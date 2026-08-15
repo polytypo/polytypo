@@ -1,0 +1,952 @@
+<title>polytypo — Brand Book</title>
+<style>
+  {{fonts}}
+  :root{
+    --ink:#14161A; --paper:#FBFAF7; --red:#D64027;
+    --grey-700:#5A6068; --grey-500:#8B9098; --grey-300:#C8CBCF; --grey-100:#EDEBE6;
+    --bg:var(--paper); --fg:var(--ink); --muted:var(--grey-700); --line:rgba(20,22,26,.14);
+    --tile:#F2F0EA;
+    --sans:"Inter Brand",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --mono:"JB Mono Brand",ui-monospace,"SF Mono",Menlo,monospace;
+    --maxw:960px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--bg:#0E1013;--fg:#EDEBE6;--muted:#9AA0A8;--line:rgba(237,235,230,.16);--tile:#181B20}
+  }
+  :root[data-theme="dark"]{--bg:#0E1013;--fg:#EDEBE6;--muted:#9AA0A8;--line:rgba(237,235,230,.16);--tile:#181B20}
+  :root[data-theme="light"]{--bg:#FBFAF7;--fg:#14161A;--muted:#5A6068;--line:rgba(20,22,26,.14);--tile:#F2F0EA}
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+    font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;font-feature-settings:"cv05","ss03"}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px 120px}
+  h1,h2,h3,h4{font-weight:600;letter-spacing:-.015em;line-height:1.2;margin:0}
+  h2{font-size:30px;margin:0 0 6px}
+  h3{font-size:19px;margin:38px 0 10px}
+  h4{font-size:15px;margin:24px 0 6px}
+  p{margin:0 0 16px;max-width:68ch}
+  a{color:inherit;text-decoration-color:var(--grey-300);text-underline-offset:3px}
+  small,.small{font-size:13px}
+  code,kbd{font-family:var(--mono);font-size:.88em;background:var(--tile);padding:.14em .38em;border-radius:4px}
+  pre{font-family:var(--mono);font-size:13px;line-height:1.65;background:var(--tile);padding:18px 20px;
+    border-radius:10px;overflow-x:auto;border:1px solid var(--line)}
+  pre code{background:none;padding:0}
+  hr{border:0;border-top:1px solid var(--line);margin:0}
+  ul,ol{margin:0 0 16px;padding-left:20px;max-width:68ch}
+  li{margin:0 0 6px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+  .lede{font-size:19px;line-height:1.55;color:var(--fg);max-width:60ch}
+  .muted{color:var(--muted)}
+  section{padding:64px 0 8px;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:0}
+  .cover{padding:96px 0 72px;text-align:left}
+  .cover .logo{max-width:520px;margin:0 0 44px}
+  .cover .logo svg{width:100%;height:auto;color:var(--fg)}
+  .meta{display:flex;flex-wrap:wrap;gap:28px;font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:44px}
+  nav.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:2px 28px;
+    font-family:var(--mono);font-size:12.5px;margin:36px 0 0;padding:24px 0 0;border-top:1px solid var(--line)}
+  nav.toc a{display:block;padding:4px 0;text-decoration:none;color:var(--muted)}
+  nav.toc a:hover{color:var(--fg)}
+  nav.toc a span{color:var(--grey-500);margin-right:10px}
+
+  .tile{background:var(--tile);border:1px solid var(--line);border-radius:12px;padding:34px;display:flex;
+    align-items:center;justify-content:center;min-height:120px}
+  .tile.ink{background:var(--ink);border-color:transparent}
+  .tile.paper{background:var(--paper);border-color:rgba(20,22,26,.12)}
+  .tile.red{background:var(--red);border-color:transparent}
+  .tile svg{max-width:100%;height:auto}
+  .grid{display:grid;gap:16px;margin:18px 0 8px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+  .g4{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+  .cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.5}
+  .cap b{color:var(--fg);font-weight:600}
+  figure{margin:0}
+
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:14px 0 20px}
+  th,td{text-align:left;padding:9px 12px 9px 0;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+  td.mono,.mono{font-family:var(--mono);font-size:13px}
+  td.mono,td .mono{overflow-wrap:anywhere}
+  .scroll{overflow-x:auto;max-width:100%}
+
+  .swatch{border-radius:12px;border:1px solid var(--line);overflow:hidden}
+  .swatch .chip{height:104px}
+  .swatch .info{padding:12px 14px;font-family:var(--mono);font-size:11.5px;line-height:1.7}
+  .swatch .info b{display:block;font-family:var(--sans);font-size:14px;letter-spacing:-.01em;margin-bottom:4px}
+
+  .do,.dont{border-radius:12px;border:1px solid var(--line);padding:20px;background:var(--tile)}
+  .flag{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+  .do .flag{color:#2E7D50}.dont .flag{color:var(--red)}
+  .dont figure svg,.do figure svg{max-width:100%;height:auto}
+
+  .note{border-left:2px solid var(--red);padding:2px 0 2px 18px;margin:22px 0;max-width:66ch}
+  .note p:last-child{margin-bottom:0}
+
+  .merch{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--tile)}
+  .merch .art{padding:24px;display:flex;justify-content:center;background:var(--tile)}
+  .merch .art svg{width:100%;max-width:240px;height:auto}
+  .merch .txt{padding:16px 18px 20px;border-top:1px solid var(--line)}
+  .merch .txt b{display:block;font-size:15px;letter-spacing:-.01em}
+  .merch .txt p{font-size:13px;color:var(--muted);margin:6px 0 0}
+
+  .spec{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .footer{padding:64px 0 0;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+  @media (max-width:640px){h2{font-size:25px}.cover{padding:56px 0 44px}.wrap{padding:0 20px 80px}}
+</style>
+
+<div class="wrap">
+  <header class="cover">
+    <div class="logo">{{svg:logo/polytypo-lockup-current.svg}}</div>
+    <p class="eyebrow">Brand book · version 1.0</p>
+    <h1 style="font-size: 44px; letter-spacing: -0.03em; margin-bottom: 18px">
+      Punctuation, set the way<br />your language sets it.
+    </h1>
+    <p class="lede">
+      polytypo is a multilingual microtypography engine: locale-correct quotes, dashes, ellipses and
+      no-break spaces. This document defines its mark, its type, its colour and the ways all three
+      may be used — including on things you can wear.
+    </p>
+    <div class="meta">
+      <span>Owner · Iurii Rogulia</span>
+      <span>Mark · «—»</span>
+      <span>Issued · 15.08.2026</span>
+    </div>
+    <nav class="toc">
+      <a href="#idea"><span>01</span>The idea</a>
+      <a href="#construction"><span>02</span>Construction</a>
+      <a href="#system"><span>03</span>The logo system</a>
+      <a href="#space"><span>04</span>Clear space &amp; sizes</a>
+      <a href="#colour"><span>05</span>Colour</a>
+      <a href="#type"><span>06</span>Typography</a>
+      <a href="#writing"><span>07</span>Writing the brand</a>
+      <a href="#misuse"><span>08</span>Misuse</a>
+      <a href="#apps"><span>09</span>Applications</a>
+      <a href="#merch"><span>10</span>Merch programme</a>
+      <a href="#assets"><span>11</span>Assets &amp; licence</a>
+    </nav>
+  </header>
+
+  <section id="idea">
+    <p class="eyebrow">01 — The idea</p>
+    <h2>A quotation mark that isn’t yours, around a dash that proves a human was here.</h2>
+
+    <div class="grid g2" style="margin-top: 28px">
+      <figure>
+        <div class="tile">{{svg:logo/polytypo-mark-current.svg}}</div>
+        <figcaption class="cap">
+          <b>The mark.</b> Guillemets enclosing an em dash. Drawn, not typed — but built to the
+          proportions of real type.
+        </figcaption>
+      </figure>
+      <div>
+        <h4>Why guillemets</h4>
+        <p>
+          Most English-speaking developers reach for <code>"</code> and stop thinking. The world
+          does not: German nests <code>„…“</code>, French demands
+          <code>«&#8239;…&#8239;»</code> with a narrow no-break space inside, Finnish closes with
+          the same glyph it opens with. The guillemet is the most recognisable
+          <em>not-English</em> quotation mark there is. Putting it in the logo states the thesis in
+          one glyph: <strong>your language has its own rules, and this library knows them.</strong>
+        </p>
+
+        <h4>Why the em dash</h4>
+        <p>
+          In 2026 the em dash acquired a second, unearned meaning: circumstantial evidence that a
+          machine wrote the text. That is a typographic tragedy — the em dash is simply the correct
+          character, and it was correct long before anyone trained a language model. We put it at
+          the centre of the mark, framed and unmissable.
+          <strong>An em dash is not a confession. It is punctuation, set properly.</strong>
+        </p>
+      </div>
+    </div>
+
+    <h3>What the mark says without a caption</h3>
+    <table>
+      <tr>
+        <th style="width: 34%">Reading</th>
+        <th>Meaning</th>
+      </tr>
+      <tr>
+        <td>Guillemets = multilingual</td>
+        <td>Six locales in v1, five runtimes planned. Not an English-only tool.</td>
+      </tr>
+      <tr>
+        <td>Em dash = correctness</td>
+        <td>The right character, in the right place, at the right width.</td>
+      </tr>
+      <tr>
+        <td>Enclosure = a transform</td>
+        <td>Text goes in, corrected text comes out. <code>transform(input, options)</code>.</td>
+      </tr>
+      <tr>
+        <td>Symmetry = idempotency</td>
+        <td>
+          The mark is its own mirror. So is the engine:
+          <code>transform(transform(x)) === transform(x)</code>.
+        </td>
+      </tr>
+    </table>
+
+    <div class="note">
+      <p>
+        The mark contains no letters, no language and no country. That is deliberate: polytypo is a
+        spec with interchangeable implementations, and the logo has to survive a Go port, a PHP port
+        and a CMS plugin without ever looking like it belongs to one of them.
+      </p>
+    </div>
+  </section>
+
+  <section id="construction">
+    <p class="eyebrow">02 — Construction</p>
+    <h2>Drawn on a 200 × 120 grid.</h2>
+    <p>
+      Every asset in this kit derives from one geometry. Reproduce the mark from these numbers,
+      never by tracing an exported PNG or by typing <code>« — »</code> in a text field.
+    </p>
+
+    <div class="tile paper" style="padding: 24px">{{construction}}</div>
+    <p class="cap">
+      <b>Construction drawing.</b> Grid unit = 10. Chevron arms run 14 across and 18 up, giving an
+      apex of about 75.6°. Stroke 9 with round caps and joins. The em dash is a rectangle, 84 × 9,
+      with flat terminals — because that is how an em dash is cut in type, while the guillemet in
+      most text faces is a stroke with a soft end.
+    </p>
+
+    <table>
+      <tr>
+        <th>Element</th>
+        <th>Geometry (grid units)</th>
+      </tr>
+      <tr>
+        <td>Canvas</td>
+        <td class="mono">200 × 120, mark centred on y = 60</td>
+      </tr>
+      <tr>
+        <td>Chevron path (outer left)</td>
+        <td class="mono">M28 42 L14 60 L28 78</td>
+      </tr>
+      <tr>
+        <td>Chevron path (inner left)</td>
+        <td class="mono">M44 42 L30 60 L44 78</td>
+      </tr>
+      <tr>
+        <td>Chevron pitch</td>
+        <td class="mono">16 units between apexes</td>
+      </tr>
+      <tr>
+        <td>Stroke</td>
+        <td class="mono">9, round cap, round join</td>
+      </tr>
+      <tr>
+        <td>Em dash</td>
+        <td class="mono">rect x 58, y 55.5, w 84, h 9</td>
+      </tr>
+      <tr>
+        <td>Dash-to-chevron gap</td>
+        <td class="mono">9.5 optical (14 nominal, less the round cap)</td>
+      </tr>
+      <tr>
+        <td>Ink bounding box</td>
+        <td class="mono">181 × 45 — the standalone mark’s viewBox</td>
+      </tr>
+    </table>
+
+    <h3>Why the dash is that long</h3>
+    <p>
+      In type, an em dash is one em wide — the single most-recognisable length in punctuation. A
+      short bar reads as a hyphen, and a hyphen is exactly the error this library exists to fix. The
+      dash is therefore
+      <strong
+        >84 units against a 45-unit mark height: nearly twice as long as the mark is tall</strong
+      >, and visibly longer than the two guillemets combined. If a rendering makes you hesitate
+      about whether it is an em dash or a hyphen, the rendering is wrong.
+    </p>
+  </section>
+
+  <section id="system">
+    <p class="eyebrow">03 — The logo system</p>
+    <h2>One mark, five sanctioned lockups.</h2>
+    <p>
+      Pick by container shape, not by taste. If none of the five fits, the answer is a different
+      container, not a sixth lockup.
+    </p>
+
+    <div class="grid g2">
+      <figure>
+        <div class="tile">{{svg:logo/polytypo-lockup-current.svg}}</div>
+        <figcaption class="cap">
+          <b>Primary — horizontal lockup.</b> The default everywhere there is width: README header,
+          site header, slide title, tee back print, conference banner.
+        </figcaption>
+      </figure>
+      <figure>
+        <div class="tile">{{svg:logo/polytypo-lockup-stacked.svg}}</div>
+        <figcaption class="cap">
+          <b>Stacked lockup.</b> For narrow or square containers. The wordmark is scaled to exactly
+          the mark’s width — flush both sides, never optically centred by eye.
+        </figcaption>
+      </figure>
+      <figure>
+        <div class="tile">{{svg:logo/polytypo-mark-current.svg}}</div>
+        <figcaption class="cap">
+          <b>Mark alone.</b> Only where the name is already present in the same view, or on
+          merchandise. Never as the first introduction to the project.
+        </figcaption>
+      </figure>
+      <figure>
+        <div class="tile ink" style="padding: 24px">{{svg:logo/polytypo-avatar.svg}}</div>
+        <figcaption class="cap">
+          <b>Avatar.</b> Square, ink field, paper mark, padded 2X on each side — the same clear
+          space the mark gets everywhere else. npm, GitHub org, X, LinkedIn, Discord. Light and
+          rounded-corner variants ship in the kit; platforms crop their own radius, and 2X keeps the
+          mark inside a circular crop.
+        </figcaption>
+      </figure>
+      <figure>
+        <div class="tile ink" style="padding: 24px">{{svg:logo/polytypo-favicon.svg}}</div>
+        <figcaption class="cap">
+          <b>Favicon tile.</b> The same mark — both guillemets, full-length em dash — nothing
+          simplified, redrawn or shortened. Padded 1X, not 2X: the one sanctioned exception in the
+          system, because at 16–48 px clear space competes with the mark’s own legibility. 32 px is
+          the size to design for; at 16 px the guillemets thicken into marks rather than resolving.
+        </figcaption>
+      </figure>
+      <figure>
+        <div class="tile">{{svg:logo/polytypo-wordmark.svg}}</div>
+        <figcaption class="cap">
+          <b>Wordmark alone.</b> Body-copy contexts, footers, sponsor rows, anywhere the mark would
+          be smaller than its minimum size.
+        </figcaption>
+      </figure>
+    </div>
+
+    <h3>Inverse and single-colour</h3>
+    <div class="grid g3" style="margin-top: 14px">
+      <figure>
+        <div class="tile ink">{{svg:logo/polytypo-lockup-inverse.svg}}</div>
+        <figcaption class="cap">Paper on ink.</figcaption>
+      </figure>
+      <figure>
+        <div class="tile paper">{{svg:logo/polytypo-lockup.svg}}</div>
+        <figcaption class="cap">Ink on paper.</figcaption>
+      </figure>
+      <figure>
+        <div class="tile red">{{svg:logo/polytypo-lockup-inverse.svg}}</div>
+        <figcaption class="cap">Paper on Correction Red. Merch and campaign use only.</figcaption>
+      </figure>
+    </div>
+    <p>
+      The mark is monochrome by definition. It has no gradient, no two-tone version and no “dark
+      mode variant” beyond swapping ink for paper. In HTML, prefer
+      <code>polytypo-mark-current.svg</code> or <code>polytypo-lockup-current.svg</code> — they
+      paint with <code>currentColor</code> and follow the surrounding theme automatically.
+    </p>
+  </section>
+
+  <section id="space">
+    <p class="eyebrow">04 — Clear space &amp; minimum sizes</p>
+    <h2>The mark needs a margin as wide as its dash is thick — twice over.</h2>
+
+    <div class="grid g2">
+      <figure>
+        <div class="tile paper" style="padding: 20px">{{clearspace}}</div>
+        <figcaption class="cap">
+          <b>X = 9 grid units = the em dash’s thickness.</b> Clear space is 2X on every side of the
+          lockup’s bounding box. Nothing enters it: no text, no rule, no badge, no container edge.
+        </figcaption>
+      </figure>
+      <div>
+        <h4>Minimum sizes</h4>
+        <table>
+          <tr>
+            <th>Asset</th>
+            <th>Screen</th>
+            <th>Print</th>
+          </tr>
+          <tr>
+            <td>Horizontal lockup</td>
+            <td class="mono">140 px wide</td>
+            <td class="mono">30 mm wide</td>
+          </tr>
+          <tr>
+            <td>Stacked lockup</td>
+            <td class="mono">96 px wide</td>
+            <td class="mono">22 mm wide</td>
+          </tr>
+          <tr>
+            <td>Mark alone</td>
+            <td class="mono">44 px wide</td>
+            <td class="mono">10 mm wide</td>
+          </tr>
+          <tr>
+            <td>Favicon tile</td>
+            <td class="mono">32 px (16 px fallback)</td>
+            <td class="mono">—</td>
+          </tr>
+          <tr>
+            <td>Avatar</td>
+            <td class="mono">48 px</td>
+            <td class="mono">—</td>
+          </tr>
+        </table>
+        <h4>Tile padding</h4>
+        <p>
+          Square tiles — avatar, favicon, sticker, app icon — are padded in the same unit as clear
+          space: <b>2X on each side</b>, giving a mark that occupies 83.4% of the tile’s width. The
+          favicon tile is the single exception at <b>1X</b> (90.9% of width), because below 48 px
+          the clear space costs more than it protects. There is no third value: if a tile needs
+          different padding, it is the wrong tile.
+        </p>
+        <p class="small muted">
+          Below the mark’s minimum, switch to the favicon tile or to the wordmark. Do not thicken
+          the strokes to compensate, and never redraw the mark with fewer chevrons or a shorter dash
+          to make it fit — that is a different logo, and it is the exact error this one exists to
+          argue against.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="colour">
+    <p class="eyebrow">05 — Colour</p>
+    <h2>Ink, paper, and one red you have to earn.</h2>
+    <p>
+      The palette is deliberately austere. A typography tool that arrives in five colours is a tool
+      that spends its credibility on decoration.
+    </p>
+
+    <div class="grid g4">
+      <div class="swatch">
+        <div class="chip" style="background: #14161a"></div>
+        <div class="info"><b>Ink</b>#14161A<br />rgb 20 22 26<br />Pantone Black 6 C ≈</div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #fbfaf7; border-bottom: 1px solid var(--line)"></div>
+        <div class="info"><b>Paper</b>#FBFAF7<br />rgb 251 250 247<br />uncoated stock ≈</div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #d64027"></div>
+        <div class="info"><b>Correction Red</b>#D64027<br />rgb 214 64 39<br />Pantone 179 C ≈</div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #5a6068"></div>
+        <div class="info"><b>Graphite</b>#5A6068<br />rgb 90 96 104<br />secondary text</div>
+      </div>
+    </div>
+
+    <h4>How they are used</h4>
+    <ul>
+      <li>
+        <b>Ink</b> — the mark, headlines, body text. Not pure black: pure black on a screen reads as
+        a hole.
+      </li>
+      <li>
+        <b>Paper</b> — backgrounds, inverse mark. Warm, not white; the brand should feel printed.
+      </li>
+      <li>
+        <b>Correction Red</b> — the proof-reader’s pencil. One accent per view, maximum: a link, a
+        diff marker, a corrected character in a demo, a limited merch run. Never the mark in a
+        product UI.
+      </li>
+      <li><b>Graphite</b> and its tints — captions, rules, disabled states, code chrome.</li>
+    </ul>
+
+    <p class="small muted">
+      CMYK and Pantone equivalents above are conversions, not measured proofs. Confirm against the
+      printer’s own profile before any production run.
+    </p>
+
+    <h4>Contrast</h4>
+    <p>
+      Ink on Paper is 15.9:1. Paper on Correction Red is 4.0:1 — acceptable for the logo and for
+      text at 19 px and above, not for small body copy. Never set Correction Red on Ink.
+    </p>
+  </section>
+
+  <section id="type">
+    <p class="eyebrow">06 — Typography</p>
+    <h2>Inter for language. JetBrains Mono for machines.</h2>
+
+    <div class="grid g2">
+      <div>
+        <h4>Inter — wordmark, headlines, body</h4>
+        <p class="mono small">SIL Open Font Licence 1.1 · variable · Latin, Cyrillic, Greek</p>
+        <p>
+          Chosen for coverage, not for fashion: a project that ships German, Russian, Finnish,
+          Swedish and French examples needs one face that renders all of them without a fallback
+          stack. Its flat terminals and even rhythm also match the mark’s straight-cut dash.
+        </p>
+        <p style="font-size: 34px; line-height: 1.25; letter-spacing: -0.02em; margin: 18px 0 0">
+          «&#8239;Kurz&#8239;» — „Zitat“ — ”lainaus”
+        </p>
+        <p class="cap">
+          Inter SemiBold 600 · the wordmark is set at weight 600 with −0.8% tracking, then outlined,
+          so no asset depends on the font being installed.
+        </p>
+      </div>
+      <div>
+        <h4>JetBrains Mono — code, rule ids, code points</h4>
+        <p class="mono small">SIL Open Font Licence 1.1 · variable</p>
+        <p>
+          Used wherever the text is machine-readable: API snippets, rule ids, error codes, code
+          points and captions in this document. It distinguishes hyphen, en dash and em dash at
+          small sizes, which matters more here than anywhere else.
+        </p>
+        <pre><code>transform("Il a dit: «bonjour»!", { locale: "fr" })
+// → "Il a dit&#8239;: «&#8239;bonjour&#8239;»&#8239;!"   U+202F, U+00AB, U+00BB</code></pre>
+      </div>
+    </div>
+
+    <h4>Scale and rules</h4>
+    <table>
+      <tr>
+        <th>Role</th>
+        <th>Face</th>
+        <th>Setting</th>
+      </tr>
+      <tr>
+        <td>Wordmark</td>
+        <td>Inter 600</td>
+        <td class="mono">lowercase, tracking −0.8%</td>
+      </tr>
+      <tr>
+        <td>Display / H1</td>
+        <td>Inter 600</td>
+        <td class="mono">40–48 px, tracking −3%</td>
+      </tr>
+      <tr>
+        <td>Section / H2</td>
+        <td>Inter 600</td>
+        <td class="mono">28–32 px, tracking −1.5%</td>
+      </tr>
+      <tr>
+        <td>Body</td>
+        <td>Inter 400</td>
+        <td class="mono">16–17 px, line-height 1.6</td>
+      </tr>
+      <tr>
+        <td>Caption / label</td>
+        <td>JetBrains Mono 400</td>
+        <td class="mono">11–13 px, tracking +8–14%, uppercase for labels</td>
+      </tr>
+      <tr>
+        <td>Code</td>
+        <td>JetBrains Mono 400</td>
+        <td class="mono">13–14 px, line-height 1.65</td>
+      </tr>
+    </table>
+    <p>
+      Fallback stack, in order:
+      <code>Inter, system-ui, -apple-system, "Segoe UI", sans-serif</code> and
+      <code>"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace</code>. Never
+      substitute a different display face for the wordmark; use the outlined asset instead.
+    </p>
+  </section>
+
+  <section id="writing">
+    <p class="eyebrow">07 — Writing the brand</p>
+    <h2>The one brand that has no excuse for a straight quote.</h2>
+
+    <div class="grid g2">
+      <div>
+        <h4>The name</h4>
+        <ul>
+          <li>Always <b>polytypo</b>, always lowercase — including at the start of a sentence.</li>
+          <li>
+            Never <span class="mono">PolyTypo</span>, <span class="mono">Polytypo</span>,
+            <span class="mono">POLYTYPO</span> or <span class="mono">poly-typo</span>.
+          </li>
+          <li>
+            The mark may be written inline as <span class="mono">«—»</span> in running text, e.g. a
+            CLI banner.
+          </li>
+          <li>
+            It is “a microtypography engine”, not “a typography library for JavaScript” — the spec
+            is the product, the runtimes are replaceable.
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h4>House typography rules</h4>
+        <ul>
+          <li>
+            All public copy is run through polytypo itself before it ships. If our own README fails
+            the conformance suite, we have shipped a lie.
+          </li>
+          <li>
+            Straight quotes and straight apostrophes never appear in prose. Only in code samples,
+            where they are the input being fixed.
+          </li>
+          <li>
+            Rule ids, locale codes and code points always in mono: <code>quotes</code>,
+            <code>de-CH</code>, <code>U+202F</code>.
+          </li>
+          <li>
+            Code points are written as <code>U+00A0</code>, never as an invisible literal character
+            in prose.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <h4>Voice</h4>
+    <p>
+      Flat, specific, checkable. Every claim in polytypo’s documentation is backed by a citation, a
+      fixture or a test — the brand voice inherits that. No superlatives, no “beautiful typography”,
+      no promises about craft. State what the rule is, cite who says so, show the before and after.
+    </p>
+  </section>
+
+  <section id="misuse">
+    <p class="eyebrow">08 — Misuse</p>
+    <h2>Eight ways to break it.</h2>
+    <div class="grid g3">{{misuse}}</div>
+    <div class="note">
+      <p>
+        <b>The worst one is the last:</b> setting the “logo” by typing <code>« — »</code> in a text
+        field. The result inherits whatever face is installed, kerns differently on every platform,
+        and turns the em dash into whatever the fallback font thinks a dash is. The logo is a
+        drawing. Use the file.
+      </p>
+    </div>
+  </section>
+
+  <section id="apps">
+    <p class="eyebrow">09 — Applications</p>
+    <h2>Where it actually lands.</h2>
+
+    <div class="grid g2">
+      <figure>
+        <div class="tile paper" style="padding: 0; overflow: hidden">{{app_readme}}</div>
+        <figcaption class="cap">
+          <b>README header.</b> Stacked or horizontal lockup at 220–320 px, centred, followed by the
+          one-line description and badges. Never a full-bleed banner image.
+        </figcaption>
+      </figure>
+      <figure>
+        <div class="tile paper" style="padding: 0; overflow: hidden">{{app_og}}</div>
+        <figcaption class="cap">
+          <b>Social card, 1200 × 630.</b> Paper field, lockup at 62% width, optically centred. Ships
+          as <span class="mono">png/polytypo-og-1200x630.png</span>.
+        </figcaption>
+      </figure>
+      <figure>
+        <div class="tile paper" style="padding: 0; overflow: hidden">{{app_browser}}</div>
+        <figcaption class="cap">
+          <b>Favicon in context.</b> The tile carries the whole mark into the tab strip. Ship all
+          three raster sizes plus the SVG: browsers pick 32 px far more often than 16.
+        </figcaption>
+      </figure>
+      <figure>
+        <div class="tile ink" style="padding: 0; overflow: hidden">{{app_cli}}</div>
+        <figcaption class="cap">
+          <b>CLI banner</b> — a specimen for whenever a CLI ships; none exists today. A terminal is
+          the one place the mark may be typed rather than drawn, since it has no vectors. Use the
+          exact string <span class="mono">«—» polytypo</span>.
+        </figcaption>
+      </figure>
+    </div>
+
+    <h4>Snippets</h4>
+    <pre><code>&lt;!-- README header --&gt;
+&lt;p align="center"&gt;
+  &lt;img src="brand/logo/polytypo-lockup-stacked.svg" alt="polytypo" width="260"&gt;
+&lt;/p&gt;
+
+&lt;!-- HTML head --&gt;
+&lt;link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48"&gt;
+&lt;link rel="icon" href="/favicon.svg" type="image/svg+xml"&gt;
+&lt;link rel="apple-touch-icon" href="/apple-touch-icon-180.png"&gt;
+&lt;meta property="og:image" content="https://polytypo.dev/polytypo-og-1200x630.png"&gt;</code></pre>
+  </section>
+
+  <section id="merch">
+    <p class="eyebrow">10 — Merch programme</p>
+    <h2>A mark this good deserves to leave the screen.</h2>
+    <p>
+      polytypo makes no money, by design — the project brief rules out monetisation entirely. Merch
+      follows the same rule:
+      <strong
+        >priced at cost, produced in small runs, given away at conferences and to
+        contributors.</strong
+      >
+      It exists to put an argument on a person’s chest, not to open a revenue line.
+    </p>
+
+    <h3>What goes where</h3>
+    <p>
+      The mark survives almost any surface, because it is one colour, has no fine detail and no
+      enclosed counters. What changes from surface to surface is only the
+      <b>weight of the stroke</b> and the <b>minimum size</b>. Two artworks cover everything: the
+      regular mark, and <span class="mono">polytypo-mark-heavy.svg</span> — the same geometry with a
+      22% thicker stroke, for anything textured, stitched, engraved or very small.
+    </p>
+
+    <div class="scroll">
+      <table>
+        <tr>
+          <th>Surface</th>
+          <th>Method</th>
+          <th>Artwork</th>
+          <th>Size &amp; placement</th>
+        </tr>
+        <tr>
+          <td><b>Tee, front</b><br /><span class="small muted">cotton jersey</span></td>
+          <td>Screen print, one colour</td>
+          <td class="mono">print-tee-front-mark.svg</td>
+          <td>
+            240 mm wide, centred, top edge 75 mm below the collar seam. Adult M; scale
+            proportionally.
+          </td>
+        </tr>
+        <tr>
+          <td><b>Tee, back neck</b></td>
+          <td>Screen print</td>
+          <td class="mono">slogan-u2014.svg</td>
+          <td>60 mm wide, centred, 40 mm below the collar seam.</td>
+        </tr>
+        <tr>
+          <td><b>Hoodie, chest</b><br /><span class="small muted">brushed fleece</span></td>
+          <td>Screen print or DTG</td>
+          <td class="mono">print-hoodie-chest-mark.svg</td>
+          <td>
+            90 mm wide, left chest, 200 mm down from the shoulder high point. Never across the
+            pocket seam.
+          </td>
+        </tr>
+        <tr>
+          <td><b>Hoodie, sleeve</b></td>
+          <td>Screen print</td>
+          <td class="mono">polytypo-mark-heavy.svg</td>
+          <td>
+            50 mm wide, running down the outer sleeve, 120 mm below the shoulder seam. Horizontal
+            only — the mark is never rotated to follow the seam.
+          </td>
+        </tr>
+        <tr>
+          <td><b>Cap, front</b><br /><span class="small muted">twill, curved</span></td>
+          <td>Flat embroidery, one colour</td>
+          <td class="mono">embroidery-cap-mark.svg</td>
+          <td>
+            110 mm wide, centred, 15 mm above the brim seam. Never the lockup: the wordmark cannot
+            hold at this stitch density.
+          </td>
+        </tr>
+        <tr>
+          <td><b>Beanie / patch</b><br /><span class="small muted">knit</span></td>
+          <td>Woven or embroidered patch</td>
+          <td class="mono">polytypo-mark-heavy.svg</td>
+          <td>
+            55 mm wide on a paper-coloured patch. Knit is too coarse for direct stitching at this
+            size.
+          </td>
+        </tr>
+        <tr>
+          <td><b>Tote</b><br /><span class="small muted">canvas</span></td>
+          <td>Screen print</td>
+          <td class="mono">print-tee-front-mark.svg</td>
+          <td>200 mm wide, centred, 90 mm below the top hem.</td>
+        </tr>
+        <tr>
+          <td><b>Sticker</b><br /><span class="small muted">vinyl</span></td>
+          <td>Die-cut</td>
+          <td class="mono">sticker-mark-diecut.svg</td>
+          <td>
+            80 mm wide; the cut line is the outer rounded rectangle. Also produce a 40 mm version
+            for laptops — that is the floor for die-cutting this shape.
+          </td>
+        </tr>
+        <tr>
+          <td><b>Enamel pin</b><br /><span class="small muted">metal</span></td>
+          <td>Hard enamel, ink fill on brushed metal</td>
+          <td class="mono">polytypo-mark-heavy.svg</td>
+          <td>
+            32 mm wide, the smallest object in the programme. Below that the guillemets fill in —
+            use the em dash alone, never a redrawn mark.
+          </td>
+        </tr>
+        <tr>
+          <td><b>Mug</b><br /><span class="small muted">ceramic, enamel</span></td>
+          <td>Pad print or transfer</td>
+          <td class="mono">polytypo-mark.svg</td>
+          <td>
+            70 mm wide, centred on the side opposite the handle, 30 mm below the rim. One side only.
+          </td>
+        </tr>
+        <tr>
+          <td><b>Notebook</b><br /><span class="small muted">board, cloth</span></td>
+          <td>Blind deboss or foil</td>
+          <td class="mono">polytypo-mark-heavy.svg</td>
+          <td>
+            60 mm wide, centred, lower third of the cover. Debossing swallows thin strokes — heavy
+            cut only.
+          </td>
+        </tr>
+        <tr>
+          <td><b>Wood / anodised metal</b></td>
+          <td>Laser engraving</td>
+          <td class="mono">polytypo-mark-heavy.svg</td>
+          <td>40 mm minimum. Engrave the mark, never the tile: a burnt square reads as damage.</td>
+        </tr>
+        <tr>
+          <td><b>Poster, banner, roll-up</b></td>
+          <td>Digital or screen</td>
+          <td class="mono">polytypo-lockup.svg</td>
+          <td>
+            Lockup, not the bare mark — a poster is an introduction. Minimum 120 mm wide, clear
+            space 2X, never bled off the edge.
+          </td>
+        </tr>
+        <tr>
+          <td><b>Dark garments &amp; surfaces</b></td>
+          <td>Any</td>
+          <td class="mono">*-inverse.svg</td>
+          <td>
+            Paper on ink. Never print the ink mark onto a dark surface and hope; never add a white
+            keyline to rescue it.
+          </td>
+        </tr>
+      </table>
+    </div>
+    <p class="small muted">
+      Sizes are starting specifications, not proofs: confirm the first sample against the supplier’s
+      own template and stitch or screen resolution before any run.
+    </p>
+
+    <h4>Rules that hold on every surface</h4>
+    <ul>
+      <li>
+        One colour. No second ink inside the mark, no outline, no shadow, no distressed texture.
+      </li>
+      <li>
+        Horizontal, always. The mark is never rotated to follow a seam, a sleeve or a mug’s curve.
+      </li>
+      <li>Clear space 2X, and seams, hems, zips and pockets count as intruders.</li>
+      <li>
+        Where the surface is textured, stitched, engraved or below 40 mm, switch to the heavy cut
+        rather than thickening the regular one by hand.
+      </li>
+      <li>
+        Never redraw the mark to fit a shape — fewer chevrons or a shorter dash is a different logo.
+      </li>
+    </ul>
+
+    <h3>Slogans</h3>
+    <ul>
+      <li>
+        <b>“The em dash was mine.”</b> <span class="mono">slogan-em-dash-was-mine.svg</span> — the
+        hero. A joke to everyone and a manifesto to writers. Front of tee and hoodie, under the
+        mark.
+      </li>
+      <li>
+        <b>“U+2014”</b> <span class="mono">slogan-u2014.svg</span> — the insider cut. Back neck,
+        cap, sticker, pin card. Says the same thing to people who already know.
+      </li>
+      <li>
+        <b>“Locale-correct by default”</b> <span class="mono">slogan-locale-correct.svg</span> — the
+        conference cut: explains the project to a stranger from across a hallway.
+      </li>
+    </ul>
+    <p>
+      Slogans are set in Inter Medium and always sit <em>below</em> the mark, centred to it, with a
+      gap of at least 3X. Never beside it, never inside the clear space, never in place of the
+      wordmark on primary applications.
+    </p>
+
+    <h4>The stroke-width rule</h4>
+    <p>
+      The mark’s stroke is 4.97% of its printed width. So
+      <span class="mono">stroke (mm) = 0.0497 × print width (mm)</span>. Embroidery needs at least
+      1.4 mm of stroke, which puts a hard floor on the regular mark at <b>28 mm wide</b>; below
+      that, or on any textured or knitted surface, use
+      <span class="mono">polytypo-mark-heavy.svg</span>, whose stroke is 22% thicker. Screen print
+      floor is 1.2 mm (24 mm wide); DTG, 1.5 mm (30 mm wide).
+    </p>
+
+    <h4>Colourways</h4>
+    <table>
+      <tr>
+        <th>Garment</th>
+        <th>Ink</th>
+        <th>Notes</th>
+      </tr>
+      <tr>
+        <td>Natural / ecru</td>
+        <td>Ink #14161A</td>
+        <td>Primary. Warmest match to Paper.</td>
+      </tr>
+      <tr>
+        <td>Black</td>
+        <td>Paper #FBFAF7</td>
+        <td>Inverse lockup. Hoodie default.</td>
+      </tr>
+      <tr>
+        <td>Natural / ecru</td>
+        <td>Correction Red #D64027</td>
+        <td>Limited run — release drops only.</td>
+      </tr>
+    </table>
+    <p>
+      No heather greys, no all-over prints, no logo repeated as a pattern, no second colour inside
+      the mark.
+    </p>
+
+    <h4>Drop plan</h4>
+    <ul>
+      <li>
+        <b>Drop 1 — v1.0.0 release.</b> Stickers with every conference handout; 30 tees, split
+        natural/black; 15 caps. Contributors first.
+      </li>
+      <li>
+        <b>Drop 2 — first port ships.</b> Hoodie, black, paper mark on the chest and the runtime
+        name on the sleeve — one garment per runtime, only for the people who built it.
+      </li>
+      <li>
+        <b>Always on.</b> Stickers. They cost nothing and travel further than anything else here.
+      </li>
+    </ul>
+  </section>
+
+  <section id="assets">
+    <p class="eyebrow">11 — Assets &amp; licence</p>
+    <h2>What ships, and what you may do with it.</h2>
+
+    <h4>Kit contents</h4>
+    <pre><code>brand/
+  logo/        12 SVG — lockup, stacked, mark, wordmark, avatar, favicon tile
+               (ink · inverse · currentColor variants)
+  png/         raster exports, 512–2048 px, plus og-image and touch icons
+  favicon/     favicon.ico (16·32·48), favicon.svg, apple-touch-icon-180.png
+  merch/       print-ready SVG with physical dimensions in mm, slogan lockups
+  tools/       gen_svg.py, render.mjs — regenerate every asset from geometry</code></pre>
+
+    <h4>Regenerating</h4>
+    <pre><code>python3 brand/tools/gen_svg.py     # vectors, wordmark outlined from Inter
+node   brand/tools/render.mjs      # PNG exports and the social card</code></pre>
+    <p>
+      The wordmark is outlined at build time, so no delivered asset requires Inter to be installed.
+      Fonts are downloaded on demand and are not vendored into the repository.
+    </p>
+
+    <h4>Licence</h4>
+    <p>
+      The polytypo <b>source code</b> is MIT. The <b>brand assets in this kit are not</b>. You may
+      use the unmodified mark and lockups to refer to, link to or credit the polytypo project — in
+      articles, talks, integration docs and package listings. You may not alter the mark, use it as
+      your own project’s identity, imply endorsement, or sell goods bearing it without written
+      permission from the owner.
+    </p>
+    <p>
+      Inter and JetBrains Mono are licensed under the SIL Open Font Licence 1.1 by their respective
+      authors.
+    </p>
+
+    <div class="footer">
+      <p>
+        polytypo brand book v1.0 · issued 15.08.2026 · Iurii Rogulia · this document was set in
+        Inter and JetBrains Mono, and every character in it was passed through polytypo.
+      </p>
+    </div>
+  </section>
+</div>

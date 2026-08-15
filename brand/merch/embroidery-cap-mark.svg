@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="8.5 36.5 183.0 47.0" width="110.0mm" height="28.3mm" role="img" aria-labelledby="t d">
+  <title id="t">polytypo</title>
+  <desc id="d">Cap, flat embroidery, one colour, minimum stroke 1.4 mm at this size.</desc>
+  <g fill="none" stroke="#14161A" stroke-width="11.0" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M28 42 L14 60 L28 78"/>
+    <path d="M44 42 L30 60 L44 78"/>
+    <path d="M172 42 L186 60 L172 78"/>
+    <path d="M156 42 L170 60 L156 78"/>
+  </g>
+  <rect x="58.0" y="54.5" width="84.0" height="11.0" fill="#14161A"/>
+</svg>

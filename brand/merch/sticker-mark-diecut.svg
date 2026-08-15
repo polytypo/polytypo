@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-16.5 11.5 233.0 97.0" width="80.0mm" height="33.3mm" role="img" aria-labelledby="t d">
+  <title id="t">polytypo</title>
+  <desc id="d">Die-cut sticker, 80 mm wide, cut line = outer rounded rectangle.</desc>
+  <rect x="-16.5" y="11.5" width="233.0" height="97.0" rx="24" fill="#FBFAF7" stroke="#14161A" stroke-width="3"/>
+  <g fill="none" stroke="#14161A" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M28 42 L14 60 L28 78"/>
+    <path d="M44 42 L30 60 L44 78"/>
+    <path d="M172 42 L186 60 L172 78"/>
+    <path d="M156 42 L170 60 L156 78"/>
+  </g>
+  <rect x="58.0" y="55.5" width="84.0" height="9.0" fill="#14161A"/>
+</svg>
