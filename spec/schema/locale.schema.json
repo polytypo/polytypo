@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://polytypo.org/schema/locale.schema.json",
+  "title": "polytypo locale data",
+  "description": "Declarative typographic conventions for one locale. Literal strings, literal code points, string lists and enum values only — no patterns, no priorities, no expressions (docs/ARCHITECTURE.md section 5.1).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["locale", "name", "quotes", "dash", "ellipsis", "hyphen", "nbsp", "sources"],
+  "properties": {
+    "locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+      "description": "BCP-47 language or language-region tag. Must equal the file name."
+    },
+    "name": {
+      "type": "string",
+      "description": "English name of the locale, for generated documentation."
+    },
+    "quotes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary", "secondary"],
+      "properties": {
+        "primary": { "$ref": "#/$defs/quotePair" },
+        "secondary": { "$ref": "#/$defs/quotePair" }
+      }
+    },
+    "dash": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["parenthetical", "range"],
+      "properties": {
+        "parenthetical": {
+          "enum": ["em-tight", "em-spaced", "en-tight", "en-spaced", "none"],
+          "description": "Dash used for a parenthetical break. `-tight` means no surrounding spaces, `-spaced` means a regular space on each side (the leading one may later be made non-breaking by the nbsp rule). `none` means the locale has no verified convention and the rule must not substitute anything."
+        },
+        "range": {
+          "enum": ["em-tight", "em-spaced", "en-tight", "en-spaced", "none"],
+          "description": "Dash used between numbers and dates. Russian sets an em dash here. `none` means the locale has no verified convention and the rule must not substitute anything — a missing citation is never a licence to guess."
+        }
+      }
+    },
+    "ellipsis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["abbreviatedAfterTerminal"],
+      "properties": {
+        "abbreviatedAfterTerminal": {
+          "type": "boolean",
+          "description": "When true, an ellipsis directly after `!` or `?` is written with two dots (`?..`) rather than three. Russian convention."
+        }
+      }
+    },
+    "hyphen": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prefixes", "suffixes", "compounds"],
+      "description": "Morphological forms whose hyphen must not break across lines. Empty arrays are the normal case — only a few languages have a normative list.",
+      "properties": {
+        "prefixes": {
+          "$ref": "#/$defs/wordList",
+          "description": "Word-initial forms written with a trailing hyphen, e.g. Russian \"кое-\"."
+        },
+        "suffixes": {
+          "$ref": "#/$defs/wordList",
+          "description": "Word-final forms written with a leading hyphen, e.g. Russian \"-таки\"."
+        },
+        "compounds": {
+          "$ref": "#/$defs/wordList",
+          "description": "Whole hyphenated forms, written with U+002D, e.g. Russian \"из-под\"."
+        }
+      }
+    },
+    "nbsp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "beforePunctuation",
+        "narrowBeforePunctuation",
+        "afterShortWords",
+        "abbreviations",
+        "beforeUnits",
+        "beforeNumber",
+        "beforeWord",
+        "afterSymbols",
+        "bindInitials"
+      ],
+      "properties": {
+        "beforePunctuation": {
+          "$ref": "#/$defs/charList",
+          "description": "Characters that take U+00A0 before them."
+        },
+        "narrowBeforePunctuation": {
+          "$ref": "#/$defs/charList",
+          "description": "Characters that take U+202F before them."
+        },
+        "afterShortWords": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "description": "Lowercase words that must not be left at the end of a line; the space after them becomes U+00A0. Matching is case-insensitive only for the first character."
+        },
+        "abbreviations": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 2 },
+          "uniqueItems": true,
+          "description": "Literal multi-token abbreviations written with regular U+0020; every internal space becomes U+00A0. Example: \"z. B.\"."
+        },
+        "beforeUnits": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "description": "Units and signs that bind to a preceding number with U+00A0. Example: \"%\", \"km\", \"°C\"."
+        },
+        "beforeNumber": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 2 },
+          "uniqueItems": true,
+          "description": "Abbreviations that bind to a following number with U+00A0. Example: \"Nr.\", \"S.\", \"art.\"."
+        },
+        "beforeWord": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 2 },
+          "uniqueItems": true,
+          "description": "Abbreviations that bind to a following word with U+00A0. Example: \"г.\", \"ул.\", \"M.\", \"Mme\". Riskier than beforeNumber — list only forms whose binding is normative."
+        },
+        "afterSymbols": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "description": "Symbols that bind to a following number with U+00A0. Example: \"§\", \"№\"."
+        },
+        "bindInitials": {
+          "type": "boolean",
+          "description": "When true, initials are bound to each other and to the surname with U+00A0."
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["rule", "cite"],
+        "properties": {
+          "rule": {
+            "enum": [
+              "quotes",
+              "dashes",
+              "ellipsis",
+              "hyphen",
+              "nbsp",
+              "spaces",
+              "apostrophe",
+              "symbols"
+            ],
+            "description": "Which rule the citation is normative for. Values are rule ids from spec/rules/order.json — note the rule is `dashes` while the locale-data field it reads is `dash`."
+          },
+          "cite": {
+            "type": "string",
+            "minLength": 8,
+            "description": "Normative authority, named precisely enough to be looked up offline."
+          },
+          "url": { "type": "string", "format": "uri" },
+          "note": { "type": "string" }
+        }
+      },
+      "description": "Mandatory. Every locale-driven rule with non-default data must be covered by at least one citation (docs/PLAN.md section 6.1)."
+    }
+  },
+  "$defs": {
+    "quotePair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["open", "close", "innerSpace"],
+      "properties": {
+        "open": { "$ref": "#/$defs/singleChar" },
+        "close": { "$ref": "#/$defs/singleChar" },
+        "innerSpace": {
+          "enum": ["none", "nbsp", "narrow-nbsp"],
+          "description": "Space inserted between the quotation mark and the quoted text, as in French guillemets."
+        }
+      }
+    },
+    "singleChar": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2,
+      "not": { "enum": ["\"", "'"] },
+      "description": "Exactly one Unicode code point, written as the literal character. maxLength is 2 only because a JSON validator counts UTF-16 units; the one-code-point rule is enforced by scripts/validate-spec.mjs, which is the portable check. U+0022 and U+0027 are forbidden: the quotes rule reasons about straight marks as input and would not terminate if a locale declared one as output."
+    },
+    "wordList": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 2 },
+      "uniqueItems": true
+    },
+    "charList": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/singleChar" },
+      "uniqueItems": true
+    }
+  }
+}

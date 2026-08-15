@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://polytypo.org/schema/resolution.schema.json",
+  "title": "polytypo locale-resolution fixtures",
+  "description": "Conformance cases for spec/rules/locale-resolution.md. Kept separate from spec/schema/fixtures.schema.json because a resolution case has no rule, no mode and no text — it maps a requested tag to a resolved locale or to an error code.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["spec", "cases"],
+  "properties": {
+    "spec": { "type": "string" },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id"],
+        "oneOf": [{ "required": ["resolves"] }, { "required": ["throws"] }],
+        "allOf": [
+          {
+            "if": { "properties": { "tagAbsent": { "const": true } }, "required": ["tagAbsent"] },
+            "then": { "not": { "required": ["tag"] } },
+            "else": { "required": ["tag"] }
+          }
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+          "tag": {
+            "type": "string",
+            "description": "The tag as passed by the caller, verbatim — including any casing or separator the resolver is expected to accept or reject."
+          },
+          "tagAbsent": {
+            "const": true,
+            "description": "The caller supplied no locale at all, or a null one — the case spec/rules/locale-resolution.md §3.1 requires to throw. A closed flag rather than a widened `tag` type, so every runtime reads one intent instead of reinterpreting null, undefined and missing keys in its own way."
+          },
+          "resolves": {
+            "type": "string",
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+            "description": "Canonical locale the tag must resolve to."
+          },
+          "throws": {
+            "enum": ["POLYTYPO_UNKNOWN_LOCALE"],
+            "description": "Resolution never falls back to English; an unresolvable tag throws."
+          },
+          "note": { "type": "string" }
+        }
+      }
+    }
+  }
+}

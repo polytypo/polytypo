@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://polytypo.org/schema/registry.schema.json",
+  "title": "polytypo locale registry",
+  "description": "The only data locale resolution consumes (spec/rules/locale-resolution.md section 2). The three registry invariants — alias targets exist, aliases never shadow a locale, aliases are never transitive — are relational and are enforced by scripts/validate-spec.mjs, not expressible here.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["locales", "aliases"],
+  "properties": {
+    "spec": { "type": "string" },
+    "$comment": { "type": "string" },
+    "locales": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+        "description": "Concrete locale identifier with a file at spec/locales/<id>.json."
+      }
+    },
+    "aliases": {
+      "type": "object",
+      "description": "Maps a tag to a member of `locales`. A value is a final answer, never another alias key.",
+      "propertyNames": { "pattern": "^[a-z]{2}(-[A-Z]{2})?$" },
+      "additionalProperties": { "type": "string", "pattern": "^[a-z]{2}(-[A-Z]{2})?$" }
+    }
+  }
+}

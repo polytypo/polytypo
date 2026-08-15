@@ -1,0 +1,70 @@
+{
+  "spec": "0.1.0",
+  "$comment": "Single source of truth for pipeline order. Rules run in ascending `order`. Disabling a rule removes it from the sequence and never reorders the rest. Rule ids are public API (see docs/ARCHITECTURE.md section 5).",
+  "rules": [
+    {
+      "id": "spaces",
+      "order": 10,
+      "default": "on",
+      "modes": ["text", "html", "markdown"],
+      "localeData": [],
+      "summary": "Collapse repeated spaces, strip spaces before punctuation, normalize spacing inside brackets."
+    },
+    {
+      "id": "ellipsis",
+      "order": 20,
+      "default": "on",
+      "modes": ["text", "html", "markdown"],
+      "localeData": ["ellipsis"],
+      "summary": "Three dots to U+2026; locale-dependent abbreviated forms after terminal punctuation."
+    },
+    {
+      "id": "dashes",
+      "order": 30,
+      "default": "on",
+      "modes": ["text", "html", "markdown"],
+      "localeData": ["dash"],
+      "summary": "Parenthetical dash and numeric/date range dash per locale convention."
+    },
+    {
+      "id": "hyphen",
+      "order": 35,
+      "default": "on",
+      "modes": ["text", "html", "markdown"],
+      "localeData": ["hyphen"],
+      "summary": "Bind morphological hyphen forms with U+2011 (non-breaking hyphen) so they cannot be broken across lines. Runs after `dashes`, which has already declined every letter-adjacent hyphen. A no-op for locales whose hyphen lists are empty."
+    },
+    {
+      "id": "quotes",
+      "order": 40,
+      "default": "on",
+      "modes": ["text", "html", "markdown"],
+      "localeData": ["quotes"],
+      "summary": "Straight quotes to locale primary/secondary pairs with nesting resolution. Runs before `apostrophe` so that a straight apostrophe is still available as quote evidence."
+    },
+    {
+      "id": "apostrophe",
+      "order": 50,
+      "default": "on",
+      "modes": ["text", "html", "markdown"],
+      "localeData": [],
+      "summary": "Remaining straight apostrophes to U+2019 without corrupting contractions."
+    },
+    {
+      "id": "symbols",
+      "order": 60,
+      "default": "on",
+      "modes": ["text", "html", "markdown"],
+      "localeData": [],
+      "summary": "(c)/(r)/(tm) to the corresponding signs; multiplication sign between numerals."
+    },
+    {
+      "id": "nbsp",
+      "order": 70,
+      "default": "on",
+      "modes": ["text", "html", "markdown"],
+      "localeData": ["nbsp", "quotes"],
+      "summary": "Insert no-break and narrow no-break spaces per locale. Runs last so that every other rule has already settled the surrounding characters."
+    }
+  ]
+}
