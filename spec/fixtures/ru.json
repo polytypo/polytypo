@@ -1,0 +1,614 @@
+{
+  "spec": "0.1.0",
+  "locale": "ru",
+  "cases": [
+    {
+      "id": "ru-spaces-collapse-run",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Привет   мир.",
+      "out": "Привет мир.",
+      "note": "spaces.md §6 case 1."
+    },
+    {
+      "id": "ru-spaces-before-punctuation",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Привет , мир !",
+      "out": "Привет, мир!",
+      "note": "spaces.md §6 case 2: the comma and the exclamation mark are in STRIP-BEFORE. Russian has no French spacing, so nbsp puts nothing back."
+    },
+    {
+      "id": "ru-spaces-brackets",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "текст  (  сноска  )  далее",
+      "out": "текст (сноска) далее",
+      "note": "spaces.md §3.4: bracket-inner runs are deleted, the outer ones collapse to one."
+    },
+    {
+      "id": "ru-spaces-leading-indentation",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "    отступ сохраняется",
+      "out": "    отступ сохраняется",
+      "note": "spaces.md §4: a run at index 0 is skipped."
+    },
+    {
+      "id": "ru-ellipsis-abbreviated-after-question",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Что?...",
+      "out": "Что?..",
+      "note": "ellipsis.md §6 case 9. Russian writes two dots after ? or !, because the terminal mark already occupies the first position of the three-dot group — Правила русской орфографии и пунктуации (1956), «Многоточие»: «Сколько жить ещё на свете?..»."
+    },
+    {
+      "id": "ru-ellipsis-abbreviated-from-existing",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Что?…",
+      "out": "Что?..",
+      "note": "ellipsis.md §6 case 10: an existing U+2026 after a terminal mark is rewritten to the abbreviated form."
+    },
+    {
+      "id": "ru-ellipsis-abbreviated-roundtrip",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Что?..",
+      "out": "Что?..",
+      "note": "ellipsis.md §6 case 11: the target form is inert, unconditionally — this is what stops the ?.. / ?… oscillation that the naive formulation produces."
+    },
+    {
+      "id": "ru-ellipsis-abbreviated-after-exclamation",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Как играли!...",
+      "out": "Как играли!..",
+      "note": "The `!..` form, same rule: «А как вы вчера играли!..»."
+    },
+    {
+      "id": "ru-ellipsis-after-interrobang",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Что?!...",
+      "out": "Что?!..",
+      "note": "ellipsis.md §3.4 and §6 case 12: the single code point left of the run is U+0021, so the abbreviated form fires — «Что?!..»."
+    },
+    {
+      "id": "ru-ellipsis-ordinary",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Он ушёл...",
+      "out": "Он ушёл…",
+      "note": "ellipsis.md §6 case 13: the left neighbour is a letter, so this is an ordinary U+2026."
+    },
+    {
+      "id": "ru-ellipsis-two-dot-run-inert",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Версия 1..5",
+      "out": "Версия 1..5",
+      "note": "ellipsis.md §6 case 14: in an abbreviating locale a two-dot run is inert unconditionally."
+    },
+    {
+      "id": "ru-dashes-parenthetical-spaced",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Москва - столица",
+      "out": "Москва — столица",
+      "note": "dashes.md §6 case 14: dash.parenthetical = em-spaced. Russian sets an em dash (U+2014), spaced on both sides — Мильчин/Розенталь."
+    },
+    {
+      "id": "ru-dashes-parenthetical-tight-input",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Москва--столица",
+      "out": "Москва — столица",
+      "note": "P3: a run of two qualifies regardless of spacing, and em-spaced inserts the spacing the input lacked."
+    },
+    {
+      "id": "ru-dashes-range-em-tight",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Годы 1941-1945 были тяжёлыми",
+      "out": "Годы 1941⁠—⁠1945 были тяжёлыми",
+      "note": "dashes.md §6 case 17 and §3.3.1. Two things at once. (1) The glyph: Russian sets an EM dash without spacing in an interval («1941—1945 гг.»), which is what forced dash.range to carry em-* — a port that hard-codes U+2013 for ranges fails here. (2) The binding: a hyphen-typed range that converts is wrapped in U+2060 word joiners, because UAX #14 gives U+2013/U+2014 the class BA and a renderer would otherwise be free to break after the dash. U+2060 is zero-width, so this case is unreadable on screen — check it in spec/fixtures/.escaped/."
+    },
+    {
+      "id": "ru-dashes-range-roundtrip",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "в XV—XVII веках",
+      "out": "в XV—XVII веках",
+      "note": "dashes.md §6 case 17a. Guard P4, the Roman-numeral veto: a TIGHT dash whose neighbours are maximal runs of the seven uppercase Roman-numeral letters, each bounded on its outer side by a non-LETTER, is declined outright. Without P4 the range branch cannot see this token (§3.3 admits a range candidate only when a DIGIT stands on each side), it falls through to the parenthetical branch, and em-spaced DAMAGES input that was already correct: `в XV — XVII веках`. A port whose output spaces this dash out is missing P4. The U+00A0 after `в` is nbsp N3 and is unrelated."
+    },
+    {
+      "id": "ru-dashes-nobreak-space-preserved",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "слово — столица",
+      "out": "слово — столица",
+      "note": "dashes.md §3.6 and §6 case 34: a U+00A0 on the left of the token counts as spacing and is preserved exactly, never downgraded to U+0020."
+    },
+    {
+      "id": "ru-dashes-cluster-inert",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a—0–0",
+      "out": "a—0–0",
+      "note": "dashes.md §6 case 18, shipped idempotency defect (a): one cluster with two dash runs is inert in its entirety."
+    },
+    {
+      "id": "ru-dashes-spacing-transition-guard",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a–1 - 1",
+      "out": "a–1 - 1",
+      "note": "dashes.md §6 case 25, shipped idempotency defect (c): guard T1 keeps the tight en dash from becoming spaced against a digit run that has another dash beyond it."
+    },
+    {
+      "id": "ru-dashes-composition-guard-t2",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a--.",
+      "out": "a--.",
+      "note": "dashes.md §6 case 29, composition defect family 1: guard T2 declines an em-spaced form whose right neighbour is a code point `spaces` strips a U+0020 before."
+    },
+    {
+      "id": "ru-dashes-compound-not-touched",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "научно-технический прогресс",
+      "out": "научно-технический прогресс",
+      "note": "Guard P1: a bare unspaced hyphen inside a word is not a dash — and this compound is in none of the hyphen lists either."
+    },
+    {
+      "id": "ru-dashes-phone-number",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Телефон 212-555-1234",
+      "out": "Телефон 212-555-1234",
+      "note": "Cluster guard and G2: a chain of dashes is inert."
+    },
+    {
+      "id": "ru-hyphen-compound-izpod",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Достал из-под стола",
+      "out": "Достал из‑под стола",
+      "note": "hyphen.md §6 case 1: `из-под` is a listed compound, so its hyphen becomes U+2011 and the word can no longer break after `из-`."
+    },
+    {
+      "id": "ru-hyphen-compound-capitalised",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Из-под стола донёсся звук",
+      "out": "Из‑под стола донёсся звук",
+      "note": "hyphen.md §6 case 2: first-character leniency, via the Unicode simple uppercase mapping of `и` — not a host-locale toUpperCase()."
+    },
+    {
+      "id": "ru-hyphen-compound-izza",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Москва — из-за дождя",
+      "out": "Москва — из‑за дождя",
+      "note": "hyphen.md §6 case 11: the em dash belongs to `dashes` and is untouched here; the compound binds. The space after `за` stays an ordinary U+0020, and that is nbsp N3 step 2: the left boundary of a short word is NONE, SPACELIKE, OPENISH or SENTENCE-DASH = {U+2013, U+2014} — a hyphen, U+002D or U+2011, deliberately fails it, because a hyphen marks an intra-word position and `за` here is the tail of the compound preposition `из-за`, not a preposition of its own. A port whose short-word boundary accepts any dash binds this and is wrong; see the next case for what the narrowing had to preserve."
+    },
+    {
+      "id": "ru-hyphen-prefix-koe",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Пришёл кое-кто важный",
+      "out": "Пришёл кое‑кто важный",
+      "note": "hyphen.md §6 case 4: the prefix `кое-` binds because a letter follows — Лопатин §135."
+    },
+    {
+      "id": "ru-hyphen-suffix-to",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Он сделал что-то важное",
+      "out": "Он сделал что‑то важное",
+      "note": "The suffix `-то`, matched at its own hyphen with a letter to the left — Лопатин §135."
+    },
+    {
+      "id": "ru-hyphen-suffix-taki",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Он всё-таки пришёл",
+      "out": "Он всё‑таки пришёл",
+      "note": "hyphen.md §6 case 5: the particle `-таки` — Лопатин §143."
+    },
+    {
+      "id": "ru-hyphen-suffix-nibud",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "что-нибудь или что-либо",
+      "out": "что‑нибудь или что‑либо",
+      "note": "hyphen.md §6 case 6: two suffixes in one string."
+    },
+    {
+      "id": "ru-nbsp-shortword-after-em-dash",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "— в Москве",
+      "out": "— в Москве",
+      "note": "nbsp.md §6 case 13h, the counterpart of the previous case: SENTENCE-DASH is exactly {U+2013, U+2014}, so an em dash still opens a phrase and a genuine one-letter preposition after it binds normally. The narrowing of N3's left boundary had to keep this working; a port that drops dashes from the boundary altogether fails here."
+    },
+    {
+      "id": "ru-dashes-roman-range-hyphen-not-converted",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "в XV-XVII веках",
+      "out": "в XV-XVII веках",
+      "note": "dashes.md §6 case 17b and §7.10: a Roman-numeral range typed with a hyphen-minus is NOT converted to an em dash. P4 tests the token's spacing and its neighbours, not which dash was typed, so it vetoes this token too. That is deliberate — P4 is a veto, never a range-enabler, because admitting ROMAN runs as range candidates would also fire on all-caps words built from the same letters (MIX, CIVIL, VIVID), and converting is the direction that can damage. A recorded miss, not a defect: do not silently \"fix\" it."
+    },
+    {
+      "id": "ru-hyphen-roundtrip",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Достал из‑под стола",
+      "out": "Достал из‑под стола",
+      "note": "hyphen.md §6 case 7, the round-trip case: matching is hyphen-lenient, so the rule recognises its own output and emits nothing."
+    },
+    {
+      "id": "ru-hyphen-allcaps-not-matched",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "ИЗ-ПОД СТОЛА",
+      "out": "ИЗ-ПОД СТОЛА",
+      "note": "hyphen.md §6 case 3 and §7.1: only the first character is case-lenient, so an all-capitals heading is deliberately not matched."
+    },
+    {
+      "id": "ru-hyphen-not-listed",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "научно-технический прогресс",
+      "out": "научно-технический прогресс",
+      "note": "hyphen.md §6 case 8: the rule has a list, not a morphology."
+    },
+    {
+      "id": "ru-hyphen-suffix-at-line-start",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "-таки в начале строки",
+      "out": "-таки в начале строки",
+      "note": "hyphen.md §6 case 12: suffix guard S1 needs a letter to the left, and there is none, so the hyphen stays U+002D. The U+00A0 after `в` is nbsp N3."
+    },
+    {
+      "id": "ru-hyphen-inside-longer-word",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "квазииз-подный",
+      "out": "квазииз-подный",
+      "note": "hyphen.md §6 case 10: compound guard C1, the code point to the left is in WORDISH."
+    },
+    {
+      "id": "ru-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Он сказал: \"это 'моё' дело\".",
+      "out": "Он сказал: «это „моё“ дело».",
+      "note": "quotes.md §6 case 14: depth 1 takes the ёлочки « », depth 2 the лапки „ “ — Лопатин 2006. Note the secondary pair's closing glyph is U+201C, which is in OPENISH; the class says nothing about the role."
+    },
+    {
+      "id": "ru-quotes-roundtrip",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Он сказал: «это „моё“ дело».",
+      "out": "Он сказал: «это „моё“ дело».",
+      "note": "Existing curly glyphs are never re-paired (quotes.md §3.8)."
+    },
+    {
+      "id": "ru-quotes-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Роман «Война и мир»",
+      "out": "Роман «Война и мир»",
+      "note": "Russian guillemets take no inner space (quotes.innerSpace = none), unlike French — N8 does nothing. The U+00A0 is nbsp N3 binding the conjunction `и`."
+    },
+    {
+      "id": "ru-quotes-unbalanced",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Он сказал: \"это моё",
+      "out": "Он сказал: \"это моё",
+      "note": "quotes.md §3.6: an unmatched straight mark is left alone rather than guessed at."
+    },
+    {
+      "id": "ru-apostrophe-medial",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Джон О'Брайен",
+      "out": "Джон О’Брайен",
+      "note": "apostrophe.md §6 case 13: letters on both sides."
+    },
+    {
+      "id": "ru-apostrophe-prime-guard",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Рост 6' 2\" дюймов",
+      "out": "Рост 6' 2\" дюймов",
+      "note": "apostrophe.md §6 case 6: the prime guard leaves a foot mark alone, and `quotes` could not pair the lone U+0022 either."
+    },
+    {
+      "id": "ru-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Все права защищены (c) 2026",
+      "out": "Все права защищены © 2026",
+      "note": "symbols.md §6 case 1."
+    },
+    {
+      "id": "ru-symbols-multiplication-with-unit",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Размер 10 x 20 см",
+      "out": "Размер 10 × 20 см",
+      "note": "symbols.md §3.3: the symmetric spaced form keeps its space code points; nbsp then binds the unit `см` to the number."
+    },
+    {
+      "id": "ru-symbols-hex-literal",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Цвет 0x1F",
+      "out": "Цвет 0x1F",
+      "note": "Guard M3: a letter follows the right digit run."
+    },
+    {
+      "id": "ru-symbols-cyrillic-x-converted",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Размер 5х4",
+      "out": "Размер 5×4",
+      "note": "symbols.md §3.1 and §6 case 5a (verbatim; the chain ends the text unit, so `after` is NONE — a valid path through guard M3 and worth pinning on its own): the Cyrillic х (U+0445) is a MUL-LETTER alongside the Latin x, universally rather than as locale data — the risk is carried entirely by the numeric context, and U+0445 between two ASCII digits has no second reading in any language. This is the one conversion in the package that the M4 hand-review structurally cannot catch: `5х4` and `5x4` are identical in every font, so a proof-reader never finds the wrong letter and the machine finds it every time."
+    },
+    {
+      "id": "ru-symbols-cyrillic-x-capital",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Размер 5Х4",
+      "out": "Размер 5×4",
+      "note": "symbols.md §6 case 5b (verbatim): the Cyrillic capital Х (U+0425) is a MUL-LETTER too, and `after` is NONE."
+    },
+    {
+      "id": "ru-symbols-chain-followed-by-unit",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Размер 5Х4 см",
+      "out": "Размер 5×4 см",
+      "note": "The cross-rule case, kept deliberately separate from the §6 row above: the U+00D7 is `symbols`, but the U+00A0 comes from `nbsp` N5, because `см` is in the ru locale file's beforeUnits and the code point two positions left of it is a digit. `symbols` never emits a no-break space. A port that binds nothing here has an incomplete beforeUnits list; a port that attributes the U+00A0 to the multiplication branch has mislayered the pipeline."
+    },
+    {
+      "id": "ru-symbols-cyrillic-x-letter-context",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "хорошо и их",
+      "out": "хорошо и их",
+      "note": "symbols.md §6 case 5c: adding the Cyrillic letters costs nothing in ordinary Russian prose, because the branch requires an ASCII digit on each side of the chain. Both `х` here have letter neighbours. The U+00A0 is nbsp N3 on the conjunction `и`."
+    },
+    {
+      "id": "ru-symbols-chain-cyrillic",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "5х4х3",
+      "out": "5×4×3",
+      "note": "symbols.md §6 case 5d: an all-Cyrillic chain, both links converted in ONE pass, because §3.3 specifies the branch as a scan of a whole chain `DIGIT+ (X DIGIT+)+` rather than a pairwise test. §7.10 records the contrast: Lebedev's Typograf converts one operator per pass on this exact input (`5х4х3` → `5×4х3` → `5×4×3`), so its output never converges under re-processing."
+    },
+    {
+      "id": "ru-symbols-chain-mixed-alphabet",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "5x4х3",
+      "out": "5×4×3",
+      "note": "symbols.md §6 case 5f: one Latin x, one Cyrillic х, one chain, both links convert. Declining on mixture would make the output depend on which keyboard layout the author's finger slipped to — the least discoverable criterion available, since the two letters are visually identical."
+    },
+    {
+      "id": "ru-symbols-chain-mixed-spacing-declined",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "5x4 x 3",
+      "out": "5x4 x 3",
+      "note": "symbols.md §6 case 5i: guard M1 requires the spacing to be symmetric AND uniform across every link. Link 1 is tight and link 2 is spaced, so the chain is declined WHOLE rather than half-converted — an implementation that converts the first link here is producing output no author asked for."
+    },
+    {
+      "id": "ru-symbols-chain-resumes-after-sign",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "5×4x3",
+      "out": "5×4×3",
+      "note": "symbols.md §6 case 5j: U+00D7 is not in MUL-LETTER, so it ends a chain; the remaining sub-chain `4x3` converts on its own and sub-chains never need joining. This is also the idempotency case for partially-converted input."
+    },
+    {
+      "id": "ru-symbols-chain-three-links",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Стол 120х80х75",
+      "out": "Стол 120×80×75",
+      "note": "symbols.md §6 case 5g (verbatim): a three-run chain with multi-digit runs, ending the text unit."
+    },
+    {
+      "id": "ru-symbols-chain-three-links-followed-by-unit",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Стол 120х80х75 см",
+      "out": "Стол 120×80×75 см",
+      "note": "The same chain with a unit after it. Both edits are real and they belong to different rules: three U+00D7 from `symbols`, one U+00A0 from `nbsp` N5 (beforeUnits `см`)."
+    },
+    {
+      "id": "ru-symbols-plusminus-after-digit",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Погрешность 5+/-3",
+      "out": "Погрешность 5±3",
+      "note": "symbols.md §6 case 5m: a digit on the left is no obstacle — guard F1 rejects only a preceding U+005B."
+    },
+    {
+      "id": "ru-nbsp-short-word",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Он живёт в Москве",
+      "out": "Он живёт в Москве",
+      "note": "nbsp.md §6 case 7: N3, one-letter preposition — Мильчин/Чельцова."
+    },
+    {
+      "id": "ru-nbsp-short-word-roundtrip",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Он живёт в Москве",
+      "out": "Он живёт в Москве",
+      "note": "nbsp.md §6 case 8: already correct."
+    },
+    {
+      "id": "ru-nbsp-short-word-capitalised",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "В Москве идёт дождь",
+      "out": "В Москве идёт дождь",
+      "note": "N3 step 1: first-character leniency via the simple uppercase mapping."
+    },
+    {
+      "id": "ru-nbsp-short-word-two-letter",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Он вышел из дома на улицу",
+      "out": "Он вышел из дома на улицу",
+      "note": "The two-letter prepositions listed in the ru locale file bind the same way."
+    },
+    {
+      "id": "ru-nbsp-abbreviation-itd",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "фрукты, овощи и т. д.",
+      "out": "фрукты, овощи и т. д.",
+      "note": "nbsp.md §6 case 9: N4 owns every internal space of the listed abbreviation `и т. д.`."
+    },
+    {
+      "id": "ru-nbsp-abbreviation-te",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "т. е. вот так",
+      "out": "т. е. вот так",
+      "note": "N4 on `т. е.`; the space after the abbreviation is not bound."
+    },
+    {
+      "id": "ru-nbsp-initials-before-surname",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "А. С. Пушкин",
+      "out": "А. С. Пушкин",
+      "note": "nbsp.md §6 case 10: N7 clause C1 twice — Мильчин/Чельцова, «А. С. Пушкин»."
+    },
+    {
+      "id": "ru-nbsp-initials-after-surname",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Пушкин А. С.",
+      "out": "Пушкин А. С.",
+      "note": "nbsp.md §6 case 11: the first space by clause C2 (two initials follow), the second by C1."
+    },
+    {
+      "id": "ru-nbsp-symbol-number",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "см. № 5 и § 12",
+      "out": "см. № 5 и § 12",
+      "note": "nbsp.md §6 case 12: N6, «Технические правила набора» п. 4д — знаки № и § не отделяются от следующих цифр. Note `и` is not bound here: N3 requires the following token to be ALNUM or OPENISH and it is `§`."
+    },
+    {
+      "id": "ru-nbsp-before-word-street",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "г. Москва, ул. Ленина",
+      "out": "г. Москва, ул. Ленина",
+      "note": "N10 binds `ул.`, which the ru locale file lists as an unambiguous toponymic abbreviation (п. 4б). `г.` is deliberately NOT in beforeWord — see the next two cases."
+    },
+    {
+      "id": "ru-nbsp-year-binds-leftwards",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Это было в 2020 г.",
+      "out": "Это было в 2020 г.",
+      "note": "`г.` is listed in beforeUnits, so it binds to the NUMBER on its left (N5) — «Технические правила набора» п. 4г, «2010 г.»."
+    },
+    {
+      "id": "ru-nbsp-year-does-not-bind-rightwards",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "В 1147 г. Москва была основана.",
+      "out": "В 1147 г. Москва была основана.",
+      "note": "And the point of leaving `г.` out of beforeWord: here it means «год» and ends the clause, so the space before `Москва` must stay breakable. A literal list cannot tell «1147 г.» from «г. Москва», and the ru locale file resolves that by binding only leftwards."
+    },
+    {
+      "id": "ru-nbsp-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "5 млн человек и 20 км пути",
+      "out": "5 млн человек и 20 км пути",
+      "note": "N5 twice, plus N3 on the conjunction `и`."
+    },
+    {
+      "id": "ru-nbsp-percent",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Рост 50 % за год",
+      "out": "Рост 50 % за год",
+      "note": "N5 on the percent sign, N3 on the two-letter preposition `за`."
+    },
+    {
+      "id": "ru-nbsp-unit-never-inserts",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Рост 50% за год",
+      "out": "Рост 50% за год",
+      "note": "nbsp.md §7.2: N5 converts, never inserts — `50%` keeps its typed form. N3 still binds the preposition `за`."
+    },
+    {
+      "id": "ru-nbsp-no-french-spacing",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Что это ?",
+      "out": "Что это?",
+      "note": "Russian declares both punctuation lists empty, so `spaces` deletes the space before the question mark and nothing puts one back. The same input in fr gains U+202F — that contrast is the whole point of per-locale data."
+    },
+    {
+      "id": "ru-nbsp-plain-sentence",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Иван пошёл домой",
+      "out": "Иван пошёл домой",
+      "note": "nbsp.md §6 case 13: no short word, no abbreviation, no unit, no initial."
+    },
+    {
+      "id": "ru-roundtrip-typeset-sentence",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "А. С. Пушкин родился в 1799 г.",
+      "out": "А. С. Пушкин родился в 1799 г.",
+      "note": "Byte-identical round trip: bound initials, a bound preposition and a bound year abbreviation."
+    },
+    {
+      "id": "ru-roundtrip-plain-prose",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Обычный текст не меняется.",
+      "out": "Обычный текст не меняется.",
+      "note": "Nothing here is a candidate for any rule."
+    },
+    {
+      "id": "ru-roundtrip-hyphen-and-dash",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Из‑под стола — 1941—1945 гг.",
+      "out": "Из‑под стола — 1941—1945 гг.",
+      "note": "Correct output of four rules at once: a bound morphological hyphen, a spaced parenthetical em dash, a tight range em dash and `гг.` bound to the interval it follows (beforeUnits). Both dashes here were typed by the author, so `dashes` leaves them exactly as written (§3.2 step 2a) — and note what that means for the range: it gets NO U+2060 joiners, unlike the hyphen-typed `1941-1945` two cases above. The rule never makes an edit whose entire content is invisible (§3.3.1, §7.14): a joiner may ride along with a conversion the author asked for, but it is never the only thing an edit does, because an invisible-only change to already-correct text cannot be reviewed by hand — and hand review is exactly the M4 criterion."
+    },
+    {
+      "id": "ru-combined-sentence",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "В книге сказано: \"Дорога длиной 20 км -- это не предел...\" (годы 1941-1945).",
+      "out": "В книге сказано: «Дорога длиной 20 км — это не предел…» (годы 1941⁠—⁠1945).",
+      "note": "A quotation, a parenthetical dash, an ellipsis, a number with a unit and a range in one sentence: ёлочки without inner space, a spaced em dash, a tight em dash for the interval, U+00A0 after the preposition and before the unit."
+    }
+  ]
+}

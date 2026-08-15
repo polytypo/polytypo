@@ -1,0 +1,115 @@
+{
+  "locale": "sv",
+  "name": "Swedish",
+  "quotes": {
+    "primary": { "open": "”", "close": "”", "innerSpace": "none" },
+    "secondary": { "open": "’", "close": "’", "innerSpace": "none" }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": [],
+    "beforeUnits": [
+      "%",
+      "‰",
+      "kr",
+      "€",
+      "kg",
+      "g",
+      "mg",
+      "km",
+      "m",
+      "cm",
+      "mm",
+      "l",
+      "dl",
+      "cl",
+      "ml",
+      "kW",
+      "kWh",
+      "min",
+      "sek",
+      "tim",
+      "h",
+      "°C"
+    ],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": ["§"],
+    "bindInitials": false
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Språkrådet (Institutet för språk och folkminnen), Snabba skrivregler – i skolan och på jobbet, red. Ola Karlsson, §1.13 “Citattecken (”)”",
+      "url": "https://www.diva-portal.org/smash/get/diva2:1829117/FULLTEXT04.pdf",
+      "note": "Verbatim: “Normala svenska citattecken ser ut som två små upphöjda nior och har samma form i början och slutet, alltså ”ord”. Men citattecken kan ha olika utseende i olika typsnitt och i olika språk, som i “engelska”, „tyska“ och «norska». Använd svenska citattecken i svensk text, även om det du citerar är på ett annat språk.” This settles the ❓ in PLAN.md §7: »…» is attested in Swedish book typography and older practice, but Språkrådet’s current recommendation is ”…” (U+201D on both sides), so that is what this file encodes."
+    },
+    {
+      "rule": "quotes",
+      "cite": "Språkrådet, Snabba skrivregler, §1.14 “Apostrof (’)”",
+      "url": "https://www.diva-portal.org/smash/get/diva2:1829117/FULLTEXT04.pdf",
+      "note": "Verbatim: “En apostrof ser ut som en liten upphöjd nia (’). … Apostrof används även vid citat inuti ett citat, se ▶ 6.1.1.” Hence the secondary pair is U+2019 on both sides. Isof’s Frågelådan phrases the same rule as “enkla citattecken … när du har ett citat i ett citat”."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Språkrådet, Snabba skrivregler, §1.10 “Tankstreck (–)”",
+      "url": "https://www.diva-portal.org/smash/get/diva2:1829117/FULLTEXT04.pdf",
+      "note": "Range, verbatim: “Det används framför allt mellan siffror och mellan ortnamn för att visa till exempel tidsperioder, avstånd och intervall. Du har då inget mellanslag före eller efter tankstrecket.” (öppet 9–18, åren 2026–2028, s. 3–5). Parenthetical, verbatim: “Tankstreck kan ibland användas före paus eller tillägg. På samma sätt används det vid mer självständiga inskott … Då har du mellanslag före och efter tankstrecket.” Swedish uses the en dash (tankstreck) in both roles; there is no em dash in the recommendation."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Språkrådet, Snabba skrivregler, kap. 1 “Skiljetecken och skrivtecken” (tre punkter)",
+      "url": "https://www.diva-portal.org/smash/get/diva2:1829117/FULLTEXT04.pdf",
+      "note": "`abbreviatedAfterTerminal` is false. The guide treats “tre punkter” as an ordinary mark alongside utropstecken and frågetecken; no two-dot form after `!`/`?` exists in Swedish. That form is Russian-only."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Språkrådet, Snabba skrivregler, §1.16 “Tecken och mellanslag”",
+      "url": "https://www.diva-portal.org/smash/get/diva2:1829117/FULLTEXT04.pdf",
+      "note": "Verbatim: “Tecken som ersätter ord, som & för och, + för plus och % för procent, skrivs helst med mellanslag före och efter, precis som när du skriver ut orden: 5 % eftersom du skriver fem procent.” Examples given: “Ek & Lund (Ek och Lund), 3 € (tre euro), § 7 (paragraf sju), 2 + 3 (två plus tre)”. And: “För att de tecken och siffror som hör ihop ska hamna på samma rad och inte på olika rader, kan du använda så kallat fast mellanslag.” This is the authority for `%`, `€` and `§`. Note the direction: Språkrådet’s own example is “§ 7”, the sign before the number, so `§` is in `afterSymbols`, the opposite of Finnish. Swedish legal citation also writes “5 §”; that order is not covered by the cited example and is deliberately not encoded. `&` and `+` are omitted because they take a space on both sides and do not fit this schema’s bind-to-a-number model."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Språkrådet, Snabba skrivregler, §4.3.4 “Förkortningar för måttenheter”; BIPM, The International System of Units (SI), 9th ed. (2019), concise summary",
+      "url": "https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-concise-EN.pdf",
+      "note": "Språkrådet verbatim: “Internationella förkortningar för måttenheter går alltid bra att skriva som förkortningar, som cm (centimeter), kg (kilo), kWh (kilowattimme) och ml (milliliter). Dessa skriver du alltid utan punkt. Så skriver du också svenska förkortningar som liknar måttenheter, som kr (kronor), min (minut), sek (sekund) och tim (timme).” BIPM verbatim: “A single space is always left between the number and the unit.” The unit list is restricted to forms named by one of these two sources."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Språkrådet, Snabba skrivregler, §4.3.1 and §4.5 “Vanliga förkortningar”",
+      "url": "https://www.diva-portal.org/smash/get/diva2:1829117/FULLTEXT04.pdf",
+      "note": "`abbreviations` is empty because Swedish multi-word abbreviations are written closed up, with no internal space: the guide’s own list gives bl.a., dvs., e.d., fr.o.m., f.d., f.ö., m.a.o., m.fl., m.m., obs., osv., p.g.a., s.k., t.ex., t.o.m. There is therefore no internal space to make non-breaking. (Older typographic practice spaced these — “t. ex.” — but that is not the current recommendation.)"
+    },
+    {
+      "rule": "nbsp",
+      "cite": "No Språkrådet guidance found for short-word binding or for initials; values deliberately conservative",
+      "note": "`afterShortWords`, `beforePunctuation` and `narrowBeforePunctuation` are empty by design. §1.16 states the general rule plainly — “När du använder vanliga skiljetecken sätter du inget mellanslag före tecknet, men efter tecknet ska du ha mellanslag” — which rules out any before-punctuation space, and Swedish has no rule against short words at line end. `bindInitials` is false: §1.16 recommends fast mellanslag only for “de tecken och siffror som hör ihop”, i.e. signs and digits, not personal initials."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Språkrådet, Snabba skrivregler, §1.16 “Tecken och mellanslag” and §4.5 “Vanliga förkortningar”",
+      "url": "https://www.diva-portal.org/smash/get/diva2:1829117/FULLTEXT04.pdf",
+      "note": "`beforeNumber` and `beforeWord` are empty, and this was the closest call in this file. Språkrådet does write kl. 8–16, nr 3 and s. 3–5, and §1.16 recommends fast mellanslag so that “de tecken och siffror som hör ihop ska hamna på samma rad”. But that sentence is scoped to tecken — the sign-and-digit pairs of §1.16 (%, €, §, &, +) — and the guide nowhere extends it to abbreviations such as kl., nr or s. Encoding them would convert a plausible reading into a normative claim the source does not make, so the lists stay empty. `beforeWord` likewise: no Swedish authority consulted requires binding a title (dr, prof.) to a following name."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Språkrådet, Snabba skrivregler, §4.4 (sammansättningar med förkortningar) and kap. 7 (avstavning)",
+      "url": "https://www.diva-portal.org/smash/get/diva2:1829117/FULLTEXT04.pdf",
+      "note": "`prefixes`, `suffixes` and `compounds` are empty. The guide’s hyphen material states when to insert a bindestreck in compounds (e-post, EU-länderna, FN-arbete, satellit-tv-program, lan-spel) and treats avstavning as a separate topic; it never forbids a line break at an existing hyphen. Swedish compounding is productive, so there is no closed inventory to list — the field exists for the Russian кое- / -таки / из-под case. No U+2011 requirement found in any Språkrådet material consulted."
+    }
+  ]
+}

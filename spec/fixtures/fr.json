@@ -1,0 +1,486 @@
+{
+  "spec": "0.1.0",
+  "locale": "fr",
+  "cases": [
+    {
+      "id": "fr-spaces-collapse-run",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Bonjour   le   monde.",
+      "out": "Bonjour le monde.",
+      "note": "spaces.md §6 case 1: a run of ordinary spaces bounded by CONTENT collapses to one."
+    },
+    {
+      "id": "fr-spaces-before-punctuation",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Bonjour !  Ça va ?",
+      "out": "Bonjour ! Ça va ?",
+      "note": "spaces.md §6 case 9: the ordinary spaces before ! and ? are deleted and nbsp (order 70) re-inserts U+202F, so the output is deterministic however the author typed it."
+    },
+    {
+      "id": "fr-spaces-brackets",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "a  (  b  ,  c  )  d",
+      "out": "a (b, c) d",
+      "note": "spaces.md §3.4 worked trace."
+    },
+    {
+      "id": "fr-spaces-empty-bracket-guard",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "- [ ] acheter du lait",
+      "out": "- [ ] acheter du lait",
+      "note": "spaces.md §3.3: the GFM task-list marker survives. The leading hyphen is asymmetric and dashes declines it."
+    },
+    {
+      "id": "fr-spaces-nbsp-is-content",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "5   km",
+      "out": "5  km",
+      "note": "spaces.md §6 case 7: U+00A0 is CONTENT and is never collapsed; only the U+0020 run beside it. nbsp N5 does not bind here because cp[a-2] is the U+00A0, not a digit."
+    },
+    {
+      "id": "fr-spaces-leading-indentation",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "    code indenté",
+      "out": "    code indenté",
+      "note": "spaces.md §4: a run at index 0 is never touched."
+    },
+    {
+      "id": "fr-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Attendez... quoi ?",
+      "out": "Attendez… quoi ?",
+      "note": "ellipsis.md §6 case 1."
+    },
+    {
+      "id": "fr-ellipsis-mixed-run",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Attendez…… quoi",
+      "out": "Attendez… quoi",
+      "note": "ellipsis.md §6 case 2: a mixed or repeated run normalises to one U+2026."
+    },
+    {
+      "id": "fr-ellipsis-two-dots-after-terminal",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Vraiment?..",
+      "out": "Vraiment ?…",
+      "note": "Two rules in sequence. ellipsis.md §6 case 3: fr has abbreviatedAfterTerminal = false, so `?..` is a typing slip for `?…`. Then nbsp N2 still inserts U+202F before the question mark: U+2026 is in the accepted set of N1/N2's right-context guard (nbsp.md §3.3 step 2), because that guard exists to spot a punctuation mark INSIDE a token — `http://`, `12:30` — and an ellipsis after a question mark is nothing of the kind. A port whose right-context guard lists only SPACELIKE and CLOSEISH gives `Vraiment?…` no fine space while `Vraiment ?` gets one."
+    },
+    {
+      "id": "fr-ellipsis-two-dot-run-inert",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Version 1..5 et ../docs",
+      "out": "Version 1..5 et ../docs",
+      "note": "ellipsis.md §6 cases 4 and 5: a two-dot run is inert in a locale that does not abbreviate. The space before `../docs` survives too, by the lone-dot condition (spaces.md §3.4): a U+0020 may be stripped before U+002E only when the maximal dot run at that index has length exactly 1. A port that strips before any member of STRIP-BEFORE produces `et../docs` and silently destroys word spacing in a relative path."
+    },
+    {
+      "id": "fr-ellipsis-existing",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Il est parti…",
+      "out": "Il est parti…",
+      "note": "ellipsis.md §6 case 6: already a lone U+2026."
+    },
+    {
+      "id": "fr-dashes-parenthetical-tight-input",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Le plan--s'il existe--échoue.",
+      "out": "Le plan — s’il existe — échoue.",
+      "note": "dash.parenthetical = em-spaced (Jacques André §2.2, tableau 1): U+2014 with an ordinary space on each side. The apostrophes are the apostrophe rule's doing."
+    },
+    {
+      "id": "fr-dashes-parenthetical-spaced-input",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Le plan - il existe - échoue.",
+      "out": "Le plan — il existe — échoue.",
+      "note": "A spaced bare hyphen satisfies P1 and normalises to the locale form."
+    },
+    {
+      "id": "fr-dashes-parenthetical-roundtrip",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Le plan — il existe — échoue.",
+      "out": "Le plan — il existe — échoue.",
+      "note": "Already the target form."
+    },
+    {
+      "id": "fr-dashes-range-none-years",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Les années 1914-1918 furent longues.",
+      "out": "Les années 1914-1918 furent longues.",
+      "note": "dash.range = none for fr: the token IS classified as a range and then nothing at all is emitted (dashes.md §3.3, case 23). Contrary to what most tools do, French page and year intervals keep the typed hyphen-minus — the fr locale file records that neither the Imprimerie nationale's Lexique nor Jacques André prescribes a range dash, and a missing citation is never a licence to guess."
+    },
+    {
+      "id": "fr-dashes-range-none-pages",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "p. 123-125",
+      "out": "p. 123-125",
+      "note": "Same: dash.range = none. Jacques André prints a hyphen in page intervals. `none` emits nothing AT ALL — the U+2060 joiners that a converted range carries in de-DE, de-CH and ru are not emitted either (dashes.md §2, §3.3.1), so the fr output is byte-identical to the input."
+    },
+    {
+      "id": "fr-dashes-range-none-not-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "34-36",
+      "out": "34-36",
+      "note": "dashes.md §3.3 final paragraph: a range candidate is never reconsidered as a parenthetical, so `none` really means nothing happens."
+    },
+    {
+      "id": "fr-dashes-compound-hyphen",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "un porte-parole arc-en-ciel",
+      "out": "un porte-parole arc-en-ciel",
+      "note": "Guard P1: a bare unspaced hyphen is a compound word."
+    },
+    {
+      "id": "fr-dashes-guillemet-hyphen",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "« - »",
+      "out": "« - »",
+      "note": "dashes.md §6 case 33, composition defect family 2: a U+00A0 to the right of a dash does not count as spacing, so the quoted hyphen is not read as a spaced parenthetical dash."
+    },
+    {
+      "id": "fr-dashes-iso-date",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Publié le 2026-08-15",
+      "out": "Publié le 2026-08-15",
+      "note": "Guard G2 (chain) plus dash.range = none."
+    },
+    {
+      "id": "fr-hyphen-noop-compounds",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Le porte-parole a parlé du savoir-faire.",
+      "out": "Le porte-parole a parlé du savoir-faire.",
+      "note": "hyphen.md §6 case 13: fr declares all three hyphen lists empty (the fr locale file cites Jacques André tableau 1, which marks the trait d'union as breakable), so the rule is a provable total no-op. A port that binds French hyphens with U+2011 must fail this case."
+    },
+    {
+      "id": "fr-hyphen-noop-names",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Jean-Luc, COVID-19 et le e-mail",
+      "out": "Jean-Luc, COVID-19 et le e-mail",
+      "note": "Same: no entries, nothing to convert."
+    },
+    {
+      "id": "fr-hyphen-noop-existing-nbhyphen",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "porte‑parole",
+      "out": "porte‑parole",
+      "note": "A U+2011 the author wrote is left alone; it is also in dashes' INERT-DASH."
+    },
+    {
+      "id": "fr-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Il a dit \"bonjour\".",
+      "out": "Il a dit « bonjour ».",
+      "note": "quotes.md §6 case 12: quotes emits the guillemets, nbsp then inserts quotes.primary.innerSpace. Note the inner space is U+00A0, not U+202F: the fr locale file follows the Lexique de l'Imprimerie nationale (espace insécable), and records the disagreement with widespread web usage and with JoliTypo, which set U+202F there."
+    },
+    {
+      "id": "fr-quotes-primary-roundtrip",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Il a dit « bonjour ».",
+      "out": "Il a dit « bonjour ».",
+      "note": "The output of the previous case is a fixed point."
+    },
+    {
+      "id": "fr-quotes-existing-guillemets-ordinary-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Il a dit « bonjour ».",
+      "out": "Il a dit « bonjour ».",
+      "note": "quotes.md §6 case 13 plus §3.7: no straight marks, so quotes does nothing and nbsp N8 converts the two U+0020 in place. Both input paths converge."
+    },
+    {
+      "id": "fr-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Il a dit 'oui' hier.\"",
+      "out": "« Il a dit “oui” hier. »",
+      "note": "Depth 1 primary « », depth 2 secondary “ ” whose innerSpace is none."
+    },
+    {
+      "id": "fr-quotes-unbalanced",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Il a dit \"bonjour",
+      "out": "Il a dit \"bonjour",
+      "note": "quotes.md §3.6: an unmatched mark is left straight rather than guessed at."
+    },
+    {
+      "id": "fr-apostrophe-elision",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "l'été et l'hiver",
+      "out": "l’été et l’hiver",
+      "note": "apostrophe.md §6 case 2: medial, letters on both sides."
+    },
+    {
+      "id": "fr-apostrophe-contractions",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Aujourd'hui c'est d'accord, n'est-ce pas",
+      "out": "Aujourd’hui c’est d’accord, n’est-ce pas",
+      "note": "Four medial apostrophes; the hyphen in n'est-ce is untouched."
+    },
+    {
+      "id": "fr-apostrophe-existing",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "l’été",
+      "out": "l’été",
+      "note": "U+2019 is not in SQ and is never examined."
+    },
+    {
+      "id": "fr-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026 Iurii Rogulia",
+      "out": "Copyright © 2026 Iurii Rogulia",
+      "note": "symbols.md §6 case 1."
+    },
+    {
+      "id": "fr-symbols-multiplication",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Une carte 3x5",
+      "out": "Une carte 3×5",
+      "note": "Digits on both sides, tight form."
+    },
+    {
+      "id": "fr-symbols-hex-literal",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Couleur 0x1F et masque 0x10",
+      "out": "Couleur 0x1F et masque 0x10",
+      "note": "Guards M3 and M4."
+    },
+    {
+      "id": "fr-symbols-revolution",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "La (r)évolution ne sera pas télévisée",
+      "out": "La (r)évolution ne sera pas télévisée",
+      "note": "Guard S2: the code point after the match is a letter."
+    },
+    {
+      "id": "fr-nbsp-narrow-question",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Ça va ?",
+      "out": "Ça va ?",
+      "note": "The distinction this package is built on: U+202F (narrow no-break space) before ? — Jacques André §5.1.1 note 21, « c'est la fine des typographes »."
+    },
+    {
+      "id": "fr-nbsp-narrow-exclamation",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Bonjour !",
+      "out": "Bonjour !",
+      "note": "U+202F before !."
+    },
+    {
+      "id": "fr-nbsp-narrow-semicolon",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Oui ; non",
+      "out": "Oui ; non",
+      "note": "U+202F before ; — « il faut une espace fine insécable avant le point-virgule » (Jacques André §5.2.3)."
+    },
+    {
+      "id": "fr-nbsp-wide-colon",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Voici : la suite",
+      "out": "Voici : la suite",
+      "note": "And the counterpart: the colon takes U+00A0, NOT the narrow space. Jacques André §5.1.1 note 21 states the exception explicitly — « contre-exemple : l'espace avant le deux-points est en fait une espace normale insécable ». Most tools use one width for all four marks; this case fails them."
+    },
+    {
+      "id": "fr-nbsp-colon-inserted-with-no-space",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Voici: la suite",
+      "out": "Voici : la suite",
+      "note": "N1 inserts when the author typed no space at all."
+    },
+    {
+      "id": "fr-nbsp-colon-in-url",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Voir http://example.org: la suite",
+      "out": "Voir http://example.org : la suite",
+      "note": "nbsp.md §6 case 5: N1 guard 2 rejects the colon inside http:// (the next code point is /) and accepts the sentence colon."
+    },
+    {
+      "id": "fr-nbsp-colon-in-time",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Le train de 12:30",
+      "out": "Le train de 12:30",
+      "note": "N1 guard 2: a digit follows the colon."
+    },
+    {
+      "id": "fr-nbsp-double-terminal",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Vraiment ?!",
+      "out": "Vraiment ?!",
+      "note": "nbsp.md §6 case 6: N1/N2 guard 1, only the first mark of a run takes the space."
+    },
+    {
+      "id": "fr-nbsp-narrow-roundtrip",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Bonjour ! Ça va : oui",
+      "out": "Bonjour ! Ça va : oui",
+      "note": "Correctly typeset text comes out byte-identical: both widths are recognised as already correct."
+    },
+    {
+      "id": "fr-nbsp-guillemet-inner",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Il a dit «mot».",
+      "out": "Il a dit « mot ».",
+      "note": "nbsp.md §6 case 3 with the fr locale's actual innerSpace, which is nbsp (U+00A0), not narrow-nbsp."
+    },
+    {
+      "id": "fr-nbsp-guillemet-then-question",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "«?",
+      "out": "« ?",
+      "note": "nbsp.md §6 case 23 and §3.10.1: N1/N2 decline an index next to an opening quote glyph, so innerSpace (U+00A0) wins over the narrow space that ? would otherwise take. This oscillated between the two widths before the guard was added."
+    },
+    {
+      "id": "fr-nbsp-unit-percent",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "98 % des cas",
+      "out": "98 % des cas",
+      "note": "Jacques André §5.1.3: « 98_% »."
+    },
+    {
+      "id": "fr-nbsp-unit-km",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "20 km à pied",
+      "out": "20 km à pied",
+      "note": "N5, conversion of an existing space."
+    },
+    {
+      "id": "fr-nbsp-unit-never-inserts",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "20km à pied",
+      "out": "20km à pied",
+      "note": "nbsp.md §7.2: N5 converts, never inserts — adding a space is a content change."
+    },
+    {
+      "id": "fr-nbsp-before-number",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "voir art. 237 et fig. 3",
+      "out": "voir art. 237 et fig. 3",
+      "note": "N9, cited literally in the fr locale file to Jacques André §5.1.3."
+    },
+    {
+      "id": "fr-nbsp-before-word-mme",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Mme Hugo et Mlle Durand",
+      "out": "Mme Hugo et Mlle Durand",
+      "note": "N10; both entries are three or more code points, so guard G-D does not apply."
+    },
+    {
+      "id": "fr-nbsp-monsieur-binds",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "M. Dupont est arrivé",
+      "out": "M. Dupont est arrivé",
+      "note": "nbsp.md §6 case 21: `M.` is inert in N10 (guard G-D: two code points, UPPER, dot, and fr has bindInitials true) and binds through N7 clause C1 instead, reaching the same U+00A0."
+    },
+    {
+      "id": "fr-nbsp-monsieur-lowercase-surname",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "M. dupont est arrivé",
+      "out": "M. dupont est arrivé",
+      "note": "nbsp.md §6 case 22 and §7.10: N7 C1 requires an UPPER code point after the space and N10 is inert for `M.`, so nothing binds. A documented gap, not an accident — French surnames are capitalised."
+    },
+    {
+      "id": "fr-nbsp-initials",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "N. Bourbaki",
+      "out": "N. Bourbaki",
+      "note": "N7 C1; cited to Jacques André §5.1.3."
+    },
+    {
+      "id": "fr-nbsp-abbreviation",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "p. ex. ceci",
+      "out": "p. ex. ceci",
+      "note": "N4 binds the space inside the listed multi-token abbreviation `p. ex.` and nothing else."
+    },
+    {
+      "id": "fr-nbsp-symbol-section",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "voir § 5",
+      "out": "voir § 5",
+      "note": "N6, afterSymbols."
+    },
+    {
+      "id": "fr-roundtrip-typeset-sentence",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Il a dit : « bonjour », puis il est parti…",
+      "out": "Il a dit : « bonjour », puis il est parti…",
+      "note": "Byte-identical round trip over the whole pipeline: correct colon width, correct guillemet inner space, an existing ellipsis."
+    },
+    {
+      "id": "fr-roundtrip-plain-prose",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Le texte ordinaire ne change pas.",
+      "out": "Le texte ordinaire ne change pas.",
+      "note": "Nothing in this sentence is a candidate for any rule."
+    },
+    {
+      "id": "fr-roundtrip-dashes-and-range",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Les années 1914-1918 — quatre ans — furent longues.",
+      "out": "Les années 1914-1918 — quatre ans — furent longues.",
+      "note": "The two French dash decisions together: the parenthetical is already em-spaced, and the range keeps its hyphen because dash.range is none."
+    },
+    {
+      "id": "fr-combined-sentence",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Il a dit : \"Le trajet -- 20 km environ -- prendra 2 h...\" et il est parti.",
+      "out": "Il a dit : « Le trajet — 20 km environ — prendra 2 h… » et il est parti.",
+      "note": "A quotation, a parenthetical dash, an ellipsis and a number with a unit in one sentence: guillemets with U+00A0 inside, U+00A0 before the colon, em dashes with ordinary spaces, U+00A0 between 20 and km."
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "locale": "de-DE",
+  "name": "German (Germany)",
+  "quotes": {
+    "primary": { "open": "„", "close": "“", "innerSpace": "none" },
+    "secondary": { "open": "‚", "close": "‘", "innerSpace": "none" }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": ["z. B.", "d. h.", "u. a.", "u. Ä.", "z. T.", "i. d. R."],
+    "beforeUnits": ["%", "‰", "€", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
+    "beforeNumber": ["S."],
+    "beforeWord": ["St."],
+    "afterSymbols": ["§", "§§"],
+    "bindInitials": true
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Duden, Rechtschreibregeln, „Anführungszeichen“, Regeln D 5 und D 12: Gänsefüßchen „…“ als Anführungszeichen, halbe Anführungszeichen ‚…‘ für eine Anführung innerhalb einer Anführung",
+      "url": "https://www.duden.de/sprachwissen/rechtschreibregeln/anfuehrungszeichen",
+      "note": "Deckungsgleich mit dem Amtlichen Regelwerk der deutschen Rechtschreibung, § 79 E2 (Anführung innerhalb einer Anführung durch halbe Anführungszeichen)."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Duden, Rechtschreibregeln, „Gedankenstrich“, Regel D 45: der Gedankenstrich (Halbgeviertstrich) steht mit Leerzeichen auf beiden Seiten beim Einschieben eines Zusatzes",
+      "url": "https://www.duden.de/sprachwissen/rechtschreibregeln/gedankenstrich"
+    },
+    {
+      "rule": "dashes",
+      "cite": "Schweizerische Bundeskanzlei, Schreibweisungen (Ausgabe 2013, aktualisiert), Rz. 234: der Gedankenstrich als Begriffszeichen für „bis“ steht ohne Leerzeichen — „die Jahre 1939–1945“",
+      "url": "https://www.bk.admin.ch/dam/bk/de/dokumente/sprachdienste/sprachdienst_de/schreibweisungen.pdf.download.pdf/schreibweisungen.pdf",
+      "note": "Für den Bis-Strich konnte keine gleichwertig präzise Duden-Onlineregel gefunden werden; die schweizerische Weisung formuliert dieselbe im gesamten deutschen Sprachraum übliche Regel und wird hier als überprüfbare Quelle angegeben."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "DIN 5008 (Schreib- und Gestaltungsregeln für die Text- und Informationsverarbeitung): geschütztes Leerzeichen zwischen den Teilen mehrgliedriger Abkürzungen („z. B.“, „d. h.“), bei Initialen („J. K. Rowling“) sowie zwischen Zahl und Einheit, Prozentzeichen und Paragrafenzeichen",
+      "note": "Die Norm selbst ist kostenpflichtig; die Regelinhalte wurden über die Duden-Regeln zu Abkürzungen (D 1) und über die von Duden selbst verwendete Schreibung „z. B.“ mit geschütztem Leerzeichen gegengeprüft. Der Einheitenliste liegt keine Normliste zugrunde: sie ist bewusst kurz gehalten und enthält keine einbuchstabigen Einheitenzeichen (m, g, l, s), weil diese ohne Kontextprüfung zu Falschtreffern führen."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Schweizerische Bundeskanzlei, Schreibweisungen, Rz. 251: der Festabstand verhindert, dass Zusammengehöriges beim Zeilensprung auseinandergerissen wird — Beispiele „20 km“, „St. Gallen“, „Artikel 35“, „S. 17 f.“, „20. November“; Rz. 438: Entsprechendes gilt für die eingliedrige Abkürzung „St.“ für „Sankt“ in Ortsnamen („St. Gallen“, „St. Moritz“); Rz. 439: abschliessende Aufzählung der Begriffszeichen (Ziffern, %, ‰, Gedankenstrich, Schrägstrich, §, Währungszeichen, mathematische Zeichen, Einheitenzeichen)",
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/YVHazXZRkqKn/schreibweisungen.pdf",
+      "note": "Wortlaut im PDF selbst geprüft. Für Deutschland regelt dieselbe Konstruktion die DIN 5008 (Schreib- und Gestaltungsregeln), die kostenpflichtig ist und deren Wortlaut hier nicht geprüft werden konnte; deshalb steht die schweizerische Weisung als überprüfbarer Beleg — dasselbe Vorgehen wie bei der Quelle zu Rz. 234 in diesem File. Die Übertragung auf de-DE ist insofern eine Ableitung, keine deutschlandspezifische Weisung. „S.“ ist mit „S. 17 f.“ wörtlich belegt und deckt die von docs/PLAN.md §7 geforderte Schreibung „S.“ + Zahl. „Nr.“ ist aus afterSymbols ersatzlos gestrichen und wurde NICHT nach beforeNumber übernommen: die Aufzählung der Begriffszeichen in Rz. 439 ist abschliessend und enthält „Nr.“ nicht (im Sachregister unter N stehen nur „NGO“, „Normen“, „Null“), der Duden führt „Nr.“ als Abkürzung, spricht aber weder im Wörterbucheintrag noch im Sprachratgeber zu Abkürzungen eine Abstandsregel aus. Damit ist afterSymbols nachweislich falsch und beforeNumber unbelegt; nach docs/PLAN.md §6.1 fährt ein Eintrag ohne deckende Quelle nicht mit. Zurückholen lässt sich „Nr.“ durch eine Lesung der DIN 5008 — die Zugehörigkeit zur Klasse allein genügt nicht, das wäre eine als Zitat ausgegebene Ableitung. Die von docs/PLAN.md §7 geforderte Schreibung „Nr.“ + Zahl bleibt damit vorerst offen."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Schweizerische Bundeskanzlei, Schreibweisungen, Rz. 223 und 224: der Bindestrich wird als Ergänzungsstrich für einen eingesparten Wortteil verwendet („Papierproduktion und -handel“); mit dem geschützten Ergänzungsstrich wird verhindert, dass der Ergänzungsstrich am Zeilenende auf der oberen Zeile bleibt, während der zugehörige zweite Wortbestandteil auf die nächste Zeile rutscht",
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/YVHazXZRkqKn/schreibweisungen.pdf",
+      "note": "Beleg dafür, dass die drei Listen leer bleiben. Das Deutsche kennt keine geschlossene Liste von Morphemen mit unteilbarem Bindestrich; die Trennung am Bindestrich ist zulässig. Der einzige belegte Fall eines geschützten Bindestrichs ist der Ergänzungsstrich (Rz. 224), und der ist offen: er betrifft jedes beliebige Zweitglied nach „und -“ und lässt sich als literale Wortliste nicht abbilden."
+    }
+  ]
+}

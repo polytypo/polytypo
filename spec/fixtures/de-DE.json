@@ -1,0 +1,462 @@
+{
+  "spec": "0.1.0",
+  "locale": "de-DE",
+  "cases": [
+    {
+      "id": "de-de-spaces-collapse-run",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Hallo   Welt.",
+      "out": "Hallo Welt.",
+      "note": "spaces.md §6 case 1."
+    },
+    {
+      "id": "de-de-spaces-before-punctuation",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Hallo , Welt !",
+      "out": "Hallo, Welt!",
+      "note": "spaces.md §6 case 2. German takes no space before terminal punctuation, so nothing is put back."
+    },
+    {
+      "id": "de-de-spaces-empty-bracket-guard",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "(  )",
+      "out": "( )",
+      "note": "spaces.md §6 case 4b, the normative reading of §3.3: the empty-bracket guard forces replacement length 1, it does not skip the run."
+    },
+    {
+      "id": "de-de-spaces-hard-break-preserved",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Zeile eins  \nZeile zwei",
+      "out": "Zeile eins  \nZeile zwei",
+      "note": "spaces.md §6 case 5: a space run bordering a line terminator is skipped, so the Markdown hard break survives."
+    },
+    {
+      "id": "de-de-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Warte... was?",
+      "out": "Warte… was?",
+      "note": "ellipsis.md §6 case 1."
+    },
+    {
+      "id": "de-de-ellipsis-many-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Hmm.....",
+      "out": "Hmm…",
+      "note": "ellipsis.md §6 case 7."
+    },
+    {
+      "id": "de-de-ellipsis-two-dots-after-terminal",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Wirklich?..",
+      "out": "Wirklich?…",
+      "note": "ellipsis.md §6 case 3: de-DE has abbreviatedAfterTerminal = false, so `?..` is a typing slip — the opposite of the Russian rule."
+    },
+    {
+      "id": "de-de-ellipsis-existing",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Er ging…",
+      "out": "Er ging…",
+      "note": "ellipsis.md §6 case 6."
+    },
+    {
+      "id": "de-de-ellipsis-two-dot-run-inert",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Version 1..5",
+      "out": "Version 1..5",
+      "note": "ellipsis.md §6 case 5: a two-dot run between digits is never touched."
+    },
+    {
+      "id": "de-de-dashes-parenthetical-tight-input",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Der Plan--falls es einen gibt--scheitert.",
+      "out": "Der Plan – falls es einen gibt – scheitert.",
+      "note": "dashes.md §6 case 11: dash.parenthetical = en-spaced, Duden D 45 (Halbgeviertstrich mit Leerzeichen auf beiden Seiten)."
+    },
+    {
+      "id": "de-de-dashes-parenthetical-roundtrip",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Der Plan – falls es einen gibt – scheitert.",
+      "out": "Der Plan – falls es einen gibt – scheitert.",
+      "note": "dashes.md §6 case 12: already the target form."
+    },
+    {
+      "id": "de-de-dashes-range",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Seiten 34-36",
+      "out": "Seiten 34⁠–⁠36",
+      "note": "dashes.md §6 case 13 and case 44: dash.range = en-tight (Bundeskanzlei Rz. 234, „die Jahre 1939–1945“) — contrast ru, which sets an em dash here. The converted range is additionally wrapped in U+2060 word joiners (§3.3.1) so the interval cannot break across lines. The joiners are zero-width; spec/fixtures/.escaped/ is the only place they are visible."
+    },
+    {
+      "id": "de-de-dashes-range-years",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Die Jahre 1939-1945",
+      "out": "Die Jahre 1939⁠–⁠1945",
+      "note": "Guards G4 (4,4) and G5 (non-decreasing) both pass, and the converted form carries its U+2060 joiners."
+    },
+    {
+      "id": "de-de-dashes-iso-date-and-isbn",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Erschienen 2026-08-15, ISBN 978-3-16-148410-0",
+      "out": "Erschienen 2026-08-15, ISBN 978-3-16-148410-0",
+      "note": "dashes.md §6 case 6: guard G2 and the cluster guard."
+    },
+    {
+      "id": "de-de-dashes-product-names",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "COVID-19 und ISO 8859-1",
+      "out": "COVID-19 und ISO 8859-1",
+      "note": "dashes.md §6 case 5: cp[L] is a letter for the first, G4 fails (4 vs 1) for the second."
+    },
+    {
+      "id": "de-de-dashes-authored-em-dash-preserved",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Der Plan—falls es einen gibt—fällt.",
+      "out": "Der Plan—falls es einen gibt—fällt.",
+      "note": "dashes.md §6 case 41: an authored em dash in an en-spaced locale keeps its glyph AND its spacing. dash.parenthetical = en-spaced remains a true statement of the Duden convention; it simply no longer governs a dash the author already typed (§3.2 step 2a, §7.14)."
+    },
+    {
+      "id": "de-de-dashes-mixed-run-declined",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a-–b",
+      "out": "a-–b",
+      "note": "dashes.md §6 case 42: a mixed run contains an authored dash, so the whole run is declined — the hyphen half is not converted on its own. Splitting the run would mean editing right against a mark the author typed."
+    },
+    {
+      "id": "de-de-dashes-asymmetric",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "mit --force überschreiben",
+      "out": "mit --force überschreiben",
+      "note": "dashes.md §6 case 8: the symmetry guard."
+    },
+    {
+      "id": "de-de-dashes-cluster-inert",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "1914-1918--annexation",
+      "out": "1914-1918--annexation",
+      "note": "dashes.md §6 case 20, shipped idempotency defect (a): one cluster with three dash runs is inert in its entirety."
+    },
+    {
+      "id": "de-de-dashes-spacing-transition-guard-spaced",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a–1 - 1",
+      "out": "a–1 - 1",
+      "note": "dashes.md §6 case 24, shipped idempotency defect (c): guard T1 at distance 2."
+    },
+    {
+      "id": "de-de-dashes-spacing-transition-guard-tight",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a–1-1",
+      "out": "a–1-1",
+      "note": "dashes.md §6 case 26: the tight sibling, guard T1 at distance 1."
+    },
+    {
+      "id": "de-de-dashes-composition-guard-t2-dot",
+      "rule": "dashes",
+      "mode": "text",
+      "in": ".--.",
+      "out": ".--.",
+      "note": "dashes.md §6 case 28, composition defect family 1: an en-spaced form would put a U+0020 exactly where `spaces` deletes one."
+    },
+    {
+      "id": "de-de-dashes-composition-guard-t2-brackets",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "(--a und a--)",
+      "out": "(--a und a--)",
+      "note": "dashes.md §6 cases 30 and 31: guard T2 on the left (open bracket) and on the right (close bracket)."
+    },
+    {
+      "id": "de-de-hyphen-noop-compounds",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Eine E-Mail-Adresse und der Nord-Süd-Verkehr",
+      "out": "Eine E-Mail-Adresse und der Nord-Süd-Verkehr",
+      "note": "hyphen.md §6 case 13: de-DE declares all three hyphen lists empty. The locale file cites Bundeskanzlei Rz. 223/224 — German has no closed list of morphemes with an unbreakable hyphen, and the one documented case (the Ergänzungsstrich) is open-ended and cannot be a literal word list. The rule is a provable total no-op; a port that implements it anyway must fail here."
+    },
+    {
+      "id": "de-de-hyphen-noop-supplementary",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Papierproduktion und -handel",
+      "out": "Papierproduktion und -handel",
+      "note": "Exactly the Ergänzungsstrich of Rz. 224: normatively unbreakable, and deliberately still not bound, because it cannot be expressed as a list entry. Recorded so the gap is visible rather than silent."
+    },
+    {
+      "id": "de-de-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Er sagte \"hallo\" zweimal.",
+      "out": "Er sagte „hallo“ zweimal.",
+      "note": "Duden D 5: Gänsefüßchen „…“. Note that the closing glyph U+201C is the one English uses to OPEN — the pairing, not the glyph shape, decides."
+    },
+    {
+      "id": "de-de-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Er sagte 'nein' zu mir\", notierte sie.",
+      "out": "„Er sagte ‚nein‘ zu mir“, notierte sie.",
+      "note": "Duden D 12 / Amtliches Regelwerk §79 E2: halbe Anführungszeichen at depth 2."
+    },
+    {
+      "id": "de-de-quotes-roundtrip",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "„Er sagte ‚nein‘ zu mir“, notierte sie.",
+      "out": "„Er sagte ‚nein‘ zu mir“, notierte sie.",
+      "note": "quotes.md §3.8: existing curly glyphs are not candidates and are not re-paired."
+    },
+    {
+      "id": "de-de-quotes-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Das Wort „Beispiel“",
+      "out": "Das Wort „Beispiel“",
+      "note": "quotes.innerSpace is none for both German pairs, so N8 inserts nothing."
+    },
+    {
+      "id": "de-de-quotes-unbalanced",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Er sagte \"hallo",
+      "out": "Er sagte \"hallo",
+      "note": "quotes.md §3.6."
+    },
+    {
+      "id": "de-de-apostrophe-medial",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Ich hab's gesehen",
+      "out": "Ich hab’s gesehen",
+      "note": "apostrophe.md §6 case 1: letters on both sides."
+    },
+    {
+      "id": "de-de-apostrophe-existing",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Ich hab’s gesehen",
+      "out": "Ich hab’s gesehen",
+      "note": "U+2019 is never examined."
+    },
+    {
+      "id": "de-de-apostrophe-prime-guard",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Er ist 6' 2\" groß.",
+      "out": "Er ist 6' 2\" groß.",
+      "note": "apostrophe.md §6 case 6 and quotes.md §4: a foot mark survives, and so does the inch mark, which nothing can pair."
+    },
+    {
+      "id": "de-de-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026 Iurii Rogulia",
+      "out": "Copyright © 2026 Iurii Rogulia",
+      "note": "symbols.md §6 case 1."
+    },
+    {
+      "id": "de-de-symbols-trademark",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Acme(tm) und Acme (R)",
+      "out": "Acme™ und Acme ®",
+      "note": "symbols.md §6 case 2: the (tm) rows are exempt from guard S1."
+    },
+    {
+      "id": "de-de-symbols-call-position",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "f(c) liefert c",
+      "out": "f(c) liefert c",
+      "note": "symbols.md §6 case 4: guard S1."
+    },
+    {
+      "id": "de-de-symbols-multiplication",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Auflösung 1920x1080",
+      "out": "Auflösung 1920×1080",
+      "note": "symbols.md §6 case 7."
+    },
+    {
+      "id": "de-de-symbols-hex-literal",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Farbe 0x1F, Maske 0xFF, Offset 0x10",
+      "out": "Farbe 0x1F, Maske 0xFF, Offset 0x10",
+      "note": "symbols.md §6 case 6: guards M3 and M4."
+    },
+    {
+      "id": "de-de-nbsp-abbreviation-zb",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "z. B. so",
+      "out": "z. B. so",
+      "note": "N4 binds the internal space of the listed abbreviation `z. B.` — DIN 5008 / Duden D 1."
+    },
+    {
+      "id": "de-de-nbsp-abbreviation-zb-berlin",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "z. B. Berlin",
+      "out": "z. B. Berlin",
+      "note": "nbsp.md §6 case 14, the live false positive this guard was written for: N4 binds the space INSIDE `z. B.`, and the space after `B.` stays breakable. Without guard C1-a the initials sub-rule read `B.` as an initial and `Berlin` as a surname and produced `z.⍽B.⍽Berlin` — a false positive on ordinary prose, which is the ship-blocking class for this project."
+    },
+    {
+      "id": "de-de-nbsp-abbreviation-zb-roundtrip",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "z. B. Berlin",
+      "out": "z. B. Berlin",
+      "note": "nbsp.md §6 case 15: N4's match is space-lenient, so its own output is recognised as already correct."
+    },
+    {
+      "id": "de-de-nbsp-abbreviation-dh",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "d. h. genau so",
+      "out": "d. h. genau so",
+      "note": "N4 on `d. h.`."
+    },
+    {
+      "id": "de-de-nbsp-abbreviation-three-part",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "i. d. R. nicht",
+      "out": "i. d. R. nicht",
+      "note": "N4 binds every internal space of a listed abbreviation, however many there are."
+    },
+    {
+      "id": "de-de-nbsp-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Es sind 20 km bis 5 %",
+      "out": "Es sind 20 km bis 5 %",
+      "note": "nbsp.md §6 case 16: N5 twice."
+    },
+    {
+      "id": "de-de-nbsp-unit-never-inserts",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Es sind 20km",
+      "out": "Es sind 20km",
+      "note": "nbsp.md §6 case 17 and §7.2: N5 converts, never inserts — even though Duden requires the space, adding one is a content change."
+    },
+    {
+      "id": "de-de-nbsp-unit-letter-guard",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "H2 O ist kein Wert",
+      "out": "H2 O ist kein Wert",
+      "note": "nbsp.md §6 case 18: N5 step 4, the digit run is preceded by a letter."
+    },
+    {
+      "id": "de-de-nbsp-before-number-seite",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "siehe S. 12",
+      "out": "siehe S. 12",
+      "note": "N9: `S.` + number, cited to Bundeskanzlei Rz. 251 („S. 17 f.“) and required by docs/PLAN.md §7. Note that guard G-D (which would make a two-code-point UPPER+dot entry inert) belongs to N10 only — N9 has no such guard, so `S.` binds forward to a number even though it looks exactly like an initial."
+    },
+    {
+      "id": "de-de-nbsp-before-number-case-sensitive",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "siehe s. 12",
+      "out": "siehe s. 12",
+      "note": "nbsp.md §6 case 20 in spirit: N9 matches exactly, with no case leniency at all. `s.` is not `S.`."
+    },
+    {
+      "id": "de-de-nbsp-symbol-number",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "siehe § 12 und Nr. 5",
+      "out": "siehe § 12 und Nr. 5",
+      "note": "Two halves with different evidence. `§` is in afterSymbols and binds through N6. `Nr.` binds through nothing: it was removed from the de-DE locale file entirely, because no consulted source states a spacing rule for it — the Schreibweisungen never mention it (it is absent from Rz. 439's closed list of Begriffszeichen and from the Sachregister), Duden classifies it as an abbreviation, which refutes afterSymbols but prescribes no spacing, and DIN 5008 is paywalled and unread. Under PLAN.md §6.1 an entry whose citation does not cover it does not ship. The gap is evidentiary, not typographic."
+    },
+    {
+      "id": "de-de-nbsp-nr-unbound-pending-citation",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "siehe Nr. 5",
+      "out": "siehe Nr. 5",
+      "note": "Pinned on its own so it is easy to find and easy to flip: if a contributor obtains DIN 5008 and it states the binding, `Nr.` goes into de-DE's nbsp.beforeNumber (NOT afterSymbols — Duden calls it an abbreviation, and Rz. 439's Begriffszeichen list excludes it) and this case's `out` becomes `siehe Nr.` + U+00A0 + `5`. Until then the space stays breakable, because moving it on class membership alone would be inference dressed as citation."
+    },
+    {
+      "id": "de-de-nbsp-before-word-sankt",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "St. Gallen liegt am See",
+      "out": "St. Gallen liegt am See",
+      "note": "N10: `St.` is three code points, so guard G-D does not apply and it binds to the following word — Bundeskanzlei Rz. 438."
+    },
+    {
+      "id": "de-de-nbsp-initials",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "J. K. Rowling",
+      "out": "J. K. Rowling",
+      "note": "N7 clause C1 twice — DIN 5008."
+    },
+    {
+      "id": "de-de-nbsp-no-french-spacing",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Wirklich ? Ja !",
+      "out": "Wirklich? Ja!",
+      "note": "Both punctuation lists are empty for German: `spaces` removes the space and nothing puts one back. The same input in fr gains U+202F."
+    },
+    {
+      "id": "de-de-roundtrip-typeset-sentence",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "z. B. sind es 20 km – also nicht weit.",
+      "out": "z. B. sind es 20 km – also nicht weit.",
+      "note": "Byte-identical round trip: a bound abbreviation, a bound unit and an en-spaced parenthetical dash."
+    },
+    {
+      "id": "de-de-roundtrip-plain-prose",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Ein ganz gewöhnlicher Satz bleibt unverändert.",
+      "out": "Ein ganz gewöhnlicher Satz bleibt unverändert.",
+      "note": "No candidate for any rule."
+    },
+    {
+      "id": "de-de-roundtrip-quotes-and-range",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "„Die Jahre 1939–1945“, sagte er.",
+      "out": "„Die Jahre 1939–1945“, sagte er.",
+      "note": "Correct German quotation marks and an AUTHORED tight en-dash range come out byte-identical — and, in particular, with no U+2060 joiners, where the hyphen-typed `1939-1945` above gets them. That asymmetry is deliberate (§3.3.1, §7.14): the rule never makes an edit whose entire content is invisible. A joiner rides along with a conversion the author wanted; it is never the only thing an edit does, because an invisible-only change to text that was already right is unreviewable by hand, and hand review is the M4 criterion. `dashes` §3.2 step 2a leaves any authored dash alone."
+    },
+    {
+      "id": "de-de-combined-sentence",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Er sagte: \"Die Strecke -- rund 20 km -- war lang...\" und ging.",
+      "out": "Er sagte: „Die Strecke – rund 20 km – war lang…“ und ging.",
+      "note": "A quotation, a parenthetical dash, an ellipsis and a number with a unit in one sentence: Gänsefüßchen without inner space, en-spaced dashes, U+2026, and U+00A0 between 20 and km."
+    }
+  ]
+}

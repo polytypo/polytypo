@@ -1,0 +1,1166 @@
+{
+  "spec": "0.1.0",
+  "locale": "fi",
+  "cases": [
+    {
+      "id": "fi-spaces-collapse-run",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Hello   world.",
+      "out": "Hello world.",
+      "note": "spaces.md §6 case 1."
+    },
+    {
+      "id": "fi-spaces-strip-before-punctuation",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Hello , world !",
+      "out": "Hello, world!",
+      "note": "spaces.md §6 case 2: `,` and `!` are in STRIP-BEFORE."
+    },
+    {
+      "id": "fi-spaces-bracket-inner",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "( ok ) and [ x ]",
+      "out": "(ok) and [x]",
+      "note": "spaces.md §6 case 3."
+    },
+    {
+      "id": "fi-spaces-gfm-checkbox",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "- [ ] buy milk",
+      "out": "- [ ] buy milk",
+      "note": "spaces.md §6 case 4: empty-bracket guard, replacement length 1 and the run is already 1."
+    },
+    {
+      "id": "fi-spaces-empty-bracket-collapse",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "(  )",
+      "out": "( )",
+      "note": "spaces.md §6 case 4b: the guard forces length 1, it does not skip."
+    },
+    {
+      "id": "fi-spaces-markdown-hard-break",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "line one  \nline two",
+      "out": "line one  \nline two",
+      "note": "spaces.md §6 case 5: the run is followed by a BREAK."
+    },
+    {
+      "id": "fi-spaces-leading-indent",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "    indented code",
+      "out": "    indented code",
+      "note": "spaces.md §6 case 6."
+    },
+    {
+      "id": "fi-spaces-nbsp-neighbour",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "5   km",
+      "out": "5  km",
+      "note": "spaces.md §6 case 7: the U+00A0 is CONTENT and bounds the run; only the U+0020 run collapses. The unit is not bound either, because nbsp N5 requires a DIGIT two positions left of the unit."
+    },
+    {
+      "id": "fi-spaces-nbsp-run-untouched",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "a  b",
+      "out": "a  b",
+      "note": "spaces.md §6 case 8: no U+0020 anywhere."
+    },
+    {
+      "id": "fi-spaces-terminal-punctuation",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Bonjour ! Ça va ?",
+      "out": "Bonjour! Ça va?",
+      "note": "spaces.md §6 case 9, transcribed verbatim. The rule is locale-independent; this locale lists nothing in nbsp.narrowBeforePunctuation, so nothing is restored."
+    },
+    {
+      "id": "fi-spaces-before-final-stop",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "See p. 12 .",
+      "out": "See p. 12.",
+      "note": "spaces.md §6 case 10: a lone dot, so the lone-dot condition (§3.4) holds and the run is deleted."
+    },
+    {
+      "id": "fi-spaces-lone-dot-condition-typed-ellipsis",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Wait ...",
+      "out": "Wait …",
+      "note": "spaces.md §6 case 10c. The dot run has length 3, so the lone-dot condition (§3.4) fails and `spaces` keeps the U+0020; `ellipsis` then collapses the run. The surviving space is DELIBERATE — a tight `Wait…` was rejected because restoring it reopens `See ../docs`. The output is a fixed point only because U+2026 was also removed from STRIP-BEFORE."
+    },
+    {
+      "id": "fi-spaces-lone-dot-condition-spaced-ellipsis",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Hello . . .",
+      "out": "Hello…",
+      "note": "spaces.md §6 case 10d, and the case worth breaking a port on. Runs are maximal IN THE INPUT ARRAY and the condition is evaluated against the input, so every dot here is a LONE dot at decision time — each is followed by a space, not by another dot — and all three spaces still strip. The dots merge to `Hello...` and `ellipsis` converts them. An implementation that applies each edit as it scans, instead of collecting edits and letting the pipeline apply them (ARCHITECTURE.md §7.1), sees a growing dot run and keeps the later spaces; it passes every other fixture and fails this one."
+    },
+    {
+      "id": "fi-spaces-break-both-sides",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "foo    \n    bar",
+      "out": "foo    \n    bar",
+      "note": "spaces.md §6 case 11."
+    },
+    {
+      "id": "fi-spaces-mixed",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Q:  why ?  Because .",
+      "out": "Q: why? Because.",
+      "note": "spaces.md §6 case 12."
+    },
+    {
+      "id": "fi-spaces-single-space-noop",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "a b",
+      "out": "a b",
+      "note": "spaces.md §4: a single space in an ordinary position is not a candidate."
+    },
+    {
+      "id": "fi-spaces-protected-spaces",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Tab\there and thin space and nbsp here",
+      "out": "Tab\there and thin space and nbsp here",
+      "note": "spaces.md §4: U+0009, U+2009 and U+00A0 are never collapsed, removed or converted."
+    },
+    {
+      "id": "fi-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Wait... what?",
+      "out": "Wait… what?",
+      "note": "ellipsis.md §6 case 1."
+    },
+    {
+      "id": "fi-ellipsis-mixed-run",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Wait…… what?",
+      "out": "Wait… what?",
+      "note": "ellipsis.md §6 case 2: a mixed/repeated DOTLIKE run normalises to one U+2026."
+    },
+    {
+      "id": "fi-ellipsis-two-dots-after-terminal",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Really?..",
+      "out": "Really?…",
+      "note": "ellipsis.md §6 case 3: abbreviatedAfterTerminal is false, so `?..` is a typing slip for `?…`."
+    },
+    {
+      "id": "fi-ellipsis-relative-path",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "../docs is one level up",
+      "out": "../docs is one level up",
+      "note": "ellipsis.md §6 case 4 / §4: a run of exactly two full stops is left alone. Written without a preceding space on purpose — see the `spaced-path` case."
+    },
+    {
+      "id": "fi-ellipsis-numeric-range",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Version 1..5",
+      "out": "Version 1..5",
+      "note": "ellipsis.md §6 case 5: left neighbour of the two-dot run is a digit."
+    },
+    {
+      "id": "fi-ellipsis-already-ellipsis",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "He left…",
+      "out": "He left…",
+      "note": "ellipsis.md §6 case 6."
+    },
+    {
+      "id": "fi-ellipsis-five-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Hmm.....",
+      "out": "Hmm…",
+      "note": "ellipsis.md §6 case 7."
+    },
+    {
+      "id": "fi-ellipsis-sentence-stops",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Yes. No.",
+      "out": "Yes. No.",
+      "note": "ellipsis.md §6 case 8: two independent runs of length 1."
+    },
+    {
+      "id": "fi-ellipsis-two-dot-leader",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Two dot leader ‥ stays",
+      "out": "Two dot leader ‥ stays",
+      "note": "ellipsis.md §4: U+2025 is in no class and is never produced or consumed."
+    },
+    {
+      "id": "fi-ellipsis-spaced-path",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "See ../docs",
+      "out": "See ../docs",
+      "note": "spaces.md §6 case 10a. Protected by the LONE-DOT CONDITION (spaces.md §3.4): `right` is U+002E but the maximal DOTLIKE run beginning there has length 2, so the replacement length is 1 and the space survives. `ellipsis` then leaves the two-dot run alone. A port that strips before any STRIP-BEFORE member without checking the run length produces `See../docs` here."
+    },
+    {
+      "id": "fi-ellipsis-spaced-two-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "e.g. ..",
+      "out": "e.g. ..",
+      "note": "spaces.md §6 case 10b, and the reason ellipsis.md §4 can promise `e.g. ..` end to end. Without the lone-dot condition `spaces` merged the run with the abbreviation dot into three U+002E, which `ellipsis` then legitimately converted to `e.g…`. Both rules were right; the condition is what makes the composition right."
+    },
+    {
+      "id": "fi-dashes-parenthetical-spaced-input",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Suunnitelma - jos sellainen on - kaatuu.",
+      "out": "Suunnitelma – jos sellainen on – kaatuu.",
+      "note": "dashes.md §3.4: en-spaced keeps the spacing and normalises the stroke."
+    },
+    {
+      "id": "fi-dashes-parenthetical-double-hyphen",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Suunnitelma--jos sellainen on--kaatuu.",
+      "out": "Suunnitelma – jos sellainen on – kaatuu.",
+      "note": "dashes.md §6 case 11 (same locale shape as de-DE): en-spaced inserts the spacing the tight input lacked."
+    },
+    {
+      "id": "fi-dashes-parenthetical-already-correct",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Suunnitelma – jos sellainen on – kaatuu.",
+      "out": "Suunnitelma – jos sellainen on – kaatuu.",
+      "note": "dashes.md §6 case 12: already the target form, byte-identical. Since the narrowing it is byte-identical for a stronger reason — the en dash is AUTHORED, so §3.2 step 2a declines the token outright rather than recomputing a replacement that happens to match. The distinction matters for a port: a token that reaches the replacement step and compares equal is not the same as a token that never reaches it, and only the second is true of every authored dash whatever the locale says."
+    },
+    {
+      "id": "fi-dashes-ranges",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "1914-1918 and pp. 34-36",
+      "out": "1914⁠–⁠1918 and pp. 34⁠–⁠36",
+      "note": "dashes.md §6 cases 3 and 13: range branch, en-tight — note that this locale's PARENTHETICAL form is en-spaced and takes no joiner, while its range form is tight and does. dashes.md §3.3.1: a TIGHT range is emitted as JOINER dash JOINER (U+2060 on each side), because UAX #14 gives U+2013 the line-break class BA and a renderer would otherwise be free to break the range after the dash. The joiner is zero-width, so this is invisible on screen and invisible in a plain diff — read spec/fixtures/.escaped/ to review it. A spaced range form is NOT bound, and the parenthetical branch never emits a joiner."
+    },
+    {
+      "id": "fi-dashes-compound-hyphens",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "A well-known e-mail address",
+      "out": "A well-known e-mail address",
+      "note": "dashes.md §6 case 4: guard P1."
+    },
+    {
+      "id": "fi-dashes-covid-and-iso",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "COVID-19 and ISO 8859-1",
+      "out": "COVID-19 and ISO 8859-1",
+      "note": "dashes.md §6 case 5."
+    },
+    {
+      "id": "fi-dashes-iso-date-and-isbn",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Released 2026-08-15, ISBN 978-3-16-148410-0",
+      "out": "Released 2026-08-15, ISBN 978-3-16-148410-0",
+      "note": "dashes.md §6 case 6."
+    },
+    {
+      "id": "fi-dashes-phone-number",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Call 212-555-1234",
+      "out": "Call 212-555-1234",
+      "note": "dashes.md §6 case 7."
+    },
+    {
+      "id": "fi-dashes-cli-flag",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "run --force to override",
+      "out": "run --force to override",
+      "note": "dashes.md §6 case 8."
+    },
+    {
+      "id": "fi-dashes-list-item",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "- first item",
+      "out": "- first item",
+      "note": "dashes.md §6 case 9."
+    },
+    {
+      "id": "fi-dashes-descending-score",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Scores: 20-10",
+      "out": "Scores: 20-10",
+      "note": "dashes.md §6 case 10: guard G5."
+    },
+    {
+      "id": "fi-dashes-dash-space-dash",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a- - a",
+      "out": "a- - a",
+      "note": "dashes.md §6 case 19, idempotency defect (b)."
+    },
+    {
+      "id": "fi-dashes-spaced-dash-pair",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a - - b",
+      "out": "a - - b",
+      "note": "dashes.md §6 case 21."
+    },
+    {
+      "id": "fi-dashes-cluster-multi-run",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "1914-1918--annexation",
+      "out": "1914-1918--annexation",
+      "note": "dashes.md §6 case 20."
+    },
+    {
+      "id": "fi-dashes-t1-spacing-transition",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a–1 - 1",
+      "out": "a–1 - 1",
+      "note": "dashes.md §6 case 24, idempotency defect (c). §5.2 names this locale explicitly: every locale whose parenthetical is -spaced and whose range is not `none` reproduced it. Guard T1 (§3.2 step 8) makes the tight `–` inert at distance 2 — and since the narrowing the authored-dash guard at step 2a declines it even earlier. §5.3a notes that step 2a cost defect (c) its original witness; T1 is kept because a hyphen-typed token can still reach the transition."
+    },
+    {
+      "id": "fi-dashes-t1-tight-sibling",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a–1-1",
+      "out": "a–1-1",
+      "note": "dashes.md §6 case 26: the tight sibling, guard T1 firing at distance 1 — and also one cluster with two dash runs, and since the narrowing an authored dash declined at step 2a. Three independent guards now hold; the case is retained because a port may implement any one of them and must still produce this output."
+    },
+    {
+      "id": "fi-dashes-t2-before-full-stop",
+      "rule": "dashes",
+      "mode": "text",
+      "in": ".--.",
+      "out": ".--.",
+      "note": "dashes.md §6 case 28, composition defect family 1: guard T2 declines because cp[R] is U+002E, a position `spaces` deletes a U+0020 from."
+    },
+    {
+      "id": "fi-dashes-t2-after-open-bracket",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "(--a",
+      "out": "(--a",
+      "note": "dashes.md §6 case 30: guard T2 on the left."
+    },
+    {
+      "id": "fi-dashes-t2-before-close-bracket",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a--)",
+      "out": "a--)",
+      "note": "dashes.md §6 case 31: guard T2 on the right."
+    },
+    {
+      "id": "fi-dashes-authored-em-dash-kept",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "asiakirjat — PDF-tiedostot — ja sinä",
+      "out": "asiakirjat — PDF-tiedostot — ja sinä",
+      "note": "dashes.md §6 case 41's shape in an `en-spaced` locale: an authored em dash keeps its glyph and its spacing, so Finnish does NOT pull it to the en dash Kotus prescribes. The locale field still states the convention correctly; since the narrowing it governs hyphen input only (§7.14)."
+    },
+    {
+      "id": "fi-dashes-mixed-run-declined",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a-–b",
+      "out": "a-–b",
+      "note": "dashes.md §6 case 42: the authored-dash test is on the RUN, not on a single code point. The run `-–` contains a U+2013, so the whole token is declined — a port that tests only cp[s] converts the hyphen and produces a two-dash run with a different verdict on the next pass."
+    },
+    {
+      "id": "fi-dashes-authored-range-unbound",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "1914–1918",
+      "out": "1914–1918",
+      "note": "dashes.md §6 case 43: an AUTHORED range gets NO joiners. The general principle, which is worth carrying into any new rule: THIS RULE NEVER MAKES AN EDIT WHOSE ENTIRE CONTENT IS INVISIBLE. A joiner may ride along with a conversion the author asked for, but it must never be the only thing an edit does — an invisible-only edit to already-correct text cannot be reviewed by hand at all, which is exactly what the M4 gate is."
+    },
+    {
+      "id": "fi-dashes-hyphen-range-bound",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "1914-1918",
+      "out": "1914⁠–⁠1918",
+      "note": "dashes.md §6 case 44, the pair to the previous case. A hyphen-typed range still converts AND still binds, because the joiners ride along with a visible conversion. The two outputs are visually identical yet only one may break across lines — §7.14 calls this the least comfortable consequence of the narrowing and the one most likely to be reported as a bug, so it is pinned in the suite rather than left to be discovered."
+    },
+    {
+      "id": "fi-dashes-range-one-two-digits",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Kestää 5-10 päivää",
+      "out": "Kestää 5⁠–⁠10 päivää",
+      "note": "dashes.md §6 case 3a: G4's (1,2) branch — Lrun is one digit, Rrun is two digits with no leading zero. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port."
+    },
+    {
+      "id": "fi-dashes-range-nine-ten",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "iältään 9-10 vuotta",
+      "out": "iältään 9⁠–⁠10 vuotta",
+      "note": "dashes.md §6 case 3b: the largest one-digit run against the smallest two-digit run, the tightest point of the (1,2) branch. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port."
+    },
+    {
+      "id": "fi-dashes-range-one-twelve",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "luvut 1-12",
+      "out": "luvut 1⁠–⁠12",
+      "note": "dashes.md §6 case 3c: (1,2). A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port."
+    },
+    {
+      "id": "fi-dashes-range-zero-sixty",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "0-60 kuudessa sekunnissa",
+      "out": "0⁠–⁠60 kuudessa sekunnissa",
+      "note": "dashes.md §6 case 3d: Lrun may be `0` — the leading-zero clause constrains Rrun only. `before` is NONE here, so G1 and G3 pass. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port."
+    },
+    {
+      "id": "fi-dashes-range-two-one-digits-rejected",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "voitti 10-7",
+      "out": "voitti 10-7",
+      "note": "dashes.md §6 case 3e: (2,1). G4's new branch is DIRECTIONAL and does not admit it — G4 gets there before G5. A port that reads the branch as \"small magnitudes are fine\" and also allows (2,1) breaks G5 without touching it: G5's left-to-right comparison would conclude \"10\" < \"7\" because '1' < '7', and nothing in G5 would look wrong (dashes.md §3.3, G4)."
+    },
+    {
+      "id": "fi-dashes-range-leading-zero-rejected",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "koodi 9-05",
+      "out": "koodi 9-05",
+      "note": "dashes.md §6 case 3f: (1,2) but Rrun begins with U+0030. This is the pair G5 could not have caught — `05` has the value 5, so the pair is descending, and G5 is specified only for equal-length runs. The leading-zero clause is what keeps G5 vacuous in the new branch."
+    },
+    {
+      "id": "fi-dashes-range-phone-seven-digits",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Soita 555-1234",
+      "out": "Soita 555-1234",
+      "note": "dashes.md §6 case 3g: (3,4), neither branch. The phone-number case G4 exists for."
+    },
+    {
+      "id": "fi-dashes-range-one-three-digits-rejected",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Soita 1-800 nyt",
+      "out": "Soita 1-800 nyt",
+      "note": "dashes.md §6 case 3h: (1,3). The new branch requires length(Rrun) = 2 exactly, so a toll-free number is still protected."
+    },
+    {
+      "id": "fi-dashes-range-abbreviated-years-rejected",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "kausi 2020-24",
+      "out": "kausi 2020-24",
+      "note": "dashes.md §6 case 3i: (4,2). The abbreviated year range remains a recorded miss (dashes.md §7.3); the widening is directional and does not reach it."
+    },
+    {
+      "id": "fi-dashes-range-compound-label-known-wrong",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Kuva 5-10",
+      "out": "Kuva 5⁠–⁠10",
+      "note": "PINNED AS KNOWN-WRONG, dashes.md §6 case 3j and §7.11. A compound label means \"chapter 5, figure 10\" — it is not a range — and converting the hyphen to an en dash is incorrect. It is asserted here deliberately so the exposure is visible in the conformance suite rather than discovered in someone's content. §7.11 records that the exposure is pre-existing rather than introduced: `Figure 3-7` is (1,1) and has converted since the first version of this rule; the (1,2) branch widens it to `Figure 5-10`. Separating a label from a range needs the preceding noun (Figure, Table, Section), an open-ended per-locale word list the schema deliberately does not carry. Same standing as the `rock 'n' roll` quotes cases."
+    },
+    {
+      "id": "fi-hyphen-empty-lists-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "A well-known e-mail address, COVID-19, Jean-Luc",
+      "out": "A well-known e-mail address, COVID-19, Jean-Luc",
+      "note": "hyphen.md §6 case 13: this locale's prefixes/suffixes/compounds are all empty, so the rule is a provable total no-op. A port that implements it anyway must fail here."
+    },
+    {
+      "id": "fi-hyphen-empty-lists-prose",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Tämä on tavallinen suomenkielinen virke.",
+      "out": "Tämä on tavallinen suomenkielinen virke.",
+      "note": "hyphen.md §6 case 14 / §2: with three empty lists the rule emits nothing for any input."
+    },
+    {
+      "id": "fi-hyphen-existing-nbhy-roundtrip",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "A well‑known e‑mail address",
+      "out": "A well‑known e‑mail address",
+      "note": "hyphen.md §5: an author-written U+2011 is never examined and round-trips byte-identically."
+    },
+    {
+      "id": "fi-hyphen-inert-dash-family",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "soft­hyphen, minus −5, figure‒dash, bar―here",
+      "out": "soft­hyphen, minus −5, figure‒dash, bar―here",
+      "note": "hyphen.md §4 and dashes.md §3.1: U+00AD, U+2212, U+2012 and U+2015 are never read and never produced."
+    },
+    {
+      "id": "fi-quotes-basic",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Hän sanoi \"moi\" ja lähti.",
+      "out": "Hän sanoi ”moi” ja lähti.",
+      "note": "quotes.md §6 case 9: the opening and the closing glyph are the SAME code point U+201D (Kotus). The rule knew which was which from the pairing, not from the glyph."
+    },
+    {
+      "id": "fi-quotes-roundtrip-same-glyph",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Hän sanoi ”moi” ja lähti.",
+      "out": "Hän sanoi ”moi” ja lähti.",
+      "note": "quotes.md §6 case 10: the output of the previous case re-processed. No STRAIGHT marks remain, so there is nothing to do. This is the case a flip-flop state machine gets wrong."
+    },
+    {
+      "id": "fi-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Hän sanoi 'moi'\", totesin.",
+      "out": "”Hän sanoi ’moi’”, totesin.",
+      "note": "quotes.md §6 case 11: depth 2 → secondary, also same-glyph on both sides. The `'` and `\"` at the end are adjacent but of DIFFERENT kinds, so the pass 1 veto does not touch them."
+    },
+    {
+      "id": "fi-quotes-nested-roundtrip",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "”Hän sanoi ’moi’”, totesin.",
+      "out": "”Hän sanoi ’moi’”, totesin.",
+      "note": "The nested same-glyph output is a fixed point: three U+2019/U+201D glyphs in a row are not candidates at all."
+    },
+    {
+      "id": "fi-quotes-nesting-with-question",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Hän kysyi: 'mitä nyt?'\"",
+      "out": "”Hän kysyi: ’mitä nyt?’”",
+      "note": "Nesting where the inner quotation ends in terminal punctuation and both closers stack up at the end of the text unit."
+    },
+    {
+      "id": "fi-quotes-unbalanced-opener",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Hän aloitti \"lainauksen mutta ei sulkenut sitä.",
+      "out": "Hän aloitti \"lainauksen mutta ei sulkenut sitä.",
+      "note": "quotes.md §3.6: an unmatchable opening mark is left as U+0022. In a same-glyph locale guessing would be unrecoverable, because the reader cannot tell an opener from a closer afterwards."
+    },
+    {
+      "id": "fi-quotes-unbalanced-closer",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Hän poistui huoneesta\" avaamatta lainausta.",
+      "out": "Hän poistui huoneesta\" avaamatta lainausta.",
+      "note": "quotes.md §3.6: a closing mark with nothing open."
+    },
+    {
+      "id": "fi-quotes-unbalanced-mixed",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Hän sanoi \"moi. Hän sanoi \"hei.\"",
+      "out": "Hän sanoi \"moi. Hän sanoi ”hei.”",
+      "note": "quotes.md §6 case 4 in a same-glyph locale: the first mark survives unmatched and the second pair resolves at depth 1 (§3.4 counts enclosing PAIRS, not stack height)."
+    },
+    {
+      "id": "fi-quotes-adjacent-to-punctuation",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Moi\", hän sanoi, \"hei\".",
+      "out": "”Moi”, hän sanoi, ”hei”.",
+      "note": "A quotation adjacent to punctuation: the closing marks are canClose because `,` and `.` are in CLOSEISH. Four identical U+201D glyphs in the output, two of which are openers."
+    },
+    {
+      "id": "fi-quotes-terminal-inside-quotation",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Moi!\" hän huusi.",
+      "out": "”Moi!” hän huusi.",
+      "note": "The closing mark's left neighbour is `!`, which is not SPACELIKE, so canClose holds."
+    },
+    {
+      "id": "fi-quotes-two-quotations",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Hän sanoi ”moi” ja ”hei”.",
+      "out": "Hän sanoi ”moi” ja ”hei”.",
+      "note": "Two already-correct same-glyph quotations in one sentence, byte-identical."
+    },
+    {
+      "id": "fi-quotes-foot-and-inch",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "He is 6' 2\" tall.",
+      "out": "He is 6' 2\" tall.",
+      "note": "quotes.md §6 case 6 / §4."
+    },
+    {
+      "id": "fi-quotes-doubled-single",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Kirjain ''",
+      "out": "Kirjain ''",
+      "note": "quotes.md §6 case 7: identical adjacent straight marks are vetoed in pass 1."
+    },
+    {
+      "id": "fi-quotes-veto-witness",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"\"\"a\"\"",
+      "out": "\"\"\"a\"\"",
+      "note": "quotes.md §6 case 7b, the §5.4 witness."
+    },
+    {
+      "id": "fi-quotes-veto-inside-pair",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"a \"\" b\"",
+      "out": "”a \"\" b”",
+      "note": "quotes.md §6 case 7c: the vetoed inner pair stays straight inside a converted same-glyph quotation."
+    },
+    {
+      "id": "fi-quotes-existing-curly-ignored",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "“Jo kaareva,” hän sanoi, ja \"tämäkin.\"",
+      "out": "“Jo kaareva,” hän sanoi, ja ”tämäkin.”",
+      "note": "quotes.md §3.8: an existing English pair is left as written and does not contribute to depth. Converting “…” to ”…” is a translation task and is out of scope."
+    },
+    {
+      "id": "fi-quotes-rock-n-roll",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "rock 'n' roll",
+      "out": "rock ”n” roll",
+      "note": "quotes.md §7.1, recorded as a known defect: the two elision marks pair at depth 1 and take the Finnish primary glyphs."
+    },
+    {
+      "id": "fi-quotes-already-correct",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "”Kyllä”, hän sanoi – vuosina 1914⁠–⁠1918, noin 5 km.",
+      "out": "”Kyllä”, hän sanoi – vuosina 1914⁠–⁠1918, noin 5 km.",
+      "note": "Round-trip: already-correct Finnish text comes out byte-identical, including the two U+2060 joiners around the tight range (dashes.md §3.3.1)."
+    },
+    {
+      "id": "fi-apostrophe-contraction",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "don't",
+      "out": "don’t",
+      "note": "apostrophe.md §6 case 1: letters on both sides."
+    },
+    {
+      "id": "fi-apostrophe-elision",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "l'été",
+      "out": "l’été",
+      "note": "apostrophe.md §6 case 2."
+    },
+    {
+      "id": "fi-apostrophe-possessive-plural",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "the dogs' bowls",
+      "out": "the dogs’ bowls",
+      "note": "apostrophe.md §6 case 3: `quotes` leaves the mark unmatched, then case 3 converts it."
+    },
+    {
+      "id": "fi-apostrophe-decade-elision",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Back in the '90s",
+      "out": "Back in the ’90s",
+      "note": "apostrophe.md §6 case 4: U+2019, never U+2018."
+    },
+    {
+      "id": "fi-apostrophe-leading-elision",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "'Tis the season",
+      "out": "’Tis the season",
+      "note": "apostrophe.md §6 case 5."
+    },
+    {
+      "id": "fi-apostrophe-foot-and-inch",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "He is 6' 2\" tall.",
+      "out": "He is 6' 2\" tall.",
+      "note": "apostrophe.md §6 case 6 and quotes.md §4: the prime guard keeps the foot mark, and the inch mark is an unmatched quote candidate."
+    },
+    {
+      "id": "fi-apostrophe-feet-inches-tight",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "6'2\"",
+      "out": "6'2\"",
+      "note": "apostrophe.md §6 case 7: digit left, digit right → prime guard."
+    },
+    {
+      "id": "fi-apostrophe-isolated-mark",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "a ' b",
+      "out": "a ' b",
+      "note": "apostrophe.md §6 case 9 and §7.4: an isolated straight mark survives into the output on purpose."
+    },
+    {
+      "id": "fi-apostrophe-doubled-mark",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "dogs''",
+      "out": "dogs''",
+      "note": "apostrophe.md §6 case 12: neither mark has the neighbour class any converting case requires; `quotes` vetoed both in pass 1."
+    },
+    {
+      "id": "fi-apostrophe-two-medial",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "O'Brien's",
+      "out": "O’Brien’s",
+      "note": "apostrophe.md §6 case 13."
+    },
+    {
+      "id": "fi-apostrophe-three-medial",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Ma'am, it's 5 o'clock",
+      "out": "Ma’am, it’s 5 o’clock",
+      "note": "apostrophe.md §6 case 14."
+    },
+    {
+      "id": "fi-apostrophe-digit-then-letter",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "The 1990's were loud",
+      "out": "The 1990’s were loud",
+      "note": "apostrophe.md §6 case 8: the prime guard does not fire because a letter follows."
+    },
+    {
+      "id": "fi-apostrophe-already-curly",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "“He said ’tis so,” she noted.",
+      "out": "“He said ’tis so,” she noted.",
+      "note": "apostrophe.md §6 case 10: no U+0027 remains, and existing curly glyphs are not candidates for `quotes` either."
+    },
+    {
+      "id": "fi-apostrophe-modifier-letters-kept",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Hawai'i, ʼokina ʼ and ʼ kept",
+      "out": "Hawai’i, ʼokina ʼ and ʼ kept",
+      "note": "apostrophe.md §4 and §7.5: U+02BC is a letter in several orthographies and is never converted; the U+0027 in `Hawai'i` is converted by case 2, which is the documented wrong-but-conventional behaviour."
+    },
+    {
+      "id": "fi-apostrophe-backtick-and-acute",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "The ``LaTeX'' idiom and a ´mark´.",
+      "out": "The ``LaTeX'' idiom and a ´mark´.",
+      "note": "apostrophe.md §4 / quotes.md §4: U+0060 and U+00B4 are not candidates, and the LaTeX `''` idiom is vetoed by the same-kind adjacency rule."
+    },
+    {
+      "id": "fi-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026 Iurii Rogulia",
+      "out": "Copyright © 2026 Iurii Rogulia",
+      "note": "symbols.md §6 case 1."
+    },
+    {
+      "id": "fi-symbols-tm-and-registered",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Acme(tm) and Acme (R)",
+      "out": "Acme™ and Acme ®",
+      "note": "symbols.md §6 case 2: the (tm) rows are exempt from guard S1."
+    },
+    {
+      "id": "fi-symbols-s1-asymmetry",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "f(c) and f(tm)",
+      "out": "f(c) and f™",
+      "note": "symbols.md §6 case 2b: S1 applies to the (c)/(r) rows only. `f(tm)` becoming `f™` is deliberate."
+    },
+    {
+      "id": "fi-symbols-optional-first-letter",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "The (r)evolution will not be televised",
+      "out": "The (r)evolution will not be televised",
+      "note": "symbols.md §6 case 3: guard S2."
+    },
+    {
+      "id": "fi-symbols-call-position",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "f(c) returns c",
+      "out": "f(c) returns c",
+      "note": "symbols.md §6 case 4: guard S1."
+    },
+    {
+      "id": "fi-symbols-nesting",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "((c))",
+      "out": "((c))",
+      "note": "symbols.md §6 case 11: guard S3."
+    },
+    {
+      "id": "fi-symbols-adjacent-signs",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "(c)(r)",
+      "out": "©(r)",
+      "note": "symbols.md §5: S1 lists U+00A9/U+00AE/U+2122 so that this converges in one run rather than two."
+    },
+    {
+      "id": "fi-symbols-multiplication",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "A 3x5 card, 10 x 20 grid",
+      "out": "A 3×5 card, 10 × 20 grid",
+      "note": "symbols.md §6 case 5: the tight and the symmetric-spaced form in one string. The trailing word is deliberately not unit-like — §6 now requires each row to exercise only the rule it documents, so this case asserts `symbols` and nothing else."
+    },
+    {
+      "id": "fi-symbols-multiplication-with-unit",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "A 3x5 card, 10 x 20 cm",
+      "out": "A 3×5 card, 10 × 20 cm",
+      "note": "PIPELINE INTERACTION, not a §6 row: the earlier wording of case 5 ended in `cm`. The U+00D7 conversions come from `symbols`, but the U+00A0 before `cm` comes from `nbsp` (order 70) binding a beforeUnits entry to the preceding number. Kept as a separate case because the `symbols` + `nbsp.beforeUnits` interaction is real and is covered nowhere else; a port whose `symbols` is correct but whose N5 boundary test is not will pass the row above and fail this one."
+    },
+    {
+      "id": "fi-symbols-hexadecimal",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Colour 0x1F, mask 0xFF, offset 0x10",
+      "out": "Colour 0x1F, mask 0xFF, offset 0x10",
+      "note": "symbols.md §6 case 6: guards M3 and M4."
+    },
+    {
+      "id": "fi-symbols-resolution",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Resolution 1920x1080",
+      "out": "Resolution 1920×1080",
+      "note": "symbols.md §6 case 7."
+    },
+    {
+      "id": "fi-symbols-variable-x",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Let x = 5 and solve for x",
+      "out": "Let x = 5 and solve for x",
+      "note": "symbols.md §6 case 8: no digit neighbour."
+    },
+    {
+      "id": "fi-symbols-chain",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "A 2x3x4 box",
+      "out": "A 2×3×4 box",
+      "note": "symbols.md §6 case 5e: the Latin chain, both links converted in ONE PASS. The branch is a scan of a whole chain `DIGIT+ (X DIGIT+)+` (§3.3), not a test on one letter between two numbers, and the former guard M5 was REMOVED rather than extended (§3.3 step 7). A pairwise implementation converts one operator per pass — `2×3x4`, then `2×3×4` — which is the exact non-idempotency §7.10 measures in Lebedev's Typograf on `5х4х3`. That failure is invisible to a test that runs the transform only once, which is why the runner also asserts transform(out) == out."
+    },
+    {
+      "id": "fi-symbols-chain-cyrillic",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "5х4х3",
+      "out": "5×4×3",
+      "note": "symbols.md §6 case 5d: an all-Cyrillic chain (U+0445), both links converted in one pass. This is the literal input §7.10 records Typograf turning into `5×4х3` on the first pass and `5×4×3` only on the second — a document that never converges under repeated processing."
+    },
+    {
+      "id": "fi-symbols-chain-mixed-alphabets",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "5x4х3",
+      "out": "5×4×3",
+      "note": "symbols.md §6 case 5f: one Latin `x`, one Cyrillic `х`, ONE chain, both links convert. The four MUL-LETTER members are interchangeable and no guard distinguishes them. Declining on mixture would make behaviour depend on which keyboard layout the author's finger slipped to — undiscoverable from the output, because the two letters are visually identical in every font."
+    },
+    {
+      "id": "fi-symbols-chain-three-links",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Стол 120х80х75",
+      "out": "Стол 120×80×75",
+      "note": "symbols.md §6 case 5g: a three-link chain over multi-digit runs. M2 and M3 apply to the OUTER boundaries of the chain, not per link — in the pairwise form they applied per pair, and the letter on the far side of a middle digit run was another MUL-LETTER, which is what made a chain reject itself."
+    },
+    {
+      "id": "fi-symbols-chain-spaced",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "10 x 20 x 30",
+      "out": "10 × 20 × 30",
+      "note": "symbols.md §6 case 5h: a spaced chain. `sp = 1` uniformly and each side keeps its own space code point."
+    },
+    {
+      "id": "fi-symbols-chain-mixed-spacing-declined",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "5x4 x 3",
+      "out": "5x4 x 3",
+      "note": "symbols.md §6 case 5i: guard M1 requires the spacing to be symmetric AND uniform across every link. Link 1 is tight, link 2 is spaced, so the chain is ambiguous input and is declined WHOLE rather than half-converted."
+    },
+    {
+      "id": "fi-symbols-chain-resumes-after-sign",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "5×4x3",
+      "out": "5×4×3",
+      "note": "symbols.md §6 case 5j: U+00D7 is not in MUL-LETTER, so an already-converted operator ENDS a chain. This reads as the digit run `5`, then the sign, then the fresh chain `4x3`, which converts. Sub-chains do not need to be joined."
+    },
+    {
+      "id": "fi-symbols-cyrillic-single-link",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Размер 5х4",
+      "out": "Размер 5×4",
+      "note": "symbols.md §6 case 5a: Cyrillic U+0445 between two ASCII digits. Identical in appearance to the Latin form and INVISIBLE IN A DIFF, so the M4 dogfooding review cannot catch it by eye — which is §3.1's argument for doing the conversion by algorithm at all."
+    },
+    {
+      "id": "fi-symbols-cyrillic-capital",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Размер 5Х4",
+      "out": "Размер 5×4",
+      "note": "symbols.md §6 case 5b: Cyrillic capital U+0425. MUL-LETTER is exactly four enumerated code points and is never case-folded (ARCHITECTURE.md §4.4)."
+    },
+    {
+      "id": "fi-symbols-cyrillic-letter-neighbours",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "хорошо и их",
+      "out": "хорошо и их",
+      "note": "symbols.md §6 case 5c: Cyrillic `х` as an ordinary letter. The chain scan starts only at a digit run, so a `х` with letter neighbours is never even examined. This is the case that makes the unconditional Cyrillic addition safe: the risk is carried by the NUMERIC context, not by the language, so the rule needs no locale data."
+    },
+    {
+      "id": "fi-symbols-plus-minus-tight",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Tolerance +/-5 points",
+      "out": "Tolerance ±5 points",
+      "note": "symbols.md §6 case 5k: the literal three code points U+002B U+002F U+002D with an immediately following digit. `points` is deliberately not a beforeUnits entry, so this row asserts `symbols` alone."
+    },
+    {
+      "id": "fi-symbols-plus-minus-spaced",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Tolerance +/- 5 points",
+      "out": "Tolerance ± 5 points",
+      "note": "symbols.md §6 case 5l: one intervening U+0020 is allowed, and the space itself is left exactly as it was — the edit replaces only the three code points of `+/-`."
+    },
+    {
+      "id": "fi-symbols-plus-minus-with-unit",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Tolerance +/-5 mm",
+      "out": "Tolerance ±5 mm",
+      "note": "PIPELINE INTERACTION, not a §6 row: the earlier wording of case 5k ended in `mm`. The U+00B1 comes from `symbols`; the U+00A0 comes from `nbsp` N5 binding `mm`, a beforeUnits entry, to the digit run before it. Kept so the interaction stays covered now that the normative row no longer carries a unit."
+    },
+    {
+      "id": "fi-symbols-plus-minus-spaced-with-unit",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Tolerance +/- 5 mm",
+      "out": "Tolerance ± 5 mm",
+      "note": "PIPELINE INTERACTION, not a §6 row: the earlier wording of case 5l. Note that the U+0020 between `±` and `5` survives while the one between `5` and `mm` becomes U+00A0 — the first is inside the plus-minus edit's neighbourhood and untouched by both rules, the second is N5's."
+    },
+    {
+      "id": "fi-symbols-plus-minus-after-digit",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Погрешность 5+/-3",
+      "out": "Погрешность 5±3",
+      "note": "symbols.md §6 case 5m: a digit on the left is not an obstacle — guard F1 rejects only U+005B."
+    },
+    {
+      "id": "fi-symbols-plus-minus-prose-declined",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "lines marked +/- were edited",
+      "out": "lines marked +/- were edited",
+      "note": "symbols.md §6 case 5n: guard F2 requires a following digit (modulo one space). Prose ABOUT the characters is not converted."
+    },
+    {
+      "id": "fi-symbols-plus-minus-character-class-declined",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "match [+/-] once",
+      "out": "match [+/-] once",
+      "note": "symbols.md §6 case 5o: guard F1. `[+/-]` is a regular-expression character class, the one code-like context that survives into prose about code — and in `text` mode nothing is skipped."
+    },
+    {
+      "id": "fi-symbols-plus-minus-bare-declined",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Range 5+-3",
+      "out": "Range 5+-3",
+      "note": "symbols.md §6 case 5p: bare `+-` is NEVER converted, in any context. Only `+/-` is unambiguous; `+-` occurs in diff listings, ASCII table borders, regex classes and as two adjacent operators in source. §7.11 exists so this is not added later \"for symmetry\"."
+    },
+    {
+      "id": "fi-symbols-asymmetric-x",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Version 1080x",
+      "out": "Version 1080x",
+      "note": "symbols.md §6 case 12: guard M1."
+    },
+    {
+      "id": "fi-symbols-already-signs",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "© 2026, ® and ™",
+      "out": "© 2026, ® and ™",
+      "note": "symbols.md §6 case 13: existing signs are not candidates."
+    },
+    {
+      "id": "fi-symbols-nbsp-preserved-around-times",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "10 × 20",
+      "out": "10 × 20",
+      "note": "symbols.md §6 case 10: already converted, and each side keeps the exact space code point it had."
+    },
+    {
+      "id": "fi-symbols-parenthesised-letters",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "(s)he chose (a) and (e)",
+      "out": "(s)he chose (a) and (e)",
+      "note": "symbols.md §4: the trademark table is exhaustive."
+    },
+    {
+      "id": "fi-symbols-ascii-art",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Smile (x) and (^_^)",
+      "out": "Smile (x) and (^_^)",
+      "note": "symbols.md §4: no table entry and no numeral context."
+    },
+    {
+      "id": "fi-nbsp-unit",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Matkaa on 20 km rannikolle",
+      "out": "Matkaa on 20 km rannikolle",
+      "note": "nbsp N5, cited to Kotus and BIPM."
+    },
+    {
+      "id": "fi-nbsp-unit-no-space",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Matkaa on 20km rannikolle",
+      "out": "Matkaa on 20km rannikolle",
+      "note": "N5 converts, never inserts."
+    },
+    {
+      "id": "fi-nbsp-unit-already-bound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Matkaa on 20 km rannikolle",
+      "out": "Matkaa on 20 km rannikolle",
+      "note": "Already-correct branch."
+    },
+    {
+      "id": "fi-nbsp-percent",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Hinta nousi 10,5 %",
+      "out": "Hinta nousi 10,5 %",
+      "note": "Finnish writes a space between the numeral and `%` (Kotus), so this binding is the normal Finnish form rather than a scientific variant."
+    },
+    {
+      "id": "fi-nbsp-section-sign",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Katso 6 § tarkemmin",
+      "out": "Katso 6 § tarkemmin",
+      "note": "Kotus sets the section sign AFTER the number, so `§` is in beforeUnits for Finnish — the opposite arrangement from Swedish, where Språkrådet's example is `§ 7` and the sign is in afterSymbols."
+    },
+    {
+      "id": "fi-nbsp-abbreviation",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "fil. maist. Virtanen",
+      "out": "fil. maist. Virtanen",
+      "note": "nbsp N4: `fil. maist.` is the one space-bearing abbreviation the fi locale file lists verbatim from Kotus. Only the space INSIDE the abbreviation binds; the space before the surname does not, because beforeWord is empty and bindInitials is false."
+    },
+    {
+      "id": "fi-nbsp-abbreviation-already-bound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "fil. maist. Virtanen",
+      "out": "fil. maist. Virtanen",
+      "note": "nbsp.md §3.6: N4 matches space-leniently, so its own output still matches and emits nothing."
+    },
+    {
+      "id": "fi-nbsp-initials-not-bound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "J. K. Paasikivi oli presidentti",
+      "out": "J. K. Paasikivi oli presidentti",
+      "note": "bindInitials is false for fi: Kotus prescribes a space between initials but no consulted page states it must be non-breaking, so the stronger claim is not made."
+    },
+    {
+      "id": "fi-nbsp-formula-not-a-unit",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "H2 O ei ole arvo",
+      "out": "H2 O ei ole arvo",
+      "note": "nbsp.md §6 case 18: N5 step 4 rejects a digit run preceded by a letter."
+    },
+    {
+      "id": "fi-nbsp-empty-lists",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Todellako? Kyllä: tässä; nyt!",
+      "out": "Todellako? Kyllä: tässä; nyt!",
+      "note": "beforePunctuation, narrowBeforePunctuation, afterShortWords, beforeNumber, beforeWord and afterSymbols are all empty for fi."
+    },
+    {
+      "id": "fi-nbsp-quotes-innerspace-none",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Hän sanoi ”moi”.",
+      "out": "Hän sanoi ”moi”.",
+      "note": "nbsp.md §3.10 and §7.5: innerSpace is `none`, and in any case N8 does nothing for a pair whose open and close are the same code point."
+    },
+    {
+      "id": "fi-nbsp-prose-everything",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Hän sanoi: \"Kävelimme 5 km -- ehkä enemmän...\" vuosina 1914-1918.",
+      "out": "Hän sanoi: ”Kävelimme 5 km – ehkä enemmän…” vuosina 1914⁠–⁠1918.",
+      "note": "Real prose exercising a same-glyph quotation, a spaced en dash, an ellipsis and a number-plus-unit at once."
+    }
+  ]
+}

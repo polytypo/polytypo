@@ -1,0 +1,68 @@
+{
+  "locale": "de-CH",
+  "name": "German (Switzerland)",
+  "quotes": {
+    "primary": { "open": "«", "close": "»", "innerSpace": "none" },
+    "secondary": { "open": "‹", "close": "›", "innerSpace": "none" }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": ["z. B.", "d. h.", "u. a.", "u. U.", "m. a. W.", "m. w. H."],
+    "beforeUnits": ["%", "‰", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
+    "beforeNumber": ["Art.", "Abs.", "Ziff.", "Kap.", "S."],
+    "beforeWord": ["St."],
+    "afterSymbols": ["§", "§§"],
+    "bindInitials": true
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Schweizerische Bundeskanzlei, Schreibweisungen, Rz. 201–203: zu schreiben sind die Guillemets « » und, für eine Anführung innerhalb einer Anführung, die halben Anführungszeichen ‹ ›; die in Deutschland übliche Schreibung » « ist für amtliche Texte nicht zulässig",
+      "url": "https://www.bk.admin.ch/dam/bk/de/dokumente/sprachdienste/sprachdienst_de/schreibweisungen.pdf.download.pdf/schreibweisungen.pdf",
+      "note": "Rz. 202 regelt ausdrücklich nur das Leerzeichen VOR dem Anführungszeichen und NACH dem Schlusszeichen; ein Zwischenraum innerhalb der Guillemets wird weder gefordert noch in einem der Beispiele gesetzt («Zukunft für Schweizer Fahrende»). Daher innerSpace = none."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Schweizerische Bundeskanzlei, Schreibweisungen, Rz. 231, 237, 238: der Gedankenstrich ist der Halbgeviertstrich –; vor und nach dem Gedankenstrich bei Nachträgen und paarigen Einschüben steht ein Leerzeichen",
+      "url": "https://www.bk.admin.ch/dam/bk/de/dokumente/sprachdienste/sprachdienst_de/schreibweisungen.pdf.download.pdf/schreibweisungen.pdf",
+      "note": "Rz. 236 hält ausdrücklich fest, dass der Geviertstrich (—) nicht zulässig ist."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Schweizerische Bundeskanzlei, Schreibweisungen, Rz. 234: der Gedankenstrich als Begriffszeichen für „bis“ steht ohne Leerzeichen — „16–17 Uhr“, „die Artikel 10–12“, „die Jahre 1939–1945“",
+      "url": "https://www.bk.admin.ch/dam/bk/de/dokumente/sprachdienste/sprachdienst_de/schreibweisungen.pdf.download.pdf/schreibweisungen.pdf"
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Schweizerische Bundeskanzlei, Schreibweisungen, Rz. 251 (Festabstand hält Zusammengehöriges zusammen: Ziffer und Masseinheit, Abkürzung und Ortsname, Teile mehrgliedriger Abkürzungen, Gliederungseinheit und Ziffer — „20 km“, „St. Gallen“, „Artikel 35“), Rz. 438 (mehrgliedrige Abkürzungen: d. h. / z. B. / u. a. / u. U. / m. a. W. / m. w. H.), Rz. 549–550 (Festabstand zwischen Zahl und Einheit), Rz. 554 (Festabstand vor % und ‰)",
+      "url": "https://www.bk.admin.ch/dam/bk/de/dokumente/sprachdienste/sprachdienst_de/schreibweisungen.pdf.download.pdf/schreibweisungen.pdf",
+      "note": "bindInitials ist eine Ableitung, keine wörtliche Weisung: Rz. 251 nennt „eine Abkürzung und ein Ortsname“ (St. Gallen) und Rz. 438 die Teile mehrgliedriger Abkürzungen; die Bindung Initiale–Nachname ist dieselbe Konstruktion, wird aber in den Schreibweisungen nicht ausdrücklich erwähnt. Die Einheitenliste ist bewusst kurz und enthält keine einbuchstabigen Einheitenzeichen. Der Schweizer Verzicht auf ß (ss statt ß, Amtliches Regelwerk § 25 E2) lässt sich im Schema nicht ausdrücken und ist deshalb hier nicht abgebildet."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Schweizerische Bundeskanzlei, Schreibweisungen, Rz. 251 (Festabstand zwischen einer Gliederungseinheit eines Erlasses und der dazugehörigen Ziffer — Beispiele „Artikel 35“, „S. 17 f.“, „St. Gallen“), Rz. 438 (Entsprechendes gilt für die eingliedrige Abkürzung „St.“ für „Sankt“ in Ortsnamen: „St. Gallen“, „St. Moritz“), Rz. 439 (abschliessende Aufzählung der Begriffszeichen: Ziffern, %, ‰, Gedankenstrich, Schrägstrich, §, Währungszeichen, mathematische Zeichen, Einheitenzeichen), Rz. 440 (zwischen einem Begriffszeichen und der dazugehörigen Zahl steht ein Festabstand), Rz. 727 (in verknapptem Text werden die Gliederungseinheiten abgekürzt: „Kap., Art., Abs., Bst. (falsch: Buchst., lit.), Ziff.“), Rz. 730 (Nummerierung der Gliederungseinheiten)",
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/YVHazXZRkqKn/schreibweisungen.pdf",
+      "note": "Wortlaut im PDF selbst geprüft. Rz. 439 und Rz. 727 entscheiden die Zuordnung von „Art.“: die Aufzählung der Begriffszeichen in Rz. 439 ist abschliessend und enthält „Art.“ nicht, Rz. 727 führt „Art.“ ausdrücklich als Abkürzung einer Gliederungseinheit. „Art.“ gehört damit zu beforeNumber und nicht zu afterSymbols, wo es zuvor stand; die Bindung an die folgende Zahl folgt aus Rz. 251. Aus derselben Liste fehlt nur „Bst.“, weil ihm ein Buchstabe folgt, keine Zahl („Bst. a“). „S.“ ist mit „S. 17 f.“ in Rz. 251 wörtlich belegt. „Nr.“ wurde ersatzlos entfernt: es steht weder in Rz. 439 noch überhaupt im Sachregister (unter N nur „NGO“, „Normen“, „Null“); die einzige Fundstelle ist Rz. 431, wo „Nr. (Nummer), Tarif-Nrn.“ als Beispiel für Deklinationsendungen dient und keine Abstandsregel ausspricht. afterSymbols war damit nachweislich falsch, und für beforeNumber fehlt der Beleg — nach docs/PLAN.md §6.1 zieht das die Streichung nach sich. Zurückkommen kann „Nr.“ mit einer Lesung der DIN 5008. beforeWord enthält nur „St.“: Rz. 438 nennt genau diesen Fall wörtlich, weitere Abkürzung-plus-Wort-Bindungen sind in den Schreibweisungen nicht als geschlossene Liste geregelt („Küssnacht a. R.“ ist eine mehrgliedrige Abkürzung, kein Präfix)."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Schweizerische Bundeskanzlei, Schreibweisungen, Rz. 223 und 224: der Bindestrich wird als Ergänzungsstrich für einen eingesparten Wortteil verwendet („Papierproduktion und -handel“); mit dem geschützten Ergänzungsstrich wird verhindert, dass der Ergänzungsstrich am Zeilenende auf der oberen Zeile bleibt, während der zugehörige zweite Wortbestandteil auf die nächste Zeile rutscht",
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/YVHazXZRkqKn/schreibweisungen.pdf",
+      "note": "Beleg dafür, dass die drei Listen leer bleiben. Das Deutsche kennt keine geschlossene Liste von Morphemen mit unteilbarem Bindestrich; die Trennung am Bindestrich ist zulässig (Rz. 269–271 behandeln nur sinnentstellende Trennungen). Der einzige belegte Fall eines geschützten Bindestrichs ist der Ergänzungsstrich (Rz. 224), und der ist offen: er betrifft jedes beliebige Zweitglied nach „und -“ und lässt sich als literale Wortliste nicht abbilden."
+    }
+  ]
+}

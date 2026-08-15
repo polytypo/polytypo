@@ -1,0 +1,106 @@
+{
+  "locale": "en-US",
+  "name": "English (United States)",
+  "quotes": {
+    "primary": { "open": "“", "close": "”", "innerSpace": "none" },
+    "secondary": { "open": "‘", "close": "’", "innerSpace": "none" }
+  },
+  "dash": {
+    "parenthetical": "em-tight",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": [],
+    "beforeUnits": [
+      "%",
+      "kg",
+      "g",
+      "mg",
+      "km",
+      "m",
+      "cm",
+      "mm",
+      "mi",
+      "ft",
+      "lb",
+      "oz",
+      "L",
+      "mL",
+      "h",
+      "min",
+      "s",
+      "ms",
+      "°C",
+      "°F",
+      "kB",
+      "MB",
+      "GB",
+      "TB",
+      "kW",
+      "kWh"
+    ],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "bindInitials": true
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "The Chicago Manual of Style, 18th ed., 6.11 (quotations within quotations); CMOS Q&A, topic “Quotations”",
+      "url": "https://www.chicagomanualofstyle.org/qanda/data/faq/topics/Quotations/faq0025.html",
+      "note": "US practice: double quotation marks at the first level, single at the second. CMOS 6.11: “When single quotation marks are nested within double quotation marks, and two of the marks appear next to each other, a space between the two marks, though not strictly required, aids legibility.” That optional legibility space is a typesetting refinement and is not expressed in this file."
+    },
+    {
+      "rule": "dashes",
+      "cite": "The Chicago Manual of Style — CMOS Shop Talk, “Hyphens and Dashes: A Refresher”, 23 January 2024",
+      "url": "https://cmosshoptalk.com/2024/01/23/hyphens-and-dashes-a-refresher/",
+      "note": "Verbatim: “In Chicago style, such dashes consist of em dashes—like this—with no space before or after.” And: “When consecutive digits express a range, however, they are separated in Chicago style not by hyphens but by en dashes, as in the range 3–5.”"
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "The Chicago Manual of Style, 18th ed., ellipses (three dots)",
+      "url": "https://cmosshoptalk.com/2021/06/15/navigating-spaces-in-manuscripts-and-beyond/",
+      "note": "`abbreviatedAfterTerminal` is false: the two-dot form after `!`/`?` is a Russian convention with no counterpart in English usage. Chicago’s spaced ellipsis (. . .) is a print-typesetting variant, not a separate character sequence this spec models."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "The Chicago Manual of Style — CMOS Shop Talk, “Navigating Spaces in Manuscripts and Beyond”, 15 June 2021",
+      "url": "https://cmosshoptalk.com/2021/06/15/navigating-spaces-in-manuscripts-and-beyond/",
+      "note": "Chicago recommends a nonbreaking space “between two or more initials in a name like ‘E. B. White’” (hence bindInitials: true) and “between a numeral and an abbreviated unit of measure, as in ‘10 kg’” (hence beforeUnits)."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "BIPM, The International System of Units (SI), 9th ed. (2019), concise summary, “The language of science: using the SI to express the values of quantities”",
+      "url": "https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-concise-EN.pdf",
+      "note": "Verbatim: “A single space is always left between the number and the unit.” This is the authority for the unit list itself; Chicago is the authority for making that space non-breaking. `%` is included even though Chicago sets percentages closed up (45%): the rule only converts a space the author already typed, and a spaced `45 %` in English is a deliberate scientific-style choice worth binding."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "No normative source found for English short-word binding; list deliberately empty",
+      "note": "`afterShortWords`, `beforePunctuation` and `narrowBeforePunctuation` are empty by design. English typography has no equivalent of the Russian rule against leaving short prepositions at line end, and no English authority prescribes a space before terminal punctuation. `afterSymbols` is empty because no consulted source states that `§`/`№` bind to a following number in English."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "No English authority prescribes non-breaking hyphens for particular word forms; lists deliberately empty",
+      "note": "`prefixes`, `suffixes` and `compounds` are empty. This field exists for languages with a closed, normative set of hyphenated morphological forms (Russian кое-, -таки, из-под). English hyphenation is productive and open-ended — self-, ex-, -like, well-known and thousands more — so any list would be an invented sample, not a specification. Chicago’s hyphenation guidance (its hyphenation table) governs whether to hyphenate, not whether the resulting hyphen may break, and Chicago explicitly permits breaking at a hyphen."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "The Chicago Manual of Style — CMOS Shop Talk, “Navigating Spaces in Manuscripts and Beyond”, 15 June 2021 (exhaustive list of recommended nonbreaking spaces)",
+      "url": "https://cmosshoptalk.com/2021/06/15/navigating-spaces-in-manuscripts-and-beyond/",
+      "note": "`beforeNumber` and `beforeWord` are empty. Chicago enumerates exactly four places where it recommends a nonbreaking space — the middle dot of a spaced ellipsis, between initials in a name, between adjacent single and double quotation marks, and between a numeral and an abbreviated unit of measure. Reference abbreviations before a numeral (p. 12, fig. 3, chap. 4, vol. 2) are not among them, and no other consulted Chicago material requires the binding, so they are left out rather than inferred. `beforeWord` is empty for the same reason plus PLAN.md §7: the Mr./Dr. + name binding is an optional rule defaulting off, and no normative source requires it — locale data must not turn an opt-in preference into a default."
+    }
+  ]
+}

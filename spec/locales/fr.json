@@ -1,0 +1,75 @@
+{
+  "locale": "fr",
+  "name": "French",
+  "quotes": {
+    "primary": { "open": "«", "close": "»", "innerSpace": "nbsp" },
+    "secondary": { "open": "“", "close": "”", "innerSpace": "none" }
+  },
+  "dash": {
+    "parenthetical": "em-spaced",
+    "range": "none"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [":"],
+    "narrowBeforePunctuation": [";", "!", "?"],
+    "afterShortWords": [],
+    "abbreviations": ["p. ex."],
+    "beforeUnits": ["%", "‰", "€", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
+    "beforeNumber": ["art.", "fig."],
+    "beforeWord": ["M.", "MM.", "Mme", "Mmes", "Mlle", "Mlles"],
+    "afterSymbols": ["§"],
+    "bindInitials": true
+  },
+  "sources": [
+    {
+      "rule": "nbsp",
+      "cite": "Jacques André, Petites leçons de typographie, éd. du jobet, révision du 1er juin 2025, § 5.1.1 note 21 et § 5.2.3 : l'espace insécable employée devant les ponctuations doubles « c'est la fine des typographes, en première approximation (contre-exemple : l'espace avant le deux-points est en fait une espace normale insécable) » ; « il faut une espace fine insécable avant le point-virgule »",
+      "url": "http://jacques-andre.fr/faqtypo/lessons.pdf",
+      "note": "C'est le point qui tranche la question posée par docs/PLAN.md §7 : « ; », « ! » et « ? » prennent U+202F ; « : » prend U+00A0. La distinction est donc confirmée, et non simplement répétée. Le tableau 1 (p. 32) donne la saisie complète des signes. Recoupé avec l'article « Espace fine insécable » de la Wikipédia francophone, qui attribue la même règle au Lexique des règles typographiques en usage à l'Imprimerie nationale, 3e éd., 2002 (fine devant ; ? !, « sauf devant deux-points, en France »)."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Jacques André, Petites leçons de typographie, § 2.5 et § 5.1.3 « Autres emplois de l'espace insécable » : espace insécable entre un prénom abrégé et le nom (« N. Bourbaki »), entre une abréviation et le mot qui la suit (« Mme Hugo », « le R.P. Durand »), entre un nombre et ce qu'il quantifie (« 14 francs », « 2 € », « 98 % », « art. 237 »)",
+      "url": "http://jacques-andre.fr/faqtypo/lessons.pdf",
+      "note": "La liste beforeUnits est volontairement courte et exclut les symboles d'une seule lettre (m, g, l, s, A), qui ne peuvent pas être désambiguïsés sans contexte. La liaison « abréviation + mot suivant » (M. Dupont, Mme Hugo) n'est pas exprimable dans ce schéma : afterSymbols lie un symbole à un NOMBRE suivant, pas à un mot."
+    },
+    {
+      "rule": "quotes",
+      "cite": "Imprimerie nationale, Lexique des règles typographiques en usage à l'Imprimerie nationale, 3e éd., 2002, entrée « Guillemets » : les guillemets français « … » sont séparés du texte qu'ils encadrent par une espace insécable",
+      "url": "https://fr.wikipedia.org/wiki/Espace_fine_ins%C3%A9cable",
+      "note": "Le Lexique n'est pas consultable en ligne ; la règle a été vérifiée par recoupement de deux articles de la Wikipédia francophone qui la citent (« Espace fine insécable » : « à l'intérieur des guillemets français […] il est recommandé d'insérer des espaces insécables », attribué au Lexique 2002 ; « Ponctuation », tableau des espacements) et du tableau 1 de Jacques André, qui note une insécable après « « » et avant « » ». Désaccord assumé avec docs/PLAN.md §7, qui annonçait U+202F à l'intérieur des guillemets : la source normative dit espace insécable (U+00A0). L'usage web contemporain, et JoliTypo, emploient souvent U+202F ; le choix retenu ici est celui de la citation, pas celui de l'usage."
+    },
+    {
+      "rule": "quotes",
+      "cite": "Jacques André, Petites leçons de typographie, § 2.2 : « en français, les guillemets sont les doubles chevrons « … » et non les (double-)quotes anglaises “…” ni ‘…’ » ; les guillemets anglais “ ” servent de guillemets de second niveau",
+      "url": "http://jacques-andre.fr/faqtypo/lessons.pdf",
+      "note": "Le second niveau est le point le moins solidement établi de ce fichier : l'usage français admet aussi la répétition des chevrons ou les chevrons simples ‹ ›. Les guillemets anglais sont retenus parce qu'ils sont la solution la plus couramment attribuée au Lexique, mais cette ligne mérite d'être revue si la 3e édition papier dit autre chose."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Jacques André, Petites leçons de typographie, § 2.2 et tableau 1 (p. 32) : le tiret marquant les incises est le tiret cadratin « — », précédé et suivi d'une espace (« mmm —_mmm … mmm_— mmm »)",
+      "url": "http://jacques-andre.fr/faqtypo/lessons.pdf",
+      "note": "Le même paragraphe signale que « la tendance est d'utiliser à sa place le tiret moyen « – » ». La valeur em-spaced suit la règle citée, pas la tendance ; docs/PLAN.md §7 supposait en-spaced. Aucune valeur de plage n'est vérifiée : les exemples de l'Imprimerie nationale et de Jacques André impriment un trait d'union dans les intervalles de pages (« p. 123-125 »), et l'énumération se fait plutôt « de … à … ». Le schéma a donc reçu la valeur « none » (ne rien substituer), retenue ici tant que le point n'est pas tranché sur le Lexique papier — une citation manquante n'autorise jamais à deviner."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Jacques André, Petites leçons de typographie, § 5.1.3 « Autres emplois de l'espace insécable », liste « Coupure entre les mots » : « entre une abréviation et le mot qui la suit, exemples : “Mme_Hugo, D._Knuth, le R.P._Durand” » ; « entre un nombre et ce qu'il quantifie, par exemple : “14_francs, 2_€, 1_A, t._vii, art._237, fig._3, pages_23 à_25, 98_%” » — le caractère « _ » note l'espace insécable",
+      "url": "http://jacques-andre.fr/faqtypo/lessons.pdf",
+      "note": "Texte relu directement dans le PDF. Cette entrée lève la limitation signalée plus haut dans ce fichier (« la liaison abréviation + mot suivant n'est pas exprimable dans ce schéma ») : le schéma a depuis reçu beforeNumber et beforeWord. beforeNumber ne retient que « art. » et « fig. », cités littéralement devant un nombre ; « t. vii » est suivi d'un chiffre romain et n'a pas été retenu. beforeWord est volontairement réduit à la classe fermée des titres de civilité : la règle citée vaut pour toute abréviation, mais l'énumérer intégralement produirait des faux positifs (« etc. », « p. ex. », « cf. »). « Mme » est cité mot pour mot ; « M., MM., Mmes, Mlle, Mlles » sont les autres membres de la même classe et relèvent donc de la même règle, ce qui reste une inférence de classe et non une citation littérale. Un « M. » qui serait en réalité une initiale de prénom reçoit de toute façon l'espace insécable prescrite au § 5.1.3 pour « N. Bourbaki » : la liaison est correcte dans les deux lectures."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Jacques André, Petites leçons de typographie, tableau 1 (p. 32), ligne « trait d'union » : la saisie est « mmm-mmm », sans espace ni marque d'insécabilité, alors que le même tableau note explicitement l'insécable pour les ponctuations doubles, les guillemets et les tirets d'incise",
+      "url": "http://jacques-andre.fr/faqtypo/lessons.pdf",
+      "note": "Justification des trois listes vides. Aucune source normative consultée n'impose un trait d'union insécable pour une classe fermée de formes morphologiques françaises ; le § 5.1.3, qui énumère les cas d'insécabilité, ne mentionne aucun trait d'union. Le champ hyphen est donc sans objet en français."
+    }
+  ]
+}

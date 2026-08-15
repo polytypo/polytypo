@@ -1,0 +1,127 @@
+{
+  "locale": "fi",
+  "name": "Finnish",
+  "quotes": {
+    "primary": { "open": "”", "close": "”", "innerSpace": "none" },
+    "secondary": { "open": "’", "close": "’", "innerSpace": "none" }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": ["fil. maist."],
+    "beforeUnits": [
+      "%",
+      "‰",
+      "§",
+      "kg",
+      "g",
+      "mg",
+      "km",
+      "m",
+      "cm",
+      "mm",
+      "l",
+      "dl",
+      "cl",
+      "ml",
+      "h",
+      "min",
+      "s",
+      "ms",
+      "°C",
+      "kW",
+      "kWh"
+    ],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": ["§"],
+    "bindInitials": false
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Kotimaisten kielten keskus (Kotus), Kielitoimiston ohjepankki: “Lainausmerkit”",
+      "url": "https://kielitoimistonohjepankki.fi/ohje/lainausmerkit/",
+      "note": "Verbatim: “Suomenkielisessä tekstissä käytettävät kokolainausmerkit ovat kaarevat ”, ja ne ovat samanmuotoiset lainatun jakson alussa ja lopussa.” Both the opening and the closing mark are U+201D. The page notes that books and newspapers sometimes use angle marks (»…») as a design choice; the Kotus recommendation for Finnish text is ”…”."
+    },
+    {
+      "rule": "quotes",
+      "cite": "Kotimaisten kielten keskus (Kotus), Kielitoimiston ohjepankki: “Puolilainausmerkki”",
+      "url": "https://kielitoimistonohjepankki.fi/ohje/puolilainausmerkki/",
+      "note": "Verbatim: “Puolilainausmerkkiä käytetään myös lainausmerkkinä kokolainausmerkkien sisällä”, and “Suomenkielisissä teksteissä käytettävä puolilainausmerkki on ’, ei ‛ eikä '.” The page gives the Windows input sequence Alt+0146, which is U+2019, confirming the code point for both the opening and the closing secondary mark."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Kotimaisten kielten keskus (Kotus), Kielitoimiston ohjepankki: “Ajatusviiva virkkeen välimerkkinä”",
+      "url": "https://kielitoimistonohjepankki.fi/ohje/ajatusviiva-virkkeen-valimerkkina/",
+      "note": "Verbatim: “Tällaisen virkkeen välimerkkinä käytetyn ajatusviivan molemmin puolin tulee välilyönti.” Hence `parenthetical: en-spaced` — Finnish uses the en dash (ajatusviiva, n-viiva), not an em dash."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Kotimaisten kielten keskus (Kotus), Kielitoimiston ohjepankki: “Ajanilmaukset: aikavälit (1.1.–31.1.)”, citing standard SFS 4175",
+      "url": "https://kielitoimistonohjepankki.fi/ohje/ajanilmaukset-aikavalit-1-1-31-1/",
+      "note": "Verbatim: “Numero- ja merkkistandardi SFS 4175 suosittaa rajakohdan merkkinä lyhempää ajatusviivaa eli ns. n-viivaa”, set tight against the endpoints (ma–pe). Known exception not expressible in this schema: when the endpoints are themselves multi-word, Kotus spaces the dash (“ma 10.4. – pe 21.4.”). `range: en-tight` therefore describes the numeric case only."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Kotimaisten kielten keskus (Kotus), Kielitoimiston ohjepankki: “Kolme pistettä”",
+      "url": "https://kielitoimistonohjepankki.fi/ohje/kolme-pistetta/",
+      "note": "`abbreviatedAfterTerminal` is false. Kotus describes the mark as three dots marking an unfinished sentence, a missing element or a continuing list; the two-dot form after `!`/`?` is a Russian convention and appears in no Kotus guidance."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Kotimaisten kielten keskus (Kotus), Kielitoimiston ohjepankki: “Prosenttimerkki (%)”",
+      "url": "https://kielitoimistonohjepankki.fi/ohje/prosenttimerkki/",
+      "note": "Finnish writes a space between the numeral and the percent sign (10,5 %), unlike English, which sets it closed up. This attests membership: `%` is a Finnish unit-like sign that follows a numeral after a space, which is what `beforeUnits` expresses. `‰` is included on the same reading."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Kotimaisten kielten keskus (Kotus), Kielitoimiston ohjepankki: “Pykälät ja pykälämerkki (§)”",
+      "url": "https://kielitoimistonohjepankki.fi/ohje/pykalat-ja-pykalamerkki/",
+      "note": "Kotus gives **three** notations as alternatives, not two: `6. §` (general language, with the ordinal full stop), `§ 6`, and `6 §` (legal language, where the ordinal stop is conventionally dropped). An earlier revision of this note named only the last two and read as though Finnish never sets the sign before the number; that was wrong. A space separates the number and the sign in all three. Because Kotus attests both orders, `§` is a member of **both** lists: `beforeUnits` covers `6 §` (N5, binds to a preceding number) and `afterSymbols` covers `§ 6` (N6, binds to a following number). The two sub-rules are disjoint by their own left/right tests, so the double membership is safe rather than contradictory. The third form, `6. §`, binds under neither — N5 requires a digit immediately before the space and there is an ordinal full stop there — which is an algorithmic gap held with the spec author, not something this file can express. Contrast Finnish with Swedish, where Språkrådet’s example is `§ 7` and only the sign-first order is attested."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Oikeusministeriö, Lainkirjoittajan opas §24.4 “Merkeistä ja taivutusmuodoista lakikielessä”",
+      "url": "https://lainkirjoittaja.finlex.fi/24-lakikieli/24-4/",
+      "note": "Second source for the legal form: statutory drafting sets `2 §` and inflects it with a colon (`3–5 §:ssä`). Corroborates the number-first notation Kotus gives, and with it `§`’s membership of `beforeUnits`."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "BIPM, The International System of Units (SI), 9th ed. (2019), concise summary, “The language of science: using the SI to express the values of quantities”; Kotus, Kielitoimiston ohjepankki: “Prosenttimerkki (%)” and “Pykälät ja pykälämerkki (§)”",
+      "url": "https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-concise-EN.pdf",
+      "note": "Membership claim, per nbsp.md §2.1: these tokens are units of measurement in Finnish and are written after a numeral with a space. BIPM verbatim: “A single space is always left between the number and the unit.” Kotus supplies the Finnish-specific members that SI does not cover — the percent sign takes a space (10,5 %), unlike English, and the section sign follows the number (6 §). That is the whole of what this list can express: which tokens are units. Whether the space is then made non-breaking is N5’s mechanism, fixed for every locale by the rule and not variable per locale, so no citation is owed for it. **Correction kept on the record, because it was real:** an earlier revision of this file justified the list with the sentence “Numeron ja lyhenteen väliin tulee välilyönti”, attributed to the Kotus page on numeroiden ryhmittely. That sentence is not on that page — it came from a search-engine summary and was never checked against the source. What that page’s “Sitova välilyönti” section actually says is “Tekstinkäsittelyohjelmissa pitkät luvut saa pysymään samalla rivillä käyttämällä sitovaa eli yhdistävää välilyöntiä”, which is about holding the digit groups of one long number together (100 000) — the class nbsp.md §7.11 declines to implement — and not about a number and a following unit. The page is no longer cited here. Kielikello and the rest of the ohjepankki were searched for a Finnish number+unit line-breaking statement and none was found; SFS 4175 may contain one, but it is a paid standard whose text was not read, and it is not cited on the strength of a secondary summary."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Kotimaisten kielten keskus (Kotus), Kielitoimiston ohjepankki: “Lyhenteet: pisteelliset”",
+      "url": "https://kielitoimistonohjepankki.fi/ohje/lyhenteet-pisteelliset/",
+      "note": "Verbatim: “Yhdyssanan lyhennettyjen osien väliin ei tule välilyöntiä, toisin kuin sanaliiton osien väliin” — a compound word abbreviates closed up (sos.dem., dipl.ins.) while a word-group abbreviation keeps the space (fil. maist.). The `abbreviations` list is therefore deliberately minimal: only the one form quoted verbatim on that page is included. Kotus’s full Lyhenneluettelo contains further space-bearing academic-title abbreviations (fil. tri, valt. maist. and similar); they are omitted rather than guessed at, and should be added by whoever can transcribe that list directly. The membership claim here is precise: `fil. maist.` is **one abbreviation that contains a space**, and Kotus states its internal shape directly. A form that a source merely shows adjacent to another token would not qualify."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Kotimaisten kielten keskus (Kotus), Kielitoimiston ohjepankki: välimerkit and lyhenteet, read for membership in each remaining list",
+      "url": "https://kielitoimistonohjepankki.fi/asiasana/valimerkit/",
+      "note": "`beforePunctuation` and `narrowBeforePunctuation` are empty because Finnish sets no space before a punctuation mark — there are no members to list. `afterShortWords` is empty because Finnish has no closed class of short words that may not end a line; its function words are inflectional suffixes rather than separate particles, so the list has no candidates. `beforeWord` is empty for want of an attested membership claim: no Kotus page shows titles such as hra or prof. as forms that bind to a following name. `beforeNumber` is a genuine open question rather than a settled empty: Kotus does write s. 12 and kuva 3, which under nbsp.md §2.1 is a membership claim of the right shape, and the earlier justification for leaving it empty (that Kotus does not require the space to be non-breaking) is no longer a valid reason. It is left empty here only because populating it is a live behaviour change that belongs in its own round with N9’s false-positive surface reviewed. `bindInitials` is false, and §2.1 makes plain that this field is unciteable in principle — it expresses nothing but mechanism, and no typographic authority states it in terms of a code point. Kotus attests the space in J. K. Paasikivi and says nothing further. The value is therefore a judgement, held at false to match the same call made for en-GB, and it should be settled by the operator across all locales at once rather than per file."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Kotimaisten kielten keskus (Kotus), Kielitoimiston ohjepankki: “Yhdysmerkki eli yhdysviiva”",
+      "url": "https://kielitoimistonohjepankki.fi/ohje/yhdysmerkki-eli-yhdysviiva/",
+      "note": "`prefixes`, `suffixes` and `compounds` are empty. Kotus’s hyphen guidance is entirely about when to write a hyphen (compounds with numerals or abbreviations, identical adjoining vowels, word-group compounds such as “avaimet käteen -sopimus”), never about forbidding a line break at one. Finnish compounding is productive, so there is no closed normative list to encode — unlike Russian, where кое-, -таки and из-под are a fixed inventory. Nothing here, and no Kotus page found, prescribes U+2011."
+    }
+  ]
+}

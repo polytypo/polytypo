@@ -1,0 +1,1174 @@
+{
+  "spec": "0.1.0",
+  "locale": "sv",
+  "cases": [
+    {
+      "id": "sv-spaces-collapse-run",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Hello   world.",
+      "out": "Hello world.",
+      "note": "spaces.md §6 case 1."
+    },
+    {
+      "id": "sv-spaces-strip-before-punctuation",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Hello , world !",
+      "out": "Hello, world!",
+      "note": "spaces.md §6 case 2: `,` and `!` are in STRIP-BEFORE."
+    },
+    {
+      "id": "sv-spaces-bracket-inner",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "( ok ) and [ x ]",
+      "out": "(ok) and [x]",
+      "note": "spaces.md §6 case 3."
+    },
+    {
+      "id": "sv-spaces-gfm-checkbox",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "- [ ] buy milk",
+      "out": "- [ ] buy milk",
+      "note": "spaces.md §6 case 4: empty-bracket guard, replacement length 1 and the run is already 1."
+    },
+    {
+      "id": "sv-spaces-empty-bracket-collapse",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "(  )",
+      "out": "( )",
+      "note": "spaces.md §6 case 4b: the guard forces length 1, it does not skip."
+    },
+    {
+      "id": "sv-spaces-markdown-hard-break",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "line one  \nline two",
+      "out": "line one  \nline two",
+      "note": "spaces.md §6 case 5: the run is followed by a BREAK."
+    },
+    {
+      "id": "sv-spaces-leading-indent",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "    indented code",
+      "out": "    indented code",
+      "note": "spaces.md §6 case 6."
+    },
+    {
+      "id": "sv-spaces-nbsp-neighbour",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "5   km",
+      "out": "5  km",
+      "note": "spaces.md §6 case 7: the U+00A0 is CONTENT and bounds the run; only the U+0020 run collapses. The unit is not bound either, because nbsp N5 requires a DIGIT two positions left of the unit."
+    },
+    {
+      "id": "sv-spaces-nbsp-run-untouched",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "a  b",
+      "out": "a  b",
+      "note": "spaces.md §6 case 8: no U+0020 anywhere."
+    },
+    {
+      "id": "sv-spaces-terminal-punctuation",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Bonjour ! Ça va ?",
+      "out": "Bonjour! Ça va?",
+      "note": "spaces.md §6 case 9, transcribed verbatim. The rule is locale-independent; this locale lists nothing in nbsp.narrowBeforePunctuation, so nothing is restored."
+    },
+    {
+      "id": "sv-spaces-before-final-stop",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "See p. 12 .",
+      "out": "See p. 12.",
+      "note": "spaces.md §6 case 10: a lone dot, so the lone-dot condition (§3.4) holds and the run is deleted."
+    },
+    {
+      "id": "sv-spaces-lone-dot-condition-typed-ellipsis",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Wait ...",
+      "out": "Wait …",
+      "note": "spaces.md §6 case 10c. The dot run has length 3, so the lone-dot condition (§3.4) fails and `spaces` keeps the U+0020; `ellipsis` then collapses the run. The surviving space is DELIBERATE — a tight `Wait…` was rejected because restoring it reopens `See ../docs`. The output is a fixed point only because U+2026 was also removed from STRIP-BEFORE."
+    },
+    {
+      "id": "sv-spaces-lone-dot-condition-spaced-ellipsis",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Hello . . .",
+      "out": "Hello…",
+      "note": "spaces.md §6 case 10d, and the case worth breaking a port on. Runs are maximal IN THE INPUT ARRAY and the condition is evaluated against the input, so every dot here is a LONE dot at decision time — each is followed by a space, not by another dot — and all three spaces still strip. The dots merge to `Hello...` and `ellipsis` converts them. An implementation that applies each edit as it scans, instead of collecting edits and letting the pipeline apply them (ARCHITECTURE.md §7.1), sees a growing dot run and keeps the later spaces; it passes every other fixture and fails this one."
+    },
+    {
+      "id": "sv-spaces-break-both-sides",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "foo    \n    bar",
+      "out": "foo    \n    bar",
+      "note": "spaces.md §6 case 11."
+    },
+    {
+      "id": "sv-spaces-mixed",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Q:  why ?  Because .",
+      "out": "Q: why? Because.",
+      "note": "spaces.md §6 case 12."
+    },
+    {
+      "id": "sv-spaces-single-space-noop",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "a b",
+      "out": "a b",
+      "note": "spaces.md §4: a single space in an ordinary position is not a candidate."
+    },
+    {
+      "id": "sv-spaces-protected-spaces",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Tab\there and thin space and nbsp here",
+      "out": "Tab\there and thin space and nbsp here",
+      "note": "spaces.md §4: U+0009, U+2009 and U+00A0 are never collapsed, removed or converted."
+    },
+    {
+      "id": "sv-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Wait... what?",
+      "out": "Wait… what?",
+      "note": "ellipsis.md §6 case 1."
+    },
+    {
+      "id": "sv-ellipsis-mixed-run",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Wait…… what?",
+      "out": "Wait… what?",
+      "note": "ellipsis.md §6 case 2: a mixed/repeated DOTLIKE run normalises to one U+2026."
+    },
+    {
+      "id": "sv-ellipsis-two-dots-after-terminal",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Really?..",
+      "out": "Really?…",
+      "note": "ellipsis.md §6 case 3: abbreviatedAfterTerminal is false, so `?..` is a typing slip for `?…`."
+    },
+    {
+      "id": "sv-ellipsis-relative-path",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "../docs is one level up",
+      "out": "../docs is one level up",
+      "note": "ellipsis.md §6 case 4 / §4: a run of exactly two full stops is left alone. Written without a preceding space on purpose — see the `spaced-path` case."
+    },
+    {
+      "id": "sv-ellipsis-numeric-range",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Version 1..5",
+      "out": "Version 1..5",
+      "note": "ellipsis.md §6 case 5: left neighbour of the two-dot run is a digit."
+    },
+    {
+      "id": "sv-ellipsis-already-ellipsis",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "He left…",
+      "out": "He left…",
+      "note": "ellipsis.md §6 case 6."
+    },
+    {
+      "id": "sv-ellipsis-five-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Hmm.....",
+      "out": "Hmm…",
+      "note": "ellipsis.md §6 case 7."
+    },
+    {
+      "id": "sv-ellipsis-sentence-stops",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Yes. No.",
+      "out": "Yes. No.",
+      "note": "ellipsis.md §6 case 8: two independent runs of length 1."
+    },
+    {
+      "id": "sv-ellipsis-two-dot-leader",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Two dot leader ‥ stays",
+      "out": "Two dot leader ‥ stays",
+      "note": "ellipsis.md §4: U+2025 is in no class and is never produced or consumed."
+    },
+    {
+      "id": "sv-ellipsis-spaced-path",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "See ../docs",
+      "out": "See ../docs",
+      "note": "spaces.md §6 case 10a. Protected by the LONE-DOT CONDITION (spaces.md §3.4): `right` is U+002E but the maximal DOTLIKE run beginning there has length 2, so the replacement length is 1 and the space survives. `ellipsis` then leaves the two-dot run alone. A port that strips before any STRIP-BEFORE member without checking the run length produces `See../docs` here."
+    },
+    {
+      "id": "sv-ellipsis-spaced-two-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "e.g. ..",
+      "out": "e.g. ..",
+      "note": "spaces.md §6 case 10b, and the reason ellipsis.md §4 can promise `e.g. ..` end to end. Without the lone-dot condition `spaces` merged the run with the abbreviation dot into three U+002E, which `ellipsis` then legitimately converted to `e.g…`. Both rules were right; the condition is what makes the composition right."
+    },
+    {
+      "id": "sv-dashes-parenthetical-spaced-input",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Planen - om det finns en - misslyckas.",
+      "out": "Planen – om det finns en – misslyckas.",
+      "note": "dashes.md §3.4: en-spaced keeps the spacing and normalises the stroke."
+    },
+    {
+      "id": "sv-dashes-parenthetical-double-hyphen",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Planen--om det finns en--misslyckas.",
+      "out": "Planen – om det finns en – misslyckas.",
+      "note": "dashes.md §6 case 11 (same locale shape as de-DE): en-spaced inserts the spacing the tight input lacked."
+    },
+    {
+      "id": "sv-dashes-parenthetical-already-correct",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Planen – om det finns en – misslyckas.",
+      "out": "Planen – om det finns en – misslyckas.",
+      "note": "dashes.md §6 case 12: already the target form, byte-identical. Since the narrowing it is byte-identical for a stronger reason — the en dash is AUTHORED, so §3.2 step 2a declines the token outright rather than recomputing a replacement that happens to match. The distinction matters for a port: a token that reaches the replacement step and compares equal is not the same as a token that never reaches it, and only the second is true of every authored dash whatever the locale says."
+    },
+    {
+      "id": "sv-dashes-ranges",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "1914-1918 and pp. 34-36",
+      "out": "1914⁠–⁠1918 and pp. 34⁠–⁠36",
+      "note": "dashes.md §6 cases 3 and 13: range branch, en-tight — note that this locale's PARENTHETICAL form is en-spaced and takes no joiner, while its range form is tight and does. dashes.md §3.3.1: a TIGHT range is emitted as JOINER dash JOINER (U+2060 on each side), because UAX #14 gives U+2013 the line-break class BA and a renderer would otherwise be free to break the range after the dash. The joiner is zero-width, so this is invisible on screen and invisible in a plain diff — read spec/fixtures/.escaped/ to review it. A spaced range form is NOT bound, and the parenthetical branch never emits a joiner."
+    },
+    {
+      "id": "sv-dashes-compound-hyphens",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "A well-known e-mail address",
+      "out": "A well-known e-mail address",
+      "note": "dashes.md §6 case 4: guard P1."
+    },
+    {
+      "id": "sv-dashes-covid-and-iso",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "COVID-19 and ISO 8859-1",
+      "out": "COVID-19 and ISO 8859-1",
+      "note": "dashes.md §6 case 5."
+    },
+    {
+      "id": "sv-dashes-iso-date-and-isbn",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Released 2026-08-15, ISBN 978-3-16-148410-0",
+      "out": "Released 2026-08-15, ISBN 978-3-16-148410-0",
+      "note": "dashes.md §6 case 6."
+    },
+    {
+      "id": "sv-dashes-phone-number",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Call 212-555-1234",
+      "out": "Call 212-555-1234",
+      "note": "dashes.md §6 case 7."
+    },
+    {
+      "id": "sv-dashes-cli-flag",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "run --force to override",
+      "out": "run --force to override",
+      "note": "dashes.md §6 case 8."
+    },
+    {
+      "id": "sv-dashes-list-item",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "- first item",
+      "out": "- first item",
+      "note": "dashes.md §6 case 9."
+    },
+    {
+      "id": "sv-dashes-descending-score",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Scores: 20-10",
+      "out": "Scores: 20-10",
+      "note": "dashes.md §6 case 10: guard G5."
+    },
+    {
+      "id": "sv-dashes-dash-space-dash",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a- - a",
+      "out": "a- - a",
+      "note": "dashes.md §6 case 19, idempotency defect (b)."
+    },
+    {
+      "id": "sv-dashes-spaced-dash-pair",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a - - b",
+      "out": "a - - b",
+      "note": "dashes.md §6 case 21."
+    },
+    {
+      "id": "sv-dashes-cluster-multi-run",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "1914-1918--annexation",
+      "out": "1914-1918--annexation",
+      "note": "dashes.md §6 case 20."
+    },
+    {
+      "id": "sv-dashes-t1-spacing-transition",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a–1 - 1",
+      "out": "a–1 - 1",
+      "note": "dashes.md §6 case 24, idempotency defect (c). §5.2 names this locale explicitly: every locale whose parenthetical is -spaced and whose range is not `none` reproduced it. Guard T1 (§3.2 step 8) makes the tight `–` inert at distance 2 — and since the narrowing the authored-dash guard at step 2a declines it even earlier. §5.3a notes that step 2a cost defect (c) its original witness; T1 is kept because a hyphen-typed token can still reach the transition."
+    },
+    {
+      "id": "sv-dashes-t1-tight-sibling",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a–1-1",
+      "out": "a–1-1",
+      "note": "dashes.md §6 case 26: the tight sibling, guard T1 firing at distance 1 — and also one cluster with two dash runs, and since the narrowing an authored dash declined at step 2a. Three independent guards now hold; the case is retained because a port may implement any one of them and must still produce this output."
+    },
+    {
+      "id": "sv-dashes-t2-before-full-stop",
+      "rule": "dashes",
+      "mode": "text",
+      "in": ".--.",
+      "out": ".--.",
+      "note": "dashes.md §6 case 28, composition defect family 1: guard T2 declines because cp[R] is U+002E, a position `spaces` deletes a U+0020 from."
+    },
+    {
+      "id": "sv-dashes-t2-after-open-bracket",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "(--a",
+      "out": "(--a",
+      "note": "dashes.md §6 case 30: guard T2 on the left."
+    },
+    {
+      "id": "sv-dashes-t2-before-close-bracket",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a--)",
+      "out": "a--)",
+      "note": "dashes.md §6 case 31: guard T2 on the right."
+    },
+    {
+      "id": "sv-dashes-authored-em-dash-kept",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "dokument — PDF-filer — och du",
+      "out": "dokument — PDF-filer — och du",
+      "note": "dashes.md §6 case 41's shape in an `en-spaced` locale: an authored em dash survives untouched even though Språkrådet's tankstreck is the en dash. What the locale governs is what the author typed as a hyphen — see this file's parenthetical cases, which still convert."
+    },
+    {
+      "id": "sv-dashes-mixed-run-declined",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a-–b",
+      "out": "a-–b",
+      "note": "dashes.md §6 case 42: the authored-dash test is on the RUN, not on a single code point. The run `-–` contains a U+2013, so the whole token is declined — a port that tests only cp[s] converts the hyphen and produces a two-dash run with a different verdict on the next pass."
+    },
+    {
+      "id": "sv-dashes-authored-range-unbound",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "1914–1918",
+      "out": "1914–1918",
+      "note": "dashes.md §6 case 43: an AUTHORED range gets NO joiners. The general principle, which is worth carrying into any new rule: THIS RULE NEVER MAKES AN EDIT WHOSE ENTIRE CONTENT IS INVISIBLE. A joiner may ride along with a conversion the author asked for, but it must never be the only thing an edit does — an invisible-only edit to already-correct text cannot be reviewed by hand at all, which is exactly what the M4 gate is."
+    },
+    {
+      "id": "sv-dashes-hyphen-range-bound",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "1914-1918",
+      "out": "1914⁠–⁠1918",
+      "note": "dashes.md §6 case 44, the pair to the previous case. A hyphen-typed range still converts AND still binds, because the joiners ride along with a visible conversion. The two outputs are visually identical yet only one may break across lines — §7.14 calls this the least comfortable consequence of the narrowing and the one most likely to be reported as a bug, so it is pinned in the suite rather than left to be discovered."
+    },
+    {
+      "id": "sv-dashes-range-one-two-digits",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Tar 5-10 dagar",
+      "out": "Tar 5⁠–⁠10 dagar",
+      "note": "dashes.md §6 case 3a: G4's (1,2) branch — Lrun is one digit, Rrun is two digits with no leading zero. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port."
+    },
+    {
+      "id": "sv-dashes-range-nine-ten",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "i åldern 9-10 år",
+      "out": "i åldern 9⁠–⁠10 år",
+      "note": "dashes.md §6 case 3b: the largest one-digit run against the smallest two-digit run, the tightest point of the (1,2) branch. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port."
+    },
+    {
+      "id": "sv-dashes-range-one-twelve",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "kapitlen 1-12",
+      "out": "kapitlen 1⁠–⁠12",
+      "note": "dashes.md §6 case 3c: (1,2). A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port."
+    },
+    {
+      "id": "sv-dashes-range-zero-sixty",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "0-60 på sex sekunder",
+      "out": "0⁠–⁠60 på sex sekunder",
+      "note": "dashes.md §6 case 3d: Lrun may be `0` — the leading-zero clause constrains Rrun only. `before` is NONE here, so G1 and G3 pass. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port."
+    },
+    {
+      "id": "sv-dashes-range-two-one-digits-rejected",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "vann 10-7",
+      "out": "vann 10-7",
+      "note": "dashes.md §6 case 3e: (2,1). G4's new branch is DIRECTIONAL and does not admit it — G4 gets there before G5. A port that reads the branch as \"small magnitudes are fine\" and also allows (2,1) breaks G5 without touching it: G5's left-to-right comparison would conclude \"10\" < \"7\" because '1' < '7', and nothing in G5 would look wrong (dashes.md §3.3, G4)."
+    },
+    {
+      "id": "sv-dashes-range-leading-zero-rejected",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "kod 9-05",
+      "out": "kod 9-05",
+      "note": "dashes.md §6 case 3f: (1,2) but Rrun begins with U+0030. This is the pair G5 could not have caught — `05` has the value 5, so the pair is descending, and G5 is specified only for equal-length runs. The leading-zero clause is what keeps G5 vacuous in the new branch."
+    },
+    {
+      "id": "sv-dashes-range-phone-seven-digits",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Ring 555-1234",
+      "out": "Ring 555-1234",
+      "note": "dashes.md §6 case 3g: (3,4), neither branch. The phone-number case G4 exists for."
+    },
+    {
+      "id": "sv-dashes-range-one-three-digits-rejected",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Ring 1-800 nu",
+      "out": "Ring 1-800 nu",
+      "note": "dashes.md §6 case 3h: (1,3). The new branch requires length(Rrun) = 2 exactly, so a toll-free number is still protected."
+    },
+    {
+      "id": "sv-dashes-range-abbreviated-years-rejected",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "säsongen 2020-24",
+      "out": "säsongen 2020-24",
+      "note": "dashes.md §6 case 3i: (4,2). The abbreviated year range remains a recorded miss (dashes.md §7.3); the widening is directional and does not reach it."
+    },
+    {
+      "id": "sv-dashes-range-compound-label-known-wrong",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Figur 5-10",
+      "out": "Figur 5⁠–⁠10",
+      "note": "PINNED AS KNOWN-WRONG, dashes.md §6 case 3j and §7.11. A compound label means \"chapter 5, figure 10\" — it is not a range — and converting the hyphen to an en dash is incorrect. It is asserted here deliberately so the exposure is visible in the conformance suite rather than discovered in someone's content. §7.11 records that the exposure is pre-existing rather than introduced: `Figure 3-7` is (1,1) and has converted since the first version of this rule; the (1,2) branch widens it to `Figure 5-10`. Separating a label from a range needs the preceding noun (Figure, Table, Section), an open-ended per-locale word list the schema deliberately does not carry. Same standing as the `rock 'n' roll` quotes cases."
+    },
+    {
+      "id": "sv-hyphen-empty-lists-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "A well-known e-mail address, COVID-19, Jean-Luc",
+      "out": "A well-known e-mail address, COVID-19, Jean-Luc",
+      "note": "hyphen.md §6 case 13: this locale's prefixes/suffixes/compounds are all empty, so the rule is a provable total no-op. A port that implements it anyway must fail here."
+    },
+    {
+      "id": "sv-hyphen-empty-lists-prose",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Det här är en helt vanlig svensk mening.",
+      "out": "Det här är en helt vanlig svensk mening.",
+      "note": "hyphen.md §6 case 14 / §2: with three empty lists the rule emits nothing for any input."
+    },
+    {
+      "id": "sv-hyphen-existing-nbhy-roundtrip",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "A well‑known e‑mail address",
+      "out": "A well‑known e‑mail address",
+      "note": "hyphen.md §5: an author-written U+2011 is never examined and round-trips byte-identically."
+    },
+    {
+      "id": "sv-hyphen-inert-dash-family",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "soft­hyphen, minus −5, figure‒dash, bar―here",
+      "out": "soft­hyphen, minus −5, figure‒dash, bar―here",
+      "note": "hyphen.md §4 and dashes.md §3.1: U+00AD, U+2212, U+2012 and U+2015 are never read and never produced."
+    },
+    {
+      "id": "sv-quotes-basic",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sa \"hej\" och gick.",
+      "out": "Han sa ”hej” och gick.",
+      "note": "Språkrådet: Swedish quotation marks have the same shape at the beginning and the end, U+201D on both sides. The rule knew which mark was which from the pairing, not from the glyph."
+    },
+    {
+      "id": "sv-quotes-roundtrip-same-glyph",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sa ”hej” och gick.",
+      "out": "Han sa ”hej” och gick.",
+      "note": "quotes.md §6 case 10, Swedish: the previous case's output re-processed. No STRAIGHT marks remain. This is the case a flip-flop state machine gets wrong."
+    },
+    {
+      "id": "sv-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Han sa 'hej'\", sa jag.",
+      "out": "”Han sa ’hej’”, sa jag.",
+      "note": "quotes.md §6 case 11, Swedish: depth 2 → secondary (U+2019 on both sides). The trailing `'` and `\"` are of different kinds, so the pass 1 veto does not apply."
+    },
+    {
+      "id": "sv-quotes-nested-roundtrip",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "”Han sa ’hej’”, sa jag.",
+      "out": "”Han sa ’hej’”, sa jag.",
+      "note": "The nested same-glyph output is a fixed point."
+    },
+    {
+      "id": "sv-quotes-nesting-with-question",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Hon frågade: 'vad nu?'\"",
+      "out": "”Hon frågade: ’vad nu?’”",
+      "note": "Nesting where both closers stack up at the end of the text unit."
+    },
+    {
+      "id": "sv-quotes-unbalanced-opener",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han började \"citatet men slöt det aldrig.",
+      "out": "Han började \"citatet men slöt det aldrig.",
+      "note": "quotes.md §3.6: an unmatchable opening mark stays U+0022 rather than being guessed at."
+    },
+    {
+      "id": "sv-quotes-unbalanced-closer",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han lämnade rummet\" utan att öppna ett citat.",
+      "out": "Han lämnade rummet\" utan att öppna ett citat.",
+      "note": "quotes.md §3.6: a closing mark with nothing open."
+    },
+    {
+      "id": "sv-quotes-unbalanced-mixed",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sa \"hej. Han sa \"hejdå.\"",
+      "out": "Han sa \"hej. Han sa ”hejdå.”",
+      "note": "quotes.md §6 case 4 in a same-glyph locale: the resolved pair is at depth 1, because §3.4 counts enclosing pairs rather than stack height."
+    },
+    {
+      "id": "sv-quotes-adjacent-to-punctuation",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Hej\", sa han, \"hejdå\".",
+      "out": "”Hej”, sa han, ”hejdå”.",
+      "note": "A quotation adjacent to punctuation: `,` and `.` are in CLOSEISH, so both closing marks are canClose."
+    },
+    {
+      "id": "sv-quotes-terminal-inside-quotation",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Hej!\" ropade han.",
+      "out": "”Hej!” ropade han.",
+      "note": "The closing mark's left neighbour is `!`."
+    },
+    {
+      "id": "sv-quotes-two-quotations",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sa ”hej” och ”hejdå”.",
+      "out": "Han sa ”hej” och ”hejdå”.",
+      "note": "Two already-correct same-glyph quotations, byte-identical."
+    },
+    {
+      "id": "sv-quotes-foot-and-inch",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "He is 6' 2\" tall.",
+      "out": "He is 6' 2\" tall.",
+      "note": "quotes.md §6 case 6 / §4."
+    },
+    {
+      "id": "sv-quotes-doubled-single",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Bokstaven ''",
+      "out": "Bokstaven ''",
+      "note": "quotes.md §6 case 7."
+    },
+    {
+      "id": "sv-quotes-veto-witness",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"\"\"a\"\"",
+      "out": "\"\"\"a\"\"",
+      "note": "quotes.md §6 case 7b, the §5.4 witness."
+    },
+    {
+      "id": "sv-quotes-veto-inside-pair",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"a \"\" b\"",
+      "out": "”a \"\" b”",
+      "note": "quotes.md §6 case 7c."
+    },
+    {
+      "id": "sv-quotes-existing-curly-ignored",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "“Redan böjda,” sa han, och \"detta också.\"",
+      "out": "“Redan böjda,” sa han, och ”detta också.”",
+      "note": "quotes.md §3.8: Språkrådet says to use Swedish quotation marks even when quoting another language, but rewriting an existing “…” pair is a translation task this rule deliberately declines."
+    },
+    {
+      "id": "sv-quotes-rock-n-roll",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "rock 'n' roll",
+      "out": "rock ”n” roll",
+      "note": "quotes.md §7.1, a known defect: the elision marks pair at depth 1 and take the Swedish primary glyphs."
+    },
+    {
+      "id": "sv-quotes-already-correct",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "”Ja”, sa hon – åren 1914⁠–⁠1918, ungefär 5 km.",
+      "out": "”Ja”, sa hon – åren 1914⁠–⁠1918, ungefär 5 km.",
+      "note": "Round-trip: already-correct Swedish text comes out byte-identical, including the two U+2060 joiners around the tight range (dashes.md §3.3.1)."
+    },
+    {
+      "id": "sv-apostrophe-contraction",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "don't",
+      "out": "don’t",
+      "note": "apostrophe.md §6 case 1: letters on both sides."
+    },
+    {
+      "id": "sv-apostrophe-elision",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "l'été",
+      "out": "l’été",
+      "note": "apostrophe.md §6 case 2."
+    },
+    {
+      "id": "sv-apostrophe-possessive-plural",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "the dogs' bowls",
+      "out": "the dogs’ bowls",
+      "note": "apostrophe.md §6 case 3: `quotes` leaves the mark unmatched, then case 3 converts it."
+    },
+    {
+      "id": "sv-apostrophe-decade-elision",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Back in the '90s",
+      "out": "Back in the ’90s",
+      "note": "apostrophe.md §6 case 4: U+2019, never U+2018."
+    },
+    {
+      "id": "sv-apostrophe-leading-elision",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "'Tis the season",
+      "out": "’Tis the season",
+      "note": "apostrophe.md §6 case 5."
+    },
+    {
+      "id": "sv-apostrophe-foot-and-inch",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "He is 6' 2\" tall.",
+      "out": "He is 6' 2\" tall.",
+      "note": "apostrophe.md §6 case 6 and quotes.md §4: the prime guard keeps the foot mark, and the inch mark is an unmatched quote candidate."
+    },
+    {
+      "id": "sv-apostrophe-feet-inches-tight",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "6'2\"",
+      "out": "6'2\"",
+      "note": "apostrophe.md §6 case 7: digit left, digit right → prime guard."
+    },
+    {
+      "id": "sv-apostrophe-isolated-mark",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "a ' b",
+      "out": "a ' b",
+      "note": "apostrophe.md §6 case 9 and §7.4: an isolated straight mark survives into the output on purpose."
+    },
+    {
+      "id": "sv-apostrophe-doubled-mark",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "dogs''",
+      "out": "dogs''",
+      "note": "apostrophe.md §6 case 12: neither mark has the neighbour class any converting case requires; `quotes` vetoed both in pass 1."
+    },
+    {
+      "id": "sv-apostrophe-two-medial",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "O'Brien's",
+      "out": "O’Brien’s",
+      "note": "apostrophe.md §6 case 13."
+    },
+    {
+      "id": "sv-apostrophe-three-medial",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Ma'am, it's 5 o'clock",
+      "out": "Ma’am, it’s 5 o’clock",
+      "note": "apostrophe.md §6 case 14."
+    },
+    {
+      "id": "sv-apostrophe-digit-then-letter",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "The 1990's were loud",
+      "out": "The 1990’s were loud",
+      "note": "apostrophe.md §6 case 8: the prime guard does not fire because a letter follows."
+    },
+    {
+      "id": "sv-apostrophe-already-curly",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "“He said ’tis so,” she noted.",
+      "out": "“He said ’tis so,” she noted.",
+      "note": "apostrophe.md §6 case 10: no U+0027 remains, and existing curly glyphs are not candidates for `quotes` either."
+    },
+    {
+      "id": "sv-apostrophe-modifier-letters-kept",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Hawai'i, ʼokina ʼ and ʼ kept",
+      "out": "Hawai’i, ʼokina ʼ and ʼ kept",
+      "note": "apostrophe.md §4 and §7.5: U+02BC is a letter in several orthographies and is never converted; the U+0027 in `Hawai'i` is converted by case 2, which is the documented wrong-but-conventional behaviour."
+    },
+    {
+      "id": "sv-apostrophe-backtick-and-acute",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "The ``LaTeX'' idiom and a ´mark´.",
+      "out": "The ``LaTeX'' idiom and a ´mark´.",
+      "note": "apostrophe.md §4 / quotes.md §4: U+0060 and U+00B4 are not candidates, and the LaTeX `''` idiom is vetoed by the same-kind adjacency rule."
+    },
+    {
+      "id": "sv-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026 Iurii Rogulia",
+      "out": "Copyright © 2026 Iurii Rogulia",
+      "note": "symbols.md §6 case 1."
+    },
+    {
+      "id": "sv-symbols-tm-and-registered",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Acme(tm) and Acme (R)",
+      "out": "Acme™ and Acme ®",
+      "note": "symbols.md §6 case 2: the (tm) rows are exempt from guard S1."
+    },
+    {
+      "id": "sv-symbols-s1-asymmetry",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "f(c) and f(tm)",
+      "out": "f(c) and f™",
+      "note": "symbols.md §6 case 2b: S1 applies to the (c)/(r) rows only. `f(tm)` becoming `f™` is deliberate."
+    },
+    {
+      "id": "sv-symbols-optional-first-letter",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "The (r)evolution will not be televised",
+      "out": "The (r)evolution will not be televised",
+      "note": "symbols.md §6 case 3: guard S2."
+    },
+    {
+      "id": "sv-symbols-call-position",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "f(c) returns c",
+      "out": "f(c) returns c",
+      "note": "symbols.md §6 case 4: guard S1."
+    },
+    {
+      "id": "sv-symbols-nesting",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "((c))",
+      "out": "((c))",
+      "note": "symbols.md §6 case 11: guard S3."
+    },
+    {
+      "id": "sv-symbols-adjacent-signs",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "(c)(r)",
+      "out": "©(r)",
+      "note": "symbols.md §5: S1 lists U+00A9/U+00AE/U+2122 so that this converges in one run rather than two."
+    },
+    {
+      "id": "sv-symbols-multiplication",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "A 3x5 card, 10 x 20 grid",
+      "out": "A 3×5 card, 10 × 20 grid",
+      "note": "symbols.md §6 case 5: the tight and the symmetric-spaced form in one string. The trailing word is deliberately not unit-like — §6 now requires each row to exercise only the rule it documents, so this case asserts `symbols` and nothing else."
+    },
+    {
+      "id": "sv-symbols-multiplication-with-unit",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "A 3x5 card, 10 x 20 cm",
+      "out": "A 3×5 card, 10 × 20 cm",
+      "note": "PIPELINE INTERACTION, not a §6 row: the earlier wording of case 5 ended in `cm`. The U+00D7 conversions come from `symbols`, but the U+00A0 before `cm` comes from `nbsp` (order 70) binding a beforeUnits entry to the preceding number. Kept as a separate case because the `symbols` + `nbsp.beforeUnits` interaction is real and is covered nowhere else; a port whose `symbols` is correct but whose N5 boundary test is not will pass the row above and fail this one."
+    },
+    {
+      "id": "sv-symbols-hexadecimal",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Colour 0x1F, mask 0xFF, offset 0x10",
+      "out": "Colour 0x1F, mask 0xFF, offset 0x10",
+      "note": "symbols.md §6 case 6: guards M3 and M4."
+    },
+    {
+      "id": "sv-symbols-resolution",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Resolution 1920x1080",
+      "out": "Resolution 1920×1080",
+      "note": "symbols.md §6 case 7."
+    },
+    {
+      "id": "sv-symbols-variable-x",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Let x = 5 and solve for x",
+      "out": "Let x = 5 and solve for x",
+      "note": "symbols.md §6 case 8: no digit neighbour."
+    },
+    {
+      "id": "sv-symbols-chain",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "A 2x3x4 box",
+      "out": "A 2×3×4 box",
+      "note": "symbols.md §6 case 5e: the Latin chain, both links converted in ONE PASS. The branch is a scan of a whole chain `DIGIT+ (X DIGIT+)+` (§3.3), not a test on one letter between two numbers, and the former guard M5 was REMOVED rather than extended (§3.3 step 7). A pairwise implementation converts one operator per pass — `2×3x4`, then `2×3×4` — which is the exact non-idempotency §7.10 measures in Lebedev's Typograf on `5х4х3`. That failure is invisible to a test that runs the transform only once, which is why the runner also asserts transform(out) == out."
+    },
+    {
+      "id": "sv-symbols-chain-cyrillic",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "5х4х3",
+      "out": "5×4×3",
+      "note": "symbols.md §6 case 5d: an all-Cyrillic chain (U+0445), both links converted in one pass. This is the literal input §7.10 records Typograf turning into `5×4х3` on the first pass and `5×4×3` only on the second — a document that never converges under repeated processing."
+    },
+    {
+      "id": "sv-symbols-chain-mixed-alphabets",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "5x4х3",
+      "out": "5×4×3",
+      "note": "symbols.md §6 case 5f: one Latin `x`, one Cyrillic `х`, ONE chain, both links convert. The four MUL-LETTER members are interchangeable and no guard distinguishes them. Declining on mixture would make behaviour depend on which keyboard layout the author's finger slipped to — undiscoverable from the output, because the two letters are visually identical in every font."
+    },
+    {
+      "id": "sv-symbols-chain-three-links",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Стол 120х80х75",
+      "out": "Стол 120×80×75",
+      "note": "symbols.md §6 case 5g: a three-link chain over multi-digit runs. M2 and M3 apply to the OUTER boundaries of the chain, not per link — in the pairwise form they applied per pair, and the letter on the far side of a middle digit run was another MUL-LETTER, which is what made a chain reject itself."
+    },
+    {
+      "id": "sv-symbols-chain-spaced",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "10 x 20 x 30",
+      "out": "10 × 20 × 30",
+      "note": "symbols.md §6 case 5h: a spaced chain. `sp = 1` uniformly and each side keeps its own space code point."
+    },
+    {
+      "id": "sv-symbols-chain-mixed-spacing-declined",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "5x4 x 3",
+      "out": "5x4 x 3",
+      "note": "symbols.md §6 case 5i: guard M1 requires the spacing to be symmetric AND uniform across every link. Link 1 is tight, link 2 is spaced, so the chain is ambiguous input and is declined WHOLE rather than half-converted."
+    },
+    {
+      "id": "sv-symbols-chain-resumes-after-sign",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "5×4x3",
+      "out": "5×4×3",
+      "note": "symbols.md §6 case 5j: U+00D7 is not in MUL-LETTER, so an already-converted operator ENDS a chain. This reads as the digit run `5`, then the sign, then the fresh chain `4x3`, which converts. Sub-chains do not need to be joined."
+    },
+    {
+      "id": "sv-symbols-cyrillic-single-link",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Размер 5х4",
+      "out": "Размер 5×4",
+      "note": "symbols.md §6 case 5a: Cyrillic U+0445 between two ASCII digits. Identical in appearance to the Latin form and INVISIBLE IN A DIFF, so the M4 dogfooding review cannot catch it by eye — which is §3.1's argument for doing the conversion by algorithm at all."
+    },
+    {
+      "id": "sv-symbols-cyrillic-capital",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Размер 5Х4",
+      "out": "Размер 5×4",
+      "note": "symbols.md §6 case 5b: Cyrillic capital U+0425. MUL-LETTER is exactly four enumerated code points and is never case-folded (ARCHITECTURE.md §4.4)."
+    },
+    {
+      "id": "sv-symbols-cyrillic-letter-neighbours",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "хорошо и их",
+      "out": "хорошо и их",
+      "note": "symbols.md §6 case 5c: Cyrillic `х` as an ordinary letter. The chain scan starts only at a digit run, so a `х` with letter neighbours is never even examined. This is the case that makes the unconditional Cyrillic addition safe: the risk is carried by the NUMERIC context, not by the language, so the rule needs no locale data."
+    },
+    {
+      "id": "sv-symbols-plus-minus-tight",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Tolerance +/-5 points",
+      "out": "Tolerance ±5 points",
+      "note": "symbols.md §6 case 5k: the literal three code points U+002B U+002F U+002D with an immediately following digit. `points` is deliberately not a beforeUnits entry, so this row asserts `symbols` alone."
+    },
+    {
+      "id": "sv-symbols-plus-minus-spaced",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Tolerance +/- 5 points",
+      "out": "Tolerance ± 5 points",
+      "note": "symbols.md §6 case 5l: one intervening U+0020 is allowed, and the space itself is left exactly as it was — the edit replaces only the three code points of `+/-`."
+    },
+    {
+      "id": "sv-symbols-plus-minus-with-unit",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Tolerance +/-5 mm",
+      "out": "Tolerance ±5 mm",
+      "note": "PIPELINE INTERACTION, not a §6 row: the earlier wording of case 5k ended in `mm`. The U+00B1 comes from `symbols`; the U+00A0 comes from `nbsp` N5 binding `mm`, a beforeUnits entry, to the digit run before it. Kept so the interaction stays covered now that the normative row no longer carries a unit."
+    },
+    {
+      "id": "sv-symbols-plus-minus-spaced-with-unit",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Tolerance +/- 5 mm",
+      "out": "Tolerance ± 5 mm",
+      "note": "PIPELINE INTERACTION, not a §6 row: the earlier wording of case 5l. Note that the U+0020 between `±` and `5` survives while the one between `5` and `mm` becomes U+00A0 — the first is inside the plus-minus edit's neighbourhood and untouched by both rules, the second is N5's."
+    },
+    {
+      "id": "sv-symbols-plus-minus-after-digit",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Погрешность 5+/-3",
+      "out": "Погрешность 5±3",
+      "note": "symbols.md §6 case 5m: a digit on the left is not an obstacle — guard F1 rejects only U+005B."
+    },
+    {
+      "id": "sv-symbols-plus-minus-prose-declined",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "lines marked +/- were edited",
+      "out": "lines marked +/- were edited",
+      "note": "symbols.md §6 case 5n: guard F2 requires a following digit (modulo one space). Prose ABOUT the characters is not converted."
+    },
+    {
+      "id": "sv-symbols-plus-minus-character-class-declined",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "match [+/-] once",
+      "out": "match [+/-] once",
+      "note": "symbols.md §6 case 5o: guard F1. `[+/-]` is a regular-expression character class, the one code-like context that survives into prose about code — and in `text` mode nothing is skipped."
+    },
+    {
+      "id": "sv-symbols-plus-minus-bare-declined",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Range 5+-3",
+      "out": "Range 5+-3",
+      "note": "symbols.md §6 case 5p: bare `+-` is NEVER converted, in any context. Only `+/-` is unambiguous; `+-` occurs in diff listings, ASCII table borders, regex classes and as two adjacent operators in source. §7.11 exists so this is not added later \"for symmetry\"."
+    },
+    {
+      "id": "sv-symbols-asymmetric-x",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Version 1080x",
+      "out": "Version 1080x",
+      "note": "symbols.md §6 case 12: guard M1."
+    },
+    {
+      "id": "sv-symbols-already-signs",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "© 2026, ® and ™",
+      "out": "© 2026, ® and ™",
+      "note": "symbols.md §6 case 13: existing signs are not candidates."
+    },
+    {
+      "id": "sv-symbols-nbsp-preserved-around-times",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "10 × 20",
+      "out": "10 × 20",
+      "note": "symbols.md §6 case 10: already converted, and each side keeps the exact space code point it had."
+    },
+    {
+      "id": "sv-symbols-parenthesised-letters",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "(s)he chose (a) and (e)",
+      "out": "(s)he chose (a) and (e)",
+      "note": "symbols.md §4: the trademark table is exhaustive."
+    },
+    {
+      "id": "sv-symbols-ascii-art",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Smile (x) and (^_^)",
+      "out": "Smile (x) and (^_^)",
+      "note": "symbols.md §4: no table entry and no numeral context."
+    },
+    {
+      "id": "sv-nbsp-unit",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Vi gick 5 km i dag",
+      "out": "Vi gick 5 km i dag",
+      "note": "nbsp N5, cited to Språkrådet §4.3.4 and BIPM."
+    },
+    {
+      "id": "sv-nbsp-unit-no-space",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Vi gick 5km i dag",
+      "out": "Vi gick 5km i dag",
+      "note": "N5 converts, never inserts."
+    },
+    {
+      "id": "sv-nbsp-unit-already-bound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Vi gick 5 km i dag",
+      "out": "Vi gick 5 km i dag",
+      "note": "Already-correct branch."
+    },
+    {
+      "id": "sv-nbsp-currency-unit",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Det kostar 100 kr",
+      "out": "Det kostar 100 kr",
+      "note": "Språkrådet lists `kr` among the Swedish abbreviations that behave like units, so it binds to the preceding number."
+    },
+    {
+      "id": "sv-nbsp-percent",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Priset steg 5 %",
+      "out": "Priset steg 5 %",
+      "note": "Språkrådet §1.16: `%` is written with a space, and fast mellanslag keeps the pair on one line."
+    },
+    {
+      "id": "sv-nbsp-section-sign",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "se § 7 i lagen",
+      "out": "se § 7 i lagen",
+      "note": "THE fi/sv DIVERGENCE ON `§`: Språkrådet's example is `§ 7`, sign before number, so `§` is in sv's afterSymbols (N6). Finnish writes `6 §` and puts the same character in beforeUnits (N5)."
+    },
+    {
+      "id": "sv-nbsp-section-sign-already-bound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "se § 7 i lagen",
+      "out": "se § 7 i lagen",
+      "note": "N6's already-correct branch."
+    },
+    {
+      "id": "sv-nbsp-initials-not-bound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "A. B. Nilsson skrev den",
+      "out": "A. B. Nilsson skrev den",
+      "note": "bindInitials is false for sv: §1.16 recommends fast mellanslag only for signs and digits, not for personal initials."
+    },
+    {
+      "id": "sv-nbsp-formula-not-a-unit",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "H2 O är inte ett värde",
+      "out": "H2 O är inte ett värde",
+      "note": "nbsp.md §6 case 18."
+    },
+    {
+      "id": "sv-nbsp-empty-lists",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Verkligen? Ja: här; nu!",
+      "out": "Verkligen? Ja: här; nu!",
+      "note": "beforePunctuation, narrowBeforePunctuation, afterShortWords, abbreviations, beforeNumber and beforeWord are all empty for sv — Swedish multi-word abbreviations are written closed up (t.ex., bl.a.), so there is no internal space to bind."
+    },
+    {
+      "id": "sv-nbsp-closed-abbreviation",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "t.ex. bl.a. och m.m.",
+      "out": "t.ex. bl.a. och m.m.",
+      "note": "Språkrådet §4.5: the current recommendation writes these closed up, so `abbreviations` is empty and nothing binds."
+    },
+    {
+      "id": "sv-nbsp-quotes-innerspace-none",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Han sa ”hej”.",
+      "out": "Han sa ”hej”.",
+      "note": "nbsp.md §3.10 and §7.5: innerSpace is `none`, and N8 does nothing for a pair whose open and close are the same code point."
+    },
+    {
+      "id": "sv-nbsp-prose-everything",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Hon sa: \"Vi gick 5 km -- kanske mer...\" åren 1914-1918.",
+      "out": "Hon sa: ”Vi gick 5 km – kanske mer…” åren 1914⁠–⁠1918.",
+      "note": "Real prose exercising a same-glyph quotation, a spaced en dash, an ellipsis and a number-plus-unit at once."
+    }
+  ]
+}

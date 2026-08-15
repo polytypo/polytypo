@@ -1,0 +1,89 @@
+{
+  "locale": "el",
+  "name": "Greek",
+  "quotes": {
+    "primary": {
+      "open": "«",
+      "close": "»",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "“",
+      "close": "”",
+      "innerSpace": "none"
+    }
+  },
+  "dash": {
+    "parenthetical": "none",
+    "range": "none"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": [],
+    "beforeUnits": [],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "bindInitials": false
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Υπηρεσία Εκδόσεων της Ευρωπαϊκής Ένωσης, Διοργανικό εγχειρίδιο σύνταξης κειμένων (ελληνική έκδοση 2011, τελευταία ενημέρωση 30.4.2012), Μέρος Τέταρτο «Συμβατικοί κανόνες για την ελληνική γλώσσα», §10.1.7 «Εισαγωγικά»: «Σε εισαγωγικά (στο ελληνικό κείμενο προτιμώνται τα διπλά γωνιώδη εισαγωγικά: « ») κλείνονται κυρίως λόγια ή παραθέματα που αναφέρονται αυτολεξεί. […] Στην περίπτωση που χρειάζονται εισαγωγικά μέσα σε κείμενο που είναι ήδη σε εισαγωγικά, τότε για τα εισαγωγικά αυτά χρησιμοποιούνται τα διπλά ανωφερή εισαγωγικά (“ ”), ενώ σε τρίτο επίπεδο εσωτερικά χρησιμοποιούνται τα μονά ανωφερή εισαγωγικά (‘ ’)»",
+      "url": "http://publications.europa.eu/resource/cellar/e774ea2a-ef84-4bf6-be92-c9ebebf91c1b.0015.03/DOC_2",
+      "note": "Primary U+00AB/U+00BB, secondary U+201C/U+201D. Part Four of this guide is a Greek-specific punctuation chapter, not the multilingual part — the distinction matters and is the reason this source is cited for Greek at all. innerSpace is \"none\": the §6.4 spacing table sets «xx» with an ordinary space only outside the guillemets, and the Greek chapter never asks for one inside. The third nesting level the source describes (U+2018/U+2019) is not expressible in locale.schema.json, which has primary and secondary only; that is a schema limit, not a gap in the source. Corroborated by ΥΠΕΠΘ/ΙΤΥΕ, Γραμματική Νέας Ελληνικής Γλώσσας Α΄–Γ΄ Γυμνασίου, §3.3 («Τα εισαγωγικά ( « » ) σημειώνονται…»), whose examples likewise carry no inner space. Retrieved 2026-08-15."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Διοργανικό εγχειρίδιο σύνταξης κειμένων (EL, 2011), §10.1.8 «Ενωτικό — Παύλα μεσαίου μεγέθους — Μεγάλη παύλα»: για τα αριθμητικά διαστήματα, «Παύλα μεσαίου μεγέθους ή μείον (–) […] γ) για να δηλώσει το διάστημα μεταξύ δύο ορίων (π.χ. άτομα ηλικίας 25–45 ετών) […] δ) στην αναφορά σε περιόδους τουλάχιστον δύο πλήρων ετών (π.χ. 1989–1991) […] Ωστόσο, και στην περίπτωση αυτή μπορεί να χρησιμοποιηθεί και ενωτικό». Ο ίδιος κανόνας για τα αριθμητικά διαστήματα εμφανίζεται ΔΥΟ ΦΟΡΕΣ στην §10.1.8, μία στην υποενότητα «Ενωτικό (-)» και μία στην υποενότητα «Παύλα μεσαίου μεγέθους (–)», και κάθε φορά η υποενότητα παραχωρεί ρητά το άλλο σημείο (paraphrase of the «Ενωτικό» occurrence — its verbatim text was not captured at review time; the «Παύλα» occurrence is quoted above verbatim)· για την παρενθετική χρήση, «Όπως η παρένθεση, η διπλή παύλα δεν χωρίζεται με κενά διαστήματα από τη λέξη, φράση ή πρόταση που περικλείει· αντίθετα, μπαίνουν διαστήματα πριν από την πρώτη και μετά τη δεύτερη παύλα»",
+      "url": "http://publications.europa.eu/resource/cellar/e774ea2a-ef84-4bf6-be92-c9ebebf91c1b.0015.03/DOC_2",
+      "note": "Justifies \"none\" on BOTH fields, which no other locale has — but for TWO DIFFERENT REASONS, and conflating them would misrepresent the source. Range: genuinely ambivalent. The rule appears twice in §10.1.8, once under «Ενωτικό (-)» and once under «Παύλα μεσαίου μεγέθους (–)», and each occurrence explicitly concedes the other mark. That mutual concession is the proof — a source that names both forms in both places is not being vague, it is declining to rank them, and substituting either would express a preference the citation does not carry. Parenthetical: NOT ambivalent. The guide prescribes a U+2014 pair (its own header gives «Alt 0151») with ordinary spaces outside the pair and none on the inner edges. \"none\" here is forced by a SCHEMA LIMIT, not by the source: locale.schema.json's dash enum has no value for asymmetric spacing — \"em-spaced\" puts a space on each side of each dash, which is precisely what this sentence forbids. See spec/rules/dashes.md §6 «el», which states the two justifications separately. SOURCE CONFLICT, recorded and deliberately not settled: this guide prescribes U+2014 for the parenthetical dash, while ΥΠΕΠΘ/ΙΤΥΕ Γραμματική Α΄–Γ΄ Γυμνασίου §3.3 appears to set U+2013 in the same role. The sources array has no way to represent a conflict — it models agreement, not disagreement — so it is recorded here in prose. Resolving it is with the operator and needs a source that ranks the two, not a third that adds a form. Retrieved 2026-08-15."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Διοργανικό εγχειρίδιο σύνταξης κειμένων (EL, 2011), §10.1.9 «Αποσιωπητικά»: «Τα αποσιωπητικά, που είναι πάντοτε τρεις (και όχι περισσότερες) τελείες, χρησιμοποιούνται κυρίως: […]»· παρατήρηση ii): «Μεταξύ των αποσιωπητικών και της λέξης που προηγείται δεν αφήνουμε διάστημα»· παρατήρηση iii): «Όταν τα αποσιωπητικά βρίσκονται στο τέλος της περιόδου δεν προσθέτουμε τελεία»",
+      "url": "http://publications.europa.eu/resource/cellar/e774ea2a-ef84-4bf6-be92-c9ebebf91c1b.0015.03/DOC_2",
+      "note": "Justifies abbreviatedAfterTerminal = false. The source requires exactly three dots always and nowhere provides for the two-dot form after «?» or «!» that Russian uses, so the Russian branch of spec/rules/ellipsis.md must stay off for Greek. Corroborated by Γραμματική Α΄–Γ΄ Γυμνασίου §3.3: «Οι σημειούμενες τελείες είναι πάντα τρεις». Neither source gives any rule for αποσιωπητικά meeting the ερωτηματικό or the θαυμαστικό — checked specifically, in the Ministry of Education grammar and in the Κέντρο Ελληνικής Γλώσσας materials — so the engine's TERMINAL class is deliberately left as {U+0021, U+003F} and the Greek U+003B is not added to it (spaces.md §7.8; adding it would also regress Russian, where Лопатин §154 ties the two-dot form to «?» and «!» by name). Neither source addresses U+2026 versus three U+002E; that choice is the engine's, made identically in every locale, and is not claimed here. KNOWN DIVERGENCE, recorded because a verified source and the engine disagree and neither may stand unremarked: the same §10.1.9, \u03c0\u03b1\u03c1\u03b1\u03c4\u03ae\u03c1\u03b7\u03c3\u03b7 ii), states \u00abΜεταξύ των αποσιωπητικών και της λέξης που προηγείται δεν αφήνουμε διάστημα\u00bb - no space between the ellipsis and the preceding word - and polytypo does NOT honour it. spec/rules/spaces.md \u00a73.4 preserves a space before a dot run in EVERY locale, so \u00abΠράγματι \u2026\u00bb is returned as typed. The divergence is deliberate and argued in spaces.md \u00a77.9 and ellipsis.md \u00a76: honouring it needs either locale data in a rule that has none by design, or an ellipsis rule that deletes rather than replaces, which changes that rule's kind and forces a new composition argument. It would be revisited if a second locale wanted the same behaviour, at which point the shape is an ellipsis.noSpaceBefore flag consumed by the ellipsis rule. The source is right about Greek; the engine is declining to act on it, not disputing it. Retrieved 2026-08-15."
+    },
+    {
+      "rule": "spaces",
+      "cite": "Διοργανικό εγχειρίδιο σύνταξης κειμένων (EL, 2011), §10.1.4 «Διπλή τελεία», παρατήρηση iv): «Στα ελληνικά, πριν από τη διπλή τελεία δεν πρέπει να υπάρχει διάστημα (πράγμα που συμβαίνει, π.χ., στα γαλλικά)»· §10.1.3 «Άνω τελεία», παρατηρήσεις ii) και iii): «Στα ελληνικά, πριν από την άνω τελεία δεν πρέπει να υπάρχει διάστημα»· «Μετά την άνω τελεία αρχίζουμε με μικρό γράμμα»",
+      "url": "http://publications.europa.eu/resource/cellar/e774ea2a-ef84-4bf6-be92-c9ebebf91c1b.0015.03/DOC_2",
+      "note": "Note the exact standing of this citation, because it is weaker than the claim it is often read as supporting. Neither passage is about the ερωτηματικό: they are about the colon and the άνω τελεία. What they establish is that Greek denies the French space-before-punctuation pattern, by name, for the marks they do cover. No source examined addresses spacing before the Greek question mark specifically, so the position is \"no source contradicts it\", NOT \"a source requires it\". Nothing rests on the difference: the Greek question mark is written U+003B, which spec/rules/spaces.md lists in STRIP-BEFORE for the Latin semicolon on its own merits, so the space is stripped under the Latin reading alone and no Greek-specific decision is being made (spaces.md §3.5 part 2). The §6.4 spacing table is deliberately NOT offered as corroboration here — the nbsp source in this same file rejects §6.4 as publisher house style rather than evidence about Greek, and it cannot be house style there and evidence here. Retrieved 2026-08-15."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Διοργανικό εγχειρίδιο σύνταξης κειμένων (EL, 2011), §10.1.4 παρατήρηση iv) και §10.1.3 παρατήρηση ii) (ό.π., ρητή αντιπαραβολή με τα γαλλικά)· §10.6 «Συντομογραφίες», γενικός κανόνας γ): «Στις ελληνικές συντομογραφίες με τις οποίες συντέμνονται φράσεις που αποτελούνται από περισσότερες της μίας λέξεις μπαίνει κατά κανόνα τελεία έπειτα από κάθε συντεμνόμενη λέξη» (π.χ. κ.λπ., π.χ., πρβλ., κ.ο.κ.)",
+      "url": "http://publications.europa.eu/resource/cellar/e774ea2a-ef84-4bf6-be92-c9ebebf91c1b.0015.03/DOC_2",
+      "note": "Two empty lists closed by citation rather than by absence of one. beforePunctuation and narrowBeforePunctuation are empty because Greek takes neither U+00A0 nor U+202F before «;» «:» «!» «·» — the source denies the French practice by name. abbreviations is empty because Greek multi-word abbreviations appear to be written with no internal space at all (κ.λπ., not «κ. λπ.»), so there is no U+0020 for the rule to promote. INFERENCE, NOT CITATION: §10.6 γ) states only that a full stop follows each abbreviated word; it says nothing about spacing between them. The no-space form is visible in the guide's own printed examples and in no normative sentence examined. The list would be empty on the absence of a citation alone (docs/PLAN.md §6.1), so nothing rests on the inference — it is labelled because an unlabelled inference in a cite field is the failure mode this field exists to prevent. The remaining lists are empty because no Greek normative source examined states a binding: the one candidate, the §6.4 table binding a number to «%» and «°C», sits in Part Three — «Συμβατικοί κανόνες κοινοί για ΟΛΕΣ τις γλώσσες» — whose own preamble says it replaced diverging national rules for uniform presentation, which makes it publisher house style rather than evidence about Greek. A missing citation is never a licence to guess (docs/PLAN.md §6.1). Observed usage does not contradict that reading, which is worth recording because it was checked rather than assumed: a byte-level scan on 2026-08-15 of the Greek-language home pages of kathimerini.gr, kathimerini.gr/economy, tovima.gr, tanea.gr, efsyn.gr, in.gr, naftemporiki.gr, protagon.gr, lifo.gr, meteo.gr, kedros.gr, onassis.org/el and emst.gr found 183 number-plus-unit occurrences — 140 «%», 41 «°C», 2 «€» — and NOT ONE of them carried a space of any kind, no U+0020, no U+00A0. Greek web practice sets «50%» and «20°C» tight, so beforeUnits would have nothing to promote even if it were populated. Method, so the figure can be re-derived rather than taken on trust: fetch each page, strip script, style and noscript elements and then all tags, decode HTML entities (so that &nbsp; becomes the U+00A0 it denotes rather than disappearing), and count matches of a digit followed by an optional single space character from {U+0020, U+00A0, U+202F, U+2009} followed by the unit. Pages carrying under 200 Greek letters were excluded as not being Greek-language content. That scan is an observation of usage, is not offered as a normative claim, and nothing in this file depends on it: the lists would be empty on the absence of a citation alone. Retrieved 2026-08-15."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Διοργανικό εγχειρίδιο σύνταξης κειμένων (EL, 2011), §10.1.8, υποενότητα «Ενωτικό (-)»: «Η μικρή οριζόντια παύλα, το βραχύτερο σε μήκος από τα τρία σημεία […] σημειώνεται χωρίς κενά σε σχέση με ό,τι προηγείται ή έπεται»",
+      "url": "http://publications.europa.eu/resource/cellar/e774ea2a-ef84-4bf6-be92-c9ebebf91c1b.0015.03/DOC_2",
+      "note": "Justifies all three lists being empty. The source describes what the hyphen does — syllable division, numeric bounds, appositional compounds such as «απόφαση-πλαίσιο» — without defining any closed list of morphological forms whose hyphen must resist a line break, which is the only thing this rule consumes. No Greek source examined defines one. Empty lists make the rule a provable total no-op for Greek (spec/rules/hyphen.md §2), which is the normal case, not a deficiency. Retrieved 2026-08-15."
+    },
+    {
+      "rule": "apostrophe",
+      "cite": "ΥΠΕΠΘ / Ινστιτούτο Τεχνολογίας Υπολογιστών και Εκδόσεων, Γραμματική Νέας Ελληνικής Γλώσσας Α΄, Β΄, Γ΄ Γυμνασίου, §3.3 «Η στίξη — Τα σημεία στίξης»: «Η απόστροφος ( ’ ) χρησιμοποιείται για να δηλώσει ότι ένα φωνήεν έχει παραλειφθεί στη γραφή λόγω της προφοράς»· και, για την ταυτότητα του κωδικού σημείου, The Unicode Standard 17.0, Core Specification, §6.2.7 «Apostrophes»: «When text is set, U+2019 RIGHT SINGLE QUOTATION MARK is preferred as apostrophe, but only U+0027 is present on most keyboards»",
+      "url": "https://ebooks.edu.gr/ebooks/v/html/8547/2334/Grammatiki-Neas-Ellinikis-Glossas_A-B-G-Gymnasiou_html-apli/index_B_03.html",
+      "note": "Two sources for two separate facts. The Greek grammar establishes that elision and apocope (γι’ αυτό, απ’ την, σ’ αυτό) are marked with an apostrophe; the code point comes only from Unicode, because no Greek normative source examined names one. U+02BC is refused: Unicode §6.2.7 reserves it for use as a modifier letter, e.g. a glottal stop in transliteration. U+0384 GREEK TONOS is refused: no source proposes a diacritic in this role. The rule reads no locale data, so this citation certifies rather than configures — but Greek elision is the shape the rule most often meets in Greek text, and it earns a fixture. Retrieved 2026-08-15."
+    },
+    {
+      "rule": "symbols",
+      "cite": "Unicode Consortium, The Unicode Standard, Version 17.0, Core Specification, ch. 7 «Europe-I», §7.2.1 Greek, «Compatibility Punctuation», verbatim: «Therefore, use of U+037E and U+0387 is not necessary for interoperating with legacy Greek data, and their use is not generally encouraged for representation of Greek punctuation.» The preceding sentence of that subsection — to the effect that the two characters have canonical equivalences to U+003B and U+00B7, so that normalised Greek text loses the distinction — is given here as PARAPHRASE, not as quotation: it could not be confirmed word for word at review time. Its substance does not rest on the prose in any case; it is entailed directly by UnicodeData.txt, where U+037E carries the canonical decomposition mapping 003B and U+0387 carries 00B7, each as a singleton",
+      "url": "https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-7/",
+      "note": "Code-point identity only, which is the one thing this source is authoritative for. Note the split standing of the citation: one sentence is verbatim, one is paraphrase backed by UnicodeData.txt rather than by the Core Specification's wording, and the file says which is which. Everything the rules do rests on the machine-readable field, not on the prose. The ερωτηματικό is written U+003B, not U+037E; the άνω τελεία is written U+00B7, not U+0387. Consequence for the rules: no rule may emit U+037E or U+0387, and none may rewrite one to the character it decomposes to — that is normalisation, forbidden by docs/ARCHITECTURE.md §4.3 and performed anyway by any downstream NFC pass. The full argument, including why U+00B7 must not join the spaces rule's STRIP-BEFORE set, is in spec/rules/spaces.md §3.5. Retrieved 2026-08-15."
+    }
+  ]
+}

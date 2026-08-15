@@ -1,0 +1,106 @@
+{
+  "locale": "en-GB",
+  "name": "English (United Kingdom)",
+  "quotes": {
+    "primary": { "open": "‘", "close": "’", "innerSpace": "none" },
+    "secondary": { "open": "“", "close": "”", "innerSpace": "none" }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": [],
+    "beforeUnits": [
+      "%",
+      "kg",
+      "g",
+      "mg",
+      "km",
+      "m",
+      "cm",
+      "mm",
+      "mi",
+      "ft",
+      "lb",
+      "oz",
+      "L",
+      "mL",
+      "h",
+      "min",
+      "s",
+      "ms",
+      "°C",
+      "°F",
+      "kB",
+      "MB",
+      "GB",
+      "TB",
+      "kW",
+      "kWh"
+    ],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "bindInitials": false
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "University of Oxford Style Guide, section “Quotation marks”",
+      "url": "https://www.ox.ac.uk/about/the-university/brand/style-guide/punctuation",
+      "note": "Verbatim: “Use single quotation marks for direct speech or a quote, and double quotation marks for direct speech or a quote within that.” Example given: ‘I have never been to Norway,’ he said, ‘but I have heard it described as “the Wales of the North”.’ This settles the ❓ in PLAN.md §7 in favour of single-first. The convention is genuinely divided in British practice — several national newspapers and trade publishers set double-first — but the cited Oxford authority (and New Hart’s Rules behind it) is unambiguous, and citation, not head-count, is the tie-breaker per ARCHITECTURE.md §8."
+    },
+    {
+      "rule": "dashes",
+      "cite": "University of Oxford Style Guide, section “Dashes and hyphens”",
+      "url": "https://www.ox.ac.uk/about/the-university/brand/style-guide/punctuation",
+      "note": "Verbatim, m-dash (—): “Do not use; use an n-dash instead.” n-dash (–): “Use in a pair in place of round brackets or commas, surrounded by spaces” (example: “It was – as far as I could tell – the only example of its kind.”), and “Use to link concepts or ranges of numbers, with no spaces either side” (example: “The salary for the post is £25,000–£30,000.”). Corroborated by CMOS Shop Talk, 23 January 2024: “In British style, spaced en dashes – like this – are more common.”"
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "University of Oxford Style Guide, section “Ellipsis”",
+      "url": "https://www.ox.ac.uk/about/the-university/brand/style-guide/punctuation",
+      "note": "`abbreviatedAfterTerminal` is false. The Oxford guide describes the ellipsis as a single mark used for omitted text, a pause or a trailing off, and notes “an exclamation mark or a question mark can and should follow the ellipsis if required” — i.e. no merged two-dot form after terminal punctuation. That form is Russian-only."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "BIPM, The International System of Units (SI), 9th ed. (2019), concise summary, “The language of science: using the SI to express the values of quantities”",
+      "url": "https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-concise-EN.pdf",
+      "note": "Verbatim: “A single space is always left between the number and the unit.” Used here because the University of Oxford Style Guide sets measurements closed up (“The average height of a woman in the UK is 1.61m.”, “worth 10% of the available marks”) and is therefore silent on binding a space it does not itself write. The nbsp rule never inserts a space — it only makes an author-typed space non-breaking — so the two positions do not conflict."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "University of Oxford Style Guide, “Specific abbreviations — people’s initials”",
+      "url": "https://www.ox.ac.uk/about/the-university/brand/style-guide/punctuation",
+      "note": "`bindInitials` is false. Oxford says only “Use a space to separate each initial” (examples: J R R Tolkien, C S Lewis — note, without full stops). No British authority consulted prescribes a non-breaking space there, so the true value is set rather than inferred from the American rule. Deliberate divergence from en-US, where Chicago states the nonbreaking space explicitly."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "No normative source found for English short-word binding; lists deliberately empty",
+      "note": "`afterShortWords`, `beforePunctuation`, `narrowBeforePunctuation`, `abbreviations` and `afterSymbols` are empty by design. Oxford instructs “close up spaces and don’t use full stops in abbreviations (eg 6pm)”, so there are no multi-token abbreviations with internal spaces to bind."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "University of Oxford Style Guide, “Abbreviations, contractions and acronyms”",
+      "url": "https://www.ox.ac.uk/about/the-university/brand/style-guide/punctuation",
+      "note": "`beforeNumber` and `beforeWord` are empty. Oxford says “Don’t use full stops after any abbreviations, contractions or acronyms”, so the British forms this field would hold (p., no., fig., ch., Mr., Dr.) are not even written with a full stop in this style, and nothing in the guide requires a non-breaking space after them. Per PLAN.md §7 the Mr./Dr. + name binding is an optional rule defaulting off; with no per-entry toggle in the schema, and no normative source requiring it, the honest value is an empty list."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "No English authority prescribes non-breaking hyphens for particular word forms; lists deliberately empty",
+      "note": "`prefixes`, `suffixes` and `compounds` are empty. The field exists for languages with a closed, normative set of hyphenated morphological forms (Russian кое-, -таки, из-под). The Oxford guide’s hyphen section describes when to hyphenate (adjectival phrases before a noun, verb participles) and never restricts breaking at the resulting hyphen. An English list here would be an invented sample."
+    }
+  ]
+}

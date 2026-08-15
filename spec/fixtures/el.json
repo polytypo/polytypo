@@ -1,0 +1,198 @@
+{
+  "spec": "0.1.0",
+  "locale": "el",
+  "cases": [
+    {
+      "id": "el-spaces-collapse-run",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Ελλάδα   και   Κύπρος",
+      "out": "Ελλάδα και Κύπρος",
+      "note": "spaces.md §6 case 1: a run of ordinary spaces bounded by CONTENT collapses to one."
+    },
+    {
+      "id": "el-spaces-before-erotimatiko",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Τι κάνεις ;",
+      "out": "Τι κάνεις;",
+      "note": "spaces.md §3.5. The Greek question mark is written U+003B, which is already in STRIP-BEFORE for the Latin semicolon, and Greek prescribes no space before it either — so the ambiguity costs nothing and no rule has to tell the two readings apart. Unlike French, nbsp puts nothing back."
+    },
+    {
+      "id": "el-spaces-before-punctuation",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Καλημέρα , κόσμε !",
+      "out": "Καλημέρα, κόσμε!",
+      "note": "spaces.md §6 case 2. Greek takes no space before terminal punctuation and the source names French as the contrast, so nothing is re-inserted at order 70."
+    },
+    {
+      "id": "el-spaces-brackets",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Μια  (  παρένθεση  ,  εδώ  )  τέλος",
+      "out": "Μια (παρένθεση, εδώ) τέλος",
+      "note": "spaces.md §3.6 worked trace, in Greek."
+    },
+    {
+      "id": "el-spaces-compat-question-mark-untouched",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Τι κάνεις ;",
+      "out": "Τι κάνεις ;",
+      "note": "spaces.md §3.5 part 3: U+037E is in no class of any rule. The space before it survives and the character is NOT rewritten to the U+003B it canonically decomposes to — that would be normalisation (ARCHITECTURE.md §4.3). Contrast el-spaces-before-erotimatiko, where the same character spelled U+003B does lose its space. This case is why spec/fixtures/el.json is deliberately NOT in NFC and validate-spec warns about it. Precisely: the character canonically decomposes, so any file holding it as a LITERAL is non-NFC. A JSON \\uXXXX escape would keep the file itself NFC while parsing to the identical string, but literals are what all nine fixture files use, and spec/fixtures/.escaped/ already provides the reviewable escaped mirror, so the literal stays. The warning is the intended state, not a defect. Do not 'fix' it by normalising the file: that silently rewrites this case into a duplicate of the recommended-spelling one, which still passes. scripts/validate-spec.mjs now asserts the code point positively by case id so that CI fails instead."
+    },
+    {
+      "id": "el-spaces-ano-teleia-untouched",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "πρώτο · δεύτερο",
+      "out": "πρώτο · δεύτερο",
+      "note": "spaces.md §3.5: U+00B7 is deliberately NOT in STRIP-BEFORE. Greek prescribes no space before the άνω τελεία, but U+00B7 is a deliberate spaced separator in other locales (Home · About, the Catalan and French interpunct) and this rule reads no locale data. The stray space survives; that is the accepted cost."
+    },
+    {
+      "id": "el-spaces-compat-ano-teleia-untouched",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "πρώτο · δεύτερο",
+      "out": "πρώτο · δεύτερο",
+      "note": "spaces.md §3.5: the compatibility άνω τελεία behaves identically to U+00B7. Adding only U+0387 to STRIP-BEFORE would split two canonically equivalent characters and would fix the spelling Unicode discourages while leaving the recommended one broken. This case is why spec/fixtures/el.json is deliberately NOT in NFC and validate-spec warns about it. Precisely: the character canonically decomposes, so any file holding it as a LITERAL is non-NFC. A JSON \\uXXXX escape would keep the file itself NFC while parsing to the identical string, but literals are what all nine fixture files use, and spec/fixtures/.escaped/ already provides the reviewable escaped mirror, so the literal stays. The warning is the intended state, not a defect. Do not 'fix' it by normalising the file: that silently rewrites this case into a duplicate of the recommended-spelling one, which still passes. scripts/validate-spec.mjs now asserts the code point positively by case id so that CI fails instead."
+    },
+    {
+      "id": "el-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Περίμενε... τι έγινε",
+      "out": "Περίμενε… τι έγινε",
+      "note": "ellipsis.md §6 case 1: a three-dot run becomes one U+2026."
+    },
+    {
+      "id": "el-ellipsis-not-abbreviated-after-terminal",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Πράγματι?..",
+      "out": "Πράγματι?…",
+      "note": "ellipsis.md §6 case 3, the abbreviatedAfterTerminal = false branch. The Greek source requires exactly three dots always («πάντοτε τρεις»), so Greek takes the non-abbreviating branch and the two-dot run after ? becomes a full U+2026 — the opposite of ru."
+    },
+    {
+      "id": "el-ellipsis-greek-question-mark-not-terminal",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Πράγματι;..",
+      "out": "Πράγματι;..",
+      "note": "spaces.md §7.8. ellipsis.md §3.1 defines TERMINAL as {U+0021, U+003F}, and a Greek question is written U+003B, so the two-dot run after it is left alone — while el-ellipsis-not-abbreviated-after-terminal, spelled with the U+003F that Greek does not use for questions, does convert. Adding U+003B to TERMINAL was researched and REFUSED: it would be a regression in Russian, where Лопатин §154 and Розенталь §68.1 tie the two-dot form to «?» and «!» by name and no source extends it to the semicolon, and no Greek source asks for it either — the Greek authorities give no rule at all for αποσιωπητικά meeting the ερωτηματικό. Unsupported on both sides, so the input round-trips unchanged, which is what an unspecified case should do. Note that the correctly written three-dot form «Πράγματι;...» already converts, needing nothing from TERMINAL."
+    },
+    {
+      "id": "el-dashes-range-noop",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "άτομα ηλικίας 25-45 ετών",
+      "out": "άτομα ηλικίας 25-45 ετών",
+      "note": "dashes.md §6 case 33. dash.range is \"none\", so the token is classified as a range and nothing is emitted. The source prints an en dash here but permits the hyphen in the same clause, so substituting would express a preference the citation does not carry."
+    },
+    {
+      "id": "el-dashes-parenthetical-noop",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Το σχέδιο - αν υπάρχει - αποτυγχάνει.",
+      "out": "Το σχέδιο - αν υπάρχει - αποτυγχάνει.",
+      "note": "dashes.md §6 case 34. dash.parenthetical is \"none\": the source prescribes spaces outside the dash pair and none inside, which no value of the enum expresses."
+    },
+    {
+      "id": "el-dashes-existing-en-dash-noop",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "την περίοδο 1989–1991",
+      "out": "την περίοδο 1989–1991",
+      "note": "dashes.md §6 case 35: an en dash already in the form the source prints. Greek is the first locale with \"none\" on both fields, so this rule is a provable total no-op for it."
+    },
+    {
+      "id": "el-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "η απόφαση-πλαίσιο και το ελληνο-γαλλικό λεξικό",
+      "out": "η απόφαση-πλαίσιο και το ελληνο-γαλλικό λεξικό",
+      "note": "hyphen.md §6: all three lists are empty, so the rule is a total no-op. «απόφαση-πλαίσιο» is the appositional compound the Greek source names, and no source defines a closed list of forms whose hyphen must resist a line break."
+    },
+    {
+      "id": "el-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Είπε \"καλημέρα\" και έφυγε.",
+      "out": "Είπε «καλημέρα» και έφυγε.",
+      "note": "quotes.md §3.4: depth 1 takes the primary pair, the Greek guillemets, with innerSpace \"none\" — unlike fr, no space is inserted on the inner edges."
+    },
+    {
+      "id": "el-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Είπε 'όχι' σε μένα\", σημείωσε.",
+      "out": "«Είπε “όχι” σε μένα», σημείωσε.",
+      "note": "quotes.md §6: one stack, inner pair at depth 2 takes the secondary pair U+201C/U+201D. Greek combines guillemets with curly double quotes, which no other v1 locale does."
+    },
+    {
+      "id": "el-quotes-already-guillemets",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Το βιβλίο «Ο Ζορμπάς» εκδόθηκε.",
+      "out": "Το βιβλίο «Ο Ζορμπάς» εκδόθηκε.",
+      "note": "No STRAIGHT marks remain, so there is nothing to resolve. Re-processing corrected Greek text is a no-op."
+    },
+    {
+      "id": "el-quotes-elision-inside-straight-quotes",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Είπε \"σ' αυτό το βιβλίο\" χθες.",
+      "out": "Είπε «σ’ αυτό το βιβλίο» χθες.",
+      "note": "quotes.md §6 case 18 and §5.5. Greek elision inside a straight-quoted span. The elision mark in «σ'» is canClose (letter left, space right), but it is an SQ and the opening mark is a DQ, and pass 2 keeps one stack per kind, so they are never paired: the two \" pair with each other and apostrophe converts the elision to U+2019. Before the per-kind split this produced «σ» and destroyed the sentence — damage rather than a miss, and the defect that motivated the split. It was never Greek-specific (en-US, en-GB, ru, fr and de-CH mangled the equivalent input identically); Greek made it unavoidable, because σ', απ', γι' and θ' occur in almost every paragraph."
+    },
+    {
+      "id": "el-apostrophe-elision",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "γι' αυτό και απ' την αρχή",
+      "out": "γι’ αυτό και απ’ την αρχή",
+      "note": "apostrophe.md §3.3 case 3: letter left, space right. Greek elision and apocope take U+2019, per the school grammar for the practice and Unicode §6.2.7 for the code point. U+0384 GREEK TONOS and U+02BC are both refused."
+    },
+    {
+      "id": "el-apostrophe-elision-inside-guillemets",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Είπε «σ' αυτό το βιβλίο» χθες.",
+      "out": "Είπε «σ’ αυτό το βιβλίο» χθες.",
+      "note": "The same elision inside guillemets that are already curly. Since quotes.md §5.5 this agrees with el-quotes-elision-inside-straight-quotes rather than contradicting it, and the pair is retained precisely so that a regression in the per-kind stack discipline shows up as the two disagreeing again."
+    },
+    {
+      "id": "el-symbols-copyright-and-multiplication",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Ανάλυση 1920x1080, Copyright (c) 2026",
+      "out": "Ανάλυση 1920×1080, Copyright © 2026",
+      "note": "symbols.md reads no locale data. Greek adds no branch to it: the refusal to map U+037E to U+003B or U+0387 to U+00B7 is recorded in symbols.md §7.8 as a decided refusal, not implemented as a conversion."
+    },
+    {
+      "id": "el-nbsp-units-not-bound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Η τιμή ανέβηκε 10,5 % φέτος",
+      "out": "Η τιμή ανέβηκε 10,5 % φέτος",
+      "note": "nbsp.beforeUnits is empty for Greek, so the ordinary space before % is left as U+0020. No Greek normative source states the binding, and a byte-level scan of 13 Greek-language pages found 183 number-plus-unit occurrences with no space of any kind — Greek sets 50% tight, so there is nothing to promote."
+    },
+    {
+      "id": "el-nbsp-no-french-spacing",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Καλημέρα! Τι κάνεις;",
+      "out": "Καλημέρα! Τι κάνεις;",
+      "note": "nbsp.beforePunctuation and narrowBeforePunctuation are both empty. The Greek source denies the French practice by name («πράγμα που συμβαίνει, π.χ., στα γαλλικά»), so nothing is inserted before ! or the U+003B ερωτηματικό. The whole nbsp rule is a no-op for Greek. nbsp.md §6 case 26."
+    },
+    {
+      "id": "el-nbsp-quote-inner-space-none",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Είπε «καλημέρα» και έφυγε.",
+      "out": "Είπε «καλημέρα» και έφυγε.",
+      "note": "nbsp.md §6 case 28. The half of the total-no-op claim that does NOT live in the nbsp object: sub-rule N8 reads quotes.innerSpace, which is \"none\" for Greek, so no inner space is inserted. A locale with all eight nbsp lists empty but a non-none innerSpace would still edit here — fr case 23 is that shape — so this case is what makes \"nbsp is a provable no-op for el\" true rather than merely likely."
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "spec": "0.1.0",
+  "cases": [
+    {
+      "id": "exact-en-us",
+      "tag": "en-US",
+      "resolves": "en-US",
+      "note": "locale-resolution.md section 5, exact match"
+    },
+    {
+      "id": "exact-en-gb",
+      "tag": "en-GB",
+      "resolves": "en-GB"
+    },
+    {
+      "id": "exact-de-de",
+      "tag": "de-DE",
+      "resolves": "de-DE"
+    },
+    {
+      "id": "exact-de-ch",
+      "tag": "de-CH",
+      "resolves": "de-CH"
+    },
+    {
+      "id": "exact-fr",
+      "tag": "fr",
+      "resolves": "fr"
+    },
+    {
+      "id": "exact-ru",
+      "tag": "ru",
+      "resolves": "ru"
+    },
+    {
+      "id": "exact-fi",
+      "tag": "fi",
+      "resolves": "fi"
+    },
+    {
+      "id": "exact-sv",
+      "tag": "sv",
+      "resolves": "sv"
+    },
+    {
+      "id": "alias-en",
+      "tag": "en",
+      "resolves": "en-US",
+      "note": "aliases.en; never the first entry of locales, never a nearest match"
+    },
+    {
+      "id": "alias-de",
+      "tag": "de",
+      "resolves": "de-DE"
+    },
+    {
+      "id": "strip-en-au",
+      "tag": "en-AU",
+      "resolves": "en-US",
+      "note": "no exact, no alias, strip region once to en, then the alias table"
+    },
+    {
+      "id": "strip-de-at",
+      "tag": "de-AT",
+      "resolves": "de-DE",
+      "note": "worked table row: de-AT resolves through de to de-DE"
+    },
+    {
+      "id": "strip-fr-ca",
+      "tag": "fr-CA",
+      "resolves": "fr"
+    },
+    {
+      "id": "strip-fi-fi",
+      "tag": "fi-FI",
+      "resolves": "fi"
+    },
+    {
+      "id": "strip-sv-fi",
+      "tag": "sv-FI",
+      "resolves": "sv",
+      "note": "section 6.3 open question: Finland Swedish has no locale of its own yet"
+    },
+    {
+      "id": "exact-el",
+      "tag": "el",
+      "resolves": "el",
+      "note": "locale-resolution.md section 5. Greek is registered with no alias: it has no region variants in the registry, so nothing needs to point at it."
+    },
+    {
+      "id": "strip-el-gr",
+      "tag": "el-GR",
+      "resolves": "el",
+      "note": "locale-resolution.md section 5, strip the region once. el-GR is by far the commonest way the tag is written in the wild, and it must not need an alias entry to work."
+    },
+    {
+      "id": "unknown-gr",
+      "tag": "gr",
+      "throws": "POLYTYPO_UNKNOWN_LOCALE",
+      "note": "The ISO 3166 country code for Greece is GR but the ISO 639 language code is el, and `gr` is a common mistake. It must throw rather than quietly resolve — locale-resolution.md section 6.1 forbids a nearest-language fallback."
+    },
+    {
+      "id": "strip-ru-by",
+      "tag": "ru-BY",
+      "resolves": "ru"
+    },
+    {
+      "id": "canonical-en-us-mixed-case",
+      "tag": "EN-us",
+      "resolves": "en-US",
+      "note": "section 3.2 canonicalisation, ASCII arithmetic only — no host-locale case folding"
+    },
+    {
+      "id": "canonical-en-us-underscore",
+      "tag": "en_US",
+      "resolves": "en-US",
+      "note": "section 3.2 step 1: U+005F is accepted as a separator. Section 6.4 flags this leniency as the one behavioural choice awaiting operator confirmation."
+    },
+    {
+      "id": "canonical-de-uppercase",
+      "tag": "DE",
+      "resolves": "de-DE",
+      "note": "canonicalise, then the alias table"
+    },
+    {
+      "id": "canonical-de-ch-underscore-lowercase",
+      "tag": "de_ch",
+      "resolves": "de-CH"
+    },
+    {
+      "id": "unknown-xx-yy",
+      "tag": "xx-YY",
+      "throws": "POLYTYPO_UNKNOWN_LOCALE",
+      "note": "worked table row: no exact, no alias, strip to xx, still nothing — never falls back to English"
+    },
+    {
+      "id": "unknown-xx",
+      "tag": "xx",
+      "throws": "POLYTYPO_UNKNOWN_LOCALE"
+    },
+    {
+      "id": "unknown-nb-no",
+      "tag": "nb-NO",
+      "throws": "POLYTYPO_UNKNOWN_LOCALE",
+      "note": "section 4: nb must not resolve to the nearest language sv"
+    },
+    {
+      "id": "unknown-es",
+      "tag": "es",
+      "throws": "POLYTYPO_UNKNOWN_LOCALE",
+      "note": "a language polytypo does not carry yet is an error, not a default"
+    },
+    {
+      "id": "invalid-three-letter",
+      "tag": "eng",
+      "throws": "POLYTYPO_UNKNOWN_LOCALE",
+      "note": "section 3.3: length 3 is neither of the two accepted shapes"
+    },
+    {
+      "id": "invalid-script-subtag",
+      "tag": "sr-Latn",
+      "throws": "POLYTYPO_UNKNOWN_LOCALE",
+      "note": "section 3.3: length 7"
+    },
+    {
+      "id": "invalid-numeric-region",
+      "tag": "es-419",
+      "throws": "POLYTYPO_UNKNOWN_LOCALE",
+      "note": "section 3.3: region code points are not in U+0041-U+005A"
+    },
+    {
+      "id": "invalid-und",
+      "tag": "und",
+      "throws": "POLYTYPO_UNKNOWN_LOCALE",
+      "note": "section 3.3: the wildcard is not a locale"
+    },
+    {
+      "id": "invalid-empty",
+      "tag": "",
+      "throws": "POLYTYPO_UNKNOWN_LOCALE",
+      "note": "section 3.1: there is no default locale"
+    },
+    {
+      "id": "invalid-single-letter",
+      "tag": "e",
+      "throws": "POLYTYPO_UNKNOWN_LOCALE",
+      "note": "section 3.3: length 1"
+    },
+    {
+      "id": "invalid-trailing-separator",
+      "tag": "de-",
+      "throws": "POLYTYPO_UNKNOWN_LOCALE",
+      "note": "section 3.3: length 3 is rejected before any lookup, so this is not the alias de"
+    },
+    {
+      "id": "invalid-extra-subtag",
+      "tag": "en-US-POSIX",
+      "throws": "POLYTYPO_UNKNOWN_LOCALE",
+      "note": "section 3.3: length 11. Section 7 open question 7: region is the only supported variation, so extra subtags are rejected rather than ignored."
+    }
+  ]
+}

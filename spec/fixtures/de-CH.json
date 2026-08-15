@@ -1,0 +1,462 @@
+{
+  "spec": "0.1.0",
+  "locale": "de-CH",
+  "cases": [
+    {
+      "id": "de-ch-spaces-collapse-run",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Hallo   Welt.",
+      "out": "Hallo Welt.",
+      "note": "spaces.md §6 case 1."
+    },
+    {
+      "id": "de-ch-spaces-before-punctuation",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "See p. 12 .",
+      "out": "See p. 12.",
+      "note": "spaces.md §6 case 10."
+    },
+    {
+      "id": "de-ch-spaces-checkbox",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "- [ ] Milch kaufen",
+      "out": "- [ ] Milch kaufen",
+      "note": "spaces.md §6 case 4: the empty-bracket guard keeps the GFM task-list marker intact."
+    },
+    {
+      "id": "de-ch-spaces-nobreak-not-collapsed",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "a  b",
+      "out": "a  b",
+      "note": "spaces.md §6 case 8: two no-break spaces are never collapsed — this rule only ever removes U+0020."
+    },
+    {
+      "id": "de-ch-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Warte... was?",
+      "out": "Warte… was?",
+      "note": "ellipsis.md §6 case 1."
+    },
+    {
+      "id": "de-ch-ellipsis-mixed-run",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Warte…… was",
+      "out": "Warte… was",
+      "note": "ellipsis.md §6 case 2."
+    },
+    {
+      "id": "de-ch-ellipsis-two-dots-after-terminal",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Wirklich?..",
+      "out": "Wirklich?…",
+      "note": "ellipsis.md §6 case 3: abbreviatedAfterTerminal = false."
+    },
+    {
+      "id": "de-ch-ellipsis-existing",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Er ging…",
+      "out": "Er ging…",
+      "note": "ellipsis.md §6 case 6."
+    },
+    {
+      "id": "de-ch-dashes-parenthetical-tight-input",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Der Plan--falls es einen gibt--scheitert.",
+      "out": "Der Plan – falls es einen gibt – scheitert.",
+      "note": "dash.parenthetical = en-spaced — Bundeskanzlei Rz. 231/237/238: der Gedankenstrich ist der Halbgeviertstrich, mit Leerzeichen davor und danach."
+    },
+    {
+      "id": "de-ch-dashes-authored-em-dash-preserved",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Das Jahr — ein langes — endet.",
+      "out": "Das Jahr — ein langes — endet.",
+      "note": "The most instructive case in this file, and it is about the limits of the package rather than about Swiss typography. Bundeskanzlei Rz. 236 does state expressly that the Geviertstrich (U+2014) is not permitted, and de-CH's dash.parenthetical = en-spaced still says so — but `dashes` §3.2 step 2a declines any dash the AUTHOR typed, so the convention governs hyphen input only and never rewrites a mark already present. The narrowing was forced by the M4 gate: restyling authored dashes changed 1063 lines across 155 files of the author's own corpus, which is precisely the false-positive class PLAN.md §8 blocks on. So: the convention still holds for `--` and `-` input (see the next case); it no longer imposes itself on `—`."
+    },
+    {
+      "id": "de-ch-dashes-range-years",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Die Jahre 1939-1945",
+      "out": "Die Jahre 1939⁠–⁠1945",
+      "note": "dash.range = en-tight — Bundeskanzlei Rz. 234: der Bis-Strich steht ohne Leerzeichen, „die Jahre 1939–1945“. The hyphen-typed range converts and is bound with U+2060 word joiners (§3.3.1), which are zero-width and visible only in spec/fixtures/.escaped/."
+    },
+    {
+      "id": "de-ch-dashes-range-hours",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "16-17 Uhr",
+      "out": "16⁠–⁠17 Uhr",
+      "note": "Rz. 234, second cited example, with the same U+2060 binding."
+    },
+    {
+      "id": "de-ch-dashes-range-roundtrip",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "die Artikel 10–12",
+      "out": "die Artikel 10–12",
+      "note": "An AUTHORED range: byte-identical out, and specifically with no U+2060 joiners, where the hyphen-typed `1939-1945` above gets them (§3.3.1, §7.14). Both forms look the same on screen, so nothing in the rendered document explains why one may break across lines and the other may not — the asymmetry is recorded rather than hidden. It follows from one principle: the rule never makes an edit whose entire content is invisible, because an invisible-only change to already-correct text cannot be reviewed by hand."
+    },
+    {
+      "id": "de-ch-dashes-iso-date",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Erschienen 2026-08-15",
+      "out": "Erschienen 2026-08-15",
+      "note": "Guard G2 and the cluster guard."
+    },
+    {
+      "id": "de-ch-dashes-decreasing-range",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Resultat 20-10",
+      "out": "Resultat 20-10",
+      "note": "dashes.md §6 case 10: guard G5, the left value must not exceed the right."
+    },
+    {
+      "id": "de-ch-dashes-compound-hyphen",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Ein wohl-bekannter E-Mail-Adressat",
+      "out": "Ein wohl-bekannter E-Mail-Adressat",
+      "note": "Guard P1."
+    },
+    {
+      "id": "de-ch-dashes-composition-guard-t2",
+      "rule": "dashes",
+      "mode": "text",
+      "in": ".--.",
+      "out": ".--.",
+      "note": "dashes.md §6 case 28: guard T2, since de-CH is also an en-spaced locale."
+    },
+    {
+      "id": "de-ch-hyphen-noop-compounds",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Ein E-Mail-Konto und der Nord-Süd-Verkehr",
+      "out": "Ein E-Mail-Konto und der Nord-Süd-Verkehr",
+      "note": "hyphen.md §6 case 13: all three hyphen lists are empty (Bundeskanzlei Rz. 223/224 — the only documented protected hyphen is the open-ended Ergänzungsstrich, which no literal list can express). A provable total no-op; a port that implements the rule anyway must fail here."
+    },
+    {
+      "id": "de-ch-hyphen-noop-supplementary",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Papierproduktion und -handel",
+      "out": "Papierproduktion und -handel",
+      "note": "The Ergänzungsstrich of Rz. 224 itself: normatively unbreakable and deliberately still untouched."
+    },
+    {
+      "id": "de-ch-quotes-primary-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Er sagte \"hallo\" zweimal.",
+      "out": "Er sagte «hallo» zweimal.",
+      "note": "The headline Swiss case, and it contradicts what most references and most tools assume: Swiss German uses guillemets « », and there is NO space inside them. Bundeskanzlei Rz. 201–203 prescribes « » (and forbids the German » « for official texts); Rz. 202 regulates only the space BEFORE the opening and AFTER the closing mark, and none of its examples («Zukunft für Schweizer Fahrende») sets an inner space. Hence quotes.primary.innerSpace = none and N8 does nothing — unlike fr, where the same glyphs take U+00A0 inside."
+    },
+    {
+      "id": "de-ch-quotes-primary-roundtrip",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Er sagte «hallo» zweimal.",
+      "out": "Er sagte «hallo» zweimal.",
+      "note": "The fixed point of the previous case: no space is inserted on a second pass either."
+    },
+    {
+      "id": "de-ch-quotes-inner-space-not-removed",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Er sagte « hallo » zweimal.",
+      "out": "Er sagte « hallo » zweimal.",
+      "note": "nbsp.md §3.10 and §7.4: with innerSpace = none, N8 does nothing at all — in particular it does not REMOVE a space the author typed inside the guillemets, and `spaces` deliberately excludes quotation marks from STRIP-BEFORE. So the two French-looking spaces survive. Recorded as a known gap rather than silently fixed."
+    },
+    {
+      "id": "de-ch-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Er sagte 'nein' zu mir\", notierte sie.",
+      "out": "«Er sagte ‹nein› zu mir», notierte sie.",
+      "note": "Depth 2 takes the halbe Anführungszeichen ‹ › (Rz. 201–203), not the German ‚ ‘."
+    },
+    {
+      "id": "de-ch-quotes-unbalanced",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Er sagte \"hallo",
+      "out": "Er sagte \"hallo",
+      "note": "quotes.md §3.6."
+    },
+    {
+      "id": "de-ch-apostrophe-medial",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Ich hab's gesehen",
+      "out": "Ich hab’s gesehen",
+      "note": "apostrophe.md §6 case 1."
+    },
+    {
+      "id": "de-ch-apostrophe-existing",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Ich hab’s gesehen",
+      "out": "Ich hab’s gesehen",
+      "note": "U+2019 is never examined."
+    },
+    {
+      "id": "de-ch-apostrophe-isolated-mark",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "a ' b",
+      "out": "a ' b",
+      "note": "apostrophe.md §6 case 9 and §7.4: nothing can be inferred from an isolated mark, so it stays straight — output text may legitimately still contain U+0027."
+    },
+    {
+      "id": "de-ch-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026 Iurii Rogulia",
+      "out": "Copyright © 2026 Iurii Rogulia",
+      "note": "symbols.md §6 case 1."
+    },
+    {
+      "id": "de-ch-symbols-adjacent-signs",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "(c)(r)",
+      "out": "©(r)",
+      "note": "symbols.md §5: guard S1 lists ©, ® and ™ precisely so that `(c)(r)` converges in one run instead of two."
+    },
+    {
+      "id": "de-ch-symbols-multiplication-spaced",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "A 3x5 card, 10 x 20 grid",
+      "out": "A 3×5 card, 10 × 20 grid",
+      "note": "symbols.md §6 case 5 (verbatim): the tight and the symmetric-spaced form in one string, with nothing after either chain that another rule would claim."
+    },
+    {
+      "id": "de-ch-symbols-multiplication-followed-by-unit",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Format 10 x 20 cm",
+      "out": "Format 10 × 20 cm",
+      "note": "The cross-rule case: the U+00D7 and its two ordinary spaces are `symbols` (§3.3 step 8 carries each side's space code point across unchanged), while the U+00A0 before `cm` is `nbsp` N5, because de-CH lists `cm` in beforeUnits. Two rules, two different space decisions in one string."
+    },
+    {
+      "id": "de-ch-symbols-chain-converted",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Eine 2x3x4 Schachtel",
+      "out": "Eine 2×3×4 Schachtel",
+      "note": "symbols.md §6 case 5e: the whole chain converts in ONE pass. The branch is a scan of `DIGIT+ (X DIGIT+)+` (§3.3), not a pairwise test — a pairwise implementation converts one operator per pass and never converges, which is the non-idempotency §7.10 measures in Lebedev's Typograf. The former chain guard M5 was removed rather than extended, because M2/M3 are what made a pairwise chain reject itself."
+    },
+    {
+      "id": "de-ch-symbols-plusminus-tight",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Tolerance +/-5 points",
+      "out": "Tolerance ±5 points",
+      "note": "symbols.md §6 case 5k (verbatim): the literal three code points `+/-` become U+00B1 when a digit follows."
+    },
+    {
+      "id": "de-ch-symbols-plusminus-spaced",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Tolerance +/- 5 points",
+      "out": "Tolerance ± 5 points",
+      "note": "symbols.md §6 case 5l (verbatim): one intervening U+0020 is allowed by guard F2, and the space itself is left exactly as it was — it stays U+0020 here, because nothing else claims it."
+    },
+    {
+      "id": "de-ch-symbols-plusminus-followed-by-unit",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Tolerance +/-5 mm",
+      "out": "Tolerance ±5 mm",
+      "note": "The cross-rule case for the tight form: U+00B1 from `symbols`, U+00A0 from `nbsp` N5 (beforeUnits `mm`). `symbols` never emits a no-break space."
+    },
+    {
+      "id": "de-ch-symbols-plusminus-spaced-followed-by-unit",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Tolerance +/- 5 mm",
+      "out": "Tolerance ± 5 mm",
+      "note": "And for the spaced form. Note the two spaces get different verdicts in the same token: the one between ± and 5 is left as U+0020 by guard F2, while the one between 5 and mm becomes U+00A0 under nbsp N5."
+    },
+    {
+      "id": "de-ch-symbols-plusminus-prose",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "lines marked +/- were edited",
+      "out": "lines marked +/- were edited",
+      "note": "symbols.md §6 case 5n, and the reason guard F2 requires a digit at all: prose that NAMES the characters rather than using them must survive. A changelog line or a legend is exactly the content this package runs on, and converting it would silently corrupt a sentence about the ASCII symbols themselves."
+    },
+    {
+      "id": "de-ch-symbols-plusminus-character-class",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "match [+/-] once",
+      "out": "match [+/-] once",
+      "note": "symbols.md §6 case 5o: guard F1, a regular-expression character class — the one code-like context that survives into prose about code."
+    },
+    {
+      "id": "de-ch-symbols-plusminus-bare-not-converted",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Range 5+-3",
+      "out": "Range 5+-3",
+      "note": "symbols.md §6 case 5p, §3.4 and §7.11: bare `+-` is NEVER converted, in any context, and the asymmetry with `+/-` is the design rather than an oversight — `+-` occurs in diff listings, ASCII table borders, regex classes and adjacent source operators, none of which is skipped in text mode. Do not add it later for symmetry."
+    },
+    {
+      "id": "de-ch-nbsp-abbreviation-zb",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "z. B. so",
+      "out": "z. B. so",
+      "note": "N4 — Bundeskanzlei Rz. 438, mehrgliedrige Abkürzungen."
+    },
+    {
+      "id": "de-ch-nbsp-abbreviation-zb-place",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "z. B. Bern",
+      "out": "z. B. Bern",
+      "note": "nbsp.md §6 case 14 in de-CH: guard C1-a keeps the initials sub-rule from gluing `B.` to the following capitalised word. The same false positive existed here as in de-DE."
+    },
+    {
+      "id": "de-ch-nbsp-abbreviation-four-part",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "m. a. W. so",
+      "out": "m. a. W. so",
+      "note": "N4 binds every internal space of the listed form — Rz. 438 lists m. a. W. and m. w. H. explicitly."
+    },
+    {
+      "id": "de-ch-nbsp-before-word-sankt",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "St. Gallen und St. Moritz",
+      "out": "St. Gallen und St. Moritz",
+      "note": "N10 — Rz. 438 names exactly this case: die eingliedrige Abkürzung „St.“ für „Sankt“ in Ortsnamen. Three code points, so guard G-D does not apply."
+    },
+    {
+      "id": "de-ch-nbsp-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Es sind 20 km und 5 %",
+      "out": "Es sind 20 km und 5 %",
+      "note": "N5 twice — Rz. 251, 549–550 (Zahl und Einheit) and Rz. 554 (vor % und ‰)."
+    },
+    {
+      "id": "de-ch-nbsp-unit-never-inserts",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Es sind 20km",
+      "out": "Es sind 20km",
+      "note": "nbsp.md §7.2: N5 converts, never inserts."
+    },
+    {
+      "id": "de-ch-nbsp-before-number",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "siehe S. 17 und Ziff. 3",
+      "out": "siehe S. 17 und Ziff. 3",
+      "note": "N9 — Rz. 251 („S. 17 f.“) and Rz. 727 (abgekürzte Gliederungseinheiten Kap., Art., Abs., Ziff.)."
+    },
+    {
+      "id": "de-ch-nbsp-before-number-abs-kap",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Abs. 2 und Kap. 4",
+      "out": "Abs. 2 und Kap. 4",
+      "note": "N9 on the remaining two Gliederungseinheiten."
+    },
+    {
+      "id": "de-ch-nbsp-symbol-number",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Art. 35 und § 12 und Nr. 5",
+      "out": "Art. 35 und § 12 und Nr. 5",
+      "note": "Three abbreviation-and-number forms that look alike and are reached three different ways, which is the point of the case. `Art.` binds through N9 (beforeNumber): the Schreibweisungen define Begriffszeichen in Rz. 439 as a closed list — Ziffern, %, ‰, Gedankenstrich, Schrägstrich, §, Währungszeichen, mathematische Zeichen, Einheitenzeichen — and `Art.` is not in it, while Rz. 727 puts it on the abbreviation side beside Abs., Ziff. and Kap. `§` binds through N6 (afterSymbols), where Rz. 439 does list it. `Nr.` binds through neither: it was removed from this file for want of any source that states a spacing rule for it. The difference between the three is evidence, not how German looks."
+    },
+    {
+      "id": "de-ch-nbsp-nr-unbound-pending-citation",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "siehe Nr. 5",
+      "out": "siehe Nr. 5",
+      "note": "Pinned separately so a future contributor knows exactly which fixture to flip: if DIN 5008 (paywalled, unread) turns out to state the binding, `Nr.` goes into nbsp.beforeNumber — not afterSymbols, since Rz. 439's closed list excludes it and Duden classifies it as an abbreviation — and this `out` becomes `siehe Nr.` + U+00A0 + `5`."
+    },
+    {
+      "id": "de-ch-nbsp-before-number-left-boundary",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Fig.Art. 5 und Muster-Art. 5",
+      "out": "Fig.Art. 5 und Muster-Art. 5",
+      "note": "Why the afterSymbols → beforeNumber move for `Art.` is not cosmetic. N6 asks only that the code point before the entry is not ALNUM, so both of these bound while `Art.` was an afterSymbols entry. N9's left guard is much stronger — cp[a-1] must be NONE, SPACELIKE, OPENISH or SENTENCE-DASH (nbsp.md §3.12 step 2) — so a preceding full stop or hyphen now declines the match, and neither of these binds."
+    },
+    {
+      "id": "de-ch-nbsp-initials",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "J. K. Rowling",
+      "out": "J. K. Rowling",
+      "note": "N7 clause C1 twice. bindInitials is a derivation in this locale file, not a literal Weisung — Rz. 251 names „eine Abkürzung und ein Ortsname“ and Rz. 438 the parts of multi-token abbreviations."
+    },
+    {
+      "id": "de-ch-nbsp-no-french-spacing",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Wirklich ? Ja !",
+      "out": "Wirklich? Ja!",
+      "note": "Both punctuation lists are empty: Swiss German is not French, even though it shares the guillemets."
+    },
+    {
+      "id": "de-ch-nbsp-plain-sentence",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Er ging einfach nach Hause",
+      "out": "Er ging einfach nach Hause",
+      "note": "No short word list, no abbreviation, no unit, no initial."
+    },
+    {
+      "id": "de-ch-roundtrip-typeset-sentence",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "St. Gallen liegt 20 km entfernt – siehe S. 17.",
+      "out": "St. Gallen liegt 20 km entfernt – siehe S. 17.",
+      "note": "Byte-identical round trip: a bound place-name abbreviation, a bound unit, an en-spaced dash and a bound page reference."
+    },
+    {
+      "id": "de-ch-roundtrip-quotes-and-range",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "«Die Jahre 1939–1945», sagte er.",
+      "out": "«Die Jahre 1939–1945», sagte er.",
+      "note": "Correct Swiss guillemets without inner space, plus an authored tight en-dash range that keeps its dash and gains no joiners (§3.2 step 2a, §7.14). Correctly typeset Swiss copy round-trips byte-for-byte, including the invisible layer."
+    },
+    {
+      "id": "de-ch-roundtrip-plain-prose",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Ein ganz gewöhnlicher Satz bleibt unverändert.",
+      "out": "Ein ganz gewöhnlicher Satz bleibt unverändert.",
+      "note": "No candidate for any rule."
+    },
+    {
+      "id": "de-ch-combined-sentence",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Er sagte: \"Die Strecke -- rund 20 km -- war lang...\" und ging nach St. Gallen.",
+      "out": "Er sagte: «Die Strecke – rund 20 km – war lang…» und ging nach St. Gallen.",
+      "note": "A quotation, a parenthetical dash, an ellipsis and a number with a unit in one sentence: guillemets without inner space, en-spaced dashes (never an em dash), U+2026, U+00A0 between 20 and km, and St. bound to Gallen."
+    }
+  ]
+}
