@@ -1,0 +1,57 @@
+{
+  "name": "polytypo",
+  "version": "0.0.0",
+  "description": "Multilingual microtypography: locale-correct quotes, dashes, ellipses and no-break spaces.",
+  "license": "MIT",
+  "author": "Iurii Rogulia",
+  "type": "module",
+  "private": false,
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "gen": "node scripts/gen-locales.mjs",
+    "validate:spec": "node scripts/validate-spec.mjs",
+    "test": "npm run gen && vitest run",
+    "build": "npm run gen && tsup",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.2.0",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "eslint": "^10.8.1",
+    "fast-check": "^4.9.0",
+    "globals": "^17.11.0",
+    "micromark-util-types": "^2.0.2",
+    "prettier": "^3.9.6",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.67.0",
+    "vitest": "^4.1.10"
+  },
+  "dependencies": {
+    "micromark": "^4.0.2",
+    "micromark-extension-frontmatter": "^2.0.0",
+    "micromark-extension-gfm": "^3.0.0",
+    "micromark-extension-mdxjs": "^3.0.0",
+    "parse5": "^8.0.1"
+  }
+}

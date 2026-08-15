@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+__pycache__/
+
+# generated review aid, emitted by scripts/validate-spec.mjs
+spec/fixtures/.escaped/
+
+# generated from spec/locales by scripts/gen-locales.mjs
+src/generated/
+
+.env
+.env.*
+.DS_Store
