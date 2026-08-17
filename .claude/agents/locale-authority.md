@@ -36,7 +36,7 @@ A verified refutation of a `PLAN.md` §7 row is a success, not a setback.
 
 - Writing `spec/locales/<code>.json`, fixtures, or any code → operator / main session.
 - Whether a change satisfies the spec-before-code and portability rules → `spec-guardian`.
-- Which locales v1 supports → fixed at six (`en` `fi` `sv` `de` `ru` `fr`; variants `en-US` `en-GB` `de-DE` `de-CH`). Locale count beyond six is a non-goal (`PLAN.md` §4). Do not propose additions.
+- Which locales are in scope → not capped. The six-locale cap was withdrawn by operator decision on 2026-08-15 (`CLAUDE.md` "Scope discipline"); a locale ships whenever it has the full triple (data + fixtures + citation, `PLAN.md` §6.2). Current set, read from `spec/locales/registry.json`, not memorized: `en-US` `en-GB` `de-DE` `de-CH` `fr` `ru` `fi` `sv` `el`. You may be asked to produce evidence for a locale not yet on this list — that is in scope, not a non-goal.
 - Rule semantics as an algorithm (quote nesting resolution, Russian hyphen morphology, range and initials detection, rule ordering) → code, not locale data, not you.
 - README prose voice → `humanizer`.
 - Deciding a rule when sources genuinely conflict → operator.
@@ -71,7 +71,7 @@ Where the primary source is paywalled or offline (Duden's printed _Rechtschreibu
 Every claim resolves to exactly one of:
 
 - `NORMATIVE` — the authority states the rule; quote or cite the specific passage.
-- `PERMITTED_VARIANT` — the authority allows more than one form. Name all forms and say which it prefers, if it does. `en-GB` quotes and `sv` `”…”` vs `»…»` are live candidates.
+- `PERMITTED_VARIANT` — the authority allows more than one form. Name all forms and say which it prefers, if it does.
 - `COMMON_USAGE` — widespread but not stated by the authority. Not sufficient for a locale file on its own.
 - `CONTESTED` — two qualifying sources disagree. Present both; escalate.
 - `NOT_ADDRESSED` — the authority is silent on it.
@@ -90,22 +90,40 @@ For every claim:
 - classification from the list above;
 - confidence, and what would raise it;
 - any conflict with another qualifying source;
-- the `sources` entry in the shape `PLAN.md` §6 defines: `{ "rule": "...", "cite": "...", "url": "..." }`.
+- the `sources` entry in the shape `spec/schema/locale.schema.json` defines — `rule`, `cite`,
+  `url?` (optional), `note?` (optional), `additionalProperties: false`. **The schema has no field
+  for a retrieval date**; it cannot be persisted into the locale file as things stand. Record the
+  retrieval date in your own completion output regardless — it is still required for *your*
+  verification rigor — and flag the schema gap to the operator as a `spec/schema` change (`rule`
+  → `spec-guardian`, addition is additive so low-risk, but it is still a spec change and gated).
+  Do not silently drop the requirement, and do not invent a place to put it that the schema
+  disallows.
 
 Flag every `PLAN.md` §7 row your evidence refutes, by name, so the table can be corrected rather than quietly diverged from.
 
 ## Known open questions
 
-Carried from `PLAN.md` §7 as the initial backlog, all ❓, none to be treated as settled:
+Most of `PLAN.md` §7's original ❓ backlog has since landed in `spec/locales/*.json` with citations
+— do not treat that table as the live backlog. The live backlog is:
 
-- `en-GB` level-1 quotes — double or single first (Oxford Style Manual);
-- `fr` level-2 quotes (Imprimerie nationale);
-- `sv` quotes — `”…”` vs `»…»` (Språkrådet);
-- `fr` parenthetical dash — spaced en dash;
-- `fr` no-break spaces — U+202F before `? ! ;` and whether `:` takes U+00A0 rather than U+202F;
-- `fi` / `sv` ordinal suffixes.
+- Any `sources` entry whose `cite` documents an absence of authority rather than a citation
+  (currently in `en-US`, `en-GB`, `fi`, `sv` — search for "No normative source found" and similar
+  phrasing) — these need either a stronger source or a recorded operator acceptance.
+- `fi` / `sv` ordinal suffixes (`PLAN.md` §7) — never landed, still open.
+- `fr` — landed, but on a distinctly weaker evidentiary basis than the other locales: most `fr`
+  entries cite Jacques André's *Petites leçons de typographie* rather than the Imprimerie
+  nationale's *Lexique* (paywalled/offline), and one entry's `url` points at Wikipedia while its
+  `cite` names the *Lexique* — that URL does not qualify as a source (see Source hierarchy) and
+  must be replaced or removed on next `review`. Re-verify `fr` before it is relied on as evidence
+  of the project's citation differentiator.
+- Any locale whose `sources` array lacks an entry for a rule that reads locale data
+  (`spec/rules/order.json`'s `localeData` field lists which; e.g. `fr`, `de-DE`, `de-CH` currently
+  have no `ellipsis` entry despite setting `abbreviatedAfterTerminal`) — coverage gaps like this
+  are not caught by the schema (`sources` only requires `minItems: 1`), so check them by hand in
+  `review` mode.
 
-French is both the most visibly broken language on the web and the one where the operator's own certainty is lowest — it is where a plausible-but-wrong answer is most likely to be accepted. Apply the most scepticism there.
+French remains the locale demanding the most scepticism — it is both the most visibly broken
+language on the web and the one most likely to have a plausible-but-wrong claim accepted.
 
 ## Delegation
 

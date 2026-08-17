@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
 
 permissions:
@@ -37,3 +37,8 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Check generated docs are up to date
+        run: |
+          npm run gen:docs
+          git diff --exit-code -- README.md docs/ports promo/examples.json promo/index.html

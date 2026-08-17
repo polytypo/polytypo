@@ -245,6 +245,11 @@ Locale rules split into two classes. **Do not try to express the second class in
 
 **Declarative → `locales/*.json`.** JSON rather than TypeScript objects, deliberately: the locale files become a **portable specification** that a future PHP/Python/Go port can consume unchanged, along with the same fixtures. `typopo` already has a Python port; making the data the artifact is what turns this from "another npm module" into a reusable source of truth on microtypography.
 
+> **Overridden by `ARCHITECTURE.md` §L0.** "Zod schema" below is superseded: validation is JSON
+> Schema (`spec/schema/locale.schema.json`, checked with `ajv` via `npm run validate:spec`), not
+> zod — zod is a JS library and cannot validate the spec in a Go or PHP CI job. The requirement
+> that a malformed locale file fails the build, not degrade at runtime, still holds.
+
 Validated by a zod schema at build time. A malformed locale file must fail the build, not degrade at runtime.
 
 ```jsonc

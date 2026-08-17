@@ -26,6 +26,7 @@
   },
   "scripts": {
     "gen": "node scripts/gen-locales.mjs",
+    "gen:docs": "npx tsx brand/tools/gen_examples.ts && python3 brand/tools/gen_readmes.py && python3 brand/tools/build_promo.py",
     "validate:spec": "node scripts/validate-spec.mjs",
     "test": "npm run gen && vitest run",
     "build": "npm run gen && tsup",
@@ -43,6 +44,7 @@
     "micromark-util-types": "^2.0.2",
     "prettier": "^3.9.6",
     "tsup": "^8.5.1",
+    "tsx": "^4.23.12",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.67.0",
     "vitest": "^4.1.10"
