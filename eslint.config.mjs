@@ -10,6 +10,7 @@ export default tseslint.config(
       "node_modules/**",
       "src/locales/**",
       "spec/fixtures/.escaped/**",
+      "promo/vendor/**",
     ],
   },
   eslint.configs.recommended,

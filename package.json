@@ -27,6 +27,7 @@
   "scripts": {
     "gen": "node scripts/gen-locales.mjs",
     "gen:docs": "npx tsx brand/tools/gen_examples.ts && python3 brand/tools/gen_readmes.py && python3 brand/tools/build_promo.py",
+    "gen:promo-bundle": "npm run gen && esbuild src/index.ts --bundle --format=iife --global-name=PolytypoBrowser --platform=browser --outfile=promo/vendor/polytypo.browser.js --minify",
     "validate:spec": "node scripts/validate-spec.mjs",
     "test": "npm run gen && vitest run",
     "build": "npm run gen && tsup",
