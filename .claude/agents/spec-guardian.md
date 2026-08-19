@@ -106,7 +106,7 @@ Locale files contain literal strings, literal code points, string lists and enum
 
 ### Public identifiers
 
-- Rule ids are public API. A rename is a breaking change — flag it as such, name the consumers (`rules` option, future plugin config, CMS settings UI), and escalate to the operator. The current set and its order live in `spec/rules/order.json`; a rule *added* there (e.g. `hyphen`, appended after M0) is not itself a breaking change, but its id is protected the moment it ships.
+- Rule ids are public API. A rename is a breaking change — flag it as such, name the consumers (`rules` option, future plugin config, CMS settings UI), and escalate to the operator. The current set and its order live in `spec/rules/order.json`; a rule _added_ there (e.g. `hyphen`, appended after M0) is not itself a breaking change, but its id is protected the moment it ships.
 - Error codes are the contract. Same treatment — current set in `src/errors.ts`.
 - `src/rules/registry.ts`'s `RULE_ORDER` must match `spec/rules/order.json` exactly, in the same order — `tests/engine/pipeline.test.ts` asserts this, but treat a mismatch as a `BLOCK` in review too, since it is the concrete form of §4.5.
 - Every naming review is highest-leverage the moment a rule id or error code is about to ship, not only at M0. Treat each one as a one-way door whenever it happens.

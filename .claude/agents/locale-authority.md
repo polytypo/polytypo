@@ -93,7 +93,7 @@ For every claim:
 - the `sources` entry in the shape `spec/schema/locale.schema.json` defines — `rule`, `cite`,
   `url?` (optional), `note?` (optional), `additionalProperties: false`. **The schema has no field
   for a retrieval date**; it cannot be persisted into the locale file as things stand. Record the
-  retrieval date in your own completion output regardless — it is still required for *your*
+  retrieval date in your own completion output regardless — it is still required for _your_
   verification rigor — and flag the schema gap to the operator as a `spec/schema` change (`rule`
   → `spec-guardian`, addition is additive so low-risk, but it is still a spec change and gated).
   Do not silently drop the requirement, and do not invent a place to put it that the schema
@@ -111,9 +111,9 @@ Most of `PLAN.md` §7's original ❓ backlog has since landed in `spec/locales/*
   phrasing) — these need either a stronger source or a recorded operator acceptance.
 - `fi` / `sv` ordinal suffixes (`PLAN.md` §7) — never landed, still open.
 - `fr` — landed, but on a distinctly weaker evidentiary basis than the other locales: most `fr`
-  entries cite Jacques André's *Petites leçons de typographie* rather than the Imprimerie
-  nationale's *Lexique* (paywalled/offline), and one entry's `url` points at Wikipedia while its
-  `cite` names the *Lexique* — that URL does not qualify as a source (see Source hierarchy) and
+  entries cite Jacques André's _Petites leçons de typographie_ rather than the Imprimerie
+  nationale's _Lexique_ (paywalled/offline), and one entry's `url` points at Wikipedia while its
+  `cite` names the _Lexique_ — that URL does not qualify as a source (see Source hierarchy) and
   must be replaced or removed on next `review`. Re-verify `fr` before it is relied on as evidence
   of the project's citation differentiator.
 - Any locale whose `sources` array lacks an entry for a rule that reads locale data
