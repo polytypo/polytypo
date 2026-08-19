@@ -103,8 +103,11 @@ See `spaces.md` §3.1–§3.3 for the exact definitions of `CONTENT` and the gua
 
 **Who can violate it.** Only a rule that emits U+0020. In the current pipeline that is
 `dashes` alone (`-spaced` forms). `nbsp` emits U+00A0 and U+202F, which are `CONTENT` to
-`spaces` and are never touched. Every other rule replaces code points one-for-one or shortens
-a run, and none of them can create a U+0020 or bring two apart-standing ones together.
+`spaces` and are never touched. `quotes` (0.3.0) deletes a code point inside a quote pair when
+`innerSpace = "none"`, but never a U+0020 that survives the deletion — the maximal-run deletion
+and the landing guard together ensure the two surviving neighbours are always `CONTENT`
+(`quotes.md` 3.7, 5). Every other rule replaces code points one-for-one or shortens a run, and
+none of them can create a U+0020 or bring two apart-standing ones together.
 
 ### I₂ — `ellipsis`
 
@@ -112,9 +115,12 @@ a run, and none of them can create a U+0020 or bring two apart-standing ones tog
 points long, or of length ≥ 2 containing a U+2026; plus the locale's terminal form.
 
 **Who can violate it.** Only a rule that emits U+002E or U+2026, or that deletes a code point
-standing between two such runs. No rule does either. `I₂` is unconditionally preserved and
-needs no attention from rule authors, but it is listed so that a future rule emitting a full
-stop knows it has an obligation.
+standing between two such runs. `quotes` (0.3.0) deletes code points, but only a maximal
+`INLINE-SPACE` run landing on `ALNUM ∪ QUOTEMARK` — never a code point standing between two dot
+runs, since a quote glyph is never itself U+002E/U+2026 and the deletion's landing class contains
+neither (`quotes.md` 5, composition obligation against `I₂`). `I₂` is otherwise unconditionally
+preserved and needs no attention from rule authors, but it is listed so that a future rule
+emitting a full stop knows it has an obligation.
 
 ### I₃ — `dashes`
 
@@ -127,9 +133,14 @@ is what `dashes` reads to decide whether a stroke is a parenthetical dash at all
 previously read _"`nbsp`, which inserts and converts space-like code points"_, which was true
 and was the source of two defects. `dashes` now treats both U+00A0 and U+202F as making an
 adjacent token inert (`dashes.md` §3.2 step 3), so `E(nbsp) = { U+00A0, U+202F }` is wholly
-inert for it and **CO-S** discharges the pair structurally. `quotes`, `apostrophe` and `symbols`
+inert for it and **CO-S** discharges the pair structurally. `apostrophe` and `symbols`
 replace code points one-for-one with characters in none of `dashes`' classes; `hyphen` emits
-U+2011, which `dashes` treats identically to U+002D everywhere it matters.
+U+2011, which `dashes` treats identically to U+002D everywhere it matters. `quotes` (0.3.0)
+replaces code points one-for-one with quote glyphs (also outside every `dashes` class) and, when
+`innerSpace = "none"`, deletes a maximal `INLINE-SPACE` run whose two sides are a quote glyph and
+a `DELETE-LANDING` member — neither in `DASH ∪ INERT-DASH`, so no dash run is ever adjacent to a
+deleted run and no token's `lsp`/`rsp` changes (`quotes.md` 3.7, 5, composition obligation
+against `I₃`).
 
 ### I₄ — `hyphen`
 
@@ -137,7 +148,10 @@ U+2011, which `dashes` treats identically to U+002D everywhere it matters.
 rule violates it only by changing a form's word boundaries, i.e. by inserting or removing a
 code point immediately beside a listed form. `nbsp` inserts only next to listed punctuation
 or beside a quote glyph, so the inserted space never lands between two letters; `symbols`
-deletes only `(`…`)` spans. `I₄` is preserved.
+deletes only `(`…`)` spans; `quotes` (0.3.0) deletes only a run whose landing is in
+`ALNUM ∪ QUOTEMARK`, but the deletion always removes an `INLINE-SPACE` run that is *not itself*
+inside a word — `hyphen`'s `WORDISH = ALNUM ∪ HYPHENISH` excludes both a U+0020 and a quote
+glyph, so the deletion never lands inside a listed form (`quotes.md` 5). `I₄` is preserved.
 
 ### I₅ … I₈
 
@@ -145,12 +159,20 @@ deletes only `(`…`)` spans. `I₄` is preserved.
 after it, and nothing runs after `nbsp` at all. `I₅` must be preserved by `apostrophe`,
 `symbols` and `nbsp`; `I₆` by `symbols` and `nbsp`; `I₇` by `nbsp`.
 
-These are discharged in the respective documents, and the argument in each case is the same
-shape: the later rule changes only code points whose class membership, as read by the earlier
-rule, is unchanged — or is changed only in the direction that _removes_ candidacy. `quotes`
-Claim 3 (`quotes.md` §5) is deliberately written to need only "capabilities on the second run
-are a subset of the first run's", which is exactly what makes it robust to `apostrophe` and
-`nbsp` editing its neighbours afterwards.
+`I₆` and `I₇` are discharged in the respective documents by the "later rule changes only code
+points whose class membership is unchanged, or changed only in the direction that removes
+candidacy" shape. `I₅` (0.3.0) is discharged differently, because `quotes`' own idempotency no
+longer rests on that shape at all — `quotes.md` 0.1.0's Claim 3 ("capabilities on the second run
+are a subset of the first run's") **no longer exists**; under mandate 1 a converted mark is a
+candidate again on the next run, so capabilities are not monotone and no subset argument is
+available. `quotes.md` §5's replacement is two lemmas plus a certification gate that checks its
+own output rather than relying on an argument about it: **Lemma A** (glyph-blindness — no
+candidate's verdict depends on *which* quote glyph a neighbour is) makes `apostrophe`'s emission
+structurally inert as a neighbour (Corollary A1); **Lemma B** (space-inertness at every position
+`nbsp` can reach) makes `nbsp`'s three insertion sites structurally inert. Both are CO-S
+discharges in the sense of §5.1a below, over a *reachable-position* alphabet rather than a
+whole-emission alphabet for Lemma B specifically — see `quotes.md` §5 for why the alphabet alone
+is not sufficient there.
 
 ---
 
@@ -332,6 +354,15 @@ The idempotency property test must include, in every runtime:
    |---|---|---|
    | **wide** | the consumed **and** emitted sets below | 0–5 |
    | **deep** | a core of at least `1`, `-`, U+0020, `.`, U+2060 | 0–8 |
+   | **quotes** (spec 0.3.0) | `{ U+0022, U+0027, U+002D, U+0020, a }` ∪ every distinct quote glyph in `spec/locales/registry.json`'s locales | 0–6, per locale |
+
+   **Why the quotes tier exists, separately from wide/deep.** `quotes` (0.3.0)'s worst witness —
+   `‘""-"-"` in `en-GB` — is seven code points over `{ ‘ " - }`, and the committed deep tier's
+   core alphabet cannot reach it: it has neither the apostrophe-shaped opener nor a second
+   dash. Under mandate 1, `quotes.md` §6's **consumed** and **emitted** columns coincide for the
+   first time — every glyph the rule can produce is also now something it reads — so a tier keyed
+   to that single, self-consistent alphabet is the natural unit rather than folding it into wide
+   or deep, which are keyed to different rules' emission alphabets.
 
    **Why two tiers, and why the bound moved.** A single length-4 bound was normative until
    `dashes` defect (e) — witness `1-1 - 1`, **seven characters** — shipped underneath it. Nothing
@@ -353,7 +384,7 @@ The idempotency property test must include, in every runtime:
 
    |              |                                                                                                                                                           |
    | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-   | **consumed** | `"` `'` `-` U+0020 `.` `1` `a`                                                                                                                            |
+   | **consumed** | `"` `'` `-` U+0020 `.` `1` `a`, plus U+2010 (hyphen) and U+2212 (minus sign) — spec 0.2.0 added both to `dashes`' `DASH` class (`dashes.md` §3.1)                                                     |
    | **emitted**  | every locale `quotes.*.open`/`close` glyph in the registry — at minimum `«` `»` `“` `”` `„` `‘` `’` — plus U+2013, U+2014, U+2026, U+00A0, U+202F, U+2011 |
 
    This is a normative requirement and it was learned the expensive way. **Idempotency is a
@@ -370,6 +401,20 @@ The idempotency property test must include, in every runtime:
    added**, since a new locale's quote glyphs are new output characters; and the sweep must be
    **deterministic and exhaustive** rather than sampled, so that a failure is reproducible from
    the seed-free description alone.
+
+   **Named witnesses pinned as individual conformance fixtures, not only as sweep coverage**
+   (spec 0.3.0): `‘""-"-"` (`en-GB`), `'"‘` (`ru`), `«␣**"` (`fr`), `"<p class="x">«[t](u)`
+   (`fr-CA`, `html`), `" --x"` (`en-US`), `" "`, and `«»`. Each exercises the `quotes` gate or the
+   `I₃` landing guard on a shape the general sweep would eventually reach but that a reviewer
+   should be able to find by name — see `spec/rules/quotes.md` §6.
+
+   Two more, found by running the implementation rather than specified by either design
+   document: `«"<p class="x">"` (`fr`, `html`) and `««”` (`fr`, `text`), pinned in
+   `spec/fixtures/fr.json` as `fr-quotes-030-cobug-html-tag-boundary` and
+   `fr-quotes-030-cobug-double-open-then-closer`. Both exercise `quotes.md` §3.2's V1
+   `gapInsertable` clause — without it, `nbsp` inserting a space at a position V1's literal
+   adjacency check depended on lets a pairing the gate declined on one pipeline pass certify on
+   the next, which is a CO violation (§2) rather than an ordinary idempotency defect.
 
 2. **A per-rule sweep.** The same assertion with a single rule enabled, which localises a
    failure to a rule rather than to the composition.
@@ -486,10 +531,8 @@ the **pinned version**. Both are needed, and only the second depends on data I c
    the adjacency that would make them a token. `modes.md` §5 adds one obligation this document
    cannot see: **the span partition must be stable between runs**, which constrains what code
    points a rule may emit.
-4. **The `nbsp`-before-`quotes` direction.** `quotes` Claim 3 is robust to `nbsp` reducing a
-   surviving straight mark's capabilities, and I verified that `nbsp`'s two insertion sites
-   (N1/N2 before listed punctuation, N8 beside a quote glyph) can only reduce them. That
-   verification is by case analysis over the four capability tests, not by exhaustive search
-   over locale data that lists U+0022 in `beforePunctuation` — no locale does, and nothing
-   forbids one. A schema constraint banning the straight marks from `nbsp.beforePunctuation`
-   and `nbsp.narrowBeforePunctuation` would close it. **Reported.**
+4. _(Settled, spec 0.3.0.)_ **The `nbsp`-before-`quotes` direction.** `quotes.md` §2.1's
+   constraint **Q-P** — every `nbsp.beforePunctuation`/`nbsp.narrowBeforePunctuation` entry must
+   be a member of `quotes`' `CLOSEISH` — is enforced by `scripts/validate-spec.mjs` and is what
+   makes `quotes.md` §5's Lemma B cover `nbsp`'s N1/N2 insertion sites as well as N8, by proof
+   rather than by case analysis over the shipped data alone. All ten shipped locales satisfy it.

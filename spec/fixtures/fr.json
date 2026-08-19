@@ -481,6 +481,46 @@
       "in": "Il a dit : \"Le trajet -- 20 km environ -- prendra 2 h...\" et il est parti.",
       "out": "Il a dit : « Le trajet — 20 km environ — prendra 2 h… » et il est parti.",
       "note": "A quotation, a parenthetical dash, an ellipsis and a number with a unit in one sentence: guillemets with U+00A0 inside, U+00A0 before the colon, em dashes with ordinary spaces, U+00A0 between 20 and km."
+    },
+    {
+      "id": "fr-quotes-030-already-guillemetted-with-spaces",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Il a dit « bonjour ».",
+      "out": "Il a dit « bonjour ».",
+      "note": "quotes.md §6 row 13, mandate 2's second requirement: the pair forms on the first application — quotes emits no edit because the glyphs are already right and innerSpace ≠ none — and the full pipeline's `nbsp` converts the two U+0020 to U+202F, a no-op since the input is already the fully-normalised form."
+    },
+    {
+      "id": "fr-quotes-030-bug3a-witness",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "« **\"",
+      "out": "« ** »",
+      "note": "quotes.md §6 row 3a, and the pinned pipeline-idempotency.md §6 witness «␣**\": « ∈ SPACE-RIGHT, so canClose's outer test skips the space nbsp would insert on either run, closing the run-1/run-2 asymmetry that used to make this witness fail."
+    },
+    {
+      "id": "fr-quotes-030-adversarial-interleaved",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "«a“b«c»d”e»",
+      "out": "« a“b« c »d”e »",
+      "note": "quotes.md §6, ru/el/fr/fr-CA adversarial sweep: already-curly interleaved WIDE-only text (fr's primary and secondary are both WIDE). `quotes` forms nested pairs correctly; the visible spaces are `nbsp` normalising the primary «/» occurrences independently of pairing, verified idempotent."
+    },
+    {
+      "id": "fr-quotes-030-cobug-html-tag-boundary",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "«\"<p class=\"x\">\"",
+      "out": "« \"<p class=\"x\">\"",
+      "note": "Implementation-discovered composition-obligation violation, not present in either design document, closed by quotes.md §3.2's V1 gapInsertable clause. Without it: quotes alone declines this pairing on the first application (the gate correctly catches that rendering it would place two literally-adjacent « — V1 would veto the pair on re-scan), but `nbsp` (order 70) still inserts a space after « unconditionally, and on the SECOND full-pipeline pass `quotes` sees the now-spaced text, the literal adjacency is gone, and the same pairing certifies — `nbsp` creating work for the earlier-ordered `quotes`, forbidden by pipeline-idempotency.md §2. Verified idempotent with the fix."
+    },
+    {
+      "id": "fr-quotes-030-cobug-double-open-then-closer",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "««”",
+      "out": "« « ”",
+      "note": "The second implementation-discovered witness for the same class: two adjacent « (vetoed by V1, unchanged by `quotes` alone) each get a trailing space from `nbsp`'s unconditional N8 on the first pass; without the gapInsertable clause, `quotes` would then pair the second (now-spaced) « with the trailing ” on the SECOND pass, producing » where the first pass produced nothing — a fresh non-idempotent output. Verified idempotent with the fix."
     }
   ]
 }

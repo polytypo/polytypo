@@ -1,736 +1,744 @@
 # Rule: `quotes`
 
 **Order:** 40. **Default:** on. **Modes:** text, html, markdown.
-**Spec version:** 0.1.0.
+**Spec version:** 0.3.0.
+
+---
+
+## 0. What changed from 0.1.0, and why it is a rewrite rather than a patch
+
+0.1.0's whole architecture rested on one sentence: *the rule reasons about the straight input
+marks and never about the curly output glyphs.* Two operator decisions withdraw that sentence:
+
+1. **Any existing quote glyph is a re-typesetting candidate**, this locale's own or a foreign
+   one. `«Wort»` in German prose becomes `„Wort“`. Same principle as `dashes` §3.2 step 2a
+   applies to dash length: a quote glyph's identity in ordinary prose is at least as often a
+   copy-paste artefact or unfamiliarity as a deliberate choice, and an author who wants their own
+   typography untouched has always had the option of not running the pipeline. **0.1.0 §3.8 is
+   withdrawn.**
+2. **A space touching a quote mark is sloppiness, not evidence.** `" hello"` is `“hello”`; the
+   space is deleted. `« bonjour »` is a formed pair on the first application, not only after
+   `nbsp` has touched it.
+
+Once every quote glyph is a candidate, **the rule's input alphabet equals its output alphabet**,
+and 0.1.0's idempotency proof — whose first line is "a converted position is not a candidate in
+pass 1 of the second run" — is not weakened, it is **false**. Three ideas replace it, and each
+closes one class of the four defects that motivated this revision:
+
+| Idea | Closes |
+| --- | --- |
+| **Glyph-blindness (Lemma A, §5).** Every quote mark belongs to `QUOTEMARK`, which is a member of *both* `OPENISH` and `CLOSEISH` and exempt from `canOpen`'s closeish rejection. A candidate's verdict never depends on *which* quote glyph its neighbour is. | neighbour drift; `apostrophe` (R₆) becomes structurally invisible as a neighbour |
+| **Directional space-skipping (Lemma B, §5).** `canOpen` skips a space on its inner (right) side, `canClose` on its inner (left) side, unconditionally; each reads its *outer* side literally, except at the two positions `nbsp` can insert — derived from locale data, not hand-picked. | mandate 2; a run-1/run-2 asymmetry across an `nbsp`-inserted space; an HTML span boundary the same shape exposed |
+| **Certification (the gate, §3.5).** The accepted pairing is *checked*, not proved: render the hypothetical output, re-run passes 1–2 on it, and decline pairs until the re-run reproduces the accepted set exactly. | width drift interacting with an unmatched candidate — the one remaining non-invariance, and provably non-local |
+
+The division of labour is the point. **Lemmas A and B cover what the gate cannot see** — edits
+made by *other* rules after `quotes` has run. **The gate covers everything `quotes` itself
+does** — instabilities in the vetoes, the width partition, the depth assignment — without
+anyone having to enumerate them by hand. A future change to the capability tests can break
+quality; it cannot break idempotency, because the gate checks the actual re-derivation rather
+than trusting an argument about it.
 
 ---
 
 ## 1. Purpose
 
-`quotes` converts typewriter quotation marks — U+0022 (") and U+0027 (') — into the pair of
-glyphs the locale prescribes, resolving which occurrence is an opening mark and which is a
-closing one, and alternating between the primary and secondary pairs by nesting depth. The
-whole design rests on one decision: **the rule reasons about the straight input marks and
-never about the curly output glyphs.** That is what makes Finnish and Swedish tractable,
-where the opening and the closing mark of a pair are the same code point U+201D (”); a state
-machine that scans the _output_ cannot tell those two apart and therefore cannot be
-idempotent, which is why essentially every competing library is wrong here. It is also why
-this rule is scheduled before `apostrophe` (order 50): while `quotes` runs, a straight
-U+0027 is still present and can be weighed as quotation evidence; whatever `quotes` declines
-to claim is handed on to `apostrophe`.
+`quotes` resolves every quotation mark in the text — typewriter (U+0022, U+0027) or typographic
+(`«`, `“`, `„`, `‘`, `”`, …), the locale's own or a foreign locale's — into the pair of glyphs
+the locale prescribes, alternating between the primary and secondary pairs by nesting depth, and
+normalising the spacing immediately inside each pair.
 
 ---
 
 ## 2. Locale data consumed
 
-- `quotes.primary.open`
-- `quotes.primary.close`
-- `quotes.primary.innerSpace`
-- `quotes.secondary.open`
-- `quotes.secondary.close`
-- `quotes.secondary.innerSpace`
+- `quotes.primary.open` / `.close` / `.innerSpace`
+- `quotes.secondary.open` / `.close` / `.innerSpace`
 
-`innerSpace` is **read but not acted on** by this rule; see §3.7.
+`innerSpace` is read and acted on in **one direction only**: `quotes` *deletes* an inner space
+when the assigned pair's `innerSpace` is `"none"`, and never inserts or converts one. Insertion
+and conversion stay with `nbsp` (order 70), exactly as 0.1.0 always said. See §3.7.
 
-**Evidence for locale data.** A locale attests **membership** — which tokens, which enum value, which boolean — and the rule owns the **mechanism** applied to them. A `sources` citation is not required to name a code point or a behaviour the locale file has no way to vary. Stated once, normatively, in [nbsp.md](nbsp.md) §2.1; it governs every locale field. Every other field of the
-locale file is ignored.
+### 2.1 Two new normative locale constraints
+
+Both are needed by §5's proof. **All ten shipped locales already satisfy both**, verified against
+`spec/locales/*.json`:
+
+- **Q-W — a pair is width-homogeneous.** For each of `primary` and `secondary`, `open` and
+  `close` must have the same quote *width* (§3.1). Without it a formed pair straddles both
+  stacks after rendering and the gate would decline every pair in a same-glyph document.
+- **Q-A — a spaced pair must not use the apostrophe glyph.** If `innerSpace ≠ "none"`, neither
+  `open` nor `close` may be U+2019. Without it `apostrophe`'s output would land in a
+  `nbsp`-insertion-adjacent skip set and Lemma A's corollary would break.
+
+One constraint belongs to `nbsp`'s data and is stated normatively in `nbsp.md` §2:
+
+- **Q-P — every code point in `nbsp.beforePunctuation` and `nbsp.narrowBeforePunctuation` must
+  be a member of this rule's `CLOSEISH`.** This is what makes Lemma B cover N1/N2 as well as N8.
+  The shipped lists (`:`, `;`, `!`, `?` in `fr`/`fr-CA`, empty elsewhere) satisfy it.
+
+**Evidence for locale data.** A locale attests **membership**; the rule owns the **mechanism**.
+Stated normatively in `nbsp.md` §2.1; it governs every locale field this rule reads.
 
 ---
 
 ## 3. Algorithm
 
-Input is a code-point array `cp[0 … n-1]`. The rule is four passes over that array plus a
-constant-time emit; none of them uses backtracking or a regular expression.
+Input is a code-point array `cp[0 … n-1]`. Five passes plus an emit; no backtracking inside a
+pass, no regular expression, no native-string indexing.
 
 ### 3.1 Character classes
 
-| Class       | Members                                                                                                                                                                                          |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `DQ`        | U+0022 (quotation mark)                                                                                                                                                                          |
-| `SQ`        | U+0027 (apostrophe)                                                                                                                                                                              |
-| `STRAIGHT`  | `DQ` ∪ `SQ`                                                                                                                                                                                      |
-| `DIGIT`     | U+0030–U+0039                                                                                                                                                                                    |
-| `LETTER`    | general category `Lu`, `Ll`, `Lt`, `Lm`, `Lo`, `Mn`, `Mc`, `Me` (combining marks count as letter-continuation)                                                                                   |
-| `ALNUM`     | `LETTER` ∪ `DIGIT`                                                                                                                                                                               |
-| `SPACELIKE` | U+0020, U+0009, U+00A0, U+202F, U+2007, U+2009, U+200A, and every member of `BREAK`                                                                                                              |
-| `BREAK`     | U+000A, U+000D, U+000B, U+000C, U+0085, U+2028, U+2029                                                                                                                                           |
-| `OPENISH`   | U+0028 `(` U+005B `[` U+007B `{` U+00AB `«` U+2018 U+201A U+201B U+201C U+201E U+201F U+2039 `‹` U+301D, plus every member of `STRAIGHT`                                                         |
-| `CLOSEISH`  | U+0029 `)` U+005D `]` U+007D `}` U+00BB `»` U+2019 U+201D U+203A `›` U+002C `,` U+002E `.` U+003B `;` U+003A `:` U+0021 `!` U+003F `?` U+2026 `…` U+2013 U+2014, plus every member of `STRAIGHT` |
-| `DASHISH`   | U+002D, U+2011, U+2013, U+2014. U+2011 is present because `hyphen` (order 35) converts U+002D to it; without it a candidate's classification would flip between pipeline runs (`hyphen.md` §3.2) |
-| `NONE`      | the pseudo-class of "index out of range"                                                                                                                                                         |
+| Class | Members |
+| --- | --- |
+| `DQ` | U+0022 |
+| `SQ` | U+0027 |
+| `STRAIGHT` | `DQ` ∪ `SQ` |
+| `WIDE` | U+0022, U+00AB, U+00BB, U+201C, U+201D, U+201E, U+201F, U+301D, U+301E, U+301F |
+| `NARROW` | U+0027, U+2018, U+2019, U+201A, U+201B, U+2039, U+203A |
+| `QUOTEMARK` | `WIDE` ∪ `NARROW` (disjoint) |
+| `DIGIT` | U+0030–U+0039 |
+| `LETTER` | general categories `Lu Ll Lt Lm Lo Mn Mc Me` |
+| `ALNUM` | `LETTER` ∪ `DIGIT` |
+| `BREAK` | U+000A, U+000D, U+000B, U+000C, U+0085, U+2028, U+2029, plus `LINE_MARKER` |
+| `INLINE-SPACE` | U+0020, U+0009, U+00A0, U+202F, U+2007, U+2009, U+200A |
+| `SPACELIKE` | `INLINE-SPACE` ∪ `BREAK` |
+| `OPENISH` | U+0028 `(` U+005B `[` U+007B `{`, `MARKER`, ∪ `QUOTEMARK` |
+| `CLOSEISH` | U+0029, U+005D, U+007D, U+002C, U+002E, U+003B, U+003A, U+0021, U+003F, U+2026, U+2013, U+2014, `MARKER`, ∪ `QUOTEMARK` |
+| `DASHISH` | U+002D, U+2011, U+2013, U+2014 |
+| `DELETE-LANDING` | `ALNUM` ∪ `QUOTEMARK` |
+| `NONE` | the pseudo-class "index out of range" |
 
-`STRAIGHT` deliberately belongs to **both** `OPENISH` and `CLOSEISH`.
+**`QUOTEMARK` is a member of both `OPENISH` and `CLOSEISH`, and is exempt from `canOpen`'s
+closeish rejection** — the same dual membership `STRAIGHT` had in 0.1.0, widened to the whole
+class. This is Lemma A's entire mechanism and must not be simplified back to per-glyph lists.
+`MARKER` keeps its 0.1.0 treatment (`modes.md` §3.3): in both classes, exempt from the
+rejection, and **not** in `SPACELIKE`, so no skip walk ever crosses a span boundary.
 
-**Unicode version.** The general categories and case mappings this rule reads are those of the UCD version pinned in `spec/UNICODE` (`17.0`). The pin is normative for the **derived tables**, not for the host runtime — see [pipeline-idempotency.md](pipeline-idempotency.md) §6a, which also specifies the canary fixtures that make the pin detectable. This is not sloppiness:
-it guarantees that replacing a neighbouring straight mark with a curly glyph (which is in
-exactly one of the two classes) can only ever _remove_ a capability from a neighbouring
-candidate, never add one. That monotonicity is the load-bearing part of the idempotency
-proof — see §5, Claim 2.
+**Deliberately excluded from `QUOTEMARK`:** U+2032/U+2033 (primes — a separate rule with its own
+false-positive profile, §7), U+02BC (a `Lm` letter), U+0060 and U+00B4. Neither candidates nor
+produced.
 
-**The classes do not track the open/close _role_, and must not be read as if they did.** An
-earlier revision of this document required a locale's declared `open` glyph to be in `OPENISH`
-and its `close` glyph in `CLOSEISH`. That constraint is false for half the shipped locales and
-has been withdrawn:
+**Unicode version.** As 0.1.0: the pinned UCD in `spec/UNICODE` is normative for the derived
+tables, not for the host runtime (`pipeline-idempotency.md` §6a).
 
-| Locale     | Declaration                | Class of the glyph |
-| ---------- | -------------------------- | ------------------ |
-| `fi`, `sv` | primary `open` = U+201D    | `CLOSEISH`         |
-| `fi`, `sv` | secondary `open` = U+2019  | `CLOSEISH`         |
-| `de-DE`    | primary `close` = U+201C   | `OPENISH`          |
-| `de-DE`    | secondary `close` = U+2018 | `OPENISH`          |
-| `ru`       | secondary `close` = U+201C | `OPENISH`          |
+**A declared quote glyph must not be in `SPACELIKE`, `ALNUM` or `STRAIGHT`**, and by Q-W must
+share its pair's `WIDE`/`NARROW` bucket with its partner glyph. `singleChar` in
+`locale.schema.json` enforces the `STRAIGHT` exclusion.
 
-Those locale files are right — they are cited to Kotus, Språkrådet and Duden — so the
-constraint was what was wrong. A glyph's class reflects the _shape_ it most often has in
-running text, which is what makes it useful for classifying a **neighbouring** candidate; it
-says nothing about the role the glyph plays in the locale that declared it.
+### 3.1a Locale-derived skip sets
 
-The actual normative requirement, which is all the idempotency proof needs, is:
+Computed once per call, from locale data alone:
 
-> **A declared quote glyph must not be in `SPACELIKE`, must not be in `ALNUM`, and must not be
-> in `STRAIGHT`.** The last is enforced by `locale.schema.json`'s `singleChar`; the first two
-> hold for every quotation glyph in Unicode and are stated so that the proof can cite them.
+```
+SPACE-RIGHT = { p.open  : p ∈ {primary, secondary}, p.innerSpace ≠ "none", p.open ≠ p.close }
+SPACE-LEFT  = { p.close : p ∈ {primary, secondary}, p.innerSpace ≠ "none", p.open ≠ p.close }
+```
 
-No constraint on `OPENISH`/`CLOSEISH` membership is needed at all — see §5, Claim 2, which
-shows that every test mentioning those classes is _already satisfied_ by a `STRAIGHT`
-neighbour, so replacing one can only ever degrade a capability regardless of which class the
-replacement lands in. As it happens every glyph in the two lists above belongs to exactly one
-of them, which is worth knowing but is not relied upon.
-
-A locale introducing a glyph absent from both lists must add it to whichever list matches its
-shape; that is a spec change, and it affects only how _neighbouring_ candidates are read.
+These are **exactly the positions at which `nbsp` N8 can insert a space** (`nbsp.md` §3.10;
+`nbsp.ts` `quotesSubRule` skips a pair whose `open` equals its `close`, and skips
+`innerSpace: "none"`). For the ten shipped locales: `SPACE-RIGHT = {«}` and `SPACE-LEFT = {»}`
+in `fr` and `fr-CA`; both empty everywhere else. The sets are derived from the *reason*, not
+hand-written — if a locale gains a spaced pair, they follow automatically and Lemma B keeps
+holding.
 
 ### 3.2 Pass 1 — collect and classify candidates
 
-Walk `i` from `0` to `n-1`. For each `i` with `cp[i]` in `STRAIGHT`, compute
+Walk `i` from `0` to `n-1`. Skip unless `cp[i] ∈ QUOTEMARK`. Write `g = cp[i]` and compute four
+neighbour reads:
 
-- `left = cp[i-1]` if `i > 0`, else `NONE`;
-- `right = cp[i+1]` if `i+1 < n`, else `NONE`;
+- `Llit = cp[i-1]`, or `NONE`; `Rlit = cp[i+1]`, or `NONE`;
+- `Lskip` = the first `cp[j]`, `j < i` descending, with `cp[j] ∉ INLINE-SPACE`; `NONE` if the
+  walk leaves the array;
+- `Rskip` = symmetric to the right.
 
-and derive two booleans:
+`MARKER` and every `BREAK` stop a skip walk, because neither is in `INLINE-SPACE` — a skip never
+crosses a span boundary or a line terminator.
 
-- `canOpen` is true iff
-  (`left` is `NONE`, or `left` is in `SPACELIKE`, or `left` is in `OPENISH`, or `left` is
-  in `DASHISH`)
-  **and** (`right` is not `NONE`, `right` is not in `SPACELIKE`, and `right` is not in
-  `CLOSEISH` — except that a `right` which is in `STRAIGHT` does not disqualify).
-- `canClose` is true iff
-  (`left` is not `NONE` and `left` is not in `SPACELIKE`)
-  **and** (`right` is `NONE`, or `right` is in `SPACELIKE`, or `right` is in `CLOSEISH`, or
-  `right` is in `DASHISH`).
+Then two *directed* reads:
 
-Then apply the **medial-apostrophe veto**, which applies to `SQ` only:
+- `openLeft` = `Lskip` if `g ∈ SPACE-LEFT`, else `Llit`;
+- `closeRight` = `Rskip` if `g ∈ SPACE-RIGHT`, else `Rlit`.
 
-- if `cp[i]` is in `SQ` and `left` is in `ALNUM` and `right` is in `ALNUM`, then set both
-  `canOpen` and `canClose` to false. The mark is `don't`, `l'été`, `O'Brien`, `1990's`,
-  `нью-йорк'ский`. It is not a quotation mark under any reading and must be left for
-  `apostrophe`.
+The two capabilities:
 
-Then apply the **same-kind adjacency veto**, which applies to both kinds:
+```
+canOpen  ⟺ ( openLeft = NONE ∨ openLeft ∈ SPACELIKE ∨ openLeft ∈ OPENISH ∨ openLeft ∈ DASHISH )
+         ∧ ( Rskip ≠ NONE ∧ Rskip ∉ SPACELIKE
+             ∧ ( Rskip ∉ CLOSEISH ∨ Rskip ∈ QUOTEMARK ∨ Rskip = MARKER ) )
 
-- if `left` is in `STRAIGHT` and `left` is the _same code point_ as `cp[i]`, or `right` is in
-  `STRAIGHT` and is the same code point as `cp[i]`, then set both `canOpen` and `canClose` to
-  false.
+canClose ⟺ ( Lskip ≠ NONE ∧ Lskip ∉ SPACELIKE )
+         ∧ ( closeRight = NONE ∨ closeRight ∈ SPACELIKE ∨ closeRight ∈ CLOSEISH ∨ closeRight ∈ DASHISH )
+```
 
-In other words `""` and `''` — two adjacent identical typewriter marks — are not quotation
-marks and are dropped outright. `"'` and `'"`, two adjacent marks of _different_ kinds, are
-untouched by this veto: that is the ordinary shape of a nested quotation opening or closing at
-the same point (`"'Tis so,"`, `Hän sanoi "moi"`, `…'moi'"`), and vetoing it would cost far
-more than it buys.
+`Rskip`/`Lskip` can still be a `BREAK` (a skip walk stops there), which is why both
+`∉ SPACELIKE` tests are retained: a mark at a line end does not open across the break, a mark at
+a line start does not close back over it.
 
-This veto replaces the empty-pair discard that used to live in pass 2, and it is the repair
-for the idempotency defect in §5.4. The property that makes it work is that it is
-**self-reinforcing**: a mark is vetoed only because an identical straight mark sits next to
-it, and that neighbour is vetoed for the same reason, so neither is ever a candidate, neither
-is ever converted, and the veto's verdict can never change between runs.
+**Why this exact asymmetry.**
 
-Record a candidate record `{index, kind ∈ {DQ, SQ}, canOpen, canClose}` for every `i` with at
-least one of the two booleans true. Candidates with both false are dropped and are never
-touched by this rule.
+- `canOpen` skips right and `canClose` skips left: each capability treats its *inner* side — the
+  side facing the quoted text under that hypothesis — as noise. That is mandate 2, stated once
+  and applied uniformly, unconditionally, on every locale.
+- Each capability reads its *outer* side literally. The outer space is not noise, it is the
+  evidence. `"hi" to me` is a closing mark **because** a space follows it; skipping that space
+  (reading `t`) would destroy the commonest closing shape in every language. `He said "hi. She
+  said "bye."` is preserved by exactly this: the first mark's `closeRight` is the letter `h`, so
+  it is `canOpen` only, and the stray mark cannot swallow the real quotation.
+- The two exceptions to "outer side is literal" are *derived*, not chosen: `nbsp` can insert on
+  the right of a `SPACE-RIGHT` glyph and the left of a `SPACE-LEFT` glyph, and those are the only
+  two outer reads it can reach. Making exactly those two reads skip is what makes every verdict
+  inert to `nbsp` (Lemma B).
 
-Note what pass 1 does **not** do: it does not decide that a `SQ` with a letter on the right
-and a space on the left is a leading elision (`’90s`, `’tis`). Such a mark is `canOpen` and
-enters the pairing; if it finds no partner it survives untouched and `apostrophe` will render
-it as U+2019. The pairing, not a heuristic, settles the ambiguity.
+**Medial-elision veto** (`NARROW` marks only, literal reads):
 
-### 3.3 Pass 2 — pair the candidates, one stack per kind
+> if `g ∈ NARROW` and `Llit ∈ ALNUM` and `Rlit ∈ ALNUM`, set both capabilities false.
 
-**There are two stacks, one for `DQ` and one for `SQ`, and a candidate only ever touches the
-stack for its own kind.** A double mark closes only a double mark and a single mark only a
-single one. Each stack entry is a candidate record.
+`don't`, `l'été`, `O'Brien`, `1990's` — and, on a second pipeline pass, `don't` with U+2019,
+because `apostrophe` has converted the mark and U+2019 is also `NARROW`. Widening from `SQ` to
+`NARROW` is what makes `apostrophe`'s output inert here.
 
-This is the one place where the shape of the input, rather than the locale, decides: **no
-reader opens a quotation with `"` and closes it with `'`**, in any language, so a mixed pair is
-never the right answer and does not need a locale to rule it out.
+**V1 — same-code-point adjacency veto** (both widths):
 
-Nesting still interleaves, and that is worth stating because a single shared stack was
-originally chosen for exactly that reason. `"He said 'no' twice"` puts each kind on its own
-stack, the `SQ` pair closes inside the `DQ` pair, and both come out right — because **genuine
-nesting is balanced within each kind**. What a shared stack additionally accepted was
-_unbalanced_ input, where the innermost open mark is of the other kind; that is not nesting,
-and treating it as nesting is what destroyed the Greek sentence in §5.5.
+> Let `gapInsertable = g ∈ SPACE-RIGHT ∨ g ∈ SPACE-LEFT`. If
+> `Llit = g`, or (`Llit ∈ INLINE-SPACE` and `Lskip = g` and `gapInsertable`), set both
+> capabilities false. Symmetrically for `Rlit`/`Rskip`.
 
-Walk the candidate list in index order. For candidate `c`, let `S` be the stack for `c.kind`:
+`""`, `''`, `««`, `””` and any longer run of one glyph, by the first (literal) clause. This is
+0.1.0's veto, generalised, and it keeps the `"""a""` witness dead and `"a "" b"` intact.
+**Granularity is deliberately "same code point", not "same width"**: the narrower test
+reproduces both witnesses, and a width-based test would veto the ordinary mixed boundary `"'`.
 
-1. If `c.canClose` is true and `S` is non-empty, pop the top entry `o` from `S` and record the
-   pair `(o.index, c.index)`. Depth is **not** taken from the stack height here; see §3.4.
-2. Else if `c.canOpen` is true, push `c` onto `S`.
+**The second clause is not in either design document that fed this revision, and closes a
+composition-obligation violation found only by running the implementation.** A literal-only V1
+lets the certification gate correctly decline a pairing when rendering it would place two
+identical glyphs strictly adjacent (e.g. `«` immediately left of a mark the gate would render to
+`«`) — but if `nbsp` (a *later* rule) subsequently inserts a space at exactly that gap, on the
+*next* full-pipeline pass `quotes` sees the two occurrences with a space between them, the
+literal adjacency is gone, and the *same* pairing certifies. That is `nbsp` creating work for an
+earlier-ordered rule, forbidden by `pipeline-idempotency.md` §2's composition obligation, and it
+reproduces with two witnesses, pinned in `spec/fixtures/fr.json` as `fr-quotes-030-cobug-html-tag-boundary`
+(`«"<p class="x">"` in `html` mode) and `fr-quotes-030-cobug-double-open-then-closer` (`««”` in
+`text` mode). The fix reads the
+skip in exactly the two positions Lemma B (§5) already names as `nbsp`'s whole insertion
+surface next to a quote mark — a candidate's own `g` value is shared identically with the
+same-glyph neighbour a skip reaches, so checking `g`'s own `SPACE-RIGHT`/`SPACE-LEFT` membership
+covers both of Lemma B's insertion sites at once, regardless of which of the two occurrences is
+on which side of the gap. **A plain skip-based V1** (comparing `Lskip`/`Rskip` to `g`
+unconditionally, with no `gapInsertable` guard) **was tried and rejected**: it also vetoes two
+genuinely distinct, space-separated quotations (`'a' 'b'`, ordinary prose, not a typewriter
+artefact) in every locale, including ones with no spaced pair at all — the guard is what keeps
+the veto scoped to positions `nbsp` can actually reach.
+
+Under mandate 1 the veto is **no longer permanent** — a converted mark can acquire or lose an
+identical neighbour between runs — and that is stated rather than papered over: **the gate
+(§3.5), not this veto, is the guarantor of stability against `quotes`' own re-derivation.** The
+`gapInsertable` clause is what extends that guarantee to survive `nbsp` acting *between*
+pipeline passes, which the gate alone — being a property of a single call — cannot see.
+
+Record `{ index, width ∈ {WIDE, NARROW}, canOpen, canClose }` for every `i` with at least one
+capability true. Candidates with both false are dropped and never touched.
+
+Pass 1 still does **not** decide that a `NARROW` mark with a letter to the right and a space to
+the left is a leading elision. It is `canOpen` and enters the pairing; if it finds no partner it
+survives and `apostrophe` renders it U+2019. The pairing settles the ambiguity, not a heuristic.
+
+### 3.3 Pass 2 — pair the candidates, one stack per width
+
+**There are two stacks, one for `WIDE` and one for `NARROW`, and a candidate only ever touches
+the stack for its own width.** 0.1.0's per-kind split generalised from "the literal code point
+`DQ`/`SQ`" to "the glyph's visual width" — the property that actually carried the argument: no
+reader opens a quotation with a double mark and closes it with a single one, in any language.
+This is what keeps a Greek elision (`σ'`, `NARROW`) from closing a `WIDE` opener.
+
+Walk the candidate list in index order. For candidate `c`, let `S` be the stack for `c.width`:
+
+1. If `c.canClose`, `S` is non-empty, and **`¬vacuous(top(S).index, c.index)`** → pop `o`, record
+   the pair `(o.index, c.index)`.
+2. Else if `c.canOpen` → push `c` onto `S`.
 3. Else record `c` as unmatched.
 
-When the walk ends, every candidate still on either stack is recorded as unmatched.
+When the walk ends, everything still on either stack is unmatched.
 
-**The three outcomes are unchanged, so Claim 3's partition survives intact.** Splitting the
-stack does not add a fourth outcome; it only narrows which entry step 1 can pop. Every
-statement of the proof in §5 holds verbatim once "the stack" is read as "the stack for its
-kind", because a candidate never inspects, pushes to, or pops from the other kind's stack. The
-per-kind form is a strict generalisation: with one kind present, the two formulations are
-identical.
+> **`vacuous(a, b)`** ⟺ every `cp[k]` with `a < k < b` is in `INLINE-SPACE` (vacuously true when
+> `b = a + 1`).
 
-**Pass 2 has exactly three outcomes — paired, pushed, or step 3 — and every candidate reaches
-exactly one of them.** That exhaustiveness is not a stylistic preference; Claim 3 of §5
-partitions the unmatched candidates into "left on the stack" and "reached step 3", and a
-fourth outcome makes the partition wrong and the proof unsound. A previous revision had one:
-an empty-pair branch that popped the opener and recorded both marks unmatched, leaving the
-opener in neither class. §5.4 documents the defect that caused. **Do not add a fourth
-outcome to this list.** The empty-pair case it existed for is now handled in pass 1, where
-the verdict depends only on immutable data.
+**The vacuity condition is new and is forced by mandate 1.** In 0.1.0 an empty pair was
+impossible: two adjacent marks of the same kind were vetoed by V1, and two of different kinds
+were on different stacks. Now `«»` is two *different* code points of the *same* width, and `" "`
+is two identical marks V1 cannot see past a space; both would enclose no content. The condition
+sits in step 1 rather than as a fourth outcome: a closer that fails step 1 **falls through to
+step 2 and then step 3**, so every candidate still reaches exactly one of three outcomes and the
+accepted/unmatched partition stays exhaustive — that exhaustiveness is what makes the "declined"
+set well-defined for the gate. **Do not add a fourth outcome to this list.**
 
-Step 1 is tried **before** step 2, i.e. closing takes precedence over opening when a candidate
-could be either. This is a **tie-break for an uncommon shape, not something that governs
-ordinary prose**, and it is worth being precise about which shape, because the obvious
-illustrations are all wrong.
-
-A candidate is both `canOpen` and `canClose` only when its `left` is in `OPENISH` ∪ `DASHISH`
-(it must be neither `NONE` nor `SPACELIKE`, or `canClose` fails; and it must be one of those
-two classes, or `canOpen` fails) **and** its `right` is in `STRAIGHT` ∪ { U+002D, U+2011 } (the
-only code points that `canClose`'s right-test accepts and `canOpen`'s right-test does not
-reject). Running text essentially never produces that combination — which is why the precedence
-almost never fires, and why it still has to be specified: two implementations that disagree
-about it would diverge silently on the inputs where it does.
-
-A minimal input that exercises it, in `en-US`:
-
-|                      |                                                                                                                               |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| input                | `"a ("-b"`                                                                                                                    |
-| the ambiguous mark   | index 4: `left` is U+0028 (in `OPENISH`), `right` is U+002D (in `DASHISH`, and not in `CLOSEISH`) — so both booleans are true |
-| step 1 before step 2 | the mark **closes** the quotation opened at index 0 → `“a (”-b"`                                                              |
-| step 2 before step 1 | the mark would **open** instead, and the mark at index 7 would close it → `"a (“-b”`                                          |
-
-Both outputs are stable, so idempotency does not choose between them; the spec does.
-
-An earlier revision of this document illustrated the precedence with `"He said "hi.""`. That example is
-now **wrong**: the two trailing marks are identical and adjacent, so the pass 1 veto (§3.2)
-drops them, and the input comes back byte-identical with no pair anywhere. The behaviour is
-correct; the example simply no longer exercises what it was cited for.
-
-**Pairing is per-kind, and the old objection to that does not transfer.** An earlier revision
-of this section said the opposite — that pairing is kind-agnostic, that requiring the kinds to
-match "would let a closer skip a mismatched top of stack, which reintroduces exactly the
-non-exhaustive fourth outcome". That objection was sound **against the design it was aimed at**,
-and only against that one: _kind-matching on a single shared stack_. There, a closer that finds
-a mismatched entry on top has to do something with it, and both available answers are wrong —
-popping it pairs across kinds, skipping it is a fourth outcome and Claim 3's partition collapses.
-
-**Two independent stacks remove the choice rather than resolving it.** A closer never inspects
-the other kind's stack, so it never encounters a mismatched top, so there is nothing to skip.
-Step 1's condition is exactly `canClose ∧ own stack non-empty`, the three outcomes stand, and
-Claim 3 holds verbatim once "the stack" is read as "the stack for its kind".
-
-The witness that was cited against kind-matching now passes: `"a 'b" c'` in `en-US` put the
-marks at indices 3 and 8 together on the first run and 0 and 5 on the second, because one shared
-stack interleaved them. With per-kind stacks the `DQ` at 0 pairs with the `DQ` at 5 and the `SQ`
-at 3 with the `SQ` at 8, both on the first run, and the second run has no candidates left. The
-witness disproved kind-matching-on-one-stack; it never disproved this.
-
-**No pair can enclose zero code points.** A pair needs two candidates of the same kind (§3.3),
-and two _adjacent_ marks of the same kind have already been dropped by the pass 1 veto, so an
-empty pair cannot be formed at all. Two adjacent marks of _different_ kinds are not a pair
-either, for the same reason they are not a pair anywhere else — pairing is per-kind: `"'` is
-left exactly as written and is never emitted as `“”`. No guard is spent on any of this; it
-falls out of §3.3.
+Step 1 before step 2 — **closing takes precedence** — is retained unchanged. An `«` whose
+right-hand space `nbsp` inserted reads `closeRight = Rskip`, exactly as it did before `nbsp`
+touched it, so the tie-break's ambiguity does not shift under mandate 1.
 
 ### 3.4 Pass 3 — assign glyphs by depth
 
-The **depth** of a recorded pair `p` is
+For a set of pairs `A`, the **depth** of `p ∈ A` is
 
-> `depth(p) = 1 + ` the number of recorded pairs `q` with `q.open < p.open` and
-> `p.close < q.close`
+> `depth_A(p) = 1 + |{ q ∈ A : q.open < p.open ∧ p.close < q.close }|`
 
-— that is, one plus the number of _successfully paired_ quotations that strictly enclose it.
-Depth is computed from the finished pair list, **not** from the stack height at the moment of
-popping, because the stack may hold candidates that never find a partner. In
-`He said "hi. She said "bye."` the stack holds the unmatched first mark while the second pair
-is closed; counting stack height would make that pair depth 2 and emit a secondary-level
-quotation for what a reader sees as a first-level one. Counting enclosing _pairs_ gives
-depth 1, which is correct.
+— one plus the number of *accepted* pairs that strictly enclose it. Odd depth → `quotes.primary`;
+even depth → `quotes.secondary`. Depths beyond 2 alternate by the same parity.
 
-For each recorded pair at depth `d` (`d ≥ 1`):
+**Depth is computed over the accepted set `A`, not over the raw pass-2 output.** On a second run
+the accepted set *is* the raw set, so a depth taken over the raw set on run 1 and over the
+accepted set on run 2 would disagree whenever the gate declined anything. Depth over `A` agrees
+on both runs by construction.
 
-- if `d` is odd → use `quotes.primary`;
-- if `d` is even → use `quotes.secondary`.
+**Depth, not the mark's original width, selects the pair.** `'He said "no" to me,' she noted.`
+promotes the outer `NARROW` marks to `en-US`'s `WIDE` primary pair and demotes the inner ones —
+the reason width drift exists at all, and the case the certification gate exists to re-verify.
 
-Depth, not the kind of the straight mark, selects the pair. In `'He said "hi"'` the outer
-single marks are depth 1 and become the locale's primary pair, and the inner double marks
-become the secondary pair — that is the point of normalising to a house style. In the
-overwhelmingly common `"He said 'hi'"` the parity and the typewriter convention agree.
+### 3.5 Pass 4 — the certification gate
 
-Depths beyond 2 alternate by the same parity rule (depth 3 → primary, depth 4 → secondary).
-Real prose essentially never goes there; the parity rule is specified only so that two
-implementations cannot disagree.
+This pass replaces 0.1.0's Claims 1–3. It is a *check the algorithm performs*, not a property a
+reader must verify by argument alone.
 
-### 3.5 Pass 4 — emit
+**Rendering.** `render(cp, A)` is the array obtained by applying, for every `p ∈ A` with assigned
+pair `P = pairFor(depth_A(p))`:
 
-For each pair, emit two edits: replace the code point at the opening index with the chosen
-pair's `open` code point, and the code point at the closing index with its `close` code
-point. Each edit is exactly one code point replacing exactly one code point; no insertion,
-no deletion, no reflow.
+- replace `cp[p.open]` with `P.open` and `cp[p.close]` with `P.close`;
+- **if and only if `P.innerSpace = "none"`**, delete the pair's two *inner runs* where the
+  landing guard permits:
+  - the **open-side run** = the maximal `INLINE-SPACE` run starting at `p.open + 1` (possibly
+    empty); its **landing** is the first code point past it;
+  - the **close-side run** = the maximal `INLINE-SPACE` run ending at `p.close - 1`; its landing
+    is the first code point before it;
+  - a run is deleted iff it is non-empty, its landing is in `DELETE-LANDING`, and it is not
+    simultaneously both of the pair's runs (a pair enclosing nothing but spaces deletes
+    neither — unreachable for an accepted pair given §3.3's vacuity condition, but stated because
+    the construction is otherwise silent about it).
 
-Unmatched candidates produce no edit. They remain U+0022 or U+0027 in the output.
+`render` also yields the order-preserving index map `π` from surviving input indices to output
+indices.
 
-### 3.6 Unbalanced quotes are left alone — and why
+**Certification loop.**
 
-An odd number of quotation marks, or a closing mark with nothing open, means the text does
-not say what the author meant it to say. Three responses are available: guess, refuse the
-whole text, or convert what is unambiguous and leave the rest.
+```
+A := the pair set from pass 2
+loop:
+    if A = ∅:                                   accept ∅ and stop
+    (y, π) := render(cp, A)
+    B := passes 1–2 applied to y                (raw, ungated)
+    if { (π(p.open), π(p.close)) : p ∈ A } = B: accept A and stop
+    A' := { p ∈ A : (π(p.open), π(p.close)) ∈ B }
+    if A' = A:  A := A \ { the pair of A with the greatest `open` index }
+    else:       A := A'
+```
 
-This rule converts what is unambiguous and leaves the rest, for three reasons:
+**Every clause is normative, including the tie-break.** When the intersection fails to shrink
+`A` — exactly when `B ⊋ π(A)`, i.e. the rendered array admits a pairing the input did not — one
+pair is removed, and *which* pair is specified so two ports cannot disagree.
 
-1. **Guessing corrupts silently.** A stray `"` at the start of a pasted paragraph would, under
-   a sequential 1st-is-open/2nd-is-close scheme, shift every subsequent quotation in the
-   paragraph by one, turning every opening mark into a closing one. The damage is invisible
-   in a diff full of curly glyphs and unbounded in extent. The ship criterion is zero false
-   positives (PLAN.md M4).
-2. **Refusing the whole text is worse than useless** in `html`/`markdown` mode, where one bad
-   text node would disable the rule for a page.
-3. **Leaving a straight mark is honest and recoverable.** A surviving `"` is visible to the
-   author, who can fix the source. A wrongly-curled `”` is not.
+**Termination.** Each iteration either accepts or strictly shrinks `A`. `A` is finite and `∅`
+accepts unconditionally, so the loop runs at most `|A₀| + 1` times. Cost is `O(k·n)` with `k` the
+number of pairs; in the overwhelmingly common case the first round certifies and the extra cost
+is one `O(n)` pass. An implementation may short-circuit on that.
 
-The stack in §3.3 already restricts the damage: an unmatchable mark cannot consume a
-matchable one, because a candidate that is not `canClose` never pops and a candidate that is
-not `canOpen` never pushes.
+**Why the exit condition is `B = π(A)` and not `π(A) ⊆ B`.** Exiting with extra pairs in `B` is
+unsound: the second run *starts* from `B`, and if `B` certifies, the second run renders `B`'s
+extra pairs and the output differs. The intersection alone does not terminate at a sound state,
+which is why the forced-removal clause exists.
 
-### 3.7 `innerSpace` is not this rule's job
+**Empirical status of the forced-removal clause.** An exhaustive sweep of ~850,000 inputs across
+all ten locales (the alphabet of §9's fixtures, to length 4–5, plus the named witnesses) did not
+observe the clause firing even once — every case that reached the gate either certified in round
+1 or was resolved by the plain intersection shrinking `A`. The clause is implemented as specified
+(it is strictly more conservative than omitting it, never less sound, so it costs nothing even if
+unreachable in practice) but its necessity is **not** demonstrated by a concrete witness as of
+this writing. If a future sweep finds one, it belongs in `spec/fixtures/` as a named case.
 
-`locale.schema.json` puts `innerSpace` on the quote pair, and the French primary pair needs
-U+202F between `«` and the quoted text. This rule **does not insert it**, for two reasons:
-the pipeline gives `nbsp` (order 70) `"localeData": ["nbsp", "quotes"]` precisely so that all
-no-break spacing is decided in one place after every other rule has settled; and inserting a
-space here would mean `spaces` (order 10, already past) never gets to see the result.
+### 3.6 Pass 5 — emit
 
-Concretely: `quotes` turns `"mot"` into `«mot»` for `fr`, and `nbsp` then turns that into
-`«` U+202F `mot` U+202F `»`. If the input already read `« mot »`, `quotes` does nothing at
-all (no straight marks are present) and `nbsp` converts the two U+0020 in place. Both paths
-converge on the same output, which is the property the pipeline needs.
+For each `p` in the accepted set:
 
-### 3.8 Already-curly text
+- an edit replacing `cp[p.open]` with the assigned `open` glyph, **omitted if the code point is
+  already that glyph**;
+- likewise at `p.close`;
+- a deletion edit for each inner run the landing guard permitted, **omitted if the run is
+  empty**.
 
-Existing locale glyphs, and foreign curly glyphs, are **not** candidates. They are not
-converted, not re-paired, and they do not contribute to the depth computed in §3.4. A
-paragraph containing both `“already curly”` and `"straight"` will have the straight pair
-converted at depth 1, ignoring the curly one.
+An edit whose replacement is identical to the span it replaces is never emitted — the
+invisible-edit principle `dashes.md` §3.3.1 states for the joiner, applied so that
+already-correct text produces a byte-identical no-op rather than a diff of self-replacements.
+Suppression is per **mark**, not per pair: a pair where only one side needed a glyph change
+emits exactly one glyph edit.
 
-This is a deliberate limitation, not an oversight: treating existing curly glyphs as
-candidates would mean re-deciding text the author may have set by hand, and — critically —
-in a same-glyph locale like `fi` there is no way to tell an existing `”` opener from an
-existing `”` closer without exactly the ambiguous state machine this rule exists to avoid.
-Converting `“…”` (US) to `”…”` (Finnish) is a _translation_ task and is out of scope.
+Emitted spans are pairwise disjoint: replacements sit at distinct mark indices; a deletion span
+lies strictly between a mark and its landing; and since accepted pairs are properly nested or
+disjoint (stack discipline) and a pair enclosing only spaces deletes neither run, no two spans
+can claim the same index. Edits are sorted ascending before returning.
+
+Unmatched candidates and declined pairs produce no edit and keep their code point exactly.
+
+### 3.7 `innerSpace`: `quotes` deletes, `nbsp` inserts
+
+The split is asymmetric on purpose.
+
+- `innerSpace = "none"` — a space inside the pair is *wrong* and nobody else can remove it.
+  `nbsp` has no deletion capability at all. `quotes` deletes it, subject to the landing guard.
+- `innerSpace ≠ "none"` — a space inside the pair is *required*, and `nbsp` (order 70) already
+  inserts and converts it, correctly and idempotently, at `nbsp.md` §3.10. `quotes` emits
+  nothing and deletes nothing there.
+
+So `quotes` still never inserts a space, `nbsp` keeps ownership of all no-break spacing, and
+there is no second copy of anyone's rules. `"mot"` → `«mot»` → (via `nbsp`) `«` U+202F `mot`
+U+202F `»`; `« mot »` → (no edit from `quotes`) → the same output via `nbsp`. Both paths
+converge, which is the property the pipeline needs.
+
+**The landing guard is not a heuristic; it is a structural CO discharge.** The deleted run's near
+side is a quote glyph and its far side is in `ALNUM ∪ QUOTEMARK`. Every class the four
+earlier-ordered rules read as evidence — `spaces`' `CONTENT`/`STRIP-BEFORE`/bracket sets,
+`ellipsis`' dot runs, `dashes`' `DASH`, `INERT-DASH`, `DIGIT`, `SPACE ∪ NOBREAK-SPACE`, `LETTER`,
+`ROMAN`, `hyphen`'s `WORDISH` — classifies a quote glyph and a U+0020 **identically** (both
+outside all of them, except `SPACE`, which the guard's own construction keeps away from any dash
+run). `ALNUM ∪ QUOTEMARK` is the largest landing class for which that holds; letting the
+deletion land on a dash is what would produce `" --x"` → `“--x”` → `“—x”`, a violation of `I₃`.
+Two absolutes fall out of the same construction: **a `BREAK` is never deleted** (not in
+`INLINE-SPACE`, so it terminates the run and, being outside `DELETE-LANDING`, declines the
+deletion) and **`MARKER` is never crossed** (same mechanism), so the span partition is stable
+between runs as `modes.md` §5 requires.
 
 ---
 
 ## 4. Must not touch
 
-**Scope.** Per [pipeline-idempotency.md](pipeline-idempotency.md) §5.2 each bullet is **[P]** —
-a guarantee of `transform` as a whole — or **[R]** — true of this rule in isolation but capable
-of being falsified by another rule, which is then named.
+Each bullet is **[P]** (a guarantee of `transform`) or **[R]** (true of this rule alone, with the
+rule that can falsify it named), per `pipeline-idempotency.md` §5.2.
 
-- **[P] A medial apostrophe:** `don't`, `l'été`, `O'Brien`, `Hawai'i`, `1990's`. Vetoed in §3.2.
-- **[R] A leading elision that finds no partner:** `’90s`, `’tis`, `’em`. It stays U+0027 here and
-  becomes U+2019 in `apostrophe`.
-- **[R] A trailing possessive that finds no partner:** `the dogs' bowls`. Same handover.
-- **[R] A foot or inch mark:** `6' 2"`. Both marks are unmatched (the `'` has a digit left and a
-  space right so it is `canClose` only; the `"` is `canClose` only; neither has an open on
-  the stack), so both survive.
-  _[R]: in `"6' 2"` the opening `"` is `canOpen` and the `'` after the digit is `canClose`, so
-  they pair and the foot mark is emitted as a closing quote glyph. Bare `6' 2"` is safe — neither
-  mark finds a partner — but the protection is not pipeline-level. See `apostrophe.md` §4._ `apostrophe` has its own guard for the `'` (see that document
-  §3.4); the `"` is left as U+0022 permanently.
-- **[P] Any unbalanced mark** (§3.6).
-- **[P] `''` and `""`** — two adjacent _identical_ straight marks are vetoed in pass 1
-  (§3.2) and are never candidates. `apostrophe` leaves `''` alone as well (see that document §4).
-- **[P] Any run of two or more identical straight marks**, anywhere: `""`, `'''`, `""""`. Every
-  mark in such a run has an identical straight neighbour and is vetoed (§3.2).
-- **[P] Every non-straight quotation glyph**: U+2018, U+2019, U+201A, U+201B, U+201C, U+201D,
-  U+201E, U+201F, U+00AB, U+00BB, U+2039, U+203A, U+301D–U+301F, U+02BC, U+2032, U+2033.
-  None is a candidate and none is ever produced except as a locale's declared `open`/`close`.
-- **[P] U+0060 (`) and U+00B4 (´)**, and the LaTeX idioms ` `` `and`''`. Not candidates.
-- **[P] Anything inside a skipped region.** Attribute values, code spans, fenced code, `<pre>`
-  and URLs are removed by the mode adapter before this rule runs. A `"` inside an HTML
-  attribute must never reach it.
-- **[R] Spacing of any kind.** This rule inserts and deletes nothing; every edit is 1:1 (§3.5).
+- **[P] A medial apostrophe:** `don't`, `l'été`, `O'Brien`, `Hawai'i`, `1990's` — and their
+  U+2019 forms on a second pass. Vetoed in §3.2.
+- **[R] A leading elision that finds no partner** (`'90s`, `'tis`) and **[R] a trailing
+  possessive that finds no partner** (`the dogs' bowls`). Handed to `apostrophe`.
+- **[R] A foot or inch mark:** `6' 2"`. Both marks are `canClose` only with an empty stack. The
+  0.1.0 caveat still applies verbatim: in `"6' 2"` the foot mark pairs, and the protection is not
+  pipeline-level.
+- **[P] Any unbalanced mark.** Convert what is unambiguous, leave the rest — §3.6 of 0.1.0's
+  policy is unchanged.
+- **[P] Any run of two or more identical quote marks:** `""`, `'''`, `««`, `””`. V1.
+- **[P] A pair enclosing nothing but spaces:** `«»`, `" "`, `” ”`. §3.3's vacuity condition.
+- **[P] U+2032, U+2033, U+02BC, U+0060, U+00B4** and the LaTeX idioms `` ` `` and `''`. Not in
+  `QUOTEMARK`.
+- **[P] Anything inside a skipped region.** Attribute values, code spans, fenced code, `<pre>`,
+  URLs — removed by the mode adapter.
+- **[P] Line terminators.** Never deleted, never crossed by a skip walk.
+- **[R] Outer spacing.** This rule deletes only *inner* spacing and inserts nothing.
+
+**No longer on this list, by operator decision:** every non-straight quotation glyph. `“ ” « »
+„ ‘ ’ ‚ ‹ ›` and the rest are now candidates. `en-GB` text containing a correct `“…”` pair will
+be rewritten to `‘…’`; `de-DE` text containing `«Wort»` becomes `„Wort“`. That is mandate 1, and
+it is the largest behavioural change in this revision.
+
+**Known, accepted residual risk — not new under this revision.** A leading elision that has
+already been curled to U+2019 (`’90s were fun,’ he said`) can, if a later unrelated closing mark
+exists on the same stack, be paired as an opener and lose its elided-digit reading. This was
+already possible for straight input under 0.1.0 (`'90s were fun,' he said` is corrupted
+identically) — it is `quotes.md` open item 1's `rock 'n' roll` family, "no local way to
+distinguish an elision from a real opening quote", now also reachable via curly input because
+mandate 1 makes curly input a candidate at all. It is **not** a new defect this revision
+introduces; §5's Corollary A1 explains why no U+2019-specific restriction is applied, and
+`spec/fixtures/` pins the verified behaviour across `en-GB`, `en-US`, `fi` and `sv` (§6, rows
+E1–E4) so the tradeoff is a citable fact rather than an assumption.
 
 ---
 
 ## 5. Idempotency argument
 
-Let `T` be the rule and let `y = T(x)`. Run `T` again on `y`.
+0.1.0's Claims 1 and 2 are **withdrawn**, not weakened. Claim 1 ("a converted position is not a
+candidate on the second run") is false by construction under mandate 1, and with it goes the
+permanence of V1: two marks that were distinct can both be assigned the same glyph, so the
+veto's verdict is no longer immutable. Claim 2's monotonicity is likewise gone: a converted mark
+can *gain* a capability. Claim 3 rested on both. Three replacements follow.
 
-### Claim 1 — converted marks are inert, and the veto is permanent
+### Lemma A — glyph-blindness
 
-Every edit replaces a `STRAIGHT` code point with a locale `open` or `close` glyph. No locale
-may declare U+0022 or U+0027 as a quote glyph — enforced by `locale.schema.json`'s
-`singleChar`, which carries `"not": {"enum": ["\"", "'"]}`. Therefore a converted position is
-not in `STRAIGHT` and is not a candidate in pass 1 of the second run.
+> Replacing any `QUOTEMARK` at index `j` with any other `QUOTEMARK` changes no capability of any
+> candidate at any index `i ≠ j`.
 
-The pass 1 **veto** is likewise permanent. A mark is vetoed only when an identical straight
-mark is immediately adjacent; that neighbour is vetoed by the same test, so neither is a
-candidate, neither is ever converted, and neither can acquire or lose an identical straight
-neighbour — no edit creates a `STRAIGHT` code point. A vetoed mark is therefore vetoed on
-every run, and a non-vetoed candidate never becomes vetoed.
+*Proof.* A candidate's four neighbour reads are compared against `NONE`, `SPACELIKE`, `OPENISH`,
+`CLOSEISH`, `DASHISH`, `QUOTEMARK`, `MARKER` and `ALNUM` (the medial veto), and V1 compares
+against `g` itself. Every `QUOTEMARK` is in `OPENISH`, in `CLOSEISH`, in `QUOTEMARK`, in none of
+`SPACELIKE`, `DASHISH`, `ALNUM`, and is neither `MARKER` nor `NONE`. All seven class tests are
+therefore **invariant**, not merely monotone. The skip walks are invariant because
+`QUOTEMARK ∩ INLINE-SPACE = ∅`. The only test that can move is V1, which compares code points
+directly — and V1's movement is precisely what the gate certifies (§3.5). ∎
 
-The candidate set of the second run is consequently exactly `U`, the candidates that pass 2
-left unmatched.
+> **Corollary A1 — `apostrophe` (R₆) is structurally invisible.** `apostrophe` replaces U+0027
+> with U+2019 and nothing else. As a *neighbour*, Lemma A applies. As the mark *itself*: both are
+> in `NARROW`, so the stack partition is unchanged; the medial veto is stated over `NARROW`, so
+> its verdict is unchanged; and neither is in `SPACE-RIGHT`/`SPACE-LEFT`, by constraint **Q-A**.
+> Every verdict is identical. This is a **CO-S** discharge in the sense of
+> `pipeline-idempotency.md` §5.1a — `E(apostrophe) = {U+2019}` is wholly inert for this rule.
+>
+> **On the elision-vs-closer tradeoff.** No U+2019-specific "can never open" restriction is
+> applied. Such a restriction was considered and rejected: `fi`/`sv`'s secondary pair is U+2019
+> on *both* sides, and forcing `canOpen = false` for every U+2019 would mean an already-correct
+> `fi`/`sv` secondary pair could never be *recognised* as a pair at all — only ever declined —
+> which directly contradicts mandate 1's purpose for that locale family. The cost of not
+> restricting is stated in §4 and verified in §6 (rows E1–E4): it is the same pre-existing
+> `rock 'n' roll`-family ambiguity 0.1.0 already documented for straight input, now also
+> reachable via curly input, not a new class of damage.
 
-### Claim 2 — capabilities are monotone non-increasing
+### Lemma B — space-inertness at every position `nbsp` can reach
 
-`canOpen` and `canClose` depend only on `cp[i-1]` and `cp[i+1]`. The only code points `T`
-changed are former `STRAIGHT` marks, each of which became some declared glyph `g`. By §3.1,
-`g` is not in `SPACELIKE`, not in `ALNUM`, and not in `STRAIGHT`. Examine each test for a
-candidate `u ∈ U` whose neighbour changed:
+> Inserting a code point of `INLINE-SPACE`, or converting one `INLINE-SPACE` code point to
+> another, at any position `nbsp` can act on, changes no capability of any candidate.
 
-- **`canOpen` left-test** (accepts `NONE`, `SPACELIKE`, `OPENISH`, `DASHISH`). Before the edit
-  `left` was `STRAIGHT`, which is in `OPENISH` (§3.1), so the test **passed**. After, it
-  passes iff `g` is in `OPENISH`. **true → true or true → false.**
-- **`canOpen` right-test** (rejects `NONE`, `SPACELIKE`, and `CLOSEISH` other than
-  `STRAIGHT`). Before, `right` was `STRAIGHT` and explicitly admitted, so the test **passed**.
-  After, it passes iff `g` is not in `CLOSEISH`. **true → true or true → false.**
-- **`canClose` left-test** (requires not `NONE`, not `SPACELIKE`). `g` is not in `SPACELIKE`
-  and neither is a straight mark. **unchanged.**
-- **`canClose` right-test** (accepts `NONE`, `SPACELIKE`, `CLOSEISH`, `DASHISH`). Before,
-  `right` was `STRAIGHT`, in `CLOSEISH`, so the test **passed**. After, it passes iff `g` is
-  in `CLOSEISH`. **true → true or true → false.**
-- **Medial veto.** Requires `ALNUM` on both sides. `g` is not `ALNUM` and neither is a straight
-  mark. **unchanged.**
-- **Same-kind adjacency veto.** Permanent, by Claim 1. **unchanged.**
+*Proof.* Conversion is trivial: every test reads class membership and U+0020, U+00A0, U+202F are
+all in `INLINE-SPACE`. For insertion, `nbsp` has exactly three insertion sites (`nbsp.ts`
+`claimInsertion`):
 
-No test can turn from false to true. Therefore for every `u ∈ U`,
-`canOpen₂(u) ⟹ canOpen₁(u)` and `canClose₂(u) ⟹ canClose₁(u)`.
+1. **N8, immediately right of an occurrence of `g ∈ SPACE-RIGHT`.**
+   - *`g` itself*: `canOpen` reads `Rskip` (skips) and `openLeft` (untouched); `canClose` reads
+     `Lskip` (untouched) and `closeRight`, which is `Rskip` because `g ∈ SPACE-RIGHT` (skips).
+     All four invariant.
+   - *the candidate `c` whose `Llit` was `g`*: `c.canOpen` reads `openLeft`, which is `Llit`
+     (unless `c ∈ SPACE-LEFT`, in which case it skips): `g ∈ OPENISH` is accepted,
+     `INLINE-SPACE ⊂ SPACELIKE` is accepted — same verdict. `c.canClose` reads `Lskip`, which
+     skips the insertion back to `g` — same. Right-hand reads untouched.
+   - no other index has a changed neighbourhood.
+2. **N8, immediately left of `h ∈ SPACE-LEFT`.** Mirror image: `h.canOpen` reads
+   `openLeft = Lskip` (skips, because `h ∈ SPACE-LEFT`); `h.canClose` reads `Lskip`. The
+   candidate whose `Rlit` was `h` reads `closeRight = Rlit`, moving from `h ∈ CLOSEISH`
+   (accepted) to `INLINE-SPACE` (accepted) — same verdict; and `Rskip`, which skips back to `h`.
+3. **N1/N2, immediately left of a mark `m ∈ nbsp.beforePunctuation ∪
+   nbsp.narrowBeforePunctuation`.** The only quote mark whose neighbourhood changes is a `g`
+   with `Rlit = m`. Its `closeRight` moves from `m` to `INLINE-SPACE`; by constraint **Q-P**,
+   `m ∈ CLOSEISH`, so both are accepted — same verdict. Its `Rskip` skips back to `m`. (`nbsp`'s
+   own step 3 already declines to insert after an opening glyph.)
 
-Notice what this argument does **not** require: it never asks which class `g` belongs to. Every
-test that mentions `OPENISH` or `CLOSEISH` was _already satisfied_ by the `STRAIGHT` neighbour
-— because `STRAIGHT` is in both classes and is explicitly exempted from the one rejection test
-— so replacing it can only degrade the outcome, whatever `g` is. This is why §3.1's withdrawn
-constraint about `open` glyphs being in `OPENISH` was never needed, and why its falseness for
-`fi`, `sv`, `de-DE` and `ru` does not endanger idempotency.
+No other sub-rule inserts; N3–N7, N9, N10 only convert. ∎
 
-### Claim 3 — no pair forms on the second run
+**V1's `gapInsertable` clause (§3.2) is what extends this proof to V1 itself.** The four
+capability tests above are the ones Lemma B's statement covers directly, but V1 is also a test a
+candidate's own capabilities depend on, and it compares *code points*, not class membership —
+Lemma B's "accepts `SPACELIKE` either way" argument does not apply to it. `gapInsertable` is
+defined to hold exactly when `g` is a member of `SPACE-RIGHT` or `SPACE-LEFT` — precisely the
+condition under which `nbsp`'s insertion sites 1 and 2 above can place a code point at the one
+gap V1's second clause reads across — so V1's verdict is invariant to that insertion by the same
+argument, case by case: at insertion site 1, the candidate immediately right of `g' ∈ SPACE-RIGHT`
+has `gapInsertable = true` when its own glyph equals `g'` (the only case V1's second clause can
+ever fire for it), and the literal-vs-skipped reads agree on whether that neighbour is `g'`,
+exactly as case 1 above already shows for `canOpen`/`canClose`. Insertion site 2 is the mirror
+image for `SPACE-LEFT`. Insertion site 3 (N1/N2) never inserts adjacent to a `QUOTEMARK` glyph on
+the side V1 reads (it inserts beside listed punctuation, never beside a quote mark's own
+same-glyph neighbour), so it cannot affect `gapInsertable`'s condition at all.
 
-By §3.3 every candidate reaches exactly one of three outcomes, so the unmatched set partitions
-**exhaustively** into
+> **Corollary B1.** A run-1/run-2 asymmetry that used to arise from `quotes` reading a
+> `SPACE-RIGHT` glyph's right side literally on one run and skipping it on the other cannot arise
+> under §3.2: the read is `Rskip` on **both** runs, so `« **"` pairs on the first application and
+> re-pairs identically on the second.
 
-- `C` = candidates that reached step 3; and
-- `O` = candidates still on a stack when pass 2 ended.
+### Certification — the theorem
 
-Throughout, "the stack" means **the stack for the candidate's own kind** (§3.3). A candidate
-never touches the other kind's stack, so each kind's argument is independent and the reasoning
-below is unchanged from the single-stack form.
+> **Theorem.** For every input `x` and every locale, `Q(Q(x)) = Q(x)`.
 
-_No member of `C` is `canOpen₁`._ Step 3 is reached only when step 2 did not fire, and step 2
-fires on `canOpen`. By Claim 2, `canOpen₂` is false for them too.
+*Proof.* Let `A` be the accepted set and `y = Q(x) = render(x, A)`.
 
-_Every member of `O` that is `canClose₁` was processed with an empty stack._ Otherwise step 1
-would have fired — its condition is exactly `canClose ∧ stack non-empty`, with no further
-qualification — and it would have been paired, not left on the stack. And since members of `O`
-are never popped, an empty stack at that index means no member of `O` precedes it.
+**Case `A = ∅`.** Then `y = x`. `Q` is a deterministic function of its input and the locale, with
+no state (`ARCHITECTURE.md` §7), so `Q(y) = Q(x) = x = y`. ∎
 
-Now run pass 2 over `U` in index order:
+**Case `A ≠ ∅`.** The loop exited on the equality branch, so `G₀(y) = π(A)`, where `G₀` denotes
+passes 1–2. Run `Q` on `y`. Passes 1–2 give `A₀' = G₀(y) = π(A)`. The gate's first round computes
+`render(y, π(A))`, and this equals `y`:
 
-- Members of `C` have `canOpen₂ = false`. If `canClose₂` is true, step 1 needs a non-empty
-  stack; the stack can only hold members of `O` pushed earlier. A member of `C` reached step 3
-  in run 1, which for a `canClose₁` candidate means the stack was empty then, so no member of
-  `O` precedes it — and members of `O` are never popped, so none can have been pushed and
-  removed. The stack is empty in run 2 as well. Step 1 does not fire, step 2 does not fire,
-  step 3 records it unmatched. No edit.
-- Members of `O`: if `canClose₂` is true then `canClose₁` was true, so by the paragraph above
-  no member of `O` precedes it, and no member of `C` pushes. The stack is empty, step 1 does
-  not fire, and it is pushed if `canOpen₂` or dropped if not. If `canClose₂` is false it is
-  pushed or dropped directly. Either way, no pair.
+- **Glyphs.** `π` is order-preserving, so `depth_{π(A)}(π(p)) = depth_A(p)` for every `p`; the
+  assigned pair is the same, and `y` already carries those glyphs at those indices by
+  construction of `render`.
+- **Inner spacing.** For a pair whose `innerSpace ≠ "none"`, `render` never touches spacing, on
+  either run. For `innerSpace = "none"`: a run that was deleted is gone, so there is nothing to
+  delete; a run that was declined is still present and its landing is unchanged — `render` maps
+  `QUOTEMARK` to `QUOTEMARK` and leaves `ALNUM` alone, so a landing outside `DELETE-LANDING`
+  stays outside it, and the same run is declined again.
 
-Pass 2 of the second run therefore records zero pairs, pass 4 emits zero edits, and
-`T(T(x)) = T(x)`. ∎
+Therefore `G₀(render(y, π(A))) = G₀(y) = π(A)`, the gate certifies in round 1, and
+`Q(y) = render(y, π(A)) = y`. ∎
 
-### 5.4 The first defect: an empty-pair branch breaking the partition
+### Composition obligation
 
-The argument above is the _original_ Claim 3, restored. It was correct for the three-outcome
-pass 2 it was written against, and it was invalidated by an empty-pair branch that introduced
-a fourth outcome: a closer adjacent to the stack top popped the opener and recorded **both**
-marks unmatched. Such an opener is in neither `C` (it never reached step 3) nor `O` (it was
-popped), so the partition was not exhaustive — and because the opener kept `canOpen`, a second
-run could push it and form a pair the first run had not.
+This rule is **R₅**; the obligation runs against `spaces`, `ellipsis`, `dashes` and `hyphen`, and
+its own `I₅` must survive `apostrophe`, `symbols` and `nbsp`.
 
-Witness, `en-US`, confirmed through `transform`:
+**What this rule emits.** `E(quotes)` = the four locale quote glyphs, each replacing exactly one
+`QUOTEMARK` at the same index. Plus deletions of a maximal `INLINE-SPACE` run whose near side is
+a quote glyph and whose far side is in `ALNUM ∪ QUOTEMARK`. **Nothing is inserted.**
 
-```
-"""a""   →   ""“a”"   →   "““a””
-```
-
-An exhaustive sweep over `{" ' a SPACE . ( 1}` up to length 7, across all nine locales, found
-1248 failing inputs. Every one contains two adjacent straight marks, and none is reachable
-without the discard branch.
-
-**The repair moves the decision from pass 2 to pass 1.** Adjacency of two _identical_ straight
-marks is a property of the input that this rule can never change (Claim 1), so vetoing on it
-is stable by construction, whereas "the candidate that happens to be on top of the stack is
-adjacent to me" is a property of pass 2's state, which depends on which other candidates were
-consumed — exactly the thing that differs between runs.
-
-Under that repair the `"""a""` witness has **no candidates at all**: all five marks have an identical
-straight neighbour, so all five are vetoed and the input is returned unchanged on the first
-pass.
-
-The alternative of _leaving the opener on the stack instead of popping it_ was rejected too: it
-keeps the fourth outcome and merely relocates the problem, since the discarded closer is then in
-no class.
-
-### 5.5 The second defect: a mixed pair swallowing a quotation
-
-The per-kind split of §3.3 repairs a different and worse defect, found while adding `el`.
-
-With one shared stack, pairing was kind-agnostic, so a `DQ` could close an `SQ` and vice
-versa. The shape that exposes it is an **elision inside a straight-quoted span**:
-
-```
-el      Είπε "σ' αυτό το βιβλίο" χθες.   →   Είπε «σ» αυτό το βιβλίο" χθες.
-en-US   She said "it's the '90s" and left.   →   She said "it’s the “90s” and left.
-```
-
-In the Greek line the `'` of `σ'` is `canClose` (letter left, space right), it popped the
-opening `"`, and the pair was emitted as `«σ»` — a destroyed sentence, with the real closing
-`"` left stranded. This is **damage, not a miss**, and it is the class of defect PLAN.md §8's
-M4 gate exists to prevent, so it is a release blocker rather than an open question.
-
-Two things make it severe rather than exotic. It corrupts **ordinary prose**: the English line
-is unremarkable writing, and Greek elision and apocope — `σ'`, `απ'`, `γι'`, `θ'`, `ν'` — occur
-in almost every paragraph, so for Greek this was not an edge case but the common case. And it
-is **locale-independent**: `en-US`, `en-GB`, `de-CH`, `fr` and `ru` all mangled the same input,
-which is why the repair belongs in the algorithm and not in locale data.
-
-**Why the obvious repair is wrong.** Keeping one stack and merely requiring the popped entry to
-match the closer's kind is _not_ idempotent. The enumeration that catches it is the `mixed-kind straight marks are idempotent` block in `tests/engine/idempotency.test.ts`, which exists for this class and fails on exactly this variant (195 non-idempotent inputs) while passing on the per-kind form: a non-matching
-entry then sits on the stack blocking the pair beneath it, `apostrophe` converts that entry to
-U+2019 on the same run, and the second run — no longer blocked — forms the pair the first run
-refused.
-
-```
-en-US   "'".'   →   "“".”   →   (a second run differs)
-```
-
-Per-kind stacks have no such state: the `SQ` never occupies the `DQ` stack in the first place,
-so nothing is blocked and nothing is unblocked by a later rule.
-
-**Cost, measured rather than asserted.** Over the alphabet `{" ' a SPACE .}` up to length 6
-across all nine locales — 175 779 (input, locale) pairs — the per-kind form differs from the
-kind-agnostic one on 25 674 of them, and **every single differing input contains both a `"` and
-a `'`**. Text using one kind of straight mark, which is nearly all real text, is bit-identical.
-The differing cases are unbalanced mixed-kind input, where the old answer invented a pair
-across kinds and the new one declines to.
-
-**The original justification for one stack was the weaker claim.** §3.3 used to read "a single
-stack is used for both kinds, because nesting genuinely interleaves". Genuine nesting does
-interleave, but it is **balanced within each kind**, and per-kind stacks handle it exactly:
-`"He said 'no' twice"` and `'He said "no" twice'` both resolve as before. What the shared stack
-additionally accepted was unbalanced input — and that acceptance was the defect, not a feature.
-
-### What had to be fixed
-
-The formulation everyone reaches for first is a state machine with a boolean `inQuote`,
-flipped at each quotation mark. It fails three ways and all three had to be designed out:
-
-1. **Same-glyph locales.** With `open = close = U+201D`, the output cannot be re-parsed, so
-   the naive rule is not idempotent by construction. Fixed by never reading output glyphs:
-   candidacy is defined on `STRAIGHT` only (§3.1, §3.8).
-2. **Unbalanced input.** A flip-flop assigns _some_ glyph to every mark, so one stray quote
-   inverts an entire paragraph. Fixed by the stack plus the explicit "leave it alone" policy
-   (§3.3, §3.6), which also makes Claim 3 provable rather than hoped-for.
-   2b. **Empty pairs.** Handling them inside pass 2 added a fourth outcome and broke the partition
-   Claim 3 depends on (§5.4). Fixed by moving the decision to pass 1, where it reads only
-   immutable data.
-3. **Neighbour-class drift.** Converting one mark changes the neighbour of the next, which
-   under a naive class table can _add_ a capability between run 1 and run 2. Fixed by the
-   dual membership of `STRAIGHT` in `OPENISH` and `CLOSEISH`, which makes capabilities
-   monotone (Claim 2).
-
-A fourth thing had to be fixed that is not about idempotency but about correctness: taking
-the nesting depth from the stack height (the obvious implementation) mis-levels every
-quotation that follows an unmatched mark. §3.4 defines depth over the finished pair list
-instead.
-
----
-
-### 5.6 Composition obligation
-
-Per [pipeline-idempotency.md](pipeline-idempotency.md) §5. This rule is **R₅**; the obligation
-runs against `spaces`, `ellipsis`, `dashes` and `hyphen`.
-
-**What this rule emits.** One locale quote glyph replacing one `STRAIGHT` code point, at the
-same index (§3.5). No insertion, no deletion, no length change, no spacing of any kind.
-
-**Against `I₁` (`spaces`).** Discharged: no U+0020 is emitted or removed, and no code point is
-inserted or deleted, so no space run changes.
-
-**Against `I₂` (`ellipsis`).** Discharged: no `DOTLIKE` code point is emitted, and none is
-brought into contact with another, since every edit is 1:1.
-
-**Against `I₃` (`dashes`).** Discharged **on its own**, but note what "on its own" excludes.
-This rule changes no spacing, and a quote glyph in a dash token's `cp[L]`/`cp[R]` is ordinary
-content — not in `DASH`, `INERT-DASH`, `DIGIT` or any space class — so no `dashes` verdict
-moves. What _did_ break `I₃` is `nbsp` (R₈) subsequently inserting a `quotes.innerSpace` beside
-a hyphen this rule had enclosed in guillemets: defect family 2. The shape originates here and
-the violation is committed there, which is a good illustration of why the obligation is stated
-per-rule on _emissions_ rather than on outcomes. See `dashes.md` §3.2 step 3 for the repair.
-
-**Against `I₄` (`hyphen`).** Discharged: quote glyphs and straight marks are alike absent from
-`WORDISH`, so no listed form's word boundary changes.
-
-**What must be preserved for this rule.** `I₅` must survive `apostrophe`, `symbols` and `nbsp`.
-All three can edit a _neighbour_ of a surviving straight mark — `apostrophe` turning an
-adjacent U+0027 into U+2019, `nbsp` inserting a no-break space beside one. Claim 3 is
-deliberately written to require only that capabilities on the second run are a **subset** of
-the first run's, never that they are equal, so any change those rules make in the
-capability-removing direction is harmless. I checked the two directions that would be harmful
-and neither is reachable: `apostrophe`'s replacement moves a neighbour from `STRAIGHT` (in both
-`OPENISH` and `CLOSEISH`) to U+2019 (in `CLOSEISH` only), which can only remove; and `nbsp`'s
-two insertion sites — before a listed punctuation character, and beside a quote glyph — always
-place the new space with punctuation or a glyph on one side, so a straight mark's neighbour
-never changes from a letter into a space, which is the only change that could _add_ `canOpen`.
-That check is by case analysis, not by exhaustive search; `pipeline-idempotency.md` §7.4
-records the schema gap that would make it airtight.
+- **Against `I₁` (`spaces`).** Discharged. No U+0020 is emitted, so no S-b/S-c/S-d position can
+  be created. Deletion removes a *maximal* run, so it cannot bring two U+0020 into contact
+  (S-a); its neighbours after deletion are a quote glyph and an `ALNUM`/`QUOTEMARK`, both
+  `CONTENT`.
+- **Against `I₂` (`ellipsis`).** Discharged. No U+002E or U+2026 is emitted; the deletion's
+  landing is in `ALNUM ∪ QUOTEMARK`, which contains no dot, so no two dot runs are joined.
+- **Against `I₃` (`dashes`).** Discharged **structurally**. A quote glyph is in none of `DASH`,
+  `INERT-DASH`, `DIGIT`, `SPACE`, `NOBREAK-SPACE`, `JOINER`, `ROMAN` or `LETTER`, so a
+  `cp[L]`/`cp[R]`/`before`/`after` moving from one quote mark to another moves nowhere. The
+  deletion's two sides are a quote glyph and a `DELETE-LANDING` member, **neither in
+  `DASH ∪ INERT-DASH`** — so no dash run is ever adjacent to a deleted run, no token's
+  `lsp`/`rsp` changes, and the landing separates the deletion from any dash run by at least one
+  code point. This is the discharge the naive "delete the inner space unconditionally"
+  formulation failed, with witness `" --x"` → `“--x”` → `“—x”` (row D1, §6).
+- **Against `I₄` (`hyphen`).** Discharged. `hyphen`'s boundary test is `¬WORDISH`, and both a
+  U+0020 and a quote glyph are outside `WORDISH = ALNUM ∪ HYPHENISH`. The deletion never lands
+  inside a word, only against its first or last code point.
+- **`I₅` against `apostrophe` (R₆).** Discharged by Corollary A1 (CO-S).
+- **`I₅` against `nbsp` (R₈).** Discharged by Lemma B (CO-S-shaped, over `nbsp`'s insertion
+  *sites* rather than its emission alphabet alone — the alphabet by itself is not enough, because
+  a `SPACELIKE` insertion is *not* inert at an arbitrary position; it is inert at exactly the
+  positions `nbsp` can reach).
+- **`I₅` against `symbols` (R₇).** **Known-weak: a case analysis, not CO-S.** `symbols`
+  collapses `(c)`/`(r)`/`(tm)` to a single sign, deleting code points, and converts `x` to `×`
+  between numerals. A quote mark adjacent to a collapsed span sees `(` on its right (moving to
+  `©`, which is neither `OPENISH` nor `CLOSEISH`) or `)` on its left (moving to `©`). Checked
+  over all four capability tests, every reachable verdict coincides: `canOpen`'s right test
+  accepts `(` and accepts `©`; `canClose`'s right test rejects both; `canOpen`'s left test
+  rejects `)` and rejects `©`; `canClose`'s left test accepts both as non-`NONE`. This is not
+  made structural — the sweep is the control, per §5.1a of `pipeline-idempotency.md`.
 
 ---
 
 ## 6. Worked examples
 
-`␣` = U+0020, `⟶` = no change. Locale data is **quoted from the shipped locale files**, not from the schema shape; each block
-states the pairs it uses. (These blocks were written while the locale files did not yet exist and
-said so; nine exist and validate now, so a row that disagrees with one is a defect in the row.)
+`␣` = U+0020, `⍽` = U+00A0, `⟶` = no change. Every row is verified by running
+`src/rules/quotes.ts` against the fixture of the same name in `spec/fixtures/`; none is
+hand-traced-only.
 
-### `en-US` — primary `“ ”` (U+201C/U+201D), secondary `‘ ’` (U+2018/U+2019), `innerSpace: none`
+### `en-US` — primary `“ ”`, secondary `‘ ’`, `innerSpace: none`
 
-| #   | Input                                       | Output                                      | Why                                                                                                                                               |
-| --- | ------------------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | `She said "hello" twice.`                   | `She said “hello” twice.`                   | depth 1 → primary                                                                                                                                 |
-| 2   | `"He said 'no' to me," she noted.`          | `“He said ‘no’ to me,” she noted.`          | per-kind stacks; the `SQ` pair is enclosed by the `DQ` pair, so it is at depth 2 → secondary                                                                                                      |
-| 3   | `'He said "no" to me,' she noted.`          | `“He said ‘no’ to me,” she noted.`          | depth, not kind, selects the pair (§3.4)                                                                                                          |
-| 4   | `He said "hi. She said "bye."`              | `He said "hi. She said “bye.”`              | three `DQ`; the first is `canOpen` only, the third `canClose` only; the first survives unmatched (§3.6)                                           |
-| 5   | `Don't touch it — it's the '90s.`           | ⟶                                           | `Don't` and `it's` are vetoed as medial; `'90s` is `canOpen` but finds no partner, so `apostrophe` will render it U+2019                          |
-| 6   | `He is 6' 2" tall.`                         | ⟶                                           | no pairing possible; both marks survive                                                                                                           |
-| 7   | `The letter ''`                             | ⟶                                           | the two `'` are identical and adjacent → both vetoed in pass 1 (§3.2)                                                                             |
-| 7b  | `"""a""`                                    | ⟶                                           | **the §5.4 witness.** All five marks have an identical straight neighbour, so none is a candidate. Previously produced `""“a”"` and then `"““a””` |
-| 7c  | `"a "" b"`                                  | `“a "" b”`                                  | the inner `""` is vetoed and stays straight; the outer pair converts normally. A second run finds only the two vetoed marks and does nothing      |
-| 8   | `“Already curly,” he said, and "this too."` | `“Already curly,” he said, and “this too.”` | existing glyphs ignored for depth (§3.8); the straight pair is depth 1                                                                            |
+| # | Input | Output | Why |
+| --- | --- | --- | --- |
+| 1 | `She said "hello" twice.` | `She said “hello” twice.` | depth 1 → primary |
+| 3 | `'He said "no" to me,' she noted.` | `“He said ‘no’ to me,” she noted.` | depth, not width, selects the pair; the gate certifies despite both streams swapping width |
+| 4 | `He said "hi. She said "bye."` | `He said "hi. She said “bye.”` | the first mark's `closeRight` is the letter `h`, so it is `canOpen` only and cannot swallow the real quotation |
+| 5 | `Don't touch it — it's the '90s.` | ⟶ | two medial vetoes; `'90s` is `canOpen`, unmatched, handed to `apostrophe` |
+| 6 | `He is 6' 2" tall.` | ⟶ | both marks `canClose` only, both stacks empty |
+| 7b | `"""a""` | ⟶ | every mark has an identical literal neighbour, V1 drops all five |
+| 7c | `"a "" b"` | `“a "" b”` | the inner `""` is vetoed; the outer pair converts; the gate certifies |
+| 8 | `“Already curly,” he said, and "this too."` | `“Already curly,” he said, and “this too.”` | the curly pair is now a real depth-1 pair, not an ignored one |
+| A | `“He said ‘no’ twice.”` | ⟶ | already-correct nesting is a no-op |
+| M2a | `" hello"` | `“hello”` | mandate 2: `canOpen` reads `Rskip = h`; the inner run's landing is `h ∈ ALNUM`, deleted |
+| M2b | `"hello "` | `“hello”` | mirror case |
+| D1 | `" --x"` | `“ --x”` | the inner run's landing is `-`, outside `DELETE-LANDING` → deletion declined, glyphs still convert |
+| E1 | `’90s were fun,’ he said` | `“90s were fun,” he said` | **elision-vs-closer, curly input** — see §4's residual-risk note |
+| E1s | `'90s were fun,' he said` | `“90s were fun,” he said` | the straight-input control: the same corruption, pre-existing since 0.1.0 |
 
-### `fi` — primary `” ”` (U+201D **both sides**), secondary `’ ’` (U+2019 both sides)
+### `en-GB` — primary `‘ ’`, secondary `“ ”`
 
-| #   | Input                         | Output                        | Why                                                                                                                                                                                                     |
-| --- | ----------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 9   | `Hän sanoi "moi" ja lähti.`   | `Hän sanoi ”moi” ja lähti.`   | opening and closing glyph are the same code point; the rule knew which was which from the pairing, not from the glyph                                                                                   |
-| 10  | `Hän sanoi ”moi” ja lähti.`   | ⟶                             | the output of case 9 re-processed: no `STRAIGHT` marks remain, so there is nothing to do. This is the case a flip-flop state machine gets wrong                                                         |
-| 11  | `"Hän sanoi 'moi'", totesin.` | `”Hän sanoi ’moi’”, totesin.` | depth 2 → secondary, also same-glyph. The `'` and `"` at the end are adjacent but of **different kinds**, so the pass 1 veto does not touch them — this is the case the veto is deliberately narrow for |
+| # | Input | Output | Why |
+| --- | --- | --- | --- |
+| B2 | `‘""-"-"` | ⟶ | width drift interacting with the same-glyph adjacency veto; the gate declines to ∅ |
+| E2 | `’90s were fun,’ he said` | `‘90s were fun,’ he said` | elision-vs-closer, curly input |
+| E2s | `'90s were fun,' he said` | `‘90s were fun,’ he said` | straight-input control |
 
-### `fr` — primary `« »` (U+00AB/U+00BB), `innerSpace: "narrow-nbsp"`, secondary per locale file
+### `fi` — primary `” ”` (U+201D both sides), secondary `’ ’` (U+2019 both sides)
 
-| #   | Input                   | Output                | Why                                                                                   |
-| --- | ----------------------- | --------------------- | ------------------------------------------------------------------------------------- |
-| 12  | `Il a dit "bonjour".`   | `Il a dit «bonjour».` | `quotes` emits the glyphs only; `nbsp` then inserts U+202F on both inner edges (§3.7) |
-| 13  | `Il a dit «␣bonjour␣».` | ⟶                     | no straight marks; `nbsp` converts the two U+0020 to U+202F                           |
+| # | Input | Output | Why |
+| --- | --- | --- | --- |
+| 9 | `Hän sanoi "moi" ja lähti.` | `Hän sanoi ”moi” ja lähti.` | the pairing, not the glyph, knows which is which |
+| B | `”Hän sanoi ’moi’”, totesin.` | ⟶ | same-glyph already-correct nesting is a no-op |
+| 11 | `"Hän sanoi 'moi'", totesin.` | `”Hän sanoi ’moi’”, totesin.` | row B's input reached from straight marks |
+| U1 | `”Hän sanoi ”moi” ja lähti.` | ⟶ | unbalanced same-glyph: three `”`, the stray leading one is left alone |
+| E3 | `’90s were fun,’ he said` | `”90s were fun,” he said` | elision-vs-closer, curly input |
+| E3s | `'90s were fun,' he said` | `”90s were fun,” he said` | straight-input control |
 
-### `ru` — primary `« »`, secondary `„ “` (U+201E/U+201C)
+### `sv` — same shape as `fi`
 
-| #   | Input                          | Output                         | Why                                |
-| --- | ------------------------------ | ------------------------------ | ---------------------------------- |
-| 14  | `Он сказал: "это 'моё' дело".` | `Он сказал: «это „моё“ дело».` | depth 1 primary, depth 2 secondary |
+| # | Input | Output | Why |
+| --- | --- | --- | --- |
+| E4 | `’90s were fun,’ he said` | `”90s were fun,” he said` | elision-vs-closer, curly input |
+| E4s | `'90s were fun,' he said` | `”90s were fun,” he said` | straight-input control |
 
-### `el` — primary `« »` (U+00AB/U+00BB), secondary `“ ”` (U+201C/U+201D), `innerSpace: none`
+### `fr` — primary `« »`, `innerSpace: "nbsp"`; secondary `“ ”`, `innerSpace: "none"`
 
-The same glyph inventory as `fr` but with no inner space, so it is the block that separates
-"which pair" from "what `nbsp` does to it".
+| # | Input | Output *(after `nbsp`)* | Why |
+| --- | --- | --- | --- |
+| 12 | `Il a dit "bonjour".` | `Il a dit «⍽bonjour⍽».` | `quotes` emits the glyphs; `nbsp` the U+00A0 |
+| 13 | `Il a dit «␣bonjour␣».` | `Il a dit «⍽bonjour⍽».` | mandate 2's second half: the pair *forms on the first application* and produces no edit from `quotes` because the glyphs are already right |
+| 3a | `«␣**"` | `«⍽**⍽»` *(after `nbsp`)* | width drift interacting with a run-1 `nbsp` insertion; `quotes` alone certifies the pair with one edit |
 
-| #   | Input                             | Output                            | Why                                                                                                                                                                                                                                                                            |
-| --- | --------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 15  | `Είπε "καλημέρα" και έφυγε.`      | `Είπε «καλημέρα» και έφυγε.`      | depth 1 → primary. `innerSpace: "none"`, so unlike case 12 `nbsp` adds nothing afterwards                                                                                                                                                                                      |
-| 16  | `"Είπε 'όχι' σε μένα", σημείωσε.` | `«Είπε “όχι” σε μένα», σημείωσε.` | depth 2 → secondary. Greek is the only v1 locale pairing guillemets with curly **double** quotes                                                                                                                                                                               |
-| 17  | `Το βιβλίο «Ο Ζορμπάς» εκδόθηκε.` | ⟶                                 | no `STRAIGHT` marks; re-processing corrected Greek is a no-op                                                                                                                                                                                                                  |
-| 18  | `Είπε "σ' αυτό το βιβλίο" χθες.`  | `Είπε «σ’ αυτό το βιβλίο» χθες.`  | **the §5.5 repair.** The elision mark is `canClose`, but it is an `SQ` while the open mark is a `DQ`, so per-kind stacks (§3.3) never bring them together; the two `"` pair and `apostrophe` takes the elision. Before the split this emitted `«σ»` and destroyed the sentence |
-| 19  | `Είπε «σ' αυτό το βιβλίο» χθες.`  | `Είπε «σ’ αυτό το βιβλίο» χθες.`  | the same sentence with the guillemets already curly. It was correct even before the repair, and it is kept because agreement between the two spellings is now the point                                                                                                        |
+### `fr-CA`, `html` mode
 
-Cases 5, 6, 7, 7b, 10, 13 and 17 are "no change" cases.
+| # | Input | Output | Why |
+| --- | --- | --- | --- |
+| 3b | `"<p class="x">«[t](u)` | ⟶ | the mode adapter splices a `MARKER` between the two text spans; `«`'s `closeRight` reads `Rskip` (because `« ∈ SPACE-RIGHT`) and finds `[`, so it is never `canClose` and no pair forms, on either application |
+
+### `ru` — primary `« »`, secondary `„ “`
+
+| # | Input | Output | Why |
+| --- | --- | --- | --- |
+| 14 | `Он сказал: "это 'моё' дело".` | `Он сказал: «это „моё“ дело».` | depths 1 and 2 |
+| B1 | `'"‘` | ⟶ | width drift with no candidate left unmatched to be swallowed; the gate declines to ∅ in one round |
+
+### `el` — primary `« »`, secondary `“ ”` (both `WIDE`)
+
+| # | Input | Output | Why |
+| --- | --- | --- | --- |
+| 16 | `"Είπε 'όχι' σε μένα", σημείωσε.` | `«Είπε “όχι” σε μένα», σημείωσε.` | width drift with no gate intervention — evidence the gate's cost is near zero |
+| 18 | `Είπε "σ' αυτό το βιβλίο" χθες.` | `Είπε «σ' αυτό το βιβλίο» χθες.` | the elision is `NARROW`, the quotation `WIDE`, different stacks — the elision survives untouched for `apostrophe` to convert on the next rule |
+
+### `de-DE` — primary `„ “`, secondary `‚ ‘`
+
+| # | Input | Output | Why |
+| --- | --- | --- | --- |
+| C | `Er sagte «Wort» leise.` | `Er sagte „Wort“ leise.` | foreign guillemets convert |
+| C2 | `Er sagte « Wort » leise.` | `Er sagte „Wort“ leise.` | same, plus both inner runs deleted (landings `W` and `t`) |
+
+### Adversarial sweep — `ru`/`el`/`fr`/`fr-CA` (§7 item 9)
+
+These four locales' primary and secondary pairs are **both `WIDE`**, so the width-keyed stack
+split does not independently separate a re-scanned primary stream from a re-scanned secondary
+stream the way it does for `en-US`/`en-GB`/`fi`/`sv`. An exhaustive sweep over
+`{«, », „, “, ", ', a, ␣}` (the locale's own glyphs plus the shared control alphabet) to length 5
+— 149,796 inputs across the four locales — found **zero** idempotency failures; the medial and
+same-glyph vetoes plus the certification gate together protect already-curly interleaved text in
+this family, even without an independent width partition. Recorded as measured, not asserted.
 
 ---
 
-## 7. Open questions
+## 7. Open questions, and what could not be closed
 
-1. **`rock 'n' roll`.** Pass 1 makes both marks candidates (`␣'n` is `canOpen`, `n'␣` is
-   `canClose`) and pass 2 pairs them. The pair encloses `n` at **depth 1**, so §3.4 sends it to
-   the locale's _primary_ pair, not the secondary one: the output is `rock “n” roll` in
-   `en-US`, `rock ”n” roll` in `fi`, and `rock ‘n’ roll` in `en-GB` — the last only because
-   `en-GB` declares the single pair as primary, not because anything selected a secondary
-   level. Correct English typography is `rock ’n’ roll`, two closing marks.
+Ordered by how much this matters.
 
-   _(The related fault this item used to carry — an elision inside a straight-quoted span being
-   swallowed, `Είπε "σ' αυτό" χθες.` → `Είπε «σ» αυτό" χθες.` — is **fixed**, by the per-kind
-   stacks of §3.3. It was a different fault despite the family resemblance: that one paired
-   across kinds, this one pairs two marks of the same kind, and no stack discipline separates
-   them. See §5.5.)_
+1. **Mandate 1's false-positive surface is genuinely larger, and M4 is where it will show.** A
+   lone `«` can now pair with a distant `"` (row 3a converts an input 0.1.0 left alone). Any
+   document with an odd stray typographic quote — a `»` used as a bullet, a `’` used as a prime,
+   a `«` in a citation — can recruit a partner from arbitrarily far away, and unlike a straight
+   mark the result is not visibly "unfinished" to a proofreader. This is a **product** risk, not
+   an idempotency one; run the M4 corpus against this change specifically before anything else.
+2. **The `symbols` (R₇) discharge is a case analysis**, not structural. Frequency: low (needs a
+   quote mark literally adjacent to a `(c)`/`(r)`/`(tm)` span), but not closed structurally.
+3. **The elision-vs-closer tradeoff (§4, §5 Corollary A1, §6 rows E1–E4) is verified, not
+   eliminated.** It is the same pre-existing ambiguity as `rock 'n' roll` (item 4 below), now
+   also reachable via curly input. No fix is proposed here; a per-locale elision word list would
+   close both at once and needs a schema field that does not exist.
+4. **The gate's forced-removal clause's necessity is asserted, not demonstrated with a concrete
+   witness.** ~850,000 swept inputs did not trigger it. Implemented anyway (free insurance); if a
+   future witness fires it, record it as a fixture.
+5. **Declined deletions leave visibly sloppy output** (`" --x"` → `“ --x”`, row D1). This is the
+   correct side to be wrong on (the alternative is a confirmed `I₃` violation) but is a real,
+   acknowledged gap in mandate 2's coverage.
+6. **`" "` and `«»` are prevented by an explicit vacuity guard, not by construction**, unlike
+   0.1.0 where an empty pair was structurally impossible. Weaker footing than 0.1.0 had, though
+   the gate catches any resulting instability.
+7. **Worst case is `O(n²)`** (gate rounds × pass cost). A pathological span of alternating quote
+   marks is quadratic; cap rounds if this matters in practice.
+8. **Unchanged from 0.1.0, still open:** `rock 'n' roll`; `en-GB` single-first (now more
+   consequential under mandate 1); quotation across a paragraph boundary; nesting deeper than 2;
+   primes; surviving-mark invisibility to the conformance matrix.
+9. **`ru`/`el`/`fr`/`fr-CA` already-curly protection is narrower than 0.1.0's** for these
+   same-width-primary/secondary locales specifically — the two-stack split no longer
+   independently protects already-curly text there the way it protects freshly-typed straight
+   text. §6's dedicated adversarial sweep found no failures, but the protection that remains is
+   the vetoes and the gate, not an independent structural guarantee.
 
-   (An earlier
-   revision of this document predicted `‘n’` for `en-US` and called it "the locale's secondary
-   glyphs"; that was wrong twice over, and it mattered, because it made the defect look like a
-   nesting-level bug rather than what it is.) Distinguishing it from the legitimate
-   `the letter 'a'` is not possible from the code points alone. The fix is a short per-locale
-   list of literal elision forms, and **`locale.schema.json` has no field for it**. Flagged in
-   the report; not invented here.
+---
 
-2. **`en-GB` single-first.** PLAN.md §7 marks the British primary pair as uncertain. This
-   rule is indifferent — it does whatever the locale file declares — but the depth-parity
-   normalisation in §3.4 means a British text written single-first will be rewritten to
-   whatever the locale declares as primary. If the operator would rather preserve the
-   author's choice of level-1 glyph kind, §3.4 needs a different rule and the schema needs a
-   flag.
-3. **Nesting deeper than 2.** Parity alternation is specified so implementations agree, but no
-   normative source was consulted for depth ≥ 3. If a source says otherwise for a given
-   locale, this is a spec change.
-4. _(Settled.)_ `locale.schema.json`'s `singleChar` now carries
-   `"not": {"enum": ["\"", "'"]}`, so a locale cannot declare U+0022 or U+0027 as a quote
-   glyph. Claim 1 of §5 rests on that constraint and may now cite it rather than assume it.
-5. **Quotation across a paragraph boundary.** English convention re-opens (but does not close)
-   a quotation that continues across paragraphs. In `text` mode a `BREAK` does not reset the
-   stack, so a multi-paragraph quotation pairs the first opener with the _second_ opener.
-   Whether the stack should reset at a blank line — and whether a mode adapter should split
-   text units at paragraph boundaries — is unresolved and is the single most likely source of
-   real-content surprises at the M4 gate.
-6. **Straight marks that survive are invisible to the conformance matrix.** A fixture asserts
-   an exact output string, so an unmatched mark is asserted as unchanged; but there is no way
-   for a runtime to _report_ "I declined to convert 3 marks". The reserved `analyze()` API
-   (ARCHITECTURE.md §7.1) would want that. Not a v1 problem, recorded so the edit model keeps
-   room for it.
-7. **Primes.** `6'` and `2"` should arguably become U+2032 and U+2033 rather than staying
-   straight. That is a separate rule with its own false-positive profile and is not in
-   `order.json`. Out of scope.
-8. _(Settled — the cost is paid, not deferred.)_ This item recorded the unmeasured cost of
-   kind-agnostic pairing: `'a"` pairing a `DQ` with an `SQ` and emitting a matched pair where the
-   author wrote two different characters. **Pairing is now per-kind (§3.3), so the cost is zero
-   and there is nothing left to measure.**
+## History
 
-   Worth recording that the adopted repair was **neither of the two options this item named**. It
-   rejected kind-matching — correctly, for the single shared stack it was judging — and proposed
-   a _post-pairing filter_, rejecting a recorded pair whose marks differ in kind before pass 3
-   assigns glyphs. Two independent stacks beat that filter on two counts: the mismatched pair is
-   never **formed**, so the opener stays available to a later legitimate closer instead of being
-   discarded along with it; and nothing has to be re-inspected between passes. On the Greek
-   elision sentence of §5.5 the filter would have unmatched both marks, whereas the stack split
-   pairs the two `"` correctly and hands the `SQ` to `apostrophe` — the right output rather than
-   a less wrong one.
-
-   The lesson generalises, which is why this is rewritten rather than deleted: an item recording
-   a cost names the options **its author could see**, and must not be read later as having
-   enumerated them.
+0.1.0 shipped with the four-pass, `STRAIGHT`-only design whose idempotency proof is quoted and
+withdrawn in §0/§5 above. 0.2.0 was `dashes`' version bump and did not touch this file. 0.3.0 is
+this revision: mandates 1 and 2, the five-pass algorithm, the certification gate, and the
+locale-schema constraints in §2.1.

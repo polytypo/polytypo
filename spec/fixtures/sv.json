@@ -248,7 +248,7 @@
       "mode": "text",
       "in": "Planen – om det finns en – misslyckas.",
       "out": "Planen – om det finns en – misslyckas.",
-      "note": "dashes.md §6 case 12: already the target form, byte-identical. Since the narrowing it is byte-identical for a stronger reason — the en dash is AUTHORED, so §3.2 step 2a declines the token outright rather than recomputing a replacement that happens to match. The distinction matters for a port: a token that reaches the replacement step and compares equal is not the same as a token that never reaches it, and only the second is true of every authored dash whatever the locale says."
+      "note": "dashes.md §6 case 12: already the target form, byte-identical. The token is admitted (spec 0.2.0 retired the unconditional authored-dash guard), but its glyph and spacing already match the locale, so §3.3.1's invisible-edit test computes an unbound replacement identical to the input and emits nothing — a true recomputation-to-fixed-point, not an early decline. A port that instead declines any token holding U+2013/U+2014 outright reaches the same output here by coincidence, but diverges on a mis-spaced or wrong-length authored dash, which this locale's other fixtures now exercise."
     },
     {
       "id": "sv-dashes-ranges",
@@ -344,7 +344,7 @@
       "mode": "text",
       "in": "a–1 - 1",
       "out": "a–1 - 1",
-      "note": "dashes.md §6 case 24, idempotency defect (c). §5.2 names this locale explicitly: every locale whose parenthetical is -spaced and whose range is not `none` reproduced it. Guard T1 (§3.2 step 8) makes the tight `–` inert at distance 2 — and since the narrowing the authored-dash guard at step 2a declines it even earlier. §5.3a notes that step 2a cost defect (c) its original witness; T1 is kept because a hyphen-typed token can still reach the transition."
+      "note": "dashes.md §6 case 24, idempotency defect (c). §5.2 names this locale explicitly: every locale whose parenthetical is -spaced and whose range is not `none` reproduced it. Guard T1 (§3.2 step 8) makes the tight `–` inert at distance 2, regardless of whether the dash was hyphen- or en/em-typed — spec 0.2.0 retired the authored-dash guard, so T1 alone is what declines this token now."
     },
     {
       "id": "sv-dashes-t1-tight-sibling",
@@ -352,7 +352,7 @@
       "mode": "text",
       "in": "a–1-1",
       "out": "a–1-1",
-      "note": "dashes.md §6 case 26: the tight sibling, guard T1 firing at distance 1 — and also one cluster with two dash runs, and since the narrowing an authored dash declined at step 2a. Three independent guards now hold; the case is retained because a port may implement any one of them and must still produce this output."
+      "note": "dashes.md §6 case 26: the tight sibling, guard T1 firing at distance 1 — and also one cluster with two dash runs (step 7). Both guards read DASH membership, not authorship, so they hold exactly as before spec 0.2.0 retired the authored-dash guard; the case is retained because a port may implement either guard and must still produce this output."
     },
     {
       "id": "sv-dashes-t2-before-full-stop",
@@ -379,20 +379,20 @@
       "note": "dashes.md §6 case 31: guard T2 on the right."
     },
     {
-      "id": "sv-dashes-authored-em-dash-kept",
+      "id": "sv-dashes-authored-em-dash-converts",
       "rule": "dashes",
       "mode": "text",
       "in": "dokument — PDF-filer — och du",
-      "out": "dokument — PDF-filer — och du",
-      "note": "dashes.md §6 case 41's shape in an `en-spaced` locale: an authored em dash survives untouched even though Språkrådet's tankstreck is the en dash. What the locale governs is what the author typed as a hyphen — see this file's parenthetical cases, which still convert."
+      "out": "dokument – PDF-filer – och du",
+      "note": "dashes.md §6 case 41, spec 0.2.0. Spec 0.1.0's authored-dash guard (and a briefly-shipped 0.2.0 narrowing that preserved only length) is fully retired: sv's parenthetical is `en-spaced`, so the author's em dash is promoted to it exactly as a hyphen-typed one would be — length included. See dashes.md §7 item 14 for why length stopped being treated as reliably authorial. Språkrådet's tankstreck is the en dash; the author's em dash is now corrected to it rather than surviving untouched."
     },
     {
-      "id": "sv-dashes-mixed-run-declined",
+      "id": "sv-dashes-mixed-run-converts",
       "rule": "dashes",
       "mode": "text",
       "in": "a-–b",
-      "out": "a-–b",
-      "note": "dashes.md §6 case 42: the authored-dash test is on the RUN, not on a single code point. The run `-–` contains a U+2013, so the whole token is declined — a port that tests only cp[s] converts the hyphen and produces a two-dash run with a different verdict on the next pass."
+      "out": "a – b",
+      "note": "dashes.md §6 case 42, spec 0.2.0. A run mixing `DASH` glyphs (U+002D and U+2013 here) is a single token, promoted exactly as the equivalent hyphen run (`a--b`) would be — P3 admits a `k = 2` run regardless of spacing. Spec 0.1.0's authored-dash guard, which declined any run containing U+2013/U+2014 outright, is retired in 0.2.0 (dashes.md §3.2 step 2a)."
     },
     {
       "id": "sv-dashes-authored-range-unbound",
@@ -520,7 +520,7 @@
       "mode": "text",
       "in": "soft­hyphen, minus −5, figure‒dash, bar―here",
       "out": "soft­hyphen, minus −5, figure‒dash, bar―here",
-      "note": "hyphen.md §4 and dashes.md §3.1: U+00AD, U+2212, U+2012 and U+2015 are never read and never produced."
+      "note": "hyphen.md §4 and dashes.md §3.1: U+00AD, U+2012 and U+2015 remain INERT-DASH, never read and never produced. U+2212 became an ordinary DASH candidate in spec 0.2.0, but this specific token still declines — 'minus −5' has a space before the minus and none after, so `dashes`' symmetry guard (§3.2 step 4) rejects it before glyph membership matters. See dashes.md §7 for a fixture pinning U+2212 as a converted candidate."
     },
     {
       "id": "sv-quotes-basic",
@@ -647,8 +647,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "“Redan böjda,” sa han, och \"detta också.\"",
-      "out": "“Redan böjda,” sa han, och ”detta också.”",
-      "note": "quotes.md §3.8: Språkrådet says to use Swedish quotation marks even when quoting another language, but rewriting an existing “…” pair is a translation task this rule deliberately declines."
+      "out": "”Redan böjda,” sa han, och ”detta också.”",
+      "note": "quotes.md §6 case 8, updated for spec 0.3.0 mandate 1, mirroring fi's own case."
     },
     {
       "id": "sv-quotes-rock-n-roll",
@@ -767,8 +767,8 @@
       "rule": "apostrophe",
       "mode": "text",
       "in": "“He said ’tis so,” she noted.",
-      "out": "“He said ’tis so,” she noted.",
-      "note": "apostrophe.md §6 case 10: no U+0027 remains, and existing curly glyphs are not candidates for `quotes` either."
+      "out": "”He said ’tis so,” she noted.",
+      "note": "apostrophe.md §6 case 10, updated for quotes.md spec 0.3.0 mandate 1: the foreign U+201C/U+201D pair is now a `quotes` candidate (order 40, before `apostrophe`) and is rewritten to this locale's own same-glyph primary (U+201D both sides) before `apostrophe` ever sees the U+2019 elision, which was and remains this case's actual point — no U+0027 survives to reach `apostrophe`."
     },
     {
       "id": "sv-apostrophe-modifier-letters-kept",
@@ -1169,6 +1169,22 @@
       "in": "Hon sa: \"Vi gick 5 km -- kanske mer...\" åren 1914-1918.",
       "out": "Hon sa: ”Vi gick 5 km – kanske mer…” åren 1914⁠–⁠1918.",
       "note": "Real prose exercising a same-glyph quotation, a spaced en dash, an ellipsis and a number-plus-unit at once."
+    },
+    {
+      "id": "sv-quotes-030-elision-vs-closer-curly",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "’90s were fun,’ he said",
+      "out": "”90s were fun,” he said",
+      "note": "quotes.md §6 row E4: elision-vs-closer, curly input — see fi's own row for the reason no U+2019 restriction is applied."
+    },
+    {
+      "id": "sv-quotes-030-elision-vs-closer-straight",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "'90s were fun,' he said",
+      "out": "”90s were fun,” he said",
+      "note": "quotes.md §6 row E4s: the straight-input control for E4."
     }
   ]
 }

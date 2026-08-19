@@ -97,6 +97,30 @@ function carriedRules(locale) {
   return carried;
 }
 
+// spec/rules/quotes.md 3.1 WIDE/NARROW and CLOSEISH, mirrored here (not imported: this script
+// validates the spec's own data files and must not depend on the generated build).
+const QUOTES_WIDE = new Set([
+  0x22, 0xab, 0xbb, 0x201c, 0x201d, 0x201e, 0x201f, 0x301d, 0x301e, 0x301f,
+]);
+const QUOTES_NARROW = new Set([0x27, 0x2018, 0x2019, 0x201a, 0x201b, 0x2039, 0x203a]);
+const QUOTES_CLOSEISH_EXTRA = new Set([
+  0x29, 0x5d, 0x7d, 0x2c, 0x2e, 0x3b, 0x3a, 0x21, 0x3f, 0x2026, 0x2013, 0x2014,
+]);
+function isQuoteMarkCp(cp) {
+  return QUOTES_WIDE.has(cp) || QUOTES_NARROW.has(cp);
+}
+function quoteWidthOf(cp) {
+  if (QUOTES_WIDE.has(cp)) return "wide";
+  if (QUOTES_NARROW.has(cp)) return "narrow";
+  return null;
+}
+function isQuotesCloseish(cp) {
+  return QUOTES_CLOSEISH_EXTRA.has(cp) || isQuoteMarkCp(cp);
+}
+function firstCodePoint(text) {
+  return typeof text === "string" ? text.codePointAt(0) : undefined;
+}
+
 // Invariants the rule semantics rely on but no JSON Schema can state.
 function checkLocaleInvariants(file, locale) {
   const nbsp = locale.nbsp ?? {};
@@ -112,6 +136,21 @@ function checkLocaleInvariants(file, locale) {
     }
   }
 
+  // Q-P (quotes.md 2.1, nbsp.md 2): every beforePunctuation/narrowBeforePunctuation entry must
+  // be in the quotes rule's CLOSEISH, or Lemma B's case 3 (pipeline-idempotency.md 7 item 4)
+  // does not cover it.
+  for (const key of ["beforePunctuation", "narrowBeforePunctuation"]) {
+    for (const char of Array.isArray(nbsp[key]) ? nbsp[key] : []) {
+      const cp = firstCodePoint(char);
+      if (cp !== undefined && !isQuotesCloseish(cp)) {
+        fail(
+          file,
+          `nbsp.${key}: "${escapeNonAscii(char)}" is not in the quotes rule's CLOSEISH — Q-P requires every entry to be (spec/rules/quotes.md 2.1)`,
+        );
+      }
+    }
+  }
+
   for (const kind of ["primary", "secondary"]) {
     const pair = locale.quotes?.[kind];
     if (!pair) continue;
@@ -121,6 +160,36 @@ function checkLocaleInvariants(file, locale) {
       fail(
         file,
         `quotes.${kind}: open equals close (${escapeNonAscii(pair.open)}) but "innerSpace" is ${JSON.stringify(pair.innerSpace)} — a symmetric pair must use "none"`,
+      );
+    }
+
+    // Q-W (quotes.md 2.1): open and close must share a WIDE/NARROW bucket, or a formed pair
+    // straddles both of the quotes rule's stacks after rendering and the certification gate
+    // would decline every pair in a same-glyph document.
+    const openCp = firstCodePoint(pair.open);
+    const closeCp = firstCodePoint(pair.close);
+    if (openCp !== undefined && closeCp !== undefined) {
+      const openWidth = quoteWidthOf(openCp);
+      const closeWidth = quoteWidthOf(closeCp);
+      if (openWidth === null || closeWidth === null) {
+        fail(
+          file,
+          `quotes.${kind}: "${escapeNonAscii(pair.open)}"/"${escapeNonAscii(pair.close)}" is not a recognised quotation glyph (spec/rules/quotes.md 3.1 QUOTEMARK)`,
+        );
+      } else if (openWidth !== closeWidth) {
+        fail(
+          file,
+          `quotes.${kind}: open "${escapeNonAscii(pair.open)}" is ${openWidth} but close "${escapeNonAscii(pair.close)}" is ${closeWidth} — Q-W requires a pair to be width-homogeneous (spec/rules/quotes.md 2.1)`,
+        );
+      }
+    }
+
+    // Q-A (quotes.md 2.1): a spaced pair must not use U+2019, or apostrophe's own emission
+    // would land in a nbsp-insertion-adjacent skip set and Corollary A1 would break.
+    if (pair.innerSpace !== "none" && (openCp === 0x2019 || closeCp === 0x2019)) {
+      fail(
+        file,
+        `quotes.${kind}: "innerSpace" is ${JSON.stringify(pair.innerSpace)} but open/close includes U+2019 — Q-A forbids the apostrophe glyph in a spaced pair (spec/rules/quotes.md 2.1)`,
       );
     }
   }

@@ -3,15 +3,22 @@ import type { Edit, LocaleData, Rule, RuleContext } from "../types.js";
 import { LINE_MARKER, NONE } from "../engine/sentinels.js";
 
 /**
- * `dashes` — spec/rules/dashes.md (spec 0.1.0), order 30.
+ * `dashes` — spec/rules/dashes.md (spec 0.2.0), order 30.
  *
  * Explicit index-based scanning only: no regex anywhere, and every index addresses the
  * code-point array, never a native string (ARCHITECTURE.md 4.1, 4.2).
  */
 
 const HYPHEN_MINUS = 0x2d;
+const HYPHEN = 0x2010;
+const FIGURE_DASH = 0x2012;
 const EN_DASH = 0x2013;
 const EM_DASH = 0x2014;
+const HORIZONTAL_BAR = 0x2015;
+const MINUS_SIGN = 0x2212;
+const SMALL_EM_DASH = 0xfe58;
+const SMALL_HYPHEN_MINUS = 0xfe63;
+const FULLWIDTH_HYPHEN_MINUS = 0xff0d;
 const SPACE = 0x20;
 const FULL_STOP = 0x2e;
 const COMMA = 0x2c;
@@ -23,22 +30,41 @@ const WORD_JOINER = 0x2060;
 
 /** Not a code point: stands for "there is nothing there" (`before` / `after` in §3.3). */
 
+/**
+ * §3.1 DASH. Beyond U+002D/U+2013/U+2014, U+2010 (hyphen) and U+2212 (minus sign) join as
+ * candidates: both are plain typewriter/OCR substitutes for an ordinary hyphen-minus, exactly
+ * as U+002D is (spec §3.2 step 2's rationale) — nobody deliberately picks MINUS SIGN as their
+ * house dash style. U+2013/U+2014 carry no special-cased treatment either (spec 0.2.0 retired
+ * the guard that used to give them one, §3.2 step 2a): every member of this set is promoted to
+ * the locale's form the same way.
+ */
 function isDash(cp: number): boolean {
-  return cp === HYPHEN_MINUS || cp === EN_DASH || cp === EM_DASH;
+  return (
+    cp === HYPHEN_MINUS || cp === HYPHEN || cp === EN_DASH || cp === EM_DASH || cp === MINUS_SIGN
+  );
 }
 
-/** §3.1 INERT-DASH: never a candidate, never produced. */
+/**
+ * §3.1 INERT-DASH: never a candidate, never produced.
+ *
+ * U+00AD and U+2011 are protective markers owned by someone other than this rule — U+00AD is
+ * invisible formatting, and U+2011 is `hyphen` (order 35)'s own output — so both keep their
+ * §3.2 step 6 protection absolutely. U+2012 (figure dash, digit-width for tabular alignment),
+ * U+2015 (horizontal bar, the dialogue dash some traditions use deliberately) and the CJK
+ * compatibility forms U+FE58/U+FE63/U+FF0D are each a *specialised* dash with its own reason
+ * to exist, not a substitute for a missing key — reclassifying one would erase the very
+ * distinction the author reached for that code point to make. `tests/rules/dashes.test.ts`
+ * "must not touch, spec §4" pins all five.
+ */
 function isInertDash(cp: number): boolean {
   return (
     cp === 0x00ad ||
-    cp === 0x2010 ||
+    cp === FIGURE_DASH ||
     cp === 0x2011 ||
-    cp === 0x2012 ||
-    cp === 0x2015 ||
-    cp === 0x2212 ||
-    cp === 0xfe58 ||
-    cp === 0xfe63 ||
-    cp === 0xff0d
+    cp === HORIZONTAL_BAR ||
+    cp === SMALL_EM_DASH ||
+    cp === SMALL_HYPHEN_MINUS ||
+    cp === FULLWIDTH_HYPHEN_MINUS
   );
 }
 
@@ -330,21 +356,17 @@ function scan(ctx: RuleContext): Edit[] {
     // §3.2 step 2 — a run longer than three is decoration, not a dash.
     if (e - s > 3) continue;
 
-    // §3.2 step 2a — authored-dash guard. This rule promotes a hyphen; it never restyles a
-    // dash. A hyphen is a typewriter substitute for a mark the writer could not type, so
-    // promoting it completes their intent; a U+2013 or U+2014 already in the input is the mark
-    // they meant, and it keeps its glyph and its spacing whatever the locale prescribes.
+    // §3.2 step 2a (retired) — this rule used to decline any run containing an existing
+    // U+2013/U+2014 outright, on the theory that a dash already in the input was inviolable.
+    // Retired for two reasons: the M4 gate's own corpus run only measured *restyling*
+    // (glyph length *and* spacing changed together) as damage, never spacing alone; and length
+    // is not reliably an authorial decision to begin with — it is at least as often a
+    // copy-paste artefact or plain unfamiliarity with which mark is which. An author who wants
+    // their own dash typography untouched has the option this project has always offered:
+    // don't run the pipeline. U+2013 and U+2014 are therefore now ordinary `DASH` members with
+    // no special-cased token-level guard — ordinary hyphen-promotion applies to them exactly as
+    // it does to U+002D, and length is corrected along with spacing.
     //
-    // The test is on the whole run, so a mixed `-–` declines too. This decides the *token*
-    // only: U+2013 and U+2014 stay full members of DASH for every other token's guards, which
-    // is what keeps steps 6 and 7 and G2 protecting a hyphen token from an authored-dash
-    // neighbour. Inert as a token, fully present as context.
-    let hasAuthoredDash = false;
-    for (let j = s; j < e; j += 1) {
-      if (cp[j] === EN_DASH || cp[j] === EM_DASH) hasAuthoredDash = true;
-    }
-    if (hasAuthoredDash) continue;
-
     // §3.2 step 3 — outer spacing. SPACE means U+0020 and nothing else: this rule normalises
     // ordinary sentence spacing, and a no-break space beside a dash belongs to whoever put it
     // there. It therefore falls through to `cp[L]`/`cp[R]`, where step 6 declines the token as
@@ -405,8 +427,17 @@ function scan(ctx: RuleContext): Edit[] {
       if (!rangeGuardsPass(cp, left, right)) continue;
       style = ctx.locale.dash.range;
     } else {
-      // §3.4 P1 — a bare hyphen must be spaced (the compound-word guard).
-      if (e - s === 1 && cp[s] === HYPHEN_MINUS && lsp === 0) continue;
+      // §3.4 P1 — a bare hyphen-shaped stroke must be spaced (the compound-word guard). A tight
+      // U+2010 or U+2212 between letters reads exactly like a tight U+002D — `well‐known`,
+      // `a−b` — the same compound-word or attached-token shape, so both stay guarded the same
+      // way. Nobody writes a compound word with a real U+2013/U+2014, so P1 never covers them.
+      if (
+        e - s === 1 &&
+        (cp[s] === HYPHEN_MINUS || cp[s] === HYPHEN || cp[s] === MINUS_SIGN) &&
+        lsp === 0
+      ) {
+        continue;
+      }
       // §3.4 P4 — Roman-numeral veto.
       if (lsp === 0 && rsp === 0 && isRomanFlanked(cp, left, right)) continue;
       style = ctx.locale.dash.parenthetical;
@@ -426,7 +457,19 @@ function scan(ctx: RuleContext): Edit[] {
       if (isOpenBracket(leftCp)) continue;
     }
 
-    const replacement = buildReplacement(style, isRange && !isSpaced(style));
+    // §3.3.1: this rule never makes an edit whose entire content is invisible. A hyphen-typed
+    // tight range always earns its U+2060 binding, because the dash glyph itself is also
+    // changing (U+002D never equals U+2013/U+2014), so the edit is visible regardless. A dash
+    // that was *already* the target glyph and spacing needs only the binding to reach its final
+    // form, and adding just a joiner pair to otherwise-unchanged text is exactly the
+    // invisible-only edit §3.3.1 forbids — so binding is withheld in precisely that one case,
+    // detected structurally rather than by asking whether the token was authored: try the
+    // unbound replacement first, and if it would already be a no-op, stay unbound.
+    const unbound = buildReplacement(style, false);
+    const onlyBindingWouldChange =
+      isRange && !isSpaced(style) && sameContent(cp, spanStart, spanEnd, unbound);
+    const bind = isRange && !isSpaced(style) && !onlyBindingWouldChange;
+    const replacement = bind ? buildReplacement(style, true) : unbound;
     if (sameContent(cp, spanStart, spanEnd, replacement)) continue;
 
     // Spans are pairwise disjoint by §3.5: the `dash space dash` shape that would share a

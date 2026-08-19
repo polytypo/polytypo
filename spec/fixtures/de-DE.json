@@ -123,20 +123,20 @@
       "note": "dashes.md §6 case 5: cp[L] is a letter for the first, G4 fails (4 vs 1) for the second."
     },
     {
-      "id": "de-de-dashes-authored-em-dash-preserved",
+      "id": "de-de-dashes-authored-em-dash-converts",
       "rule": "dashes",
       "mode": "text",
       "in": "Der Plan—falls es einen gibt—fällt.",
-      "out": "Der Plan—falls es einen gibt—fällt.",
-      "note": "dashes.md §6 case 41: an authored em dash in an en-spaced locale keeps its glyph AND its spacing. dash.parenthetical = en-spaced remains a true statement of the Duden convention; it simply no longer governs a dash the author already typed (§3.2 step 2a, §7.14)."
+      "out": "Der Plan – falls es einen gibt – fällt.",
+      "note": "dashes.md §6 case 41, spec 0.2.0. Spec 0.1.0's authored-dash guard (and a briefly-shipped 0.2.0 narrowing that preserved only length) is fully retired: de-DE's parenthetical is `en-spaced`, so the author's em dash is promoted to it exactly as a hyphen-typed one would be — length included. See dashes.md §7 item 14 for why length stopped being treated as reliably authorial."
     },
     {
-      "id": "de-de-dashes-mixed-run-declined",
+      "id": "de-de-dashes-mixed-run-converts",
       "rule": "dashes",
       "mode": "text",
       "in": "a-–b",
-      "out": "a-–b",
-      "note": "dashes.md §6 case 42: a mixed run contains an authored dash, so the whole run is declined — the hyphen half is not converted on its own. Splitting the run would mean editing right against a mark the author typed."
+      "out": "a – b",
+      "note": "dashes.md §6 case 42, spec 0.2.0. A run mixing `DASH` glyphs (U+002D and U+2013 here) is a single token, promoted exactly as the equivalent hyphen run (`a--b`) would be — P3 admits a `k = 2` run regardless of spacing. Spec 0.1.0's authored-dash guard, which declined any run containing U+2013/U+2014 outright, is retired in 0.2.0 (dashes.md §3.2 step 2a)."
     },
     {
       "id": "de-de-dashes-asymmetric",
@@ -448,7 +448,7 @@
       "mode": "text",
       "in": "„Die Jahre 1939–1945“, sagte er.",
       "out": "„Die Jahre 1939–1945“, sagte er.",
-      "note": "Correct German quotation marks and an AUTHORED tight en-dash range come out byte-identical — and, in particular, with no U+2060 joiners, where the hyphen-typed `1939-1945` above gets them. That asymmetry is deliberate (§3.3.1, §7.14): the rule never makes an edit whose entire content is invisible. A joiner rides along with a conversion the author wanted; it is never the only thing an edit does, because an invisible-only change to text that was already right is unreviewable by hand, and hand review is the M4 criterion. `dashes` §3.2 step 2a leaves any authored dash alone."
+      "note": "Correct German quotation marks and a tight en-dash range already exactly in de-DE's `en-tight` form come out byte-identical — and, in particular, with no U+2060 joiners, where the hyphen-typed `1939-1945` above gets them. That asymmetry is deliberate (§3.3.1, §7.14): the rule never makes an edit whose entire content is invisible. A joiner rides along with a real conversion; it is never the only thing an edit does, because an invisible-only change to text that was already right is unreviewable by hand, and hand review is the M4 criterion. §3.3.1's invisible-edit test decides this by computing the unbound replacement first and comparing it to the input — not by asking whether the dash was authored, which spec 0.2.0's retirement of §3.2 step 2a made irrelevant to the question."
     },
     {
       "id": "de-de-combined-sentence",
@@ -457,6 +457,22 @@
       "in": "Er sagte: \"Die Strecke -- rund 20 km -- war lang...\" und ging.",
       "out": "Er sagte: „Die Strecke – rund 20 km – war lang…“ und ging.",
       "note": "A quotation, a parenthetical dash, an ellipsis and a number with a unit in one sentence: Gänsefüßchen without inner space, en-spaced dashes, U+2026, and U+00A0 between 20 and km."
+    },
+    {
+      "id": "de-de-quotes-030-foreign-guillemets",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Er sagte «Wort» leise.",
+      "out": "Er sagte „Wort“ leise.",
+      "note": "quotes.md §6 row C, required scenario (c): foreign guillemets convert to de-DE's own primary pair."
+    },
+    {
+      "id": "de-de-quotes-030-foreign-guillemets-spaced",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Er sagte « Wort » leise.",
+      "out": "Er sagte „Wort“ leise.",
+      "note": "quotes.md §6 row C2: same as the previous case, plus both inner runs are deleted (landings W and t, both in DELETE-LANDING) since de-DE's innerSpace is none."
     }
   ]
 }

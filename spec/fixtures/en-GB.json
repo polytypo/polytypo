@@ -248,7 +248,7 @@
       "mode": "text",
       "in": "The plan – if there is one – fails.",
       "out": "The plan – if there is one – fails.",
-      "note": "dashes.md §6 case 12: already the target form, byte-identical. Since the narrowing it is byte-identical for a stronger reason — the en dash is AUTHORED, so §3.2 step 2a declines the token outright rather than recomputing a replacement that happens to match. The distinction matters for a port: a token that reaches the replacement step and compares equal is not the same as a token that never reaches it, and only the second is true of every authored dash whatever the locale says."
+      "note": "dashes.md §6 case 12: already the target form, byte-identical. The token is admitted (spec 0.2.0 retired the unconditional authored-dash guard), but its glyph and spacing already match the locale, so §3.3.1's invisible-edit test computes an unbound replacement identical to the input and emits nothing — a true recomputation-to-fixed-point, not an early decline. A port that instead declines any token holding U+2013/U+2014 outright reaches the same output here by coincidence, but diverges on a mis-spaced or wrong-length authored dash, which this locale's other fixtures now exercise."
     },
     {
       "id": "en-gb-dashes-ranges",
@@ -344,7 +344,7 @@
       "mode": "text",
       "in": "a–1 - 1",
       "out": "a–1 - 1",
-      "note": "dashes.md §6 case 24, idempotency defect (c). §5.2 names this locale explicitly: every locale whose parenthetical is -spaced and whose range is not `none` reproduced it. Guard T1 (§3.2 step 8) makes the tight `–` inert at distance 2 — and since the narrowing the authored-dash guard at step 2a declines it even earlier. §5.3a notes that step 2a cost defect (c) its original witness; T1 is kept because a hyphen-typed token can still reach the transition."
+      "note": "dashes.md §6 case 24, idempotency defect (c). §5.2 names this locale explicitly: every locale whose parenthetical is -spaced and whose range is not `none` reproduced it. Guard T1 (§3.2 step 8) makes the tight `–` inert at distance 2, regardless of whether the dash was hyphen- or en/em-typed — spec 0.2.0 retired the authored-dash guard, so T1 alone is what declines this token now."
     },
     {
       "id": "en-gb-dashes-t1-tight-sibling",
@@ -352,7 +352,7 @@
       "mode": "text",
       "in": "a–1-1",
       "out": "a–1-1",
-      "note": "dashes.md §6 case 26: the tight sibling, guard T1 firing at distance 1 — and also one cluster with two dash runs, and since the narrowing an authored dash declined at step 2a. Three independent guards now hold; the case is retained because a port may implement any one of them and must still produce this output."
+      "note": "dashes.md §6 case 26: the tight sibling, guard T1 firing at distance 1 — and also one cluster with two dash runs (step 7). Both guards read DASH membership, not authorship, so they hold exactly as before spec 0.2.0 retired the authored-dash guard; the case is retained because a port may implement either guard and must still produce this output."
     },
     {
       "id": "en-gb-dashes-t2-before-full-stop",
@@ -379,20 +379,20 @@
       "note": "dashes.md §6 case 31: guard T2 on the right."
     },
     {
-      "id": "en-gb-dashes-authored-em-dash-kept",
+      "id": "en-gb-dashes-authored-em-dash-converts",
       "rule": "dashes",
       "mode": "text",
       "in": "documents — PDFs — and you",
-      "out": "documents — PDFs — and you",
-      "note": "dashes.md §6 case 39: the same shape in the other English locale, which previously turned these em dashes into spaced en dashes on 1060 lines of the same corpus. `en-GB` was no escape from the M4 blocker — it restyled just as much, only differently."
+      "out": "documents – PDFs – and you",
+      "note": "dashes.md §6 case 41, spec 0.2.0. Spec 0.1.0's authored-dash guard (and a briefly-shipped 0.2.0 narrowing that preserved only length) is fully retired: en-GB's parenthetical is `en-spaced`, so the author's em dash is promoted to it exactly as a hyphen-typed one would be — length included. See dashes.md §7 item 14 for why length stopped being treated as reliably authorial. This is the M4 corpus's own shape (dashes.md §6 case 39), reopened deliberately: the operator judged the M4 finding reflected a false premise about dash length being authorial, not a property the pipeline had to preserve regardless."
     },
     {
-      "id": "en-gb-dashes-mixed-run-declined",
+      "id": "en-gb-dashes-mixed-run-converts",
       "rule": "dashes",
       "mode": "text",
       "in": "a-–b",
-      "out": "a-–b",
-      "note": "dashes.md §6 case 42: the authored-dash test is on the RUN, not on a single code point. The run `-–` contains a U+2013, so the whole token is declined — a port that tests only cp[s] converts the hyphen and produces a two-dash run with a different verdict on the next pass."
+      "out": "a – b",
+      "note": "dashes.md §6 case 42, spec 0.2.0. A run mixing `DASH` glyphs (U+002D and U+2013 here) is a single token, promoted exactly as the equivalent hyphen run (`a--b`) would be — P3 admits a `k = 2` run regardless of spacing. Spec 0.1.0's authored-dash guard, which declined any run containing U+2013/U+2014 outright, is retired in 0.2.0 (dashes.md §3.2 step 2a)."
     },
     {
       "id": "en-gb-dashes-authored-range-unbound",
@@ -520,7 +520,7 @@
       "mode": "text",
       "in": "soft­hyphen, minus −5, figure‒dash, bar―here",
       "out": "soft­hyphen, minus −5, figure‒dash, bar―here",
-      "note": "hyphen.md §4 and dashes.md §3.1: U+00AD, U+2212, U+2012 and U+2015 are never read and never produced."
+      "note": "hyphen.md §4 and dashes.md §3.1: U+00AD, U+2012 and U+2015 remain INERT-DASH, never read and never produced. U+2212 became an ordinary DASH candidate in spec 0.2.0, but this specific token still declines — 'minus −5' has a space before the minus and none after, so `dashes`' symmetry guard (§3.2 step 4) rejects it before glyph membership matters. See dashes.md §7 for a fixture pinning U+2212 as a converted candidate."
     },
     {
       "id": "en-gb-quotes-basic",
@@ -567,8 +567,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "Don't touch it — it's the '90s.",
-      "out": "Don’t touch it — it’s the ’90s.",
-      "note": "quotes.md §6 case 5, and the authored-dash guard (dashes.md §3.2 step 2a). THE en-US/en-GB DASH DIVERGENCE IS NOW GONE FOR THIS INPUT, and that is the point: an authored U+2014 keeps its glyph and spacing in BOTH locales, so the two files agree here where they used to differ. Before the narrowing en-GB turned the same em dash into a spaced en dash on 1060 lines of the author's corpus, the mirror of the en-US M4 blocker. The locale still declares `en-spaced`, and that still governs hyphen input — see the parenthetical cases, which are unaffected."
+      "out": "Don’t touch it – it’s the ’90s.",
+      "note": "quotes.md §6 case 5. The en-US/en-GB dash divergence is real again as of spec 0.2.0's full retirement of the authored-dash guard (dashes.md §3.2 step 2a): en-GB's `en-spaced` parenthetical converts the author's em dash to a spaced en dash (compare `en-us-quotes-apostrophes-and-dash`, which keeps the em dash, closed up, for the same input under en-US's `em-tight`). This was the M4 blocker's shape — restyling an authored dash — deliberately reopened by operator decision: a dash's length was judged not to be reliably authorial (dashes.md §7 item 14 records the history in full), so both locales now impose their own convention on every dash regardless of which glyph the author typed."
     },
     {
       "id": "en-gb-quotes-foot-and-inch",
@@ -607,8 +607,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "“Already curly,” he said, and \"this too.\"",
-      "out": "“Already curly,” he said, and ‘this too.’",
-      "note": "quotes.md §6 case 8 / §3.8. The pre-existing American-style pair is left exactly as written while the straight pair takes the British primary glyphs — the two coexist in one output, which is the point of §3.8."
+      "out": "‘Already curly,’ he said, and ‘this too.’",
+      "note": "quotes.md §6 case 8, updated for spec 0.3.0 mandate 1: the curly WIDE pair is now a real depth-1 pair and is rewritten to en-GB's primary (NARROW ‘ ’), exactly as the straight pair is."
     },
     {
       "id": "en-gb-quotes-rock-n-roll",
@@ -623,8 +623,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "She said \"it's the '90s\" and left.",
-      "out": "She said ‘it’s the ’90s’ and left.",
-      "note": "quotes.md §3.3 and §5.5, same input as the en-US case: per-kind stacks mean the two DQ marks pair with each other and take the British PRIMARY glyphs (single), while the SQ elision marks find no SQ partner and become U+2019 in `apostrophe`. The level-1 glyph and the elision glyph are therefore both U+2019 here, which is correct and is the one place the en-GB inversion is invisible. A PORT WITH ONE SHARED STACK PRODUCES `She said \"it’s the ‘90s’ and left.`, stranding the opening `\"` — §5.5 measures the same corruption in en-US, de-CH, fr, ru and el."
+      "out": "She said \"it’s the ’90s\" and left.",
+      "note": "quotes.md §5, certification gate, updated for spec 0.3.0. Under 0.1.0 the DQ pair converted to en-GB's primary (NARROW ‘ ’) unconditionally, because 0.1.0 never re-verified its own output. Under mandate 1 the certification gate catches that this assignment is NOT self-consistent: once the outer pair is rendered as NARROW glyphs, the still-unconverted SQ elision '90s — also NARROW and canOpen — sits between them on the same width stack and would shadow the real opener on re-scan (a fresh closer would pop the elision instead of the outer opener). The gate declines the pair rather than risk that instability, so both DQ marks survive exactly as typed. `apostrophe` (order 50) still renders the medial \"it's\" and the unmatched leading elision \"'90s\" as U+2019, since neither was ever claimed by `quotes`. Verified by running the full pipeline twice (idempotent), not hand-derived."
     },
     {
       "id": "en-gb-quotes-adjacent-to-punctuation",
@@ -647,8 +647,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "He wrote ‘this’ and «that» and „so“.",
-      "out": "He wrote ‘this’ and «that» and „so“.",
-      "note": "quotes.md §4. Note that U+2018/U+2019 are en-GB's own primary glyphs and are still not re-examined — the rule reasons about straight marks only."
+      "out": "He wrote ‘this’ and ‘that’ and ‘so’.",
+      "note": "quotes.md §4, updated for spec 0.3.0 mandate 1: withdrawn. Every quote glyph is now a candidate. All three depth-1 pairs are rewritten to en-GB's primary. The first pair was already correct and is a no-op by the invisible-edit test."
     },
     {
       "id": "en-gb-quotes-already-correct",
@@ -1145,6 +1145,30 @@
       "in": "The report -- published 2026-08-15 -- says \"growth was 5 %\", but...",
       "out": "The report – published 2026-08-15 – says ‘growth was 5 %’, but…",
       "note": "Second prose case, same input as en-US-nbsp-prose-report."
+    },
+    {
+      "id": "en-gb-quotes-030-bug2-witness",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "‘\"\"-\"-\"",
+      "out": "‘\"\"-\"-\"",
+      "note": "quotes.md §6 row B2, and the pinned pipeline-idempotency.md §6 witness ‘\"\"-\"-\": width drift after render would let the leading NARROW ‘ swallow a WIDE pair once rendered to NARROW glyphs; the certification gate declines to ∅ rather than accept an unstable pairing."
+    },
+    {
+      "id": "en-gb-quotes-030-elision-vs-closer-curly",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "’90s were fun,’ he said",
+      "out": "‘90s were fun,’ he said",
+      "note": "quotes.md §6 row E2: elision-vs-closer, curly input. See en-us-quotes-030-elision-vs-closer-curly for the full discussion; en-GB's primary is NARROW so the assigned glyphs differ but the shape of the finding is identical."
+    },
+    {
+      "id": "en-gb-quotes-030-elision-vs-closer-straight",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "'90s were fun,' he said",
+      "out": "‘90s were fun,’ he said",
+      "note": "quotes.md §6 row E2s: the straight-input control, confirming the corruption in E2 predates mandate 1."
     }
   ]
 }

@@ -609,6 +609,22 @@
       "in": "В книге сказано: \"Дорога длиной 20 км -- это не предел...\" (годы 1941-1945).",
       "out": "В книге сказано: «Дорога длиной 20 км — это не предел…» (годы 1941⁠—⁠1945).",
       "note": "A quotation, a parenthetical dash, an ellipsis, a number with a unit and a range in one sentence: ёлочки without inner space, a spaced em dash, a tight em dash for the interval, U+00A0 after the preposition and before the unit."
+    },
+    {
+      "id": "ru-quotes-030-bug1-witness",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "'\"‘",
+      "out": "'\"‘",
+      "note": "quotes.md §6 row B1, and the pinned pipeline-idempotency.md §6 witness '\"‘: pass 2 forms (\", ‘) as a pair, but rendering it to «»  puts all three marks on the same WIDE stack and the re-derivation finds no candidate set at all — the gate declines to ∅ in one round rather than accept the unstable pairing."
+    },
+    {
+      "id": "ru-quotes-030-adversarial-interleaved",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "«a„b«c»d“e»",
+      "out": "«a„b«c»d“e»",
+      "note": "quotes.md §6, ru/el/fr/fr-CA adversarial sweep: already-curly interleaved WIDE-only text (ru's primary « » and secondary „ “ are both WIDE). Already correct nesting; no edits from `quotes`, verified idempotent."
     }
   ]
 }

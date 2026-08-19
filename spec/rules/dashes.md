@@ -1,7 +1,7 @@
 # Rule: `dashes`
 
 **Order:** 30. **Default:** on. **Modes:** text, html, markdown.
-**Spec version:** 0.1.0.
+**Spec version:** 0.2.0.
 
 ---
 
@@ -53,17 +53,35 @@ Input is a code-point array `cp[0 … n-1]`.
 
 | Class           | Members                                                                                                                                                                                                              |
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `DASH`          | U+002D (hyphen-minus), U+2013 (en dash), U+2014 (em dash)                                                                                                                                                            |
+| `DASH`          | U+002D (hyphen-minus), U+2010 (hyphen), U+2013 (en dash), U+2014 (em dash), U+2212 (minus sign) — see the note below the table                                                                                      |
 | `DIGIT`         | U+0030–U+0039 only. **ASCII digits only** — see §7.1                                                                                                                                                                 |
 | `LETTER`        | any code point whose Unicode general category is `Lu`, `Ll`, `Lt`, `Lm` or `Lo`, or `Mn`, `Mc`, `Me` (combining marks count as letter-continuation, so a decomposed `é` is treated as one letter followed by a mark) |
 | `SPACE`         | U+0020 only                                                                                                                                                                                                          |
 | `BREAK`         | U+000A, U+000D, U+000B, U+000C, U+0085, U+2028, U+2029                                                                                                                                                               |
 | `NOBREAK-SPACE` | U+00A0, U+202F                                                                                                                                                                                                       |
 | `ROMAN`         | the seven uppercase Roman-numeral letters only: U+0049 `I`, U+0056 `V`, U+0058 `X`, U+004C `L`, U+0043 `C`, U+0044 `D`, U+004D `M`. Lower-case forms are **not** members — see §3.4 P4                               |
-| `INERT-DASH`    | U+00AD (soft hyphen), U+2010 (hyphen), U+2011 (non-breaking hyphen), U+2012 (figure dash), U+2015 (horizontal bar), U+2212 (minus sign), U+FE58, U+FE63, U+FF0D                                                      |
+| `INERT-DASH`    | U+00AD (soft hyphen), U+2011 (non-breaking hyphen), U+2012 (figure dash), U+2015 (horizontal bar), U+FE58, U+FE63, U+FF0D                                                                                            |
 | `JOINER`        | U+2060 (word joiner) only. Produced by the range branch (§3.3.1) and by nothing else in this rule                                                                                                                    |
 
-`INERT-DASH` members are **never** candidates and are **never** produced.
+`INERT-DASH` members are **never** candidates and are **never** produced. Two of the seven are
+protective markers owned by someone else — U+00AD is invisible formatting, and U+2011 is
+`hyphen` (order 35)'s own output — and stay excluded on that basis alone. The rest —
+U+2012, U+2015, U+FE58, U+FE63, U+FF0D — are each a *specialised* dash with its own reason to
+exist (digit-width tabular alignment, the dialogue dash some traditions use on purpose, CJK
+compatibility forms), not a substitute for a missing key, and reclassifying one would erase the
+distinction the author reached for that code point to make.
+
+**`DASH` beyond U+002D/U+2013/U+2014.** U+2010 (hyphen) and U+2212 (minus sign) are members too
+(added in spec 0.2.0): both are plain typewriter or OCR substitutes for an ordinary hyphen-minus,
+governed by exactly the same rationale as U+002D in step 2 below. U+2013 and U+2014 are ordinary
+`DASH` members too, with **no token-level special case** (spec 0.2.0 retires the guard that used
+to give them one — see step 2a's history note): a run holding any mixture of `DASH` glyphs is
+promoted to the locale's form exactly as a pure-hyphen run would be. This treats the dash's
+*length* the same way this rule has always treated its spacing — as something to correct, not
+preserve — on the view that a dash's length in ordinary prose is at least as often a copy-paste
+artefact or plain unfamiliarity with which mark is which as it is a deliberate choice, and an
+author who wants their own dash typography left alone has always had the option of not running
+the pipeline.
 
 **Unicode version.** The general categories and case mappings this rule reads are those of the UCD version pinned in `spec/UNICODE` (`17.0`). The pin is normative for the **derived tables**, not for the host runtime — see [pipeline-idempotency.md](pipeline-idempotency.md) §6a, which also specifies the canary fixtures that make the pin detectable. If an author wrote
 U+2011 they meant it.
@@ -74,30 +92,36 @@ U+2011 they meant it.
    `DASH` members: `s = i`, `e` = first index `> s` not in `DASH`, `k = e - s`.
 2. If `k > 3`, the run is decoration (a horizontal rule, a signature line, a Markdown
    `---` setext underline of arbitrary length). Emit nothing; set `i = e`; continue.
-2a. **Authored-dash guard — the rule promotes a hyphen, it never restyles a dash.** If the run
-   contains **any** U+2013 or U+2014, emit nothing for this token and continue the scan.
+2a. **(Retired, spec 0.2.0. Number kept — see the note at the end of this step.)** Spec 0.1.0
+   had an authored-dash guard here: any run containing U+2013 or U+2014 was declined outright,
+   glyph and spacing both, whatever the locale said. It is gone. U+2013 and U+2014 carry no
+   token-level special case anywhere in this algorithm; a run holding them is classified and
+   replaced exactly as the same run spelled with U+002D would be. Length is corrected along
+   with spacing, by the same replacement tables in §3.3 and §3.4.
 
-   An en or em dash in the input is a decision the author already made. This rule may turn a
-   hyphen into a dash, because a hyphen in that position is a typewriter substitute for a mark
-   the writer could not type; it may not turn one dash into another, or add or remove the spaces
-   around one, because there is no substitute involved — the author typed the mark they meant.
-   **An existing U+2013 or U+2014 therefore keeps its glyph and its spacing, whatever
-   `dash.parenthetical` or `dash.range` says.**
+   **History, in two moves.** 0.1.0's unconditional guard was itself a repair: an M4 corpus run
+   found 1063 lines across 155 files where restyling an author's dash — length and spacing
+   changed together — was pure damage, and the guard blocked the whole class by declining every
+   authored token outright (§7.14 records the finding in full). A later revision inside 0.2.0
+   narrowed the guard instead of removing it — preserve length, correct spacing only — after a
+   `Минус — при разногласиях`-shaped complaint showed the unconditional form leaving genuinely
+   mis-spaced dashes broken forever. That narrower design shipped only briefly: the length
+   restriction rests on treating a dash's length as an authorial decision, and on review that
+   premise does not hold in general — a dash's length in ordinary prose is at least as often a
+   copy-paste artefact or plain unfamiliarity with which mark is which as it is a deliberate
+   choice, and this project has never claimed to distinguish the two from context. **The
+   guard is retired outright, on the same basis this rule has always used for spacing:
+   correcting an author's mechanical error is what a normalising pass is for, and an author who
+   wants their own typography untouched has always had the option of not running one.**
 
-   The test is on the **run**, not on a single code point: a mixed run such as `-–` contains an
-   authored dash and is declined whole. Hyphen input is untouched by this guard — `a - b` still
-   becomes the locale's parenthetical form, `1914-1918` still becomes the locale's range form,
-   joiners included.
+   **§3.3.1's binding restriction is unaffected by this retirement and is stated independently
+   there:** this rule still never makes an edit whose entire content is invisible — regardless
+   of whether the dash was hyphen- or en/em-typed — because that restriction was never about
+   authorship, only about reviewability.
 
-   **This guard decides *this token*; it does not reclassify the characters.** U+2013 and U+2014
-   remain full members of `DASH` (§3.1) for every other token's guards, and that is load-bearing
-   rather than incidental: the isolation guard (step 6) and the cluster guard (step 7) protect a
-   *hyphen* token from a neighbouring authored dash, and if an authored dash stopped counting as
-   a `DASH` those protections would lapse and the `a—0–0` family of §5.2 would return.
-   A declined token is inert as a token and fully present as context.
-
-   Numbered `2a` rather than `3` deliberately: six documents cite the guards of this section by
-   number, and renumbering them to insert one step would be a worse defect than an odd label.
+   Numbered `2a` rather than renumbered to `3`: six documents cite the guards of this section by
+   number, and a step that is retired but still occupies its number costs less than a
+   renumbering would.
 
 3. Determine the **outer spacing** of the token:
    - `lsp = 1` if `s > 0` and `cp[s-1]` is `SPACE`, else `0`;
@@ -139,8 +163,10 @@ U+2011 they meant it.
 6. **Isolation guard.** If `cp[L]` or `cp[R]` is in `INERT-DASH`, or in `DASH`, or in
    `SPACE` ∪ `NOBREAK-SPACE`, emit nothing and continue.
    Three separate things are being excluded here and all three are load-bearing:
-   - an `INERT-DASH` neighbour — the author wrote U+2011 or U+2212 deliberately, and (since
-     spec 0.1.0) `hyphen` at order 35 produces U+2011 from text this rule has already seen;
+   - an `INERT-DASH` neighbour — U+2011 is produced by `hyphen` at order 35 from text this rule
+     has already seen, and U+2012/U+2015/the fullwidth and small forms are each a specialised
+     dash with its own reason to exist (§3.1); U+2010 and U+2212 are **not** in this set as of
+     spec 0.2.0 — they are ordinary `DASH` members and fall into the next bullet instead;
    - a `DASH` neighbour — the pattern `dash space dash` (`a- - a`). Without this clause the
      rule normalises the second stroke, the two dash runs become adjacent, and on the next
      run they read as **one** run of length 2 with a completely different verdict. That is
@@ -399,18 +425,24 @@ covers any `JOINER` already adjacent to the token (§3.2a).
 The parenthetical branch never emits a joiner: an interrupting dash is exactly where a line
 _may_ break.
 
-**A range the author typed with a real dash is not bound.** `1914–1918` reaches §3.2 step 2a,
-which declines the token, so no joiner is emitted either. The principle is worth stating in its
-general form because it decides the case cleanly: **this rule never makes an edit whose entire
-content is invisible.** A joiner rides along with a conversion the author wanted — the glyph
-changed, and the binding came with it — but it is never the *only* thing an edit does. An
-invisible-only edit to text the author already got right is unreviewable at the M4 gate by
-construction (§7.13), and PLAN.md §8's criterion is that any change the author would not have
-made by hand is a bug: no author types U+2060.
+**A range already in its exact target form — glyph, length and spacing — is never bound.**
+`1914–1918` in a locale whose `dash.range` is `en-tight` is already correct in every visible
+respect; adding only a `JOINER` pair would be an edit whose entire content is invisible, and
+this rule never makes one (§7.13). Concretely: compute the replacement with `bind = false`
+first — call it the *unbound form*. If the unbound form is identical, code point for code
+point, to the span it would replace, the token is left exactly as written; no joiner is added
+even though the hyphen-typed `1914-1918` gets one for the same locale. If the unbound form
+differs from the input — because the glyph, the length or the spacing is genuinely changing —
+the edit is visible on its own merits, and `bind` reverts to `isRange ∧ ¬isSpaced(style)` as
+normal: the joiner rides along with a real conversion, which is never itself the only thing an
+edit does. This test is evaluated the same way regardless of what the original dash glyph was;
+§3.2 step 2a's retirement removed the token-level distinction, and this paragraph's invisible-
+edit test is what actually decided the binding question all along — length-preservation was
+never load-bearing for it.
 
 The asymmetry this creates is real and is recorded rather than left to be discovered: in one
-document, `1914-1918` comes out bound and `1914–1918` comes out unbound, and nothing visible
-distinguishes them. §7.14.
+document, a hyphen-typed range and an already-correct dash-typed range of the same shape come
+out differently bound, and nothing visible distinguishes the two outputs. §7.14.
 
 ---
 
@@ -419,14 +451,19 @@ distinguishes them. §7.14.
 Reached only when the token is not a range candidate (i.e. at least one of `cp[L]`, `cp[R]`
 is not a `DIGIT`). Additional guards:
 
-- **P1 — a bare hyphen must be spaced.** If `k = 1` and `cp[s]` is U+002D and `lsp = 0`,
-  emit nothing. This is the compound-word guard: `well-known`, `e-mail`, `Jean-Luc`,
-  `по-русски` are all untouched. (`lsp = rsp` by §3.2 step 4, so testing one side suffices.)
-_(There is no P2. It read "an existing en/em dash is always a parenthetical dash — the rule's
-job is then to normalise it to the locale form", which is exactly what the authored-dash guard
-of §3.2 step 2a now forbids. A token containing U+2013 or U+2014 never reaches this branch, so
-P2 became unreachable in every input and was **deleted rather than left to rot** — the same
-treatment M5 got in `symbols.md` §3.3 for the same reason. The label is retired, not reused.)_
+- **P1 — a bare hyphen-shaped stroke must be spaced.** If `k = 1` and `cp[s]` is U+002D,
+  U+2010 or U+2212 and `lsp = 0`, emit nothing. This is the compound-word guard: `well-known`,
+  `e-mail`, `Jean-Luc`, `по-русски`, `well‐known` (U+2010) and `a−b` (U+2212, the same tight
+  attached shape) are all untouched. U+2013/U+2014 are never a compound-word substitute — no
+  author writes a compound word with a real en or em dash — so this guard never covers them.
+  (`lsp = rsp` by §3.2 step 4, so testing one side suffices.)
+- **P2 (restored, spec 0.2.0) — an en or em dash is a parenthetical dash, promoted to the
+  locale's form exactly as a hyphen would be.** Spec 0.1.0's step 2a made every token holding
+  U+2013/U+2014 unreachable in this branch, which made this clause dead code, so it was deleted
+  rather than left to rot. 0.2.0 retired step 2a outright (its history note explains why), so
+  U+2013/U+2014 reach this branch again on the same terms as U+002D, and the clause is restored
+  under its original label and its original, unconditional wording: length and spacing are both
+  corrected, with no distinction based on which `DASH` glyph the author typed.
 - **P4 — Roman-numeral veto.** If `lsp = rsp = 0` (the token is tight), and the maximal run of
   `ROMAN` code points ending at `cp[L]` is non-empty, and the maximal run of `ROMAN` code points
   starting at `cp[R]` is non-empty, and each of those runs is bounded on its outer side by a
@@ -540,10 +577,14 @@ of being falsified by another rule, which is then named.
 - **[P] A tight dash between two Roman numerals**, in either direction: `XV—XVII`, `I—V`,
   `Louis XIV—XVI`. Guard P4. Note this is a _preservation_ claim, not a conversion one — the
   input is already correct and the rule's job is to leave it alone.
-- **[P] Any member of `INERT-DASH`**: U+00AD, U+2010, U+2011, U+2012, U+2015, U+2212, and the
-  fullwidth/small forms. Neither read as a candidate nor produced.
-- **[P] A minus sign or a negative number.** `-5` has no space to the left of the digit and a
-  letter/space to the left of the hyphen → asymmetric → rejected.
+- **[P] Any member of `INERT-DASH`** (spec 0.2.0): U+00AD, U+2011, U+2012, U+2015, and the
+  fullwidth/small forms U+FE58, U+FE63, U+FF0D. Neither read as a candidate nor produced. **Not
+  a member since 0.2.0: U+2010 and U+2212 are ordinary `DASH` candidates** (§3.1) — `x ‐ y`
+  (U+2010) and `x − y` (U+2212) both convert to the locale's parenthetical form, and
+  `1990−2000` converts and binds as a range.
+- **[P] A negative number.** `-5` has no space to the left of the digit and a letter/space to
+  the left of the hyphen → asymmetric → rejected. This holds for U+002D, U+2010 and U+2212
+  alike — the same asymmetry guard, not a glyph-specific one.
 - **[P] Digit-flanked strokes that fail the range guards.** Left alone entirely, never
   reinterpreted as parenthetical (§3.3, final paragraph).
 - **[P] URLs, code spans, fenced code, HTML attributes.** Removed by the mode adapter before this
@@ -791,25 +832,49 @@ perturbation. The claim is now falsifiable in a useful way: if a counterexample 
 must be an edit that changes `before` or `after` from a dash to a space without being a tight
 token becoming spaced against a digit run — and E1–E4 admit no such edit.
 
-### 5.3a What the authored-dash guard does to the argument
+### 5.3a What retiring the authored-dash guard does to the argument
 
-The narrowing of §3.2 step 2a makes this rule **strictly more** stable, and the reason is worth
-one line: **this rule emits U+2013 and U+2014, and now declines every token containing one.** Its
-own output is therefore inert to it in the glyph-and-spacing dimension — not by an argument about
-recomputing an identical span, but because the token is never admitted. §5.1's first two rows
-(tight and spaced parenthetical forms recomputing to themselves) are now unreachable for that
-reason and survive only as an account of why the older formulation was sound.
+**Spec 0.1.0's claim here was that the guard made this rule strictly more stable, because it
+declined every token holding U+2013/U+2014 outright and so was inert to its own output in the
+glyph-and-spacing dimension by construction, not by recomputation. That claim is retired along
+with the guard.** Spec 0.2.0 gives U+2013/U+2014 no token-level treatment at all: from step 1
+onward they are exactly as much a `DASH` member as U+002D, so every witness §5.1–§5.3 exists to
+close is live for them too, and the stability argument has to cover them explicitly rather than
+assume they are inert.
 
-What the guard does **not** simplify: the rule still emits U+0020 for hyphen input, so guard T2
-and the whole of defect family 1 remain live; and it still emits U+2060, so §3.2a's joiner
-handling remains live. The guards that protect a hyphen token from an authored-dash neighbour —
-step 6, step 7, G2 — are **more** important than before, not less, because they are now the only
-thing standing between a hyphen and a neighbouring dash the rule will not touch.
+It reduces to two obligations, both already discharged elsewhere in this document:
 
-Guards that the narrowing made unreachable were deleted, not left in place: **P2** is gone
-(§3.4). Two that look unreachable are not, and are kept: **P4** still fires on `XV--XVII`, a
-hyphen-run between Roman numerals, and **T1** still fires on a tight `--` run facing a digit run
-with a dash beyond. Both lost their original witnesses to step 2a and kept a narrower one.
+- **Recomputation to a fixed point.** A token built from U+2013/U+2014 is, from the replacement
+  step onward, computed by exactly the same code path as a token built from U+002D — §5.1's
+  per-row argument (tight and spaced parenthetical forms recomputing to themselves, the range
+  branch's `sameContent` no-op) already covers every shape this rule can produce, regardless of
+  which `DASH` glyph the input held, and needs nothing added for it.
+- **CO-S — this rule must be inert to its own output (`pipeline-idempotency.md` §5.1a).** A tight
+  range this rule binds (§3.3.1) is, on its next pass, a single U+2013 or U+2014 reached by
+  crossing its own `JOINER` pair. Under 0.1.0's guard this was the case the guard was built to
+  recognise (via the crossed-joiner check re-admitting a digit-flanked token); under 0.2.0 the
+  same token is now just an ordinary range candidate that happens to already hold the correct
+  glyph, and §3.3.1's *invisible-edit test* — compute the unbound form, and bind only if the
+  unbound form would itself be a visible change — is what keeps it a fixed point: the unbound
+  form equals the input exactly (right glyph, right spacing), so `bind` stays `false` and the
+  joiners are re-affirmed rather than stripped. This is the same test that discharges the
+  ordinary "already-correct dash-typed range" case in the paragraph above; CO-S for the
+  self-produced case falls out of it rather than needing a separate mechanism. This was
+  confirmed, not merely argued: `tests/rules/dashes.test.ts`'s exhaustive bounded sweep and its
+  `fast-check` idempotency property both cover the 0.2.0 code path and are green.
+
+What the retirement does **not** change: the rule still emits U+0020 for hyphen input, so guard
+T2 and the whole of defect family 1 remain live; it still emits U+2060, so §3.2a's joiner
+handling remains live; and the guards that protect a hyphen token from a *neighbouring* dash —
+step 6, step 7, G2 — are unaffected, because they always read `DASH` membership, never
+authorship, and continue to.
+
+**P2** is restored (§3.4) to its original, unconditional wording. **P4** still fires on
+`XV--XVII`, a hyphen-run between Roman numerals, and now also on `в XV—XVII веках` typed with a
+real em dash, for the same reason it always fired: a tight dash between two word-bounded `ROMAN`
+runs is a range the parenthetical branch must not touch, regardless of which `DASH` glyph it is
+made of. **T1** still fires on a tight `--` run facing a digit run with a dash beyond, and now
+also on the same shape typed with U+2013/U+2014, U+2010 or U+2212.
 
 ### 5.4 Composition obligation
 
@@ -920,12 +985,12 @@ variation selector.
 | #   | Input                          | Output                               | Why                                                                                                                                                                                 |
 | --- | ------------------------------ | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 14  | `Москва␣-␣столица`             | `Москва␣—␣столица`                   | `em-spaced`                                                                                                                                                                         |
-| 15  | `Москва⍽—␣столица`             | ⟶                                    | declined at **step 2a**, before spacing is computed. It was already declined by the symmetry guard (`lsp = 0`, a U+00A0 not being this rule's spacing); both hold, step 2a reaches it first                                                 |
+| 15  | `Москва⍽—␣столица`             | ⟶                                    | declined by the **symmetry guard** (`lsp = 0`, since a U+00A0 is not this rule's spacing; `rsp = 1`) — unaffected by step 2a's retirement, because the symmetry guard has never read which `DASH` glyph the token holds                                                 |
 | 16  | `из-под стола, кое-что`        | ⟶                                    | P1. (`hyphen`, order 35, will bind these two hyphens with U+2011 — that is a different rule)                                                                                        |
 | 17  | `Годы 1941-1945 были тяжёлыми` | `Годы 1941⟨J⟩—⟨J⟩1945 были тяжёлыми` | Russian sets an **em** dash in ranges; `range: "em-tight"`. Aligned to the shipped fixture — which pair of years the row uses is arbitrary, and a second fixture differing only in its digits would be coverage of nothing                                                                                                                          |
 | 17a | `в XV—XVII веках`              | ⟶                                    | **guard P4.** A tight em dash between two Roman-numeral runs is a range already in its correct form. Previously produced `в XV — XVII веках`, damaging input that was already right |
 | 17b | `в XV-XVII веках`              | ⟶                                    | P4 fires here too (it tests the token's spacing and its neighbours, not which dash was typed), so the hyphen is left as written rather than converted. A miss, not damage — §7.6   |
-| 17c | `Москва—столица`               | ⟶                   | **§3.2 step 2a**: the em dash is authored, so it keeps its glyph and its tightness. Before the narrowing this produced `Москва␣—␣столица`, restyling a mark the author chose                                                                                  |
+| 17c | `Москва—столица`               | `Москва␣—␣столица`  | Cyrillic is not `ROMAN`, so P4 does not fire. ru's parenthetical is `em-spaced`; the token's length already matches (`em`), so only its spacing changes — but a length mismatch would convert here too, since spec 0.2.0 retired the token-level distinction entirely (§3.2 step 2a) |
 
 ### Idempotency regression cases
 
@@ -941,7 +1006,7 @@ fixtures.
 | 24  | `de-DE` | `a–1␣-␣1`               | ⟶         | **defect (c).** Step 8: the `–` is tight, `en-spaced` would make it spaced, and the digit run `1` to its right has a `-` two code points beyond → the `–` is inert. The `-` is rejected by G2 (`before` is `–`). Previously `a – 1 - 1` then `a – 1–1`                                                                                |
 | 25  | `ru`    | `a–1␣-␣1`               | ⟶         | same shape, `em-spaced` parenthetical and `em-tight` range. Previously `a — 1 - 1` then `a — 1—1`                                                                                                                                                                                                                                     |
 | 26  | `de-DE` | `a–1-1`                 | ⟶         | the tight sibling of case 24, but **step 7** is what rejects it: with no space anywhere, `–1-1` is a single cluster containing two dash runs, so the whole cluster is inert. Step 8 is load-bearing only for the _spaced_ form in case 24, where the range token's own spacing ends its cluster and step 7 cannot see the second dash |
-| 27  | `en-US` | `a–1␣-␣1`               | ⟶         | the `–` is authored and declines at step 2a; the `-` stays rejected by G2. Before the narrowing the `–` normalised to `—`                                                                                                                                                                                                      |
+| 27  | `en-US` | `a–1␣-␣1`               | `a—1␣-␣1` | en-US's parenthetical is `em-tight` (not spaced), so **T1 never applies** — the token converts freely, length included. `de-DE`'s `en-spaced` parenthetical, by contrast, makes this token spaced, and T1 blocks it (the trailing `- 1` sits a far dash away): `run("a–1 - 1", deDE)` stays `a–1 - 1`, unconverted — this is what row 27 originally tested, and the mechanism is unchanged by step 2a's retirement                                                                                                                                                                                                      |
 
 ### Composition regression cases
 
@@ -961,7 +1026,7 @@ point on its own output; the pipeline was not.
 | 36  | `fr`    | `«–␣"`            | ⟶      | the pass-1 form of case 35: `cp[s-1]` is `«`, not a space, so the token is asymmetric from the start. `nbsp` then inserts the inner space, producing case 35, which is now a fixed point                                                                   |
 | 37  | `fr`    | `«⍽–␣a`           | ⟶      | the same family with a letter to the right; all five witnesses (`«`, `"`, `'`, `a`, `1`) behave identically                                                                                                                                                |
 
-### The authored-dash guard — §3.2 step 2a
+### Dash-glyph reclassification, spec 0.2.0 (formerly "the authored-dash guard — §3.2 step 2a")
 
 The M4 gate rejected 1063 lines of exactly this shape, 30% of the whole diff: the author's spaced
 em dashes rewritten to the `en-US` `em-tight` convention. `en-GB` was no escape — there the same
@@ -970,12 +1035,12 @@ authorial choice across an entire corpus.
 
 | #   | Locale  | Input                                  | Output                            | Why                                                                                                                     |
 | --- | ------- | -------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| 38  | `en-US` | `documents␣—␣PDFs, invoices␣—␣and you` | ⟶                                 | **the M4 blocker.** Authored em dashes keep glyph and spacing. Before the narrowing: `documents—PDFs, invoices—and you` |
-| 39  | `en-GB` | `documents␣—␣PDFs␣—␣and you`           | ⟶                                 | the same input in the other English locale, which previously produced en dashes                                          |
+| 38  | `en-US` | `documents␣—␣PDFs, invoices␣—␣and you` | `documents—PDFs, invoices—and you` | **the M4 blocker, reopened deliberately in spec 0.2.0** (§7 item 14). en-US's parenthetical is `em-tight`; the author's dash is already EM, so only its spacing is corrected — length happens to already match here |
+| 39  | `en-GB` | `documents␣—␣PDFs␣—␣and you`           | `documents – PDFs – and you`       | the same input in the other English locale: en-GB's parenthetical is `en-spaced`, so the length converts (em → en) as well as the spacing already being correct — this is the M4 corpus's own shape, reopened on the same operator decision as row 38 |
 | 40  | `en-US` | `The plan␣-␣if there is one␣-␣fails.`  | `The plan—if there is one—fails.` | **hyphen input is unaffected** — this is the conversion the rule exists for, and it still fires                         |
-| 41  | `de-DE` | `Der Plan—falls es einen gibt—fällt.`  | ⟶                                 | an authored em dash in an `en-spaced` locale: no glyph change, no spacing change                                         |
-| 42  | `en-US` | `a-–b`                                 | ⟶                                 | a **mixed run** contains an authored dash and is declined whole                                                          |
-| 43  | `en-US` | `1914–1918`                            | ⟶                                 | an authored range gets **no joiners** — the rule never makes an edit whose entire content is invisible (§3.3.1, §7.14) |
+| 41  | `de-DE` | `Der Plan—falls es einen gibt—fällt.`  | `Der Plan – falls es einen gibt – fällt.` | an em dash typed by the author; de-DE's parenthetical is `en-spaced`, so both the length (em → en) and the spacing (tight → spaced) are corrected. Under 0.1.0's guard, and under the briefly-shipped 0.2.0 narrowing, this row stayed unchanged — retiring the guard outright is what converts it |
+| 42  | `en-US` | `a-–b`                                 | `a—b`                              | a **mixed run** of `DASH` glyphs is a single token, promoted exactly as the equivalent hyphen run (`a--b`) would be — P3 admits a `k = 2` run regardless of spacing                                                          |
+| 43  | `en-US` | `1914–1918`                            | ⟶                                 | en-US's range is `en-tight`; the token is already exactly correct — glyph, length and spacing — so it is left alone. §3.3.1's invisible-edit test (compute the unbound form; bind only if that would itself be a visible change) is what decides this, not any property of the original glyph |
 | 44  | `en-US` | `1914-1918`                            | `1914⟨J⟩–⟨J⟩1918`                 | the hyphen-typed range still converts and still binds. 43 and 44 are the asymmetry §7.14 records                         |
 
 ### The joiner-transparency repair — §3.2b
@@ -983,7 +1048,7 @@ authorial choice across an entire corpus.
 | #   | Locale  | Input       | Output              | Why                                                                                                                                                                    |
 | --- | ------- | ----------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 45  | `de-DE` | `1-1␣-␣1`   | `1⟨J⟩–⟨J⟩1␣-␣1`     | **defect (e), §5.2.** The second token's `before` is an effective neighbour that skips the joiner and finds the `–`, so G2 rejects it on every pass. Previously pass 2 produced `1⟨J⟩–⟨J⟩1⟨J⟩–⟨J⟩1` |
-| 46  | `de-DE` | `1–1␣-␣1`   | ⟶                   | the **control**: the same shape with an authored dash was a fixed point throughout, because G2 always saw a real `DASH` there. It is the row that isolates (e) from step 2a       |
+| 46  | `de-DE` | `1–1␣-␣1`   | ⟶                   | the **control**: the first token is already exactly correct for `en-tight` (glyph, length, spacing), so §3.3.1's invisible-edit test leaves it unbound and unchanged; the second token's G2 still rejects it, because `before` is a real `DASH` regardless of which `DASH` glyph it is. `1—1 - 1` (an em dash where the locale wants en) is **not** a fixed point here — it converts to `1⟨J⟩–⟨J⟩1 - 1`, the same as row 45 |
 | 47  | `ru`    | `1-1␣-␣1`   | `1⟨J⟩—⟨J⟩1␣-␣1`     | the defect reproduced in all seven locales whose `range` is not `none`; `ru` sets `em-tight`                                                                            |
 
 ### `el` — `parenthetical: "none"`, `range: "none"`
@@ -1034,9 +1099,14 @@ U+2014 parenthetically while the state school grammar appears to set U+2013.
 | 51  | `The plan␣-␣if there is one␣-␣fails.` | ⟶      | the token is classified as parenthetical and then nothing is emitted            |
 | 52  | `1914-1918`                           | ⟶      | classified as a range, nothing emitted; **not** reconsidered as a parenthetical |
 
-Cases 3e, 3f, 3g, 3h, 3i, 4, 5, 6, 7, 8, 9, 10, 12, 15, 16, 17a, 17b, 17c, 18, 19, 20, 21, 24, 25, 26, 27, 28, 29, 30, 31, 33, 34, 35, 36, 37, 38, 39, 41, 42, 43, 46, 48, 49, 50, 51 and 52 are "no change" cases. (Rebuilt from the rows
-themselves rather than maintained by hand: the previous list omitted 17a and 17b, and every
-row added after it was written.)
+Cases 3e, 3f, 3g, 3h, 3i, 4, 5, 6, 7, 8, 9, 10, 12, 15, 16, 17a, 17b, 18, 19, 20, 21, 24, 25, 26,
+28, 29, 30, 31, 33, 34, 35, 36, 37, 43, 46, 48, 49, 50, 51 and 52 are "no change" cases. (Rebuilt
+programmatically from the rows themselves and re-checked against spec 0.2.0's live
+`transform()` output. **17c, 27, 38, 39, 41 and 42 are no longer "no change" as of 0.2.0** and
+were removed from this list — each converts visibly now that the authored-dash guard is
+retired. 17a, 17b and 34 use guards unrelated to authorship — P4 and the symmetry guard — and
+remain no-change exactly as before. Re-derive this list from the table, not from memory,
+before trusting it: it has been wrong twice already in this document's history.)
 
 ---
 
@@ -1167,31 +1237,42 @@ row added after it was written.)
     argument that invisibility is a property a spec has to manage explicitly, in the same way
     `symbols.md` §3.1 manages the Cyrillic `х` — the other change in this project that no
     reviewer can catch by eye.
-14. **What the authored-dash guard costs, stated plainly.** §3.2 step 2a was adopted to unblock
-    the M4 gate, and it is a real reduction in what this rule can do. Three consequences, none of
-    them hidden:
+14. **The authored-dash guard's history, and why it ended in full retirement (spec 0.2.0).**
+    Spec 0.1.0 introduced an unconditional guard here after an M4 corpus run found 1063 lines
+    across 155 files where restyling an author's dash — glyph length and spacing changed
+    together — was pure damage against a criterion (PLAN.md §8) that names exactly that as the
+    ship blocker. A later revision inside 0.2.0 narrowed the guard rather than removing it —
+    preserve the author's dash length, correct only the spacing — after a
+    `Минус — при разногласиях`-shaped operator complaint showed the unconditional form leaving
+    genuinely mis-spaced dashes broken forever. That narrowing rested on treating a dash's
+    length as reliably an authorial decision. On operator review that premise was rejected: a
+    dash's length in ordinary prose is at least as often a copy-paste artefact or plain
+    unfamiliarity with which mark is which as it is deliberate, and this project has no way to
+    tell the two apart from context — so the guard was retired outright rather than kept
+    narrow, on the same footing this rule has always used for spacing: an author who wants their
+    own dash typography untouched has always had the option of not running the pipeline.
 
-    - **Mixed-style copy stays mixed.** A document containing both `a — b` and `a - b` comes out
-      with a spaced em dash beside the locale's parenthetical form. Before the narrowing the rule
-      would have unified them; now it cannot, because unifying requires overriding one of the two
-      spellings and the author typed one of them deliberately. **Normalising power is the thing
-      being traded away**, and this is the trade.
-    - **`en-US`'s `em-tight` convention now applies only to text the author typed with a hyphen.**
-      The locale field still says `em-tight` and it is still correct as a statement of the
-      convention; it simply no longer governs any dash already present. The same is true of every
-      `-spaced` locale.
-    - **An author-typed range is not bound; a hyphen-typed one is.** `1914–1918` keeps its
-      breakable dash while `1914-1918` becomes `1914⟨J⟩–⟨J⟩1918` (§6 cases 43, 44). Both forms
-      are visually identical, so nothing in the rendered document explains why one may break
-      across lines and the other may not. This is the least comfortable consequence of the
-      narrowing and the one most likely to be reported as a bug.
+    Two consequences worth stating plainly, neither hidden:
 
-    The reasoning that made all three acceptable is that they are **misses, and the behaviour they
-    replaced was damage**: 1063 lines of the author's own corpus rewritten against his intent, on
-    a criterion (PLAN.md §8) that names exactly that as the ship blocker. A rule that leaves good
-    text alone and improves less is the right side of that trade. It would be reopened only by a
-    locale field distinguishing "normalise dashes" from "promote hyphens" — which is a caller
-    preference, not a typographic fact about a language, and so does not belong in a locale file.
+    - **`en-US`'s `em-tight` convention, and every locale's dash convention, now governs every
+      dash in the document — hyphen-typed or not, whatever length or spacing it started with.**
+      `documents — PDFs, invoices — and you` and `documents–PDFs, invoices–and you` both become
+      `documents—PDFs, invoices—and you` in `en-US`. This is the M4 corpus's 1063-line class,
+      reopened deliberately: the operator judged that the M4 gate's corpus finding reflected a
+      false premise about dash length being authorial, not a property of the tool that had to be
+      preserved regardless of that premise.
+    - **A range already in its exact target form — glyph, length and spacing — is still never
+      bound; a range that needs any visible correction (hyphen-typed, or a dash of the wrong
+      length or spacing) is.** `1914–1918` in an `en-tight` locale keeps its breakable dash,
+      because binding it would be an edit whose entire content is invisible (§3.3.1); the same
+      shape typed `1914-1918`, or typed `1941—1945` where the locale wants `en-tight`, converts
+      and binds, because the glyph itself is visibly changing. This asymmetry is unaffected by
+      the guard's retirement — it was never about authorship, only about reviewability — and
+      remains the one most likely to be reported as a bug (§6 cases 43, 44).
+
+    The length restriction could be reopened only by a locale field distinguishing "normalise
+    dash length" from "promote hyphens only" — which is a caller preference, not a typographic
+    fact about a language, and so does not belong in a locale file.
 15. **T2's set is deliberately wider than `spaces`' `STRIP-BEFORE`, by U+2026, and no fixture
     covers the difference.** §3.2 step 9 declines a `-spaced` form before U+2026 although
     `spaces` would not delete a space there. Both readings are idempotent, so the property suite

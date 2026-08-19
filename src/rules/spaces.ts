@@ -1,5 +1,6 @@
 import type { Edit, Rule, RuleContext } from "../types.js";
 import { isMarker, LINE_MARKER, NONE } from "../engine/sentinels.js";
+import { isLetter } from "../engine/unicode.js";
 
 // spec/rules/spaces.md 3.1. Explicit code points only: no regex, no \s (ARCHITECTURE.md 4.1).
 const SPACE = 0x20;
@@ -26,6 +27,21 @@ const SQUARE_OPEN = 0x5b;
 const SQUARE_CLOSE = 0x5d;
 const CURLY_OPEN = 0x7b;
 const CURLY_CLOSE = 0x7d;
+
+const HYPHEN_MINUS = 0x2d;
+const CARET = 0x5e;
+const SOLIDUS = 0x2f;
+const REVERSE_SOLIDUS = 0x5c;
+const VERTICAL_LINE = 0x7c;
+const ASTERISK = 0x2a;
+const DIGIT_ZERO = 0x30;
+const DIGIT_NINE = 0x39;
+const LETTER_D_UPPER = 0x44;
+const LETTER_D_LOWER = 0x64;
+const LETTER_P_UPPER = 0x50;
+const LETTER_P_LOWER = 0x70;
+const LETTER_O_UPPER = 0x4f;
+const LETTER_O_LOWER = 0x6f;
 
 /** `NONE` in the spec: the position one past either end of the array. */
 
@@ -107,13 +123,61 @@ function isLoneDot(cp: readonly number[], e: number): boolean {
   return !isDotlike(at(cp, e + 1));
 }
 
+function isDigitAscii(cp: number): boolean {
+  return cp >= DIGIT_ZERO && cp <= DIGIT_NINE;
+}
+
+/** spec/rules/spaces.md 3.6: the recognised "mouth" glyphs of a Western text emoticon. */
+function isEmoticonMouth(cp: number): boolean {
+  return (
+    cp === PAREN_OPEN ||
+    cp === PAREN_CLOSE ||
+    cp === SQUARE_OPEN ||
+    cp === SQUARE_CLOSE ||
+    cp === LETTER_D_UPPER ||
+    cp === LETTER_D_LOWER ||
+    cp === LETTER_P_UPPER ||
+    cp === LETTER_P_LOWER ||
+    cp === LETTER_O_UPPER ||
+    cp === LETTER_O_LOWER ||
+    cp === SOLIDUS ||
+    cp === REVERSE_SOLIDUS ||
+    cp === VERTICAL_LINE ||
+    cp === ASTERISK
+  );
+}
+
+/**
+ * spec/rules/spaces.md 3.6, the emoticon guard. A colon or semicolon immediately followed by
+ * an optional "nose" and a recognised "mouth" is the eye of a Western text emoticon
+ * (`:-)`, `:)`, `;-)`), not sentence punctuation, and the space in front of it must survive.
+ *
+ * The mouth must not itself run into a letter or a digit — `:Deal` is a colon before a
+ * capitalised word, not a face — which is the one check needed to keep this from firing on
+ * ordinary prose. `e` indexes `right`, exactly as `isLoneDot` does.
+ */
+function isEmoticon(cp: readonly number[], e: number): boolean {
+  const eye = at(cp, e);
+  if (eye !== COLON && eye !== SEMICOLON) return false;
+
+  let i = e + 1;
+  const nose = at(cp, i);
+  if (nose === HYPHEN_MINUS || nose === CARET) i += 1;
+
+  if (!isEmoticonMouth(at(cp, i))) return false;
+  i += 1;
+
+  const after = at(cp, i);
+  return !isLetter(after) && !isDigitAscii(after);
+}
+
 function replacementLength(cp: readonly number[], e: number, left: number, right: number): number {
   // The guard is a clause of this decision, not a "skip the run" branch: `(  )` collapses to
   // `( )` (spec/rules/spaces.md 3.3, normative reading).
   if (isEmptyBracketGuarded(left, right)) return 1;
   if (isOpenBracket(left)) return 0;
   if (isCloseBracket(right)) return 0;
-  if (isStripBefore(right) && isLoneDot(cp, e)) return 0;
+  if (isStripBefore(right) && isLoneDot(cp, e) && !isEmoticon(cp, e)) return 0;
   return 1;
 }
 

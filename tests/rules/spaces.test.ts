@@ -42,6 +42,11 @@ describe("spaces — worked examples (spec/rules/spaces.md 6)", () => {
     ["10e", "Wait …", "Wait …"],
     [11, "foo    \n    bar", "foo    \n    bar"],
     [12, "Q:  why ?  Because .", "Q: why? Because."],
+    [13, "Привет :-)", "Привет :-)"],
+    ["13a", "Привет :)", "Привет :)"],
+    ["13b", "Hello :Deal with it", "Hello:Deal with it"],
+    ["13c", "10:30", "10:30"],
+    ["13d", "See you at 10 : 30", "See you at 10: 30"],
   ];
 
   for (const [n, input, expected] of cases) {
@@ -52,6 +57,41 @@ describe("spaces — worked examples (spec/rules/spaces.md 6)", () => {
 
   it("worked trace of 3.4", () => {
     expect(run("a  (  b  ,  c  )  d")).toBe("a (b, c) d");
+  });
+});
+
+describe("spaces — the emoticon guard (spec/rules/spaces.md 3.6)", () => {
+  it("fires for common Western emoticons, with and without a nose", () => {
+    for (const mouth of [")", "(", "D", "d", "P", "p", "O", "o", "/", "\\", "|", "*", "[", "]"]) {
+      expect(run(`hi :-${mouth}`)).toBe(`hi :-${mouth}`);
+      expect(run(`hi :${mouth}`)).toBe(`hi :${mouth}`);
+    }
+  });
+
+  it("fires on the semicolon eye too (a wink)", () => {
+    expect(run("sure ;-)")).toBe("sure ;-)");
+    expect(run("sure ;)")).toBe("sure ;)");
+  });
+
+  it("does not fire when the mouth runs into a letter or digit", () => {
+    expect(run("Hello :Deal with it")).toBe("Hello:Deal with it");
+    expect(run("Say :D5 the code")).toBe("Say:D5 the code");
+  });
+
+  it("does not fire when there is no mouth at all", () => {
+    expect(run("See you at 10 : 30")).toBe("See you at 10: 30");
+    expect(run("Note ; think again")).toBe("Note; think again");
+  });
+
+  it("fires even when the mouth is followed by more punctuation", () => {
+    expect(run("great :-)!")).toBe("great :-)!");
+  });
+
+  it("is idempotent", () => {
+    for (const input of ["hi :-)", "hi :)", "sure ;-)", "Hello :Deal with it", "10 : 30"]) {
+      const once = run(input);
+      expect(run(once)).toBe(once);
+    }
   });
 });
 

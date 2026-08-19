@@ -88,11 +88,11 @@
       "properties": {
         "beforePunctuation": {
           "$ref": "#/$defs/charList",
-          "description": "Characters that take U+00A0 before them."
+          "description": "Characters that take U+00A0 before them. Q-P (quotes.md 2.1, enforced by scripts/validate-spec.mjs): every entry must be a member of the quotes rule's CLOSEISH."
         },
         "narrowBeforePunctuation": {
           "$ref": "#/$defs/charList",
-          "description": "Characters that take U+202F before them."
+          "description": "Characters that take U+202F before them. Q-P (quotes.md 2.1, enforced by scripts/validate-spec.mjs): every entry must be a member of the quotes rule's CLOSEISH."
         },
         "afterShortWords": {
           "type": "array",
@@ -181,7 +181,8 @@
           "enum": ["none", "nbsp", "narrow-nbsp"],
           "description": "Space inserted between the quotation mark and the quoted text, as in French guillemets."
         }
-      }
+      },
+      "description": "Q-W (quotes.md 2.1, enforced by scripts/validate-spec.mjs): open and close must share a WIDE/NARROW visual width. Q-A: if innerSpace is not \"none\", neither open nor close may be U+2019."
     },
     "singleChar": {
       "type": "string",

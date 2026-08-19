@@ -35,6 +35,16 @@ that already carries the right no-break spaces.
 - `quotes.primary.open`, `quotes.primary.close`, `quotes.primary.innerSpace`
 - `quotes.secondary.open`, `quotes.secondary.close`, `quotes.secondary.innerSpace`
 
+**Constraint Q-P (`quotes.md` §2.1), normative on this rule's own data.** Every code point in
+`nbsp.beforePunctuation` and `nbsp.narrowBeforePunctuation` must be a member of `quotes`'
+`CLOSEISH` (`quotes.md` §3.1). This is what makes `quotes`' Lemma B cover N1/N2 as well as N8:
+Lemma B's case 3 needs `m ∈ CLOSEISH` to know that a mark whose `closeRight` moves from `m` to a
+`SPACELIKE` insertion is accepted either way. The shipped lists (`:`, `;`, `!`, `?` in
+`fr`/`fr-CA`, empty elsewhere) satisfy it; `pipeline-idempotency.md` §7 item 4's schema gap is
+closed by `locale.schema.json`'s `nbspClosePunctuation` check. A locale adding a new
+`beforePunctuation`/`narrowBeforePunctuation` entry outside `CLOSEISH` reopens Lemma B and needs
+a `quotes.md` §5 re-derivation, not just a data change.
+
 ### 2.1 A locale attests membership; the rule owns the mechanism
 
 **Normative, and general — it governs every list-valued field in `locale.schema.json`, not only

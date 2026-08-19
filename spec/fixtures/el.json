@@ -193,6 +193,22 @@
       "in": "Είπε «καλημέρα» και έφυγε.",
       "out": "Είπε «καλημέρα» και έφυγε.",
       "note": "nbsp.md §6 case 28. The half of the total-no-op claim that does NOT live in the nbsp object: sub-rule N8 reads quotes.innerSpace, which is \"none\" for Greek, so no inner space is inserted. A locale with all eight nbsp lists empty but a non-none innerSpace would still edit here — fr case 23 is that shape — so this case is what makes \"nbsp is a provable no-op for el\" true rather than merely likely."
+    },
+    {
+      "id": "el-quotes-030-width-drift-no-gate",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Είπε 'όχι' σε μένα\", σημείωσε.",
+      "out": "«Είπε “όχι” σε μένα», σημείωσε.",
+      "note": "quotes.md §6 row 16: width drift with no gate intervention — el's secondary pair is WIDE (“ ”), so the inner NARROW pair drifts to WIDE on render and all four marks land on one stack in the gate's re-scan; the certification gate certifies without declining anything, evidence the gate's cost is near zero for the common case."
+    },
+    {
+      "id": "el-quotes-030-adversarial-interleaved",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "«a“b«c»d”e»",
+      "out": "«a“b«c»d”e»",
+      "note": "quotes.md §6, ru/el/fr/fr-CA adversarial sweep: already-curly interleaved WIDE-only text. Already correct nesting; no edits, verified idempotent."
     }
   ]
 }

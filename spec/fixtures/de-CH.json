@@ -75,12 +75,12 @@
       "note": "dash.parenthetical = en-spaced — Bundeskanzlei Rz. 231/237/238: der Gedankenstrich ist der Halbgeviertstrich, mit Leerzeichen davor und danach."
     },
     {
-      "id": "de-ch-dashes-authored-em-dash-preserved",
+      "id": "de-ch-dashes-authored-em-dash-converts",
       "rule": "dashes",
       "mode": "text",
       "in": "Das Jahr — ein langes — endet.",
-      "out": "Das Jahr — ein langes — endet.",
-      "note": "The most instructive case in this file, and it is about the limits of the package rather than about Swiss typography. Bundeskanzlei Rz. 236 does state expressly that the Geviertstrich (U+2014) is not permitted, and de-CH's dash.parenthetical = en-spaced still says so — but `dashes` §3.2 step 2a declines any dash the AUTHOR typed, so the convention governs hyphen input only and never rewrites a mark already present. The narrowing was forced by the M4 gate: restyling authored dashes changed 1063 lines across 155 files of the author's own corpus, which is precisely the false-positive class PLAN.md §8 blocks on. So: the convention still holds for `--` and `-` input (see the next case); it no longer imposes itself on `—`."
+      "out": "Das Jahr – ein langes – endet.",
+      "note": "dashes.md §6 case 41, spec 0.2.0. Spec 0.1.0's authored-dash guard (and a briefly-shipped 0.2.0 narrowing that preserved only length) is fully retired: de-CH's parenthetical is `en-spaced`, so the author's em dash is promoted to it exactly as a hyphen-typed one would be — length included. See dashes.md §7 item 14 for why length stopped being treated as reliably authorial. Bundeskanzlei Rz. 236 states the Geviertstrich (U+2014) is not permitted in Swiss usage; the author's em dash is now corrected to the prescribed en dash rather than merely respaced or left alone."
     },
     {
       "id": "de-ch-dashes-range-years",
@@ -171,12 +171,12 @@
       "note": "The fixed point of the previous case: no space is inserted on a second pass either."
     },
     {
-      "id": "de-ch-quotes-inner-space-not-removed",
+      "id": "de-ch-quotes-inner-space-removed",
       "rule": "quotes",
       "mode": "text",
       "in": "Er sagte « hallo » zweimal.",
-      "out": "Er sagte « hallo » zweimal.",
-      "note": "nbsp.md §3.10 and §7.4: with innerSpace = none, N8 does nothing at all — in particular it does not REMOVE a space the author typed inside the guillemets, and `spaces` deliberately excludes quotation marks from STRIP-BEFORE. So the two French-looking spaces survive. Recorded as a known gap rather than silently fixed."
+      "out": "Er sagte «hallo» zweimal.",
+      "note": "quotes.md §3.7, updated for spec 0.3.0 mandate 2: a space touching a quote mark is sloppiness, not evidence. Under 0.1.0 an already-correctly-guillemetted pair with a stray inner space was left untouched by `quotes` (no straight marks to act on). Under mandate 2 the pair is recognised on the first application and, since de-CH's innerSpace is none, the inner space is deleted by `quotes` itself rather than surviving as a typo. Renamed from de-ch-quotes-inner-space-not-removed, whose old id described 0.1.0 behaviour that mandate 2 reverses."
     },
     {
       "id": "de-ch-quotes-nested",
@@ -440,7 +440,7 @@
       "mode": "text",
       "in": "«Die Jahre 1939–1945», sagte er.",
       "out": "«Die Jahre 1939–1945», sagte er.",
-      "note": "Correct Swiss guillemets without inner space, plus an authored tight en-dash range that keeps its dash and gains no joiners (§3.2 step 2a, §7.14). Correctly typeset Swiss copy round-trips byte-for-byte, including the invisible layer."
+      "note": "Correct Swiss guillemets without inner space, plus a tight en-dash range already exactly in de-CH's `en-tight` form. §3.3.1's invisible-edit test computes the unbound replacement first; it is identical to the input, so no joiners are added and nothing is emitted at all (§7.14) — this holds regardless of whether the dash was hyphen- or en-typed (spec 0.2.0 retired the authored-dash guard). Correctly typeset Swiss copy round-trips byte-for-byte, including the invisible layer."
     },
     {
       "id": "de-ch-roundtrip-plain-prose",

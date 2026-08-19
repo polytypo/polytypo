@@ -427,8 +427,13 @@ describe("nbsp — end to end through transform", () => {
     expect(transform("Vraiment ?", { locale: "fr" })).toBe(`Vraiment${NNBSP}?`);
   });
 
-  it("§7.4. `« hallo »` keeps the author's spaces when innerSpace is none", () => {
-    expect(transform("« hallo »", { locale: "de-CH" })).toBe("« hallo »");
+  it("§7.4, updated for quotes.md spec 0.3.0 mandate 2: `« hallo »`'s inner spaces are now deleted by `quotes` itself, not merely left alone by `nbsp`", () => {
+    // Under 0.1.0 `nbsp` alone was the whole story here: it never removes a space, so a
+    // stray inner space beside an innerSpace:"none" pair survived untouched. Under mandate 2
+    // `quotes` (order 40, before `nbsp`) now recognises the already-correct pair on the first
+    // application and deletes the inner space itself, since `nbsp` still has no deletion
+    // capability at all — see spec/rules/quotes.md §3.7.
+    expect(transform("« hallo »", { locale: "de-CH" })).toBe("«hallo»");
   });
 
   it("each of the four is a fixed point of transform", () => {

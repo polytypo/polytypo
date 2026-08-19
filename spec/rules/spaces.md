@@ -1,7 +1,7 @@
 # Rule: `spaces`
 
 **Order:** 10 (first). **Default:** on. **Modes:** text, html, markdown.
-**Spec version:** 0.1.0.
+**Spec version:** 0.2.0.
 
 ---
 
@@ -47,6 +47,9 @@ The input is a code-point array `cp[0 … n-1]`. Indices below are code-point in
 | `DOTLIKE`         | U+002E (.) and U+2026 (…)                                                                                                                                                                                                                                |
 | `OPEN-BRACKET`    | U+0028 `(` U+005B `[` U+007B `{`                                                                                                                                                                                                                         |
 | `CLOSE-BRACKET`   | U+0029 `)` U+005D `]` U+007D `}`                                                                                                                                                                                                                         |
+| `EMOTICON-EYE`    | U+003A (:), U+003B (;) — a subset of `STRIP-BEFORE`, not a new code point this rule reads outside it. See §3.6                                                                                                                                          |
+| `EMOTICON-NOSE`   | U+002D (-), U+005E (^). Optional. See §3.6                                                                                                                                                                                                               |
+| `EMOTICON-MOUTH`  | U+0028 `(`, U+0029 `)`, U+005B `[`, U+005D `]`, U+0044 `D`, U+0064 `d`, U+0050 `P`, U+0070 `p`, U+004F `O`, U+006F `o`, U+002F `/`, U+005C `\`, U+007C `|`, U+002A `*`. See §3.6                                                                          |
 
 `STRIP-BEFORE` contains only these **six** code points. It deliberately excludes closing
 quotation marks and guillemets: their inner spacing is `nbsp`'s business (`quotes.innerSpace`),
@@ -84,8 +87,8 @@ and stripping there would fight with it.
    - If the _empty-bracket guard_ (§3.3) fires → replacement length **1**.
    - Else if `left` is in `OPEN-BRACKET` → replacement length 0.
    - Else if `right` is in `CLOSE-BRACKET` → replacement length 0.
-   - Else if `right` is in `STRIP-BEFORE` **and the lone-dot condition (§3.4) holds** →
-     replacement length 0.
+   - Else if `right` is in `STRIP-BEFORE` **and the lone-dot condition (§3.4) holds and the
+     emoticon guard (§3.6) does not fire** → replacement length 0.
    - Else → replacement length 1.
      The guard is a clause of this decision, not a separate "skip the run" branch. **This
      reading is normative**; see §3.3.
@@ -221,7 +224,44 @@ amount of context lets a single scan distinguish them.
    a vendor layout specification would settle it. Until one is cited the argument does not need
    it, which is why deleting was cheaper than sourcing.
 
-### 3.6 Worked trace
+### 3.6 The emoticon guard
+
+`STRIP-BEFORE`'s two punctuation-adjacent members U+003A (:) and U+003B (;) are read two ways
+in ordinary text: as sentence punctuation (`Note: read this`, `Wait; think`) and as the eye of a
+Western text emoticon (`:-)`, `:)`, `;-)`). The two readings take opposite spacing: sentence
+punctuation never wants a preceding space (hence `STRIP-BEFORE`), but an emoticon is a token in
+its own right and the space before it is ordinary word spacing that must survive — `Привет :-)`
+must not become `Привет:-)`.
+
+> **Emoticon guard.** For a run whose `right` (at index `e`) is in `EMOTICON-EYE`, walk forward:
+>
+> 1. Let `i = e + 1`. If `cp[i]` is in `EMOTICON-NOSE`, set `i = i + 1`.
+> 2. If `cp[i]` is not in `EMOTICON-MOUTH`, the guard does not fire.
+> 3. Otherwise let `after = cp[i + 1]` (or `NONE`). If `after` is a `LETTER` (ARCHITECTURE.md
+>    §4.1's Unicode category test, as used throughout this spec) or an ASCII digit, the guard
+>    does not fire. Otherwise **the guard fires**, and step 5 of §3.2 does not strip the space.
+
+**Why the trailing check.** Without it, `:D` inside an ordinary word — `:Deal with it`,
+`;Design review` — would read as an emoticon and keep a space that sentence punctuation never
+wants. The mouth must be the end of a token, not the start of a capitalised word: `after` is
+checked against `LETTER` and `DIGIT`, not against `SPACE` or `NONE` specifically, so `:-)!`
+(mouth followed by punctuation) and `:-):-)` (two emoticons back to back) both still fire, and
+`10:30` (colon before a digit, no mouth at all — the mouth check in step 2 already declines it
+before this check is reached) and `:Deal` do not.
+
+**Scope, deliberately narrow.** This guard recognises the eye-nose-mouth shape of a Western
+text emoticon and nothing else: no East Asian kaomoji (`(^_^)`, whose parenthesis is the frame,
+not the eye), no `=)` (U+003D is not in `STRIP-BEFORE` and has no bug to fix), no emoji. It
+exists because `STRIP-BEFORE`'s membership of U+003A and U+003B was already normative and
+locale-independent (§2), and an emoticon eye is the one shape that class was silently getting
+wrong; it is not a general-purpose emoticon detector and does not try to be one.
+
+**Idempotency.** The guard reads only `cp[e]`, `cp[e+1]` and `cp[e+2]`, none of which this rule
+or any earlier rule (`spaces` is R₁, §5) ever modifies, so its verdict is stable across a
+re-run for the same reason every other clause of §3.2 step 5 is: it is a pure function of
+code points this rule does not write.
+
+### 3.7 Worked trace
 
 `"a  (  b  ,  c  )  d"`
 
@@ -268,6 +308,8 @@ here; but later rules touch some of the same characters, and those bullets are m
 - **[P] `"[ ]"`, `"( )"`, `"{ }"`** — see §3.3.
 - **[R] Spaces before a closing quotation mark or guillemet.** Owned by `nbsp` via
   `quotes.innerSpace`.
+- **[R] A space before an emoticon's eye.** §3.6. `Привет :-)` keeps its space in every locale;
+  this rule reads no locale data (§2) and the guard is not locale-dependent either.
 - **[P] U+037E, U+0387, U+00B7.** In no class of this rule and of no other. A space before an
   άνω τελεία survives, and a Greek compatibility code point is never rewritten to the character
   it canonically decomposes to — §3.5. Note that the Greek ερωτηματικό is _not_ an exception
@@ -358,8 +400,13 @@ verdict here, so naming the locale is what makes the claim checkable.
 | 10e | `Wait␣…`               | ⟶                  | U+2026 is not in `STRIP-BEFORE`                                                                                                                                       |
 | 11  | `foo␣␣␣␣↵␣␣␣␣bar`      | ⟶                  | first run touches a `BREAK` on the right, second on the left                                                                                                          |
 | 12  | `Q:␣␣why␣?␣␣Because␣.` | `Q:␣why?␣Because.` | mixed                                                                                                                                                                 |
+| 13  | `Привет␣:-)`           | ⟶                  | **emoticon guard (§3.6).** `:` is `EMOTICON-EYE`, `-` is `EMOTICON-NOSE`, `)` is `EMOTICON-MOUTH`, and there is nothing after it — the guard fires and the space survives |
+| 13a | `Привет␣:)`            | ⟶                  | same, no nose                                                                                                                                                        |
+| 13b | `Hello␣:Deal␣with␣it`  | `Hello:Deal␣with␣it` | `D` is `EMOTICON-MOUTH`, but `e` immediately after it is a `LETTER` — the guard does not fire, and ordinary `STRIP-BEFORE` behaviour applies                        |
+| 13c | `10:30`                | ⟶                  | no space run at all — outside this rule's scope regardless of the guard                                                                                             |
+| 13d | `See␣you␣at␣10␣:␣30`  | `See␣you␣at␣10:␣30` | `:` is `EMOTICON-EYE`, but the very next code point is a space, not `EMOTICON-MOUTH` — the guard does not fire; ordinary `STRIP-BEFORE` strips the leading space, and the trailing space (right neighbour `3`, not `STRIP-BEFORE`) is untouched |
 
-Cases 4, 5, 6, 8, 10a, 10b, 10c, 10e and 11 are "no change" cases.
+Cases 4, 5, 6, 8, 10a, 10b, 10c, 10e, 11, 13 and 13a are "no change" cases.
 
 ---
 

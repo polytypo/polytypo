@@ -234,24 +234,35 @@ describe("dashes — idempotency regressions, spec §6 cases 18-21", () => {
   });
 });
 
-describe("dashes — authored-dash guard, spec §3.2 step 2a and §6 cases 42-44", () => {
-  it("42. a mixed run contains an authored dash and is declined whole", () => {
-    // The test is on the RUN, not on a single code point.
+describe("dashes — dash-length reclassification, spec §3.2 step 2a (0.2.0)", () => {
+  // Spec 0.2.0 retires the unconditional authored-dash guard: length is not reliably an
+  // authorial decision (as often a copy-paste artefact as a deliberate choice), and the M4
+  // corpus finding this guard originally repaired only ever measured *restyling* — length and
+  // spacing changed together — as damage. U+2013/U+2014 are now ordinary `DASH` members with
+  // no token-level special case: a run mixing dash glyphs converts exactly as the same run
+  // spelled entirely with hyphens would (§3.4 P3 admits a `k = 2, 3` run regardless of
+  // spacing), and a locale with no verified convention (`el`, both fields `"none"`) still
+  // leaves everything untouched.
+  it("42. a mixed run of dash glyphs converts exactly like the same run typed with hyphens", () => {
     for (const input of [`a-${EN}b`, `a${EN}-b`, `a-${EM}b`, `a${EM}--b`, `a-${EN}-b`]) {
-      for (const tag of Object.keys(LOCALES)) {
-        expect(run(input, localeOf(tag))).toBe(input);
-      }
+      expect(run(input, enUS)).toBe("a—b");
+      expect(run(input, deDE)).toBe("a – b");
+      expect(run(input, ru)).toBe("a — b");
+      // `el` has no verified convention for either field: everything round-trips untouched.
+      expect(run(input, localeOf("el"))).toBe(input);
     }
   });
 
-  it("43. an authored range gets no joiners", () => {
-    // §3.3.1 / §7.14: this rule never makes an edit whose entire content is invisible. An
-    // invisible-only edit to already-correct text is unreviewable at the M4 gate.
-    for (const input of [`1914${EN}1918`, `1941${EM}1945`, `Seiten 34${EN}36`]) {
-      for (const tag of Object.keys(LOCALES)) {
-        expect(run(input, localeOf(tag))).toBe(input);
-      }
-    }
+  it("43. an authored range converts and binds exactly when the edit is not invisible-only", () => {
+    // §3.3.1 / §7.14: this rule never makes an edit whose entire content is invisible. A range
+    // already in its target glyph, length and spacing gets no edit at all — adding only a
+    // joiner pair to otherwise-unchanged text is exactly the invisible-only edit this rule
+    // refuses to make. A range whose length or spacing is NOT already correct gets a real,
+    // visible edit, and the joiner binding rides along with it, same as a hyphen-typed range.
+    expect(run(`1914${EN}1918`, enUS)).toBe(`1914${EN}1918`); // en-tight, already correct
+    expect(run(`1914${EN}1918`, ru)).toBe(`1914${WJ}${EM}${WJ}1918`); // em-tight: length differs, visible
+    expect(run(`1941${EM}1945`, deDE)).toBe(`1941${WJ}${EN}${WJ}1945`); // en-tight: length differs, visible
+    expect(run(`1941${EM}1945`, ru)).toBe(`1941${EM}1945`); // em-tight, already correct
   });
 
   it("44. the hyphen-typed range still converts and still binds", () => {
@@ -300,11 +311,22 @@ describe("dashes — authored-dash guard, spec §3.2 step 2a and §6 cases 42-44
     }
   });
 
-  it("46. the control: the authored-dash shape was a fixed point throughout", () => {
-    // This is the row that isolates defect (e) from step 2a — G2 always saw a real DASH here.
+  it("46. the control, updated for spec 0.2.0: the first token is a fixed point only where its length already matches the locale's range form", () => {
+    // The second token's G2 always saw a real DASH here (unaffected by the guard's
+    // retirement — G2 reads DASH membership, not authorship), so it never converts either way.
+    // The first token now converts and binds whenever its glyph is not already exactly the
+    // locale's range form — a length-blind "control" no longer exists.
     for (const tag of Object.keys(LOCALES)) {
-      expect(run(`1${EN}1 - 1`, localeOf(tag))).toBe(`1${EN}1 - 1`);
-      expect(run(`1${EM}1 - 1`, localeOf(tag))).toBe(`1${EM}1 - 1`);
+      const range = localeOf(tag).dash.range;
+      const target = range === "em-tight" || range === "em-spaced" ? EM : EN;
+      const bound = `1${WJ}${target}${WJ}1 - 1`;
+
+      expect(run(`1${EN}1 - 1`, localeOf(tag)), `${tag} EN`).toBe(
+        range === "none" || target === EN ? `1${EN}1 - 1` : bound,
+      );
+      expect(run(`1${EM}1 - 1`, localeOf(tag)), `${tag} EM`).toBe(
+        range === "none" || target === EM ? `1${EM}1 - 1` : bound,
+      );
     }
   });
 
@@ -353,13 +375,28 @@ describe("dashes — authored-dash guard, spec §3.2 step 2a and §6 cases 42-44
     expect(run("a--\u2026", enUS)).toBe(`a${EM}\u2026`);
   });
 
-  it("the M4 class is gone: a spaced em dash survives both English locales", () => {
+  it("spec 0.2.0 reopens the M4 class deliberately: en-GB (en-spaced) now converts an authored em dash's length too", () => {
+    // en-GB wants EN_DASH for parenthetical; the author typed EM_DASH. Spec 0.1.0's guard (and
+    // 0.2.0's briefly-shipped narrowing) declined this outright. Full retirement converts it:
+    // the operator judged a dash's length not to be reliably authorial, so every dash \u2014 not
+    // just the spacing of a length-matching one \u2014 now follows the locale.
     const authored = "The plan \u2014 if there is one \u2014 fails.";
-    for (const tag of ["en-US", "en-GB"]) {
-      const once = transform(authored, { locale: tag });
-      expect(once).toBe(authored);
-      expect(transform(once, { locale: tag })).toBe(once);
-    }
+    const fixed = "The plan \u2013 if there is one \u2013 fails.";
+    const once = transform(authored, { locale: "en-GB" });
+    expect(once).toBe(fixed);
+    expect(transform(once, { locale: "en-GB" })).toBe(once);
+  });
+
+  it("a mis-spaced authored em dash gets its spacing corrected in en-US (em-tight), same as before the length repeal", () => {
+    // en-US wants EM_DASH tight. The author's dash is already the right length, only spaced
+    // wrong \u2014 this is the class the M4 gate's own corpus showed being left broken forever
+    // under the original unconditional guard, and it converts under every later revision of
+    // this guard, including full retirement, because the length already matches.
+    const authored = "The plan \u2014 if there is one \u2014 fails.";
+    const fixed = "The plan\u2014if there is one\u2014fails.";
+    const once = transform(authored, { locale: "en-US" });
+    expect(once).toBe(fixed);
+    expect(transform(once, { locale: "en-US" })).toBe(once);
   });
 });
 
@@ -485,11 +522,13 @@ describe("dashes — Roman-numeral veto P4, spec §3.4 and §6 cases 17a-17c", (
     expect(run("XV--XVII", ru)).toBe("XV--XVII");
   });
 
-  it("17c. an authored em dash keeps its glyph and its tightness (revised by step 2a)", () => {
-    // Cyrillic is not ROMAN, so P4 does not fire — but step 2a reaches it first. Before the
-    // narrowing this produced `Москва — столица`, restyling a mark the author chose.
-    expect(run(`Москва${EM}столица`, ru)).toBe(`Москва${EM}столица`);
-    // The hyphen-typed form still normalises, which is what P4 has to be tested against.
+  it("17c. an authored tight em dash gets ru's spacing", () => {
+    // Cyrillic is not ROMAN, so P4 does not fire. ru's parenthetical is `em-spaced`, so the
+    // token is promoted exactly as a hyphen-typed one would be — its length here happens to
+    // already be EM, so only the spacing visibly changes.
+    expect(run(`Москва${EM}столица`, ru)).toBe(`Москва ${EM} столица`);
+    // The hyphen-typed form still normalises the same way, which is what P4 has to be tested
+    // against.
     expect(run("Москва--столица", ru)).toBe(`Москва ${EM} столица`);
   });
 
@@ -553,10 +592,14 @@ describe("dashes — spacing-transition guard T1, spec §3.2 step 8 (cases 24-27
     expect(run(`a${EN}1-1`, deDE)).toBe(`a${EN}1-1`);
   });
 
-  it("27. en-US: the authored en dash declines at step 2a; the hyphen stays rejected by G2", () => {
-    // Revised row 27. Before the narrowing the `–` normalised to `—`.
+  it("27. en-US converts freely (em-tight, T1 never applies); de-DE stays blocked by T1 (en-spaced)", () => {
+    // Revised row 27 for spec 0.2.0. en-US's parenthetical is `em-tight` — not spaced — so T1
+    // (which only guards a tight-to-spaced transition) never engages, and the token converts
+    // length and spacing both. de-DE's parenthetical is `en-spaced`, so converting this token
+    // would insert a U+0020 next to a digit run with a dash two positions further out — T1
+    // blocks exactly that, same mechanism as before the guard's retirement.
     const input = `a${EN}1 - 1`;
-    expect(run(input, enUS)).toBe(input);
+    expect(run(input, enUS)).toBe(`a${EM}1 - 1`);
     expect(run(input, deDE)).toBe(input);
   });
 
@@ -820,21 +863,35 @@ describe("dashes — range styles and no-break spaces", () => {
     expect(emitted.has(0x202f)).toBe(false);
   });
 
-  it("an existing dash keeps its glyph AND its spacing — step 2a, the M4 repair", () => {
-    // This is the 1063-line class from the M4 gate: the author writes a spaced em dash and
-    // `en-US` (em-tight) closed every one of them up, `en-GB` (en-spaced) turned them into en
-    // dashes. Both are restyling, and the rule no longer does it.
-    for (const input of [
-      `Der Plan${EM}falls${EM}scheitert`,
-      `The plan ${EN} if any ${EN} fails`,
-      `The plan ${EM} if any ${EM} fails`,
-      `The plan${EN}if any${EN}fails`,
-    ]) {
-      for (const tag of Object.keys(LOCALES)) {
-        expect(run(input, localeOf(tag))).toBe(input);
+  it("an authored dash's length and spacing both follow the locale's parenthetical form (spec 0.2.0)", () => {
+    // The 1063-line M4 class was restyling — turning an authored em dash into an en dash or
+    // back — and spec 0.2.0 reopens it deliberately (dashes.md §7 item 14): a dash's length is
+    // no longer treated as reliably authorial, so every authored dash is promoted to the
+    // locale's parenthetical form exactly as a hyphen-typed one would be. Expected outputs are
+    // computed from each locale's own `dash.parenthetical` field, not hand-picked per row.
+    for (const tag of Object.keys(LOCALES)) {
+      const style = localeOf(tag).dash.parenthetical;
+      for (const glyph of [EM, EN]) {
+        for (const spaced of [true, false]) {
+          const input = spaced
+            ? `The plan ${glyph} if any ${glyph} fails`
+            : `The plan${glyph}if any${glyph}fails`;
+          const expected =
+            style === "none"
+              ? input
+              : (() => {
+                  const target = style === "em-tight" || style === "em-spaced" ? EM : EN;
+                  const wantSpaced = style === "em-spaced" || style === "en-spaced";
+                  return wantSpaced
+                    ? `The plan ${target} if any ${target} fails`
+                    : `The plan${target}if any${target}fails`;
+                })();
+          expect(run(input, localeOf(tag)), `${tag} ${JSON.stringify(input)}`).toBe(expected);
+        }
       }
     }
-    // Hyphen input is untouched by the guard and still converts.
+
+    // Hyphen input converts exactly the same way — there is no separate "length guard" left.
     expect(run("The plan -- if any -- fails", enUS)).toBe(`The plan${EM}if any${EM}fails`);
   });
 
@@ -899,6 +956,8 @@ describe("dashes — idempotency", () => {
       ".",
       "1",
       "a",
+      "‐", // hyphen — joined `dashes`' DASH class in spec 0.2.0
+      "−", // minus sign — joined `dashes`' DASH class in spec 0.2.0
       // emitted
       "\u00AB",
       "\u00BB",
@@ -995,7 +1054,10 @@ describe("dashes — idempotency", () => {
   });
 
   it("never produces an INERT-DASH that was not already there", () => {
-    const inert = [0x00ad, 0x2010, 0x2011, 0x2012, 0x2015, 0x2212, 0xfe58, 0xfe63, 0xff0d];
+    // §3.1: U+00AD (soft hyphen) and U+2011 (non-breaking hyphen, `hyphen`'s own output) are
+    // the only two code points this rule must never touch or emit. Every other former member
+    // (U+2010, U+2012, U+2015, U+2212, U+FE58, U+FE63, U+FF0D) is now a DASH candidate.
+    const inert = [0x00ad, 0x2011];
     fc.assert(
       fc.property(
         fc.constantFrom(...tags),

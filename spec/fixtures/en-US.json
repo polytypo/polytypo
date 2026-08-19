@@ -139,6 +139,46 @@
       "note": "spaces.md §4: U+0009, U+2009 and U+00A0 are never collapsed, removed or converted."
     },
     {
+      "id": "en-us-spaces-emoticon-with-nose",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Sounds good :-)",
+      "out": "Sounds good :-)",
+      "note": "spaces.md §6 case 13 / §3.6: the emoticon guard. `:` is EMOTICON-EYE, `-` is EMOTICON-NOSE, `)` is EMOTICON-MOUTH, nothing follows — the space before the eye survives instead of being stripped as ordinary STRIP-BEFORE punctuation."
+    },
+    {
+      "id": "en-us-spaces-emoticon-no-nose",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Sounds good :)",
+      "out": "Sounds good :)",
+      "note": "spaces.md §6 case 13a: same guard, no nose — EMOTICON-NOSE is optional."
+    },
+    {
+      "id": "en-us-spaces-emoticon-semicolon-wink",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Sure thing ;-)",
+      "out": "Sure thing ;-)",
+      "note": "spaces.md §3.6: U+003B is EMOTICON-EYE too, not only U+003A."
+    },
+    {
+      "id": "en-us-spaces-emoticon-not-before-word",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Hello :Deal with it",
+      "out": "Hello:Deal with it",
+      "note": "spaces.md §6 case 13b: `D` is EMOTICON-MOUTH, but the letter `e` immediately after it means the guard does not fire — this is a colon before a capitalised word, not a face, so ordinary STRIP-BEFORE strips the space."
+    },
+    {
+      "id": "en-us-spaces-colon-not-emoticon-mouth",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "See you at 10 : 30",
+      "out": "See you at 10: 30",
+      "note": "spaces.md §6 case 13d: the code point after the colon is a space, not EMOTICON-MOUTH, so the guard does not fire and ordinary STRIP-BEFORE behaviour is unaffected by its introduction."
+    },
+    {
       "id": "en-us-ellipsis-three-dots",
       "rule": "ellipsis",
       "mode": "text",
@@ -259,6 +299,46 @@
       "note": "dashes.md §6 case 4: guard P1."
     },
     {
+      "id": "en-us-dashes-hyphen-glyph-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "x ‐ y",
+      "out": "x—y",
+      "note": "dashes.md §3.1 (spec 0.2.0): U+2010 (hyphen) joined `DASH`. Spaced and flanked by letters — not a compound-word shape — it converts to the locale's parenthetical form exactly as U+002D would."
+    },
+    {
+      "id": "en-us-dashes-hyphen-glyph-compound-guarded",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "well‐known",
+      "out": "well‐known",
+      "note": "dashes.md §3.4 P1 (spec 0.2.0): P1's hyphen-shaped set now includes U+2010, so a tight, unspaced U+2010 between letters is guarded as a compound word exactly like U+002D — `well‐known` stays untouched."
+    },
+    {
+      "id": "en-us-dashes-minus-sign-glyph-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "x − y",
+      "out": "x—y",
+      "note": "dashes.md §3.1 (spec 0.2.0): U+2212 (minus sign) joined `DASH`. Spaced and flanked by letters, it converts to the locale's parenthetical form — this is the operator's explicit example (\"минус\") of a dash-like glyph that should no longer be silently ignored."
+    },
+    {
+      "id": "en-us-dashes-minus-sign-glyph-range",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "1990−2000",
+      "out": "1990⁠–⁠2000",
+      "note": "dashes.md §3.1 (spec 0.2.0): U+2212 between two equal-length digit runs is a range candidate, subject to the same G1-G5 guards as U+002D, and gets en-US's `en-tight` form with joiner binding (§3.3.1)."
+    },
+    {
+      "id": "en-us-dashes-minus-sign-glyph-compound-guarded",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "well−known",
+      "out": "well−known",
+      "note": "dashes.md §3.4 P1 (spec 0.2.0): P1's hyphen-shaped set includes U+2212, so a tight, unspaced minus sign between letters is guarded as a compound-word shape exactly like U+002D, on the view that this reads the same way `well-known` does — stays untouched."
+    },
+    {
       "id": "en-us-dashes-covid-and-iso",
       "rule": "dashes",
       "mode": "text",
@@ -339,12 +419,12 @@
       "note": "dashes.md §3.2 step 7: one cluster (–, 1, -, 1) with two dash runs, so the whole cluster is inert. Since the narrowing the authored `–` is additionally declined at step 2a, which reaches it first; both guards hold and either alone is sufficient."
     },
     {
-      "id": "en-us-dashes-t1-immune-em-tight",
+      "id": "en-us-dashes-em-tight-converts-freely",
       "rule": "dashes",
       "mode": "text",
       "in": "a–1 - 1",
-      "out": "a–1 - 1",
-      "note": "dashes.md §6 case 27, rewritten by the narrowing: the `–` is AUTHORED and declines at §3.2 step 2a, before spacing or the T1 guard is ever considered; the `-` stays rejected by G2 on both runs. Before the narrowing the `–` normalised to `—`. The case is retained because it is still the en-US half of idempotency defect (c) — it simply now passes for a stronger reason, and §5.3a records that step 2a makes the whole rule strictly more stable by removing the tight-to-spaced transition that defect (c) needed."
+      "out": "a—1 - 1",
+      "note": "dashes.md §6 case 27, spec 0.2.0. en-US's parenthetical is `em-tight` — not spaced — so guard T1 (which only blocks a tight-to-spaced transition) never engages, and the token converts its length freely. Compare `de-DE`'s `en-spaced` parenthetical on the same input, where T1 blocks the conversion because it would insert a U+0020 next to a digit run with a dash two positions further out."
     },
     {
       "id": "en-us-dashes-t2-not-needed-em-tight",
@@ -355,28 +435,28 @@
       "note": "dashes.md §6 case 32: a tight form emits no U+0020, so guard T2 never applies and there is nothing for `spaces` to undo."
     },
     {
-      "id": "en-us-dashes-authored-em-dash-kept",
+      "id": "en-us-dashes-authored-em-dash-respaced",
       "rule": "dashes",
       "mode": "text",
       "in": "documents — PDFs, invoices — and you",
-      "out": "documents — PDFs, invoices — and you",
-      "note": "dashes.md §6 case 38, THE M4 BLOCKER, verbatim. Authored em dashes keep both glyph and spacing although en-US declares `em-tight`. Before the narrowing this produced `documents—PDFs, invoices—and you`. The gate ran the pipeline over the author's real corpus and rejected 1063 changed lines of this shape across 155 files — 30% of the entire diff — which is how it was found; no amount of reasoning over worked examples had surfaced it."
+      "out": "documents—PDFs, invoices—and you",
+      "note": "dashes.md §6 case 38, THE M4 BLOCKER, verbatim, and its final repair (spec 0.2.0). en-US declares `em-tight`; this input's dash is already EM, so only spacing changes — length happens to already match. It is not a special case: `documents – PDFs, invoices – and you` (EN dash) converts to the same output, because spec 0.2.0 retired the authored-dash guard outright and U+2013/U+2014 are now ordinary `DASH` members with no token-level distinction (dashes.md §3.2 step 2a). See `en-us-dashes-mixed-run-converts` for a run mixing dash glyphs, and `en-us-dashes-already-correct-range-unbound` for why an already-exactly-correct range still gets no joiners (§3.3.1's invisible-edit test, unrelated to authorship)."
     },
     {
-      "id": "en-us-dashes-mixed-run-declined",
+      "id": "en-us-dashes-mixed-run-converts",
       "rule": "dashes",
       "mode": "text",
       "in": "a-–b",
-      "out": "a-–b",
-      "note": "dashes.md §6 case 42: the authored-dash test is on the RUN, not on a single code point. The run `-–` contains a U+2013, so the whole token is declined — a port that tests only cp[s] converts the hyphen and produces a two-dash run with a different verdict on the next pass."
+      "out": "a—b",
+      "note": "dashes.md §6 case 42 (spec 0.2.0). A run mixing `DASH` glyphs — U+002D and U+2013 here — is a single token, treated exactly like the same run typed entirely with hyphens (`a--b`): P3 admits a `k = 2` run regardless of spacing, and the whole run is promoted to the locale's form. Before 0.2.0's authored-dash guard was retired, any run containing U+2013/U+2014 was declined whole; a port implementing spec 0.1.0's step 2a must not do that under 0.2.0."
     },
     {
-      "id": "en-us-dashes-authored-range-unbound",
+      "id": "en-us-dashes-already-correct-range-unbound",
       "rule": "dashes",
       "mode": "text",
       "in": "1914–1918",
       "out": "1914–1918",
-      "note": "dashes.md §6 case 43: an AUTHORED range gets NO joiners. The general principle, which is worth carrying into any new rule: THIS RULE NEVER MAKES AN EDIT WHOSE ENTIRE CONTENT IS INVISIBLE. A joiner may ride along with a conversion the author asked for, but it must never be the only thing an edit does — an invisible-only edit to already-correct text cannot be reviewed by hand at all, which is exactly what the M4 gate is."
+      "note": "dashes.md §6 case 43: en-US's range is `en-tight`, and this token is already exactly correct — glyph, length and spacing — so it is left alone. The general principle, which is worth carrying into any new rule: THIS RULE NEVER MAKES AN EDIT WHOSE ENTIRE CONTENT IS INVISIBLE. A joiner may ride along with a visible conversion, but it must never be the only thing an edit does — an invisible-only edit to already-correct text cannot be reviewed by hand at all, which is exactly what the M4 gate is. This is decided by §3.3.1's invisible-edit test (compute the unbound form; bind only if that would itself change something visible), not by whether the original dash was authored — `1941—1945` (em dash) in this same locale converts to a bound en dash, because its length is visibly wrong and the edit is not invisible-only."
     },
     {
       "id": "en-us-dashes-hyphen-range-bound",
@@ -496,7 +576,7 @@
       "mode": "text",
       "in": "soft­hyphen, minus −5, figure‒dash, bar―here",
       "out": "soft­hyphen, minus −5, figure‒dash, bar―here",
-      "note": "hyphen.md §4 and dashes.md §3.1: U+00AD, U+2212, U+2012 and U+2015 are never read and never produced."
+      "note": "hyphen.md §4 and dashes.md §3.1: U+00AD, U+2012 and U+2015 remain INERT-DASH, never read and never produced. U+2212 became an ordinary DASH candidate in spec 0.2.0, but this specific token still declines — 'minus −5' has a space before the minus and none after, so `dashes`' symmetry guard (§3.2 step 4) rejects it before glyph membership matters. See dashes.md §7 for a fixture pinning U+2212 as a converted candidate."
     },
     {
       "id": "en-us-quotes-basic",
@@ -543,8 +623,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "Don't touch it — it's the '90s.",
-      "out": "Don’t touch it — it’s the ’90s.",
-      "note": "quotes.md §6 case 5 for the three apostrophes: none is claimed as a quotation, and `apostrophe` renders all three as U+2019. THE DASH IS THE M4 CLASS ITSELF. dashes.md §3.2 step 2a — the authored-dash guard — declines any run containing U+2013 or U+2014, so the author's SPACED EM DASH keeps its glyph and its spacing even though this locale declares `em-tight`. Before the narrowing this produced `it${EM}it${RSQ}s`, restyling a deliberate authorial choice. That was not found by reasoning: the M4 gate ran the pipeline over the author's real corpus and rejected 1063 changed lines of exactly this shape across 155 files — 30% of the entire diff. §7.14 states the trade plainly: normalising power is what was given up, because the behaviour it replaced was damage rather than a miss. This case is the proof that polytypo does not impose a locale convention on a dash the author already typed."
+      "out": "Don’t touch it—it’s the ’90s.",
+      "note": "quotes.md §6 case 5 for the three apostrophes: none is claimed as a quotation, and `apostrophe` renders all three as U+2019. THE DASH IS THE M4 CLASS ITSELF. Spec 0.2.0 fully retired `dashes`' authored-dash guard (dashes.md §3.2 step 2a): en-US declares `em-tight`, and the author's dash is already EM, so this input happens to need only a spacing fix — but the same input with an EN dash converts its length too (compare `en-gb-quotes-apostrophes-and-dash`, where en-GB's `en-spaced` parenthetical converts this exact em dash to a spaced en dash). §7.14 records the M4 finding and the operator decision to reopen it: a dash's length is no longer treated as reliably authorial."
     },
     {
       "id": "en-us-quotes-foot-and-inch",
@@ -584,7 +664,7 @@
       "mode": "text",
       "in": "“Already curly,” he said, and \"this too.\"",
       "out": "“Already curly,” he said, and “this too.”",
-      "note": "quotes.md §6 case 8 and §3.8: existing glyphs are ignored for depth, so the straight pair is depth 1."
+      "note": "quotes.md §6 case 8, updated for spec 0.3.0 mandate 1: existing curly glyphs are now candidates too. The curly pair here is already the depth-1 primary pair, so it is a no-op by the invisible-edit test (§3.6); the straight pair is also depth 1 (the two pairs are siblings, neither enclosing the other) and converts. Same output as 0.1.0, for a different reason — see quotes.md §0."
     },
     {
       "id": "en-us-quotes-rock-n-roll",
@@ -623,8 +703,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "He wrote ‘this’ and «that» and „so“.",
-      "out": "He wrote ‘this’ and «that» and „so“.",
-      "note": "quotes.md §4: every non-straight quotation glyph is left alone; converting a foreign pair to the house style is a translation task and is out of scope (§3.8)."
+      "out": "He wrote “this” and “that” and “so”.",
+      "note": "quotes.md §4, updated for spec 0.3.0 mandate 1: withdrawn. Every quote glyph — this locale's own or foreign — is now a re-typesetting candidate. All three pairs here are depth 1 and are rewritten to en-US's own primary pair. Compare en-us-quotes-existing-curly-ignored, where the curly pair happens to already be en-US's own primary glyphs."
     },
     {
       "id": "en-us-quotes-already-correct",
@@ -1129,6 +1209,118 @@
       "in": "The report -- published 2026-08-15 -- says \"growth was 5 %\", but...",
       "out": "The report—published 2026-08-15—says “growth was 5 %”, but…",
       "note": "Second prose case: the ISO date is protected by the chain guard while the parenthetical dashes around it convert."
+    },
+    {
+      "id": "en-us-quotes-030-nesting-swap",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "'He said \"no\" to me,' she noted.",
+      "out": "“He said ‘no’ to me,” she noted.",
+      "note": "quotes.md §6 row 3: depth, not width, selects the pair; the certification gate certifies despite both streams swapping width."
+    },
+    {
+      "id": "en-us-quotes-030-first-mark-survives",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "He said \"hi. She said \"bye.\"",
+      "out": "He said \"hi. She said “bye.”",
+      "note": "quotes.md §6 row 4: the first mark's closeRight is the letter h, so it is canOpen only and cannot swallow the real quotation."
+    },
+    {
+      "id": "en-us-quotes-030-medial-vetoes",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Don't touch it — it's the '90s.",
+      "out": "Don’t touch it—it’s the ’90s.",
+      "note": "quotes.md §6 row 5: two medial vetoes and an unmatched leading elision, none claimed by `quotes`. Output shown is the full pipeline's: `apostrophe` renders all three straight marks as U+2019 and `dashes` tightens the spaced em dash, neither of which this case is really about — it exists to pin that `quotes` itself declines all three marks."
+    },
+    {
+      "id": "en-us-quotes-030-foot-inch",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "He is 6' 2\" tall.",
+      "out": "He is 6' 2\" tall.",
+      "note": "quotes.md §6 row 6: both marks canClose only, both stacks empty."
+    },
+    {
+      "id": "en-us-quotes-030-run-of-five",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"\"\"a\"\"",
+      "out": "\"\"\"a\"\"",
+      "note": "quotes.md §6 row 7b: every mark has an identical literal neighbour, V1 drops all five."
+    },
+    {
+      "id": "en-us-quotes-030-vetoed-inner-pair",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"a \"\" b\"",
+      "out": "“a \"\" b”",
+      "note": "quotes.md §6 row 7c: the inner \"\" is vetoed; the outer pair converts; the gate certifies."
+    },
+    {
+      "id": "en-us-quotes-030-already-correct-nesting",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "“He said ‘no’ twice.”",
+      "out": "“He said ‘no’ twice.”",
+      "note": "quotes.md §6 row A: already-correct nesting is a no-op — required scenario (a), the case 0.1.0 §3.8 declared impossible to even attempt."
+    },
+    {
+      "id": "en-us-quotes-030-mandate2-leading-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\" hello\"",
+      "out": "“hello”",
+      "note": "quotes.md §6 row M2a: mandate 2. canOpen reads Rskip = h; the inner run's landing is h ∈ ALNUM, so it is deleted."
+    },
+    {
+      "id": "en-us-quotes-030-mandate2-trailing-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"hello \"",
+      "out": "“hello”",
+      "note": "quotes.md §6 row M2b: the mirror case, by the same Lskip/landing mechanism."
+    },
+    {
+      "id": "en-us-quotes-030-declined-deletion-dash",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\" --x\"",
+      "out": "“ --x”",
+      "note": "quotes.md §6 row D1, and the pinned pipeline-idempotency.md §6 witness \" --x\": the inner run's landing is -, outside DELETE-LANDING, so the deletion is declined while the glyphs still convert. Deleting would revive the dash token for `dashes` on the next pass (I₃)."
+    },
+    {
+      "id": "en-us-quotes-030-empty-pair-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\" \"",
+      "out": "\" \"",
+      "note": "quotes.md §3.3's vacuity condition and the pinned pipeline-idempotency.md §6 witness \" \": a pair enclosing nothing but spaces is never formed."
+    },
+    {
+      "id": "en-us-quotes-030-empty-pair-guillemets",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "«»",
+      "out": "«»",
+      "note": "quotes.md §3.3's vacuity condition and the pinned pipeline-idempotency.md §6 witness «»: two different WIDE code points with nothing between them do not pair."
+    },
+    {
+      "id": "en-us-quotes-030-elision-vs-closer-curly",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "’90s were fun,’ he said",
+      "out": "“90s were fun,” he said",
+      "note": "quotes.md §4's residual-risk note and §6 row E1: an already-curly leading elision can be paired as an opener by a later unrelated closer. Verified, not hand-derived: this is the same pre-existing rock 'n' roll-family ambiguity as row E1s, now also reachable via curly input under mandate 1. No U+2019-specific restriction is applied (quotes.md §5 Corollary A1) because it would break fi/sv's same-glyph secondary pair."
+    },
+    {
+      "id": "en-us-quotes-030-elision-vs-closer-straight",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "'90s were fun,' he said",
+      "out": "“90s were fun,” he said",
+      "note": "quotes.md §6 row E1s, the straight-input control for E1: the identical corruption already existed under spec 0.1.0's per-kind stacks (both marks are SQ and pair on the same stack), confirming E1 is not new damage introduced by mandate 1."
     }
   ]
 }
