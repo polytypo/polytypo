@@ -149,8 +149,8 @@ module-level mutable state, reentrant).
 
 ## 5. Worked table
 
-Against `spec/locales/registry.json` as of spec 0.1.0:
-`locales = ["en-US","en-GB","de-DE","de-CH","fr","ru","fi","sv","el"]`,
+Against `spec/locales/registry.json` as of spec 0.2.0:
+`locales = ["en-US","en-GB","de-DE","de-CH","fr","fr-CA","ru","fi","sv","el"]`,
 `aliases = {"en":"en-US","de":"de-DE"}`.
 
 | Input         | Canonical | Path                                                 | Result                              |
@@ -164,7 +164,8 @@ Against `spec/locales/registry.json` as of spec 0.1.0:
 | `de-CH`       | `de-CH`   | exact                                                | `de-CH`                             |
 | `de-AT`       | `de-AT`   | no exact, no alias, strip → `de`, no exact, alias    | `de-DE`                             |
 | `fr`          | `fr`      | exact                                                | `fr`                                |
-| `fr-CA`       | `fr-CA`   | strip → `fr`, exact                                  | `fr`                                |
+| `fr-CA`       | `fr-CA`   | exact                                                | `fr-CA`                             |
+| `fr-BE`       | `fr-BE`   | no exact, no alias, strip → `fr`, exact              | `fr`                                |
 | `fi`          | `fi`      | exact                                                | `fi`                                |
 | `fi-FI`       | `fi-FI`   | strip → `fi`, exact                                  | `fi`                                |
 | `sv-FI`       | `sv-FI`   | strip → `sv`, exact                                  | `sv` (see §6.3)                     |

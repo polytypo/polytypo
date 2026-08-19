@@ -1,0 +1,69 @@
+{
+  "locale": "fr-CA",
+  "name": "French (Canada)",
+  "quotes": {
+    "primary": { "open": "«", "close": "»", "innerSpace": "nbsp" },
+    "secondary": { "open": "“", "close": "”", "innerSpace": "none" }
+  },
+  "dash": {
+    "parenthetical": "em-spaced",
+    "range": "none"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [":"],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": ["p. ex."],
+    "beforeUnits": ["%", "‰", "€", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
+    "beforeNumber": ["art.", "fig."],
+    "beforeWord": ["M.", "MM.", "Mme", "Mmes", "Mlle", "Mlles"],
+    "afterSymbols": ["§"],
+    "bindInitials": true
+  },
+  "sources": [
+    {
+      "rule": "nbsp",
+      "cite": "Office québécois de la langue française, Banque de dépannage linguistique, « Espacement avant et après les signes de ponctuation et les symboles » : « L'Office québécois de la langue française opte pour l'absence d'espace devant le point-virgule, le point d'exclamation et le point d'interrogation », l'espace fine restant admise « lorsqu'elle est disponible » ; le deux-points est précédé d'une espace insécable",
+      "url": "https://vitrinelinguistique.oqlf.gouv.qc.ca/22039/la-typographie/espacement/espacement-avant-et-apres-les-signes-de-ponctuation-et-les-symboles",
+      "note": "C'est le point qui distingue fr-CA de fr (France) : l'usage de France, documenté dans spec/locales/fr.json à partir de Jacques André, insère une espace fine insécable (U+202F) avant « ; », « ! » et « ? ». L'OQLF choisit explicitement l'absence d'espace pour l'usage québécois ; l'espace fine n'est mentionnée que comme variante disponible, pas comme la règle par défaut. Le champ narrowBeforePunctuation est donc vide : la règle « spaces » retire toute espace ordinaire tapée devant ces signes (comportement indépendant de la locale, spec/rules/spaces.md), et aucune espace n'est réinsérée ici — le résultat net est « Bonjour! », sans espace, ce qui correspond au choix explicite de l'OQLF plutôt qu'à un oubli. Le deux-points reste précédé d'une espace insécable ordinaire (U+00A0), comme en France : les deux sources OQLF consultées s'accordent sur ce point avec Jacques André."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Jacques André, Petites leçons de typographie, éd. du jobet, § 5.1.3 « Autres emplois de l'espace insécable » — voir spec/locales/fr.json pour la citation complète",
+      "url": "http://jacques-andre.fr/faqtypo/lessons.pdf",
+      "note": "beforeUnits, beforeNumber, beforeWord, abbreviations et bindInitials sont repris tels quels de spec/locales/fr.json : aucune source spécifiquement québécoise n'a été consultée pour ces cas (seuls le point-virgule/point d'exclamation/point d'interrogation et le deux-points ont été vérifiés séparément auprès de l'OQLF, voir l'entrée précédente). L'OQLF confirme par ailleurs, sur la même page que l'entrée précédente, une espace insécable devant les symboles d'unités SI et le pourcentage, ce qui corrobore — sans le prouver intégralement — le maintien de ces listes pour fr-CA."
+    },
+    {
+      "rule": "quotes",
+      "cite": "Office québécois de la langue française, Banque de dépannage linguistique, « Généralités sur les guillemets » : « Les guillemets français (« »), appelés chevrons à cause de leur forme, sont ceux que l'on utilise normalement dans un texte français » ; « Une espace insécable sépare les guillemets ouvrants et fermants du texte » ; pour une citation à l'intérieur d'une citation, « on utilise successivement les guillemets anglais doubles, puis anglais simples »",
+      "url": "https://vitrinelinguistique.oqlf.gouv.qc.ca/23363/la-ponctuation/guillemets/generalites-sur-les-guillemets",
+      "note": "Chevrons, second niveau et espace intérieure identiques à fr (France) ; aucun écart québécois trouvé. La largeur exacte de l'espace intérieure (U+00A0 ordinaire vs U+202F fine) n'est pas non plus tranchée ici — l'OQLF emploie le terme générique « espace insécable » ; la valeur « nbsp » est reprise de fr.json en attendant que ce point soit résolu pour les deux locales."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Jacques André, Petites leçons de typographie, § 2.2 et tableau 1 — voir spec/locales/fr.json pour la citation complète ; corroboré par l'OQLF, « Tiret : mise en valeur » : « Les tirets sont précédés et suivis d'un espacement. »",
+      "url": "https://vitrinelinguistique.oqlf.gouv.qc.ca/index.php?id=23378",
+      "note": "Repris de fr : tiret cadratin espacé pour l'incise, aucune valeur de plage vérifiée (range: none). L'OQLF confirme l'espacement mais ne distingue pas le cadratin du demi-cadratin ; aucun écart québécois trouvé sur ce point."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Jacques André, Petites leçons de typographie, § 5.1.2 et tableau 2 — voir spec/locales/fr.json pour la citation complète",
+      "url": "http://jacques-andre.fr/faqtypo/lessons.pdf",
+      "note": "Repris tel quel de fr ; aucune source québécoise consultée séparément pour ce point, aucun écart identifié dans les sources OQLF lues."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Jacques André, Petites leçons de typographie, tableau 1 — voir spec/locales/fr.json pour la citation complète",
+      "url": "http://jacques-andre.fr/faqtypo/lessons.pdf",
+      "note": "Repris tel quel de fr : aucune source consultée n'impose un trait d'union insécable pour une classe fermée de formes morphologiques françaises, en France comme au Québec."
+    }
+  ]
+}

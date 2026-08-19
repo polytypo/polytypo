@@ -1,5 +1,5 @@
 {
-  "spec": "0.1.0",
+  "spec": "0.2.0",
   "cases": [
     {
       "id": "exact-en-us",
@@ -66,9 +66,16 @@
       "note": "worked table row: de-AT resolves through de to de-DE"
     },
     {
-      "id": "strip-fr-ca",
+      "id": "exact-fr-ca",
       "tag": "fr-CA",
-      "resolves": "fr"
+      "resolves": "fr-CA",
+      "note": "fr-CA is its own registered locale as of spec 0.2.0 (Québec French nbsp practice differs from France's before ; ! ?), not a stripped variant of fr."
+    },
+    {
+      "id": "strip-fr-be",
+      "tag": "fr-BE",
+      "resolves": "fr",
+      "note": "A French region with no locale of its own still strips to the base language, exactly as fr-CA did before it was registered."
     },
     {
       "id": "strip-fi-fi",

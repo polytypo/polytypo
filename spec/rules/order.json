@@ -1,5 +1,5 @@
 {
-  "spec": "0.1.0",
+  "spec": "0.2.0",
   "$comment": "Single source of truth for pipeline order. Rules run in ascending `order`. Disabling a rule removes it from the sequence and never reorders the rest. Rule ids are public API (see docs/ARCHITECTURE.md section 5).",
   "rules": [
     {

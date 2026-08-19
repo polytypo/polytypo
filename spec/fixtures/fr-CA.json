@@ -1,0 +1,236 @@
+{
+  "spec": "0.2.0",
+  "locale": "fr-CA",
+  "cases": [
+    {
+      "id": "fr-ca-spaces-collapse-run",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Bonjour   le   monde.",
+      "out": "Bonjour le monde.",
+      "note": "spaces.md §6 case 1: locale-independent, identical to fr."
+    },
+    {
+      "id": "fr-ca-spaces-brackets",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "a  (  b  ,  c  )  d",
+      "out": "a (b, c) d"
+    },
+    {
+      "id": "fr-ca-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Attendez... quoi?",
+      "out": "Attendez… quoi?",
+      "note": "Unlike fr, the space before ? is not reinserted: narrowBeforePunctuation is empty for fr-CA."
+    },
+    {
+      "id": "fr-ca-ellipsis-existing",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Il est parti…",
+      "out": "Il est parti…"
+    },
+    {
+      "id": "fr-ca-dashes-parenthetical-spaced-input",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Le plan - il existe - échoue.",
+      "out": "Le plan — il existe — échoue.",
+      "note": "Identical to fr: no Quebec-specific dash source found."
+    },
+    {
+      "id": "fr-ca-dashes-range-none-years",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Les années 1914-1918 furent longues.",
+      "out": "Les années 1914-1918 furent longues."
+    },
+    {
+      "id": "fr-ca-hyphen-noop-compounds",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Le porte-parole a parlé du savoir-faire.",
+      "out": "Le porte-parole a parlé du savoir-faire.",
+      "note": "Identical to fr: hyphen lists are empty for both."
+    },
+    {
+      "id": "fr-ca-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Il a dit \"bonjour\".",
+      "out": "Il a dit « bonjour ».",
+      "note": "Same glyphs and inner space as fr — OQLF confirms chevrons and an unqualified 'espace insécable'."
+    },
+    {
+      "id": "fr-ca-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Il a dit 'oui' hier.\"",
+      "out": "« Il a dit “oui” hier. »"
+    },
+    {
+      "id": "fr-ca-apostrophe-elision",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "l'été et l'hiver",
+      "out": "l’été et l’hiver",
+      "note": "Locale-independent within fr* — identical to fr."
+    },
+    {
+      "id": "fr-ca-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026 Iurii Rogulia",
+      "out": "Copyright © 2026 Iurii Rogulia"
+    },
+    {
+      "id": "fr-ca-symbols-multiplication",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Une carte 3x5",
+      "out": "Une carte 3×5"
+    },
+    {
+      "id": "fr-ca-nbsp-question-no-space",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Ça va ?",
+      "out": "Ça va?",
+      "note": "The flagship fr vs fr-CA divergence: OQLF 'opte pour l'absence d'espace' before ? ! ; — the spaces rule strips the typed space and nbsp does not reinsert one, unlike fr where U+202F lands here."
+    },
+    {
+      "id": "fr-ca-nbsp-exclamation-no-space",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Bonjour !",
+      "out": "Bonjour!"
+    },
+    {
+      "id": "fr-ca-nbsp-semicolon-no-space",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Oui ; non",
+      "out": "Oui; non"
+    },
+    {
+      "id": "fr-ca-nbsp-already-tight-no-space",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Bonjour!",
+      "out": "Bonjour!",
+      "note": "Idempotency in the direction that matters most for fr-CA: an author who already omits the space, per OQLF practice, gets no space inserted."
+    },
+    {
+      "id": "fr-ca-nbsp-wide-colon",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Voici : la suite",
+      "out": "Voici : la suite",
+      "note": "Colon behaviour is shared with fr — both OQLF pages consulted agree with André on U+00A0 before ':'."
+    },
+    {
+      "id": "fr-ca-nbsp-colon-inserted-with-no-space",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Voici: la suite",
+      "out": "Voici : la suite"
+    },
+    {
+      "id": "fr-ca-nbsp-double-terminal",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Vraiment ?!",
+      "out": "Vraiment?!",
+      "note": "Both marks are in the empty narrowBeforePunctuation list; contrast fr's 'Vraiment ?!' where only the leading mark gets the fine space."
+    },
+    {
+      "id": "fr-ca-nbsp-guillemet-inner",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Il a dit «mot».",
+      "out": "Il a dit « mot ».",
+      "note": "Quotes inner space is shared with fr."
+    },
+    {
+      "id": "fr-ca-nbsp-unit-percent",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "98 % des cas",
+      "out": "98 % des cas",
+      "note": "Shared with fr — OQLF confirms nbsp before SI units and %."
+    },
+    {
+      "id": "fr-ca-nbsp-unit-km",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "20 km à pied",
+      "out": "20 km à pied"
+    },
+    {
+      "id": "fr-ca-nbsp-before-number",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "voir art. 237 et fig. 3",
+      "out": "voir art. 237 et fig. 3",
+      "note": "Inherited from fr's André citation; not independently re-verified against a Quebec-specific source."
+    },
+    {
+      "id": "fr-ca-nbsp-before-word-mme",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Mme Hugo et Mlle Durand",
+      "out": "Mme Hugo et Mlle Durand",
+      "note": "Inherited from fr's André citation."
+    },
+    {
+      "id": "fr-ca-nbsp-initials",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "N. Bourbaki",
+      "out": "N. Bourbaki",
+      "note": "Inherited from fr's André citation (bindInitials)."
+    },
+    {
+      "id": "fr-ca-nbsp-abbreviation",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "p. ex. ceci",
+      "out": "p. ex. ceci",
+      "note": "Inherited from fr's André citation."
+    },
+    {
+      "id": "fr-ca-roundtrip-typeset-sentence",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Il a dit : « bonjour », il est parti",
+      "out": "Il a dit : « bonjour », il est parti",
+      "note": "Round-trip on already-correct fr-CA typesetting — no ! ? ; involved, so identical to the fr round-trip."
+    },
+    {
+      "id": "fr-ca-combined-sentence",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Il a dit : \"Le trajet -- 20 km environ -- prendra une heure !\"",
+      "out": "Il a dit : « Le trajet — 20 km environ — prendra une heure! »",
+      "note": "Every rule in one sentence: colon gets U+00A0 (shared with fr), the guillemets get U+00A0 inner space, the dash pair becomes em-spaced, the unit gets U+00A0 — but the exclamation mark gets no space at all, the one point where fr-CA diverges from fr."
+    },
+    {
+      "id": "fr-ca-quotes-030-bug3b-witness",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "\"<p class=\"x\">«[t](u)",
+      "out": "\"<p class=\"x\">« [t](u)",
+      "note": "quotes.md §6 row 3b, and the pinned pipeline-idempotency.md §6 witness \"<p class=\"x\">«[t](u): the mode adapter splices a MARKER between the two text spans; « 's closeRight reads Rskip (because « ∈ SPACE-RIGHT) and finds [, so it is never canClose and no pair forms from `quotes` alone. The visible space after « is `nbsp` N8, which inserts unconditionally beside a primary-open occurrence regardless of pairing; verified idempotent by running the full pipeline twice."
+    },
+    {
+      "id": "fr-ca-quotes-030-adversarial-interleaved",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "«a“b«c»d”e»",
+      "out": "« a“b« c »d”e »",
+      "note": "quotes.md §6, ru/el/fr/fr-CA adversarial sweep: already-curly interleaved WIDE-only text, mirroring fr's own case."
+    }
+  ]
+}

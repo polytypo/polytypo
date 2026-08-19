@@ -1,7 +1,7 @@
 {
-  "spec": "0.1.0",
+  "spec": "0.2.0",
   "$comment": "Locale resolution input. Algorithm is specified in spec/rules/locale-resolution.md and is identical in every runtime — never delegate it to a platform locale-negotiation library.",
-  "locales": ["en-US", "en-GB", "de-DE", "de-CH", "fr", "ru", "fi", "sv", "el"],
+  "locales": ["en-US", "en-GB", "de-DE", "de-CH", "fr", "fr-CA", "ru", "fi", "sv", "el"],
   "aliases": {
     "en": "en-US",
     "de": "de-DE"

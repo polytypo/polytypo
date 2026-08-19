@@ -14,6 +14,7 @@ describe("locale resolution", () => {
     ["fi", "fi"],
     ["sv", "sv"],
     ["fr", "fr"],
+    ["fr-CA", "fr-CA"],
     ["ru", "ru"],
     // alias table
     ["en", "en-US"],
@@ -21,7 +22,7 @@ describe("locale resolution", () => {
     // region stripped, then resolved again
     ["de-AT", "de-DE"],
     ["en-AU", "en-US"],
-    ["fr-CA", "fr"],
+    ["fr-BE", "fr"],
     ["ru-BY", "ru"],
     // case and separator normalization
     ["FI", "fi"],
