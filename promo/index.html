@@ -507,6 +507,158 @@
     border-left: 2px solid var(--color-accent);
   }
 
+  /* Playground */
+  .pg-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-6);
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pg-bar label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .pg-bar select {
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: none;
+  }
+
+  textarea.pg-textarea {
+    display: block;
+    width: 100%;
+    height: 260px;
+    margin-top: var(--space-4);
+    resize: vertical;
+    border: 1px solid var(--line);
+    outline: 0;
+    border-radius: 8px;
+    padding: var(--space-5);
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.7;
+    box-shadow: inset 0 1px 2px rgb(20 22 26 / 6%);
+  }
+
+  textarea.pg-textarea::placeholder {
+    color: var(--muted);
+  }
+
+  textarea.pg-textarea:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgb(214 64 39 / 14%);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    textarea.pg-textarea {
+      box-shadow: inset 0 1px 2px rgb(0 0 0 / 30%);
+    }
+  }
+
+  .pg-output {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+
+  .pg-output.error {
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .pg-note {
+    margin-top: var(--space-4);
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  /* Docs / reference */
+  .kv {
+    border-collapse: collapse;
+    width: 100%;
+    margin: var(--space-5) 0 var(--space-9);
+    font-size: 14px;
+  }
+
+  .kv th,
+  .kv td {
+    padding: var(--space-3) var(--space-5) var(--space-3) 0;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .ready-cite {
+    max-width: 42ch;
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+
+  .ready-ok {
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .steps {
+    counter-reset: step;
+    margin: var(--space-8) 0 var(--space-2);
+    padding: 0;
+    list-style: none;
+  }
+
+  .steps > li {
+    position: relative;
+    margin: 0 0 var(--space-7);
+    padding-left: 38px;
+  }
+
+  .steps > li::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: var(--surface-strong);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .steps h4 {
+    margin: 0 0 4px;
+    font-size: 15px;
+  }
+
+  .steps p {
+    margin: 0;
+  }
+
   footer {
     padding-top: 70px;
     border-top: 1px solid var(--line);
@@ -608,6 +760,60 @@
       <div class="foot" id="demo-foot"></div>
     </div>
   </header>
+
+  <section id="playground">
+    <p class="eyebrow">Try it on your own text</p>
+    <h2>This runs the real engine, in your browser.</h2>
+    <p>
+      No server round trip: <code>promo/vendor/polytypo.browser.js</code> is <code>src/index.ts</code>
+      bundled with esbuild against the same locale data <code>npm run gen</code> embeds in the
+      published package. Whatever comes out on the right is exactly what
+      <code>npm install polytypo</code> gives you — same code, same rules, same order.
+    </p>
+    <div class="demo">
+      <div class="pg-bar">
+        <label title="Which locale's quotes, dashes and spacing to apply. Required — no fallback to English.">
+          Locale <select id="pg-locale"></select>
+        </label>
+        <label title="text: no markup parsing, the whole input is prose. html: parse5 touches only text nodes, never tags or attributes. markdown: micromark touches only prose, never code spans/blocks or front matter.">
+          Mode
+          <select id="pg-mode">
+            <option value="text">text</option>
+            <option value="html">html</option>
+            <option value="markdown">markdown</option>
+          </select>
+        </label>
+        <label id="pg-dialect-wrap" hidden title="Markdown-only, no default. commonmark vs mdx changes how ambiguous syntax like &lt;https://…&gt; is parsed — the two disagree, so this can't be auto-detected.">
+          Dialect
+          <select id="pg-dialect">
+            <option value="commonmark">commonmark</option>
+            <option value="mdx">mdx</option>
+          </select>
+        </label>
+      </div>
+      <div class="split">
+        <div class="pane-l">
+          <div class="who">Input <span id="pg-count"></span></div>
+          <textarea
+            id="pg-input"
+            class="pg-textarea"
+            spellcheck="false"
+            autocapitalize="off"
+            placeholder="Paste or type text here — try: &quot;It's a test&quot; - said no one -- ever..."
+          ></textarea>
+        </div>
+        <div class="pane-r">
+          <div class="who">Output</div>
+          <div class="txt set pg-output" id="pg-output"></div>
+        </div>
+      </div>
+      <div class="foot" id="pg-foot"></div>
+    </div>
+    <p class="pg-note">
+      Idempotency is a headline claim, not just a property test: paste the output back into the
+      input and nothing should change.
+    </p>
+  </section>
 
   <section id="languages">
     <p class="eyebrow">The same sentence, nine locales</p>
@@ -732,12 +938,103 @@ try {
 } catch (PolytypoException $error) {
     $error-&gt;errorCode; // &#x27;POLYTYPO_UNKNOWN_LOCALE&#x27;
 }</code></pre></div></div>
-    <p class="small muted" style="margin-top: 14px">
-      Error codes are part of the contract in every runtime: <code>POLYTYPO_UNKNOWN_LOCALE</code>,
-      <code>POLYTYPO_INVALID_MODE</code>, <code>POLYTYPO_UNKNOWN_RULE</code>,
-      <code>POLYTYPO_MALFORMED_LOCALE_DATA</code>, <code>POLYTYPO_RULE_CONTRACT</code>. Messages are
-      English and are not.
+    <h3>Options</h3>
+    <div class="scroll">
+      <table class="kv">
+        <tr><th>Option</th><th>Type</th><th>Default</th><th>Notes</th></tr>
+        <tr>
+          <td class="mono">locale</td><td class="mono">string</td><td class="mono">—</td>
+          <td class="small muted">Required, no exceptions. Unknown locale throws
+            <code>POLYTYPO_UNKNOWN_LOCALE</code> rather than falling back to English. Resolution
+            (<code>de-AT</code> → <code>de</code>) follows
+            <code>spec/rules/locale-resolution.md</code>.</td>
+        </tr>
+        <tr>
+          <td class="mono">mode</td><td class="mono">"text" | "html" | "markdown"</td>
+          <td class="mono">"text"</td>
+          <td class="small muted">Selects the adapter. <code>html</code> parses with parse5,
+            <code>markdown</code> with micromark; both run the same rule pipeline only on prose
+            text nodes, never inside tags, attributes, code spans or code blocks.</td>
+        </tr>
+        <tr>
+          <td class="mono">dialect</td><td class="mono">"commonmark" | "mdx"</td><td class="mono">—</td>
+          <td class="small muted">Required when <code>mode</code> is <code>"markdown"</code>, with no
+            default — omitting it throws <code>POLYTYPO_INVALID_DIALECT</code>. Dialect detection is
+            forbidden by design: one <code>&lt;https://…&gt;</code> autolink is valid CommonMark and
+            invalid MDX, so a heuristic would silently reclassify content. Ignored for the other two
+            modes.</td>
+        </tr>
+        <tr>
+          <td class="mono">rules</td><td class="mono">Partial&lt;Record&lt;RuleId, boolean&gt;&gt;</td>
+          <td class="mono">all on</td>
+          <td class="small muted">Opt-out only — <code>{ dashes: false }</code>. Disabling a rule
+            removes it from the pipeline; it never reorders the rest. <code>true</code> is a no-op.
+            An unrecognised rule id throws <code>POLYTYPO_UNKNOWN_RULE</code>.</td>
+        </tr>
+      </table>
+    </div>
+
+    <h3>Error codes</h3>
+    <p class="small muted" style="margin-top: -6px">
+      All seven are part of the contract in every runtime; messages are English and are not.
     </p>
+    <div class="scroll">
+      <table class="kv">
+        <tr><th>Code</th><th>Thrown when</th></tr>
+        <tr><td class="mono">POLYTYPO_UNKNOWN_LOCALE</td><td class="small muted"><code>locale</code> is missing or not in the spec's locale registry.</td></tr>
+        <tr><td class="mono">POLYTYPO_INVALID_MODE</td><td class="small muted"><code>mode</code> is set to something other than <code>text</code>, <code>html</code> or <code>markdown</code>.</td></tr>
+        <tr><td class="mono">POLYTYPO_INVALID_DIALECT</td><td class="small muted"><code>mode: "markdown"</code> without a <code>dialect</code>, or an unrecognised one.</td></tr>
+        <tr><td class="mono">POLYTYPO_UNKNOWN_RULE</td><td class="small muted">A key in <code>rules</code> that is not one of the eight rule ids.</td></tr>
+        <tr><td class="mono">POLYTYPO_MALFORMED_LOCALE_DATA</td><td class="small muted">Internal — a locale's data failed its own schema at load time.</td></tr>
+        <tr><td class="mono">POLYTYPO_RULE_CONTRACT</td><td class="small muted">Internal — a rule emitted an edit outside its contract (out of bounds, overlapping, wrong <code>ruleId</code>). Should never surface; if it does, it's a bug in this project, not your input.</td></tr>
+        <tr><td class="mono">POLYTYPO_MALFORMED_INPUT</td><td class="small muted">The <code>html</code> or <code>markdown</code> parser rejected the input; the underlying parser error is wrapped so no dependency's error type reaches the public surface.</td></tr>
+      </table>
+    </div>
+
+    <h3>Wiring it into a build step</h3>
+    <p>
+      There is no CLI, no plugin API and no hosted service in v1 — that is a deliberate non-goal
+      (see <a href="#extend">Extending polytypo</a>). <code>transform()</code> is a plain pure
+      function, so it drops into whatever already touches your content at build time.
+    </p>
+    <div class="tabs" id="build-tabs"></div>
+    <div id="build-panes">
+      <div class="pane" data-label="Markdown / MDX pipeline">
+        <pre><code>// e.g. a remark/unified plugin, or any step that reads .md/.mdx files
+import { readFile, writeFile } from &quot;node:fs/promises&quot;;
+import { transform } from &quot;polytypo&quot;;
+
+const path = &quot;content/posts/hello-world.mdx&quot;;
+const source = await readFile(path, &quot;utf8&quot;);
+const dialect = path.endsWith(&quot;.mdx&quot;) ? &quot;mdx&quot; : &quot;commonmark&quot;;
+
+await writeFile(path, transform(source, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect }));
+// transform(transform(x)) === transform(x) — safe to run on every build, not just once.</code></pre>
+      </div>
+      <div class="pane" data-label="CMS field on save">
+        <pre><code>// wherever a rich-text field is persisted — a webhook handler, a save hook
+import { transform, PolytypoError } from &quot;polytypo&quot;;
+
+function sanitizeBody(html, locale) {
+  try {
+    return transform(html, { locale, mode: &quot;html&quot; });
+  } catch (error) {
+    if (error instanceof PolytypoError &amp;&amp; error.code === &quot;POLYTYPO_MALFORMED_INPUT&quot;) {
+      return html; // don&#x27;t block a save on a typography pass
+    }
+    throw error;
+  }
+}</code></pre>
+      </div>
+      <div class="pane" data-label="React / templating">
+        <pre><code>// call it wherever untrusted or imported copy reaches a render — not on every keystroke
+import { transform } from &quot;polytypo&quot;;
+
+function Byline({ text, locale }) {
+  return &lt;p&gt;{transform(text, { locale })}&lt;/p&gt;;
+}</code></pre>
+      </div>
+    </div>
   </section>
 
   <section id="why">
@@ -785,8 +1082,8 @@ try {
         <h3 style="margin: 0 0 6px">Invisible characters, on purpose</h3>
         <p class="small muted" style="margin: 0">
           U+00A0, U+202F and U+2011 are the whole point of the <code>nbsp</code> and
-          <code>hyphen</code> rules. Toggle <em>show invisibles</em> in the demo above to see what
-          actually changed.
+          <code>hyphen</code> rules. Every demo on this page reveals them with an underline —
+          hover a highlighted character to see exactly what it is.
         </p>
       </div>
     </div>
@@ -843,9 +1140,135 @@ try {
     </p>
   </section>
 
+  <section id="extend">
+    <p class="eyebrow">Coverage, and how it grows</p>
+    <h2>Ten locales are cited. Everything else is uncovered, not unplanned.</h2>
+    <p>
+      This project does not guess a locale into existence. A row below exists because someone wrote
+      the rules down, cited a normative source for each one, and backed it with fixtures the
+      conformance suite runs on every change. That is the only way a locale is added — including
+      by you.
+    </p>
+    <div class="scroll">
+      <table class="kv">
+        <tr><th>Locale</th><th>Name</th><th>Rules cited</th><th>Fixtures</th><th>Primary sources</th></tr>
+        <tr><td class="mono">en-US</td><td>English (US)</td><td class="mono small">dashes, ellipsis, hyphen, nbsp, quotes</td><td>141</td><td class="ready-cite">Chicago Manual of Style; BIPM (SI units)</td></tr>
+        <tr><td class="mono">en-GB</td><td>English (UK)</td><td class="mono small">dashes, ellipsis, hyphen, nbsp, quotes</td><td>143</td><td class="ready-cite">University of Oxford Style Guide; BIPM (SI units)</td></tr>
+        <tr><td class="mono">de-DE</td><td>German (Germany)</td><td class="mono small">dashes, hyphen, nbsp, quotes</td><td>57</td><td class="ready-cite">Duden Rechtschreibregeln; DIN 5008</td></tr>
+        <tr><td class="mono">de-CH</td><td>German (Switzerland)</td><td class="mono small">dashes, hyphen, nbsp, quotes</td><td>57</td><td class="ready-cite">Schweizerische Bundeskanzlei, Schreibweisungen</td></tr>
+        <tr><td class="mono">fr</td><td>French</td><td class="mono small">dashes, hyphen, nbsp, quotes</td><td>60</td><td class="ready-cite">Imprimerie nationale, Lexique; Jacques André, Petites leçons de typographie</td></tr>
+        <tr><td class="mono">fr-CA</td><td>French (Canada)</td><td class="mono small">dashes, ellipsis, hyphen, nbsp, quotes</td><td>28</td><td class="ready-cite">Office québécois de la langue française; Jacques André</td></tr>
+        <tr><td class="mono">ru</td><td>Russian</td><td class="mono small">dashes, ellipsis, hyphen, nbsp, quotes</td><td>76</td><td class="ready-cite">Мильчин &amp; Чельцова, Справочник издателя и автора; Розенталь</td></tr>
+        <tr><td class="mono">fi</td><td>Finnish</td><td class="mono small">dashes, ellipsis, hyphen, nbsp, quotes</td><td>145</td><td class="ready-cite">Kotimaisten kielten keskus (Kotus), Kielitoimiston ohjepankki</td></tr>
+        <tr><td class="mono">sv</td><td>Swedish</td><td class="mono small">dashes, ellipsis, hyphen, nbsp, quotes</td><td>146</td><td class="ready-cite">Institutet för språk och folkminnen (Språkrådet), Snabba skrivregler</td></tr>
+        <tr><td class="mono">el</td><td>Greek</td><td class="mono small">apostrophe, dashes, ellipsis, hyphen, nbsp, quotes, spaces, symbols</td><td>24</td><td class="ready-cite">EU Interinstitutional Style Guide (Greek); Unicode Standard 17.0</td></tr>
+      </table>
+    </div>
+    <p class="small muted" style="margin-top: -8px">
+      Locale count, citations and fixture totals read directly from <code>spec/locales/</code> and
+      <code>spec/fixtures/</code>. <code>en</code> and <code>de</code> are aliases resolving to
+      <code>en-US</code> and <code>de-DE</code> (<code>spec/rules/locale-resolution.md</code>).
+    </p>
+    <div class="note">
+      <p>
+        Italian is not in that table. Neither is Spanish, Polish, Portuguese, Japanese, Arabic or
+        every other language this format could describe. That is not a roadmap with dates attached
+        — it is simply what nobody has cited yet. The six-locale cap this project shipped with was
+        withdrawn by operator decision: <strong>coverage is a goal, and the only gate is evidence.</strong>
+      </p>
+    </div>
+
+    <h3>Adding a locale — worked through for Italian</h3>
+    <p>
+      None of this is Italian-specific guidance; nothing below has been checked against an Italian
+      style authority. It is the exact sequence anyone adds any locale through, illustrated with the
+      locale this page's own coverage table is missing.
+    </p>
+    <ol class="steps">
+      <li>
+        <h4>Read <code>spec/schema/locale.schema.json</code></h4>
+        <p class="small muted">
+          It defines what a locale file may say: quote glyphs and inner-space rule, the
+          parenthetical and range dash convention, whether ellipsis abbreviates after terminal
+          punctuation, hyphen-binding word lists, and the no-break-space triggers. Literal strings,
+          literal code points, string lists and enum values only — no regex, no priority numbers, no
+          conditionals. If Italian needs a distinction the schema can't express, that is a spec
+          discussion, not a workaround in the locale file.
+        </p>
+      </li>
+      <li>
+        <h4>Write <code>spec/locales/it.json</code></h4>
+        <p class="small muted">
+          One field at a time, each backed by a citation in the mandatory <code>sources</code>
+          array — a national style guide, a standards body (Accademia della Crusca, a major
+          dictionary or publisher's house style), never a blog post or a contributor's own habit.
+          A locale is accepted only as the triple this table enforces: data, fixtures, citation.
+        </p>
+      </li>
+      <li>
+        <h4>Add cases to <code>spec/fixtures/it.json</code></h4>
+        <p class="small muted">
+          One <code>{ "in", "out", "rule" }</code> pair per behaviour the citation asserts, plus at
+          least one edge case per rule — the ordinary sentence is not the interesting test, the
+          nested quote or nasty numeric range is. Every fixture is automatically also an idempotency
+          case: <code>transform(out) === out</code> is checked for free.
+        </p>
+      </li>
+      <li>
+        <h4>Register it in <code>spec/locales/registry.json</code></h4>
+        <p class="small muted">
+          Add <code>"it"</code> to the <code>locales</code> array. Only add an alias
+          (<code>it-CH</code> → <code>it</code>, say) if the fallback is itself a cited decision,
+          not a guess of convenience.
+        </p>
+      </li>
+      <li>
+        <h4>Validate and test</h4>
+        <p class="small muted">
+          <code>npm run validate:spec</code> checks the file against the schema and NFC-normalizes
+          it; <code>npm run gen &amp;&amp; npm test</code> runs the new fixtures through the
+          conformance suite and the <code>fast-check</code> idempotency property. Both must be
+          green — a red run blocks the locale, not just a warning.
+        </p>
+      </li>
+      <li>
+        <h4>Open a pull request</h4>
+        <p class="small muted">
+          Disagreements about what Italian actually does are settled by citation, not preference —
+          if a review turns up a more normative source, that source wins, not whoever argued longer.
+        </p>
+      </li>
+    </ol>
+
+    <h3>Changing or adding a rule</h3>
+    <p>
+      Rules are cross-locale algorithms, not per-language code. <code>spec/rules/order.json</code>
+      is the single source of truth for a rule's id, pipeline order, default and which locale
+      fields it reads; <code>spec/rules/&lt;id&gt;.md</code> is normative prose written
+      <em>before</em> the implementation — extracting a spec from a finished implementation is
+      exactly the rework this project's spec-first discipline exists to avoid. A behaviour change
+      starts with a fixture in <code>spec/fixtures/</code>, not a diff in <code>src/rules/</code>.
+      Implementation constraints that are already binding, even with one runtime shipped: no regex
+      in a rule (Go's RE2 has no lookbehind — a rule is a single left-to-right scan over code
+      points with explicit lookaround), index by Unicode code point rather than a native string,
+      and rules emit <em>edits</em> for the pipeline to apply rather than mutating text directly, so
+      <code>applyEdits</code> can enforce the contract instead of trusting it.
+    </p>
+
+    <h3>What v1 deliberately does not do</h3>
+    <p>
+      Language auto-detection, hyphenation, optical alignment, spellcheck, a hosted API, a
+      plugin/extension API and CMS integrations are refused by explicit decision, not oversight —
+      each one trades away a property (purity, predictability, or the citation discipline above)
+      that this project is not willing to give up for convenience. A pull request implementing one
+      of these will be asked for the operator decision that authorizes it, not merged on its own
+      merits.
+    </p>
+  </section>
+
   <section id="status">
     <p class="eyebrow">Status — read this before installing</p>
-    <h2>Spec 0.1.0. One runtime, one mode, today.</h2>
+    <h2>Spec 0.2.0. One runtime, today.</h2>
     <p>
       This project publishes what exists and says plainly what does not. Nothing below is a roadmap
       promise with a date attached.
@@ -857,18 +1280,11 @@ try {
       </tr>
       <tr>
         <td>Spec — locale data, rule semantics, fixtures</td>
-        <td>0.1.0, 8 locales, 8 rules, in the repository</td>
+        <td>0.2.0, 10 locales, 8 rules, in the repository</td>
       </tr>
       <tr>
-        <td>JavaScript / TypeScript engine, <code>text</code> mode</td>
-        <td>Implemented, passing the conformance suite</td>
-      </tr>
-      <tr>
-        <td><code>html</code> and <code>markdown</code> modes</td>
-        <td>
-          Specified in <code>spec/rules/modes.md</code>; the engine throws
-          <code>POLYTYPO_INVALID_MODE</code> for now
-        </td>
+        <td>JavaScript / TypeScript engine — <code>text</code>, <code>html</code>, <code>markdown</code> modes</td>
+        <td>Implemented, passing the conformance suite (spec/rules/modes.md)</td>
       </tr>
       <tr>
         <td>npm package</td>
@@ -902,6 +1318,9 @@ try {
   </footer>
 </div>
 
+<!-- src/index.ts bundled for the browser with esbuild — see "gen:promo-bundle" in package.json.
+     Regenerate with: npm run gen:promo-bundle -->
+<script src="vendor/polytypo.browser.js"></script>
 <script>
   const DATA = {"spec": "0.1.0", "locales": [{"locale": "en-US", "name": "English (US)", "hero": {"in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.", "out": "Is this “polytypo”?—No, it’s “polytypo”! She said, “He replied ‘never’ twice”… The release—all 5 km of it—covers 1914⁠–⁠1918. Copyright © 2026, at 1920×1080."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "“He said ‘no’ to me,” she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan—if there is one—fails."}, {"rule": "dashes", "in": "1914-1918 and pp. 34-36", "out": "1914⁠–⁠1918 and pp. 34⁠–⁠36"}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "apostrophe", "in": "don't", "out": "don’t"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}, {"rule": "symbols", "in": "Copyright (c) 2026, 1920x1080", "out": "Copyright © 2026, 1920×1080"}]}, {"locale": "en-GB", "name": "English (UK)", "hero": {"in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.", "out": "Is this ‘polytypo’? – No, it’s ‘polytypo’! She said, ‘He replied “never” twice’… The release – all 5 km of it – covers 1914⁠–⁠1918. Copyright © 2026, at 1920×1080."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "‘He said “no” to me,’ she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan – if there is one – fails."}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}]}, {"locale": "de-DE", "name": "German", "hero": {"in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.", "out": "Ist das „polytypo“? – Nein, das ist „polytypo“! Sie sagte: „Er hat ‚nie‘ geantwortet“… Die Ausgabe – z. B. die Jahre 1939⁠–⁠1945 – erscheint in 1920×1080. Copyright © 2026."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "„Er sagte ‚nein‘ zu mir“, notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "dashes", "in": "Die Jahre 1939-1945", "out": "Die Jahre 1939⁠–⁠1945"}, {"rule": "nbsp", "in": "z. B. Berlin", "out": "z. B. Berlin"}, {"rule": "symbols", "in": "Auflösung 1920x1080", "out": "Auflösung 1920×1080"}]}, {"locale": "de-CH", "name": "Swiss German", "hero": {"in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.", "out": "Ist das «polytypo»? – Nein, das ist «polytypo»! Sie sagte: «Er hat ‹nie› geantwortet»… Die Ausgabe – z. B. die Jahre 1939⁠–⁠1945 – erscheint in 1920×1080. Copyright © 2026."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "«Er sagte ‹nein› zu mir», notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "nbsp", "in": "z. B. Bern", "out": "z. B. Bern"}]}, {"locale": "fr", "name": "French", "hero": {"in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.", "out": "C’est « polytypo » ? — Non, c’est « polytypo » ! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm ; c’est tout. Copyright © 2026."}, "cases": [{"rule": "quotes", "in": "Il a dit \"bonjour\".", "out": "Il a dit « bonjour »."}, {"rule": "quotes", "in": "\"Il a dit 'oui' hier.\"", "out": "« Il a dit “oui” hier. »"}, {"rule": "nbsp", "in": "Ça va ? Bonjour !", "out": "Ça va ? Bonjour !"}, {"rule": "dashes", "in": "Le plan - il existe - échoue.", "out": "Le plan — il existe — échoue."}, {"rule": "apostrophe", "in": "l'été et l'hiver", "out": "l’été et l’hiver"}]}, {"locale": "ru", "name": "Russian", "hero": {"in": "Это \"полиштамп\"? - Нет, это \"полиштамп\"! Она сказала: \"он ответил 'никогда'\"... Достал из-под стола - в 1941-1945 годах - размер 10 x 20 см. Все права защищены (c) 2026.", "out": "Это «полиштамп»? — Нет, это «полиштамп»! Она сказала: «он ответил „никогда“»… Достал из‑под стола — в 1941⁠—⁠1945 годах — размер 10 × 20 см. Все права защищены © 2026."}, "cases": [{"rule": "quotes", "in": "Он сказал: \"это 'моё' дело\".", "out": "Он сказал: «это „моё“ дело»."}, {"rule": "dashes", "in": "Москва - столица", "out": "Москва — столица"}, {"rule": "dashes", "in": "Годы 1941-1945 были тяжёлыми", "out": "Годы 1941⁠—⁠1945 были тяжёлыми"}, {"rule": "hyphen", "in": "Достал из-под стола", "out": "Достал из‑под стола"}, {"rule": "ellipsis", "in": "Что?...", "out": "Что?.."}, {"rule": "nbsp", "in": "Он живёт в Москве", "out": "Он живёт в Москве"}]}, {"locale": "fi", "name": "Finnish", "hero": {"in": "Onko tämä \"polytypo\"? - Ei, tämä on \"polytypo\"! Hän sanoi: \"hän vastasi 'ei koskaan'\"... Matkaa on 20 km - vuosina 1914-1918 - ja hinta nousi 10,5 %. Copyright (c) 2026.", "out": "Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän sanoi: ”hän vastasi ’ei koskaan’”… Matkaa on 20 km – vuosina 1914⁠–⁠1918 – ja hinta nousi 10,5 %. Copyright © 2026."}, "cases": [{"rule": "quotes", "in": "\"Hän sanoi 'moi'\", totesin.", "out": "”Hän sanoi ’moi’”, totesin."}, {"rule": "dashes", "in": "Suunnitelma - jos sellainen on - kaatuu.", "out": "Suunnitelma – jos sellainen on – kaatuu."}, {"rule": "nbsp", "in": "Hinta nousi 10,5 %", "out": "Hinta nousi 10,5 %"}]}, {"locale": "sv", "name": "Swedish", "hero": {"in": "Är det här \"polytypo\"? - Nej, det är \"polytypo\"! Hon sa: \"han svarade 'aldrig'\"... Vi gick 5 km - åren 1914-1918 - och det kostar 100 kr. Copyright (c) 2026.", "out": "Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914⁠–⁠1918 – och det kostar 100 kr. Copyright © 2026."}, "cases": [{"rule": "quotes", "in": "\"Han sa 'hej'\", sa jag.", "out": "”Han sa ’hej’”, sa jag."}, {"rule": "dashes", "in": "Planen - om det finns en - misslyckas.", "out": "Planen – om det finns en – misslyckas."}, {"rule": "nbsp", "in": "Det kostar 100 kr", "out": "Det kostar 100 kr"}]}, {"locale": "el", "name": "Greek", "hero": {"in": "Είναι αυτό \"polytypo\"; - Όχι, αυτό είναι \"polytypo\"! Είπε: \"απάντησε “ποτέ”\"... Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright (c) 2026, σε 1920x1080.", "out": "Είναι αυτό «polytypo»; - Όχι, αυτό είναι «polytypo»! Είπε: «απάντησε “ποτέ”»… Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright © 2026, σε 1920×1080."}, "cases": [{"rule": "quotes", "in": "Είπε \"καλημέρα\" και έφυγε.", "out": "Είπε «καλημέρα» και έφυγε."}, {"rule": "quotes", "in": "\"Είπε “όχι” σε μένα\", σημείωσε.", "out": "«Είπε “όχι” σε μένα», σημείωσε."}, {"rule": "apostrophe", "in": "γι' αυτό και απ' την αρχή", "out": "γι’ αυτό και απ’ την αρχή"}, {"rule": "spaces", "in": "Τι κάνεις ;", "out": "Τι κάνεις;"}, {"rule": "ellipsis", "in": "Περίμενε... τι έγινε", "out": "Περίμενε… τι έγινε"}, {"rule": "symbols", "in": "Ανάλυση 1920x1080", "out": "Ανάλυση 1920×1080"}]}]};
   const INVISIBLES = [
@@ -913,6 +1332,35 @@ try {
   let current = DATA.locales[0].locale;
 
   const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  /**
+   * What a single visibly-changed character is, for the title tooltip on a highlighted span.
+   * Invisible characters already carry their own tooltip via INVISIBLES/the bound-span markup
+   * above; this only covers ordinary visible glyphs so hovering a highlight explains itself
+   * instead of just showing that something happened.
+   */
+  const CHAR_INFO = {
+    "’": "U+2019 right single quotation mark — closing quote or apostrophe",
+    "‘": "U+2018 left single quotation mark — opening secondary quote",
+    "“": "U+201C left double quotation mark — opening quote",
+    "”": "U+201D right double quotation mark — closing quote",
+    "„": "U+201E double low-9 quotation mark — opening quote (German/Russian style)",
+    "‚": "U+201A single low-9 quotation mark — opening secondary quote",
+    "«": "U+00AB left-pointing double angle quotation mark (guillemet)",
+    "»": "U+00BB right-pointing double angle quotation mark (guillemet)",
+    "‹": "U+2039 single left-pointing angle quotation mark",
+    "›": "U+203A single right-pointing angle quotation mark",
+    "–": "U+2013 en dash",
+    "—": "U+2014 em dash",
+    "…": "U+2026 horizontal ellipsis",
+    "×": "U+00D7 multiplication sign",
+    "©": "U+00A9 copyright sign",
+    "®": "U+00AE registered sign",
+    "™": "U+2122 trade mark sign",
+  };
+  /** A one-character changed segment gets a title straight from CHAR_INFO; anything longer is
+   *  left unlabeled rather than guessed at. */
+  const describeChange = (text) => ([...text].length === 1 ? CHAR_INFO[text] : undefined);
 
   /** Escape, then always reveal the characters the engine inserted but nobody can see. */
   function mark(text) {
@@ -957,7 +1405,12 @@ try {
 
   function paint(segments) {
     return segments
-      .map(([changed, text]) => (changed ? '<span class="chg">' + mark(text) + "</span>" : mark(text)))
+      .map(([changed, text]) => {
+        if (!changed) return mark(text);
+        const why = describeChange(text);
+        const title = why ? ' title="' + esc(why) + '"' : "";
+        return '<span class="chg"' + title + ">" + mark(text) + "</span>";
+      })
       .join("");
   }
 
@@ -997,20 +1450,119 @@ try {
     }).join("");
   }
 
-  const tabs = document.getElementById("lang-tabs");
-  const panes = [...document.querySelectorAll("#lang-panes .pane")];
-  panes.forEach((p, i) => {
-    const b = document.createElement("button");
-    b.type = "button"; b.textContent = p.dataset.label;
-    b.setAttribute("aria-pressed", String(i === 0));
-    b.addEventListener("click", () => {
-      panes.forEach((q, j) => { q.hidden = j !== i; tabs.children[j].setAttribute("aria-pressed", String(j === i)); });
+  function bootTabs(tabsId, panesId) {
+    const tabs = document.getElementById(tabsId);
+    const panes = [...document.querySelectorAll("#" + panesId + " .pane")];
+    panes.forEach((p, i) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = p.dataset.label;
+      b.setAttribute("aria-pressed", String(i === 0));
+      b.addEventListener("click", () => {
+        panes.forEach((q, j) => { q.hidden = j !== i; tabs.children[j].setAttribute("aria-pressed", String(j === i)); });
+      });
+      tabs.appendChild(b);
+      p.hidden = i !== 0;
     });
-    tabs.appendChild(b);
-    p.hidden = i !== 0;
-  });
+  }
+  bootTabs("lang-tabs", "lang-panes");
+  bootTabs("build-tabs", "build-panes");
 
   paintDemo(); paintAll();
+
+  /* ---------- Playground: the real engine, running against pasted text ---------- */
+  (function playground() {
+    const engine = window.PolytypoBrowser;
+    const LOCALES = [
+      ["en-US", "English (US)"], ["en-GB", "English (UK)"],
+      ["de-DE", "German (Germany)"], ["de-CH", "German (Switzerland)"],
+      ["fr", "French"], ["fr-CA", "French (Canada)"],
+      ["ru", "Russian"], ["fi", "Finnish"], ["sv", "Swedish"], ["el", "Greek"],
+    ];
+    const DIFF_CAP = 4000; // above this, skip character-level highlighting (O(n*m) LCS)
+
+    const $locale = document.getElementById("pg-locale");
+    const $mode = document.getElementById("pg-mode");
+    const $dialectWrap = document.getElementById("pg-dialect-wrap");
+    const $dialect = document.getElementById("pg-dialect");
+    const $input = document.getElementById("pg-input");
+    const $output = document.getElementById("pg-output");
+    const $count = document.getElementById("pg-count");
+    const $foot = document.getElementById("pg-foot");
+
+    for (const [code, name] of LOCALES) {
+      const o = document.createElement("option");
+      o.value = code; o.textContent = code + " — " + name;
+      $locale.appendChild(o);
+    }
+
+    const SAMPLE =
+      `Is this "polytypo"? - No, it's "polytypo"! She said, "He replied 'never' twice"... ` +
+      `The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.`;
+    $input.value = SAMPLE;
+
+    if (!engine) {
+      $output.classList.add("error");
+      $output.textContent =
+        "The engine bundle (promo/vendor/polytypo.browser.js) failed to load — nothing else on " +
+        "this page depends on it, but the playground does. Run npm run gen:promo-bundle.";
+      $foot.textContent = "";
+      return;
+    }
+
+    let timer = null;
+    const run = () => { clearTimeout(timer); timer = setTimeout(render, 120); };
+
+    // Named render(), not paint(): the top-level paint(segments) above (shared with the hero
+    // demo) would otherwise be shadowed and unreachable from inside this closure.
+    function render() {
+      const text = $input.value;
+      const n = text.length;
+      $count.textContent = n ? n.toLocaleString("en-US") + " chars" : "";
+      $dialectWrap.hidden = $mode.value !== "markdown";
+
+      if (!text) {
+        $output.classList.remove("error");
+        $output.innerHTML = "";
+        $foot.textContent = "";
+        return;
+      }
+
+      const options = { locale: $locale.value, mode: $mode.value };
+      if ($mode.value === "markdown") options.dialect = $dialect.value;
+
+      let out;
+      try {
+        out = engine.transform(text, options);
+      } catch (error) {
+        $output.classList.add("error");
+        const code = error && error.code ? error.code : "Error";
+        $output.textContent = code + ": " + (error && error.message ? error.message : String(error));
+        $foot.textContent = "";
+        return;
+      }
+
+      $output.classList.remove("error");
+      if (n <= DIFF_CAP) {
+        const segments = diff([...text], [...out]);
+        $output.innerHTML = paint(segments);
+        const edits = segments.filter(([changed]) => changed).length;
+        $foot.textContent =
+          $locale.value + " · " + $mode.value + " · " + edits + " change" + (edits === 1 ? "" : "s") +
+          (text === out ? " · idempotent: unchanged" : "");
+      } else {
+        $output.innerHTML = mark(out);
+        $foot.textContent =
+          $locale.value + " · " + $mode.value + " · " + n.toLocaleString("en-US") +
+          " chars — change-highlighting skipped above " + DIFF_CAP.toLocaleString("en-US") + " chars";
+      }
+    }
+
+    $locale.addEventListener("change", render);
+    $mode.addEventListener("change", render);
+    $dialect.addEventListener("change", render);
+    $input.addEventListener("input", run);
+    render();
+  })();
 </script>
 
 </html>
