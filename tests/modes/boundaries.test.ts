@@ -183,13 +183,30 @@ describe("the edge-growth rule (modes.md 3.4)", () => {
   });
 
   it("does not resurrect a conversion the rule itself declined", () => {
-    // `dashes.md` 3.2 step 2a: an authored dash keeps its glyph and its spacing whatever the
-    // locale convention says. The mode layer only ever removes edits, so a rule that produced
-    // none must come back byte-identical in every locale — including the tight ones, where the
-    // edge-growth rule would have permitted a 1 → 1 replacement had one been offered.
+    // `dashes.md` §3.2 step 2a is fully retired (spec 0.2.0): a dash's length is no longer
+    // protected on authorship grounds, so `a<em>–</em>b`'s EN dash converts to EM in en-US
+    // (`em-tight`) — the mode edge-growth rule (modes.md 3.4) permits it because a tight
+    // 1-code-point-for-1-code-point replacement does not grow the span. Every other locale
+    // here wants EN already (unchanged, correct) or wants a spaced form the tight token has no
+    // room to grow into at the span edge (unchanged, declined at the boundary layer, not by
+    // authorship). The mode layer only ever removes edits, so a rule that produced none must
+    // come back byte-identical.
     for (const locale of Object.keys(LOCALES)) {
-      expect(html("a<em>–</em>b", locale), locale).toBe("a<em>–</em>b");
-      expect(html("a<em>x — y</em>b", locale), locale).toBe("a<em>x — y</em>b");
+      const expected = locale === "en-US" ? "a<em>—</em>b" : "a<em>–</em>b";
+      expect(html("a<em>–</em>b", locale), locale).toBe(expected);
+    }
+    // `a<em>x — y</em>b` is EM, spaced, with room inside the span for the dash to change
+    // length. en-US (`em-tight`) closes the spacing; de-CH/de-DE/en-GB/fi/sv (`en-spaced`)
+    // convert the length; el/fr/fr-CA/ru (`em-spaced` or `none`) are already correct.
+    const enSpaced = ["de-CH", "de-DE", "en-GB", "fi", "sv"];
+    for (const locale of Object.keys(LOCALES)) {
+      const expected =
+        locale === "en-US"
+          ? "a<em>x—y</em>b"
+          : enSpaced.includes(locale)
+            ? "a<em>x – y</em>b"
+            : "a<em>x — y</em>b";
+      expect(html("a<em>x — y</em>b", locale), locale).toBe(expected);
     }
   });
 });
