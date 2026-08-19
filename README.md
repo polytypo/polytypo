@@ -11,9 +11,9 @@
 
 ---
 
-**Status: in development, not yet published.** All three modes — `text`, `html` and `markdown` — are implemented for all nine locales against `spec/rules/modes.md`. `markdown` requires an explicit `dialect` (`commonmark` or `mdx`); there is no default and no detection.
+**Status: in development, not yet published.** All three modes — `text`, `html` and `markdown` — are implemented for all ten locales against `spec/rules/modes.md`. `markdown` requires an explicit `dialect` (`commonmark` or `mdx`); there is no default and no detection.
 
-Spec version: **0.1.0** · locales: **9** · rules: **8** · not yet on npm.
+Spec version: **0.2.0** · locales: **10** · rules: **8** · not yet on npm.
 
 ## What it does
 
@@ -35,6 +35,7 @@ fi    → Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän san
 sv    → Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914⁠–⁠1918 – och det kostar 100 kr. Copyright © 2026.
 el    → Είναι αυτό «polytypo»; - Όχι, αυτό είναι «polytypo»! Είπε: «απάντησε “ποτέ”»… Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright © 2026, σε 1920×1080.
 ```
+
 
 Every string above is real engine output, generated from `promo/examples.json` — not typed by hand.
 
@@ -61,7 +62,7 @@ import { transform } from "polytypo";
 transform(`Is this "polytypo"? - No, it's "polytypo"!`, { locale: "en-US" });
 // → Is this “polytypo”?—No, it’s “polytypo”!
 
-transform(`Ist das "polytypo"?`, { locale: "de" }); // de → de-DE
+transform(`Ist das "polytypo"?`, { locale: "de" });   // de → de-DE
 // → Ist das „polytypo“?
 
 transform(`Il a dit "bonjour".`, { locale: "fr" });
@@ -127,51 +128,48 @@ try {
 }
 ```
 
-| Code                             | Raised when                                                                                                       |
-| -------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `POLYTYPO_UNKNOWN_LOCALE`        | The locale is not in the registry and does not resolve to one.                                                    |
-| `POLYTYPO_INVALID_MODE`          | The mode is not `text`, `html` or `markdown`.                                                                     |
-| `POLYTYPO_INVALID_DIALECT`       | `mode` is `markdown` and `dialect` is missing, or is not `commonmark` or `mdx`.                                   |
-| `POLYTYPO_UNKNOWN_RULE`          | The `rules` map names a rule that does not exist.                                                                 |
-| `POLYTYPO_MALFORMED_INPUT`       | The input does not parse in the requested language. Reachable only for `dialect: "mdx"`, which embeds JavaScript. |
-| `POLYTYPO_MALFORMED_LOCALE_DATA` | Embedded locale data failed schema validation at build time.                                                      |
-| `POLYTYPO_RULE_CONTRACT`         | A rule produced an edit that violates the pipeline contract.                                                      |
-
-The parser's own error type never escapes: a `VFileMessage` on the public surface would put a JS
-dependency into a contract four other runtimes have to honour. Only the code is contractual; the
-message and the source position are useful and are not.
+| Code | Raised when |
+| --- | --- |
+| `POLYTYPO_UNKNOWN_LOCALE` | The locale is not in the registry and does not resolve to one. |
+| `POLYTYPO_INVALID_MODE` | The mode is not `text`, `html` or `markdown`. |
+| `POLYTYPO_INVALID_DIALECT` | `mode` is `markdown` and `dialect` is missing, or is not `commonmark` or `mdx`. |
+| `POLYTYPO_UNKNOWN_RULE` | The `rules` map names a rule that does not exist. |
+| `POLYTYPO_MALFORMED_INPUT` | The input does not parse in the requested language. Reachable only for `dialect: "mdx"`, which embeds JavaScript. |
+| `POLYTYPO_MALFORMED_LOCALE_DATA` | Embedded locale data failed schema validation at build time. |
+| `POLYTYPO_RULE_CONTRACT` | A rule produced an edit that violates the pipeline contract. |
 
 Codes are the contract across all five runtimes. **Messages are English prose and are not** — never
 match on them.
 
 ## Locales
 
-| Locale  | Language                 | Primary quotes | Secondary | Parenthetical dash | Range             |
-| ------- | ------------------------ | -------------- | --------- | ------------------ | ----------------- |
-| `en-US` | English (United States)  | “…”            | ‘…’       | em dash, unspaced  | en dash, unspaced |
-| `en-GB` | English (United Kingdom) | ‘…’            | “…”       | en dash, spaced    | en dash, unspaced |
-| `de-DE` | German (Germany)         | „…“            | ‚…‘       | en dash, spaced    | en dash, unspaced |
-| `de-CH` | German (Switzerland)     | «…»            | ‹…›       | en dash, spaced    | en dash, unspaced |
-| `fr`    | French                   | «…» + U+00A0   | “…”       | em dash, spaced    | unchanged         |
-| `ru`    | Russian                  | «…»            | „…“       | em dash, spaced    | em dash, unspaced |
-| `fi`    | Finnish                  | ”…”            | ’…’       | en dash, spaced    | en dash, unspaced |
-| `sv`    | Swedish                  | ”…”            | ’…’       | en dash, spaced    | en dash, unspaced |
-| `el`    | Greek                    | «…»            | “…”       | unchanged          | unchanged         |
+| Locale | Language | Primary quotes | Secondary | Parenthetical dash | Range |
+| --- | --- | --- | --- | --- | --- |
+| `en-US` | English (United States) | “…” | ‘…’ | em dash, unspaced | en dash, unspaced |
+| `en-GB` | English (United Kingdom) | ‘…’ | “…” | en dash, spaced | en dash, unspaced |
+| `de-DE` | German (Germany) | „…“ | ‚…‘ | en dash, spaced | en dash, unspaced |
+| `de-CH` | German (Switzerland) | «…» | ‹…› | en dash, spaced | en dash, unspaced |
+| `fr` | French | «…» + U+00A0 | “…” | em dash, spaced | unchanged |
+| `fr-CA` | French (Canada) | «…» + U+00A0 | “…” | em dash, spaced | unchanged |
+| `ru` | Russian | «…» | „…“ | em dash, spaced | em dash, unspaced |
+| `fi` | Finnish | ”…” | ’…’ | en dash, spaced | en dash, unspaced |
+| `sv` | Swedish | ”…” | ’…’ | en dash, spaced | en dash, unspaced |
+| `el` | Greek | «…» | “…” | unchanged | unchanged |
 
 Aliases resolve in the spec, never in a platform locale library: `en` → `en-US`, `de` → `de-DE`. An unknown locale throws — there is no silent fallback to English.
 
 ## Rules
 
-| Order | Rule id      | Default | What it does                                                                                             |
-| ----- | ------------ | ------- | -------------------------------------------------------------------------------------------------------- |
-| 10    | `spaces`     | on      | Collapse repeated spaces, strip spaces before punctuation, normalize spacing inside brackets.            |
-| 20    | `ellipsis`   | on      | Three dots to U+2026; locale-dependent abbreviated forms after terminal punctuation.                     |
-| 30    | `dashes`     | on      | Parenthetical dash and numeric/date range dash per locale convention.                                    |
-| 35    | `hyphen`     | on      | Bind morphological hyphen forms with U+2011 (non-breaking hyphen) so they cannot be broken across lines. |
-| 40    | `quotes`     | on      | Straight quotes to locale primary/secondary pairs with nesting resolution.                               |
-| 50    | `apostrophe` | on      | Remaining straight apostrophes to U+2019 without corrupting contractions.                                |
-| 60    | `symbols`    | on      | (c)/(r)/(tm) to the corresponding signs; multiplication sign between numerals.                           |
-| 70    | `nbsp`       | on      | Insert no-break and narrow no-break spaces per locale.                                                   |
+| Order | Rule id | Default | What it does |
+| --- | --- | --- | --- |
+| 10 | `spaces` | on | Collapse repeated spaces, strip spaces before punctuation, normalize spacing inside brackets. |
+| 20 | `ellipsis` | on | Three dots to U+2026; locale-dependent abbreviated forms after terminal punctuation. |
+| 30 | `dashes` | on | Parenthetical dash and numeric/date range dash per locale convention. |
+| 35 | `hyphen` | on | Bind morphological hyphen forms with U+2011 (non-breaking hyphen) so they cannot be broken across lines. |
+| 40 | `quotes` | on | Straight quotes to locale primary/secondary pairs with nesting resolution. |
+| 50 | `apostrophe` | on | Remaining straight apostrophes to U+2019 without corrupting contractions. |
+| 60 | `symbols` | on | (c)/(r)/(tm) to the corresponding signs; multiplication sign between numerals. |
+| 70 | `nbsp` | on | Insert no-break and narrow no-break spaces per locale. |
 
 Rule ids are **public API** — they appear in the `rules` option and in future integration config.
 Renaming one is a breaking change. Order comes from `spec/rules/order.json`, never from registration
@@ -179,15 +177,15 @@ order and never from map iteration order.
 
 ## Examples, by rule
 
-| Rule         | In                                    | Out                              |
-| ------------ | ------------------------------------- | -------------------------------- |
-| `quotes`     | `"He said 'no' to me," she noted.`    | “He said ‘no’ to me,” she noted. |
-| `dashes`     | `The plan - if there is one - fails.` | The plan—if there is one—fails.  |
-| `dashes`     | `1914-1918 and pp. 34-36`             | 1914⁠–⁠1918 and pp. 34⁠–⁠36      |
-| `ellipsis`   | `Wait... what?`                       | Wait… what?                      |
-| `apostrophe` | `don't`                               | don’t                            |
-| `nbsp`       | `It is 20 km to the coast`            | It is 20⍽km to the coast         |
-| `symbols`    | `Copyright (c) 2026, 1920x1080`       | Copyright © 2026, 1920×1080      |
+| Rule | In | Out |
+| --- | --- | --- |
+| `quotes` | `"He said 'no' to me," she noted.` | “He said ‘no’ to me,” she noted. |
+| `dashes` | `The plan - if there is one - fails.` | The plan—if there is one—fails. |
+| `dashes` | `1914-1918 and pp. 34-36` | 1914⁠–⁠1918 and pp. 34⁠–⁠36 |
+| `ellipsis` | `Wait... what?` | Wait… what? |
+| `apostrophe` | `don't` | don’t |
+| `nbsp` | `It is 20 km to the coast` | It is 20⍽km to the coast |
+| `symbols` | `Copyright (c) 2026, 1920x1080` | Copyright © 2026, 1920×1080 |
 
 **⍽ is not in the output — it marks U+00A0 NO-BREAK SPACE**, which is otherwise indistinguishable
 from an ordinary space on this page. The `nbsp` rule's entire job is invisible, which is exactly why
@@ -196,11 +194,11 @@ U+00A0 and U+202F cannot be reviewed by a human.
 
 ## Modes
 
-| Mode       | What it processes                                                                                                               | Parser                                  |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
-| `text`     | The whole string                                                                                                                | none                                    |
-| `html`     | Text nodes only; skips `code`, `pre`, `kbd`, `samp`, `var`, `script`, `style`, `textarea`, all attributes and existing entities | `parse5`                                |
-| `markdown` | Prose only; skips code spans, fenced blocks, link destinations, autolinks                                                       | `micromark`, per the required `dialect` |
+| Mode | What it processes | Parser |
+| --- | --- | --- |
+| `text` | The whole string | none |
+| `html` | Text nodes only; skips `code`, `pre`, `kbd`, `samp`, `var`, `script`, `style`, `textarea`, all attributes and existing entities | `parse5` |
+| `markdown` | Prose only; skips code spans, fenced blocks, link destinations, autolinks | `micromark`, per the required `dialect` |
 
 All three are implemented in the JavaScript engine against `spec/rules/modes.md`. The skip list and
 the reassembly guarantee live in the spec, not in the parser — the parser differs per runtime

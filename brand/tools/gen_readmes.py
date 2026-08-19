@@ -100,19 +100,49 @@ def rules_table():
     return "\n".join(rows)
 
 
-def examples_table(locale):
+def examples_table(locale, mark_invisible=False):
     e = HERO[locale]
     rows = ["| Rule | In | Out |", "| --- | --- | --- |"]
     for c in e["cases"]:
-        rows.append(f"| `{c['rule']}` | `{c['in']}` | {c['out']} |")
-    return "\n".join(rows)
+        out = c["out"].replace(" ", "⍽") if mark_invisible else c["out"]
+        rows.append(f"| `{c['rule']}` | `{c['in']}` | {out} |")
+    table = "\n".join(rows)
+    if not mark_invisible:
+        return table
+    return table + "\n\n" + NBSP_NOTE
+
+
+NBSP_NOTE = """**⍽ is not in the output — it marks U+00A0 NO-BREAK SPACE**, which is otherwise indistinguishable
+from an ordinary space on this page. The `nbsp` rule's entire job is invisible, which is exactly why
+`spec/fixtures/` is mirrored by a CI-generated escaped `\\uXXXX` file: a diff full of unannotated
+U+00A0 and U+202F cannot be reviewed by a human."""
+
+
+MODES_GENERIC = """| Mode | What it processes | Status |
+| --- | --- | --- |
+| `text` | The whole string | Implemented in the JavaScript engine |
+| `html` | Text nodes only; skips `code`, `pre`, `kbd`, `samp`, `var`, `script`, `style`, `textarea`, all attributes and existing entities | Specified in `spec/rules/modes.md`, not implemented |
+| `markdown` | Prose only; skips code spans, fenced blocks, link destinations, autolinks | Specified in `spec/rules/modes.md`, not implemented |"""
+
+
+MODES_JS = """| Mode | What it processes | Parser |
+| --- | --- | --- |
+| `text` | The whole string | none |
+| `html` | Text nodes only; skips `code`, `pre`, `kbd`, `samp`, `var`, `script`, `style`, `textarea`, all attributes and existing entities | `parse5` |
+| `markdown` | Prose only; skips code spans, fenced blocks, link destinations, autolinks | `micromark`, per the required `dialect` |
+
+All three are implemented in the JavaScript engine against `spec/rules/modes.md`. The skip list and
+the reassembly guarantee live in the spec, not in the parser — the parser differs per runtime
+(`nokogiri` in Ruby, `golang.org/x/net/html` in Go, DOM in PHP), the guarantee does not."""
 
 
 ERRORS = """| Code | Raised when |
 | --- | --- |
 | `POLYTYPO_UNKNOWN_LOCALE` | The locale is not in the registry and does not resolve to one. |
-| `POLYTYPO_INVALID_MODE` | The mode is not `text`, `html` or `markdown` — or is specified but not yet implemented in this runtime. |
+| `POLYTYPO_INVALID_MODE` | The mode is not `text`, `html` or `markdown`. |
+| `POLYTYPO_INVALID_DIALECT` | `mode` is `markdown` and `dialect` is missing, or is not `commonmark` or `mdx`. |
 | `POLYTYPO_UNKNOWN_RULE` | The `rules` map names a rule that does not exist. |
+| `POLYTYPO_MALFORMED_INPUT` | The input does not parse in the requested language. Reachable only for `dialect: "mdx"`, which embeds JavaScript. |
 | `POLYTYPO_MALFORMED_LOCALE_DATA` | Embedded locale data failed schema validation at build time. |
 | `POLYTYPO_RULE_CONTRACT` | A rule produced an edit that violates the pipeline contract. |
 
@@ -128,13 +158,25 @@ LANGS = {
         "package": "polytypo",
         "registry": "npm",
         "logo": "brand/logo/polytypo-lockup-stacked.svg",
+        "on_registry": False,
         "status": (
-            "**Status: in development, not yet published.** The engine implements `text` mode for all "
-            f"{LOCALE_COUNT_WORD} locales and passes the conformance suite; `html` and `markdown` are "
-            "specified in "
-            "`spec/rules/modes.md` but raise `POLYTYPO_INVALID_MODE` for now."
+            "**Status: in development, not yet published.** All three modes — `text`, `html` and "
+            f"`markdown` — are implemented for all {LOCALE_COUNT_WORD} locales against "
+            "`spec/rules/modes.md`. `markdown` requires an explicit `dialect` (`commonmark` or "
+            "`mdx`); there is no default and no detection."
         ),
-        "install": "```bash\nnpm install polytypo\n```",
+        "install": """Not published yet — the name `polytypo` is reserved but nothing has been released to npm, and the
+package version is still `0.0.0`. Until it ships, use it from a clone:
+
+```bash
+git clone https://github.com/polytypo/polytypo-js && cd polytypo-js && npm install && npm run build
+```
+
+Once published, installation will be the ordinary one:
+
+```bash
+npm install polytypo
+```""",
         "quickstart": """```js
 import { transform } from "polytypo";
 
@@ -153,8 +195,23 @@ transform(input: string, options: Options): string
 interface Options {
   locale: string;                            // required — unknown locale throws
   mode?: "text" | "html" | "markdown";       // default "text"
+  dialect?: "commonmark" | "mdx";            // required when mode is "markdown"; no default
   rules?: Partial<Record<RuleId, boolean>>;  // opt-out only; false disables
 }
+```
+
+`dialect` is required — not defaulted — whenever `mode` is `"markdown"`, and ignored otherwise.
+CommonMark and MDX disagree about ordinary documents, so the caller states which one it has; that
+is the file extension, and the library cannot know it. Detection is deliberately refused: a single
+`<https://…>` autolink makes a file invalid MDX, and a heuristic would then silently reclassify an
+ESM statement as prose.
+
+```js
+transform('Is this "polytypo"? - No', { locale: "en-US", mode: "markdown", dialect: "commonmark" });
+// → Is this “polytypo”?—No
+
+transform("a", { locale: "en-US", mode: "markdown" });
+// throws PolytypoError { code: "POLYTYPO_INVALID_DIALECT" }
 ```""",
         "optout": """```js
 transform("1914-1918", { locale: "en-US", rules: { dashes: false } });
@@ -175,6 +232,8 @@ try {
 
 The package is ESM and CJS, side-effect free and tree-shakeable. Locale data is embedded into the
 published artifact at build time — nothing is read from disk or fetched at runtime.""",
+        "modes": MODES_JS,
+        "mark_invisible": True,
     },
     "python": {
         "file": "docs/ports/README.python.md",
@@ -426,7 +485,7 @@ TEMPLATE = """<p align="center">
 
 {status}
 
-Spec version: **{spec}** · locales: **{n_locales}** · rules: **{n_rules}** · `{package}` on {registry}.
+Spec version: **{spec}** · locales: **{n_locales}** · rules: **{n_rules}** · {registry_line}
 
 ## What it does
 
@@ -485,11 +544,7 @@ order and never from map iteration order.
 
 ## Modes
 
-| Mode | What it processes | Status |
-| --- | --- | --- |
-| `text` | The whole string | Implemented in the JavaScript engine |
-| `html` | Text nodes only; skips `code`, `pre`, `kbd`, `samp`, `var`, `script`, `style`, `textarea`, all attributes and existing entities | Specified in `spec/rules/modes.md`, not implemented |
-| `markdown` | Prose only; skips code spans, fenced blocks, link destinations, autolinks | Specified in `spec/rules/modes.md`, not implemented |
+{modes}
 
 In every mode the output is **the input with a set of disjoint substring replacements applied, and
 nothing else**. The parser locates text; it never produces output. That is the only formulation five
@@ -531,6 +586,11 @@ and not as another project's identity, nor on goods for sale, without permission
 
 def build():
     for key, cfg in LANGS.items():
+        registry_line = (
+            f"`{cfg['package']}` on {cfg['registry']}."
+            if cfg.get("on_registry", True)
+            else f"not yet on {cfg['registry']}."
+        )
         body = TEMPLATE.format(
             logo=cfg["logo"],
             title=cfg["title"],
@@ -538,8 +598,7 @@ def build():
             spec=SPEC_VERSION,
             n_locales=len(REGISTRY["locales"]),
             n_rules=len(ORDER["rules"]),
-            package=cfg["package"],
-            registry=cfg["registry"],
+            registry_line=registry_line,
             hero=hero_block(),
             install=cfg["install"],
             quickstart=cfg["quickstart"],
@@ -549,7 +608,8 @@ def build():
             errors_table=ERRORS,
             locales=locale_table(),
             rules=rules_table(),
-            examples=examples_table("en-US" if key == "js" else "en-US"),
+            examples=examples_table("en-US", mark_invisible=cfg.get("mark_invisible", False)),
+            modes=cfg.get("modes", MODES_GENERIC),
         )
         if cfg.get("extra"):
             body = body.replace("## Conformance", cfg["extra"] + "\n\n## Conformance")

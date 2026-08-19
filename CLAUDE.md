@@ -147,7 +147,7 @@ is a breaking change.
 
 ## Scope discipline
 
-v1 locales are `en-US` `en-GB` `de-DE` `de-CH` `fr` `ru` `fi` `sv` `el` (aliases `en`→`en-US`,
+v1 locales are `en-US` `en-GB` `de-DE` `de-CH` `fr` `fr-CA` `ru` `fi` `sv` `el` (aliases `en`→`en-US`,
 `de`→`de-DE`). **The six-locale cap was withdrawn 2026-08-15 by operator decision — coverage is a
 goal, and the constraint is evidentiary rather than numeric: a locale ships only as the PLAN §6.2
 triple (data + fixtures + citation).** Also three

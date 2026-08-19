@@ -13,7 +13,7 @@
 
 **Status: planned, not yet started.** This document is the specification of the port's public surface, kept in the spec repository so the API is agreed before any code exists. No module is published.
 
-Spec version: **0.1.0** · locales: **9** · rules: **8** · `github.com/polytypo/polytypo-go` on Go modules.
+Spec version: **0.2.0** · locales: **10** · rules: **8** · `github.com/polytypo/polytypo-go` on Go modules.
 
 ## What it does
 
@@ -116,8 +116,10 @@ if errors.As(err, &perr) {
 | Code | Raised when |
 | --- | --- |
 | `POLYTYPO_UNKNOWN_LOCALE` | The locale is not in the registry and does not resolve to one. |
-| `POLYTYPO_INVALID_MODE` | The mode is not `text`, `html` or `markdown` — or is specified but not yet implemented in this runtime. |
+| `POLYTYPO_INVALID_MODE` | The mode is not `text`, `html` or `markdown`. |
+| `POLYTYPO_INVALID_DIALECT` | `mode` is `markdown` and `dialect` is missing, or is not `commonmark` or `mdx`. |
 | `POLYTYPO_UNKNOWN_RULE` | The `rules` map names a rule that does not exist. |
+| `POLYTYPO_MALFORMED_INPUT` | The input does not parse in the requested language. Reachable only for `dialect: "mdx"`, which embeds JavaScript. |
 | `POLYTYPO_MALFORMED_LOCALE_DATA` | Embedded locale data failed schema validation at build time. |
 | `POLYTYPO_RULE_CONTRACT` | A rule produced an edit that violates the pipeline contract. |
 
@@ -133,6 +135,7 @@ match on them.
 | `de-DE` | German (Germany) | „…“ | ‚…‘ | en dash, spaced | en dash, unspaced |
 | `de-CH` | German (Switzerland) | «…» | ‹…› | en dash, spaced | en dash, unspaced |
 | `fr` | French | «…» + U+00A0 | “…” | em dash, spaced | unchanged |
+| `fr-CA` | French (Canada) | «…» + U+00A0 | “…” | em dash, spaced | unchanged |
 | `ru` | Russian | «…» | „…“ | em dash, spaced | em dash, unspaced |
 | `fi` | Finnish | ”…” | ’…’ | en dash, spaced | en dash, unspaced |
 | `sv` | Swedish | ”…” | ’…’ | en dash, spaced | en dash, unspaced |
