@@ -172,6 +172,36 @@
       ]
     },
     {
+      "locale": "fr-CA",
+      "name": "French (Canada)",
+      "hero": {
+        "in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.",
+        "out": "C’est « polytypo »? — Non, c’est « polytypo »! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm; c’est tout. Copyright © 2026."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Il a dit \"bonjour\".",
+          "out": "Il a dit « bonjour »."
+        },
+        {
+          "rule": "dashes",
+          "in": "Le plan - il existe - échoue.",
+          "out": "Le plan — il existe — échoue."
+        },
+        {
+          "rule": "nbsp",
+          "in": "Ça va? Bonjour!",
+          "out": "Ça va? Bonjour!"
+        },
+        {
+          "rule": "nbsp",
+          "in": "Rendez-vous à 15 h: bureau 204.",
+          "out": "Rendez-vous à 15 h : bureau 204."
+        }
+      ]
+    },
+    {
       "locale": "ru",
       "name": "Russian",
       "hero": {

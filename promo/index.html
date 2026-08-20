@@ -34,6 +34,7 @@
     --line: rgb(20 22 26 / 14%);
     --surface: #f2f0ea;
     --surface-strong: #e9e6df;
+    --tok-string: #2f7a44;
 
     --font-sans: "Inter Brand", system-ui, -apple-system, "Segoe UI", sans-serif;
     --font-mono: "JB Mono Brand", ui-monospace, "SF Mono", Menlo, monospace;
@@ -65,6 +66,7 @@
       --line: rgb(237 235 230 / 16%);
       --surface: #181b20;
       --surface-strong: #22262c;
+      --tok-string: #8fc79a;
     }
   }
 
@@ -76,6 +78,7 @@
     --line: rgb(20 22 26 / 14%);
     --surface: #f2f0ea;
     --surface-strong: #e9e6df;
+    --tok-string: #2f7a44;
   }
 
   :root[data-theme="dark"] {
@@ -86,6 +89,7 @@
     --line: rgb(237 235 230 / 16%);
     --surface: #181b20;
     --surface-strong: #22262c;
+    --tok-string: #8fc79a;
   }
 
   *,
@@ -478,6 +482,18 @@
     line-height: 1.7;
   }
 
+  /* Minimal hand-rolled highlighting for the generated call samples — no highlighter
+     dependency, just two token classes (string literals, line comments); everything else
+     stays the code block's own foreground color. */
+  .tok-str {
+    color: var(--tok-string);
+  }
+
+  .tok-com {
+    color: var(--muted);
+    font-style: italic;
+  }
+
   .pane[hidden] {
     display: none;
   }
@@ -741,35 +757,10 @@
 </svg></div>
     <h1>Punctuation, set the way your language sets it.</h1>
     <p class="tagline">
-      A microtypography engine for nine locales: quotes, dashes, ellipses, apostrophes,
+      A microtypography engine for ten locales: quotes, dashes, ellipses, apostrophes,
       symbols and the no-break spaces nobody can see but everybody notices. One spec, five runtimes.
     </p>
 
-    <div class="demo">
-      <div class="bar" id="locale-bar"></div>
-      <div class="split">
-        <div class="pane-l">
-          <div class="who">What was typed</div>
-          <div class="txt raw" id="demo-in"></div>
-        </div>
-        <div class="pane-r">
-          <div class="who" id="demo-label">polytypo</div>
-          <div class="txt set" id="demo-out"></div>
-        </div>
-      </div>
-      <div class="foot" id="demo-foot"></div>
-    </div>
-  </header>
-
-  <section id="playground">
-    <p class="eyebrow">Try it on your own text</p>
-    <h2>This runs the real engine, in your browser.</h2>
-    <p>
-      No server round trip: <code>promo/vendor/polytypo.browser.js</code> is <code>src/index.ts</code>
-      bundled with esbuild against the same locale data <code>npm run gen</code> embeds in the
-      published package. Whatever comes out on the right is exactly what
-      <code>npm install polytypo</code> gives you — same code, same rules, same order.
-    </p>
     <div class="demo">
       <div class="pg-bar">
         <label title="Which locale's quotes, dashes and spacing to apply. Required — no fallback to English.">
@@ -810,13 +801,78 @@
       <div class="foot" id="pg-foot"></div>
     </div>
     <p class="pg-note">
-      Idempotency is a headline claim, not just a property test: paste the output back into the
-      input and nothing should change.
+      This runs the real engine, right here in your browser — no server round trip.
+      <code>promo/vendor/polytypo.browser.js</code> is <code>src/index.ts</code> bundled against
+      the same locale data <code>npm install polytypo</code> ships with. Each locale starts with
+      its own default example; edit it, or switch languages to see how the same idea is
+      punctuated differently everywhere. Idempotency is a headline claim, not just a property
+      test: paste the output back into the input and nothing should change.
     </p>
-  </section>
+    <p class="pg-note">
+      No hard size limit on <code>transform()</code> — ordinary prose runs at roughly 250K
+      characters per second, so even a full novel pasted in typesets in a couple of seconds.
+      Pathological input (long runs of alternating quote or dash characters with no real
+      content between them) is measurably slower, since a couple of rules re-check their own
+      output to guarantee idempotency — real text never has that shape, so this only matters
+      if you're piping in machine-generated or adversarial input.
+    </p>
+
+    <p class="eyebrow" style="margin-top: var(--space-8)">The call that just ran</p>
+    <div class="tabs" id="call-tabs"></div>
+    <div id="call-panes">
+      <div class="pane" data-label="JavaScript / TypeScript"><pre><code id="call-code-js"></code></pre></div>
+      <div class="pane" data-label="Python"><pre><code id="call-code-py"></code></pre></div>
+      <div class="pane" data-label="Go"><pre><code id="call-code-go"></code></pre></div>
+      <div class="pane" data-label="Ruby"><pre><code id="call-code-rb"></code></pre></div>
+      <div class="pane" data-label="PHP"><pre><code id="call-code-php"></code></pre></div>
+    </div>
+
+    <p class="small muted" style="margin-top: var(--space-4)">
+      Every field's own comment carries its type, default and allowed values.
+      <strong>None of them fall back to a default when the value is wrong or missing</strong> —
+      each throws its own error, with a machine-readable <code>code</code>, rather than guessing
+      what you meant.
+    </p>
+    <div class="scroll">
+      <table class="kv">
+        <tr><th>Field</th><th>What it does</th><th>If it's missing or wrong</th></tr>
+        <tr>
+          <td class="mono">locale</td>
+          <td class="small muted">Which language and region's conventions to apply — quote
+            glyphs, dash spacing, no-break spaces, all of it. Required, no default: unlike a
+            browser or an OS, this library never falls back to English.</td>
+          <td class="small muted">Throws <code>POLYTYPO_UNKNOWN_LOCALE</code> — for a missing
+            value and for one not in the registry alike.</td>
+        </tr>
+        <tr>
+          <td class="mono">mode</td>
+          <td class="small muted">Which parser wraps the engine. <code>"text"</code> treats the
+            whole input as prose. <code>"html"</code> (parse5) and <code>"markdown"</code>
+            (micromark) parse the surrounding markup but only ever run the typography rules on
+            prose text nodes — never inside tags, attributes, code spans or code blocks.</td>
+          <td class="small muted">Throws <code>POLYTYPO_INVALID_MODE</code> for anything other
+            than the three values above. Omit it and you get <code>"text"</code>.</td>
+        </tr>
+        <tr>
+          <td class="mono">dialect</td>
+          <td class="small muted">Which Markdown flavor to parse with — only meaningful when
+            <code>mode</code> is <code>"markdown"</code>; ignored otherwise. CommonMark and MDX
+            disagree on ambiguous syntax (an autolink like <code>&lt;https://…&gt;</code> is
+            valid CommonMark and invalid MDX), so this library refuses to guess.</td>
+          <td class="small muted">Throws <code>POLYTYPO_INVALID_DIALECT</code> — including when
+            <code>mode</code> is <code>"markdown"</code> and <code>dialect</code> was left out
+            entirely. There is no default to fall back to.</td>
+        </tr>
+      </table>
+    </div>
+    <p class="small muted" style="margin-top: var(--space-4)">
+      There's also an opt-out <code>rules</code> field, not shown here — full reference,
+      including every error code, in <a href="#use">Using it</a> below.
+    </p>
+  </header>
 
   <section id="languages">
-    <p class="eyebrow">The same sentence, nine locales</p>
+    <p class="eyebrow">The same sentence, ten locales</p>
     <h2>Nobody agrees about quotation marks.</h2>
     <p>
       German lowers the opening quote. Swiss German turns it into guillemets pointing outward.
@@ -1322,7 +1378,7 @@ function Byline({ text, locale }) {
      Regenerate with: npm run gen:promo-bundle -->
 <script src="vendor/polytypo.browser.js"></script>
 <script>
-  const DATA = {"spec": "0.1.0", "locales": [{"locale": "en-US", "name": "English (US)", "hero": {"in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.", "out": "Is this “polytypo”?—No, it’s “polytypo”! She said, “He replied ‘never’ twice”… The release—all 5 km of it—covers 1914⁠–⁠1918. Copyright © 2026, at 1920×1080."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "“He said ‘no’ to me,” she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan—if there is one—fails."}, {"rule": "dashes", "in": "1914-1918 and pp. 34-36", "out": "1914⁠–⁠1918 and pp. 34⁠–⁠36"}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "apostrophe", "in": "don't", "out": "don’t"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}, {"rule": "symbols", "in": "Copyright (c) 2026, 1920x1080", "out": "Copyright © 2026, 1920×1080"}]}, {"locale": "en-GB", "name": "English (UK)", "hero": {"in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.", "out": "Is this ‘polytypo’? – No, it’s ‘polytypo’! She said, ‘He replied “never” twice’… The release – all 5 km of it – covers 1914⁠–⁠1918. Copyright © 2026, at 1920×1080."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "‘He said “no” to me,’ she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan – if there is one – fails."}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}]}, {"locale": "de-DE", "name": "German", "hero": {"in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.", "out": "Ist das „polytypo“? – Nein, das ist „polytypo“! Sie sagte: „Er hat ‚nie‘ geantwortet“… Die Ausgabe – z. B. die Jahre 1939⁠–⁠1945 – erscheint in 1920×1080. Copyright © 2026."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "„Er sagte ‚nein‘ zu mir“, notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "dashes", "in": "Die Jahre 1939-1945", "out": "Die Jahre 1939⁠–⁠1945"}, {"rule": "nbsp", "in": "z. B. Berlin", "out": "z. B. Berlin"}, {"rule": "symbols", "in": "Auflösung 1920x1080", "out": "Auflösung 1920×1080"}]}, {"locale": "de-CH", "name": "Swiss German", "hero": {"in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.", "out": "Ist das «polytypo»? – Nein, das ist «polytypo»! Sie sagte: «Er hat ‹nie› geantwortet»… Die Ausgabe – z. B. die Jahre 1939⁠–⁠1945 – erscheint in 1920×1080. Copyright © 2026."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "«Er sagte ‹nein› zu mir», notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "nbsp", "in": "z. B. Bern", "out": "z. B. Bern"}]}, {"locale": "fr", "name": "French", "hero": {"in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.", "out": "C’est « polytypo » ? — Non, c’est « polytypo » ! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm ; c’est tout. Copyright © 2026."}, "cases": [{"rule": "quotes", "in": "Il a dit \"bonjour\".", "out": "Il a dit « bonjour »."}, {"rule": "quotes", "in": "\"Il a dit 'oui' hier.\"", "out": "« Il a dit “oui” hier. »"}, {"rule": "nbsp", "in": "Ça va ? Bonjour !", "out": "Ça va ? Bonjour !"}, {"rule": "dashes", "in": "Le plan - il existe - échoue.", "out": "Le plan — il existe — échoue."}, {"rule": "apostrophe", "in": "l'été et l'hiver", "out": "l’été et l’hiver"}]}, {"locale": "ru", "name": "Russian", "hero": {"in": "Это \"полиштамп\"? - Нет, это \"полиштамп\"! Она сказала: \"он ответил 'никогда'\"... Достал из-под стола - в 1941-1945 годах - размер 10 x 20 см. Все права защищены (c) 2026.", "out": "Это «полиштамп»? — Нет, это «полиштамп»! Она сказала: «он ответил „никогда“»… Достал из‑под стола — в 1941⁠—⁠1945 годах — размер 10 × 20 см. Все права защищены © 2026."}, "cases": [{"rule": "quotes", "in": "Он сказал: \"это 'моё' дело\".", "out": "Он сказал: «это „моё“ дело»."}, {"rule": "dashes", "in": "Москва - столица", "out": "Москва — столица"}, {"rule": "dashes", "in": "Годы 1941-1945 были тяжёлыми", "out": "Годы 1941⁠—⁠1945 были тяжёлыми"}, {"rule": "hyphen", "in": "Достал из-под стола", "out": "Достал из‑под стола"}, {"rule": "ellipsis", "in": "Что?...", "out": "Что?.."}, {"rule": "nbsp", "in": "Он живёт в Москве", "out": "Он живёт в Москве"}]}, {"locale": "fi", "name": "Finnish", "hero": {"in": "Onko tämä \"polytypo\"? - Ei, tämä on \"polytypo\"! Hän sanoi: \"hän vastasi 'ei koskaan'\"... Matkaa on 20 km - vuosina 1914-1918 - ja hinta nousi 10,5 %. Copyright (c) 2026.", "out": "Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän sanoi: ”hän vastasi ’ei koskaan’”… Matkaa on 20 km – vuosina 1914⁠–⁠1918 – ja hinta nousi 10,5 %. Copyright © 2026."}, "cases": [{"rule": "quotes", "in": "\"Hän sanoi 'moi'\", totesin.", "out": "”Hän sanoi ’moi’”, totesin."}, {"rule": "dashes", "in": "Suunnitelma - jos sellainen on - kaatuu.", "out": "Suunnitelma – jos sellainen on – kaatuu."}, {"rule": "nbsp", "in": "Hinta nousi 10,5 %", "out": "Hinta nousi 10,5 %"}]}, {"locale": "sv", "name": "Swedish", "hero": {"in": "Är det här \"polytypo\"? - Nej, det är \"polytypo\"! Hon sa: \"han svarade 'aldrig'\"... Vi gick 5 km - åren 1914-1918 - och det kostar 100 kr. Copyright (c) 2026.", "out": "Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914⁠–⁠1918 – och det kostar 100 kr. Copyright © 2026."}, "cases": [{"rule": "quotes", "in": "\"Han sa 'hej'\", sa jag.", "out": "”Han sa ’hej’”, sa jag."}, {"rule": "dashes", "in": "Planen - om det finns en - misslyckas.", "out": "Planen – om det finns en – misslyckas."}, {"rule": "nbsp", "in": "Det kostar 100 kr", "out": "Det kostar 100 kr"}]}, {"locale": "el", "name": "Greek", "hero": {"in": "Είναι αυτό \"polytypo\"; - Όχι, αυτό είναι \"polytypo\"! Είπε: \"απάντησε “ποτέ”\"... Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright (c) 2026, σε 1920x1080.", "out": "Είναι αυτό «polytypo»; - Όχι, αυτό είναι «polytypo»! Είπε: «απάντησε “ποτέ”»… Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright © 2026, σε 1920×1080."}, "cases": [{"rule": "quotes", "in": "Είπε \"καλημέρα\" και έφυγε.", "out": "Είπε «καλημέρα» και έφυγε."}, {"rule": "quotes", "in": "\"Είπε “όχι” σε μένα\", σημείωσε.", "out": "«Είπε “όχι” σε μένα», σημείωσε."}, {"rule": "apostrophe", "in": "γι' αυτό και απ' την αρχή", "out": "γι’ αυτό και απ’ την αρχή"}, {"rule": "spaces", "in": "Τι κάνεις ;", "out": "Τι κάνεις;"}, {"rule": "ellipsis", "in": "Περίμενε... τι έγινε", "out": "Περίμενε… τι έγινε"}, {"rule": "symbols", "in": "Ανάλυση 1920x1080", "out": "Ανάλυση 1920×1080"}]}]};
+  const DATA = {"spec": "0.1.0", "locales": [{"locale": "en-US", "name": "English (US)", "hero": {"in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.", "out": "Is this “polytypo”?—No, it’s “polytypo”! She said, “He replied ‘never’ twice”… The release—all 5 km of it—covers 1914⁠–⁠1918. Copyright © 2026, at 1920×1080."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "“He said ‘no’ to me,” she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan—if there is one—fails."}, {"rule": "dashes", "in": "1914-1918 and pp. 34-36", "out": "1914⁠–⁠1918 and pp. 34⁠–⁠36"}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "apostrophe", "in": "don't", "out": "don’t"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}, {"rule": "symbols", "in": "Copyright (c) 2026, 1920x1080", "out": "Copyright © 2026, 1920×1080"}]}, {"locale": "en-GB", "name": "English (UK)", "hero": {"in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.", "out": "Is this ‘polytypo’? – No, it’s ‘polytypo’! She said, ‘He replied “never” twice’… The release – all 5 km of it – covers 1914⁠–⁠1918. Copyright © 2026, at 1920×1080."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "‘He said “no” to me,’ she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan – if there is one – fails."}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}]}, {"locale": "de-DE", "name": "German", "hero": {"in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.", "out": "Ist das „polytypo“? – Nein, das ist „polytypo“! Sie sagte: „Er hat ‚nie‘ geantwortet“… Die Ausgabe – z. B. die Jahre 1939⁠–⁠1945 – erscheint in 1920×1080. Copyright © 2026."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "„Er sagte ‚nein‘ zu mir“, notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "dashes", "in": "Die Jahre 1939-1945", "out": "Die Jahre 1939⁠–⁠1945"}, {"rule": "nbsp", "in": "z. B. Berlin", "out": "z. B. Berlin"}, {"rule": "symbols", "in": "Auflösung 1920x1080", "out": "Auflösung 1920×1080"}]}, {"locale": "de-CH", "name": "Swiss German", "hero": {"in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.", "out": "Ist das «polytypo»? – Nein, das ist «polytypo»! Sie sagte: «Er hat ‹nie› geantwortet»… Die Ausgabe – z. B. die Jahre 1939⁠–⁠1945 – erscheint in 1920×1080. Copyright © 2026."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "«Er sagte ‹nein› zu mir», notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "nbsp", "in": "z. B. Bern", "out": "z. B. Bern"}]}, {"locale": "fr", "name": "French", "hero": {"in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.", "out": "C’est « polytypo » ? — Non, c’est « polytypo » ! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm ; c’est tout. Copyright © 2026."}, "cases": [{"rule": "quotes", "in": "Il a dit \"bonjour\".", "out": "Il a dit « bonjour »."}, {"rule": "quotes", "in": "\"Il a dit 'oui' hier.\"", "out": "« Il a dit “oui” hier. »"}, {"rule": "nbsp", "in": "Ça va ? Bonjour !", "out": "Ça va ? Bonjour !"}, {"rule": "dashes", "in": "Le plan - il existe - échoue.", "out": "Le plan — il existe — échoue."}, {"rule": "apostrophe", "in": "l'été et l'hiver", "out": "l’été et l’hiver"}]}, {"locale": "fr-CA", "name": "French (Canada)", "hero": {"in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.", "out": "C’est « polytypo »? — Non, c’est « polytypo »! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm; c’est tout. Copyright © 2026."}, "cases": [{"rule": "quotes", "in": "Il a dit \"bonjour\".", "out": "Il a dit « bonjour »."}, {"rule": "dashes", "in": "Le plan - il existe - échoue.", "out": "Le plan — il existe — échoue."}, {"rule": "nbsp", "in": "Ça va? Bonjour!", "out": "Ça va? Bonjour!"}, {"rule": "nbsp", "in": "Rendez-vous à 15 h: bureau 204.", "out": "Rendez-vous à 15 h : bureau 204."}]}, {"locale": "ru", "name": "Russian", "hero": {"in": "Это \"полиштамп\"? - Нет, это \"полиштамп\"! Она сказала: \"он ответил 'никогда'\"... Достал из-под стола - в 1941-1945 годах - размер 10 x 20 см. Все права защищены (c) 2026.", "out": "Это «полиштамп»? — Нет, это «полиштамп»! Она сказала: «он ответил „никогда“»… Достал из‑под стола — в 1941⁠—⁠1945 годах — размер 10 × 20 см. Все права защищены © 2026."}, "cases": [{"rule": "quotes", "in": "Он сказал: \"это 'моё' дело\".", "out": "Он сказал: «это „моё“ дело»."}, {"rule": "dashes", "in": "Москва - столица", "out": "Москва — столица"}, {"rule": "dashes", "in": "Годы 1941-1945 были тяжёлыми", "out": "Годы 1941⁠—⁠1945 были тяжёлыми"}, {"rule": "hyphen", "in": "Достал из-под стола", "out": "Достал из‑под стола"}, {"rule": "ellipsis", "in": "Что?...", "out": "Что?.."}, {"rule": "nbsp", "in": "Он живёт в Москве", "out": "Он живёт в Москве"}]}, {"locale": "fi", "name": "Finnish", "hero": {"in": "Onko tämä \"polytypo\"? - Ei, tämä on \"polytypo\"! Hän sanoi: \"hän vastasi 'ei koskaan'\"... Matkaa on 20 km - vuosina 1914-1918 - ja hinta nousi 10,5 %. Copyright (c) 2026.", "out": "Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän sanoi: ”hän vastasi ’ei koskaan’”… Matkaa on 20 km – vuosina 1914⁠–⁠1918 – ja hinta nousi 10,5 %. Copyright © 2026."}, "cases": [{"rule": "quotes", "in": "\"Hän sanoi 'moi'\", totesin.", "out": "”Hän sanoi ’moi’”, totesin."}, {"rule": "dashes", "in": "Suunnitelma - jos sellainen on - kaatuu.", "out": "Suunnitelma – jos sellainen on – kaatuu."}, {"rule": "nbsp", "in": "Hinta nousi 10,5 %", "out": "Hinta nousi 10,5 %"}]}, {"locale": "sv", "name": "Swedish", "hero": {"in": "Är det här \"polytypo\"? - Nej, det är \"polytypo\"! Hon sa: \"han svarade 'aldrig'\"... Vi gick 5 km - åren 1914-1918 - och det kostar 100 kr. Copyright (c) 2026.", "out": "Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914⁠–⁠1918 – och det kostar 100 kr. Copyright © 2026."}, "cases": [{"rule": "quotes", "in": "\"Han sa 'hej'\", sa jag.", "out": "”Han sa ’hej’”, sa jag."}, {"rule": "dashes", "in": "Planen - om det finns en - misslyckas.", "out": "Planen – om det finns en – misslyckas."}, {"rule": "nbsp", "in": "Det kostar 100 kr", "out": "Det kostar 100 kr"}]}, {"locale": "el", "name": "Greek", "hero": {"in": "Είναι αυτό \"polytypo\"; - Όχι, αυτό είναι \"polytypo\"! Είπε: \"απάντησε “ποτέ”\"... Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright (c) 2026, σε 1920x1080.", "out": "Είναι αυτό «polytypo»; - Όχι, αυτό είναι «polytypo»! Είπε: «απάντησε “ποτέ”»… Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright © 2026, σε 1920×1080."}, "cases": [{"rule": "quotes", "in": "Είπε \"καλημέρα\" και έφυγε.", "out": "Είπε «καλημέρα» και έφυγε."}, {"rule": "quotes", "in": "\"Είπε “όχι” σε μένα\", σημείωσε.", "out": "«Είπε “όχι” σε μένα», σημείωσε."}, {"rule": "apostrophe", "in": "γι' αυτό και απ' την αρχή", "out": "γι’ αυτό και απ’ την αρχή"}, {"rule": "spaces", "in": "Τι κάνεις ;", "out": "Τι κάνεις;"}, {"rule": "ellipsis", "in": "Περίμενε... τι έγινε", "out": "Περίμενε… τι έγινε"}, {"rule": "symbols", "in": "Ανάλυση 1920x1080", "out": "Ανάλυση 1920×1080"}]}]};
   const INVISIBLES = [
     [/ /g, '<span class="nb" title="U+00A0 no-break space"> </span>'],
     [/ /g, '<span class="nb" title="U+202F narrow no-break space"> </span>'],
@@ -1414,32 +1470,6 @@ function Byline({ text, locale }) {
       .join("");
   }
 
-  function entry() { return DATA.locales.find((l) => l.locale === current); }
-
-  function paintDemo() {
-    const e = entry();
-    const segments = diff([...e.hero.in], [...e.hero.out]);
-    document.getElementById("demo-in").innerHTML = mark(e.hero.in);
-    document.getElementById("demo-out").innerHTML = paint(segments);
-    document.getElementById("demo-label").textContent = "polytypo · locale " + e.locale;
-    const inserted = [...new Set([...e.hero.out].filter((c) => "  ‑".includes(c)))]
-      .map((c) => "U+" + c.codePointAt(0).toString(16).toUpperCase().padStart(4, "0"));
-    const edits = segments.filter(([changed]) => changed).length;
-    document.getElementById("demo-foot").textContent =
-      e.name + " · " + edits + " change" + (edits === 1 ? "" : "s") +
-      (inserted.length ? " · inserted " + inserted.join(", ") : "");
-    for (const b of document.querySelectorAll("#locale-bar button[data-locale]"))
-      b.setAttribute("aria-pressed", String(b.dataset.locale === current));
-  }
-
-  const bar = document.getElementById("locale-bar");
-  for (const l of DATA.locales) {
-    const b = document.createElement("button");
-    b.textContent = l.locale; b.dataset.locale = l.locale; b.type = "button";
-    b.addEventListener("click", () => { current = l.locale; paintDemo(); });
-    bar.appendChild(b);
-  }
-
   const all = document.getElementById("all-locales");
   function paintAll() {
     all.innerHTML = DATA.locales.map((l) => {
@@ -1466,8 +1496,9 @@ function Byline({ text, locale }) {
   }
   bootTabs("lang-tabs", "lang-panes");
   bootTabs("build-tabs", "build-panes");
+  bootTabs("call-tabs", "call-panes");
 
-  paintDemo(); paintAll();
+  paintAll();
 
   /* ---------- Playground: the real engine, running against pasted text ---------- */
   (function playground() {
@@ -1495,10 +1526,23 @@ function Byline({ text, locale }) {
       $locale.appendChild(o);
     }
 
-    const SAMPLE =
+    // A generic fallback for any locale DATA has no `hero.in` for yet — every shipped locale
+    // has one, this only guards a future locale landing before promo/examples.json is
+    // regenerated for it.
+    const FALLBACK_SAMPLE =
       `Is this "polytypo"? - No, it's "polytypo"! She said, "He replied 'never' twice"... ` +
       `The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.`;
-    $input.value = SAMPLE;
+
+    function defaultFor(code) {
+      const e = DATA.locales.find((l) => l.locale === code);
+      return e ? e.hero.in : FALLBACK_SAMPLE;
+    }
+
+    // Each locale opens on its own default example, editable in place. Switching locales swaps
+    // in the new default only while the text still *is* the previous locale's default — once
+    // the visitor edits it, changing locale re-typesets what they wrote instead of discarding it.
+    let lastDefault = defaultFor($locale.value);
+    $input.value = lastDefault;
 
     if (!engine) {
       $output.classList.add("error");
@@ -1512,6 +1556,127 @@ function Byline({ text, locale }) {
     let timer = null;
     const run = () => { clearTimeout(timer); timer = setTimeout(render, 120); };
 
+    /* ---------- "The call that just ran": the same locale/mode/dialect/text, as a call in
+     * each planned runtime's own syntax. JSON.stringify's double-quoted output is a valid
+     * string literal in every one of these languages for the escapes that actually occur in
+     * ordinary prose (\\, \", \n, \t) — Ruby's the one exception (double-quoted strings
+     * interpolate #{...}), handled below. This is a demo convenience, not a claim that any of
+     * these runtimes exist yet — see the status table further down the page. */
+    const $callJs = document.getElementById("call-code-js");
+    const $callPy = document.getElementById("call-code-py");
+    const $callGo = document.getElementById("call-code-go");
+    const $callRb = document.getElementById("call-code-rb");
+    const $callPhp = document.getElementById("call-code-php");
+
+    const strLit = (s) => JSON.stringify(s);
+    const rubyStrLit = (s) => strLit(s).replace(/#\{/g, "\\#{");
+    const phpStrLit = (s) => "'" + s.replace(/\\/g, "\\\\").replace(/'/g, "\\'") + "'";
+
+    // Every field's own comment carries its type, default and allowed values — so this block
+    // is both a working call (paste it in, replace `input` with your own) and the only
+    // documentation you need to read to use it. LOCALE_LIST is the exact enum the `locale`
+    // comment shows, generated from LOCALES so it can never drift from what the dropdown offers.
+    const LOCALE_LIST = LOCALES.map(([code]) => code).join(", ");
+
+    // Minimal highlighting: string literals and line comments only, in source order, so the
+    // rest of a line (keywords, punctuation, identifiers) keeps the block's plain foreground
+    // color rather than a wrong guess. `commentToken` is "//" for the C-family panes and "#"
+    // for Python/Ruby.
+    function highlight(code, commentToken) {
+      const pattern = new RegExp(
+        `"(?:[^"\\\\]|\\\\.)*"|'(?:[^'\\\\]|\\\\.)*'|${commentToken}.*$`,
+        "gm",
+      );
+      let html = "";
+      let last = 0;
+      for (const m of code.matchAll(pattern)) {
+        html += esc(code.slice(last, m.index));
+        const cls = m[0].startsWith(commentToken) ? "tok-com" : "tok-str";
+        html += `<span class="${cls}">${esc(m[0])}</span>`;
+        last = m.index + m[0].length;
+      }
+      html += esc(code.slice(last));
+      return html;
+    }
+
+    // No output preview here, on purpose: the box on the left is already the real output, and
+    // an actual return value — however long whatever you pasted made it — has no business
+    // being echoed into a call example meant to stay a few lines long.
+    function renderCallCode(options) {
+      const showDialect = options.mode === "markdown";
+      const locale = strLit(options.locale);
+      const mode = strLit(options.mode);
+      const dialect = strLit(options.dialect || "commonmark");
+
+      const jsCode =
+        `import { transform } from "polytypo";\n\n` +
+        `transform(\n` +
+        `  input, // your text, type: string\n` +
+        `  {\n` +
+        `    locale: ${locale}, // required, type: string — one of: ${LOCALE_LIST}\n` +
+        `    mode: ${mode}, // type: string, default: "text" — "text" | "html" | "markdown"\n` +
+        (showDialect
+          ? `    dialect: ${dialect}, // type: string, required because mode is "markdown" — "commonmark" | "mdx"\n`
+          : `    // dialect: "commonmark", // required only when mode is "markdown"; ignored otherwise\n`) +
+        `  },\n` +
+        `);`;
+      $callJs.innerHTML = highlight(jsCode, "//");
+
+      const pyCode =
+        `from polytypo import transform\n\n` +
+        `transform(\n` +
+        `    input,  # your text, type: str\n` +
+        `    locale=${locale},  # required, type: str — one of: ${LOCALE_LIST}\n` +
+        `    mode=${mode},  # type: str, default: "text" — "text" | "html" | "markdown"\n` +
+        (showDialect
+          ? `    dialect=${dialect},  # type: str, required because mode is "markdown" — "commonmark" | "mdx"\n`
+          : `    # dialect="commonmark",  # required only when mode is "markdown"; ignored otherwise\n`) +
+        `)`;
+      $callPy.innerHTML = highlight(pyCode, "#");
+
+      const goCode =
+        `out, err := polytypo.Transform(\n` +
+        `    input, // your text, type: string\n` +
+        `    polytypo.Options{\n` +
+        `        Locale:  ${locale}, // required, type: string — one of: ${LOCALE_LIST}\n` +
+        `        Mode:    ${mode}, // type: string, default: "text" — "text" | "html" | "markdown"\n` +
+        (showDialect
+          ? `        Dialect: ${dialect}, // type: string, required because Mode is "markdown" — "commonmark" | "mdx"\n`
+          : `        // Dialect: "commonmark", // required only when Mode is "markdown"; ignored otherwise\n`) +
+        `    },\n` +
+        `)`;
+      $callGo.innerHTML = highlight(goCode, "//");
+
+      const rbCode =
+        `require "polytypo"\n\n` +
+        `Polytypo.transform(\n` +
+        `  input, # your text, type: String\n` +
+        `  locale: ${rubyStrLit(options.locale)}, # required, type: String — one of: ${LOCALE_LIST}\n` +
+        `  mode: ${rubyStrLit(options.mode)}, # type: String, default: "text" — "text" | "html" | "markdown"\n` +
+        (showDialect
+          ? `  dialect: ${rubyStrLit(options.dialect)}, # type: String, required because mode is "markdown" — "commonmark" | "mdx"\n`
+          : `  # dialect: "commonmark", # required only when mode is "markdown"; ignored otherwise\n`) +
+        `)`;
+      $callRb.innerHTML = highlight(rbCode, "#");
+
+      const phpCode =
+        `Polytypo::transform(\n` +
+        `    $input, // your text, type: string\n` +
+        `    [\n` +
+        `        'locale' => ${phpStrLit(options.locale)}, // required, type: string — one of: ${LOCALE_LIST}\n` +
+        `        'mode' => ${phpStrLit(options.mode)}, // type: string, default: 'text' — 'text' | 'html' | 'markdown'\n` +
+        (showDialect
+          ? `        'dialect' => ${phpStrLit(options.dialect)}, // type: string, required because mode is 'markdown' — 'commonmark' | 'mdx'\n`
+          : `        // 'dialect' => 'commonmark', // required only when mode is 'markdown'; ignored otherwise\n`) +
+        `    ],\n` +
+        `);`;
+      $callPhp.innerHTML = highlight(phpCode, "//");
+    }
+
+    function clearCallCode() {
+      for (const el of [$callJs, $callPy, $callGo, $callRb, $callPhp]) el.textContent = "";
+    }
+
     // Named render(), not paint(): the top-level paint(segments) above (shared with the hero
     // demo) would otherwise be shadowed and unreachable from inside this closure.
     function render() {
@@ -1524,6 +1689,7 @@ function Byline({ text, locale }) {
         $output.classList.remove("error");
         $output.innerHTML = "";
         $foot.textContent = "";
+        clearCallCode();
         return;
       }
 
@@ -1538,9 +1704,11 @@ function Byline({ text, locale }) {
         const code = error && error.code ? error.code : "Error";
         $output.textContent = code + ": " + (error && error.message ? error.message : String(error));
         $foot.textContent = "";
+        clearCallCode();
         return;
       }
 
+      renderCallCode(options);
       $output.classList.remove("error");
       if (n <= DIFF_CAP) {
         const segments = diff([...text], [...out]);
@@ -1557,7 +1725,13 @@ function Byline({ text, locale }) {
       }
     }
 
-    $locale.addEventListener("change", render);
+    $locale.addEventListener("change", () => {
+      if ($input.value === lastDefault) {
+        lastDefault = defaultFor($locale.value);
+        $input.value = lastDefault;
+      }
+      render();
+    });
     $mode.addEventListener("change", render);
     $dialect.addEventListener("change", render);
     $input.addEventListener("input", run);
