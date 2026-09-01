@@ -5,10 +5,21 @@
  *
  *   npx tsx brand/tools/gen_examples.ts
  */
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { transform } from "../../src/index.js";
 
-const LOCALES = ["en-US", "en-GB", "de-DE", "de-CH", "fr", "ru", "fi", "sv", "el"] as const;
+const LOCALES = [
+  "en-US",
+  "en-GB",
+  "de-DE",
+  "de-CH",
+  "fr",
+  "fr-CA",
+  "ru",
+  "fi",
+  "sv",
+  "el",
+] as const;
 
 const HERO: Record<string, string> = {
   "en-US":
@@ -24,6 +35,9 @@ const HERO: Record<string, string> = {
     `Ist das "polytypo"? - Nein, das ist "polytypo"! Sie sagte: "Er hat 'nie' geantwortet"... ` +
     `Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.`,
   fr:
+    `C'est "polytypo" ? - Non, c'est "polytypo" ! Elle a dit : "Il a répondu 'jamais'"... ` +
+    `L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.`,
+  "fr-CA":
     `C'est "polytypo" ? - Non, c'est "polytypo" ! Elle a dit : "Il a répondu 'jamais'"... ` +
     `L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.`,
   ru:
@@ -79,6 +93,12 @@ const SHOWCASE: Record<string, Array<{ rule: string; in: string }>> = {
     { rule: "dashes", in: `Le plan - il existe - échoue.` },
     { rule: "apostrophe", in: `l'été et l'hiver` },
   ],
+  "fr-CA": [
+    { rule: "quotes", in: `Il a dit "bonjour".` },
+    { rule: "dashes", in: `Le plan - il existe - échoue.` },
+    { rule: "nbsp", in: `Ça va? Bonjour!` },
+    { rule: "nbsp", in: `Rendez-vous à 15 h: bureau 204.` },
+  ],
   ru: [
     { rule: "quotes", in: `Он сказал: "это 'моё' дело".` },
     { rule: "dashes", in: `Москва - столица` },
@@ -107,24 +127,47 @@ const SHOWCASE: Record<string, Array<{ rule: string; in: string }>> = {
   ],
 };
 
+// The home/manifesto "proof" grid runs this ONE input string through every selected locale, so
+// the only thing that varies card-to-card is the locale's own convention, not the sentence.
+// Straight double quotes AND a straight, spaced hyphen (" - ") so the engine actually has to
+// choose both a quote style and a dash style — an already-literal em dash inside the quoted
+// span (an earlier version of this input) proves nothing about dash conversion. Verified by
+// running this exact string through every v1 locale (see git history / PROOF_LOCALES below):
+// en-US produces a tight (unspaced) em dash, de-DE/de-CH a spaced en dash, fr/fr-CA/ru a spaced
+// em dash — with fr additionally showing NBSP-guillemet spacing that ru's guillemets don't get.
+const PROOF_INPUT = `She said: "The em dash was mine before AI" - and she meant it.`;
+
 const NAMES: Record<string, string> = {
   "en-US": "English (US)",
   "en-GB": "English (UK)",
   "de-DE": "German",
   "de-CH": "Swiss German",
   fr: "French",
+  "fr-CA": "French (Canada)",
   ru: "Russian",
   fi: "Finnish",
   sv: "Swedish",
   el: "Greek",
 };
 
+// Single source of truth for which locales the home/manifesto "proof grid" renders — read by
+// brand/tools/build_promo.py (proof_grid()) from the `proofLocales` field below, so the builder
+// never maintains its own parallel list that could silently drift from what's actually generated.
+// Chosen so this exact PROOF_INPUT produces four visibly, materially different outputs across
+// quote style, dash style, and spacing — verified by running the real engine (see PROOF_INPUT's
+// comment); re-verify for collisions if either the input or this list ever changes.
+const PROOF_LOCALES = ["en-US", "de-DE", "fr", "ru"] as const;
+
+const specVersion = readFileSync(new URL("../../spec/VERSION", import.meta.url), "utf8").trim();
+
 const data = {
-  spec: "0.1.0",
+  spec: specVersion,
+  proofLocales: PROOF_LOCALES as unknown as string[],
   locales: LOCALES.map((locale) => ({
     locale,
     name: NAMES[locale],
     hero: { in: HERO[locale], out: transform(HERO[locale], { locale }) },
+    proof: { in: PROOF_INPUT, out: transform(PROOF_INPUT, { locale }) },
     cases: SHOWCASE[locale].map((c) => ({
       rule: c.rule,
       in: c.in,

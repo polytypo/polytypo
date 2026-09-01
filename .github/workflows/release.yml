@@ -1,0 +1,277 @@
+name: Release (npm publish)
+
+# Stage 6 (AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 5.2, 8.6) release-preparation workflow. This
+# file is checked in as release *readiness*, not an active release: nothing in this repository
+# creates, pushes, or triggers a version tag, and this task did not execute, simulate, or
+# dry-run the `npm publish` step below. The workflow only becomes reachable once a human pushes a
+# `v*` tag matching a real (non-"0.0.0") package.json version, which has not happened and is out
+# of scope for Stage 6.
+#
+# Two jobs, split deliberately (Stage 6 follow-up review, item 2):
+#   verify  — builds, tests, packs exactly ONE real tarball, runs every release gate against that
+#             exact file (never a re-pack), and uploads it as a workflow artifact. Only
+#             `contents: read` — no npm token, no `id-token: write`; it cannot publish anything.
+#   publish — needs: verify. Downloads the artifact `verify` uploaded, verifies its checksum
+#             matches what `verify` recorded, and runs `npm publish <that exact .tgz>
+#             --provenance`. It never runs `npm run build` or `npm pack` itself — the artifact it
+#             publishes is byte-for-byte the artifact `verify` already checked. `id-token: write`
+#             is granted only here.
+#
+# Pre-split repository note (AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 8.1, 8.2, 8.6, section 9):
+# this workflow currently lives in the canonical `polytypo/polytypo` repository alongside spec/,
+# src/, and package.json, because the execution order in section 9 places "publish JavaScript
+# only after the complete release gate is green" (step 8) *before* "split canonical and JS
+# repositories" (step 9). When Stage 9 performs that split, this file — along with package.json,
+# src/, and the JS-specific CI in .github/workflows/ci.yml — moves to
+# `github.com/polytypo/polytypo-js`; nothing here needs to change except where it lives.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+# Read-only at the workflow level; the one job that needs more (OIDC for npm provenance) grants
+# it to itself, narrowly, below.
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify release gate and pack the artifact
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      tarball-filename: ${{ steps.pack.outputs.filename }}
+    steps:
+      # fetch-depth: 0 (full history, not the default shallow single-commit checkout) so the
+      # spec-tag verification step below can resolve refs/tags/spec-v* and dereference annotated
+      # tags to their target commit — a shallow checkout may not even have the tag object fetched.
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 22
+          cache: npm
+
+      # Tag-triggered only (the `on.push.tags` filter above) — there is no `workflow_dispatch` or
+      # other manually-triggerable path to the publish job. This rejects a tag that does not
+      # exactly match "v${package.json.version}", and separately and unconditionally rejects the
+      # version "0.0.0" (package.json's version is deliberately left there until an operator
+      # explicitly chooses the first real public version — Stage 6 task 1). This is the *only*
+      # place "0.0.0" is treated as unpublishable: scripts/check-package-contents.mjs
+      # (Package-content assertions, below) is deliberately release-version agnostic, so it does
+      # not duplicate — or contradict — this gate.
+      #
+      # `github.ref_name` is the pushed tag's literal name — a git tag may contain arbitrary
+      # characters, including shell metacharacters (`v$(...)`, backticks, `;`, …). It is passed
+      # through a step-level `env` var and referenced as `"${RELEASE_TAG}"` rather than
+      # interpolated with `${{ }}` directly into the `run:` shell text, so the tag's contents are
+      # never parsed as shell syntax — GitHub's documented mitigation for this class of injection.
+      - name: Verify tag matches package.json version, and reject 0.0.0
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: node scripts/verify-release-tag.mjs "${RELEASE_TAG}"
+
+      # Two-tag release contract (docs/ROADMAP.md M5, docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md
+      # section 4.4, docs/AUDIT_REMEDIATION_AND_RELEASE_PLAN.md section 8.4): the npm package tag
+      # verified above (`v<package.json version>`) and the canonical spec tag
+      # (`spec-v<spec/VERSION>`) are distinct identities that happen to share a numeric value
+      # right now. For v1, an operator creates and pushes `spec-v1.0.0` manually, before pushing
+      # `v1.0.0` (only the latter triggers this workflow). This step proves both tags point at the
+      # exact same commit before anything is built or packed — it never creates, moves, fetches,
+      # or pushes a tag, only reads what the checkout above (fetch-depth: 0) already has.
+      # `github.sha` is the commit the pushed tag resolves to; passed through `env` and referenced
+      # as a quoted shell variable for the same injection-safety reason as RELEASE_TAG above.
+      - name: Verify canonical spec tag matches this release commit
+        env:
+          RELEASE_COMMIT: ${{ github.sha }}
+        run: node scripts/verify-spec-tag.mjs "${RELEASE_COMMIT}"
+
+      # Clean, reproducible install from the committed lockfile — never `npm install` here.
+      - name: Install dependencies (npm ci)
+        run: npm ci
+
+      - name: Validate spec
+        run: npm run validate:spec
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      # Release policy checked independently of ordinary CI, before packaging: every external
+      # `uses:` reference in .github/workflows/ must be pinned to an immutable full 40-character
+      # commit SHA. See scripts/check-actions-pinned.mjs.
+      - name: Actions-pinned check
+        run: npm run check:actions-pinned
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      # Packs exactly ONE real tarball. Every check below runs against this same file (by exact
+      # path); nothing after this step ever re-packs.
+      - name: Pack the release tarball
+        id: pack
+        run: |
+          set -euo pipefail
+          mkdir -p release-artifact
+          PACK_JSON=$(npm pack --pack-destination release-artifact --json)
+          FILENAME=$(node -e "console.log(JSON.parse(process.argv[1])[0].filename)" "$PACK_JSON")
+          echo "packed: release-artifact/${FILENAME}"
+          echo "filename=${FILENAME}" >> "$GITHUB_OUTPUT"
+          echo "path=release-artifact/${FILENAME}" >> "$GITHUB_OUTPUT"
+          # Fail loudly if pack produced anything other than exactly one tarball — the checksum
+          # step and the publish job's exact-filename lookup both assume there is exactly one.
+          TARBALL_COUNT=$(find release-artifact -maxdepth 1 -name '*.tgz' | wc -l)
+          if [ "${TARBALL_COUNT}" -ne 1 ]; then
+            echo "::error::expected exactly one .tgz in release-artifact/, found ${TARBALL_COUNT}"
+            exit 1
+          fi
+          # Generate the checksum from INSIDE release-artifact/ (not the job's default working
+          # directory), so SHA256SUMS records only the bare filename ("polytypo-X.Y.Z.tgz"), not
+          # "release-artifact/polytypo-X.Y.Z.tgz". The publish job downloads the artifact into its
+          # own "release-artifact/" directory and also `cd`s into it before running
+          # `sha256sum -c SHA256SUMS` — a path recorded relative to the wrong working directory
+          # would make that check look for a nonexistent nested
+          # "release-artifact/release-artifact/<file>" and fail every time. Matching working
+          # directories on both ends is the fix; see
+          # tests/scripts/release-artifact-checksum.test.ts, which reproduces exactly this handoff
+          # (including the old, broken form, to prove it does fail) without a real GitHub Actions
+          # run.
+          ( cd release-artifact && sha256sum "${FILENAME}" > SHA256SUMS )
+          cat release-artifact/SHA256SUMS
+
+      # Asserts on the tarball manifest directly: package.json/README.md/LICENSE present, every
+      # entry has its ESM/CJS/declaration files, every referenced chunk is present, every
+      # published JS/CJS file has exactly one valid, resolvable source map (this project's
+      # ship-maps policy — see tsup.config.ts), no unrelated repository content leaked in, every
+      # "exports" target resolves. Runs against the exact tarball packed above, not a re-pack.
+      - name: Package-content assertions
+        env:
+          TARBALL_PATH: ${{ steps.pack.outputs.path }}
+        run: npm run check:package-contents -- --tarball "${TARBALL_PATH}"
+
+      # Installs that exact tarball into a temporary consumer project outside this checkout and
+      # exercises every public entry point from there — ESM, CommonJS, `.mts`/`.cts` declaration
+      # resolution — never Node package self-reference, never a re-pack.
+      - name: Packed-tarball ESM/CJS/TypeScript smoke tests
+        env:
+          TARBALL_PATH: ${{ steps.pack.outputs.path }}
+        run: npm run test:packed-tarball -- --tarball "${TARBALL_PATH}"
+
+      # Proves the module graph, not just size: polytypo/text excludes parse5 and the entire
+      # Micromark/MDX stack (checked as five separate package identities), polytypo/html excludes
+      # the Markdown stack, polytypo/markdown and the aggregate entry still genuinely reach all
+      # five. Runs against the build's dist/ output directly (the same build the tarball above was
+      # packed from), not the tarball itself.
+      - name: Dependency-reach gate
+        run: npm run check:entry-reach
+
+      # Resolver assertion (TypeScript compiler API) proving the exact .d.ts vs .d.cts file
+      # selected under the "import" and "require" conditions for every entry, via Node
+      # self-reference against this checkout — a second, faster check alongside the
+      # tarball-installed resolution already proven above.
+      - name: Declaration-resolution gate
+        run: npm run check:declaration-resolution
+
+      # Compares every entry's raw/gzip size against the committed post-split baseline
+      # (scripts/bundle-size-baseline.json) with a 5% regression budget.
+      - name: Bundle-size gate
+        run: npm run check:bundle-size
+
+      # Informational only (does not fail the release): the package-wide npm install footprint is
+      # identical for every entry point regardless of subpath exports.
+      - name: Report npm install footprint
+        run: npm run check:install-footprint
+
+      - name: Upload verified tarball as a workflow artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: npm-package-tarball
+          path: |
+            release-artifact/*.tgz
+            release-artifact/SHA256SUMS
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    name: Publish the verified tarball to npm
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # required for `npm publish --provenance`; nothing else in this job needs it.
+    steps:
+      - name: Download the verified tarball
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: npm-package-tarball
+          path: release-artifact
+
+      # Confirms exactly the file `verify` packed and named is present — the filename comes from
+      # `needs.verify.outputs.tarball-filename` (a job output `verify` set from its own `npm
+      # pack --json` result), never rediscovered here with `ls release-artifact/*.tgz`: rediscovery
+      # would silently accept whatever the artifact download happened to contain, including an
+      # unexpected extra file, rather than the exact one `verify` named.
+      - name: Confirm the expected tarball is present, and only it
+        env:
+          EXPECTED_FILENAME: ${{ needs.verify.outputs.tarball-filename }}
+        run: |
+          set -euo pipefail
+          if [ ! -f "release-artifact/${EXPECTED_FILENAME}" ]; then
+            echo "::error::expected release-artifact/${EXPECTED_FILENAME} (verify job's recorded filename) but it is not present after download"
+            exit 1
+          fi
+          TARBALL_COUNT=$(find release-artifact -maxdepth 1 -name '*.tgz' | wc -l)
+          if [ "${TARBALL_COUNT}" -ne 1 ]; then
+            echo "::error::expected exactly one .tgz in release-artifact/, found ${TARBALL_COUNT}"
+            exit 1
+          fi
+
+      # Re-verifies the checksum `verify` recorded, proving the file this job is about to publish
+      # is byte-for-byte the file `verify` already checked — not merely assumed, because
+      # actions/upload-artifact and actions/download-artifact preserve bytes exactly, but this
+      # check makes that guarantee explicit and fails loudly rather than trusting it silently.
+      # SHA256SUMS records only the bare filename (see the "Pack the release tarball" step in the
+      # verify job), and this `cd`s into release-artifact/ first for the exact same reason — the
+      # two must use matching working directories, or the checksum path in SHA256SUMS resolves
+      # against the wrong directory and `sha256sum -c` reports every line as unreadable. See
+      # tests/scripts/release-artifact-checksum.test.ts.
+      - name: Verify tarball checksum matches what was verified
+        run: |
+          cd release-artifact
+          sha256sum -c SHA256SUMS
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 22
+          registry-url: "https://registry.npmjs.org"
+
+      # "polytypo" is an unscoped package name, so npm's default publish access is already
+      # public — there is no `--access restricted` option for an unscoped name, and passing
+      # `--access public` here would be inert, not a safeguard. `npm publish <tarball>` publishes
+      # that exact file rather than repacking from the working directory (there is no source
+      # checkout in this job at all — nothing to repack from). Provenance requires the
+      # `id-token: write` permission granted above and either `--provenance` here or
+      # `publishConfig.provenance: true` in package.json (both are set, deliberately redundant).
+      # NODE_AUTH_TOKEN is a GitHub Actions secret, scoped to only this one step (not the job or
+      # workflow); secrets are masked in logs automatically, and no step in this workflow echoes
+      # it. This workflow performs the publish only — it does not create or push the tag that
+      # triggers it, does not create a GitHub release, and does not push anything to this
+      # repository.
+      - name: Publish to npm with provenance
+        env:
+          TARBALL_FILENAME: ${{ needs.verify.outputs.tarball-filename }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          TARBALL="release-artifact/${TARBALL_FILENAME}"
+          echo "publishing exact verified artifact: ${TARBALL}"
+          npm publish "${TARBALL}" --provenance

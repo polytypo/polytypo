@@ -52,11 +52,8 @@ describe("dashes — worked examples, spec §6", () => {
     );
   });
 
-  it("3. en-US: numeric ranges become en dashes", () => {
-    expect(run("1914-1918 and pp. 34-36", enUS)).toBe(
-      `1914${WJ}${EN}${WJ}1918 and pp. 34${WJ}${EN}${WJ}36`,
-    );
-  });
+  // Case 3 (numeric ranges become en dashes) moved to tests/rules/ranges.test.ts, spec 0.5.0:
+  // range recognition is `ranges`' rule now, not `dashes`'.
 
   it("4. en-US: compound words are untouched", () => {
     const input = "A well-known e-mail address";
@@ -104,9 +101,7 @@ describe("dashes — worked examples, spec §6", () => {
     expect(run(input, deDE)).toBe(input);
   });
 
-  it("13. de-DE: a page range", () => {
-    expect(run("Seiten 34-36", deDE)).toBe(`Seiten 34${WJ}${EN}${WJ}36`);
-  });
+  // Case 13 (a page range) moved to tests/rules/ranges.test.ts, spec 0.5.0.
 
   it("14. ru: em-spaced parenthetical", () => {
     expect(run("Москва - столица", ru)).toBe(`Москва ${EM} столица`);
@@ -201,9 +196,7 @@ describe("dashes — regressions with the highest false-positive cost", () => {
     }
   });
 
-  it("an increasing score is converted — spec §7.4 records this as unresolved", () => {
-    expect(run("Final score 0-5", enUS)).toBe(`Final score 0${WJ}${EN}${WJ}5`);
-  });
+  // "an increasing score is converted" moved to tests/rules/ranges.test.ts, spec 0.5.0.
 });
 
 describe("dashes — idempotency regressions, spec §6 cases 18-21", () => {
@@ -253,24 +246,8 @@ describe("dashes — dash-length reclassification, spec §3.2 step 2a (0.2.0)", 
     }
   });
 
-  it("43. an authored range converts and binds exactly when the edit is not invisible-only", () => {
-    // §3.3.1 / §7.14: this rule never makes an edit whose entire content is invisible. A range
-    // already in its target glyph, length and spacing gets no edit at all — adding only a
-    // joiner pair to otherwise-unchanged text is exactly the invisible-only edit this rule
-    // refuses to make. A range whose length or spacing is NOT already correct gets a real,
-    // visible edit, and the joiner binding rides along with it, same as a hyphen-typed range.
-    expect(run(`1914${EN}1918`, enUS)).toBe(`1914${EN}1918`); // en-tight, already correct
-    expect(run(`1914${EN}1918`, ru)).toBe(`1914${WJ}${EM}${WJ}1918`); // em-tight: length differs, visible
-    expect(run(`1941${EM}1945`, deDE)).toBe(`1941${WJ}${EN}${WJ}1945`); // en-tight: length differs, visible
-    expect(run(`1941${EM}1945`, ru)).toBe(`1941${EM}1945`); // em-tight, already correct
-  });
-
-  it("44. the hyphen-typed range still converts and still binds", () => {
-    expect(run("1914-1918", enUS)).toBe(`1914${WJ}${EN}${WJ}1918`);
-    expect(run("Годы 1941-1945", ru)).toBe(`Годы 1941${WJ}${EM}${WJ}1945`);
-    // 43 and 44 side by side: visually identical, one bound and one not. §7.14.
-    expect(run(`1914${EN}1918`, enUS)).toBe(`1914${EN}1918`);
-  });
+  // Cases 43 and 44 (binding an authored/hyphen-typed range) moved to
+  // tests/rules/ranges.test.ts, spec 0.5.0 — binding (§3.3.1) is `ranges`-only now.
 
   it("the guard decides the token, it does not reclassify the characters", () => {
     // U+2013/U+2014 remain full DASH members as CONTEXT. If they stopped counting, the
@@ -293,50 +270,8 @@ describe("dashes — dash-length reclassification, spec §3.2 step 2a (0.2.0)", 
     expect(run("a--1 x", deDE)).toBe(`a ${EN} 1 x`);
   });
 
-  /**
-   * §3.2b, spec cases 45-47. Was defect (e): §3.3.1's joiner sat in a *neighbouring* token's
-   * lookaround, where nothing skipped it, so G2 found U+2060 on pass 2 where it had found a
-   * dash on pass 1. Guards that leave their own token now read effective neighbours.
-   */
-  it("45./47. an emitted joiner is transparent to a neighbouring token's G2", () => {
-    for (const tag of Object.keys(LOCALES)) {
-      const style = localeOf(tag).dash.range;
-      if (style === "none") continue; // fr substitutes nothing at all
-      const glyph = style === "em-tight" || style === "em-spaced" ? EM : EN;
-      const once = run("1-1 - 1", localeOf(tag));
-      expect(once).toBe(`1${WJ}${glyph}${WJ}1 - 1`);
-      // The point of the repair: pass 2 is a fixed point, in all seven non-`none` locales.
-      expect(run(once, localeOf(tag))).toBe(once);
-      expect(run(run(once, localeOf(tag)), localeOf(tag))).toBe(once);
-    }
-  });
-
-  it("46. the control, updated for spec 0.2.0: the first token is a fixed point only where its length already matches the locale's range form", () => {
-    // The second token's G2 always saw a real DASH here (unaffected by the guard's
-    // retirement — G2 reads DASH membership, not authorship), so it never converts either way.
-    // The first token now converts and binds whenever its glyph is not already exactly the
-    // locale's range form — a length-blind "control" no longer exists.
-    for (const tag of Object.keys(LOCALES)) {
-      const range = localeOf(tag).dash.range;
-      const target = range === "em-tight" || range === "em-spaced" ? EM : EN;
-      const bound = `1${WJ}${target}${WJ}1 - 1`;
-
-      expect(run(`1${EN}1 - 1`, localeOf(tag)), `${tag} EN`).toBe(
-        range === "none" || target === EN ? `1${EN}1 - 1` : bound,
-      );
-      expect(run(`1${EM}1 - 1`, localeOf(tag)), `${tag} EM`).toBe(
-        range === "none" || target === EM ? `1${EM}1 - 1` : bound,
-      );
-    }
-  });
-
-  it("the joiner is transparent to G1 and G3 too, not only G2", () => {
-    // G1: a letter beyond the joiner still blocks the range.
-    expect(run(`MP3${WJ}-4`, enUS)).toBe(`MP3${WJ}-4`);
-    // G3: a decimal point beyond the joiner still blocks it.
-    expect(run(`1.5${WJ}-2.5`, enUS)).toBe(`1.5${WJ}-2.5`);
-    expect(run(`1${WJ}/2-3${WJ}/4`, enUS)).toBe(`1${WJ}/2-3${WJ}/4`);
-  });
+  // Cases 45-47 (joiner transparency for G1/G2/G3, and the fixed-point control) moved to
+  // tests/rules/ranges.test.ts, spec 0.5.0 — G1-G5 are `ranges`-only now.
 
   it("the joiner is transparent to T1's two-code-point reach", () => {
     // de-DE en-spaced: the far dash is now reachable across a joiner as well as across a space.
@@ -400,104 +335,9 @@ describe("dashes — dash-length reclassification, spec §3.2 step 2a (0.2.0)", 
   });
 });
 
-describe("dashes — G4 run lengths, spec §3.3 and §6 cases 3a-3j", () => {
-  it("3a. `Takes 5-10 days` converts", () => {
-    expect(run("Takes 5-10 days", enUS)).toBe(`Takes 5${WJ}${EN}${WJ}10 days`);
-  });
-
-  it("3b. `aged 9-10 years` converts — the largest 1-digit against the smallest 2-digit", () => {
-    expect(run("aged 9-10 years", enUS)).toBe(`aged 9${WJ}${EN}${WJ}10 years`);
-  });
-
-  it("3c. `chapters 1-12` converts", () => {
-    expect(run("chapters 1-12", enUS)).toBe(`chapters 1${WJ}${EN}${WJ}12`);
-  });
-
-  it("3d. `0-60 in six seconds` converts — the leading-zero clause constrains Rrun only", () => {
-    expect(run("0-60 in six seconds", enUS)).toBe(`0${WJ}${EN}${WJ}60 in six seconds`);
-  });
-
-  /**
-   * These four are the port trap named in §3.3. G5 is a lexicographic comparison of ASCII
-   * digits, which is an integer comparison only for equal-length runs. An implementation that
-   * widened G4 but still ran G5 on the (1,2) branch would compare "5" against "10", find
-   * '5' > '1', and decline every one of 3a-3d. This assertion is what fails in that case.
-   */
-  it("the (1,2) branch never reaches G5's equal-length comparison", () => {
-    for (let l = 0; l <= 9; l += 1) {
-      for (let r = 10; r <= 99; r += 1) {
-        const input = `x ${l}-${r} y`;
-        expect(run(input, enUS)).toBe(`x ${l}${WJ}${EN}${WJ}${r} y`);
-      }
-    }
-  });
-
-  it("3e. `won 10-7` does not convert — the new branch is directional", () => {
-    expect(run("won 10-7", enUS)).toBe("won 10-7");
-  });
-
-  it("3f. `code 9-05` does not convert — the leading zero is load-bearing", () => {
-    // Without the clause this descending pair enters the (1,2) branch, where G5 is skipped.
-    expect(run("code 9-05", enUS)).toBe("code 9-05");
-    for (let l = 0; l <= 9; l += 1) {
-      for (let r = 0; r <= 9; r += 1) {
-        const input = `x ${l}-0${r} y`;
-        expect(run(input, enUS)).toBe(input);
-      }
-    }
-  });
-
-  it("3g. `Call 555-1234` does not convert", () => {
-    expect(run("Call 555-1234", enUS)).toBe("Call 555-1234");
-  });
-
-  it("3h. `Call 1-800 now` does not convert — Rrun must be exactly 2 digits", () => {
-    expect(run("Call 1-800 now", enUS)).toBe("Call 1-800 now");
-  });
-
-  it("3i. `the 2020-24 season` does not convert — still a recorded miss (§7.3)", () => {
-    expect(run("the 2020-24 season", enUS)).toBe("the 2020-24 season");
-  });
-
-  it("3j. KNOWN-WRONG: `Figure 5-10` converts — do not silently fix this", () => {
-    // spec §7.11. A compound label, not a range. The exposure is pre-existing (`Figure 3-7`
-    // has always converted) and the operator accepted the widening knowingly. Separating the
-    // two needs a per-locale `dash.labelWords` list the rule deliberately does not have.
-    expect(run("Figure 5-10", enUS)).toBe(`Figure 5${WJ}${EN}${WJ}10`);
-    expect(run("Figure 3-7", enUS)).toBe(`Figure 3${WJ}${EN}${WJ}7`);
-    expect(run("Table 3-12", deDE)).toBe(`Table 3${WJ}${EN}${WJ}12`);
-  });
-
-  it("the equal-length branch and G5 are unchanged", () => {
-    expect(run("1914-1918", enUS)).toBe(`1914${WJ}${EN}${WJ}1918`);
-    expect(run("1234-5678", enUS)).toBe(`1234${WJ}${EN}${WJ}5678`);
-    expect(run("20-10", enUS)).toBe("20-10");
-    expect(run("5-0", enUS)).toBe("5-0");
-    expect(run("99-99", enUS)).toBe(`99${WJ}${EN}${WJ}99`);
-  });
-
-  it("the widening holds end to end through `transform`", () => {
-    for (const tag of Object.keys(LOCALES)) {
-      const dash = localeOf(tag).dash.range;
-      if (dash === "none") {
-        expect(transform("Takes 5-10 days", { locale: tag })).toBe("Takes 5-10 days");
-        continue;
-      }
-      const glyph = dash === "em-tight" || dash === "em-spaced" ? EM : EN;
-      // §3.3.1: every shipped locale's range form is tight, so every one binds.
-      const bound = dash === "em-spaced" || dash === "en-spaced" ? glyph : `${WJ}${glyph}${WJ}`;
-      const once = transform("Takes 5-10 days", { locale: tag });
-      expect(once).toBe(`Takes 5${bound}10 days`);
-      expect(transform(once, { locale: tag })).toBe(once);
-      // The no-change cases survive the whole pipeline too.
-      for (const input of ["won 10-7", "code 9-05", "Call 555-1234", "Call 1-800 now"]) {
-        const out = transform(input, { locale: tag });
-        expect(out).toBe(input);
-        expect(transform(out, { locale: tag })).toBe(out);
-      }
-    }
-  });
-});
+// The entire "G4 run lengths" describe block (cases 3a-3j) moved to
+// tests/rules/ranges.test.ts, spec 0.5.0 — G4/G5 and the whole range admissibility test are
+// `ranges`-only now.
 
 describe("dashes — Roman-numeral veto P4, spec §3.4 and §6 cases 17a-17c", () => {
   it("17a. ru: a tight em dash between Roman numerals is already correct and is left alone", () => {
@@ -580,16 +420,24 @@ describe("dashes — Roman-numeral veto P4, spec §3.4 and §6 cases 17a-17c", (
 });
 
 describe("dashes — spacing-transition guard T1, spec §3.2 step 8 (cases 24-27)", () => {
+  // Correction pass (spec 0.6.0): cases 24-26 used to witness with EN (U+2013). That is no
+  // longer a valid T1 witness — P5 (§3.4) now declines a pure single authored U+2013
+  // unconditionally, before T1 is ever consulted, so an EN witness "passes" regardless of
+  // whether T1's own condition holds or not (P5 alone decides it) and would keep passing even
+  // with T1 deleted. A T1 test must reach T1 and change outcome if T1 is removed, so every
+  // witness below uses EM (never touched by P5) instead. Case 27 already did; 24-26 now match
+  // it. See "28b. P5 pre-empts T1" for the EN-witness case, tested separately and honestly as a
+  // P5 test, not conflated with T1's own.
   it("24. de-DE: a tight token may not become spaced across a digit run with a far dash", () => {
-    expect(run(`a${EN}1 - 1`, deDE)).toBe(`a${EN}1 - 1`);
+    expect(run(`a${EM}1 - 1`, deDE)).toBe(`a${EM}1 - 1`);
   });
 
   it("25. ru: the same shape under em-spaced / em-tight", () => {
-    expect(run(`a${EN}1 - 1`, ru)).toBe(`a${EN}1 - 1`);
+    expect(run(`a${EM}1 - 1`, ru)).toBe(`a${EM}1 - 1`);
   });
 
   it("26. de-DE: the tight sibling, far dash at distance 1", () => {
-    expect(run(`a${EN}1-1`, deDE)).toBe(`a${EN}1-1`);
+    expect(run(`a${EM}1-1`, deDE)).toBe(`a${EM}1-1`);
   });
 
   it("27. en-US converts freely (em-tight, T1 never applies); de-DE stays blocked by T1 (en-spaced)", () => {
@@ -598,8 +446,21 @@ describe("dashes — spacing-transition guard T1, spec §3.2 step 8 (cases 24-27
     // length and spacing both. de-DE's parenthetical is `en-spaced`, so converting this token
     // would insert a U+0020 next to a digit run with a dash two positions further out — T1
     // blocks exactly that, same mechanism as before the guard's retirement.
-    const input = `a${EN}1 - 1`;
+    // spec 0.6.0: the witness uses EM here, not EN — an authored EN witness would now be
+    // declined by P5 (§3.4) regardless of T1/style, which tests P5 rather than T1. See
+    // "28b. P5 pre-empts T1" immediately below for that case.
+    const input = `a${EM}1 - 1`;
     expect(run(input, enUS)).toBe(`a${EM}1 - 1`);
+    expect(run(input, deDE)).toBe(input);
+  });
+
+  it("28b. P5 pre-empts T1: an authored EN witness in this exact shape is declined by P5, not converted", () => {
+    // Same shape as case 27, but with EN instead of EM: P5 (dashes.md §3.4, spec 0.6.0) declines
+    // a pure single authored U+2013 unconditionally, before T1 is ever consulted. This is the
+    // regression the T1 test above used to exercise incidentally; kept as its own case so the
+    // T1 mechanism and the P5 veto are each tested for what they actually do.
+    const input = `a${EN}1 - 1`;
+    expect(run(input, enUS)).toBe(input);
     expect(run(input, deDE)).toBe(input);
   });
 
@@ -609,10 +470,8 @@ describe("dashes — spacing-transition guard T1, spec §3.2 step 8 (cases 24-27
     );
   });
 
-  it("T1 does not fire when there is no far dash", () => {
-    expect(run("Seiten 34-36", deDE)).toBe(`Seiten 34${WJ}${EN}${WJ}36`);
-    expect(run(`${EM} 1914-1918 годы`, ru)).toBe(`${EM} 1914${WJ}${EM}${WJ}1918 годы`);
-  });
+  // "T1 does not fire when there is no far dash" moved to tests/rules/ranges.test.ts, spec
+  // 0.5.0 — both witnesses were range tokens.
 });
 
 describe("dashes — composition guard T2, spec §3.2 step 9 (cases 28-32)", () => {
@@ -692,9 +551,8 @@ describe("dashes — composition family 2, spec §6 cases 33-34", () => {
     expect(run("Москва - столица", ru)).toBe(`Москва ${EM} столица`);
     expect(run(`Москва ${EM} столица`, ru)).toBe(`Москва ${EM} столица`);
     expect(run("Москва--столица", ru)).toBe(`Москва ${EM} столица`);
-    expect(run("Годы 1914-1918 были тяжёлыми", ru)).toBe(
-      `Годы 1914${WJ}${EM}${WJ}1918 были тяжёлыми`,
-    );
+    // The range witness ("Годы 1914-1918 были тяжёлыми") moved to tests/rules/ranges.test.ts,
+    // spec 0.5.0.
     // ...and through the whole pipeline, where `nbsp` then settles the spacing.
     for (const input of ["\u00AB - \u00BB", "Москва - столица", "Москва--столица"]) {
       const once = transform(input, { locale: input.includes("Моск") ? "ru" : "fr" });
@@ -724,21 +582,14 @@ describe("dashes — isolation guard, spec §3.2 step 6", () => {
 });
 
 describe("dashes — cluster guard, spec §3.2 step 7", () => {
-  it("a cluster with one dash run is still editable", () => {
-    expect(run("pp. 34-36", enUS)).toBe(`pp. 34${WJ}${EN}${WJ}36`);
-  });
+  // "a cluster with one dash run is still editable" and "a space ends a cluster" moved to
+  // tests/rules/ranges.test.ts, spec 0.5.0 — both witnesses were range tokens; the cluster
+  // guard itself (dash-shared.ts) is unchanged and shared with `dashes`.
 
   it("INERT-DASH counts towards the cluster's dash-run total", () => {
     // U+2011 and U+002D are two runs inside the single cluster `1914\u20111918-1920`.
     const input = "1914\u20111918-1920";
     expect(run(input, enUS)).toBe(input);
-  });
-
-  it("a space ends a cluster", () => {
-    // `1914-1918` and `34-36` are separate clusters, one dash run each.
-    expect(run("1914-1918 and 34-36", enUS)).toBe(
-      `1914${WJ}${EN}${WJ}1918 and 34${WJ}${EN}${WJ}36`,
-    );
   });
 });
 
@@ -785,20 +636,9 @@ describe("dashes — the `none` convention substitutes nothing", () => {
   });
 });
 
-describe("dashes — range styles and no-break spaces", () => {
-  it("17. ru uses an em dash for ranges", () => {
-    expect(ru.dash.range).toBe("em-tight");
-    expect(run("Годы 1914-1918 были тяжёлыми", ru)).toBe(
-      `Годы 1914${WJ}${EM}${WJ}1918 были тяжёлыми`,
-    );
-  });
-
-  it("an en-spaced range keeps its spacing stable", () => {
-    const spacedRange = withDash(enUS, { parenthetical: "em-tight", range: "en-spaced" });
-    const once = run("pp. 34-36", spacedRange);
-    expect(once).toBe(`pp. 34 ${EN} 36`);
-    expect(run(once, spacedRange)).toBe(once);
-  });
+describe("dashes — no-break spaces", () => {
+  // "17. ru uses an em dash for ranges" and "an en-spaced range keeps its spacing stable" moved
+  // to tests/rules/ranges.test.ts, spec 0.5.0 — `dash.range` is no longer read by `dashes`.
 
   /**
    * §3.2 step 3 + §3.6, rewritten. SPACE means U+0020 and nothing else, so a dash touching a
@@ -842,14 +682,7 @@ describe("dashes — range styles and no-break spaces", () => {
     const emitted = new Set<number>();
     for (const tag of Object.keys(LOCALES)) {
       const locale = localeOf(tag);
-      for (const input of [
-        "mot - autre",
-        "mot--autre",
-        `mot${EM}autre`,
-        "pp. 34-36",
-        "Takes 5-10 days",
-        `a ${EN} b`,
-      ]) {
+      for (const input of ["mot - autre", "mot--autre", `mot${EM}autre`, `a ${EN} b`]) {
         const cp = toCodePoints(input);
         for (const edit of dashesRule.apply({ cp, locale, mode: "text" })) {
           for (const value of edit.replacement) emitted.add(value);
@@ -863,36 +696,57 @@ describe("dashes — range styles and no-break spaces", () => {
     expect(emitted.has(0x202f)).toBe(false);
   });
 
-  it("an authored dash's length and spacing both follow the locale's parenthetical form (spec 0.2.0)", () => {
+  it("an authored EM dash's length and spacing both follow the locale's parenthetical form (spec 0.2.0)", () => {
     // The 1063-line M4 class was restyling — turning an authored em dash into an en dash or
     // back — and spec 0.2.0 reopens it deliberately (dashes.md §7 item 14): a dash's length is
-    // no longer treated as reliably authorial, so every authored dash is promoted to the
+    // no longer treated as reliably authorial, so every authored EM dash is promoted to the
     // locale's parenthetical form exactly as a hyphen-typed one would be. Expected outputs are
     // computed from each locale's own `dash.parenthetical` field, not hand-picked per row.
+    // spec 0.6.0: this exhaustive loop used to cover EN alongside EM. It no longer does — P5
+    // (§3.4, §8.8) carves out exactly one glyph, a pure single authored U+2013, as a narrow
+    // exception to the "no distinction based on which DASH glyph the author typed" claim this
+    // test title used to make in full generality. See the next test for EN's own, now-different,
+    // exhaustive assertion.
     for (const tag of Object.keys(LOCALES)) {
       const style = localeOf(tag).dash.parenthetical;
-      for (const glyph of [EM, EN]) {
-        for (const spaced of [true, false]) {
-          const input = spaced
-            ? `The plan ${glyph} if any ${glyph} fails`
-            : `The plan${glyph}if any${glyph}fails`;
-          const expected =
-            style === "none"
-              ? input
-              : (() => {
-                  const target = style === "em-tight" || style === "em-spaced" ? EM : EN;
-                  const wantSpaced = style === "em-spaced" || style === "en-spaced";
-                  return wantSpaced
-                    ? `The plan ${target} if any ${target} fails`
-                    : `The plan${target}if any${target}fails`;
-                })();
-          expect(run(input, localeOf(tag)), `${tag} ${JSON.stringify(input)}`).toBe(expected);
-        }
+      for (const spaced of [true, false]) {
+        const input = spaced
+          ? `The plan ${EM} if any ${EM} fails`
+          : `The plan${EM}if any${EM}fails`;
+        const expected =
+          style === "none"
+            ? input
+            : (() => {
+                const target = style === "em-tight" || style === "em-spaced" ? EM : EN;
+                const wantSpaced = style === "em-spaced" || style === "en-spaced";
+                return wantSpaced
+                  ? `The plan ${target} if any ${target} fails`
+                  : `The plan${target}if any${target}fails`;
+              })();
+        expect(run(input, localeOf(tag)), `${tag} ${JSON.stringify(input)}`).toBe(expected);
       }
     }
 
-    // Hyphen input converts exactly the same way — there is no separate "length guard" left.
+    // Hyphen input converts exactly the same way — there is no separate "length guard" left, and
+    // P5 never applies to a hyphen (only to a pure single U+2013).
     expect(run("The plan -- if any -- fails", enUS)).toBe(`The plan${EM}if any${EM}fails`);
+  });
+
+  it("P5 (spec 0.6.0): an authored EN dash is declined unconditionally, every locale, tight and spaced, regardless of the locale's own parenthetical target glyph", () => {
+    // Fresh M4 evidence (dashes.md §8.8): 8/8 authored-en-dash conversions found in a real
+    // corpus were range or joint-name damage; 0/8589 other accepted edits touched an authored
+    // en-dash at all. Unlike EM above, EN's expected output is the same everywhere: unchanged —
+    // not locale-target-conditioned, per the operator decision recorded in §8.8 (a
+    // target-glyph-conditioned veto would leave the identical failure reachable in exactly the
+    // locales whose own target happens to already be U+2013).
+    for (const tag of Object.keys(LOCALES)) {
+      for (const spaced of [true, false]) {
+        const input = spaced
+          ? `The plan ${EN} if any ${EN} fails`
+          : `The plan${EN}if any${EN}fails`;
+        expect(run(input, localeOf(tag)), `${tag} ${JSON.stringify(input)}`).toBe(input);
+      }
+    }
   });
 
   it("a run of two or three qualifies, a run of four does not", () => {

@@ -17,7 +17,10 @@ const files = discoverFixtureFiles();
 const totalCases = files.reduce((sum, f) => sum + f.cases.length, 0);
 
 function optionsFor(locale: string, testCase: ConformanceCase): Options {
-  const base = { locale, mode: testCase.mode };
+  const base: Options =
+    testCase.dialect === undefined
+      ? { locale, mode: testCase.mode }
+      : { locale, mode: testCase.mode, dialect: testCase.dialect };
   return testCase.rules === undefined ? base : { ...base, rules: testCase.rules };
 }
 

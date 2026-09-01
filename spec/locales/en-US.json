@@ -2,8 +2,23 @@
   "locale": "en-US",
   "name": "English (United States)",
   "quotes": {
-    "primary": { "open": "“", "close": "”", "innerSpace": "none" },
-    "secondary": { "open": "‘", "close": "’", "innerSpace": "none" }
+    "primary": {
+      "open": "“",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "‘",
+      "close": "’",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": [
+      {
+        "left": "rock",
+        "elided": "n",
+        "right": "roll"
+      }
+    ]
   },
   "dash": {
     "parenthetical": "em-tight",
@@ -53,7 +68,7 @@
     "beforeNumber": [],
     "beforeWord": [],
     "afterSymbols": [],
-    "bindInitials": true
+    "initialBinding": "chain"
   },
   "sources": [
     {
@@ -61,6 +76,18 @@
       "cite": "The Chicago Manual of Style, 18th ed., 6.11 (quotations within quotations); CMOS Q&A, topic “Quotations”",
       "url": "https://www.chicagomanualofstyle.org/qanda/data/faq/topics/Quotations/faq0025.html",
       "note": "US practice: double quotation marks at the first level, single at the second. CMOS 6.11: “When single quotation marks are nested within double quotation marks, and two of the marks appear next to each other, a space between the two marks, though not strictly required, aids legibility.” That optional legibility space is a typesetting refinement and is not expressed in this file."
+    },
+    {
+      "rule": "quotes",
+      "cite": "Chicago Manual of Style Online Q&A, topic “Special Characters”: “If you want, for example, an apostrophe rather than an opening single quotation mark at the beginning of a string (e.g., the apostrophe before the n in “rock ’n’ roll”), you must tell the computer that that's what you want.”",
+      "url": "https://www.chicagomanualofstyle.org/qanda/data/faq/topics/SpecialCharacters/faq0002.html",
+      "note": "Supports quotes.elisionIdioms = [{ left: \"rock\", elided: \"n\", right: \"roll\" }]: the leading mark of the elision must not be resolved as an opening quotation mark. CMOS states the mark's function, not a code point; U+2019 follows from spec/rules/apostrophe.md, which is unchanged. Reproduced verbatim, including CMOS's own U+2019 in “rock ’n’ roll” — not straightened to U+0027 — because it is a direct quotation of the source's printed text. Edition/section not fully cited: the page reports 17th ed. in-body while the site titles itself 18th ed., and the numbered CMOS section is paywalled."
+    },
+    {
+      "rule": "quotes",
+      "cite": "American Heritage Dictionary of the English Language, entry “rock and roll”: headword line “rock-and-roll or rock 'n' roll”, the elided variant spaced as rock 'n' roll with a mark on each side of the bare word n.",
+      "url": "https://www.ahdictionary.com/word/search.html?q=rock+and+roll",
+      "note": "Attests the spaced two-mark orthography of the \"rock\"/\"n\"/\"roll\" idiom only — this citation supports no other elisionIdioms entry. In particular it does not attest \"fish 'n' chips\", which is not listed here and would need its own citation before being added; the field is a closed set of individually evidenced idioms, not a general elision-word list."
     },
     {
       "rule": "dashes",
@@ -78,7 +105,7 @@
       "rule": "nbsp",
       "cite": "The Chicago Manual of Style — CMOS Shop Talk, “Navigating Spaces in Manuscripts and Beyond”, 15 June 2021",
       "url": "https://cmosshoptalk.com/2021/06/15/navigating-spaces-in-manuscripts-and-beyond/",
-      "note": "Chicago recommends a nonbreaking space “between two or more initials in a name like ‘E. B. White’” (hence bindInitials: true) and “between a numeral and an abbreviated unit of measure, as in ‘10 kg’” (hence beforeUnits)."
+      "note": "Chicago recommends a nonbreaking space “between two or more initials in a name like ‘E. B. White’” (hence initialBinding: \"chain\" — spec 0.6.0: the field used to be the boolean bindInitials; Chicago's own “two or more” wording is the citation for the chain requirement, not merely for turning N7 on) and “between a numeral and an abbreviated unit of measure, as in ‘10 kg’” (hence beforeUnits)."
     },
     {
       "rule": "nbsp",

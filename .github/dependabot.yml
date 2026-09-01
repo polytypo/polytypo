@@ -1,0 +1,11 @@
+# Proposes updates to the pinned commit SHAs in .github/workflows/*.yml (scripts/check-actions-pinned.mjs
+# enforces that every external action stays pinned to a full 40-character SHA; Dependabot is how
+# those pins move forward without ever falling back to a mutable tag). GitHub Actions is the only
+# ecosystem configured here — npm dependency updates are out of scope for this stage.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5

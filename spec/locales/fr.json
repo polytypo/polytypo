@@ -2,8 +2,17 @@
   "locale": "fr",
   "name": "French",
   "quotes": {
-    "primary": { "open": "«", "close": "»", "innerSpace": "nbsp" },
-    "secondary": { "open": "“", "close": "”", "innerSpace": "none" }
+    "primary": {
+      "open": "«",
+      "close": "»",
+      "innerSpace": "nbsp"
+    },
+    "secondary": {
+      "open": "“",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": []
   },
   "dash": {
     "parenthetical": "em-spaced",
@@ -26,7 +35,7 @@
     "beforeNumber": ["art.", "fig."],
     "beforeWord": ["M.", "MM.", "Mme", "Mmes", "Mlle", "Mlles"],
     "afterSymbols": ["§"],
-    "bindInitials": true
+    "initialBinding": "single"
   },
   "sources": [
     {
@@ -39,7 +48,7 @@
       "rule": "nbsp",
       "cite": "Jacques André, Petites leçons de typographie, § 2.5 et § 5.1.3 « Autres emplois de l'espace insécable » : espace insécable entre un prénom abrégé et le nom (« N. Bourbaki »), entre une abréviation et le mot qui la suit (« Mme Hugo », « le R.P. Durand »), entre un nombre et ce qu'il quantifie (« 14 francs », « 2 € », « 98 % », « art. 237 »)",
       "url": "http://jacques-andre.fr/faqtypo/lessons.pdf",
-      "note": "La liste beforeUnits est volontairement courte et exclut les symboles d'une seule lettre (m, g, l, s, A), qui ne peuvent pas être désambiguïsés sans contexte. La liaison « abréviation + mot suivant » (M. Dupont, Mme Hugo) n'est pas exprimable dans ce schéma : afterSymbols lie un symbole à un NOMBRE suivant, pas à un mot."
+      "note": "La liste beforeUnits est volontairement courte et exclut les symboles d'une seule lettre (m, g, l, s, A), qui ne peuvent pas être désambiguïsés sans contexte. La liaison « abréviation + mot suivant » (M. Dupont, Mme Hugo) n'est pas exprimable dans ce schéma : afterSymbols lie un symbole à un NOMBRE suivant, pas à un mot ; elle passe par nbsp.initialBinding = \"single\" (spec 0.6.0 : le champ s'appelait auparavant le booléen bindInitials), qui conserve la liaison sur une seule initiale citée ici (« N. Bourbaki »). Contrairement à \"chain\" (en-US, de-DE, de-CH, ru — Chicago exige « two or more initials »), \"single\" ne peut pas distinguer structurellement un prénom abrégé authentique d'une collision de fin de phrase (une initiale isolée suivie d'un mot capitalisé qui commence en fait une nouvelle phrase) ; voir spec/rules/nbsp.md §7."
     },
     {
       "rule": "quotes",

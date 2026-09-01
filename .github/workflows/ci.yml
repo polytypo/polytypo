@@ -17,14 +17,39 @@ jobs:
       matrix:
         node: [20, 22]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: ${{ matrix.node }}
           cache: npm
 
       - run: npm ci
+
+      # gen:brandbook (part of `npm run generate:all`, invoked below) shells out to
+      # `python3 brand/tools/build_brandbook.py`, which needs fonttools (subsetting, WOFF2) and
+      # brotli (WOFF2's compression codec) — packages `npm ci` does not and should not install.
+      # An isolated venv with only the pinned versions from brand/tools/requirements.txt, not the
+      # runner's own preinstalled global site-packages, so generation is exactly as reproducible
+      # here as it is documented to be in brand/README.md. Prepending the venv's bin/ to
+      # $GITHUB_PATH makes every subsequent step's bare `python3`/`pip` resolve inside it, without
+      # needing to re-activate per step.
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+
+      - name: Set up isolated Python virtual environment for brand/promo generation
+        run: |
+          python3 -m venv .venv-brand
+          echo "$PWD/.venv-brand/bin" >> "$GITHUB_PATH"
+          .venv-brand/bin/pip install -r brand/tools/requirements.txt
+
+      # gen_svg.py's ensure_font(): a cached font is re-verified by sha256 on every use, a fresh
+      # download is checksum-verified before being atomically moved into place, and a mismatch of
+      # either kind fails loudly instead of silently falling back. No network access — the
+      # downloader is a fake injected by the test. See brand/tools/test_gen_svg.py.
+      - name: Font-acquisition tests
+        run: npm run test:font-acquisition
 
       - name: Validate spec
         run: npm run validate:spec
@@ -32,25 +57,102 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # Static check: no `${{ ... }}` GitHub Actions expression is embedded in a `run:` step's
+      # shell text anywhere in .github/workflows/ — a git tag or other GitHub context value can
+      # contain shell metacharacters, so it must always be passed through a step-level `env:` var
+      # instead. See scripts/lib/workflow-shell-safety.mjs.
+      - name: Workflow shell-safety check
+        run: npm run check:workflow-shell-safety
+
+      # Static check: every external `uses:` reference in .github/workflows/ is pinned to an
+      # immutable full 40-character commit SHA, never a mutable tag/branch or an abbreviated SHA
+      # (this stage's security-hardening task). See scripts/check-actions-pinned.mjs.
+      - name: Actions-pinned check
+        run: npm run check:actions-pinned
+
       - name: Test
         run: npm test
 
       - name: Build
         run: npm run build
 
-      - name: Check generated docs are up to date
-        run: |
-          npm run gen:docs
-          git checkout -- promo/index.html promo/examples.json
-          git diff --exit-code -- README.md docs/ports
+      # Imports every public entry point ("polytypo", "polytypo/text", "polytypo/html",
+      # "polytypo/markdown") through its published package path — via Node's package
+      # self-reference, resolved through package.json "exports" — in ESM, CommonJS, and as a
+      # TypeScript declaration consumer. npm run build already ran above, so this only re-runs it
+      # (npm run test:packaging's own dependency) plus the three smoke tests.
+      - name: Packaging smoke tests (ESM, CommonJS, TypeScript declarations)
+        run: npm run test:packaging
 
-      # Non-blocking for now: brand/tools/build_promo.py still lags the shipped promo/index.html
-      # (older, simpler brand CSS instead of the current design system) and gen_examples.ts's
-      # LOCALES list is hand-maintained separately from spec/locales/registry.json. Flip to a
-      # hard `git diff --exit-code` on promo/examples.json and promo/index.html too once both are
-      # brought back in sync — see docs/agents/agent-system-audit.md.
-      - name: Check generated promo page is up to date
-        continue-on-error: true
+      # Builds and packs the real package, then asserts on the tarball manifest directly (Stage
+      # 6): package.json/README.md/LICENSE present, every entry has its ESM/CJS/declaration
+      # files, every referenced chunk is present, every published JS/CJS file has exactly one
+      # valid, resolvable source map (see tsup.config.ts's ship-maps policy), no unrelated
+      # repository content leaked in, every "exports" target resolves. Release-version agnostic
+      # by design — it does not check package.json's version at all; that policy belongs solely
+      # to the release workflow's tag-vs-version gate (.github/workflows/release.yml,
+      # scripts/lib/release-tag.mjs). See scripts/check-package-contents.mjs.
+      - name: Package-content assertions
+        run: npm run check:package-contents
+
+      # Installs the actual `npm pack` tarball into a temporary consumer project outside this
+      # checkout and exercises every entry point from there — ESM, CommonJS, `.mts`/`.cts`
+      # declaration resolution — never Node package self-reference. See
+      # tests/packaging/packed-tarball.mjs.
+      - name: Packed-tarball ESM/CJS/TypeScript smoke tests
+        run: npm run test:packed-tarball
+
+      # Proves the actual module graph, not just size (AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 5.1):
+      # polytypo/text excludes parse5 and the Micromark/MDX stack, polytypo/html excludes the
+      # Micromark/MDX stack, and polytypo/markdown + the aggregate entry still genuinely reach
+      # both — a required-reach check, so a parser silently dropping out fails too.
+      - name: Check entry-point dependency reach
+        run: npm run check:entry-reach
+
+      # Compares every entry's raw/gzip size against the committed baseline
+      # (scripts/bundle-size-baseline.json) with a tolerance for ordinary toolchain variance; a
+      # regression past that budget fails the build. Secondary signal to the reach check above,
+      # not a replacement for it — see scripts/check-bundle-size.mjs.
+      - name: Report bundle sizes
+        run: npm run check:bundle-size
+
+      # Reports the package-wide npm install dependency count — identical for every entry point,
+      # since npm resolves package.json "dependencies" as a whole, not per subpath. Informational
+      # only (does not fail the build): subpath exports change what a bundler can reach and
+      # tree-shake per entry, not what `npm install polytypo` puts on disk. See
+      # scripts/check-install-footprint.mjs and AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 5.1.
+      - name: Report npm install footprint
+        run: npm run check:install-footprint
+
+      # One deterministic entry point (npm run generate:all: locale codegen, READMEs, promo
+      # pages/assets, browser bundle, brandbook — gen:docs + gen:promo-bundle + gen:brandbook, in
+      # that order), then a hard, scoped git diff — no continue-on-error, and no second,
+      # competing generation path. spec/VERSION is the single global spec-version source
+      # (docs/ARCHITECTURE.md section 2, "L0 — spec"; docs/AUDIT_REMEDIATION_AND_RELEASE_PLAN.md
+      # section 4.1). scripts/validate-spec.mjs separately asserts order.json/registry.json never
+      # drift from it.
+      #
+      # Every promo page (all five — index/docs/playground/locales/manifesto) and
+      # brand/BRANDBOOK.html are tracked, generated files and belong in this list; manifesto.html
+      # was previously missing here despite being generated the same way as the other four pages,
+      # and BRANDBOOK.html was previously generated by no automated step at all (Stage 10
+      # correction pass 1) — both gaps meant a drift in either file would never be caught here.
+      #
+      # src/generated/locales.ts and spec/fixtures/.escaped/ are gitignored by design (never
+      # committed), so they cannot be drift-checked via git diff here; their generation is
+      # exercised deterministically by the Test/Build/Validate-spec steps above instead.
+      - name: Check generated artifacts are up to date
         run: |
-          npm run gen:docs
-          git diff -- promo/examples.json promo/index.html
+          npm run generate:all
+          git diff --exit-code -- \
+            README.md \
+            docs/ports \
+            promo/examples.json \
+            promo/index.html \
+            promo/docs.html \
+            promo/locales.html \
+            promo/playground.html \
+            promo/manifesto.html \
+            promo/assets \
+            promo/vendor/polytypo.browser.js \
+            brand/BRANDBOOK.html

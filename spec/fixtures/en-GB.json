@@ -1,5 +1,5 @@
 {
-  "spec": "0.1.0",
+  "spec": "1.0.0",
   "locale": "en-GB",
   "cases": [
     {
@@ -251,12 +251,15 @@
       "note": "dashes.md §6 case 12: already the target form, byte-identical. The token is admitted (spec 0.2.0 retired the unconditional authored-dash guard), but its glyph and spacing already match the locale, so §3.3.1's invisible-edit test computes an unbound replacement identical to the input and emits nothing — a true recomputation-to-fixed-point, not an early decline. A port that instead declines any token holding U+2013/U+2014 outright reaches the same output here by coincidence, but diverges on a mis-spaced or wrong-length authored dash, which this locale's other fixtures now exercise."
     },
     {
-      "id": "en-gb-dashes-ranges",
-      "rule": "dashes",
+      "id": "en-gb-ranges",
+      "rule": "ranges",
       "mode": "text",
       "in": "1914-1918 and pp. 34-36",
       "out": "1914⁠–⁠1918 and pp. 34⁠–⁠36",
-      "note": "dashes.md §6 cases 3 and 13: range branch, en-tight — note that this locale's PARENTHETICAL form is en-spaced and takes no joiner, while its range form is tight and does. dashes.md §3.3.1: a TIGHT range is emitted as JOINER dash JOINER (U+2060 on each side), because UAX #14 gives U+2013 the line-break class BA and a renderer would otherwise be free to break the range after the dash. The joiner is zero-width, so this is invisible on screen and invisible in a plain diff — read spec/fixtures/.escaped/ to review it. A spaced range form is NOT bound, and the parenthetical branch never emits a joiner."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). ranges.md §6 rows 3 and 13 (relocated from dashes.md §6 cases 3 and 13 through spec 0.4.1): range branch, en-tight — note that this locale's PARENTHETICAL form is en-spaced and takes no joiner, while its range form is tight and does. ranges.md §3.3.1 (relocated from dashes.md §3.3.1 through spec 0.4.1): a TIGHT range is emitted as JOINER dash JOINER (U+2060 on each side), because UAX #14 gives U+2013 the line-break class BA and a renderer would otherwise be free to break the range after the dash. The joiner is zero-width, so this is invisible on screen and invisible in a plain diff — read spec/fixtures/.escaped/ to review it. A spaced range form is NOT bound, and the parenthetical branch never emits a joiner.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "en-gb-dashes-compound-hyphens",
@@ -267,28 +270,45 @@
       "note": "dashes.md §6 case 4: guard P1."
     },
     {
-      "id": "en-gb-dashes-covid-and-iso",
+      "id": "en-gb-dashes-covid",
       "rule": "dashes",
       "mode": "text",
-      "in": "COVID-19 and ISO 8859-1",
-      "out": "COVID-19 and ISO 8859-1",
-      "note": "dashes.md §6 case 5."
+      "in": "COVID-19",
+      "out": "COVID-19",
+      "note": "spec 0.5.0 ownership correction: split from the former combined `en-gb-dashes-covid-and-iso` case (which bundled a genuine `dashes` witness with a genuine `ranges` witness in one string, letting one no-op stand in for two independent guarantees). This half tests `dashes` alone: `cp[L]` is the letter `D`, so the hyphen is a mixed letter/digit token, P1's compound-word guard declines it (dashes.md §3.4) — never a range candidate, since a range candidate needs a `DIGIT` on *both* sides (dashes.md §3.3, first paragraph). See `en-gb-ranges-iso-8859` for the range-guard half."
     },
     {
-      "id": "en-gb-dashes-iso-date-and-isbn",
-      "rule": "dashes",
+      "id": "en-gb-ranges-iso-8859",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "ISO 8859-1",
+      "out": "ISO 8859-1",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0 ownership correction: split from the former combined `en-gb-dashes-covid-and-iso` case. This half tests `ranges` alone, explicitly enabled: `8859-1` is digit-flanked, a genuine range candidate — G4 (equal-run-length, or the (1,2) branch) fails on (4,1), so it is declined (ranges.md §3.2). Without `rules: {ranges: true}` this input is already a no-op for the unrelated reason that `dashes` never reaches a digit-flanked token at all (dashes.md §1) — asserting it under `rule: \"dashes\"` would prove nothing about G4."
+    },
+    {
+      "id": "en-gb-ranges-iso-date-and-isbn",
+      "rule": "ranges",
       "mode": "text",
       "in": "Released 2026-08-15, ISBN 978-3-16-148410-0",
       "out": "Released 2026-08-15, ISBN 978-3-16-148410-0",
-      "note": "dashes.md §6 case 6."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 6. ranges.md §3.2's G2 (chain) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-gb-dashes-phone-number",
-      "rule": "dashes",
+      "id": "en-gb-ranges-phone-number",
+      "rule": "ranges",
       "mode": "text",
       "in": "Call 212-555-1234",
       "out": "Call 212-555-1234",
-      "note": "dashes.md §6 case 7."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 7. ranges.md §3.2's G2 (chain) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "en-gb-dashes-cli-flag",
@@ -307,12 +327,15 @@
       "note": "dashes.md §6 case 9."
     },
     {
-      "id": "en-gb-dashes-descending-score",
-      "rule": "dashes",
+      "id": "en-gb-ranges-descending-score",
+      "rule": "ranges",
       "mode": "text",
       "in": "Scores: 20-10",
       "out": "Scores: 20-10",
-      "note": "dashes.md §6 case 10: guard G5."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 10: guard G5. ranges.md §3.2's G5 (non-decreasing) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "en-gb-dashes-dash-space-dash",
@@ -339,6 +362,17 @@
       "note": "dashes.md §6 case 20."
     },
     {
+      "id": "en-gb-ranges-cluster-multi-run",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "1914-1918--annexation",
+      "out": "1914-1918--annexation",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0 ownership correction: companion to `en-gb-dashes-cluster-multi-run`, covering the range-candidate half of the same cluster honestly. Explicitly opted in (`rules: {ranges: true}`): `1914-1918` sits in the same three-dash-run cluster as the `--` before `annexation`, so `ranges`' own cluster guard declines it too (ranges.md §3.1)."
+    },
+    {
       "id": "en-gb-dashes-t1-spacing-transition",
       "rule": "dashes",
       "mode": "text",
@@ -347,12 +381,34 @@
       "note": "dashes.md §6 case 24, idempotency defect (c). §5.2 names this locale explicitly: every locale whose parenthetical is -spaced and whose range is not `none` reproduced it. Guard T1 (§3.2 step 8) makes the tight `–` inert at distance 2, regardless of whether the dash was hyphen- or en/em-typed — spec 0.2.0 retired the authored-dash guard, so T1 alone is what declines this token now."
     },
     {
+      "id": "en-gb-ranges-t1-spacing-transition",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "a–1 - 1",
+      "out": "a–1 - 1",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0 ownership correction: companion to `en-gb-dashes-t1-spacing-transition`. Explicitly opted in (`rules: {ranges: true}`): the trailing `1 - 1` is a genuine range candidate, declined independently by G2 (\"no chain\", ranges.md §3.2) — its effective left neighbour is the earlier dash, regardless of `dashes`' own T1 guard on the first token."
+    },
+    {
       "id": "en-gb-dashes-t1-tight-sibling",
       "rule": "dashes",
       "mode": "text",
       "in": "a–1-1",
       "out": "a–1-1",
       "note": "dashes.md §6 case 26: the tight sibling, guard T1 firing at distance 1 — and also one cluster with two dash runs (step 7). Both guards read DASH membership, not authorship, so they hold exactly as before spec 0.2.0 retired the authored-dash guard; the case is retained because a port may implement either guard and must still produce this output."
+    },
+    {
+      "id": "en-gb-ranges-t1-tight-sibling",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "a–1-1",
+      "out": "a–1-1",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0 ownership correction: companion to `en-gb-dashes-t1-tight-sibling`. Explicitly opted in (`rules: {ranges: true}`): `1-1` is a genuine range candidate; the whole `–1-1` span is one cluster with two dash runs, so `ranges`' own cluster guard declines it too (ranges.md §3.1)."
     },
     {
       "id": "en-gb-dashes-t2-before-full-stop",
@@ -384,7 +440,15 @@
       "mode": "text",
       "in": "documents — PDFs — and you",
       "out": "documents – PDFs – and you",
-      "note": "dashes.md §6 case 41, spec 0.2.0. Spec 0.1.0's authored-dash guard (and a briefly-shipped 0.2.0 narrowing that preserved only length) is fully retired: en-GB's parenthetical is `en-spaced`, so the author's em dash is promoted to it exactly as a hyphen-typed one would be — length included. See dashes.md §7 item 14 for why length stopped being treated as reliably authorial. This is the M4 corpus's own shape (dashes.md §6 case 39), reopened deliberately: the operator judged the M4 finding reflected a false premise about dash length being authorial, not a property the pipeline had to preserve regardless."
+      "note": "dashes.md §6 case 41, spec 0.2.0. Spec 0.1.0's authored-dash guard (and a briefly-shipped 0.2.0 narrowing that preserved only length) is fully retired: en-GB's parenthetical is `en-spaced`, so the author's em dash is promoted to it exactly as a hyphen-typed one would be — length included. See dashes.md §7 item 14 for why length stopped being treated as reliably authorial. This is the M4 corpus's own shape (dashes.md §6 case 39), reopened deliberately: the operator judged the M4 finding reflected a false premise about dash length being authorial, not a property the pipeline had to preserve regardless. This fixture holds only for U+2014 — see `en-gb-dashes-authored-en-dash-tight-declined` for why U+2013 does not follow the same path since spec 0.6.0."
+    },
+    {
+      "id": "en-gb-dashes-authored-en-dash-tight-declined",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "documents–PDFs–and you",
+      "out": "documents–PDFs–and you",
+      "note": "dashes.md §3.4 P5 (spec 0.6.0): a pure single authored U+2013 is declined unconditionally, even though en-GB's `dash.parenthetical` target glyph is already `en-spaced` (U+2013). Before P5, this tight authored en-dash would have been *re-spaced* (glyph already correct, only spacing missing), the exact sibling of `en-gb-dashes-authored-em-dash-converts` above. P5 protects the whole token, spacing included — see dashes.md §8.8 for why the guard is unconditional rather than keyed to the locale's own target glyph."
     },
     {
       "id": "en-gb-dashes-mixed-run-converts",
@@ -395,100 +459,133 @@
       "note": "dashes.md §6 case 42, spec 0.2.0. A run mixing `DASH` glyphs (U+002D and U+2013 here) is a single token, promoted exactly as the equivalent hyphen run (`a--b`) would be — P3 admits a `k = 2` run regardless of spacing. Spec 0.1.0's authored-dash guard, which declined any run containing U+2013/U+2014 outright, is retired in 0.2.0 (dashes.md §3.2 step 2a)."
     },
     {
-      "id": "en-gb-dashes-authored-range-unbound",
-      "rule": "dashes",
+      "id": "en-gb-ranges-authored-range-unbound",
+      "rule": "ranges",
       "mode": "text",
       "in": "1914–1918",
       "out": "1914–1918",
-      "note": "dashes.md §6 case 43: an AUTHORED range gets NO joiners. The general principle, which is worth carrying into any new rule: THIS RULE NEVER MAKES AN EDIT WHOSE ENTIRE CONTENT IS INVISIBLE. A joiner may ride along with a conversion the author asked for, but it must never be the only thing an edit does — an invisible-only edit to already-correct text cannot be reviewed by hand at all, which is exactly what the M4 gate is."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 43: an AUTHORED range gets NO joiners. The general principle, which is worth carrying into any new rule: THIS RULE NEVER MAKES AN EDIT WHOSE ENTIRE CONTENT IS INVISIBLE. A joiner may ride along with a conversion the author asked for, but it must never be the only thing an edit does — an invisible-only edit to already-correct text cannot be reviewed by hand at all, which is exactly what the M4 gate is. ranges.md §3.3.1's invisible-edit test is the current normative source for why this stays unbound.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-gb-dashes-hyphen-range-bound",
-      "rule": "dashes",
+      "id": "en-gb-ranges-hyphen-range-bound",
+      "rule": "ranges",
       "mode": "text",
       "in": "1914-1918",
       "out": "1914⁠–⁠1918",
-      "note": "dashes.md §6 case 44, the pair to the previous case. A hyphen-typed range still converts AND still binds, because the joiners ride along with a visible conversion. The two outputs are visually identical yet only one may break across lines — §7.14 calls this the least comfortable consequence of the narrowing and the one most likely to be reported as a bug, so it is pinned in the suite rather than left to be discovered."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). ranges.md §6 row 44 (relocated from dashes.md §6 case 44 through spec 0.4.1), the pair to the previous case. A hyphen-typed range still converts AND still binds, because the joiners ride along with a visible conversion. The two outputs are visually identical yet only one may break across lines — §7.14 calls this the least comfortable consequence of the narrowing and the one most likely to be reported as a bug, so it is pinned in the suite rather than left to be discovered.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-gb-dashes-range-one-two-digits",
-      "rule": "dashes",
+      "id": "en-gb-ranges-one-two-digits",
+      "rule": "ranges",
       "mode": "text",
       "in": "Takes 5-10 days",
       "out": "Takes 5⁠–⁠10 days",
-      "note": "dashes.md §6 case 3a: G4's (1,2) branch — Lrun is one digit, Rrun is two digits with no leading zero. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). ranges.md §6 row 3a (relocated from dashes.md §6 case 3a through spec 0.4.1): G4's (1,2) branch — Lrun is one digit, Rrun is two digits with no leading zero. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-gb-dashes-range-nine-ten",
-      "rule": "dashes",
+      "id": "en-gb-ranges-nine-ten",
+      "rule": "ranges",
       "mode": "text",
       "in": "aged 9-10 years",
       "out": "aged 9⁠–⁠10 years",
-      "note": "dashes.md §6 case 3b: the largest one-digit run against the smallest two-digit run, the tightest point of the (1,2) branch. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). ranges.md §6 row 3b (relocated from dashes.md §6 case 3b through spec 0.4.1): the largest one-digit run against the smallest two-digit run, the tightest point of the (1,2) branch. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-gb-dashes-range-one-twelve",
-      "rule": "dashes",
+      "id": "en-gb-ranges-one-twelve",
+      "rule": "ranges",
       "mode": "text",
       "in": "chapters 1-12",
       "out": "chapters 1⁠–⁠12",
-      "note": "dashes.md §6 case 3c: (1,2). A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). ranges.md §6 row 3c (relocated from dashes.md §6 case 3c through spec 0.4.1): (1,2). A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-gb-dashes-range-zero-sixty",
-      "rule": "dashes",
+      "id": "en-gb-ranges-zero-sixty",
+      "rule": "ranges",
       "mode": "text",
       "in": "0-60 in six seconds",
       "out": "0⁠–⁠60 in six seconds",
-      "note": "dashes.md §6 case 3d: Lrun may be `0` — the leading-zero clause constrains Rrun only. `before` is NONE here, so G1 and G3 pass. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). ranges.md §6 row 3d (relocated from dashes.md §6 case 3d through spec 0.4.1): Lrun may be `0` — the leading-zero clause constrains Rrun only. `before` is NONE here, so G1 and G3 pass. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-gb-dashes-range-two-one-digits-rejected",
-      "rule": "dashes",
+      "id": "en-gb-ranges-two-one-digits-rejected",
+      "rule": "ranges",
       "mode": "text",
       "in": "won 10-7",
       "out": "won 10-7",
-      "note": "dashes.md §6 case 3e: (2,1). G4's new branch is DIRECTIONAL and does not admit it — G4 gets there before G5. A port that reads the branch as \"small magnitudes are fine\" and also allows (2,1) breaks G5 without touching it: G5's left-to-right comparison would conclude \"10\" < \"7\" because '1' < '7', and nothing in G5 would look wrong (dashes.md §3.3, G4)."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 3e: (2,1). G4's new branch is DIRECTIONAL and does not admit it — G4 gets there before G5. A port that reads the branch as \"small magnitudes are fine\" and also allows (2,1) breaks G5 without touching it: G5's left-to-right comparison would conclude \"10\" < \"7\" because '1' < '7', and nothing in G5 would look wrong (dashes.md §3.3, G4). ranges.md §3.2's G5 (non-decreasing) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-gb-dashes-range-leading-zero-rejected",
-      "rule": "dashes",
+      "id": "en-gb-ranges-leading-zero-rejected",
+      "rule": "ranges",
       "mode": "text",
       "in": "code 9-05",
       "out": "code 9-05",
-      "note": "dashes.md §6 case 3f: (1,2) but Rrun begins with U+0030. This is the pair G5 could not have caught — `05` has the value 5, so the pair is descending, and G5 is specified only for equal-length runs. The leading-zero clause is what keeps G5 vacuous in the new branch."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 3f: (1,2) but Rrun begins with U+0030. This is the pair G5 could not have caught — `05` has the value 5, so the pair is descending, and G5 is specified only for equal-length runs. The leading-zero clause is what keeps G5 vacuous in the new branch. ranges.md §3.2's G4 (run lengths) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-gb-dashes-range-phone-seven-digits",
-      "rule": "dashes",
+      "id": "en-gb-ranges-phone-seven-digits",
+      "rule": "ranges",
       "mode": "text",
       "in": "Call 555-1234",
       "out": "Call 555-1234",
-      "note": "dashes.md §6 case 3g: (3,4), neither branch. The phone-number case G4 exists for."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 3g: (3,4), neither branch. The phone-number case G4 exists for. ranges.md §3.2's G2 (chain) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-gb-dashes-range-one-three-digits-rejected",
-      "rule": "dashes",
+      "id": "en-gb-ranges-one-three-digits-rejected",
+      "rule": "ranges",
       "mode": "text",
       "in": "Call 1-800 now",
       "out": "Call 1-800 now",
-      "note": "dashes.md §6 case 3h: (1,3). The new branch requires length(Rrun) = 2 exactly, so a toll-free number is still protected."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 3h: (1,3). The new branch requires length(Rrun) = 2 exactly, so a toll-free number is still protected. ranges.md §3.2's G4 (run lengths) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-gb-dashes-range-abbreviated-years-rejected",
-      "rule": "dashes",
+      "id": "en-gb-ranges-abbreviated-years-rejected",
+      "rule": "ranges",
       "mode": "text",
       "in": "the 2020-24 season",
       "out": "the 2020-24 season",
-      "note": "dashes.md §6 case 3i: (4,2). The abbreviated year range remains a recorded miss (dashes.md §7.3); the widening is directional and does not reach it."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 3i: (4,2). The abbreviated year range remains a recorded miss (dashes.md §7.3); the widening is directional and does not reach it. ranges.md §3.2's G4 (run lengths) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-gb-dashes-range-compound-label-known-wrong",
+      "id": "en-gb-dashes-range-compound-label-safe-default",
       "rule": "dashes",
       "mode": "text",
       "in": "Figure 5-10",
-      "out": "Figure 5⁠–⁠10",
-      "note": "PINNED AS KNOWN-WRONG, dashes.md §6 case 3j and §7.11. A compound label means \"chapter 5, figure 10\" — it is not a range — and converting the hyphen to an en dash is incorrect. It is asserted here deliberately so the exposure is visible in the conformance suite rather than discovered in someone's content. §7.11 records that the exposure is pre-existing rather than introduced: `Figure 3-7` is (1,1) and has converted since the first version of this rule; the (1,2) branch widens it to `Figure 5-10`. Separating a label from a range needs the preceding noun (Figure, Table, Section), an open-ended per-locale word list the schema deliberately does not carry. Same standing as the `rock 'n' roll` quotes cases."
+      "out": "Figure 5-10",
+      "note": "spec 0.5.0: compound labels (`chapter 5, figure 10`, not a range) are no longer converted with default options. `dashes` never processes a digit-flanked token (dashes.md 1, 3.4), and `ranges` — the only rule that could convert this shape — is off by default (ranges.md 1). Canonical fixtures no longer assert the converted form as a successful output under any option set; what the explicit opt-in (`rules: {ranges: true}`) does with this same input is a documented limitation of that rule, characterized in tests/rules/ranges.test.ts, not portable conformance evidence."
     },
     {
       "id": "en-gb-hyphen-empty-lists-noop",
@@ -535,8 +632,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "\"He said 'no' to me,\" she noted.",
-      "out": "‘He said “no” to me,’ she noted.",
-      "note": "quotes.md §6 case 2, inverted: depth 1 → single, depth 2 → double. Compare en-US-quotes-nested, same input."
+      "out": "‘He said 'no' to me,’ she noted.",
+      "note": "quotes.md §6 case 2, inverted: depth 1 → single, depth 2 → double. Compare en-US-quotes-nested, same input. The inner 'no' (2 letters, space-flanked, no matching elisionIdioms entry — en-GB has none) is preserved by the general ambiguous-medial-span veto (quotes.md §3.2) rather than paired as a nested quotation: a documented false negative, not an unresolved gap (History: this was open per quotes.md §7 item 8 through spec 0.4.1, closed by the general veto in spec 0.5.0)."
     },
     {
       "id": "en-gb-quotes-nested-inverted-input",
@@ -615,8 +712,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "rock 'n' roll",
-      "out": "rock ‘n’ roll",
-      "note": "quotes.md §7.1. The output is accidentally right here — not because a secondary level was selected, but because en-GB declares the single pair as PRIMARY and the pair is at depth 1."
+      "out": "rock 'n' roll",
+      "note": "quotes.md §7.1. The output is accidentally right here — not because a secondary level was selected, but because en-GB declares the single pair as PRIMARY and the pair is at depth 1. spec 0.5.0: en-GB has no cited elisionIdioms entry for this idiom (quotes.md §7 item 8 — elevated ambiguity risk, since en-GB's primary pair is itself the single quote). The general ambiguous-medial-span veto now preserves the marks as literal U+0027 instead of pairing them as an ordinary quotation, which is the pre-0.5.0 behaviour this fixture used to assert. AUDIT_REMEDIATION_AND_RELEASE_PLAN.md §3.1 named exactly this locale as an affected case."
     },
     {
       "id": "en-gb-quotes-elision-inside-quotation",
@@ -1112,7 +1209,7 @@
       "mode": "text",
       "in": "E. B. White wrote it",
       "out": "E. B. White wrote it",
-      "note": "THE en-US/en-GB DIVERGENCE: en-GB declares bindInitials: false, because no British authority consulted prescribes a non-breaking space between initials. The same input in en-US.json becomes E. B. White."
+      "note": "THE en-US/en-GB DIVERGENCE: en-GB declares initialBinding: \"none\" (spec 0.6.0: the field used to be the boolean bindInitials, false), because no British authority consulted prescribes a non-breaking space between initials. The same input in en-US.json becomes E. B. White (initialBinding: \"chain\")."
     },
     {
       "id": "en-gb-nbsp-empty-lists",
@@ -1136,7 +1233,10 @@
       "mode": "text",
       "in": "\"We walked 5 km -- maybe more...\" she said, \"in 1914-1918 weather.\"",
       "out": "‘We walked 5 km – maybe more…’ she said, ‘in 1914⁠–⁠1918 weather.’",
-      "note": "The same input as en-US-nbsp-prose-everything. Two divergences are visible at once: single-first quotation marks, and a spaced en dash where en-US sets a tight em dash."
+      "note": "The same input as en-US-nbsp-prose-everything. Two divergences are visible at once: single-first quotation marks, and a spaced en dash where en-US sets a tight em dash. spec 0.5.0: explicit `rules: {ranges: true}` added — this fixture's embedded numeric range (e.g. 1914-1918) is off by default now that range detection moved to the `ranges` rule; the fixture keeps its original comprehensive nbsp-positioning coverage by opting in explicitly rather than dropping the range from the sentence.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "en-gb-nbsp-prose-report",

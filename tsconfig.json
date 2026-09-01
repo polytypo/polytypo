@@ -22,5 +22,11 @@
     "outDir": "dist",
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts"]
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  // tests/packaging imports "polytypo"/"polytypo/text"/etc by their published package path via
+  // Node/TS self-reference, resolved through package.json "exports" to dist/*.d.ts. That only
+  // exists after `npm run build`, so it has its own tsconfig.json (moduleResolution: bundler,
+  // same as here) and is excluded from the plain `npx tsc --noEmit` used everywhere else, which
+  // must stay buildable from a fresh checkout with no dist/ present. See npm run test:packaging.
+  "exclude": ["tests/packaging/**"]
 }

@@ -1,7 +1,7 @@
 import { toCodePoints } from "../engine/codepoints.js";
 import { isLetter, isUpper, simpleUppercase } from "../engine/unicode.js";
 import { PolytypoError } from "../errors.js";
-import type { Edit, LocaleData, Rule, RuleContext } from "../types.js";
+import type { Edit, InitialBinding, LocaleData, Rule, RuleContext } from "../types.js";
 import { LINE_MARKER, NONE } from "../engine/sentinels.js";
 
 /**
@@ -35,7 +35,7 @@ const ELLIPSIS = 0x2026;
 /** Not a code point: stands for "index out of range" (spec 3.1 `NONE`). */
 
 /** Out-of-range reads yield `NONE`, which is the spec's own boundary value. */
-function at(cp: readonly number[], i: number): number {
+export function at(cp: readonly number[], i: number): number {
   const value = cp[i];
   return value === undefined ? NONE : value;
 }
@@ -80,7 +80,7 @@ function isOtherSpace(cp: number): boolean {
  * 3.1 `SPACELIKE` — and `NOBREAK ⊂ SPACELIKE`. Every boundary test in this rule uses this
  * predicate and never U+0020 alone; that single decision is what makes the rule idempotent.
  */
-function isSpaceLike(cp: number): boolean {
+export function isSpaceLike(cp: number): boolean {
   return cp === SPACE || isNoBreak(cp) || cp === TAB || isOtherSpace(cp) || isBreak(cp);
 }
 
@@ -104,7 +104,7 @@ interface QuoteTarget {
 }
 
 /** Locale data, resolved to code points once per call. No module-level state (ARCHITECTURE.md 7). */
-interface Prepared {
+export interface Prepared {
   readonly beforePunctuation: readonly number[];
   readonly narrowBeforePunctuation: readonly number[];
   readonly shortWords: readonly (readonly number[])[];
@@ -113,7 +113,7 @@ interface Prepared {
   readonly beforeNumber: readonly (readonly number[])[];
   readonly beforeWord: readonly (readonly number[])[];
   readonly symbols: readonly (readonly number[])[];
-  readonly bindInitials: boolean;
+  readonly initialBinding: InitialBinding;
   readonly opens: readonly number[];
   readonly closes: readonly number[];
   readonly quotePairs: readonly QuoteTarget[];
@@ -146,7 +146,7 @@ function prepareList(entries: readonly string[]): (readonly number[])[] {
   return out;
 }
 
-function prepare(locale: LocaleData): Prepared {
+export function prepare(locale: LocaleData): Prepared {
   const data = locale.nbsp;
   const beforePunctuation = data.beforePunctuation.map((entry) =>
     singleCodePoint(entry, "beforePunctuation"),
@@ -201,7 +201,7 @@ function prepare(locale: LocaleData): Prepared {
     beforeNumber: prepareList(data.beforeNumber),
     beforeWord: prepareList(data.beforeWord),
     symbols: prepareList(data.afterSymbols),
-    bindInitials: data.bindInitials,
+    initialBinding: data.initialBinding,
     opens,
     closes,
     quotePairs,
@@ -209,7 +209,7 @@ function prepare(locale: LocaleData): Prepared {
 }
 
 /** 3.1 `OPENISH` / `CLOSEISH`: the ASCII brackets plus every locale quote glyph. */
-function isOpenish(prep: Prepared, cp: number): boolean {
+export function isOpenish(prep: Prepared, cp: number): boolean {
   return contains(prep.opens, cp);
 }
 
@@ -414,7 +414,7 @@ function symbolsSubRule(cp: readonly number[], prep: Prepared, claims: Claims): 
 }
 
 /** 3.9: one uppercase letter, one full stop, at a token start. */
-function isInitialAt(cp: readonly number[], prep: Prepared, p: number): boolean {
+export function isInitialAt(cp: readonly number[], prep: Prepared, p: number): boolean {
   if (p < 0) return false;
   if (!isUpper(at(cp, p))) return false;
   if (at(cp, p + 1) !== FULL_STOP) return false;
@@ -428,26 +428,51 @@ function isInitialAt(cp: readonly number[], prep: Prepared, p: number): boolean 
  * shipped `de-DE` data turns `z. B. Berlin` into `z.⍽B.⍽Berlin` — a false positive on
  * ordinary prose. `А. С. Пушкин` is unaffected: `cp[p-3]` there is uppercase.
  */
-function isAbbreviationTail(cp: readonly number[], p: number): boolean {
+export function isAbbreviationTail(cp: readonly number[], p: number): boolean {
   if (!isSpaceLike(at(cp, p - 1))) return false;
   if (at(cp, p - 2) !== FULL_STOP) return false;
   const head = at(cp, p - 3);
   return isLetter(head) && !isUpper(head);
 }
 
-/** N7 — 3.9 `bindInitials`. */
+/**
+ * 3.9 chain confirmation: is the initial whose letter sits at `p` itself immediately preceded by
+ * another initial (`cp[p-1]` space-like, `cp[p-2]` a full stop, and `isInitialAt(p-3)`)? Used only
+ * by `"chain"` mode's C1, to require Chicago's own "two or more initials" before the space
+ * leading into a following non-initial word (a candidate surname) is bound — see nbsp.md §3.9.
+ */
+export function hasPrecedingInitial(cp: readonly number[], prep: Prepared, p: number): boolean {
+  const gap = at(cp, p - 1);
+  if (gap !== SPACE && gap !== NBSP) return false;
+  if (at(cp, p - 2) !== FULL_STOP) return false;
+  return isInitialAt(cp, prep, p - 3);
+}
+
+/** N7 — 3.9 `initialBinding`. */
 function initialsSubRule(cp: readonly number[], prep: Prepared, claims: Claims): void {
-  if (!prep.bindInitials) return;
+  const mode: InitialBinding = prep.initialBinding;
+  if (mode === "none") return;
   for (let q = 0; q < cp.length; q += 1) {
     const here = cp[q] as number;
     if (here !== SPACE && here !== NBSP) continue;
     // C1 — an initial on the left and an uppercase letter on the right, unless C1-a declines.
-    const c1 =
+    const leftInitialP = q - 2;
+    const c1Shape =
       at(cp, q - 1) === FULL_STOP &&
-      isInitialAt(cp, prep, q - 2) &&
+      isInitialAt(cp, prep, leftInitialP) &&
       isUpper(at(cp, q + 1)) &&
-      !isAbbreviationTail(cp, q - 2);
-    // C2 — a word on the left and two consecutive initials on the right (`Пушкин А. С.`).
+      !isAbbreviationTail(cp, leftInitialP);
+    // `"chain"` mode additionally requires either that the right side is itself an initial (the
+    // between-initials case, e.g. `E.|B.`, always safe) or that the left initial is itself
+    // preceded by another initial (a confirmed chain of two or more, e.g. `E. B.|White`) before
+    // binding to a plain following word. `"single"` mode keeps the unconditional shape check —
+    // that is the behaviour `fr`/`fr-CA` need for `N. Bourbaki`/`M. Dupont` (nbsp.md §3.9,
+    // Jacques André) and cannot structurally distinguish from a sentence-boundary collision.
+    const c1 =
+      c1Shape &&
+      (mode === "single" || isInitialAt(cp, prep, q + 1) || hasPrecedingInitial(cp, prep, leftInitialP));
+    // C2 — a word on the left and two consecutive initials on the right (`Пушкин А. С.`). Already
+    // requires two initials by construction, so it is unaffected by `"chain"` vs `"single"`.
     const rightSpace = at(cp, q + 3);
     const c2 =
       isLetter(at(cp, q - 1)) &&
@@ -510,7 +535,7 @@ function forwardBindingSubRule(
     // load-bearing: without it Russian `г.` would be inert, contradicting §6 case 13a.
     if (
       !wantsDigit &&
-      prep.bindInitials &&
+      prep.initialBinding !== "none" &&
       k === 2 &&
       isUpper(w[0] as number) &&
       w[1] === FULL_STOP

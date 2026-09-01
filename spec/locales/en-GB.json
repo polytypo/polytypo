@@ -2,8 +2,17 @@
   "locale": "en-GB",
   "name": "English (United Kingdom)",
   "quotes": {
-    "primary": { "open": "‘", "close": "’", "innerSpace": "none" },
-    "secondary": { "open": "“", "close": "”", "innerSpace": "none" }
+    "primary": {
+      "open": "‘",
+      "close": "’",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "“",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": []
   },
   "dash": {
     "parenthetical": "en-spaced",
@@ -53,7 +62,7 @@
     "beforeNumber": [],
     "beforeWord": [],
     "afterSymbols": [],
-    "bindInitials": false
+    "initialBinding": "none"
   },
   "sources": [
     {
@@ -84,7 +93,7 @@
       "rule": "nbsp",
       "cite": "University of Oxford Style Guide, “Specific abbreviations — people’s initials”",
       "url": "https://www.ox.ac.uk/about/the-university/brand/style-guide/punctuation",
-      "note": "`bindInitials` is false. Oxford says only “Use a space to separate each initial” (examples: J R R Tolkien, C S Lewis — note, without full stops). No British authority consulted prescribes a non-breaking space there, so the true value is set rather than inferred from the American rule. Deliberate divergence from en-US, where Chicago states the nonbreaking space explicitly."
+      "note": "`initialBinding` is \"none\" (spec 0.6.0: the field used to be the boolean bindInitials, false). Oxford says only “Use a space to separate each initial” (examples: J R R Tolkien, C S Lewis — note, without full stops). No British authority consulted prescribes a non-breaking space there, so the true value is set rather than inferred from the American rule. Deliberate divergence from en-US, where Chicago states the nonbreaking space explicitly."
     },
     {
       "rule": "nbsp",

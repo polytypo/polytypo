@@ -19,9 +19,10 @@ this whole plan exists to avoid.
 
 - `spec/` repo: `locales/`, `rules/`, `fixtures/`, `schema/locale.schema.json`, `VERSION`
 - `locale.schema.json` covers quotes, dash, nbsp, sources (PLAN.md §6 shape)
-- `rules/order.json` with the v1 rule ids and their defaults — **eight**, not the seven this line
-  originally said: `spaces` `ellipsis` `dashes` `hyphen` `quotes` `apostrophe` `symbols` `nbsp`.
-  `hyphen` was added at order 35 (corrected 2026-08-15)
+- `rules/order.json` with the v1 rule ids and their defaults — **nine**, not the seven this line
+  originally said: `spaces` `ellipsis` `ranges` `dashes` `hyphen` `quotes` `apostrophe` `symbols`
+  `nbsp`. `hyphen` was added at order 35 (corrected 2026-08-15); `ranges` was split out of
+  `dashes` at order 25, off by default (corrected spec 0.5.0)
 - `rules/<id>.md` stubs — semantics written before implementation, not after
 - `rules/locale-resolution.md` — the fallback algorithm (ARCHITECTURE.md §4.7)
 - Spec CI: schema validation + NFC check on locale files + escaped-mirror generation for fixtures
@@ -35,11 +36,14 @@ this whole plan exists to avoid.
 - Locale data embedded in the build output, loaded in exactly one place (`scripts/gen-locales.mjs`)
   and never read from disk at runtime — **delivered**
 
-> **Corrected 2026-08-15.** This item read "Spec vendored as a submodule; locale data embedded in the
-> build output" and counted the whole line as delivered. The embedding half is delivered; the
-> submodule half **is not, and was never M1's to deliver** — the project is still one repo, `spec/`
-> is an ordinary directory, there is no `.gitmodules`, and spec distribution remains open decision
-> #2 below. Vendoring becomes real work at the multi-repo split, which has not happened.
+> **Corrected 2026-08-15, transport decision updated 2026-08-27.** This item read "Spec vendored as
+> a submodule; locale data embedded in the build output" and counted the whole line as delivered.
+> The embedding half is delivered; vendoring the spec into each runtime repository **is not, and was
+> never M1's to deliver** — the project is still one repo, `spec/` is an ordinary directory, there is
+> no `.gitmodules`. Spec distribution is no longer an open decision (see "Open decisions" #2 below):
+> the chosen transport is an automated, vendored, content-hash-verified snapshot, not a submodule —
+> full design in `docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md` §3–§4. Vendoring becomes real work at the
+> multi-repo split, which has not happened.
 - Unknown locale throws with `POLYTYPO_UNKNOWN_LOCALE`
 - Conformance runner + `fast-check` idempotency property, every rule × locale
 
@@ -78,7 +82,19 @@ this document's.
 - README: locale table, source citations, honest comparison to `typograf` / `JoliTypo` / `typopo`,
   and the five-line contribution rule (PLAN.md §6.2)
 - MIT, GitHub Actions CI (schema + conformance + property + build)
-- Tag `spec@1.0.0`; publish `polytypo` to npm
+- Two distinct tag identities, both currently `1.0.0` in value but never interchangeable: the
+  canonical spec tag `spec-v1.0.0` and the npm package tag `v1.0.0`. For this single-repo v1, an
+  operator creates and pushes `spec-v1.0.0` at the release commit first, then creates and pushes
+  `v1.0.0` at the exact same commit — only the `v*` push triggers `.github/workflows/release.yml`.
+  Before building or publishing anything, that workflow verifies both tags resolve to the same
+  commit (`scripts/verify-release-tag.mjs` for the package tag, `scripts/verify-spec-tag.mjs`,
+  deriving the required tag name from `spec/VERSION`, for the spec tag); pushing `spec-v1.0.0`
+  alone publishes nothing. Once a remote exists, tag protection against force-moving either tag
+  family is a required repository setting (`docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md` §4.4) — not
+  yet applicable, since no remote is configured. The dispatch automation that opens per-runtime
+  update PRs on a `spec-v*` push (`docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md` §3–§4,
+  `docs/AUDIT_REMEDIATION_AND_RELEASE_PLAN.md` §8.4) is future, post-split work — not implemented
+  in this single-repo v1
 - No downloads badge until the number is non-trivial
 
 **Phase A total: ~10 focused days.** Longer than PLAN.md's original week; the delta is M0 and
@@ -104,9 +120,10 @@ Per-port checklist — this is the whole job, and it is deliberately mechanical:
       script over each runtime's machine-readable conformance report, never by hand
       (ARCHITECTURE.md §6.2). Building it *before* the port means the port's gaps are visible from
       its first red run instead of reconstructed afterwards
-- [ ] Vendor `spec` per whatever open decision #2 settles on — submodule or spec package; embed
-      locale data in the package either way
-- [ ] Port the engine: code-point array, no regex, fixed rule order, all eight rules
+- [ ] Vendor `spec` per the chosen automated snapshot model (`docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md`
+      §3–§4: content-hash-verified `vendor/polytypo-spec/`, dispatched on `spec-vX.Y.Z` tags — not a
+      submodule, not a per-ecosystem spec package); embed locale data in the package
+- [ ] Port the engine: code-point array, no regex, fixed rule order, all nine rules (including `ranges`, off by default)
 - [ ] Port the three modes with the runtime's own HTML/Markdown parser; same required `dialect`
 - [ ] Same public shape, idiomatic naming; the same seven error codes
 - [ ] Conformance suite green; idempotency property test green
@@ -135,14 +152,13 @@ Carried from PLAN.md §10, plus what multi-runtime adds:
 1. **Repo visibility** — public from commit one, or private until M4? Public helps the
    case-study narrative; private avoids a half-correct French locale shipping under the
    author's name.
-2. **Spec distribution** — git submodule (recommended, ARCHITECTURE.md §3.1) or publishing
-   the spec as a package per ecosystem (`@polytypo/spec`, `polytypo-spec` on PyPI, …).
-   Submodule is simpler and has no release choreography; per-ecosystem packages are friendlier
-   to outside contributors. ~~Decide before M0.~~ **Still open, and no longer urgent
-   (2026-08-15):** M0 shipped without it and nothing has been foreclosed, because the project is
-   still a single repo — `spec/` is a plain directory, `scripts/gen-locales.mjs` reads it from the
-   working tree, and that is correct under either outcome. The real deadline is the multi-repo
-   split, i.e. before the first port. ARCHITECTURE.md §3.1 previously asserted the submodule as
-   settled fact; that overreach has been corrected there.
+2. **Spec distribution** — ~~open~~ **resolved (2026-08-27):** an automated, vendored,
+   content-hash-verified snapshot (`vendor/polytypo-spec/`), dispatched from the canonical
+   repository on every `spec-vX.Y.Z` tag — not a git submodule, not a per-ecosystem published
+   package, not a consumer-time git dependency. Full manifest format, hash algorithm, and
+   dispatch/verification flow: `docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md` §3–§4. ARCHITECTURE.md
+   §3.1 reflects this decision. Nothing in the current single-repo state depends on it yet —
+   `scripts/gen-locales.mjs` reads `spec/locales/*.json` from the working tree, unchanged until the
+   multi-repo split executes.
 3. **First port** — Python (fast feedback) or Go (harshest portability test). Not needed
    until Phase B.

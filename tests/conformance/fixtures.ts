@@ -5,7 +5,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Mode, Options } from "../../src/types";
+import type { Dialect, Mode, Options } from "../../src/types";
 import type { PolytypoErrorCode } from "../../src/errors";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -17,11 +17,18 @@ export const RESOLUTION_FILE = path.join(FIXTURES_DIR, "locale-resolution.json")
 const RESOLUTION_NAME = "locale-resolution.json";
 
 const MODES: readonly string[] = ["text", "html", "markdown"];
+const DIALECTS: readonly string[] = ["commonmark", "mdx"];
 
 export interface ConformanceCase {
   readonly id: string;
   readonly rule: string;
   readonly mode: Mode;
+  /**
+   * Required exactly when `mode` is `"markdown"`, forbidden otherwise — mirrors
+   * spec/schema/fixtures.schema.json's `allOf` conditional (modes.md 3.7.1: `dialect` has no
+   * default and detection is forbidden, so a fixture must name it exactly as a caller would).
+   */
+  readonly dialect?: Dialect | undefined;
   readonly in: string;
   readonly out?: string | undefined;
   readonly throws?: PolytypoErrorCode | undefined;
@@ -83,11 +90,32 @@ function parseRuleOverrides(value: unknown, where: string): Options["rules"] {
   return value as Options["rules"];
 }
 
+function parseDialect(value: unknown, mode: Mode, where: string): Dialect | undefined {
+  const dialect = optionalString(value, `${where} "dialect"`);
+  if (mode === "markdown") {
+    if (dialect === undefined) {
+      throw new Error(
+        `${where}: "dialect" is required when "mode" is "markdown" (modes.md 3.7.1 — no ` +
+          `default, detection is forbidden, a fixture must name it exactly as a caller would)`,
+      );
+    }
+    if (!DIALECTS.includes(dialect)) {
+      throw new Error(`${where}: unknown dialect "${dialect}"`);
+    }
+    return dialect as Dialect;
+  }
+  if (dialect !== undefined) {
+    throw new Error(`${where}: "dialect" is only meaningful when "mode" is "markdown"`);
+  }
+  return undefined;
+}
+
 function parseCase(raw: unknown, where: string): ConformanceCase {
   if (!isRecord(raw)) throw new Error(`${where}: expected an object`);
   const id = requireString(raw.id, `${where} "id"`);
   const mode = requireString(raw.mode, `${where} "mode"`);
   if (!MODES.includes(mode)) throw new Error(`${where}: unknown mode "${mode}"`);
+  const dialect = parseDialect(raw.dialect, mode as Mode, where);
   const out = optionalString(raw.out, `${where} "out"`);
   const throws = optionalString(raw.throws, `${where} "throws"`);
   if ((out === undefined) === (throws === undefined)) {
@@ -97,6 +125,7 @@ function parseCase(raw: unknown, where: string): ConformanceCase {
     id,
     rule: requireString(raw.rule, `${where} "rule"`),
     mode: mode as Mode,
+    dialect,
     in: requireString(raw.in, `${where} "in"`),
     out,
     throws: throws as PolytypoErrorCode | undefined,

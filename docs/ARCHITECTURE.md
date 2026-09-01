@@ -60,12 +60,18 @@ about HTML or Markdown. L3 does not exist yet and is not designed for.
 
 ### L1 — engine
 
-Per runtime, the eight rules of `spec/rules/order.json` over a plain string. No I/O, no env, no
+Per runtime, the nine rules of `spec/rules/order.json` over a plain string. No I/O, no env, no
 clock, no locale-dependent library calls (see §4.6). Pure function in, pure string out.
 
-> **Corrected 2026-08-15.** This read "~7 rules". The count is eight and it is not approximate —
+> **Corrected 2026-08-15.** This read "~7 rules". The count was eight and it was not approximate —
 > `order.json` is the source of truth and `hyphen` was added at order 35. Rule count is not a
-> rounding matter: a port that implements seven of eight fails conformance.
+> rounding matter: a port that implements seven of eight failed conformance.
+>
+> **Corrected spec 0.5.0.** The count is now nine: `ranges` (order 25, off by default) was split
+> out of `dashes`, which retains only parenthetical-dash processing. A port implementing eight of
+> nine — omitting `ranges` — is non-conforming even though `ranges` defaults off, exactly as
+> omitting any other default-off behaviour would be; "off by default" is a runtime option, not
+> licence to skip implementing the rule.
 
 ### L2 — modes
 
@@ -78,15 +84,15 @@ and the reassembly guarantee do not**, and both live in the spec.
 
 ## 3. Repository layout
 
-GitHub org `polytypo`. **Multi-repo, one repo per runtime, plus the spec.**
+GitHub org `polytypo`. **Multi-repo, one repo per runtime, plus the canonical repo.**
 
 ```
-polytypo/spec          ← canonical: locale data, rule semantics, fixtures, schema
-polytypo/polytypo-js   ← npm
-polytypo/polytypo-php  ← packagist
-polytypo/polytypo-py   ← pypi
-polytypo/polytypo-rb   ← rubygems
-polytypo/polytypo-go   ← go module
+polytypo/polytypo         ← canonical: spec, fixtures, schema, brand, public site
+polytypo/polytypo-js      ← npm
+polytypo/polytypo-php     ← packagist
+polytypo/polytypo-python  ← pypi
+polytypo/polytypo-ruby    ← rubygems
+polytypo/polytypo-go      ← go module
 ```
 
 Rationale for multi-repo over a monorepo: every one of these ecosystems expects a repo root
@@ -94,40 +100,40 @@ it can consume directly (`go get` on a subdirectory is friction; Packagist and R
 assume a repo). A polyglot monorepo also means every runtime's CI runs on every locale-data
 typo. Multi-repo costs one thing — spec distribution — and §3.1 solves that.
 
+**Until the multi-repo split happens**, "each implementation repo" describes an intended end
+state, not the present layout. This section's repo table is a plan, not a description. The
+implementation-ready design — inventory, migration runbook, and acceptance checklist — is
+`docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md`; it is authoritative on execution detail and supersedes
+this section wherever the two might read as disagreeing.
+
 ### 3.1 How each runtime gets the spec
 
-**Vendored, pinned, never fetched at runtime.**
+**Vendored, pinned, content-hash-verified, and never fetched at runtime — decided, not open.**
 
-> **Corrected 2026-08-15.** This section stated as settled fact that "`spec` **is** a git submodule
-> at `vendor/spec` in each implementation repo". It is not, in two senses. Factually: the project is
-> currently a **single repo**, `spec/` is an ordinary directory in it, and there is no `.gitmodules`.
-> Procedurally: the submodule-vs-package question is an **open operator decision** (ROADMAP.md "Open
-> decisions" #2) and this document had no authority to close it by assertion. The bullets below now
-> separate what is decided from what is not.
+> **Corrected 2026-08-27.** This section previously left the submodule-vs-package transport
+> question open (ROADMAP.md "Open decisions" #2). It is resolved: `docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md`
+> §3 specifies an automated, vendored, content-hashed snapshot (`vendor/polytypo-spec/`) as the
+> transport, dispatched from the canonical repository on every `spec-vX.Y.Z` tag and verified by
+> each runtime before it is applied — neither a git submodule nor a consumer-time git dependency.
+> That document is the authoritative source for the manifest format, the hash algorithm, and the
+> dispatch/verification flow; this section states the decision and its consequences only.
 
-Decided, and independent of how the spec travels:
-
-* The spec is **vendored and pinned** into each implementation repo — a fixed spec version, chosen
-  deliberately, never resolved at build time and never fetched over the network.
-* A build step copies `spec/locales/*.json` into the runtime's package payload, so the
-  published artifact is self-contained and does **not** require the vendored spec at install time,
-  whichever transport it arrives by.
-* Locale data is **embedded** in the shipped artifact (`import` in JS, `embed.FS` in Go,
-  package data in Python/Ruby/PHP). No filesystem reads at runtime, anywhere, ever — this is
-  what keeps the library usable in browsers, edge runtimes, and serverless.
-* Each implementation's README states the spec version it implements. `polytypo-js@1.4.0`
-  implementing `spec@1.2.0` is normal and expected.
-
-Open, and not to be resolved here:
-
-* **The transport.** Either a git submodule at `vendor/spec` pinned to a tag (the original
-  recommendation: simplest, no release choreography) or a published spec package per ecosystem
-  (`@polytypo/spec`, `polytypo-spec` on PyPI, …: friendlier to outside contributors). Operator
-  decision, ROADMAP.md "Open decisions" #2. Until it is taken, nothing in this repo depends on the
-  answer: `scripts/gen-locales.mjs` reads `spec/locales/*.json` from the working tree, which is
-  correct under either outcome.
-* **Until the multi-repo split happens**, "each implementation repo" describes an intended end
-  state, not the present layout. §3's repo table is a plan, not a description.
+* The spec is **vendored, pinned, and hash-verified** into each implementation repo — a fixed spec
+  version, chosen deliberately by merging a reviewed update PR, never resolved at build time and
+  never fetched over the network during ordinary use.
+* A build step copies the vendored locale data into the runtime's package payload, so the published
+  artifact is self-contained and does not require the vendored spec directory at install time.
+* Locale data is **embedded** in the shipped artifact (`import` in JS, `embed.FS` in Go, package
+  data in Python/Ruby/PHP). No filesystem reads at runtime, anywhere, ever — this is what keeps the
+  library usable in browsers, edge runtimes, and serverless.
+* Each implementation's README, and a programmatic export, state the spec version it implements.
+  The npm package `polytypo@1.4.0` implementing spec 1.2.0 is normal and expected — the package
+  name (`polytypo`), the repository name (`polytypo-js`), and the spec's own tag syntax
+  (`spec-vX.Y.Z`, never a name a registry would publish) are three distinct identifiers and are not
+  interchangeable.
+* Until the multi-repo split executes, `scripts/gen-locales.mjs` reads `spec/locales/*.json` from
+  the working tree directly, which remains correct in the single-repo state and requires no change
+  ahead of the split.
 
 ### 3.2 Order of construction
 
@@ -256,6 +262,11 @@ CMS settings UI. Renaming one is a breaking change. Choose names once.
 > `hyphen` `quotes` `apostrophe` `symbols` `nbsp`. `abbreviations` is a *field of the locale file*
 > that the `nbsp` rule reads — not a rule. Since ids are public API, an illustrative id that does
 > not exist is a naming precedent nobody agreed to; `order.json` is the only list.
+>
+> **Corrected spec 0.5.0.** Nine real ids now: `spaces` `ellipsis` `ranges` `dashes` `hyphen`
+> `quotes` `apostrophe` `symbols` `nbsp`. `ranges` (order 25) is the first rule id whose
+> `RULE_DEFAULTS` entry is off — a caller opts in explicitly (`{ rules: { ranges: true } }`); it
+> is still a full rule id subject to the same public-API stability as the other eight.
 
 Adding a rule is therefore a mechanical, five-step operation, which is the extensibility
 goal stated in the brief:
@@ -312,6 +323,9 @@ One flat, boring format, consumable by a ~50-line runner in any language:
 
 Rules for fixtures:
 
+* The root `"spec"` field is the current global spec contract version and must equal
+  `spec/VERSION` exactly — it is not an authoring-time stamp and not a per-case introduction
+  version. `scripts/validate-spec.mjs` fails closed on every fixture root that disagrees.
 * `in` and `out` are written with **literal characters**, and the spec CI additionally emits
   an escaped `\uXXXX` mirror file — reviewing a diff full of invisible U+202F is otherwise
   impossible.

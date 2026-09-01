@@ -1,0 +1,21 @@
+{
+  "_meta": {
+    "description": "Post-split baseline: measured from the four separate entry points, for tracking future regressions from this point forward. NOT the pre-split measurement — see HISTORICAL_PRE_SPLIT_AGGREGATE in this script and AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 5.1."
+  },
+  "index": {
+    "raw": 679497,
+    "gzip": 195629
+  },
+  "text": {
+    "raw": 166750,
+    "gzip": 47788
+  },
+  "html": {
+    "raw": 333902,
+    "gzip": 97730
+  },
+  "markdown": {
+    "raw": 679049,
+    "gzip": 196410
+  }
+}

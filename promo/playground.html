@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="polytypo — locale-correct quotes, dashes, ellipses and no-break spaces for 10 locales. One runtime today. One portable spec designed for five.">
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/style.css">
+<title>polytypo — Playground</title>
+</head>
+<body>
+<nav class="site-nav"><div class="wrap"><a class="brand" href="index.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="9.5 37.5 181.0 45.0" role="img" aria-labelledby="t4 d4">
+  <title id="t4">polytypo</title>
+  <desc id="d4">Guillemets enclosing an em dash.</desc>
+  <g fill="none" stroke="currentColor" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M28 42 L14 60 L28 78"/>
+    <path d="M44 42 L30 60 L44 78"/>
+    <path d="M172 42 L186 60 L172 78"/>
+    <path d="M156 42 L170 60 L156 78"/>
+  </g>
+  <rect x="58.0" y="55.5" width="84.0" height="9.0" fill="currentColor"/>
+</svg>polytypo</a><div class="links"><a href="index.html">Home</a><a href="docs.html">Docs</a><a href="playground.html" aria-current="page">Playground</a><a href="locales.html">Locales</a></div></div></nav>
+<div class="wrap">
+<header class="hero" style="padding: 40px 0 24px">
+  <p class="eyebrow">Try it</p>
+  <h1 style="max-width: none">This runs the real engine, right here in your browser.</h1>
+  <p class="tagline" style="font-size: 17px">
+    No server round trip: <code>promo/vendor/polytypo.browser.js</code> is
+    <code>src/index.ts</code> bundled against the same locale data the npm package will ship with
+    once it is published. Each locale starts with its own default example; edit it, or switch
+    languages to see how the same idea is punctuated differently everywhere.
+  </p>
+</header>
+
+<div class="demo">
+  <div class="pg-bar">
+    <label
+      title="Which locale's quotes, dashes and spacing to apply. Required — no fallback to English."
+    >
+      Locale
+      <select id="pg-locale"></select>
+    </label>
+    <label
+      title="text: no markup parsing, the whole input is prose. html: parse5 touches only text nodes, never tags or attributes. markdown: micromark touches only prose, never code spans/blocks or front matter."
+    >
+      Mode
+      <select id="pg-mode">
+        <option value="text">text</option>
+        <option value="html">html</option>
+        <option value="markdown">markdown</option>
+      </select>
+    </label>
+    <label
+      id="pg-dialect-wrap"
+      hidden
+      title="Markdown-only, no default. commonmark vs mdx changes how ambiguous syntax like &lt;https://…&gt; is parsed — the two disagree, so this can't be auto-detected."
+    >
+      Dialect
+      <select id="pg-dialect">
+        <option value="commonmark">commonmark</option>
+        <option value="mdx">mdx</option>
+      </select>
+    </label>
+  </div>
+  <div class="split">
+    <div class="pane-l">
+      <label class="who" for="pg-input">Input <span id="pg-count"></span></label>
+      <textarea
+        id="pg-input"
+        class="pg-textarea"
+        spellcheck="false"
+        autocapitalize="off"
+        placeholder='Paste or type text here — try: "It&apos;s a test" - said no one -- ever...'
+      ></textarea>
+    </div>
+    <div class="pane-r">
+      <span class="who" id="pg-output-label">Output</span>
+      <div
+        class="txt set pg-output"
+        id="pg-output"
+        role="region"
+        aria-labelledby="pg-output-label"
+      ></div>
+    </div>
+  </div>
+  <div class="foot" id="pg-foot" role="status" aria-atomic="true"></div>
+  <div class="pg-actions">
+    <button type="button" id="pg-copy-output">Copy Output</button>
+    <button type="button" id="pg-copy-link">Copy Link</button>
+    <button type="button" id="pg-share" hidden>Share</button>
+    <span class="pg-action-status" id="pg-action-status" role="status" aria-atomic="true"></span>
+  </div>
+</div>
+<p class="pg-note" id="pg-permalink-notice" role="status" hidden></p>
+<p class="pg-note">
+  <strong>Copy Link</strong> puts locale, mode, dialect and your input in the URL's
+  <code>#</code> fragment — never sent to any server, not even ours; the fragment never leaves
+  your browser in an ordinary request. Opening a copied link restores exactly what was shared.
+</p>
+<p class="pg-note">
+  Idempotency is a headline claim, not just a property test: paste the output back into the input
+  and nothing should change.
+</p>
+<p class="pg-note">
+  No hard size limit on <code>transform()</code> — ordinary prose runs at roughly 250K characters
+  per second, so even a full novel pasted in typesets in a couple of seconds. Pathological input
+  (long runs of alternating quote or dash characters with no real content between them) is
+  measurably slower, since a couple of rules re-check their own output to guarantee idempotency —
+  real text never has that shape, so this only matters if you're piping in machine-generated or
+  adversarial input.
+</p>
+
+<p class="eyebrow" style="margin-top: var(--space-8)">The call that just ran</p>
+<div class="tabs" id="call-tabs"></div>
+<div id="call-panes">
+  <div class="pane" data-label="JavaScript / TypeScript">
+    <pre><code id="call-code-js"></code></pre>
+  </div>
+  <div class="pane" data-label="Python">
+    <pre><code id="call-code-py"></code></pre>
+  </div>
+  <div class="pane" data-label="Go">
+    <pre><code id="call-code-go"></code></pre>
+  </div>
+  <div class="pane" data-label="Ruby">
+    <pre><code id="call-code-rb"></code></pre>
+  </div>
+  <div class="pane" data-label="PHP">
+    <pre><code id="call-code-php"></code></pre>
+  </div>
+</div>
+
+<p class="small muted" style="margin-top: var(--space-4)">
+  Every field's own comment carries its type, default and allowed values.
+  <strong>None of them fall back to a default when the value is wrong or missing</strong> — each
+  throws its own error, with a machine-readable <code>code</code>, rather than guessing what you
+  meant. Full option and error-code reference — <a href="docs.html#use">Docs</a>.
+</p>
+
+<footer><div class="wrap"><p>polytypo · spec 1.0.0 · MIT for the code, separate terms for the brand assets · every before/after typography example on this site is generated with the engine.</p><p><a href="manifesto.html">Manifesto</a></p><p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p></div></footer>
+</div>
+<script src="assets/site.js"></script>
+<script src="vendor/polytypo.browser.js"></script>
+<script>
+const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "locales": [{"locale": "en-US", "name": "English (US)", "hero": {"in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.", "out": "Is this “polytypo”?—No, it’s “polytypo”! She said, “He replied ‘never’ twice”… The release—all 5 km of it—covers 1914-1918. Copyright © 2026, at 1920×1080."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: “The em dash was mine before AI”—and she meant it."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "“He said 'no' to me,” she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan—if there is one—fails."}, {"rule": "dashes", "in": "1914-1918 and pp. 34-36", "out": "1914-1918 and pp. 34-36"}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "apostrophe", "in": "don't", "out": "don’t"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}, {"rule": "symbols", "in": "Copyright (c) 2026, 1920x1080", "out": "Copyright © 2026, 1920×1080"}]}, {"locale": "en-GB", "name": "English (UK)", "hero": {"in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.", "out": "Is this ‘polytypo’? – No, it’s ‘polytypo’! She said, ‘He replied “never” twice’… The release – all 5 km of it – covers 1914-1918. Copyright © 2026, at 1920×1080."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: ‘The em dash was mine before AI’ – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "‘He said 'no' to me,’ she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan – if there is one – fails."}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}]}, {"locale": "de-DE", "name": "German", "hero": {"in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.", "out": "Ist das „polytypo“? – Nein, das ist „polytypo“! Sie sagte: „Er hat 'nie' geantwortet“… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: „The em dash was mine before AI“ – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "„Er sagte ‚nein‘ zu mir“, notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "dashes", "in": "Die Jahre 1939-1945", "out": "Die Jahre 1939-1945"}, {"rule": "nbsp", "in": "z. B. Berlin", "out": "z. B. Berlin"}, {"rule": "symbols", "in": "Auflösung 1920x1080", "out": "Auflösung 1920×1080"}]}, {"locale": "de-CH", "name": "Swiss German", "hero": {"in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.", "out": "Ist das «polytypo»? – Nein, das ist «polytypo»! Sie sagte: «Er hat 'nie' geantwortet»… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: «The em dash was mine before AI» – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "«Er sagte ‹nein› zu mir», notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "nbsp", "in": "z. B. Bern", "out": "z. B. Bern"}]}, {"locale": "fr", "name": "French", "hero": {"in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.", "out": "C’est « polytypo » ? — Non, c’est « polytypo » ! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm ; c’est tout. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said : « The em dash was mine before AI » — and she meant it."}, "cases": [{"rule": "quotes", "in": "Il a dit \"bonjour\".", "out": "Il a dit « bonjour »."}, {"rule": "quotes", "in": "\"Il a dit 'oui' hier.\"", "out": "« Il a dit 'oui' hier. »"}, {"rule": "nbsp", "in": "Ça va ? Bonjour !", "out": "Ça va ? Bonjour !"}, {"rule": "dashes", "in": "Le plan - il existe - échoue.", "out": "Le plan — il existe — échoue."}, {"rule": "apostrophe", "in": "l'été et l'hiver", "out": "l’été et l’hiver"}]}, {"locale": "fr-CA", "name": "French (Canada)", "hero": {"in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.", "out": "C’est « polytypo »? — Non, c’est « polytypo »! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm; c’est tout. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said : « The em dash was mine before AI » — and she meant it."}, "cases": [{"rule": "quotes", "in": "Il a dit \"bonjour\".", "out": "Il a dit « bonjour »."}, {"rule": "dashes", "in": "Le plan - il existe - échoue.", "out": "Le plan — il existe — échoue."}, {"rule": "nbsp", "in": "Ça va? Bonjour!", "out": "Ça va? Bonjour!"}, {"rule": "nbsp", "in": "Rendez-vous à 15 h: bureau 204.", "out": "Rendez-vous à 15 h : bureau 204."}]}, {"locale": "ru", "name": "Russian", "hero": {"in": "Это \"полиштамп\"? - Нет, это \"полиштамп\"! Она сказала: \"он ответил 'никогда'\"... Достал из-под стола - в 1941-1945 годах - размер 10 x 20 см. Все права защищены (c) 2026.", "out": "Это «полиштамп»? — Нет, это «полиштамп»! Она сказала: «он ответил „никогда“»… Достал из‑под стола — в 1941-1945 годах — размер 10 × 20 см. Все права защищены © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: «The em dash was mine before AI» — and she meant it."}, "cases": [{"rule": "quotes", "in": "Он сказал: \"это 'моё' дело\".", "out": "Он сказал: «это 'моё' дело»."}, {"rule": "dashes", "in": "Москва - столица", "out": "Москва — столица"}, {"rule": "dashes", "in": "Годы 1941-1945 были тяжёлыми", "out": "Годы 1941-1945 были тяжёлыми"}, {"rule": "hyphen", "in": "Достал из-под стола", "out": "Достал из‑под стола"}, {"rule": "ellipsis", "in": "Что?...", "out": "Что?.."}, {"rule": "nbsp", "in": "Он живёт в Москве", "out": "Он живёт в Москве"}]}, {"locale": "fi", "name": "Finnish", "hero": {"in": "Onko tämä \"polytypo\"? - Ei, tämä on \"polytypo\"! Hän sanoi: \"hän vastasi 'ei koskaan'\"... Matkaa on 20 km - vuosina 1914-1918 - ja hinta nousi 10,5 %. Copyright (c) 2026.", "out": "Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän sanoi: ”hän vastasi ’ei koskaan’”… Matkaa on 20 km – vuosina 1914-1918 – ja hinta nousi 10,5 %. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: ”The em dash was mine before AI” – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Hän sanoi 'moi'\", totesin.", "out": "”Hän sanoi ’moi’”, totesin."}, {"rule": "dashes", "in": "Suunnitelma - jos sellainen on - kaatuu.", "out": "Suunnitelma – jos sellainen on – kaatuu."}, {"rule": "nbsp", "in": "Hinta nousi 10,5 %", "out": "Hinta nousi 10,5 %"}]}, {"locale": "sv", "name": "Swedish", "hero": {"in": "Är det här \"polytypo\"? - Nej, det är \"polytypo\"! Hon sa: \"han svarade 'aldrig'\"... Vi gick 5 km - åren 1914-1918 - och det kostar 100 kr. Copyright (c) 2026.", "out": "Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914-1918 – och det kostar 100 kr. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: ”The em dash was mine before AI” – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Han sa 'hej'\", sa jag.", "out": "”Han sa ’hej’”, sa jag."}, {"rule": "dashes", "in": "Planen - om det finns en - misslyckas.", "out": "Planen – om det finns en – misslyckas."}, {"rule": "nbsp", "in": "Det kostar 100 kr", "out": "Det kostar 100 kr"}]}, {"locale": "el", "name": "Greek", "hero": {"in": "Είναι αυτό \"polytypo\"; - Όχι, αυτό είναι \"polytypo\"! Είπε: \"απάντησε “ποτέ”\"... Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright (c) 2026, σε 1920x1080.", "out": "Είναι αυτό «polytypo»; - Όχι, αυτό είναι «polytypo»! Είπε: «απάντησε “ποτέ”»… Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright © 2026, σε 1920×1080."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: «The em dash was mine before AI» - and she meant it."}, "cases": [{"rule": "quotes", "in": "Είπε \"καλημέρα\" και έφυγε.", "out": "Είπε «καλημέρα» και έφυγε."}, {"rule": "quotes", "in": "\"Είπε “όχι” σε μένα\", σημείωσε.", "out": "«Είπε “όχι” σε μένα», σημείωσε."}, {"rule": "apostrophe", "in": "γι' αυτό και απ' την αρχή", "out": "γι’ αυτό και απ’ την αρχή"}, {"rule": "spaces", "in": "Τι κάνεις ;", "out": "Τι κάνεις;"}, {"rule": "ellipsis", "in": "Περίμενε... τι έγινε", "out": "Περίμενε… τι έγινε"}, {"rule": "symbols", "in": "Ανάλυση 1920x1080", "out": "Ανάλυση 1920×1080"}]}]};
+(function playground() {
+  const engine = window.PolytypoBrowser;
+  const {
+    mark, diff, paint, highlight, bootTabs, summarizeChange, summarizeError,
+    encodePermalinkFragment, decodePermalinkFragment, copyStatusText, permalinkStatusText,
+    shareStatusText, buildPermalinkUrl, stripPermalinkFragment, validateRestoredState,
+    MAX_PERMALINK_LENGTH,
+  } = window.Polytypo;
+  const LOCALES = DATA.locales.map((l) => [l.locale, l.name]);
+  const DIFF_CAP = 4000; // above this, skip character-level highlighting (O(n*m) LCS)
+
+  const $locale = document.getElementById("pg-locale");
+  const $mode = document.getElementById("pg-mode");
+  const $dialectWrap = document.getElementById("pg-dialect-wrap");
+  const $dialect = document.getElementById("pg-dialect");
+  const $input = document.getElementById("pg-input");
+  const $output = document.getElementById("pg-output");
+  const $count = document.getElementById("pg-count");
+  const $foot = document.getElementById("pg-foot");
+  const $permalinkNotice = document.getElementById("pg-permalink-notice");
+  const $copyOutput = document.getElementById("pg-copy-output");
+  const $copyLink = document.getElementById("pg-copy-link");
+  const $share = document.getElementById("pg-share");
+  const $actionStatus = document.getElementById("pg-action-status");
+
+  for (const [code, name] of LOCALES) {
+    const o = document.createElement("option");
+    o.value = code; o.textContent = code + " — " + name;
+    $locale.appendChild(o);
+  }
+
+  const FALLBACK_SAMPLE =
+    `Is this "polytypo"? - No, it's "polytypo"! She said, "He replied 'never' twice"... ` +
+    `The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.`;
+
+  function defaultFor(code) {
+    const e = DATA.locales.find((l) => l.locale === code);
+    return e ? e.hero.in : FALLBACK_SAMPLE;
+  }
+
+  let lastDefault = defaultFor($locale.value);
+  $input.value = lastDefault;
+
+  if (!engine) {
+    $output.classList.add("error");
+    $output.textContent =
+      "The engine bundle (promo/vendor/polytypo.browser.js) failed to load — nothing else on " +
+      "this page depends on it, but the playground does. Run npm run gen:promo-bundle.";
+    $foot.textContent = summarizeError("PolytypoEngineMissing");
+    return;
+  }
+
+  // Fix #4 (stale-permalink invalidation): once the address bar's hash was set by either a
+  // restore-on-load below or a later "Copy Link" click, it must be removed the FIRST time the
+  // user changes state afterward (input/locale/mode/dialect) — and only once, not on every
+  // keystroke. `hashArmed` tracks whether there is currently a hash to invalidate;
+  // `clearStaleFragmentOnce()` is the single place that does it, called from every state-change
+  // handler below, and it is idempotent per arming (checks-then-clears the flag).
+  let hashArmed = location.hash.length > 1;
+  function clearStaleFragmentOnce() {
+    if (!hashArmed) return;
+    hashArmed = false;
+    history.replaceState(null, "", stripPermalinkFragment(location.href));
+  }
+
+  // Restore playground state from a "Copy Link" permalink, if the page was opened with one.
+  // Any validation failure (malformed encoding, unknown version, oversized fragment, a
+  // locale/mode/dialect this build doesn't actually offer, or — fix #5 — a non-markdown mode
+  // paired with a non-empty dialect) falls back to the normal default example rather than
+  // partially applying untrusted state. decodePermalinkFragment only checks shape/type;
+  // validateRestoredState (shared with the unit tests in tests/promo/permalink.test.ts) is what
+  // confirms the decoded values are ones this page's own <select> option lists actually support,
+  // and that mode/dialect form a sensible pair — REQUIRING dialect === "" outside markdown mode
+  // rather than merely ignoring a stray value, so e.g. [1, "en-US", "text", "mdx", "hello"] is
+  // rejected outright instead of silently dropping the "mdx".
+  {
+    const fragment = location.hash.slice(1);
+    if (fragment) {
+      const decoded = decodePermalinkFragment(fragment);
+      let restored = false;
+      if (decoded.ok) {
+        const options = {
+          locales: LOCALES.map(([code]) => code),
+          modes: [...$mode.options].map((o) => o.value),
+          dialects: [...$dialect.options].map((o) => o.value),
+        };
+        if (validateRestoredState(decoded.state, options)) {
+          const { locale, mode, dialect, input } = decoded.state;
+          $locale.value = locale;
+          $mode.value = mode;
+          if (mode === "markdown") $dialect.value = dialect;
+          $input.value = input;
+          lastDefault = defaultFor(locale);
+          restored = true;
+        }
+      }
+      if (!restored) {
+        $permalinkNotice.hidden = false;
+        $permalinkNotice.textContent =
+          "This link's shared state could not be restored — showing the default example instead.";
+        // hashArmed is already true from the initial `location.hash.length > 1` check above:
+        // even an unrestorable hash is still sitting in the address bar and is just as
+        // misleading as a stale one, so it gets the same one-shot removal on the next edit.
+      }
+    }
+  }
+
+  let timer = null;
+  const run = () => { clearTimeout(timer); timer = setTimeout(render, 120); };
+
+  const $callJs = document.getElementById("call-code-js");
+  const $callPy = document.getElementById("call-code-py");
+  const $callGo = document.getElementById("call-code-go");
+  const $callRb = document.getElementById("call-code-rb");
+  const $callPhp = document.getElementById("call-code-php");
+
+  const strLit = (s) => JSON.stringify(s);
+  const rubyStrLit = (s) => strLit(s).replace(/#\{/g, "\\#{");
+  const phpStrLit = (s) => "'" + s.replace(/\\/g, "\\\\").replace(/'/g, "\\'") + "'";
+
+  const LOCALE_LIST = LOCALES.map(([code]) => code).join(", ");
+
+  function renderCallCode(options) {
+    const showDialect = options.mode === "markdown";
+    const locale = strLit(options.locale);
+    const mode = strLit(options.mode);
+    const dialect = strLit(options.dialect || "commonmark");
+
+    const jsCode =
+      `import { transform } from "polytypo";\n\n` +
+      `transform(\n` +
+      `  input, // your text, type: string\n` +
+      `  {\n` +
+      `    locale: ${locale}, // required, type: string — one of: ${LOCALE_LIST}\n` +
+      `    mode: ${mode}, // type: string, default: "text" — "text" | "html" | "markdown"\n` +
+      (showDialect
+        ? `    dialect: ${dialect}, // type: string, required because mode is "markdown" — "commonmark" | "mdx"\n`
+        : `    // dialect: "commonmark", // required only when mode is "markdown"; ignored otherwise\n`) +
+      `  },\n` +
+      `);`;
+    $callJs.innerHTML = highlight(jsCode, "//");
+
+    const pyCode =
+      `from polytypo import transform\n\n` +
+      `transform(\n` +
+      `    input,  # your text, type: str\n` +
+      `    locale=${locale},  # required, type: str — one of: ${LOCALE_LIST}\n` +
+      `    mode=${mode},  # type: str, default: "text" — "text" | "html" | "markdown"\n` +
+      (showDialect
+        ? `    dialect=${dialect},  # type: str, required because mode is "markdown" — "commonmark" | "mdx"\n`
+        : `    # dialect="commonmark",  # required only when mode is "markdown"; ignored otherwise\n`) +
+      `)`;
+    $callPy.innerHTML = highlight(pyCode, "#");
+
+    const goCode =
+      `out, err := polytypo.Transform(\n` +
+      `    input, // your text, type: string\n` +
+      `    polytypo.Options{\n` +
+      `        Locale:  ${locale}, // required, type: string — one of: ${LOCALE_LIST}\n` +
+      `        Mode:    ${mode}, // type: string, default: "text" — "text" | "html" | "markdown"\n` +
+      (showDialect
+        ? `        Dialect: ${dialect}, // type: string, required because Mode is "markdown" — "commonmark" | "mdx"\n`
+        : `        // Dialect: "commonmark", // required only when Mode is "markdown"; ignored otherwise\n`) +
+      `    },\n` +
+      `)`;
+    $callGo.innerHTML = highlight(goCode, "//");
+
+    const rbCode =
+      `require "polytypo"\n\n` +
+      `Polytypo.transform(\n` +
+      `  input, # your text, type: String\n` +
+      `  locale: ${rubyStrLit(options.locale)}, # required, type: String — one of: ${LOCALE_LIST}\n` +
+      `  mode: ${rubyStrLit(options.mode)}, # type: String, default: "text" — "text" | "html" | "markdown"\n` +
+      (showDialect
+        ? `  dialect: ${rubyStrLit(options.dialect)}, # type: String, required because mode is "markdown" — "commonmark" | "mdx"\n`
+        : `  # dialect: "commonmark", # required only when mode is "markdown"; ignored otherwise\n`) +
+      `)`;
+    $callRb.innerHTML = highlight(rbCode, "#");
+
+    const phpCode =
+      `Polytypo::transform(\n` +
+      `    $input, // your text, type: string\n` +
+      `    [\n` +
+      `        'locale' => ${phpStrLit(options.locale)}, // required, type: string — one of: ${LOCALE_LIST}\n` +
+      `        'mode' => ${phpStrLit(options.mode)}, // type: string, default: 'text' — 'text' | 'html' | 'markdown'\n` +
+      (showDialect
+        ? `        'dialect' => ${phpStrLit(options.dialect)}, // type: string, required because mode is 'markdown' — 'commonmark' | 'mdx'\n`
+        : `        // 'dialect' => 'commonmark', // required only when mode is 'markdown'; ignored otherwise\n`) +
+      `    ],\n` +
+      `);`;
+    $callPhp.innerHTML = highlight(phpCode, "//");
+  }
+
+  function clearCallCode() {
+    for (const el of [$callJs, $callPy, $callGo, $callRb, $callPhp]) el.textContent = "";
+  }
+
+  function render() {
+    const text = $input.value;
+    const n = text.length;
+    $count.textContent = n ? n.toLocaleString("en-US") + " chars" : "";
+    $dialectWrap.hidden = $mode.value !== "markdown";
+
+    if (!text) {
+      $output.classList.remove("error");
+      $output.innerHTML = "";
+      $foot.textContent = "";
+      clearCallCode();
+      return;
+    }
+
+    const options = { locale: $locale.value, mode: $mode.value };
+    if ($mode.value === "markdown") options.dialect = $dialect.value;
+
+    let out;
+    try {
+      out = engine.transform(text, options);
+    } catch (error) {
+      $output.classList.add("error");
+      const code = error && error.code ? error.code : "Error";
+      $output.textContent = code + ": " + (error && error.message ? error.message : String(error));
+      $foot.textContent = summarizeError(code);
+      clearCallCode();
+      return;
+    }
+
+    renderCallCode(options);
+    $output.classList.remove("error");
+    if (n <= DIFF_CAP) {
+      const segments = diff([...text], [...out]);
+      $output.innerHTML = paint(segments);
+      $foot.textContent =
+        $locale.value + " · " + $mode.value + " · " + summarizeChange(text, out, segments);
+    } else {
+      $output.innerHTML = mark(out);
+      $foot.textContent =
+        $locale.value + " · " + $mode.value + " · " + n.toLocaleString("en-US") +
+        " chars — change-highlighting skipped above " + DIFF_CAP.toLocaleString("en-US") + " chars";
+    }
+  }
+
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  function buildPermalink() {
+    const encoded = encodePermalinkFragment({
+      locale: $locale.value,
+      mode: $mode.value,
+      dialect: $mode.value === "markdown" ? $dialect.value : "",
+      input: $input.value,
+    });
+    // buildPermalinkUrl uses the URL API against the CURRENT full href — not
+    // `location.origin + location.pathname` string concatenation, which breaks under file://
+    // (location.origin is the string "null" there). See tests/promo/permalink.test.ts.
+    return { encoded, url: buildPermalinkUrl(location.href, encoded) };
+  }
+
+  $copyOutput.addEventListener("click", async () => {
+    const text = $output.textContent;
+    if (!text) {
+      $actionStatus.textContent = "Nothing to copy yet.";
+      return;
+    }
+    const ok = await copyText(text);
+    $actionStatus.textContent = copyStatusText("Output", ok);
+  });
+
+  $copyLink.addEventListener("click", async () => {
+    const { encoded, url } = buildPermalink();
+    if (encoded.length > MAX_PERMALINK_LENGTH) {
+      // Oversized state must not touch the address bar at all — checked, and returns, before
+      // any history mutation.
+      $actionStatus.textContent = permalinkStatusText("too-long");
+      return;
+    }
+    // Fix #3 (race condition): the address bar is updated SYNCHRONOUSLY, before awaiting
+    // Clipboard — not after. `navigator.clipboard.writeText()` can stay pending for a while (a
+    // real permission prompt, a slow platform call), and the address-bar fallback this promises
+    // (fix #3 of the previous pass) has to already be true DURING that window, not only once the
+    // promise settles. Doing this after the await also raced the stale-fragment-invalidation
+    // logic below: an edit made while Clipboard was still pending could have its "clear the
+    // stale hash" run BEFORE this handler's own (delayed) history.replaceState, so the edit's
+    // clear would be immediately undone by a hash that was already stale the moment it landed.
+    // Reusing `url` (built via buildPermalinkUrl, not string concatenation) as the
+    // history.replaceState target keeps the copied string and the address-bar string
+    // byte-identical for https/localhost/query-string/file:// alike.
+    history.replaceState(null, "", url);
+    hashArmed = true; // re-arm: the next edit should invalidate THIS fresh fragment, once.
+    const ok = await copyText(url);
+    // Nothing below this line touches history/hashArmed — by the time this await resolves, the
+    // user may already have edited state and cleared the fragment (clearStaleFragmentOnce()),
+    // and this handler must not re-apply the stale `url` captured before the await.
+    $actionStatus.textContent = permalinkStatusText(ok ? "copied" : "clipboard-unavailable");
+  });
+
+  // Progressive enhancement only — every action above already works without it.
+  if (navigator.share) {
+    $share.hidden = false;
+    $share.addEventListener("click", async () => {
+      const { encoded, url } = buildPermalink();
+      if (encoded.length > MAX_PERMALINK_LENGTH) {
+        $actionStatus.textContent = permalinkStatusText("too-long");
+        return;
+      }
+      try {
+        await navigator.share({ url, title: "polytypo playground" });
+        $actionStatus.textContent = shareStatusText("shared");
+      } catch (error) {
+        // AbortError: the user dismissed the share sheet — reported neutrally, not as a
+        // failure. Anything else is a real API failure and must be visible, not silent.
+        $actionStatus.textContent = shareStatusText(
+          error && error.name === "AbortError" ? "cancelled" : "failed",
+        );
+      }
+    });
+  }
+
+  $locale.addEventListener("change", () => {
+    clearStaleFragmentOnce();
+    if ($input.value === lastDefault) {
+      lastDefault = defaultFor($locale.value);
+      $input.value = lastDefault;
+    }
+    render();
+  });
+  $mode.addEventListener("change", () => {
+    clearStaleFragmentOnce();
+    render();
+  });
+  $dialect.addEventListener("change", () => {
+    clearStaleFragmentOnce();
+    render();
+  });
+  $input.addEventListener("input", () => {
+    // Cleared here, in the raw event handler — not inside run()'s 120ms-debounced render() —
+    // so the stale fragment is gone on the FIRST keystroke, not 120ms after the last one.
+    clearStaleFragmentOnce();
+    run();
+  });
+  bootTabs("call-tabs", "call-panes");
+  render();
+})();
+</script>
+</body>
+</html>

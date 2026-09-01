@@ -2,8 +2,17 @@
   "locale": "ru",
   "name": "Russian",
   "quotes": {
-    "primary": { "open": "«", "close": "»", "innerSpace": "none" },
-    "secondary": { "open": "„", "close": "“", "innerSpace": "none" }
+    "primary": {
+      "open": "«",
+      "close": "»",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "„",
+      "close": "“",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": []
   },
   "dash": {
     "parenthetical": "em-spaced",
@@ -60,7 +69,7 @@
     "beforeNumber": [],
     "beforeWord": ["ул.", "пл."],
     "afterSymbols": ["№", "§"],
-    "bindInitials": true
+    "initialBinding": "chain"
   },
   "sources": [
     {

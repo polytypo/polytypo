@@ -1,7 +1,7 @@
 # Rule: `nbsp`
 
 **Order:** 70 (last). **Default:** on. **Modes:** text, html, markdown.
-**Spec version:** 0.1.0.
+**Spec version:** 0.6.0 (0.1.0 for everything except §3.9's `initialBinding` change, noted inline).
 
 ---
 
@@ -31,7 +31,8 @@ that already carries the right no-break spaces.
 - `nbsp.beforeNumber` — array of abbreviations that bind to a following **number**
 - `nbsp.beforeWord` — array of abbreviations that bind to a following **word**
 - `nbsp.afterSymbols` — array of symbols that bind to a following number
-- `nbsp.bindInitials` — boolean
+- `nbsp.initialBinding` — enum: `"none" | "chain" | "single"` (spec 0.6.0; replaces the boolean
+  `bindInitials`). See §3.9.
 - `quotes.primary.open`, `quotes.primary.close`, `quotes.primary.innerSpace`
 - `quotes.secondary.open`, `quotes.secondary.close`, `quotes.secondary.innerSpace`
 
@@ -74,9 +75,14 @@ Four supporting points:
   uniform mechanism belongs.
 - **Every other field works this way, and must.** `afterShortWords` enumerates words and N3
   decides what happens to the following space; nobody asks Мильчин to name U+00A0 by code point.
-  `abbreviations` lists strings and N4 converts their internal spaces. `bindInitials` is a
-  boolean whose entire content is mechanism — under the opposite reading it would be
-  unciteable in principle, since no typographic authority names a code point for it.
+  `abbreviations` lists strings and N4 converts their internal spaces. `initialBinding` (spec
+  0.6.0; the enum that replaced the boolean `bindInitials`) is still mechanism, not a code-point
+  claim — no typographic authority names U+00A0 by code point for it, and this document still
+  owns exactly what C1/C2 do — but the enum is more citable than the boolean it replaced: Chicago
+  states "two or more initials" (`"chain"`, en-US/de-DE/de-CH/ru) and André states a single
+  abbreviated first name (`"single"`, fr/fr-CA) as two *distinguishable* claims a locale file can
+  now actually choose between, where the boolean could only say on or off. `"none"` remains the
+  uncitable negative it always was.
 - **PLAN.md §6 and ARCHITECTURE.md §5.1 already draw this line.** Declarative facts that vary by
   locale go in the file; algorithms that do not vary go in the rule. *Which tokens are units*
   varies by language. *A measurement does not break between its number and its unit* does not —
@@ -179,7 +185,7 @@ longer, more specific form must be claimed by N4, so N4 must precede N10. `befor
 precedes `beforeWord` so that an abbreviation listed in both — `S.` before `12` and before
 `Petersburg` — resolves to the number reading first; the two are then disjoint by their own
 guards (N9 requires a following digit, N10 a following letter) and the ordering is belt and
-braces rather than a real tie-break. `bindInitials` (N7) precedes both because an initial is a
+braces rather than a real tie-break. `initialBinding` (N7, spec 0.6.0) precedes both because an initial is a
 narrower, structurally-recognised form than a listed abbreviation, and the two agree on the
 replacement (U+00A0) wherever they overlap.
 
@@ -315,7 +321,7 @@ For each entry `y` in `nbsp.afterSymbols`, of `k` code points:
 4. `cp[a+k+1]` must be in `DIGIT`.
 5. Emit an edit replacing `cp[a+k]` with U+00A0.
 
-### 3.9 N7 — `bindInitials` (U+00A0), only when `nbsp.bindInitials` is `true`
+### 3.9 N7 — `initialBinding` (U+00A0), only when `nbsp.initialBinding` is not `"none"` (spec 0.6.0)
 
 Define an **initial** at index `p` as: `cp[p]` in `UPPER`, `cp[p+1]` = U+002E (.), and
 `cp[p-1]` either `NONE`, in `SPACELIKE`, or in `OPENISH`. (One letter, one full stop, at a
@@ -325,16 +331,42 @@ Two clauses, both operating on a single space at index `q`:
 
 - **C1 — initial on the left.** If `cp[q]` is `SP` or `NBSP`, and there is an initial ending
   at `q-1` (i.e. `cp[q-1]` = U+002E and `cp[q-2]` is an initial's letter satisfying the
-  definition above), and `cp[q+1]` is in `UPPER`, then bind: if `cp[q]` is `NBSP` emit
-  nothing, else emit an edit replacing `cp[q]` with U+00A0.
-  This covers both spaces of `А. С. Пушкин`: the first because `cp[q+1]` is `С`, the second
-  because `cp[q+1]` is `П`.
+  definition above), and `cp[q+1]` is in `UPPER`, **and the mode condition below holds**, then
+  bind: if `cp[q]` is `NBSP` emit nothing, else emit an edit replacing `cp[q]` with U+00A0.
 
-  **Guard C1-a — lower-case abbreviation tail.** C1 does **not** fire if, letting `p = q-2` be
-  the initial's letter, `cp[p-1]` is in `SPACELIKE`, `cp[p-2]` is U+002E, and `cp[p-3]` is in
-  `LETTER` but **not** in `UPPER`. In other words: an uppercase letter plus a dot that is
-  itself preceded by a _lower-case_ letter plus a dot is the second token of an abbreviation,
-  not an initial.
+  **Mode condition (spec 0.6.0).** Split `cp[q+1]`'s role into two shapes:
+  - **Between-initials** — `cp[q+1]` is *itself* an initial (i.e. `q+1` also satisfies the
+    `initial` definition above: `cp[q+1]` in `UPPER`, `cp[q+2]` = U+002E). This shape always
+    binds, in every mode except `"none"` — it is unambiguous by construction: two adjacent
+    initial-shaped tokens are Chicago's own literal case ("between two or more initials").
+  - **Initial-to-word** — `cp[q+1]` is `UPPER` but not itself an initial (no U+002E follows at
+    `q+2`), i.e. the space leads into a candidate surname or ordinary word. This shape's
+    eligibility depends on `nbsp.initialBinding`:
+    - `"single"` — binds unconditionally, the historical shape (this is what `fr`/`fr-CA` need
+      for `N. Bourbaki`/`M. Dupont` — André §5.1.3, cited below).
+    - `"chain"` — binds **only if** the initial ending at `q-1` (letter at `p = q-2`) is itself
+      immediately preceded by another initial: `cp[p-1]` is `SP` or `NBSP`, `cp[p-2]` = U+002E,
+      and `p-3` satisfies the `initial` definition. In other words: bind the space leading out
+      of a chain into a following word only once the chain already has two or more members —
+      Chicago's own "two or more initials" wording, applied to this shape specifically rather
+      than to N7 as a whole. `E. B. White`: the space before `White` binds, because `B.` is
+      itself preceded by `E.`. A lone `A. Smith`, or `...take the top N. It runs...`, does not:
+      neither `A.` nor `N.` is preceded by another initial, so this shape declines. The declined
+      case is a **deliberate false negative**, not a bug: this document has no way to tell a
+      genuine single-initial name from an ordinary sentence boundary using only local structure
+      (§7.9a), and `"chain"` resolves that ambiguity by declining rather than guessing, on the
+      same footing P4 in `dashes.md` §3.4 declines rather than guessing at a range.
+    - `"none"` — N7 does not run at all (checked once, before either clause).
+
+  This covers both spaces of `А. С. Пушкин` under `"chain"` (`ru`): the first is
+  between-initials (`cp[q+1]` is `С`, itself an initial), the second is initial-to-word but
+  eligible because `С.` is preceded by `А.`.
+
+  **Guard C1-a — lower-case abbreviation tail.** C1 does **not** fire (in any mode, on either
+  shape) if, letting `p = q-2` be the initial's letter, `cp[p-1]` is in `SPACELIKE`, `cp[p-2]`
+  is U+002E, and `cp[p-3]` is in `LETTER` but **not** in `UPPER`. In other words: an uppercase
+  letter plus a dot that is itself preceded by a _lower-case_ letter plus a dot is the second
+  token of an abbreviation, not an initial.
 
   This is not a refinement, it is a false-positive repair on real German data. With the
   shipped `de-DE` file, `z. B. Berlin` produced `z.⍽B.⍽Berlin`: N4 correctly bound the space
@@ -347,7 +379,8 @@ Two clauses, both operating on a single space at index `q`:
 - **C2 — two initials on the right.** If `cp[q]` is `SP` or `NBSP`, `cp[q-1]` is in `LETTER`,
   and the code points starting at `q+1` form **two consecutive initials** (`X. Y.`, i.e. an
   initial at `q+1`, a `SP` or `NBSP` at `q+3`, and an initial at `q+4`), then bind `cp[q]` the
-  same way.
+  same way, **in every mode except `"none"`** — C2 already requires two initials by
+  construction (Chicago's own "two or more"), so it needs no mode split.
   This covers `Пушкин А. С.` — the surname-first order — without binding every
   `word` + `Capital letter + period` pair, which would fire on ordinary sentences.
 
@@ -479,28 +512,34 @@ For each entry `s` in `nbsp.beforeWord`, of `k` code points:
    `beforeNumber` entry never double-claims. Not `OPENISH`, not a quotation glyph, not a
    dash: `г. «Москва»` is left alone, because the binding target is then a quotation and the
    line-break risk this sub-rule exists to remove is not present in the same way.
-5. **Initial-collision guard (G-D).** If `nbsp.bindInitials` is `true`, **and** `s` is exactly
-   two code points, **and** the first is in `UPPER`, **and** the second is U+002E, skip.
+5. **Initial-collision guard (G-D).** If `nbsp.initialBinding` is not `"none"`, **and** `s` is
+   exactly two code points, **and** the first is in `UPPER`, **and** the second is U+002E, skip.
    An _uppercase_ letter plus a dot is structurally indistinguishable from an initial, and in a
    locale where N7 is active, N7 owns that shape with better evidence (it inspects what follows
-   for a second initial or a surname).
+   for a second initial or a surname). G-D's own condition does not distinguish `"chain"` from
+   `"single"` — it only asks whether N7 is active at all — because G-D's job is routing (which
+   sub-rule owns this shape), not deciding whether the space actually ends up bound; that
+   decision is C1's alone (§3.9), and under `"chain"` a routed-to-N7 space can still end up
+   declined if no chain is confirmed.
 
    All three conditions matter:
    - **`UPPER`** — without it, a lower-case two-code-point entry such as `ул.` would be inert
-     in a `bindInitials` locale, and `ул. Ленина` would not bind. A lower-case letter plus a dot
-     is not a plausible initial in any orthography this spec covers, so the guard must not
-     capture one. (An earlier revision justified this clause with `г. Москва`, which is **not**
-     an example of it: `ru.json` does not list `г.` in `beforeWord` at all — see §6 row 13a.)
-   - **`bindInitials`** — in a locale where N7 is switched off, nothing else claims the shape
-     and there is no collision to avoid.
+     in an `initialBinding`-active locale, and `ул. Ленина` would not bind. A lower-case letter
+     plus a dot is not a plausible initial in any orthography this spec covers, so the guard
+     must not capture one. (An earlier revision justified this clause with `г. Москва`, which is
+     **not** an example of it: `ru.json` does not list `г.` in `beforeWord` at all — see §6 row
+     13a.)
+   - **`initialBinding !== "none"`** — in a locale where N7 is switched off, nothing else claims
+     the shape and there is no collision to avoid.
    - **exactly two code points** — `Mme`, `ул.`, `art.` are longer and are never initials.
 
    Consequence for French, stated plainly because an earlier revision of this document got the
-   underlying fact wrong: **`fr` has `bindInitials: true`** (cited to Jacques André §5.1.3 for
-   `N. Bourbaki`). So a listed `M.` _is_ inert in N10, and `M. Dupont` binds through N7 clause
-   C1 instead — which reaches the same U+00A0 by a different route. The residual gap is that
-   C1 requires an `UPPER` code point after the space, so `M. dupont` with a lower-case surname
-   does not bind at all. That is an acceptable miss; French surnames are capitalised.
+   underlying fact wrong: **`fr` has `initialBinding: "single"`** (spec 0.6.0; cited to Jacques
+   André §5.1.3 for `N. Bourbaki`). So a listed `M.` _is_ inert in N10, and `M. Dupont` binds
+   through N7 clause C1 instead — which reaches the same U+00A0 by a different route, eligible
+   under `"single"`'s unconditional initial-to-word shape (§3.9). The residual gap is that C1
+   requires an `UPPER` code point after the space, so `M. dupont` with a lower-case surname does
+   not bind at all. That is an acceptable miss; French surnames are capitalised.
 
 6. **Line-boundary guard (G-B).** If `cp[a+k]` is in `BREAK`, or if `cp[a+k+1]` is `NONE`,
    skip. Covered by G-S/G-W but stated separately because it is the guard that keeps a
@@ -737,7 +776,7 @@ about the engine **and** about a file in `spec/locales/`, and both halves have t
 | 6a  | `Vraiment?…`                        | `Vraiment⍹?…`                        | U+2026 is accepted right context (§3.3 step 2). Previously the narrow space was omitted here but not in `Vraiment␣?`, purely because `ellipsis` had already run |
 | 6b  | `Voir␣../docs`                      | ⟶                                    | the French instance of the `spaces` lone-dot defect; see `spaces.md` §3.4                                                                                       |
 
-### `ru` — `afterShortWords: ["в","и","на",…]`, `abbreviations: ["т. д.","и т. п."]`, `bindInitials: true`, `afterSymbols: ["№","§"]`
+### `ru` — `afterShortWords: ["в","и","на",…]`, `abbreviations: ["т. д.","и т. п."]`, `initialBinding: "chain"`, `afterSymbols: ["№","§"]`
 
 | #   | Input                   | Output                  | Why                                                                                                                                                                                                                         |
 | --- | ----------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -772,13 +811,13 @@ about the engine **and** about a file in `spec/locales/`, and both halves have t
 
 | #   | Input                   | Output                  | Why                                                                                                                                                                                              |
 | --- | ----------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 21  | `M.␣Dupont et Mme␣Hugo` | `M.⍽Dupont et Mme⍽Hugo` | `Mme` binds via N10 (three code points, G-D does not apply). `M.` is inert in N10 because `fr` has `bindInitials: true` and G-D fires — it binds via **N7 C1** instead, reaching the same U+00A0 |
+| 21  | `M.␣Dupont et Mme␣Hugo` | `M.⍽Dupont et Mme⍽Hugo` | `Mme` binds via N10 (three code points, G-D does not apply). `M.` is inert in N10 because `fr` has `initialBinding: "single"` and G-D fires — it binds via **N7 C1** instead, eligible under `"single"`'s unconditional initial-to-word shape, reaching the same U+00A0 |
 | 22  | `M.␣dupont`             | ⟶                       | lower-case surname: N7 C1 needs `UPPER` after the space, and N10 is inert for `M.`. A documented gap, §7.10                                                                                      |
 | 23  | `«?`                    | `«⍽?`                   | N1/N2 decline the index (quote-glyph guard, §3.3 step 3) and N8 owns it, inserting the `innerSpace` target. Previously this oscillated between U+00A0 and U+202F for ever — §3.10.1              |
 | 24  | `«⍽?`                   | ⟶                       | the fixed point of case 23                                                                                                                                                                       |
 | 25  | `mot␣?`                 | `mot⍹?`                 | the ordinary case: the code point before the space is a letter, so N2 applies normally                                                                                                           |
 
-### `el` — every list empty, `bindInitials: false`, `quotes.innerSpace: "none"`
+### `el` — every list empty, `initialBinding: "none"`, `quotes.innerSpace: "none"`
 
 The first locale for which this rule is a **total no-op**, in the same provable sense `hyphen` is
 a no-op for a locale with empty lists. It is worth a block of its own because the claim needs
@@ -838,9 +877,9 @@ Cases 2, 4, 8, 13, 13c, 13d, 13e, 15, 17, 18, 20, 22, 24, 26, 27 and 28 are "no 
    §3.10 makes it a documented no-op. Either the schema should forbid it or the pipeline
    should let `quotes` hand its pair positions to `nbsp` — the latter breaks the "rules are
    independent" property and I did not propose it unilaterally. Reported.
-6. **`bindInitials` clause C2 requires two consecutive initials.** `Пушкин А.` (one initial)
-   is not bound. Restricting it this way avoids binding every `word` + `Capital.` pair, but it
-   is a guess about Russian practice and needs checking against Мильчин.
+6. **`initialBinding` clause C2 requires two consecutive initials, in every mode.** `Пушкин А.`
+   (one initial) is not bound. Restricting it this way avoids binding every `word` + `Capital.`
+   pair, but it is a guess about Russian practice and needs checking against Мильчин.
 7. _(Settled.)_ `nbsp.beforeNumber` and `nbsp.beforeWord` were added to the schema and are
    specified as N9 (§3.11) and N10 (§3.12). `Nr. 5`, `S. 12`, `art. 237`, `г. Москва`,
    `ул. Ленина`, `M. Dupont` are all now expressible.
@@ -871,7 +910,34 @@ Cases 2, 4, 8, 13, 13c, 13d, 13e, 15, 17, 18, 20, 22, 24, 26, 27 and 28 are "no 
    lesson worth keeping is the one this entry got wrong: **a prose claim about what a rule does
    to a language must be checked against the shipped locale file**, because the rule alone does
    not determine it.
-10. **G-D is conditional on `bindInitials`**, so a `beforeWord` entry's behaviour depends on
+9a. **N7's own sentence-boundary miss (spec 0.6.0) — resolved for `"chain"`, deliberately left
+    open for `"single"`.** A fresh M4 dogfooding pass surfaced the C1 sibling of item 9's N10
+    miss: `"...take the top N. It runs..."` bound `N.` to `It` across a sentence boundary,
+    because the old boolean `bindInitials` let C1's initial-to-word shape fire on any lone
+    initial next to any uppercase-starting word, with no check that a genuine name — as opposed
+    to an ordinary sentence ending in a single capital letter — was actually present. `"chain"`
+    closes this for en-US/de-DE/de-CH/ru by requiring a confirmed sequence of two or more
+    initials before that shape binds (Chicago's own "two or more initials" wording, applied
+    literally rather than only for turning N7 on at all) — see §3.9's mode condition.
+
+    **This does not close the miss for `"single"` (`fr`/`fr-CA`).** `N. Bourbaki` and
+    `M. Dupont` — both cited, both canonical fixtures — are structurally the identical shape to
+    the English witness: one lone initial, one following capitalized word, no preceding initial
+    and no further initial on the right. No local, non-lexical structural signal distinguishes
+    them (both my English witness and both French citations happen to sit at the very start of
+    their sentence, which is suggestive but not load-bearing evidence, and is not implemented as
+    a guard here — it is not reliable enough to specify without lexical or genuine
+    sentence-segmentation data, which this rule does not have and is not mine to add
+    unilaterally). A French sentence ending in a lone initial immediately followed by a new
+    sentence starting with a capitalized word would misfire under `"single"` exactly as the
+    English witness did before `"chain"` existed. This is a **known, accepted limitation of
+    `"single"` mode**, not a regression: the alternative (applying `"chain"`'s restriction to
+    French too) would break `N. Bourbaki`/`M. Dupont`, which André's own citation supports and
+    which have been canonical fixtures since before this item was written. Revisiting it needs
+    either a genuinely new structural signal (none is known) or a locale-specific operator
+    decision to accept `"single"`'s narrower false-positive-vs-false-negative trade for French,
+    which is the decision already made, recorded here rather than left implicit.
+10. **G-D is conditional on `initialBinding !== "none"`**, so a `beforeWord` entry's behaviour depends on
     an unrelated field. That is the only coupling of its kind in the rule and it is mildly
     unpleasant, but every alternative is worse: an absolute guard makes `г.` inert, and no
     guard at all lets N7 and N10 both claim `M. Dupont`. The residual cost is §6 case 22 —

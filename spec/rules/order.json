@@ -1,6 +1,6 @@
 {
-  "spec": "0.2.0",
-  "$comment": "Single source of truth for pipeline order. Rules run in ascending `order`. Disabling a rule removes it from the sequence and never reorders the rest. Rule ids are public API (see docs/ARCHITECTURE.md section 5).",
+  "spec": "1.0.0",
+  "$comment": "Single source of truth for pipeline order. Rules run in ascending `order`. Disabling a rule removes it from the sequence and never reorders the rest. Rule ids are public API (see docs/ARCHITECTURE.md section 5). \"spec\" here must track spec/VERSION exactly — it is not itself the global version source; scripts/validate-spec.mjs enforces the match.",
   "rules": [
     {
       "id": "spaces",
@@ -19,12 +19,20 @@
       "summary": "Three dots to U+2026; locale-dependent abbreviated forms after terminal punctuation."
     },
     {
+      "id": "ranges",
+      "order": 25,
+      "default": "off",
+      "modes": ["text", "html", "markdown"],
+      "localeData": ["dash"],
+      "summary": "Numeric/date range dash per locale convention (dash.range). Explicit opt-in (spec 0.5.0): a genuine range and a compound label sharing the same digit-hyphen-digit shape (`Figure 5-10`) cannot be told apart without the preceding word, which this project's rules are built never to consult. Off by default; enable with `{ rules: { ranges: true } }`."
+    },
+    {
       "id": "dashes",
       "order": 30,
       "default": "on",
       "modes": ["text", "html", "markdown"],
       "localeData": ["dash"],
-      "summary": "Parenthetical dash and numeric/date range dash per locale convention."
+      "summary": "Parenthetical dash per locale convention (dash.parenthetical). Never reinterprets a digit-flanked hyphen as a parenthetical dash — that shape belongs to `ranges` alone, whether or not `ranges` is enabled (spec 0.5.0; range detection moved out of this rule)."
     },
     {
       "id": "hyphen",
@@ -40,15 +48,15 @@
       "default": "on",
       "modes": ["text", "html", "markdown"],
       "localeData": ["quotes"],
-      "summary": "Straight quotes to locale primary/secondary pairs with nesting resolution. Runs before `apostrophe` so that a straight apostrophe is still available as quote evidence."
+      "summary": "Straight quotes to locale primary/secondary pairs with nesting resolution. Runs before `apostrophe` so that a straight apostrophe is still available as quote evidence. Declines to pair an ambiguous medial short single-quoted span (spec 0.5.0) unless a cited `quotes.elisionIdioms` entry matches."
     },
     {
       "id": "apostrophe",
       "order": 50,
       "default": "on",
       "modes": ["text", "html", "markdown"],
-      "localeData": [],
-      "summary": "Remaining straight apostrophes to U+2019 without corrupting contractions."
+      "localeData": ["quotes"],
+      "summary": "Remaining straight apostrophes to U+2019 without corrupting contractions. As of spec 0.5.0, also reads `quotes.elisionIdioms` (indirectly, via the shared ambiguity predicate) to keep a straight-ASCII mark `quotes` deliberately preserved from being independently curled by this rule's own structural case ladder."
     },
     {
       "id": "symbols",

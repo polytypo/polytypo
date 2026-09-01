@@ -19,10 +19,16 @@
     "quotes": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["primary", "secondary"],
+      "required": ["primary", "secondary", "elisionIdioms"],
       "properties": {
         "primary": { "$ref": "#/$defs/quotePair" },
-        "secondary": { "$ref": "#/$defs/quotePair" }
+        "secondary": { "$ref": "#/$defs/quotePair" },
+        "elisionIdioms": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/elisionIdiom" },
+          "uniqueItems": true,
+          "description": "Literal, closed-set elision idioms consulted only to decline pairing two NARROW quote marks as a quotation when the full context — the word immediately before the opening mark and the word immediately after the closing mark, not merely the elided content between them — matches (quotes.md 3.2's listed elision veto), e.g. English { left: \"rock\", elided: \"n\", right: \"roll\" } for \"rock 'n' roll\". Empty is the default and means no verified idiom of this shape — a missing citation is never a licence to guess. Matching the elided content alone (a bare word list) is insufficient and is not this field's shape: it cannot distinguish the idiom from an arbitrary quoted letter, e.g. \"The letter 'n' is common.\", which is exactly the false positive this three-part contract exists to avoid."
+        }
       }
     },
     "dash": {
@@ -83,7 +89,7 @@
         "beforeNumber",
         "beforeWord",
         "afterSymbols",
-        "bindInitials"
+        "initialBinding"
       ],
       "properties": {
         "beforePunctuation": {
@@ -130,9 +136,9 @@
           "uniqueItems": true,
           "description": "Symbols that bind to a following number with U+00A0. Example: \"§\", \"№\"."
         },
-        "bindInitials": {
-          "type": "boolean",
-          "description": "When true, initials are bound to each other and to the surname with U+00A0."
+        "initialBinding": {
+          "enum": ["none", "chain", "single"],
+          "description": "N7's mode (spec 0.6.0, replaces the boolean bindInitials). \"none\": N7 disabled. \"chain\": binds only a confirmed sequence of two or more adjacent initials (Chicago's own \"two or more initials\" wording) — a lone initial next to an ordinary capitalized word is left alone. \"single\": additionally binds one lone initial to a following word (Jacques André's citation), which cannot structurally distinguish every genuine name from a sentence-boundary collision."
         }
       }
     },
@@ -148,6 +154,7 @@
             "enum": [
               "quotes",
               "dashes",
+              "ranges",
               "ellipsis",
               "hyphen",
               "nbsp",
@@ -155,7 +162,7 @@
               "apostrophe",
               "symbols"
             ],
-            "description": "Which rule the citation is normative for. Values are rule ids from spec/rules/order.json — note the rule is `dashes` while the locale-data field it reads is `dash`."
+            "description": "Which rule the citation is normative for. Values are rule ids from spec/rules/order.json — note the rule is `dashes`/`ranges` while the locale-data field both read is `dash`."
           },
           "cite": {
             "type": "string",
@@ -200,6 +207,29 @@
       "type": "array",
       "items": { "$ref": "#/$defs/singleChar" },
       "uniqueItems": true
+    },
+    "elisionIdiom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["left", "elided", "right"],
+      "properties": {
+        "left": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Literal word immediately before the opening NARROW mark, separated from it by exactly one permitted inline-space code point. Matched as a whole word (quotes.md 3.2), first code point case-insensitive, the rest exact. Every code point must be LETTER (quotes.md 3.2's Word definition) — not because the engine's literal matcher would fail to match a digit or punctuation code point (it would match those exact bytes wherever they occur), but because an entry outside LETTER would make runtime behaviour exceed what the normative Word definition authorises. JSON Schema cannot express a Unicode-category constraint, so this is enforced by scripts/validate-spec.mjs and scripts/gen-locales.mjs against the same pinned table src/engine/unicode.ts imports, not by this schema."
+        },
+        "elided": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Literal content between the two NARROW marks, matched exactly, code point for code point, no case leniency. Not constrained to LETTER: the match is a literal equality test, not a Word-boundary walk."
+        },
+        "right": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Literal word immediately after the closing NARROW mark, separated from it by exactly one permitted inline-space code point. Matched as a whole word, first code point case-insensitive, the rest exact. Same LETTER-only constraint as \"left\", enforced the same way."
+        }
+      },
+      "description": "A closed-set elision idiom (quotes.md 3.2's listed elision veto). All three fields are required and non-empty: matching only `elided` cannot distinguish an idiom from an arbitrary quoted word and is not a supported shape."
     }
   }
 }

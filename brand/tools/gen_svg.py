@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Generate polytypo brand vector assets. Wordmark is outlined from Inter (OFL)."""
+import hashlib
 import os
+import tempfile
 from fontTools.ttLib import TTFont
 from fontTools.varLib import instancer
 from fontTools.pens.svgPathPen import SVGPathPen
@@ -9,20 +11,103 @@ from fontTools.misc.transform import Transform
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
+# Fonts are OFL but not vendored into the repo (brand/tools/.gitignore: "*.ttf") — fetched on
+# first run and cached next to the tools, so every build after the first is offline.
+#
+# The URL for each font is pinned to one immutable commit SHA in google/fonts — never `main`
+# (rewritten continuously) and never a mutable tag or branch. Each entry's "sha256" is the
+# expected hash of that exact commit's file content; ensure_font() below verifies it on every
+# use, cached or freshly downloaded, and refuses to proceed on any mismatch.
+#
+# How these two pins were chosen (2026-08-28): `GET
+# /repos/google/fonts/commits?path=<font path>&per_page=1` gave the latest commit that touched
+# each file; the raw content at that commit's SHA was downloaded and independently hashed, and
+# matched the sha256 below. Re-derive the same way to extend this table to a new font, or to
+# move a pin forward after verifying the new commit's content by hash first.
 FONTS = {
-    "Inter.ttf": "https://raw.githubusercontent.com/google/fonts/main/ofl/inter/Inter%5Bopsz%2Cwght%5D.ttf",
-    "JBMono.ttf": "https://raw.githubusercontent.com/google/fonts/main/ofl/jetbrainsmono/JetBrainsMono%5Bwght%5D.ttf",
+    "Inter.ttf": {
+        "url": (
+            "https://raw.githubusercontent.com/google/fonts/"
+            "e1d6480102fed30739fead0faee463101f892c8f/"
+            "ofl/inter/Inter%5Bopsz%2Cwght%5D.ttf"
+        ),
+        "sha256": "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031",
+    },
+    "JBMono.ttf": {
+        "url": (
+            "https://raw.githubusercontent.com/google/fonts/"
+            "2e05c1cf00a6e4f40a4b931600a90881c26e15cd/"
+            "ofl/jetbrainsmono/JetBrainsMono%5Bwght%5D.ttf"
+        ),
+        "sha256": "48715a42ec242c21e9f02692891e147d022299a52e48d5e413e1a942193ffeda",
+    },
 }
 
+FONT_DOWNLOAD_TIMEOUT_SECONDS = 30
 
-def ensure_font(name):
-    """Fonts are OFL but not vendored: fetch on first run, cache next to the tools."""
+
+def _sha256_of_file(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def _default_download(url, timeout):
+    """Real network fetch. Tests inject a fake in its place — see test_gen_svg.py."""
+    import urllib.request
+
+    with urllib.request.urlopen(url, timeout=timeout) as resp:  # noqa: S310 (pinned https URL)
+        return resp.read()
+
+
+def ensure_font(name, download=_default_download, timeout=FONT_DOWNLOAD_TIMEOUT_SECONDS):
+    """Return a local path to `name`'s font bytes, verified against its pinned sha256.
+
+    A cached file is re-verified on every call, not trusted because it exists — a corrupted or
+    tampered cache is a loud failure here, never silently accepted and never silently
+    re-downloaded out from under the caller. A fresh download is verified in memory before it
+    ever touches the target path: bytes are written to a same-directory temp file and atomically
+    renamed into place only after the checksum matches, so a failed or mismatched download can
+    never leave a partial or wrong file at `name`'s path — either the pre-existing valid cache
+    (untouched) or nothing.
+    """
+    if name not in FONTS:
+        raise KeyError(f"no immutable source is registered for font {name!r} in FONTS")
+    spec = FONTS[name]
     path = os.path.join(HERE, name)
-    if not os.path.exists(path):
-        import urllib.request
 
-        print(f"   fetching {name} ...")
-        urllib.request.urlretrieve(FONTS[name], path)
+    if os.path.exists(path):
+        actual = _sha256_of_file(path)
+        if actual != spec["sha256"]:
+            raise RuntimeError(
+                f"{name}: cached file at {path} does not match the pinned checksum "
+                f"(expected {spec['sha256']}, got {actual}). Refusing to use a font that does "
+                f"not match its immutable source — delete the cached file to force a fresh, "
+                f"verified download, after confirming why it changed."
+            )
+        return path
+
+    print(f"   fetching {name} from its pinned google/fonts commit ...")
+    data = download(spec["url"], timeout)
+    actual = hashlib.sha256(data).hexdigest()
+    if actual != spec["sha256"]:
+        raise RuntimeError(
+            f"{name}: downloaded bytes do not match the pinned checksum "
+            f"(expected {spec['sha256']}, got {actual}). Discarding the download; nothing was "
+            f"written to {path}."
+        )
+
+    fd, tmp_path = tempfile.mkstemp(dir=HERE, prefix=f".{name}.", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "wb") as f:
+            f.write(data)
+        os.replace(tmp_path, path)  # atomic on the same filesystem
+    except BaseException:
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
+        raise
     return path
 OUT = os.environ.get("BRAND_OUT", os.path.dirname(HERE))  # brand/
 

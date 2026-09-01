@@ -1,5 +1,5 @@
 {
-  "spec": "0.1.0",
+  "spec": "1.0.0",
   "locale": "ru",
   "cases": [
     {
@@ -107,12 +107,23 @@
       "note": "P3: a run of two qualifies regardless of spacing, and em-spaced inserts the spacing the input lacked."
     },
     {
-      "id": "ru-dashes-range-em-tight",
+      "id": "ru-dashes-authored-en-dash-declined",
       "rule": "dashes",
+      "mode": "text",
+      "in": "Москва–столица",
+      "out": "Москва–столица",
+      "note": "dashes.md §3.4 P5 (spec 0.6.0): a pure single authored U+2013 is declined unconditionally, even though ru's `dash.parenthetical` is `em-spaced` and would otherwise both promote the glyph to U+2014 and add spacing (as `ru-dashes-parenthetical-tight-input` does for a hyphen run). No existing ru fixture exercised authored-en-dash promotion before this change (checked against every `dashes`-rule fixture in this file)."
+    },
+    {
+      "id": "ru-ranges-em-tight",
+      "rule": "ranges",
       "mode": "text",
       "in": "Годы 1941-1945 были тяжёлыми",
       "out": "Годы 1941⁠—⁠1945 были тяжёлыми",
-      "note": "dashes.md §6 case 17 and §3.3.1. Two things at once. (1) The glyph: Russian sets an EM dash without spacing in an interval («1941—1945 гг.»), which is what forced dash.range to carry em-* — a port that hard-codes U+2013 for ranges fails here. (2) The binding: a hyphen-typed range that converts is wrapped in U+2060 word joiners, because UAX #14 gives U+2013/U+2014 the class BA and a renderer would otherwise be free to break after the dash. U+2060 is zero-width, so this case is unreadable on screen — check it in spec/fixtures/.escaped/."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). ranges.md §6 row 17 and §3.3.1 (relocated from dashes.md §6 case 17 and §3.3.1 through spec 0.4.1). Two things at once. (1) The glyph: Russian sets an EM dash without spacing in an interval («1941—1945 гг.»), which is what forced dash.range to carry em-* — a port that hard-codes U+2013 for ranges fails here. (2) The binding: a hyphen-typed range that converts is wrapped in U+2060 word joiners, because UAX #14 gives U+2013/U+2014 the class BA and a renderer would otherwise be free to break after the dash. U+2060 is zero-width, so this case is unreadable on screen — check it in spec/fixtures/.escaped/.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "ru-dashes-range-roundtrip",
@@ -139,12 +150,34 @@
       "note": "dashes.md §6 case 18, shipped idempotency defect (a): one cluster with two dash runs is inert in its entirety."
     },
     {
+      "id": "ru-ranges-cluster-inert",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "a—0–0",
+      "out": "a—0–0",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0 ownership correction: companion to `ru-dashes-cluster-inert`. Explicitly opted in (`rules: {ranges: true}`): `0–0` is a genuine range candidate; the whole `—0–0` span is one cluster with two dash runs, so `ranges`' own cluster guard declines it too (ranges.md §3.1)."
+    },
+    {
       "id": "ru-dashes-spacing-transition-guard",
       "rule": "dashes",
       "mode": "text",
       "in": "a–1 - 1",
       "out": "a–1 - 1",
       "note": "dashes.md §6 case 25, shipped idempotency defect (c): guard T1 keeps the tight en dash from becoming spaced against a digit run that has another dash beyond it."
+    },
+    {
+      "id": "ru-ranges-spacing-transition-guard",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "a–1 - 1",
+      "out": "a–1 - 1",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0 ownership correction: companion to `ru-dashes-spacing-transition-guard`. Explicitly opted in (`rules: {ranges: true}`): the trailing `1 - 1` is a genuine range candidate, declined independently by G2 (ranges.md §3.2) regardless of `dashes`' own T1 guard on the first token."
     },
     {
       "id": "ru-dashes-composition-guard-t2",
@@ -163,12 +196,15 @@
       "note": "Guard P1: a bare unspaced hyphen inside a word is not a dash — and this compound is in none of the hyphen lists either."
     },
     {
-      "id": "ru-dashes-phone-number",
-      "rule": "dashes",
+      "id": "ru-ranges-phone-number",
+      "rule": "ranges",
       "mode": "text",
       "in": "Телефон 212-555-1234",
       "out": "Телефон 212-555-1234",
-      "note": "Cluster guard and G2: a chain of dashes is inert."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. Cluster guard and G2: a chain of dashes is inert. ranges.md §3.2's G2 (chain) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "ru-hyphen-compound-izpod",
@@ -287,8 +323,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "Он сказал: \"это 'моё' дело\".",
-      "out": "Он сказал: «это „моё“ дело».",
-      "note": "quotes.md §6 case 14: depth 1 takes the ёлочки « », depth 2 the лапки „ “ — Лопатин 2006. Note the secondary pair's closing glyph is U+201C, which is in OPENISH; the class says nothing about the role."
+      "out": "Он сказал: «это 'моё' дело».",
+      "note": "quotes.md §6 case 14: depth 1 takes the ёлочки « », depth 2 the лапки „ “ — Лопатин 2006. Note the secondary pair's closing glyph is U+201C, which is in OPENISH; the class says nothing about the role. spec 0.5.0: the inner 'моё' (3 Cyrillic letters, space-flanked) is preserved by the general ambiguous-medial-span veto, which reads Unicode LETTER generally, not only ASCII — ru has no elisionIdioms entry for this shape."
     },
     {
       "id": "ru-quotes-roundtrip",
@@ -600,7 +636,18 @@
       "mode": "text",
       "in": "Из‑под стола — 1941—1945 гг.",
       "out": "Из‑под стола — 1941—1945 гг.",
-      "note": "Correct output of four rules at once: a bound morphological hyphen, a spaced parenthetical em dash, a tight range em dash and `гг.` bound to the interval it follows (beforeUnits). Both dashes here were typed by the author, so `dashes` leaves them exactly as written (§3.2 step 2a) — and note what that means for the range: it gets NO U+2060 joiners, unlike the hyphen-typed `1941-1945` two cases above. The rule never makes an edit whose entire content is invisible (§3.3.1, §7.14): a joiner may ride along with a conversion the author asked for, but it is never the only thing an edit does, because an invisible-only change to already-correct text cannot be reviewed by hand — and hand review is exactly the M4 criterion."
+      "note": "Correct output of four rules at once: a bound morphological hyphen, a spaced parenthetical em dash, a tight range em dash and `гг.` bound to the interval it follows (beforeUnits). Both dashes here were typed by the author, so `dashes` leaves them exactly as written (§3.2 step 2a) — and note what that means for the range: it gets NO U+2060 joiners, unlike the hyphen-typed `1941-1945` two cases above. The rule never makes an edit whose entire content is invisible (§3.3.1, §7.14): a joiner may ride along with a conversion the author asked for, but it is never the only thing an edit does, because an invisible-only change to already-correct text cannot be reviewed by hand — and hand review is exactly the M4 criterion. spec 0.5.0 ownership correction: `1941—1945` is a genuine range candidate already in its exact target form (em-tight) — untouched here for the unrelated reason that `dashes` never reaches a digit-flanked token at all (dashes.md §1), not because any range guard evaluated and passed it. See the companion `ru-ranges-roundtrip-already-correct`, which explicitly enables `ranges` on the same sentence and proves the range stays a genuine fixed point (ranges.md §3.3.1's invisible-edit test), not merely unreached."
+    },
+    {
+      "id": "ru-ranges-roundtrip-already-correct",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "Из‑под стола — 1941—1945 гг.",
+      "out": "Из‑под стола — 1941—1945 гг.",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0 ownership correction: companion to `ru-roundtrip-hyphen-and-dash`, explicitly opted in (`rules: {ranges: true}`). `1941—1945` is already exactly `em-tight` — glyph, length and spacing all correct — so ranges.md §3.3.1's invisible-edit test leaves it unbound and unchanged: a genuine fixed point, not an absence of evaluation."
     },
     {
       "id": "ru-combined-sentence",
@@ -608,7 +655,10 @@
       "mode": "text",
       "in": "В книге сказано: \"Дорога длиной 20 км -- это не предел...\" (годы 1941-1945).",
       "out": "В книге сказано: «Дорога длиной 20 км — это не предел…» (годы 1941⁠—⁠1945).",
-      "note": "A quotation, a parenthetical dash, an ellipsis, a number with a unit and a range in one sentence: ёлочки without inner space, a spaced em dash, a tight em dash for the interval, U+00A0 after the preposition and before the unit."
+      "note": "A quotation, a parenthetical dash, an ellipsis, a number with a unit and a range in one sentence: ёлочки without inner space, a spaced em dash, a tight em dash for the interval, U+00A0 after the preposition and before the unit. spec 0.5.0: explicit `rules: {ranges: true}` added — this fixture's embedded numeric range (e.g. 1914-1918) is off by default now that range detection moved to the `ranges` rule; the fixture keeps its original comprehensive nbsp-positioning coverage by opting in explicitly rather than dropping the range from the sentence.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "ru-quotes-030-bug1-witness",
@@ -625,6 +675,14 @@
       "in": "«a„b«c»d“e»",
       "out": "«a„b«c»d“e»",
       "note": "quotes.md §6, ru/el/fr/fr-CA adversarial sweep: already-curly interleaved WIDE-only text (ru's primary « » and secondary „ “ are both WIDE). Already correct nesting; no edits from `quotes`, verified idempotent."
+    },
+    {
+      "id": "ru-quotes-rock-n-roll",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "rock 'n' roll",
+      "out": "rock 'n' roll",
+      "note": "spec 0.5.0: ru has no cited quotes.elisionIdioms entry for this idiom (quotes.md §7 item 8 — only en-US does, via Chicago Manual of Style Online and the American Heritage Dictionary). The general ambiguous-medial-span veto (quotes.md 3.2) preserves both marks as literal U+0027 rather than pairing them as an ordinary quotation, closing the false positive AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 3.1 named for \"equivalent cases in several locales.\""
     }
   ]
 }

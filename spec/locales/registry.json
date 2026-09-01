@@ -1,6 +1,6 @@
 {
-  "spec": "0.2.0",
-  "$comment": "Locale resolution input. Algorithm is specified in spec/rules/locale-resolution.md and is identical in every runtime — never delegate it to a platform locale-negotiation library.",
+  "spec": "1.0.0",
+  "$comment": "Locale resolution input. Algorithm is specified in spec/rules/locale-resolution.md and is identical in every runtime — never delegate it to a platform locale-negotiation library. \"spec\" here must track spec/VERSION exactly — it is not itself the global version source; scripts/validate-spec.mjs enforces the match.",
   "locales": ["en-US", "en-GB", "de-DE", "de-CH", "fr", "fr-CA", "ru", "fi", "sv", "el"],
   "aliases": {
     "en": "en-US",

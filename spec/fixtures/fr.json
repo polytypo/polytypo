@@ -1,5 +1,5 @@
 {
-  "spec": "0.1.0",
+  "spec": "1.0.0",
   "locale": "fr",
   "cases": [
     {
@@ -107,6 +107,14 @@
       "note": "A spaced bare hyphen satisfies P1 and normalises to the locale form."
     },
     {
+      "id": "fr-dashes-authored-en-dash-declined",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Le plan–peut-être–échoue.",
+      "out": "Le plan–peut-être–échoue.",
+      "note": "dashes.md §3.4 P5 (spec 0.6.0): a pure single authored U+2013 is declined unconditionally, even though fr's `dash.parenthetical` is `em-spaced` and would otherwise both promote the glyph to U+2014 and add spacing, the exact sibling of `fr-dashes-parenthetical-tight-input` above (which uses a hyphen, unaffected by P5). No existing fr fixture exercised authored-en-dash promotion before this change. Correction pass (spec 0.6.0): re-witnessed to remove the straight apostrophe in the original `s'il` -- that made the whole-output assertion depend on `apostrophe` converting it too, obscuring the P5 claim (`transform(in) === in` is only obvious when nothing else in the sentence is transformable). `peut-être`'s internal hyphen is a compound word (P1, dashes.md §3.4), untouched by any rule, so this input is a true rule-isolated fixed point end to end."
+    },
+    {
       "id": "fr-dashes-parenthetical-roundtrip",
       "rule": "dashes",
       "mode": "text",
@@ -115,28 +123,37 @@
       "note": "Already the target form."
     },
     {
-      "id": "fr-dashes-range-none-years",
-      "rule": "dashes",
+      "id": "fr-ranges-none-years",
+      "rule": "ranges",
       "mode": "text",
       "in": "Les années 1914-1918 furent longues.",
       "out": "Les années 1914-1918 furent longues.",
-      "note": "dash.range = none for fr: the token IS classified as a range and then nothing at all is emitted (dashes.md §3.3, case 23). Contrary to what most tools do, French page and year intervals keep the typed hyphen-minus — the fr locale file records that neither the Imprimerie nationale's Lexique nor Jacques André prescribes a range dash, and a missing citation is never a licence to guess."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dash.range = none for fr: the token IS classified as a range and then nothing at all is emitted (dashes.md §3.3, case 23). Contrary to what most tools do, French page and year intervals keep the typed hyphen-minus — the fr locale file records that neither the Imprimerie nationale's Lexique nor Jacques André prescribes a range dash, and a missing citation is never a licence to guess. ranges.md §2 is the current normative source for the `range: \"none\"` no-op.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "fr-dashes-range-none-pages",
-      "rule": "dashes",
+      "id": "fr-ranges-none-pages",
+      "rule": "ranges",
       "mode": "text",
       "in": "p. 123-125",
       "out": "p. 123-125",
-      "note": "Same: dash.range = none. Jacques André prints a hyphen in page intervals. `none` emits nothing AT ALL — the U+2060 joiners that a converted range carries in de-DE, de-CH and ru are not emitted either (dashes.md §2, §3.3.1), so the fr output is byte-identical to the input."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. Same: dash.range = none. Jacques André prints a hyphen in page intervals. `none` emits nothing AT ALL — the U+2060 joiners that a converted range carries in de-DE, de-CH and ru are not emitted either (dashes.md §2, §3.3.1), so the fr output is byte-identical to the input. ranges.md §2 is the current normative source for the `range: \"none\"` no-op.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "fr-dashes-range-none-not-parenthetical",
-      "rule": "dashes",
+      "id": "fr-ranges-none-not-parenthetical",
+      "rule": "ranges",
       "mode": "text",
       "in": "34-36",
       "out": "34-36",
-      "note": "dashes.md §3.3 final paragraph: a range candidate is never reconsidered as a parenthetical, so `none` really means nothing happens."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §3.3 final paragraph: a range candidate is never reconsidered as a parenthetical, so `none` really means nothing happens. ranges.md §2 is the current normative source for the `range: \"none\"` no-op.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "fr-dashes-compound-hyphen",
@@ -155,12 +172,15 @@
       "note": "dashes.md §6 case 33, composition defect family 2: a U+00A0 to the right of a dash does not count as spacing, so the quoted hyphen is not read as a spaced parenthetical dash."
     },
     {
-      "id": "fr-dashes-iso-date",
-      "rule": "dashes",
+      "id": "fr-ranges-iso-date",
+      "rule": "ranges",
       "mode": "text",
       "in": "Publié le 2026-08-15",
       "out": "Publié le 2026-08-15",
-      "note": "Guard G2 (chain) plus dash.range = none."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. Guard G2 (chain) plus dash.range = none. ranges.md §3.2's G2 (chain) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "fr-hyphen-noop-compounds",
@@ -215,8 +235,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "\"Il a dit 'oui' hier.\"",
-      "out": "« Il a dit “oui” hier. »",
-      "note": "Depth 1 primary « », depth 2 secondary “ ” whose innerSpace is none."
+      "out": "« Il a dit 'oui' hier. »",
+      "note": "Depth 1 primary « », depth 2 secondary “ ” whose innerSpace is none. spec 0.5.0: the inner 'oui' (3 letters, space-flanked) is preserved by the general ambiguous-medial-span veto — fr has no elisionIdioms entry for this shape."
     },
     {
       "id": "fr-quotes-unbalanced",
@@ -416,7 +436,7 @@
       "mode": "text",
       "in": "M. Dupont est arrivé",
       "out": "M. Dupont est arrivé",
-      "note": "nbsp.md §6 case 21: `M.` is inert in N10 (guard G-D: two code points, UPPER, dot, and fr has bindInitials true) and binds through N7 clause C1 instead, reaching the same U+00A0."
+      "note": "nbsp.md §6 case 21: `M.` is inert in N10 (guard G-D: two code points, UPPER, dot, and fr has initialBinding \"single\" — spec 0.6.0, the field used to be the boolean bindInitials, true) and binds through N7 clause C1 instead, reaching the same U+00A0. `single` mode keeps the unconditional single-initial shape, which is what this exact case needs."
     },
     {
       "id": "fr-nbsp-monsieur-lowercase-surname",
@@ -472,7 +492,18 @@
       "mode": "text",
       "in": "Les années 1914-1918 — quatre ans — furent longues.",
       "out": "Les années 1914-1918 — quatre ans — furent longues.",
-      "note": "The two French dash decisions together: the parenthetical is already em-spaced, and the range keeps its hyphen because dash.range is none."
+      "note": "spec 0.5.0 ownership correction: the parenthetical half (`— quatre ans —`) is `dashes`' own concern (already em-spaced, unchanged) — the range half (`1914-1918`) is a no-op for the unrelated reason that fr's `dash.range` is \"none\", already covered on its own by `fr-ranges-none-years`/`fr-ranges-none-pages`/`fr-ranges-none-not-parenthetical` (rule:\"ranges\", explicit `rules: {ranges: true}`) and by the companion `fr-ranges-roundtrip-with-parenthetical` below, which proves the exact same sentence stays a no-op with `ranges` explicitly enabled too — this case alone does not, and must not be read to, prove anything about G1-G5."
+    },
+    {
+      "id": "fr-ranges-roundtrip-with-parenthetical",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "Les années 1914-1918 — quatre ans — furent longues.",
+      "out": "Les années 1914-1918 — quatre ans — furent longues.",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0 ownership correction: companion to `fr-roundtrip-dashes-and-range`, explicitly opted in (`rules: {ranges: true}`) so the same realistic sentence is honestly proven a no-op with `ranges` actually evaluating it, not merely absent. `1914-1918` stays untouched because fr's `dash.range` is \"none\" (ranges.md §2), not because `ranges` was never asked."
     },
     {
       "id": "fr-combined-sentence",
@@ -488,7 +519,7 @@
       "mode": "text",
       "in": "Il a dit « bonjour ».",
       "out": "Il a dit « bonjour ».",
-      "note": "quotes.md §6 row 13, mandate 2's second requirement: the pair forms on the first application — quotes emits no edit because the glyphs are already right and innerSpace ≠ none — and the full pipeline's `nbsp` converts the two U+0020 to U+202F, a no-op since the input is already the fully-normalised form."
+      "note": "quotes.md §6 row 13, mandate 2's second requirement: the pair forms on the first application — the `quotes` rule itself emits no glyph edit here, because the guillemets are already correct. That does not make the full pipeline a no-op on this input: the later `nbsp` rule (nbsp.md §3.10, N8) still converts the two inner U+0020 spaces beside the guillemets to U+00A0 (not U+202F), per fr's `quotes.primary.innerSpace: \"nbsp\"`. The output above is the fixed point: a second full `transform` call on it is the no-op, not the first one."
     },
     {
       "id": "fr-quotes-030-bug3a-witness",
@@ -521,6 +552,52 @@
       "in": "««”",
       "out": "« « ”",
       "note": "The second implementation-discovered witness for the same class: two adjacent « (vetoed by V1, unchanged by `quotes` alone) each get a trailing space from `nbsp`'s unconditional N8 on the first pass; without the gapInsertable clause, `quotes` would then pair the second (now-spaced) « with the trailing ” on the SECOND pass, producing » where the first pass produced nothing — a fresh non-idempotent output. Verified idempotent with the fix."
+    },
+    {
+      "id": "fr-markdown-commonmark-prose-guillemets",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Il a dit \"bonjour\" et \"au revoir\".\n",
+      "out": "Il a dit « bonjour » et « au revoir ».\n",
+      "note": "Locale-dependent conversion applies inside a markdown span exactly as in text mode: fr's guillemets and no-break spaces, not en-US's curly quotes."
+    },
+    {
+      "id": "fr-markdown-commonmark-noop",
+      "rule": "nbsp",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Il a dit : « bonjour ».\n",
+      "out": "Il a dit : « bonjour ».\n",
+      "note": "modes.md §4: already-typeset fr prose, including the no-break space before the colon and inside the guillemets, is returned byte for byte."
+    },
+    {
+      "id": "fr-markdown-mdx-jsx-children",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "<Callout title=\"a\">Il a dit \"bonjour\"</Callout>\n",
+      "out": "<Callout title=\"a\">Il a dit « bonjour »</Callout>\n",
+      "note": "modes.md §3.7.3: JSX element children are processable prose, and locale-dependent conversion (fr's guillemets) applies there exactly as elsewhere."
+    },
+    {
+      "id": "fr-quotes-rock-n-roll",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "rock 'n' roll",
+      "out": "rock 'n' roll",
+      "note": "spec 0.5.0: fr has no cited quotes.elisionIdioms entry for this idiom (quotes.md §7 item 8 — only en-US does, via Chicago Manual of Style Online and the American Heritage Dictionary). The general ambiguous-medial-span veto (quotes.md 3.2) preserves both marks as literal U+0027 rather than pairing them as an ordinary quotation, closing the false positive AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 3.1 named for \"equivalent cases in several locales.\""
+    },
+    {
+      "id": "fr-ranges-none",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "p. 123-125",
+      "out": "p. 123-125",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0: fr's dash.range is \"none\" (no verified convention), so `ranges` substitutes nothing even when explicitly enabled (ranges.md §2, §3.3) — the same invariant the pre-0.5.0 `dashes`-tagged no-op fixtures for this locale already proved for the combined rule."
     }
   ]
 }

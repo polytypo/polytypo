@@ -1,0 +1,223 @@
+<header class="hero" style="padding: 40px 0 24px">
+  <p class="eyebrow">Coverage, and how it grows</p>
+  <h1 style="max-width: none">
+    {{Locale_count}} locales are cited. Everything else is uncovered, not unplanned.
+  </h1>
+  <p class="tagline" style="font-size: 17px">
+    This project does not guess a locale into existence. A row below exists because someone wrote
+    the rules down, cited a normative source for each one, and backed it with fixtures the
+    conformance suite runs on every change. That is the only way a locale is added — including by
+    you.
+  </p>
+</header>
+
+<section id="all-locales" style="border-top: 0; padding-top: 0">
+  <p class="eyebrow">The same sentence, {{locale_count}} locales</p>
+  <h2>Nobody agrees about quotation marks.</h2>
+  <p>
+    German lowers the opening quote. Swiss German turns it into guillemets pointing outward. French
+    puts a no-break space <em>inside</em> them (U+00A0) and a narrow one before
+    <code>! ? ;</code> (U+202F). Finnish and Swedish close with the same glyph they open with.
+    British English swaps the primary and secondary levels round. Every one of these is correct — in
+    exactly one place.
+  </p>
+  <div class="card-grid card-grid--two">{{locale_cards}}</div>
+  <p class="small muted">
+    Rendered by the engine from the inputs shown, not typed by hand. Regenerate with
+    <code>npx tsx brand/tools/gen_examples.ts</code>.
+  </p>
+</section>
+
+<section id="extend">
+  <p class="eyebrow">Coverage table</p>
+  <h2>Cited, not guessed.</h2>
+  <div class="scroll">
+    <table class="kv">
+      <tr>
+        <th>Locale</th>
+        <th>Name</th>
+        <th>Rules cited</th>
+        <th>Fixtures</th>
+        <th>Primary sources</th>
+      </tr>
+      <tr>
+        <td class="mono">en-US</td>
+        <td>English (US)</td>
+        <td class="mono small">dashes, ellipsis, hyphen, nbsp, quotes</td>
+        <td>{{fixtures:en-US}}</td>
+        <td class="ready-cite">Chicago Manual of Style; BIPM (SI units)</td>
+      </tr>
+      <tr>
+        <td class="mono">en-GB</td>
+        <td>English (UK)</td>
+        <td class="mono small">dashes, ellipsis, hyphen, nbsp, quotes</td>
+        <td>{{fixtures:en-GB}}</td>
+        <td class="ready-cite">University of Oxford Style Guide; BIPM (SI units)</td>
+      </tr>
+      <tr>
+        <td class="mono">de-DE</td>
+        <td>German (Germany)</td>
+        <td class="mono small">dashes, hyphen, nbsp, quotes</td>
+        <td>{{fixtures:de-DE}}</td>
+        <td class="ready-cite">Duden Rechtschreibregeln; DIN 5008</td>
+      </tr>
+      <tr>
+        <td class="mono">de-CH</td>
+        <td>German (Switzerland)</td>
+        <td class="mono small">dashes, hyphen, nbsp, quotes</td>
+        <td>{{fixtures:de-CH}}</td>
+        <td class="ready-cite">Schweizerische Bundeskanzlei, Schreibweisungen</td>
+      </tr>
+      <tr>
+        <td class="mono">fr</td>
+        <td>French</td>
+        <td class="mono small">dashes, hyphen, nbsp, quotes</td>
+        <td>{{fixtures:fr}}</td>
+        <td class="ready-cite">
+          Imprimerie nationale, Lexique; Jacques André, Petites leçons de typographie
+        </td>
+      </tr>
+      <tr>
+        <td class="mono">fr-CA</td>
+        <td>French (Canada)</td>
+        <td class="mono small">dashes, ellipsis, hyphen, nbsp, quotes</td>
+        <td>{{fixtures:fr-CA}}</td>
+        <td class="ready-cite">Office québécois de la langue française; Jacques André</td>
+      </tr>
+      <tr>
+        <td class="mono">ru</td>
+        <td>Russian</td>
+        <td class="mono small">dashes, ellipsis, hyphen, nbsp, quotes</td>
+        <td>{{fixtures:ru}}</td>
+        <td class="ready-cite">Мильчин &amp; Чельцова, Справочник издателя и автора; Розенталь</td>
+      </tr>
+      <tr>
+        <td class="mono">fi</td>
+        <td>Finnish</td>
+        <td class="mono small">dashes, ellipsis, hyphen, nbsp, quotes</td>
+        <td>{{fixtures:fi}}</td>
+        <td class="ready-cite">Kotimaisten kielten keskus (Kotus), Kielitoimiston ohjepankki</td>
+      </tr>
+      <tr>
+        <td class="mono">sv</td>
+        <td>Swedish</td>
+        <td class="mono small">dashes, ellipsis, hyphen, nbsp, quotes</td>
+        <td>{{fixtures:sv}}</td>
+        <td class="ready-cite">
+          Institutet för språk och folkminnen (Språkrådet), Snabba skrivregler
+        </td>
+      </tr>
+      <tr>
+        <td class="mono">el</td>
+        <td>Greek</td>
+        <td class="mono small">
+          apostrophe, dashes, ellipsis, hyphen, nbsp, quotes, spaces, symbols
+        </td>
+        <td>{{fixtures:el}}</td>
+        <td class="ready-cite">EU Interinstitutional Style Guide (Greek); Unicode Standard 17.0</td>
+      </tr>
+    </table>
+  </div>
+  <p class="small muted" style="margin-top: -8px">
+    Locale count and citations read directly from <code>spec/locales/</code>; fixture totals from
+    <code>spec/fixtures/</code>. <code>en</code> and <code>de</code> are aliases resolving to
+    <code>en-US</code> and <code>de-DE</code> (<code>spec/rules/locale-resolution.md</code>).
+  </p>
+  <div class="note">
+    <p>
+      Italian is not in that table. Neither is Spanish, Polish, Portuguese, Japanese, Arabic or
+      every other language this format could describe. That is not a roadmap with dates attached —
+      it is simply what nobody has cited yet. The six-locale cap this project shipped with was
+      withdrawn by operator decision:
+      <strong>coverage is a goal, and the only gate is evidence.</strong>
+    </p>
+  </div>
+
+  <h3>Adding a locale — worked through for Italian</h3>
+  <p>
+    None of this is Italian-specific guidance; nothing below has been checked against an Italian
+    style authority. It is the exact sequence anyone adds any locale through, illustrated with the
+    locale this table is missing.
+  </p>
+  <ol class="steps">
+    <li>
+      <h4>Read <code>spec/schema/locale.schema.json</code></h4>
+      <p class="small muted">
+        It defines what a locale file may say: quote glyphs and inner-space rule, the parenthetical
+        and range dash convention, whether ellipsis abbreviates after terminal punctuation,
+        hyphen-binding word lists, and the no-break-space triggers. Literal strings, literal code
+        points, string lists and enum values only — no regex, no priority numbers, no conditionals.
+        If Italian needs a distinction the schema can't express, that is a spec discussion, not a
+        workaround in the locale file.
+      </p>
+    </li>
+    <li>
+      <h4>Write <code>spec/locales/it.json</code></h4>
+      <p class="small muted">
+        One field at a time, each backed by a citation in the mandatory <code>sources</code>
+        array — a national style guide, a standards body (Accademia della Crusca, a major dictionary
+        or publisher's house style), never a blog post or a contributor's own habit. A locale is
+        accepted only as the triple this table enforces: data, fixtures, citation.
+      </p>
+    </li>
+    <li>
+      <h4>Add cases to <code>spec/fixtures/it.json</code></h4>
+      <p class="small muted">
+        One <code>{ "in", "out", "rule" }</code> pair per behaviour the citation asserts, plus at
+        least one edge case per rule — the ordinary sentence is not the interesting test, the nested
+        quote or nasty numeric range is. Every fixture is automatically also an idempotency case:
+        <code>transform(out) === out</code> is checked for free.
+      </p>
+    </li>
+    <li>
+      <h4>Register it in <code>spec/locales/registry.json</code></h4>
+      <p class="small muted">
+        Add <code>"it"</code> to the <code>locales</code> array. Only add an alias (<code
+          >it-CH</code
+        >
+        → <code>it</code>, say) if the fallback is itself a cited decision, not a guess of
+        convenience.
+      </p>
+    </li>
+    <li>
+      <h4>Validate and test</h4>
+      <p class="small muted">
+        <code>npm run validate:spec</code> checks the file against the schema and NFC-normalizes it;
+        <code>npm run gen &amp;&amp; npm test</code> runs the new fixtures through the conformance
+        suite and the <code>fast-check</code> idempotency property. Both must be green — a red run
+        blocks the locale, not just a warning.
+      </p>
+    </li>
+    <li>
+      <h4>Open a pull request</h4>
+      <p class="small muted">
+        Disagreements about what Italian actually does are settled by citation, not preference — if
+        a review turns up a more normative source, that source wins, not whoever argued longer.
+      </p>
+    </li>
+  </ol>
+
+  <h3>Changing or adding a rule</h3>
+  <p>
+    Rules are cross-locale algorithms, not per-language code. <code>spec/rules/order.json</code> is
+    the single source of truth for a rule's id, pipeline order, default and which locale fields it
+    reads; <code>spec/rules/&lt;id&gt;.md</code> is normative prose written <em>before</em> the
+    implementation — extracting a spec from a finished implementation is exactly the rework this
+    project's spec-first discipline exists to avoid. A behaviour change starts with a fixture in
+    <code>spec/fixtures/</code>, not a diff in <code>src/rules/</code>. Implementation constraints
+    that are already binding, even with one runtime shipped: no regex in a rule (Go's RE2 has no
+    lookbehind — a rule is a single left-to-right scan over code points with explicit lookaround),
+    index by Unicode code point rather than a native string, and rules emit <em>edits</em> for the
+    pipeline to apply rather than mutating text directly, so <code>applyEdits</code> can enforce the
+    contract instead of trusting it.
+  </p>
+
+  <h3>What v1 deliberately does not do</h3>
+  <p>
+    Language auto-detection, hyphenation, optical alignment, spellcheck, a hosted API, a
+    plugin/extension API and CMS integrations are refused by explicit decision, not oversight — each
+    one trades away a property (purity, predictability, or the citation discipline above) that this
+    project is not willing to give up for convenience. A pull request implementing one of these will
+    be asked for the operator decision that authorizes it, not merged on its own merits.
+  </p>
+</section>

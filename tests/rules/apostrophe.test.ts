@@ -4,6 +4,7 @@ import { fromCodePoints, toCodePoints } from "../../src/engine/codepoints";
 import { applyEdits } from "../../src/engine/edits";
 import { getLocaleData } from "../../src/engine/locale";
 import { KNOWN_LOCALES } from "../../src/generated/locales";
+import { transform } from "../../src/index";
 import { apostropheRule } from "../../src/rules/apostrophe";
 
 function run(input: string, tag = "en-US"): string {
@@ -250,4 +251,26 @@ describe("apostrophe — idempotency", () => {
       );
     });
   }
+});
+
+describe("apostrophe — ambiguity preserve-set: at least one inline space, not exactly one (spec 0.5.0 correction)", () => {
+  it("apostropheRule alone still skips both marks with a doubled space on either side", () => {
+    // Marks that `quotes` would have declined to pair (spec 0.5.0's general ambiguous-medial-
+    // span veto) must never be independently curled by this rule's own case ladder — see
+    // apostrophe.md §3.4. Exercised directly against apostropheRule.apply() so this proves the
+    // rule's own consumption of the shared preserve-set, not merely that `quotes` got there
+    // first in the full pipeline.
+    for (const input of ["rock  'n' roll", "rock 'n'  roll", "rock  'n'  roll"]) {
+      expect(run(input, "en-GB")).toBe(input);
+    }
+  });
+
+  it("full pipeline: stable through a second run with doubled spaces, `spaces` disabled", () => {
+    const opts = { locale: "en-GB", rules: { spaces: false } } as const;
+    for (const input of ["rock  'n' roll", "say  'no'  now"]) {
+      const once = transform(input, opts);
+      expect(once).toBe(input);
+      expect(transform(once, opts)).toBe(once);
+    }
+  });
 });

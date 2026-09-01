@@ -2,8 +2,17 @@
   "locale": "fi",
   "name": "Finnish",
   "quotes": {
-    "primary": { "open": "”", "close": "”", "innerSpace": "none" },
-    "secondary": { "open": "’", "close": "’", "innerSpace": "none" }
+    "primary": {
+      "open": "”",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "’",
+      "close": "’",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": []
   },
   "dash": {
     "parenthetical": "en-spaced",
@@ -48,7 +57,7 @@
     "beforeNumber": [],
     "beforeWord": [],
     "afterSymbols": ["§"],
-    "bindInitials": false
+    "initialBinding": "none"
   },
   "sources": [
     {
@@ -115,7 +124,7 @@
       "rule": "nbsp",
       "cite": "Kotimaisten kielten keskus (Kotus), Kielitoimiston ohjepankki: välimerkit and lyhenteet, read for membership in each remaining list",
       "url": "https://kielitoimistonohjepankki.fi/asiasana/valimerkit/",
-      "note": "`beforePunctuation` and `narrowBeforePunctuation` are empty because Finnish sets no space before a punctuation mark — there are no members to list. `afterShortWords` is empty because Finnish has no closed class of short words that may not end a line; its function words are inflectional suffixes rather than separate particles, so the list has no candidates. `beforeWord` is empty for want of an attested membership claim: no Kotus page shows titles such as hra or prof. as forms that bind to a following name. `beforeNumber` is a genuine open question rather than a settled empty: Kotus does write s. 12 and kuva 3, which under nbsp.md §2.1 is a membership claim of the right shape, and the earlier justification for leaving it empty (that Kotus does not require the space to be non-breaking) is no longer a valid reason. It is left empty here only because populating it is a live behaviour change that belongs in its own round with N9’s false-positive surface reviewed. `bindInitials` is false, and §2.1 makes plain that this field is unciteable in principle — it expresses nothing but mechanism, and no typographic authority states it in terms of a code point. Kotus attests the space in J. K. Paasikivi and says nothing further. The value is therefore a judgement, held at false to match the same call made for en-GB, and it should be settled by the operator across all locales at once rather than per file."
+      "note": "`beforePunctuation` and `narrowBeforePunctuation` are empty because Finnish sets no space before a punctuation mark — there are no members to list. `afterShortWords` is empty because Finnish has no closed class of short words that may not end a line; its function words are inflectional suffixes rather than separate particles, so the list has no candidates. `beforeWord` is empty for want of an attested membership claim: no Kotus page shows titles such as hra or prof. as forms that bind to a following name. `beforeNumber` is a genuine open question rather than a settled empty: Kotus does write s. 12 and kuva 3, which under nbsp.md §2.1 is a membership claim of the right shape, and the earlier justification for leaving it empty (that Kotus does not require the space to be non-breaking) is no longer a valid reason. It is left empty here only because populating it is a live behaviour change that belongs in its own round with N9’s false-positive surface reviewed. `initialBinding` is \"none\" (spec 0.6.0: the field used to be the boolean bindInitials, false), and §2.1 makes plain that this field is unciteable in principle — it expresses nothing but mechanism, and no typographic authority states it in terms of a code point. Kotus attests the space in J. K. Paasikivi and says nothing further. The value is therefore a judgement, held at \"none\" to match the same call made for en-GB, and it should be settled by the operator across all locales at once rather than per file."
     },
     {
       "rule": "hyphen",

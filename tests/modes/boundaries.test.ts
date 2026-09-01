@@ -21,12 +21,17 @@ describe("the span model (modes.md 3.2)", () => {
   it("is not model A: an inner quotation nested across an element takes the secondary pair", () => {
     // Processed per span, `'hi'` would pair in isolation at depth 1 and take the *primary*
     // glyphs. It sits inside a converted outer quotation, so the answer is the secondary pair.
-    expect(html("\"He said <em>'hi'</em> loudly\"", "en-US")).toBe(
-      "“He said <em>‘hi’</em> loudly”",
+    // "hi" (2 letters) is used elsewhere in this suite as a short quoted word; here it is
+    // replaced by "fine" (4 letters, past the general ambiguous-medial-span veto's 1-3 LETTER
+    // bound, quotes.md 3.2) specifically so this test keeps exercising nesting-across-an-element
+    // mechanics rather than the veto's own boundary — that boundary has its own dedicated
+    // coverage in tests/rules/quotes.test.ts.
+    expect(html("\"He said <em>'fine'</em> loudly\"", "en-US")).toBe(
+      "“He said <em>‘fine’</em> loudly”",
     );
     // Same depths as the unwrapped text run: the element is invisible to nesting.
-    expect(html("\"He said <em>'hi'</em> loudly\"", "fr")).toBe(
-      transform("\"He said 'hi' loudly\"", { locale: "fr" })
+    expect(html("\"He said <em>'fine'</em> loudly\"", "fr")).toBe(
+      transform("\"He said 'fine' loudly\"", { locale: "fr" })
         .replace("“", "<em>“")
         .replace("”", "”</em>"),
     );
@@ -184,16 +189,17 @@ describe("the edge-growth rule (modes.md 3.4)", () => {
 
   it("does not resurrect a conversion the rule itself declined", () => {
     // `dashes.md` §3.2 step 2a is fully retired (spec 0.2.0): a dash's length is no longer
-    // protected on authorship grounds, so `a<em>–</em>b`'s EN dash converts to EM in en-US
-    // (`em-tight`) — the mode edge-growth rule (modes.md 3.4) permits it because a tight
-    // 1-code-point-for-1-code-point replacement does not grow the span. Every other locale
-    // here wants EN already (unchanged, correct) or wants a spaced form the tight token has no
-    // room to grow into at the span edge (unchanged, declined at the boundary layer, not by
-    // authorship). The mode layer only ever removes edits, so a rule that produced none must
-    // come back byte-identical.
+    // protected on authorship grounds in general. spec 0.6.0 adds one narrow, unconditional
+    // exception back — P5 (`dashes.md` §3.4/§8.8): a pure single authored U+2013 is declined in
+    // every locale, regardless of mode or of what the boundary layer would otherwise permit. So
+    // `a<em>–</em>b`'s EN dash is now unchanged everywhere, including en-US — the rule itself
+    // never proposes an edit for P5 to have anything to grow into, so the mode edge-growth rule
+    // (modes.md 3.4) is not even reached for this token. Every other locale here wants EN
+    // already (unchanged, correct) or wants a spaced form the tight token has no room to grow
+    // into at the span edge (unchanged, declined at the boundary layer). The mode layer only
+    // ever removes edits, so a rule that produced none must come back byte-identical.
     for (const locale of Object.keys(LOCALES)) {
-      const expected = locale === "en-US" ? "a<em>—</em>b" : "a<em>–</em>b";
-      expect(html("a<em>–</em>b", locale), locale).toBe(expected);
+      expect(html("a<em>–</em>b", locale), locale).toBe("a<em>–</em>b");
     }
     // `a<em>x — y</em>b` is EM, spaced, with room inside the span for the dash to change
     // length. en-US (`em-tight`) closes the spacing; de-CH/de-DE/en-GB/fi/sv (`en-spaced`)

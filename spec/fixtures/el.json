@@ -1,5 +1,5 @@
 {
-  "spec": "0.1.0",
+  "spec": "1.0.0",
   "locale": "el",
   "cases": [
     {
@@ -83,12 +83,15 @@
       "note": "spaces.md §7.8. ellipsis.md §3.1 defines TERMINAL as {U+0021, U+003F}, and a Greek question is written U+003B, so the two-dot run after it is left alone — while el-ellipsis-not-abbreviated-after-terminal, spelled with the U+003F that Greek does not use for questions, does convert. Adding U+003B to TERMINAL was researched and REFUSED: it would be a regression in Russian, where Лопатин §154 and Розенталь §68.1 tie the two-dot form to «?» and «!» by name and no source extends it to the semicolon, and no Greek source asks for it either — the Greek authorities give no rule at all for αποσιωπητικά meeting the ερωτηματικό. Unsupported on both sides, so the input round-trips unchanged, which is what an unspecified case should do. Note that the correctly written three-dot form «Πράγματι;...» already converts, needing nothing from TERMINAL."
     },
     {
-      "id": "el-dashes-range-noop",
-      "rule": "dashes",
+      "id": "el-ranges-noop",
+      "rule": "ranges",
       "mode": "text",
       "in": "άτομα ηλικίας 25-45 ετών",
       "out": "άτομα ηλικίας 25-45 ετών",
-      "note": "dashes.md §6 case 33. dash.range is \"none\", so the token is classified as a range and nothing is emitted. The source prints an en dash here but permits the hyphen in the same clause, so substituting would express a preference the citation does not carry."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 33. dash.range is \"none\", so the token is classified as a range and nothing is emitted. The source prints an en dash here but permits the hyphen in the same clause, so substituting would express a preference the citation does not carry. ranges.md §2 is the current normative source for the `range: \"none\"` no-op.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "el-dashes-parenthetical-noop",
@@ -99,12 +102,15 @@
       "note": "dashes.md §6 case 34. dash.parenthetical is \"none\": the source prescribes spaces outside the dash pair and none inside, which no value of the enum expresses."
     },
     {
-      "id": "el-dashes-existing-en-dash-noop",
-      "rule": "dashes",
+      "id": "el-ranges-existing-en-dash-noop",
+      "rule": "ranges",
       "mode": "text",
       "in": "την περίοδο 1989–1991",
       "out": "την περίοδο 1989–1991",
-      "note": "dashes.md §6 case 35: an en dash already in the form the source prints. Greek is the first locale with \"none\" on both fields, so this rule is a provable total no-op for it."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 35: an en dash already in the form the source prints. Greek is the first locale with \"none\" on both fields, so this rule is a provable total no-op for it. ranges.md §2 is the current normative source for the `range: \"none\"` no-op.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "el-hyphen-noop",
@@ -127,8 +133,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "\"Είπε 'όχι' σε μένα\", σημείωσε.",
-      "out": "«Είπε “όχι” σε μένα», σημείωσε.",
-      "note": "quotes.md §6: one stack, inner pair at depth 2 takes the secondary pair U+201C/U+201D. Greek combines guillemets with curly double quotes, which no other v1 locale does."
+      "out": "«Είπε 'όχι' σε μένα», σημείωσε.",
+      "note": "quotes.md §6: one stack, inner pair at depth 2 takes the secondary pair U+201C/U+201D. Greek combines guillemets with curly double quotes, which no other v1 locale does. spec 0.5.0: the inner 'όχι' (3 Greek letters, space-flanked) is preserved by the general ambiguous-medial-span veto — el has no elisionIdioms entry for this shape."
     },
     {
       "id": "el-quotes-already-guillemets",
@@ -199,8 +205,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "\"Είπε 'όχι' σε μένα\", σημείωσε.",
-      "out": "«Είπε “όχι” σε μένα», σημείωσε.",
-      "note": "quotes.md §6 row 16: width drift with no gate intervention — el's secondary pair is WIDE (“ ”), so the inner NARROW pair drifts to WIDE on render and all four marks land on one stack in the gate's re-scan; the certification gate certifies without declining anything, evidence the gate's cost is near zero for the common case."
+      "out": "«Είπε 'όχι' σε μένα», σημείωσε.",
+      "note": "quotes.md §6 row 16: width drift with no gate intervention — el's secondary pair is WIDE (“ ”), so the inner NARROW pair drifts to WIDE on render and all four marks land on one stack in the gate's re-scan; the certification gate certifies without declining anything, evidence the gate's cost is near zero for the common case. spec 0.5.0: same as el-quotes-nested — 'όχι' is preserved by the general ambiguous-medial-span veto rather than pairing as an ordinary same-width quotation."
     },
     {
       "id": "el-quotes-030-adversarial-interleaved",
@@ -209,6 +215,25 @@
       "in": "«a“b«c»d”e»",
       "out": "«a“b«c»d”e»",
       "note": "quotes.md §6, ru/el/fr/fr-CA adversarial sweep: already-curly interleaved WIDE-only text. Already correct nesting; no edits, verified idempotent."
+    },
+    {
+      "id": "el-quotes-rock-n-roll",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "rock 'n' roll",
+      "out": "rock 'n' roll",
+      "note": "spec 0.5.0: el has no cited quotes.elisionIdioms entry for this idiom (quotes.md §7 item 8 — only en-US does, via Chicago Manual of Style Online and the American Heritage Dictionary). The general ambiguous-medial-span veto (quotes.md 3.2) preserves both marks as literal U+0027 rather than pairing them as an ordinary quotation, closing the false positive AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 3.1 named for \"equivalent cases in several locales.\""
+    },
+    {
+      "id": "el-ranges-none",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "άτομα ηλικίας 25-45 ετών",
+      "out": "άτομα ηλικίας 25-45 ετών",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0: el's dash.range is \"none\" (no verified convention), so `ranges` substitutes nothing even when explicitly enabled (ranges.md §2, §3.3) — the same invariant the pre-0.5.0 `dashes`-tagged no-op fixtures for this locale already proved for the combined rule."
     }
   ]
 }

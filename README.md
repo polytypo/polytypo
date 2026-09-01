@@ -6,33 +6,33 @@
 
 <p align="center">
   Locale-correct quotes, dashes, ellipses, apostrophes, symbols and no-break spaces.<br>
-  One spec, five runtimes, byte-identical output.
+  One runtime today. One portable spec designed for five, byte-identical output.
 </p>
 
 ---
 
-**Status: in development, not yet published.** All three modes — `text`, `html` and `markdown` — are implemented for all ten locales against `spec/rules/modes.md`. `markdown` requires an explicit `dialect` (`commonmark` or `mdx`); there is no default and no detection.
+**Status: stable JavaScript runtime — package version 1.0.0.** All three modes — `text`, `html` and `markdown` — are implemented for all ten locales against `spec/rules/modes.md`. `markdown` requires an explicit `dialect` (`commonmark` or `mdx`); there is no default and no detection.
 
-Spec version: **0.2.0** · locales: **10** · rules: **8** · not yet on npm.
+Spec version: **1.0.0** · package version: **1.0.0** · locales: **10** · rules: **9**.
 
 ## What it does
 
 ```text
 in   Is this "polytypo"? - No, it's "polytypo"! She said, "He replied 'never' twice"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.
 
-en-US → Is this “polytypo”?—No, it’s “polytypo”! She said, “He replied ‘never’ twice”… The release—all 5 km of it—covers 1914⁠–⁠1918. Copyright © 2026, at 1920×1080.
-en-GB → Is this ‘polytypo’? – No, it’s ‘polytypo’! She said, ‘He replied “never” twice’… The release – all 5 km of it – covers 1914⁠–⁠1918. Copyright © 2026, at 1920×1080.
+en-US → Is this “polytypo”?—No, it’s “polytypo”! She said, “He replied ‘never’ twice”… The release—all 5 km of it—covers 1914-1918. Copyright © 2026, at 1920×1080.
+en-GB → Is this ‘polytypo’? – No, it’s ‘polytypo’! She said, ‘He replied “never” twice’… The release – all 5 km of it – covers 1914-1918. Copyright © 2026, at 1920×1080.
 ```
 
 The same construction, in the languages that disagree with English about it:
 
 ```text
-de-DE → Ist das „polytypo“? – Nein, das ist „polytypo“! Sie sagte: „Er hat ‚nie‘ geantwortet“… Die Ausgabe – z. B. die Jahre 1939⁠–⁠1945 – erscheint in 1920×1080. Copyright © 2026.
-de-CH → Ist das «polytypo»? – Nein, das ist «polytypo»! Sie sagte: «Er hat ‹nie› geantwortet»… Die Ausgabe – z. B. die Jahre 1939⁠–⁠1945 – erscheint in 1920×1080. Copyright © 2026.
+de-DE → Ist das „polytypo“? – Nein, das ist „polytypo“! Sie sagte: „Er hat 'nie' geantwortet“… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026.
+de-CH → Ist das «polytypo»? – Nein, das ist «polytypo»! Sie sagte: «Er hat 'nie' geantwortet»… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026.
 fr    → C’est « polytypo » ? — Non, c’est « polytypo » ! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm ; c’est tout. Copyright © 2026.
-ru    → Это «полиштамп»? — Нет, это «полиштамп»! Она сказала: «он ответил „никогда“»… Достал из‑под стола — в 1941⁠—⁠1945 годах — размер 10 × 20 см. Все права защищены © 2026.
-fi    → Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän sanoi: ”hän vastasi ’ei koskaan’”… Matkaa on 20 km – vuosina 1914⁠–⁠1918 – ja hinta nousi 10,5 %. Copyright © 2026.
-sv    → Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914⁠–⁠1918 – och det kostar 100 kr. Copyright © 2026.
+ru    → Это «полиштамп»? — Нет, это «полиштамп»! Она сказала: «он ответил „никогда“»… Достал из‑под стола — в 1941-1945 годах — размер 10 × 20 см. Все права защищены © 2026.
+fi    → Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän sanoi: ”hän vastasi ’ei koskaan’”… Matkaa on 20 km – vuosina 1914-1918 – ja hinta nousi 10,5 %. Copyright © 2026.
+sv    → Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914-1918 – och det kostar 100 kr. Copyright © 2026.
 el    → Είναι αυτό «polytypo»; - Όχι, αυτό είναι «polytypo»! Είπε: «απάντησε “ποτέ”»… Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright © 2026, σε 1920×1080.
 ```
 
@@ -40,15 +40,6 @@ el    → Είναι αυτό «polytypo»; - Όχι, αυτό είναι «poly
 Every string above is real engine output, generated from `promo/examples.json` — not typed by hand.
 
 ## Install
-
-Not published yet — the name `polytypo` is reserved but nothing has been released to npm, and the
-package version is still `0.0.0`. Until it ships, use it from a clone:
-
-```bash
-git clone https://github.com/polytypo/polytypo-js && cd polytypo-js && npm install && npm run build
-```
-
-Once published, installation will be the ordinary one:
 
 ```bash
 npm install polytypo
@@ -134,12 +125,12 @@ try {
 | `POLYTYPO_INVALID_MODE` | The mode is not `text`, `html` or `markdown`. |
 | `POLYTYPO_INVALID_DIALECT` | `mode` is `markdown` and `dialect` is missing, or is not `commonmark` or `mdx`. |
 | `POLYTYPO_UNKNOWN_RULE` | The `rules` map names a rule that does not exist. |
-| `POLYTYPO_MALFORMED_INPUT` | The input does not parse in the requested language. Reachable only for `dialect: "mdx"`, which embeds JavaScript. |
+| `POLYTYPO_MALFORMED_INPUT` | The input does not parse in the requested language. Reachable only for `dialect: "mdx"`, which embeds JavaScript — `html` parsing is recovery-based and never throws this, and plain CommonMark has no syntax errors at all. |
 | `POLYTYPO_MALFORMED_LOCALE_DATA` | Embedded locale data failed schema validation at build time. |
 | `POLYTYPO_RULE_CONTRACT` | A rule produced an edit that violates the pipeline contract. |
 
-Codes are the contract across all five runtimes. **Messages are English prose and are not** — never
-match on them.
+Codes are the contract across every runtime this spec is designed for. **Messages are English
+prose and are not** — never match on them.
 
 ## Locales
 
@@ -164,7 +155,8 @@ Aliases resolve in the spec, never in a platform locale library: `en` → `en-US
 | --- | --- | --- | --- |
 | 10 | `spaces` | on | Collapse repeated spaces, strip spaces before punctuation, normalize spacing inside brackets. |
 | 20 | `ellipsis` | on | Three dots to U+2026; locale-dependent abbreviated forms after terminal punctuation. |
-| 30 | `dashes` | on | Parenthetical dash and numeric/date range dash per locale convention. |
+| 25 | `ranges` | off | Numeric/date range dash per locale convention (dash.range). |
+| 30 | `dashes` | on | Parenthetical dash per locale convention (dash.parenthetical). |
 | 35 | `hyphen` | on | Bind morphological hyphen forms with U+2011 (non-breaking hyphen) so they cannot be broken across lines. |
 | 40 | `quotes` | on | Straight quotes to locale primary/secondary pairs with nesting resolution. |
 | 50 | `apostrophe` | on | Remaining straight apostrophes to U+2019 without corrupting contractions. |
@@ -179,9 +171,9 @@ order and never from map iteration order.
 
 | Rule | In | Out |
 | --- | --- | --- |
-| `quotes` | `"He said 'no' to me," she noted.` | “He said ‘no’ to me,” she noted. |
+| `quotes` | `"He said 'no' to me," she noted.` | “He said 'no' to me,” she noted. |
 | `dashes` | `The plan - if there is one - fails.` | The plan—if there is one—fails. |
-| `dashes` | `1914-1918 and pp. 34-36` | 1914⁠–⁠1918 and pp. 34⁠–⁠36 |
+| `dashes` | `1914-1918 and pp. 34-36` | 1914-1918 and pp. 34-36 |
 | `ellipsis` | `Wait... what?` | Wait… what? |
 | `apostrophe` | `don't` | don’t |
 | `nbsp` | `It is 20 km to the coast` | It is 20⍽km to the coast |
@@ -212,6 +204,50 @@ different parsers can agree on.
 
 The package is ESM and CJS, side-effect free and tree-shakeable. Locale data is embedded into the
 published artifact at build time — nothing is read from disk or fetched at runtime.
+
+### Subpath entry points
+
+Four import paths are published. All four ship ESM, CommonJS, and their own TypeScript
+declarations:
+
+```js
+import { transform } from "polytypo";           // aggregate — all three modes, one import
+import { transform } from "polytypo/text";       // text-only
+import { transform } from "polytypo/html";       // HTML, without the Markdown parser stack
+import { transform } from "polytypo/markdown";   // Markdown — CommonMark and MDX
+```
+
+Use the aggregate `polytypo` import if your code needs more than one mode. Each mode-specific
+entry point fixes its own mode at the type level, taken directly from its source
+(`src/index.text.ts`, `src/index.html.ts`, `src/index.markdown.ts`):
+
+```ts
+// polytypo/text — TextOptions = Omit<Options, "mode" | "dialect">
+transform(input: string, options: TextOptions): string
+
+// polytypo/html — HtmlOptions = Omit<Options, "mode" | "dialect">
+transform(input: string, options: HtmlOptions): string
+
+// polytypo/markdown — MarkdownOptions = Omit<Options, "mode"> & { dialect: Dialect }
+transform(input: string, options: MarkdownOptions): string
+```
+
+`mode` is not a parameter of `TextOptions` or `HtmlOptions` — there is no competing mode to pass,
+since each entry point only ever runs the one mode its name says. `MarkdownOptions` keeps the
+aggregate entry's `dialect` contract exactly: required, no default. A plain-JS caller — or a
+TypeScript caller passing a wider-typed variable, which excess-property checking does not catch —
+can still supply a runtime `mode` anyway. That value is checked, not silently ignored or
+overridden: omitting it is the normal case; supplying the entry's own fixed mode (e.g. `mode:
+"text"` to `polytypo/text`) is redundant but tolerated; supplying any other mode throws
+`POLYTYPO_INVALID_MODE`.
+
+Choosing a subpath narrows what a bundler can *reach* — `polytypo/text` never imports `parse5` or
+the Micromark/MDX stack, and `polytypo/html` never imports the Micromark/MDX stack. Whether that
+narrower reachable graph actually produces a smaller bundle for you depends on your bundler and its
+configuration (tree-shaking, code-splitting, externals) — reach is what this package controls;
+the bundle it becomes is your tool's job. It does **not** change what `npm install polytypo` puts
+on disk either way — npm resolves `package.json`'s `dependencies` as a whole, once, regardless of
+which entry point your code imports from.
 
 ## Conformance
 

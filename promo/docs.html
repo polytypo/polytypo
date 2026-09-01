@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="polytypo — locale-correct quotes, dashes, ellipses and no-break spaces for 10 locales. One runtime today. One portable spec designed for five.">
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/style.css">
+<title>polytypo — Docs</title>
+</head>
+<body>
+<nav class="site-nav"><div class="wrap"><a class="brand" href="index.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="9.5 37.5 181.0 45.0" role="img" aria-labelledby="t3 d3">
+  <title id="t3">polytypo</title>
+  <desc id="d3">Guillemets enclosing an em dash.</desc>
+  <g fill="none" stroke="currentColor" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M28 42 L14 60 L28 78"/>
+    <path d="M44 42 L30 60 L44 78"/>
+    <path d="M172 42 L186 60 L172 78"/>
+    <path d="M156 42 L170 60 L156 78"/>
+  </g>
+  <rect x="58.0" y="55.5" width="84.0" height="9.0" fill="currentColor"/>
+</svg>polytypo</a><div class="links"><a href="index.html">Home</a><a href="docs.html" aria-current="page">Docs</a><a href="playground.html">Playground</a><a href="locales.html">Locales</a></div></div></nav>
+<div class="wrap">
+<header class="hero" style="padding: 40px 0 24px">
+  <p class="eyebrow">Reference</p>
+  <h1 style="max-width: none">One function. No configuration, no globals, no I/O.</h1>
+  <p class="tagline" style="font-size: 17px">
+    <code>transform(input, options)</code> takes a string and a locale and returns a string. It is
+    pure: no filesystem, no network, no clock, no ambient config, no module-level state. Locale is
+    required — an unknown locale throws rather than silently falling back to English.
+  </p>
+</header>
+
+<section id="use" style="border-top: 0; padding-top: 0">
+  <div class="tabs" id="lang-tabs"></div>
+  <div id="lang-panes"><div class="pane" data-label="JavaScript / TypeScript"><h3 style="margin:22px 0 0">JavaScript / TypeScript<span class="status live">npm — not yet published</span></h3><pre><code><span class="tok-com">// npm install polytypo</span>
+import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;
+
+transform(`Is this <span class="tok-str">&quot;polytypo&quot;</span>? - No, it&#x27;s <span class="tok-str">&quot;polytypo&quot;</span>!`, { locale: <span class="tok-str">&quot;de&quot;</span> });
+<span class="tok-com">// → Ist das „polytypo“? – Nein, das ist „polytypo“!</span>
+
+transform(<span class="tok-str">&quot;Il a dit \&quot;bonjour\&quot;.&quot;</span>, { locale: <span class="tok-str">&quot;fr&quot;</span> });
+<span class="tok-com">// → Il a dit «\u202fbonjour\u202f».</span>
+
+<span class="tok-com">// opt out of a single rule; the order of the rest never changes</span>
+transform(<span class="tok-str">&quot;1914-1918&quot;</span>, { locale: <span class="tok-str">&quot;en-US&quot;</span>, rules: { dashes: false } });
+
+try {
+  transform(<span class="tok-str">&quot;x&quot;</span>, { locale: <span class="tok-str">&quot;xx&quot;</span> });
+} catch (error) {
+  error.code; <span class="tok-com">// &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span>
+}</code></pre></div><div class="pane" data-label="Python"><h3 style="margin:22px 0 0">Python<span class="status">PyPI — planned</span></h3><pre><code><span class="tok-com"># pip install polytypo</span>
+from polytypo import transform, PolytypoError
+
+transform(<span class="tok-str">&#x27;Is this &quot;polytypo&quot;? - No, it\&#x27;s &quot;polytypo&quot;!&#x27;</span>, locale=<span class="tok-str">&quot;de&quot;</span>)
+<span class="tok-com"># → Ist das „polytypo“? – Nein, das ist „polytypo“!</span>
+
+transform(<span class="tok-str">&#x27;Il a dit &quot;bonjour&quot;.&#x27;</span>, locale=<span class="tok-str">&quot;fr&quot;</span>)
+<span class="tok-com"># → Il a dit «\u202fbonjour\u202f».</span>
+
+transform(<span class="tok-str">&quot;1914-1918&quot;</span>, locale=<span class="tok-str">&quot;en-US&quot;</span>, rules={<span class="tok-str">&quot;dashes&quot;</span>: False})
+
+try:
+    transform(<span class="tok-str">&quot;x&quot;</span>, locale=<span class="tok-str">&quot;xx&quot;</span>)
+except PolytypoError as error:
+    error.code  <span class="tok-com"># &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></code></pre></div><div class="pane" data-label="Go"><h3 style="margin:22px 0 0">Go<span class="status">Go modules — planned</span></h3><pre><code><span class="tok-com">// go get github.com/polytypo/polytypo-go</span>
+package main
+
+import (
+    <span class="tok-str">&quot;fmt&quot;</span>
+    <span class="tok-str">&quot;github.com/polytypo/polytypo-go&quot;</span>
+)
+
+func main() {
+    out, err := polytypo.Transform(
+        `Is this <span class="tok-str">&quot;polytypo&quot;</span>? - No, it&#x27;s <span class="tok-str">&quot;polytypo&quot;</span>!`,
+        polytypo.Options{Locale: <span class="tok-str">&quot;de&quot;</span>},
+    )
+    if err != nil {
+        var perr *polytypo.Error
+        if errors.As(err, &amp;perr) {
+            _ = perr.Code <span class="tok-com">// &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span>
+        }
+    }
+    fmt.Println(out)
+    <span class="tok-com">// Ist das „polytypo“? – Nein, das ist „polytypo“!</span>
+}</code></pre></div><div class="pane" data-label="Ruby"><h3 style="margin:22px 0 0">Ruby<span class="status">RubyGems — planned</span></h3><pre><code><span class="tok-com"># gem install polytypo</span>
+require <span class="tok-str">&quot;polytypo&quot;</span>
+
+Polytypo.transform(%q{Is this <span class="tok-str">&quot;polytypo&quot;</span>? - No, it<span class="tok-str">&#x27;s &quot;polytypo&quot;!}, locale: &quot;de&quot;)
+# =&gt; &quot;Ist das „polytypo“? – Nein, das ist „polytypo“!&quot;
+
+Polytypo.transform(&#x27;</span>Il a dit <span class="tok-str">&quot;bonjour&quot;</span>.&#x27;, locale: <span class="tok-str">&quot;fr&quot;</span>)
+<span class="tok-com"># =&gt; &quot;Il a dit «\u202fbonjour\u202f».&quot;</span>
+
+Polytypo.transform(<span class="tok-str">&quot;1914-1918&quot;</span>, locale: <span class="tok-str">&quot;en-US&quot;</span>, rules: { dashes: false })
+
+begin
+  Polytypo.transform(<span class="tok-str">&quot;x&quot;</span>, locale: <span class="tok-str">&quot;xx&quot;</span>)
+rescue Polytypo::Error =&gt; error
+  error.code <span class="tok-com"># =&gt; &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span>
+end</code></pre></div><div class="pane" data-label="PHP"><h3 style="margin:22px 0 0">PHP<span class="status">Packagist — planned</span></h3><pre><code>&lt;?php
+<span class="tok-com">// composer require polytypo/polytypo</span>
+use Polytypo\Polytypo;
+use Polytypo\PolytypoException;
+
+Polytypo::transform(<span class="tok-str">&#x27;Is this &quot;polytypo&quot;? - No, it\&#x27;s &quot;polytypo&quot;!&#x27;</span>, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;de&#x27;</span>]);
+<span class="tok-com">// → Ist das „polytypo“? – Nein, das ist „polytypo“!</span>
+
+Polytypo::transform(<span class="tok-str">&#x27;Il a dit &quot;bonjour&quot;.&#x27;</span>, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;fr&#x27;</span>]);
+<span class="tok-com">// → Il a dit «\u{202f}bonjour\u{202f}».</span>
+
+try {
+    Polytypo::transform(<span class="tok-str">&#x27;x&#x27;</span>, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;xx&#x27;</span>]);
+} catch (PolytypoException $error) {
+    $error-&gt;errorCode; <span class="tok-com">// &#x27;POLYTYPO_UNKNOWN_LOCALE&#x27;</span>
+}</code></pre></div></div>
+  <p class="small muted" style="margin-top: 14px">
+    Error codes are part of the contract in every runtime — full list below. Messages are English
+    and are not part of the contract.
+  </p>
+
+  <h3>Options</h3>
+  <div class="scroll">
+    <table class="kv">
+      <tr>
+        <th>Option</th>
+        <th>Type</th>
+        <th>Default</th>
+        <th>Notes</th>
+      </tr>
+      <tr>
+        <td class="mono">locale</td>
+        <td class="mono">string</td>
+        <td class="mono">—</td>
+        <td class="small muted">
+          Required, no exceptions. Unknown locale throws <code>POLYTYPO_UNKNOWN_LOCALE</code> rather
+          than falling back to English. Resolution (<code>de-AT</code> → <code>de</code>) follows
+          <code>spec/rules/locale-resolution.md</code>.
+        </td>
+      </tr>
+      <tr>
+        <td class="mono">mode</td>
+        <td class="mono">"text" | "html" | "markdown"</td>
+        <td class="mono">"text"</td>
+        <td class="small muted">
+          Selects the adapter. <code>html</code> parses with parse5, <code>markdown</code> with
+          micromark; both run the same rule pipeline only on prose text nodes, never inside tags,
+          attributes, code spans or code blocks.
+        </td>
+      </tr>
+      <tr>
+        <td class="mono">dialect</td>
+        <td class="mono">"commonmark" | "mdx"</td>
+        <td class="mono">—</td>
+        <td class="small muted">
+          Required when <code>mode</code> is <code>"markdown"</code>, with no default — omitting it
+          throws <code>POLYTYPO_INVALID_DIALECT</code>. Dialect detection is forbidden by design:
+          one <code>&lt;https://…&gt;</code> autolink is valid CommonMark and invalid MDX, so a
+          heuristic would silently reclassify content. Ignored for the other two modes.
+        </td>
+      </tr>
+      <tr>
+        <td class="mono">rules</td>
+        <td class="mono">Partial&lt;Record&lt;RuleId, boolean&gt;&gt;</td>
+        <td class="mono">all on</td>
+        <td class="small muted">
+          Opt-out only — <code>{ dashes: false }</code>. Disabling a rule removes it from the
+          pipeline; it never reorders the rest. <code>true</code> is a no-op. An unrecognised rule
+          id throws <code>POLYTYPO_UNKNOWN_RULE</code>.
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <h3>Error codes</h3>
+  <p class="small muted" style="margin-top: -6px">
+    All seven are part of the contract in every runtime; messages are English and are not.
+  </p>
+  <div class="scroll">
+    <table class="kv">
+      <tr>
+        <th>Code</th>
+        <th>Thrown when</th>
+      </tr>
+      <tr>
+        <td class="mono">POLYTYPO_UNKNOWN_LOCALE</td>
+        <td class="small muted">
+          <code>locale</code> is missing or not in the spec's locale registry.
+        </td>
+      </tr>
+      <tr>
+        <td class="mono">POLYTYPO_INVALID_MODE</td>
+        <td class="small muted">
+          <code>mode</code> is set to something other than <code>text</code>, <code>html</code> or
+          <code>markdown</code>.
+        </td>
+      </tr>
+      <tr>
+        <td class="mono">POLYTYPO_INVALID_DIALECT</td>
+        <td class="small muted">
+          <code>mode: "markdown"</code> without a <code>dialect</code>, or an unrecognised one.
+        </td>
+      </tr>
+      <tr>
+        <td class="mono">POLYTYPO_UNKNOWN_RULE</td>
+        <td class="small muted">
+          A key in <code>rules</code> that is not one of the nine rule ids.
+        </td>
+      </tr>
+      <tr>
+        <td class="mono">POLYTYPO_MALFORMED_LOCALE_DATA</td>
+        <td class="small muted">Internal — a locale's data failed its own schema at load time.</td>
+      </tr>
+      <tr>
+        <td class="mono">POLYTYPO_RULE_CONTRACT</td>
+        <td class="small muted">
+          Internal — a rule emitted an edit outside its contract (out of bounds, overlapping, wrong
+          <code>ruleId</code>). Should never surface; if it does, it's a bug in this project, not
+          your input.
+        </td>
+      </tr>
+      <tr>
+        <td class="mono">POLYTYPO_MALFORMED_INPUT</td>
+        <td class="small muted">
+          Reachable only when <code>mode: "markdown"</code> and <code>dialect: "mdx"</code> — MDX
+          embeds JavaScript, so an unterminated JSX element or a broken <code>{…}</code>
+          expression can fail to parse. <code>html</code> parsing is recovery-based and never
+          throws this; plain CommonMark has no syntax errors at all. The underlying parser error
+          is wrapped either way, so no dependency's error type reaches the public surface.
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <h3>Wiring it into a build step</h3>
+  <p>
+    There is no CLI, no plugin API and no hosted service in v1 — that is a deliberate non-goal (see
+    <a href="locales.html#extend">Locales → What v1 deliberately does not do</a>).
+    <code>transform()</code> is a plain pure function, so it drops into whatever already touches
+    your content at build time.
+  </p>
+  <div class="tabs" id="build-tabs"></div>
+  <div id="build-panes"><div class="pane" data-label="Markdown / MDX pipeline"><pre><code><span class="tok-com">// e.g. a remark/unified plugin, or any step that reads .md/.mdx files</span>
+import { readFile, writeFile } from <span class="tok-str">&quot;node:fs/promises&quot;</span>;
+import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;
+
+const path = <span class="tok-str">&quot;content/posts/hello-world.mdx&quot;</span>;
+const source = await readFile(path, <span class="tok-str">&quot;utf8&quot;</span>);
+const dialect = path.endsWith(<span class="tok-str">&quot;.mdx&quot;</span>) ? <span class="tok-str">&quot;mdx&quot;</span> : <span class="tok-str">&quot;commonmark&quot;</span>;
+
+await writeFile(path, transform(source, { locale: <span class="tok-str">&quot;en-US&quot;</span>, mode: <span class="tok-str">&quot;markdown&quot;</span>, dialect }));
+<span class="tok-com">// transform(transform(x)) === transform(x) — safe to run on every build, not just once.</span></code></pre></div><div class="pane" data-label="CMS field on save"><pre><code><span class="tok-com">// wherever a rich-text field is persisted — a webhook handler, a save hook</span>
+import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;
+
+function sanitizeBody(html, locale) {
+  <span class="tok-com">// html parsing is recovery-based and never throws POLYTYPO_MALFORMED_INPUT — that code is</span>
+  <span class="tok-com">// reachable only for markdown&#x27;s mdx dialect, which embeds JavaScript. Nothing to catch here.</span>
+  return transform(html, { locale, mode: <span class="tok-str">&quot;html&quot;</span> });
+}</code></pre></div><div class="pane" data-label="React / templating"><pre><code><span class="tok-com">// call it wherever untrusted or imported copy reaches a render — not on every keystroke</span>
+import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;
+
+function Byline({ text, locale }) {
+  return &lt;p&gt;{transform(text, { locale })}&lt;/p&gt;;
+}</code></pre></div></div>
+</section>
+
+<section id="rules">
+  <p class="eyebrow">What it changes</p>
+  <h2>Nine rules, in a fixed order, on every runtime.</h2>
+  <p>
+    Order is declared once in <code>spec/rules/order.json</code> and is identical everywhere — not
+    registration order, not map-iteration order. Any rule can be switched off; nothing else moves
+    when you do.
+  </p>
+  <div class="scroll"><table><tr><th>Rule</th><th>Locale</th><th>In</th><th>Out</th><th>What it does</th></tr><tr><td class="mono">spaces</td><td class="mono">en-US</td><td class="rule-in">Hello  ,   world !</td><td class="rule-out">Hello, world!</td><td class="small muted">Collapse repeated spaces, strip the space before punctuation.</td></tr><tr><td class="mono">ellipsis</td><td class="mono">en-US</td><td class="rule-in">Wait... what?</td><td class="rule-out">Wait<span class="chg">…</span> what?</td><td class="small muted">Three dots become U+2026.</td></tr><tr><td class="mono">ellipsis</td><td class="mono">ru</td><td class="rule-in">Что?...</td><td class="rule-out">Что?..</td><td class="small muted">Russian keeps the abbreviated form after terminal punctuation.</td></tr><tr><td class="mono">dashes</td><td class="mono">en-US</td><td class="rule-in">The plan - if there is one - fails.</td><td class="rule-out">The plan<span class="chg">—</span>if there is one<span class="chg">—</span>fails.</td><td class="small muted">Parenthetical dash, per locale: em tight, en spaced, em spaced.</td></tr><tr><td class="mono">dashes</td><td class="mono">en-US</td><td class="rule-in">1914-1918 and pp. 34-36</td><td class="rule-out">1914-1918 and pp. 34-36</td><td class="small muted">Numeric and date ranges take an en dash, unspaced.</td></tr><tr><td class="mono">hyphen</td><td class="mono">ru</td><td class="rule-in">Достал из-под стола</td><td class="rule-out">Достал из<span class="chg"><span class="nb" title="U+2011 non-breaking hyphen">‑</span></span>под стола</td><td class="small muted">Morphological hyphens bound with U+2011 so they cannot break.</td></tr><tr><td class="mono">quotes</td><td class="mono">de-DE</td><td class="rule-in">&quot;Er sagte &#x27;nein&#x27; zu mir&quot;, notierte sie.</td><td class="rule-out"><span class="chg">„</span>Er sagte <span class="chg">‚</span>nein<span class="chg">‘</span> zu mir<span class="chg">“</span>, notierte sie.</td><td class="small muted">Primary and secondary quotes, with nesting resolved.</td></tr><tr><td class="mono">apostrophe</td><td class="mono">en-US</td><td class="rule-in">don&#x27;t</td><td class="rule-out">don<span class="chg">’</span>t</td><td class="small muted">Straight apostrophe to U+2019, contractions intact.</td></tr><tr><td class="mono">symbols</td><td class="mono">en-US</td><td class="rule-in">Copyright (c) 2026, 1920x1080</td><td class="rule-out">Copyright <span class="chg">©</span> 2026, 1920<span class="chg">×</span>1080</td><td class="small muted">(c) (r) (tm) and the multiplication sign between numerals.</td></tr><tr><td class="mono">nbsp</td><td class="mono">fr</td><td class="rule-in">Ça va ? Bonjour !</td><td class="rule-out">Ça va<span class="chg"><span class="nb" title="U+202F narrow no-break space"> </span></span>? Bonjour<span class="chg"><span class="nb" title="U+202F narrow no-break space"> </span></span>!</td><td class="small muted">No-break and narrow no-break spaces, inserted per locale.</td></tr></table></div>
+  <p class="small muted">
+    Examples are real engine output for the locale named in each row. Grey marks what was typed; red
+    marks what the engine set instead. Try any of these live in the
+    <a href="playground.html">Playground</a>.
+  </p>
+</section>
+
+<section id="why">
+  <p class="eyebrow">Why this and not a regex</p>
+  <h2>Because the fifth port is where regex-based typography dies.</h2>
+  <div class="card-grid card-grid--responsive">
+    <div class="card">
+      <h3 style="margin: 0 0 6px">The spec is the product</h3>
+      <p class="small muted" style="margin: 0">
+        Locale data, rule semantics and conformance fixtures live in one repository. An
+        implementation is polytypo <em>iff</em> it passes the suite for the spec version it claims.
+        Runtimes are replaceable; the spec is not.
+      </p>
+    </div>
+    <div class="card">
+      <h3 style="margin: 0 0 6px">No regex in the core</h3>
+      <p class="small muted" style="margin: 0">
+        Go's RE2 has no lookbehind. A rule written as a clever regex in one language is a rule
+        rewritten from scratch in the next. Rules are a single left-to-right scan over code points
+        with explicit lookaround.
+      </p>
+    </div>
+    <div class="card">
+      <h3 style="margin: 0 0 6px">Idempotent by contract</h3>
+      <p class="small muted" style="margin: 0">
+        <code>transform(transform(x)) === transform(x)</code>, proven by property-based tests, not
+        hoped for. Running it twice — in a CMS, in CI, in a build step — cannot corrupt text.
+      </p>
+    </div>
+    <div class="card">
+      <h3 style="margin: 0 0 6px">Every locale is cited</h3>
+      <p class="small muted" style="margin: 0">
+        Duden, Imprimerie nationale, Kotus, Språkrådet, Chicago, Мильчин. A locale ships only as a
+        triple: data, fixtures, citation. Disagreements are settled by source, not by preference.
+      </p>
+    </div>
+    <div class="card">
+      <h3 style="margin: 0 0 6px">Ten correct beats fifty guessed</h3>
+      <p class="small muted" style="margin: 0">
+        The competing library with fifty locales guesses most of them. When the choice is "add a
+        language" or "make an existing one provably correct", this project picks correctness.
+      </p>
+    </div>
+    <div class="card">
+      <h3 style="margin: 0 0 6px">Invisible characters, on purpose</h3>
+      <p class="small muted" style="margin: 0">
+        U+00A0, U+202F and U+2011 are the whole point of the <code>nbsp</code> and
+        <code>hyphen</code> rules. Every demo on this site reveals them with an underline — hover a
+        highlighted character to see exactly what it is.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="typing">
+  <p class="eyebrow">Before the text ever reaches a build step</p>
+  <h2>Type it right in the first place: Ilya Birman's Typography Layout.</h2>
+  <p>
+    polytypo fixes text that has already been written. It is a repair pass — useful in a CMS, a
+    build step, a content pipeline. But the best em dash is the one you typed on purpose, and for
+    that there is a better tool than any library: a keyboard layout that puts real typographic
+    characters under real keys.
+  </p>
+  <p>
+    <strong
+      ><a href="https://ilyabirman.net/typography-layout/" target="_blank"
+        >Ilya Birman's Typography Layout</a
+      ></strong
+    >
+    is what we recommend, without reservation, for macOS and Windows. It leaves your usual layout
+    alone and adds the correct characters on the right-hand modifier: em dash, en dash, the
+    quotation marks of several languages, the ellipsis, the no-break space, degrees, arrows,
+    currency signs. You stop thinking about it within a week, and then you never type
+    <code>--</code> again.
+  </p>
+  <div class="card-grid card-grid--responsive">
+    <div class="card">
+      <h3 style="margin: 0 0 6px">Typing beats fixing</h3>
+      <p class="small muted" style="margin: 0">
+        A rule engine has to infer intent from context. Your fingers already know it. Every
+        character typed correctly is a character no heuristic has to guess at.
+      </p>
+    </div>
+    <div class="card">
+      <h3 style="margin: 0 0 6px">They compose</h3>
+      <p class="small muted" style="margin: 0">
+        Use the layout while writing, run polytypo over the result. Text that is already correct
+        passes through unchanged — that is what idempotency means in practice.
+      </p>
+    </div>
+    <div class="card">
+      <h3 style="margin: 0 0 6px">Where each one wins</h3>
+      <p class="small muted" style="margin: 0">
+        The layout works where a person types. polytypo works where nobody is typing at all:
+        imported catalogues, user submissions, migrated content, other people's Markdown.
+      </p>
+    </div>
+  </div>
+  <p class="small muted">
+    No affiliation, no arrangement — just the tool this project's author actually uses. Available
+    for macOS and Windows at
+    <a href="https://ilyabirman.net/typography-layout/" target="_blank"
+      >ilyabirman.net/typography-layout</a
+    >.
+  </p>
+</section>
+
+<footer><div class="wrap"><p>polytypo · spec 1.0.0 · MIT for the code, separate terms for the brand assets · every before/after typography example on this site is generated with the engine.</p><p><a href="manifesto.html">Manifesto</a></p><p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p></div></footer>
+</div>
+<script src="assets/site.js"></script>
+<script>
+Polytypo.bootTabs("lang-tabs", "lang-panes");
+Polytypo.bootTabs("build-tabs", "build-panes");
+</script>
+</body>
+</html>

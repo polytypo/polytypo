@@ -1,5 +1,5 @@
 {
-  "spec": "0.1.0",
+  "spec": "1.0.0",
   "locale": "de-CH",
   "cases": [
     {
@@ -80,47 +80,70 @@
       "mode": "text",
       "in": "Das Jahr — ein langes — endet.",
       "out": "Das Jahr – ein langes – endet.",
-      "note": "dashes.md §6 case 41, spec 0.2.0. Spec 0.1.0's authored-dash guard (and a briefly-shipped 0.2.0 narrowing that preserved only length) is fully retired: de-CH's parenthetical is `en-spaced`, so the author's em dash is promoted to it exactly as a hyphen-typed one would be — length included. See dashes.md §7 item 14 for why length stopped being treated as reliably authorial. Bundeskanzlei Rz. 236 states the Geviertstrich (U+2014) is not permitted in Swiss usage; the author's em dash is now corrected to the prescribed en dash rather than merely respaced or left alone."
+      "note": "dashes.md §6 case 41, spec 0.2.0. Spec 0.1.0's authored-dash guard (and a briefly-shipped 0.2.0 narrowing that preserved only length) is fully retired: de-CH's parenthetical is `en-spaced`, so the author's em dash is promoted to it exactly as a hyphen-typed one would be — length included. See dashes.md §7 item 14 for why length stopped being treated as reliably authorial. Bundeskanzlei Rz. 236 states the Geviertstrich (U+2014) is not permitted in Swiss usage; the author's em dash is now corrected to the prescribed en dash rather than merely respaced or left alone. This fixture holds only for U+2014 — see `de-ch-dashes-authored-en-dash-tight-declined` for why U+2013 does not follow the same path since spec 0.6.0."
     },
     {
-      "id": "de-ch-dashes-range-years",
+      "id": "de-ch-dashes-authored-en-dash-tight-declined",
       "rule": "dashes",
+      "mode": "text",
+      "in": "Das Jahr–ein langes–endet.",
+      "out": "Das Jahr–ein langes–endet.",
+      "note": "dashes.md §3.4 P5 (spec 0.6.0): a pure single authored U+2013 is declined unconditionally, even though de-CH's `dash.parenthetical` target glyph is already `en-spaced` (U+2013) and Bundeskanzlei Rz. 236 forbids the Geviertstrich outright. Before P5 this tight authored en-dash would have been re-spaced; P5 protects the whole token, spacing included (§8.8)."
+    },
+    {
+      "id": "de-ch-ranges-years",
+      "rule": "ranges",
       "mode": "text",
       "in": "Die Jahre 1939-1945",
       "out": "Die Jahre 1939⁠–⁠1945",
-      "note": "dash.range = en-tight — Bundeskanzlei Rz. 234: der Bis-Strich steht ohne Leerzeichen, „die Jahre 1939–1945“. The hyphen-typed range converts and is bound with U+2060 word joiners (§3.3.1), which are zero-width and visible only in spec/fixtures/.escaped/."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). dash.range = en-tight — Bundeskanzlei Rz. 234: der Bis-Strich steht ohne Leerzeichen, „die Jahre 1939–1945“. The hyphen-typed range converts and is bound with U+2060 word joiners (ranges.md §3.3.1), which are zero-width and visible only in spec/fixtures/.escaped/.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "de-ch-dashes-range-hours",
-      "rule": "dashes",
+      "id": "de-ch-ranges-hours",
+      "rule": "ranges",
       "mode": "text",
       "in": "16-17 Uhr",
       "out": "16⁠–⁠17 Uhr",
-      "note": "Rz. 234, second cited example, with the same U+2060 binding."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). Rz. 234, second cited example, with the same U+2060 binding (ranges.md §3.3.1).",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "de-ch-dashes-range-roundtrip",
-      "rule": "dashes",
+      "id": "de-ch-ranges-roundtrip",
+      "rule": "ranges",
       "mode": "text",
       "in": "die Artikel 10–12",
       "out": "die Artikel 10–12",
-      "note": "An AUTHORED range: byte-identical out, and specifically with no U+2060 joiners, where the hyphen-typed `1939-1945` above gets them (§3.3.1, §7.14). Both forms look the same on screen, so nothing in the rendered document explains why one may break across lines and the other may not — the asymmetry is recorded rather than hidden. It follows from one principle: the rule never makes an edit whose entire content is invisible, because an invisible-only change to already-correct text cannot be reviewed by hand."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. An AUTHORED range: byte-identical out, and specifically with no U+2060 joiners, where the hyphen-typed `1939-1945` above gets them (§3.3.1, §7.14). Both forms look the same on screen, so nothing in the rendered document explains why one may break across lines and the other may not — the asymmetry is recorded rather than hidden. It follows from one principle: the rule never makes an edit whose entire content is invisible, because an invisible-only change to already-correct text cannot be reviewed by hand. ranges.md §3-§4 is the current normative source for this rule's own behaviour here.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "de-ch-dashes-iso-date",
-      "rule": "dashes",
+      "id": "de-ch-ranges-iso-date",
+      "rule": "ranges",
       "mode": "text",
       "in": "Erschienen 2026-08-15",
       "out": "Erschienen 2026-08-15",
-      "note": "Guard G2 and the cluster guard."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. Guard G2 and the cluster guard. ranges.md §3.2's G2 (chain) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "de-ch-dashes-decreasing-range",
-      "rule": "dashes",
+      "id": "de-ch-ranges-decreasing-range",
+      "rule": "ranges",
       "mode": "text",
       "in": "Resultat 20-10",
       "out": "Resultat 20-10",
-      "note": "dashes.md §6 case 10: guard G5, the left value must not exceed the right."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 10: guard G5, the left value must not exceed the right. ranges.md §3.2's G5 (non-decreasing) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "de-ch-dashes-compound-hyphen",
@@ -408,7 +431,7 @@
       "mode": "text",
       "in": "J. K. Rowling",
       "out": "J. K. Rowling",
-      "note": "N7 clause C1 twice. bindInitials is a derivation in this locale file, not a literal Weisung — Rz. 251 names „eine Abkürzung und ein Ortsname“ and Rz. 438 the parts of multi-token abbreviations."
+      "note": "N7 clause C1 twice, confirmed chain of two initials before the surname. initialBinding: \"chain\" (spec 0.6.0) is a derivation in this locale file, not a literal Weisung — Rz. 251 names „eine Abkürzung und ein Ortsname“ and Rz. 438 the parts of multi-token abbreviations."
     },
     {
       "id": "de-ch-nbsp-no-french-spacing",
@@ -457,6 +480,22 @@
       "in": "Er sagte: \"Die Strecke -- rund 20 km -- war lang...\" und ging nach St. Gallen.",
       "out": "Er sagte: «Die Strecke – rund 20 km – war lang…» und ging nach St. Gallen.",
       "note": "A quotation, a parenthetical dash, an ellipsis and a number with a unit in one sentence: guillemets without inner space, en-spaced dashes (never an em dash), U+2026, U+00A0 between 20 and km, and St. bound to Gallen."
+    },
+    {
+      "id": "de-ch-quotes-041-cobug-apostrophe-v1",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"B'’\"‹",
+      "out": "«B’’»‹",
+      "note": "Implementation-discovered composition-obligation violation against I5 by apostrophe (R6), closed by quotes.md §3.2's V1ID normalisation (spec 0.4.1). Before the fix: on pass 1, quotes' raw pairing finds a crossing WIDE pair (the two U+0022) and a NARROW pair (U+2019/U+2039), both assigned depth 1 (primary), and the certification gate rejects the whole set down to the empty set because rendering both to the same primary glyph creates a new V1-adjacency the re-derivation cannot reproduce -- so quotes makes no edit, and apostrophe then converts the sole unmatched U+0027 to U+2019. On pass 2 the input has two literally-identical adjacent U+2019 where pass 1 had one U+0027 and one U+2019 (different code points); V1's old literal comparison newly fires and drops both from candidacy, removing the crossing NARROW pair and letting the WIDE pair certify cleanly -- a different, non-idempotent result. V1ID makes U+0027 and U+2019 the same identity for V1's own comparison on both passes, so pass 1 already reaches the fixed point this fixture asserts. Found by the fast-check idempotency property sweep; reproduces deterministically (not a flaky/seed-dependent finding). See quotes.md §5 Lemma A / Corollary A1 and apostrophe.md §5's Against I5 section."
+    },
+    {
+      "id": "de-ch-quotes-rock-n-roll",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "rock 'n' roll",
+      "out": "rock 'n' roll",
+      "note": "spec 0.5.0: de-CH has no cited quotes.elisionIdioms entry for this idiom (quotes.md §7 item 8 — only en-US does, via Chicago Manual of Style Online and the American Heritage Dictionary). The general ambiguous-medial-span veto (quotes.md 3.2) preserves both marks as literal U+0027 rather than pairing them as an ordinary quotation, closing the false positive AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 3.1 named for \"equivalent cases in several locales.\""
     }
   ]
 }

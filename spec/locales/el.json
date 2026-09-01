@@ -11,7 +11,8 @@
       "open": "“",
       "close": "”",
       "innerSpace": "none"
-    }
+    },
+    "elisionIdioms": []
   },
   "dash": {
     "parenthetical": "none",
@@ -34,7 +35,7 @@
     "beforeNumber": [],
     "beforeWord": [],
     "afterSymbols": [],
-    "bindInitials": false
+    "initialBinding": "none"
   },
   "sources": [
     {
@@ -53,7 +54,7 @@
       "rule": "ellipsis",
       "cite": "Διοργανικό εγχειρίδιο σύνταξης κειμένων (EL, 2011), §10.1.9 «Αποσιωπητικά»: «Τα αποσιωπητικά, που είναι πάντοτε τρεις (και όχι περισσότερες) τελείες, χρησιμοποιούνται κυρίως: […]»· παρατήρηση ii): «Μεταξύ των αποσιωπητικών και της λέξης που προηγείται δεν αφήνουμε διάστημα»· παρατήρηση iii): «Όταν τα αποσιωπητικά βρίσκονται στο τέλος της περιόδου δεν προσθέτουμε τελεία»",
       "url": "http://publications.europa.eu/resource/cellar/e774ea2a-ef84-4bf6-be92-c9ebebf91c1b.0015.03/DOC_2",
-      "note": "Justifies abbreviatedAfterTerminal = false. The source requires exactly three dots always and nowhere provides for the two-dot form after «?» or «!» that Russian uses, so the Russian branch of spec/rules/ellipsis.md must stay off for Greek. Corroborated by Γραμματική Α΄–Γ΄ Γυμνασίου §3.3: «Οι σημειούμενες τελείες είναι πάντα τρεις». Neither source gives any rule for αποσιωπητικά meeting the ερωτηματικό or the θαυμαστικό — checked specifically, in the Ministry of Education grammar and in the Κέντρο Ελληνικής Γλώσσας materials — so the engine's TERMINAL class is deliberately left as {U+0021, U+003F} and the Greek U+003B is not added to it (spaces.md §7.8; adding it would also regress Russian, where Лопатин §154 ties the two-dot form to «?» and «!» by name). Neither source addresses U+2026 versus three U+002E; that choice is the engine's, made identically in every locale, and is not claimed here. KNOWN DIVERGENCE, recorded because a verified source and the engine disagree and neither may stand unremarked: the same §10.1.9, \u03c0\u03b1\u03c1\u03b1\u03c4\u03ae\u03c1\u03b7\u03c3\u03b7 ii), states \u00abΜεταξύ των αποσιωπητικών και της λέξης που προηγείται δεν αφήνουμε διάστημα\u00bb - no space between the ellipsis and the preceding word - and polytypo does NOT honour it. spec/rules/spaces.md \u00a73.4 preserves a space before a dot run in EVERY locale, so \u00abΠράγματι \u2026\u00bb is returned as typed. The divergence is deliberate and argued in spaces.md \u00a77.9 and ellipsis.md \u00a76: honouring it needs either locale data in a rule that has none by design, or an ellipsis rule that deletes rather than replaces, which changes that rule's kind and forces a new composition argument. It would be revisited if a second locale wanted the same behaviour, at which point the shape is an ellipsis.noSpaceBefore flag consumed by the ellipsis rule. The source is right about Greek; the engine is declining to act on it, not disputing it. Retrieved 2026-08-15."
+      "note": "Justifies abbreviatedAfterTerminal = false. The source requires exactly three dots always and nowhere provides for the two-dot form after «?» or «!» that Russian uses, so the Russian branch of spec/rules/ellipsis.md must stay off for Greek. Corroborated by Γραμματική Α΄–Γ΄ Γυμνασίου §3.3: «Οι σημειούμενες τελείες είναι πάντα τρεις». Neither source gives any rule for αποσιωπητικά meeting the ερωτηματικό or the θαυμαστικό — checked specifically, in the Ministry of Education grammar and in the Κέντρο Ελληνικής Γλώσσας materials — so the engine's TERMINAL class is deliberately left as {U+0021, U+003F} and the Greek U+003B is not added to it (spaces.md §7.8; adding it would also regress Russian, where Лопатин §154 ties the two-dot form to «?» and «!» by name). Neither source addresses U+2026 versus three U+002E; that choice is the engine's, made identically in every locale, and is not claimed here. KNOWN DIVERGENCE, recorded because a verified source and the engine disagree and neither may stand unremarked: the same §10.1.9, παρατήρηση ii), states «Μεταξύ των αποσιωπητικών και της λέξης που προηγείται δεν αφήνουμε διάστημα» - no space between the ellipsis and the preceding word - and polytypo does NOT honour it. spec/rules/spaces.md §3.4 preserves a space before a dot run in EVERY locale, so «Πράγματι …» is returned as typed. The divergence is deliberate and argued in spaces.md §7.9 and ellipsis.md §6: honouring it needs either locale data in a rule that has none by design, or an ellipsis rule that deletes rather than replaces, which changes that rule's kind and forces a new composition argument. It would be revisited if a second locale wanted the same behaviour, at which point the shape is an ellipsis.noSpaceBefore flag consumed by the ellipsis rule. The source is right about Greek; the engine is declining to act on it, not disputing it. Retrieved 2026-08-15."
     },
     {
       "rule": "spaces",

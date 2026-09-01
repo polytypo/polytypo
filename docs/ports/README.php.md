@@ -6,33 +6,33 @@
 
 <p align="center">
   Locale-correct quotes, dashes, ellipses, apostrophes, symbols and no-break spaces.<br>
-  One spec, five runtimes, byte-identical output.
+  One runtime today. One portable spec designed for five, byte-identical output.
 </p>
 
 ---
 
 **Status: planned, not yet started.** This document is the specification of the port's public surface, kept in the spec repository so the API is agreed before any code exists. No package is published on Packagist.
 
-Spec version: **0.2.0** · locales: **10** · rules: **8** · `polytypo/polytypo` on Packagist.
+Spec version: **1.0.0** · locales: **10** · rules: **9** · not yet on Packagist.
 
 ## What it does
 
 ```text
 in   Is this "polytypo"? - No, it's "polytypo"! She said, "He replied 'never' twice"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.
 
-en-US → Is this “polytypo”?—No, it’s “polytypo”! She said, “He replied ‘never’ twice”… The release—all 5 km of it—covers 1914⁠–⁠1918. Copyright © 2026, at 1920×1080.
-en-GB → Is this ‘polytypo’? – No, it’s ‘polytypo’! She said, ‘He replied “never” twice’… The release – all 5 km of it – covers 1914⁠–⁠1918. Copyright © 2026, at 1920×1080.
+en-US → Is this “polytypo”?—No, it’s “polytypo”! She said, “He replied ‘never’ twice”… The release—all 5 km of it—covers 1914-1918. Copyright © 2026, at 1920×1080.
+en-GB → Is this ‘polytypo’? – No, it’s ‘polytypo’! She said, ‘He replied “never” twice’… The release – all 5 km of it – covers 1914-1918. Copyright © 2026, at 1920×1080.
 ```
 
 The same construction, in the languages that disagree with English about it:
 
 ```text
-de-DE → Ist das „polytypo“? – Nein, das ist „polytypo“! Sie sagte: „Er hat ‚nie‘ geantwortet“… Die Ausgabe – z. B. die Jahre 1939⁠–⁠1945 – erscheint in 1920×1080. Copyright © 2026.
-de-CH → Ist das «polytypo»? – Nein, das ist «polytypo»! Sie sagte: «Er hat ‹nie› geantwortet»… Die Ausgabe – z. B. die Jahre 1939⁠–⁠1945 – erscheint in 1920×1080. Copyright © 2026.
+de-DE → Ist das „polytypo“? – Nein, das ist „polytypo“! Sie sagte: „Er hat 'nie' geantwortet“… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026.
+de-CH → Ist das «polytypo»? – Nein, das ist «polytypo»! Sie sagte: «Er hat 'nie' geantwortet»… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026.
 fr    → C’est « polytypo » ? — Non, c’est « polytypo » ! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm ; c’est tout. Copyright © 2026.
-ru    → Это «полиштамп»? — Нет, это «полиштамп»! Она сказала: «он ответил „никогда“»… Достал из‑под стола — в 1941⁠—⁠1945 годах — размер 10 × 20 см. Все права защищены © 2026.
-fi    → Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän sanoi: ”hän vastasi ’ei koskaan’”… Matkaa on 20 km – vuosina 1914⁠–⁠1918 – ja hinta nousi 10,5 %. Copyright © 2026.
-sv    → Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914⁠–⁠1918 – och det kostar 100 kr. Copyright © 2026.
+ru    → Это «полиштамп»? — Нет, это «полиштамп»! Она сказала: «он ответил „никогда“»… Достал из‑под стола — в 1941-1945 годах — размер 10 × 20 см. Все права защищены © 2026.
+fi    → Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän sanoi: ”hän vastasi ’ei koskaan’”… Matkaa on 20 km – vuosina 1914-1918 – ja hinta nousi 10,5 %. Copyright © 2026.
+sv    → Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914-1918 – och det kostar 100 kr. Copyright © 2026.
 el    → Είναι αυτό «polytypo»; - Όχι, αυτό είναι «polytypo»! Είπε: «απάντησε “ποτέ”»… Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright © 2026, σε 1920×1080.
 ```
 
@@ -40,6 +40,8 @@ el    → Είναι αυτό «polytypo»; - Όχι, αυτό είναι «poly
 Every string above is real engine output, generated from `promo/examples.json` — not typed by hand.
 
 ## Install
+
+**Planned API — not installable.** No package exists on Packagist yet; the command below is what it will be once the port ships, not something you can run today.
 
 ```bash
 composer require polytypo/polytypo
@@ -67,10 +69,28 @@ Polytypo::transform('Il a dit "bonjour".', ['locale' => 'fr']);
 Polytypo::transform(string $input, array $options): string
 
 // $options = [
-//   'locale' => 'de-DE',        // required — unknown locale throws
-//   'mode'   => 'text',         // 'text' | 'html' | 'markdown'
-//   'rules'  => ['dashes' => false],  // opt-out only
+//   'locale'  => 'de-DE',        // required — unknown locale throws
+//   'mode'    => 'text',         // 'text' | 'html' | 'markdown'
+//   'dialect' => null,           // 'commonmark' | 'mdx' — required when mode is 'markdown'; no default
+//   'rules'   => ['dashes' => false],  // opt-out only
 // ];
+```
+
+`dialect` is required — not defaulted — whenever `mode` is `'markdown'`, and ignored otherwise.
+Automatic dialect detection is refused — CommonMark and MDX disagree about ordinary documents, so
+the caller states which one it has, matching the JavaScript reference implementation's contract
+exactly.
+
+```php
+Polytypo::transform('Is this "polytypo"? - No', [
+    'locale'  => 'en-US',
+    'mode'    => 'markdown',
+    'dialect' => 'commonmark',
+]);
+// → Is this “polytypo”?—No
+
+Polytypo::transform('a', ['locale' => 'en-US', 'mode' => 'markdown']);
+// throws PolytypoException with errorCode 'POLYTYPO_INVALID_DIALECT'
 ```
 
 `transform` is **pure**: no filesystem, no network, no clock, no environment, no globals, no
@@ -112,12 +132,12 @@ try {
 | `POLYTYPO_INVALID_MODE` | The mode is not `text`, `html` or `markdown`. |
 | `POLYTYPO_INVALID_DIALECT` | `mode` is `markdown` and `dialect` is missing, or is not `commonmark` or `mdx`. |
 | `POLYTYPO_UNKNOWN_RULE` | The `rules` map names a rule that does not exist. |
-| `POLYTYPO_MALFORMED_INPUT` | The input does not parse in the requested language. Reachable only for `dialect: "mdx"`, which embeds JavaScript. |
+| `POLYTYPO_MALFORMED_INPUT` | The input does not parse in the requested language. Reachable only for `dialect: "mdx"`, which embeds JavaScript — `html` parsing is recovery-based and never throws this, and plain CommonMark has no syntax errors at all. |
 | `POLYTYPO_MALFORMED_LOCALE_DATA` | Embedded locale data failed schema validation at build time. |
 | `POLYTYPO_RULE_CONTRACT` | A rule produced an edit that violates the pipeline contract. |
 
-Codes are the contract across all five runtimes. **Messages are English prose and are not** — never
-match on them.
+Codes are the contract across every runtime this spec is designed for. **Messages are English
+prose and are not** — never match on them.
 
 ## Locales
 
@@ -142,7 +162,8 @@ Aliases resolve in the spec, never in a platform locale library: `en` → `en-US
 | --- | --- | --- | --- |
 | 10 | `spaces` | on | Collapse repeated spaces, strip spaces before punctuation, normalize spacing inside brackets. |
 | 20 | `ellipsis` | on | Three dots to U+2026; locale-dependent abbreviated forms after terminal punctuation. |
-| 30 | `dashes` | on | Parenthetical dash and numeric/date range dash per locale convention. |
+| 25 | `ranges` | off | Numeric/date range dash per locale convention (dash.range). |
+| 30 | `dashes` | on | Parenthetical dash per locale convention (dash.parenthetical). |
 | 35 | `hyphen` | on | Bind morphological hyphen forms with U+2011 (non-breaking hyphen) so they cannot be broken across lines. |
 | 40 | `quotes` | on | Straight quotes to locale primary/secondary pairs with nesting resolution. |
 | 50 | `apostrophe` | on | Remaining straight apostrophes to U+2019 without corrupting contractions. |
@@ -157,9 +178,9 @@ order and never from map iteration order.
 
 | Rule | In | Out |
 | --- | --- | --- |
-| `quotes` | `"He said 'no' to me," she noted.` | “He said ‘no’ to me,” she noted. |
+| `quotes` | `"He said 'no' to me," she noted.` | “He said 'no' to me,” she noted. |
 | `dashes` | `The plan - if there is one - fails.` | The plan—if there is one—fails. |
-| `dashes` | `1914-1918 and pp. 34-36` | 1914⁠–⁠1918 and pp. 34⁠–⁠36 |
+| `dashes` | `1914-1918 and pp. 34-36` | 1914-1918 and pp. 34-36 |
 | `ellipsis` | `Wait... what?` | Wait… what? |
 | `apostrophe` | `don't` | don’t |
 | `nbsp` | `It is 20 km to the coast` | It is 20 km to the coast |

@@ -1,149 +1,40 @@
 import { isLetter } from "../engine/unicode.js";
-import type { Edit, LocaleData, Rule, RuleContext } from "../types.js";
-import { LINE_MARKER, NONE } from "../engine/sentinels.js";
+import type { Edit, Rule, RuleContext } from "../types.js";
+import {
+  HYPHEN_MINUS,
+  HYPHEN,
+  MINUS_SIGN,
+  EN_DASH,
+  buildReplacement,
+  isDigit,
+  isOpenBracket,
+  isSpaced,
+  isSpacingTransitionBlocked,
+  isStripBeforeOrCloseBracket,
+  findDashTokens,
+  sameContent,
+  type DashStyle,
+} from "./dash-shared.js";
 
 /**
- * `dashes` — spec/rules/dashes.md (spec 0.2.0), order 30.
+ * `dashes` — spec/rules/dashes.md (spec 0.5.0), order 30. Parenthetical-dash processing only,
+ * as of spec 0.5.0: numeric/date-range recognition moved to the `ranges` rule (order 25,
+ * off by default), which owns `dash.range` and shares this rule's token-scanning and guard
+ * machinery via `dash-shared.js`. See dashes.md 1 and 7.11, and ranges.md 1, for why the split
+ * happened and why range detection is opt-in rather than fixed structurally.
+ *
+ * A digit-flanked dash token is declined here **unconditionally** — never reinterpreted as a
+ * parenthetical dash — regardless of whether `ranges` is enabled (operator decision, spec
+ * 0.5.0). That was already true of every prior spec version: the range/parenthetical branches
+ * have always been mutually exclusive per token, on the same `isDigit(leftCp) && isDigit(rightCp)`
+ * test that now decides which rule a token belongs to rather than which branch of one rule it
+ * takes.
  *
  * Explicit index-based scanning only: no regex anywhere, and every index addresses the
  * code-point array, never a native string (ARCHITECTURE.md 4.1, 4.2).
  */
 
-const HYPHEN_MINUS = 0x2d;
-const HYPHEN = 0x2010;
-const FIGURE_DASH = 0x2012;
-const EN_DASH = 0x2013;
-const EM_DASH = 0x2014;
-const HORIZONTAL_BAR = 0x2015;
-const MINUS_SIGN = 0x2212;
-const SMALL_EM_DASH = 0xfe58;
-const SMALL_HYPHEN_MINUS = 0xfe63;
-const FULLWIDTH_HYPHEN_MINUS = 0xff0d;
-const SPACE = 0x20;
-const FULL_STOP = 0x2e;
-const COMMA = 0x2c;
-const SOLIDUS = 0x2f;
-const DIGIT_ZERO = 0x30;
-const DIGIT_NINE = 0x39;
-/** §3.1 JOINER — U+2060, emitted only around a tight range dash (§3.3.1). */
-const WORD_JOINER = 0x2060;
-
-/** Not a code point: stands for "there is nothing there" (`before` / `after` in §3.3). */
-
-/**
- * §3.1 DASH. Beyond U+002D/U+2013/U+2014, U+2010 (hyphen) and U+2212 (minus sign) join as
- * candidates: both are plain typewriter/OCR substitutes for an ordinary hyphen-minus, exactly
- * as U+002D is (spec §3.2 step 2's rationale) — nobody deliberately picks MINUS SIGN as their
- * house dash style. U+2013/U+2014 carry no special-cased treatment either (spec 0.2.0 retired
- * the guard that used to give them one, §3.2 step 2a): every member of this set is promoted to
- * the locale's form the same way.
- */
-function isDash(cp: number): boolean {
-  return (
-    cp === HYPHEN_MINUS || cp === HYPHEN || cp === EN_DASH || cp === EM_DASH || cp === MINUS_SIGN
-  );
-}
-
-/**
- * §3.1 INERT-DASH: never a candidate, never produced.
- *
- * U+00AD and U+2011 are protective markers owned by someone other than this rule — U+00AD is
- * invisible formatting, and U+2011 is `hyphen` (order 35)'s own output — so both keep their
- * §3.2 step 6 protection absolutely. U+2012 (figure dash, digit-width for tabular alignment),
- * U+2015 (horizontal bar, the dialogue dash some traditions use deliberately) and the CJK
- * compatibility forms U+FE58/U+FE63/U+FF0D are each a *specialised* dash with its own reason
- * to exist, not a substitute for a missing key — reclassifying one would erase the very
- * distinction the author reached for that code point to make. `tests/rules/dashes.test.ts`
- * "must not touch, spec §4" pins all five.
- */
-function isInertDash(cp: number): boolean {
-  return (
-    cp === 0x00ad ||
-    cp === FIGURE_DASH ||
-    cp === 0x2011 ||
-    cp === HORIZONTAL_BAR ||
-    cp === SMALL_EM_DASH ||
-    cp === SMALL_HYPHEN_MINUS ||
-    cp === FULLWIDTH_HYPHEN_MINUS
-  );
-}
-
-/** §3.1 DIGIT: ASCII only, deliberately — see spec §7.1. */
-function isDigit(cp: number): boolean {
-  return cp >= DIGIT_ZERO && cp <= DIGIT_NINE;
-}
-
-/** `BREAK` — including `LINE_MARKER`, a member for every rule everywhere (modes.md 3.2). */
-function isBreak(cp: number): boolean {
-  return (
-    cp === 0x0a ||
-    cp === 0x0d ||
-    cp === 0x0b ||
-    cp === 0x0c ||
-    cp === 0x85 ||
-    cp === 0x2028 ||
-    cp === 0x2029 ||
-    cp === LINE_MARKER
-  );
-}
-
-function isNoBreakSpace(cp: number): boolean {
-  return cp === 0x00a0 || cp === 0x202f;
-}
-
-type DashStyle = LocaleData["dash"]["parenthetical"];
-
-function dashCodePoint(style: DashStyle): number {
-  return style === "em-tight" || style === "em-spaced" ? EM_DASH : EN_DASH;
-}
-
-function isSpaced(style: DashStyle): boolean {
-  return style === "em-spaced" || style === "en-spaced";
-}
-
-function sameContent(cp: readonly number[], start: number, end: number, next: readonly number[]) {
-  if (end - start !== next.length) return false;
-  for (let i = 0; i < next.length; i += 1) {
-    if (cp[start + i] !== next[i]) return false;
-  }
-  return true;
-}
-
-/**
- * §3.6: every replacement is built from U+0020 alone. A token touching a no-break space is
- * inert (§3.2 step 3 + step 6), so no edit this rule produces can contain one and there is
- * nothing to preserve.
- */
-function buildReplacement(style: DashStyle, bind: boolean): number[] {
-  if (!isSpaced(style)) {
-    // §3.3.1 — a tight range is one lexical unit; U+2013 is UAX #14 class BA, so without the
-    // joiners a renderer may break after the dash.
-    return bind ? [WORD_JOINER, dashCodePoint(style), WORD_JOINER] : [dashCodePoint(style)];
-  }
-  return [SPACE, dashCodePoint(style), SPACE];
-}
-
-/** §3.2 step 9 — the positions `spaces` (order 10) deletes a U+0020 from. */
-function isStripBeforeOrCloseBracket(cp: number): boolean {
-  return (
-    cp === COMMA ||
-    cp === FULL_STOP ||
-    cp === 0x3b ||
-    cp === 0x3a ||
-    cp === 0x21 ||
-    cp === 0x3f ||
-    cp === 0x2026 ||
-    cp === 0x29 ||
-    cp === 0x5d ||
-    cp === 0x7d
-  );
-}
-
-function isOpenBracket(cp: number): boolean {
-  return cp === 0x28 || cp === 0x5b || cp === 0x7b;
-}
-
-/** §3.1 ROMAN: the seven uppercase Roman-numeral letters only. Lower-case is not a member. */
+/** dashes.md 3.1 ROMAN: the seven uppercase Roman-numeral letters only. Lower-case is not a member. */
 function isRoman(cp: number): boolean {
   return (
     cp === 0x49 || // I
@@ -157,14 +48,14 @@ function isRoman(cp: number): boolean {
 }
 
 /**
- * §3.4 P4 — Roman-numeral veto. A tight dash between two word-bounded ROMAN runs is a range
- * already in its correct Russian form (`в XV—XVII веках`); the range branch cannot see it,
- * because §3.3 needs a DIGIT on each side, so without this the parenthetical branch would space
+ * dashes.md 3.4 P4 — Roman-numeral veto. A tight dash between two word-bounded ROMAN runs is a
+ * range already in its correct Russian form (`в XV—XVII веках`); `ranges` cannot see it, because
+ * ranges.md 3.3 needs a DIGIT on each side, so without this the parenthetical branch would space
  * out input that was already right.
  *
  * A veto only: it never converts. Admitting ROMAN runs as range candidates would also fix
  * `XV-XVII`, but it fires on all-caps words built from the same letters (`MIX`, `CIVIL`), and
- * converting is the direction that damages. The miss is recorded in spec §7.10.
+ * converting is the direction that damages. The miss is recorded in dashes.md 7.10.
  */
 function isRomanFlanked(cp: readonly number[], left: number, right: number): boolean {
   const n = cp.length;
@@ -182,298 +73,59 @@ function isRomanFlanked(cp: readonly number[], left: number, right: number): boo
   return true;
 }
 
-/**
- * §3.2 step 7: the cluster alphabet is DASH ∪ INERT-DASH ∪ DIGIT ∪ JOINER.
- *
- * JOINER is a member because a bound range (§3.3.1) is one lexical unit: without it, the
- * joiners this rule emits would split `a—0⁠–⁠0` into two clusters and hand the tight em dash
- * to the parenthetical branch, undoing the protection the guard exists to give an ISBN or a
- * phone number. A joiner is not a space, so admitting it does not widen the guard's reach
- * past the boundary §3.2 step 7 draws.
- */
-function isClusterMember(cp: number): boolean {
-  return isDash(cp) || isInertDash(cp) || isDigit(cp) || cp === WORD_JOINER;
-}
-
-function isDashUnion(cp: number): boolean {
-  return isDash(cp) || isInertDash(cp);
-}
-
-/**
- * §3.2 step 7 — cluster guard. A maximal DASH ∪ INERT-DASH ∪ DIGIT span holding two or more
- * dash runs is inert in its entirety: `2026-08-15`, an ISBN, a phone number, `a—0–0`.
- */
-function isClusterInert(cp: readonly number[], s: number, e: number): boolean {
-  const n = cp.length;
-  let start = s;
-  while (start > 0 && isClusterMember(cp[start - 1] as number)) start -= 1;
-  let end = e;
-  while (end < n && isClusterMember(cp[end] as number)) end += 1;
-
-  let runs = 0;
-  let i = start;
-  while (i < end) {
-    if (!isDashUnion(cp[i] as number)) {
-      i += 1;
-      continue;
-    }
-    runs += 1;
-    if (runs >= 2) return true;
-    while (i < end && isDashUnion(cp[i] as number)) i += 1;
-  }
-  return false;
-}
-
-/**
- * §3.2 step 8 (T1) — spacing-transition guard, the repair for idempotency defect (c).
- *
- * A tight token that is about to become spaced would insert a U+0020 between itself and an
- * adjacent digit run. If that digit run has another dash on its far side, the insertion turns
- * that other token's `before`/`after` from a dash into a space and flips its G2 verdict on the
- * next run. The far dash may be tight against the digit run (`a–1-1`) or one space away
- * (`a–1 - 1`); no third distance is reachable, because the replacement inserts exactly one
- * U+0020.
- */
-function isSpacingTransitionBlocked(cp: readonly number[], left: number, right: number): boolean {
-  const n = cp.length;
-
-  if (isDigit(cp[left] as number)) {
-    let d = left;
-    while (d > 0 && isDigit(cp[d - 1] as number)) d -= 1;
-    // §3.2b: T1's two-code-point reach is measured in effective neighbours.
-    const i1 = effectiveIndex(cp, d - 1, -1);
-    const one = i1 < 0 ? NONE : (cp[i1] as number);
-    const two = i1 < 0 ? NONE : effectiveNeighbour(cp, i1 - 1, -1);
-    if (isDashUnion(one)) return true;
-    if ((one === SPACE || isNoBreakSpace(one)) && isDashUnion(two)) return true;
-  }
-
-  if (isDigit(cp[right] as number)) {
-    let d = right;
-    while (d + 1 < n && isDigit(cp[d + 1] as number)) d += 1;
-    const i1 = effectiveIndex(cp, d + 1, 1);
-    const one = i1 < 0 ? NONE : (cp[i1] as number);
-    const two = i1 < 0 ? NONE : effectiveNeighbour(cp, i1 + 1, 1);
-    if (isDashUnion(one)) return true;
-    if ((one === SPACE || isNoBreakSpace(one)) && isDashUnion(two)) return true;
-  }
-
-  return false;
-}
-
-/** §3.3 G5: equal-length ASCII digit runs compare lexicographically, so no arithmetic. */
-function isNonDecreasing(
-  cp: readonly number[],
-  leftStart: number,
-  rightStart: number,
-  length: number,
-): boolean {
-  for (let i = 0; i < length; i += 1) {
-    const l = cp[leftStart + i] as number;
-    const r = cp[rightStart + i] as number;
-    if (l < r) return true;
-    if (l > r) return false;
-  }
-  return true;
-}
-
-/**
- * §3.2b — effective neighbour. Step outward across a maximal run of JOINER and return the index
- * of the first code point that is not one, or -1 if the walk leaves the array.
- *
- * Every guard that inspects a code point outside its own token's dash run must read one of
- * these. U+2060 is in this rule's own emission alphabet, so a guard that cannot see through it
- * has a verdict that depends on whether the rule has already run — which is the definition of
- * non-idempotency (CO-S, pipeline-idempotency.md §5.1a). §3.2a made the joiner transparent to
- * the token that owns it; this makes it transparent everywhere a guard looks outward.
- */
-function effectiveIndex(cp: readonly number[], from: number, step: number): number {
-  let i = from;
-  while (i >= 0 && i < cp.length && cp[i] === WORD_JOINER) i += step;
-  return i >= 0 && i < cp.length ? i : -1;
-}
-
-function effectiveNeighbour(cp: readonly number[], from: number, step: number): number {
-  const i = effectiveIndex(cp, from, step);
-  return i < 0 ? NONE : (cp[i] as number);
-}
-
-function rangeGuardsPass(cp: readonly number[], left: number, right: number): boolean {
-  const n = cp.length;
-  let a = left;
-  while (a > 0 && isDigit(cp[a - 1] as number)) a -= 1;
-  let b = right;
-  while (b + 1 < n && isDigit(cp[b + 1] as number)) b += 1;
-
-  // §3.2b: `before` and `after` are effective neighbours, so G1-G3 see through a joiner this
-  // rule emitted on an earlier pass. Without this, `1-1 - 1` converts the second token on pass
-  // 2 because G2 finds U+2060 where pass 1 found a dash — defect (e).
-  const before = effectiveNeighbour(cp, a - 1, -1);
-  const after = effectiveNeighbour(cp, b + 1, 1);
-
-  // G1 — no letter adjacency.
-  if (isLetter(before)) return false;
-  // G2 — no chain: an ISO date, an ISBN or a phone number always trips this.
-  if (isDash(before) || isInertDash(before)) return false;
-  if (isDash(after) || isInertDash(after)) return false;
-  // G3 — not part of a decimal or a path.
-  if (before === FULL_STOP || before === COMMA || before === SOLIDUS) return false;
-  if (after === SOLIDUS) return false;
-  // G4 — run lengths. Equal, or the directional (1,2) branch with no leading zero on Rrun.
-  const leftLength = left - a + 1;
-  const rightLength = b - right + 1;
-  if (leftLength === 1 && rightLength === 2 && cp[right] !== DIGIT_ZERO) {
-    // `5-10`, `9-10`, `0-60`. G5 is *vacuous* here — a one-digit run is at most 9 and a
-    // two-digit run without a leading zero is at least 10 — so it is deliberately not called.
-    // G5 compares digit-by-digit, which is an integer comparison only for equal-length runs;
-    // handing it `"5"` against `"10"` would yield `'5' > '1'` and decline the very case this
-    // branch exists to admit. The leading-zero clause is what keeps G5 vacuous: `9-05` is
-    // descending and G5 could not evaluate it. (2,1) is excluded for the same reason.
-    return true;
-  }
-  if (leftLength !== rightLength) return false;
-  // G5 — non-decreasing. Unchanged, and reached only for equal-length runs.
-  return isNonDecreasing(cp, a, right, leftLength);
-}
-
 function scan(ctx: RuleContext): Edit[] {
   const cp = ctx.cp;
-  const n = cp.length;
   const edits: Edit[] = [];
-  let i = 0;
+  const style: DashStyle = ctx.locale.dash.parenthetical;
 
-  while (i < n) {
-    if (!isDash(cp[i] as number)) {
-      i += 1;
+  for (const token of findDashTokens(cp)) {
+    const { s, e, leftCp, rightCp, left, right, lsp, rsp } = token;
+
+    // A digit-flanked token is `ranges`' territory, never `dashes`' — declined unconditionally,
+    // whether or not `ranges` is enabled (operator decision, spec 0.5.0).
+    if (isDigit(leftCp) && isDigit(rightCp)) continue;
+
+    // dashes.md 3.4 P5 — authored en-dash mark-identity veto (spec 0.6.0). A run consisting of
+    // exactly one U+2013 is declined unconditionally: every locale, tight or spaced, regardless
+    // of `dash.parenthetical`'s target glyph. Unlike P1/P4 this is not conditioned on the
+    // replacement that would be chosen — an en-spaced locale's own tight-authored en-dash is
+    // just as protected as an em-target locale's, because the failure this guards against
+    // (an authored en-dash silently re-spaced into ordinary parenthetical punctuation) can
+    // corrupt a range or joint-name reading in an en-spaced locale exactly as it can in an
+    // em-target one; only the glyph substitution differs, not the risk. See §8.8 for the
+    // fresh-evidence argument this guard rests on and why it does not reopen the pre-0.2.0
+    // guards §8.1 retired.
+    if (e - s === 1 && cp[s] === EN_DASH) continue;
+
+    // dashes.md 3.4 P1 — a bare hyphen-shaped stroke must be spaced (the compound-word guard).
+    if (
+      e - s === 1 &&
+      (cp[s] === HYPHEN_MINUS || cp[s] === HYPHEN || cp[s] === MINUS_SIGN) &&
+      lsp === 0
+    ) {
       continue;
     }
+    // dashes.md 3.4 P4 — Roman-numeral veto.
+    if (lsp === 0 && rsp === 0 && isRomanFlanked(cp, left, right)) continue;
 
-    const s = i;
-    let e = s;
-    while (e < n && isDash(cp[e] as number)) e += 1;
-    i = e;
-
-    // §3.2 step 2 — a run longer than three is decoration, not a dash.
-    if (e - s > 3) continue;
-
-    // §3.2 step 2a (retired) — this rule used to decline any run containing an existing
-    // U+2013/U+2014 outright, on the theory that a dash already in the input was inviolable.
-    // Retired for two reasons: the M4 gate's own corpus run only measured *restyling*
-    // (glyph length *and* spacing changed together) as damage, never spacing alone; and length
-    // is not reliably an authorial decision to begin with — it is at least as often a
-    // copy-paste artefact or plain unfamiliarity with which mark is which. An author who wants
-    // their own dash typography untouched has the option this project has always offered:
-    // don't run the pipeline. U+2013 and U+2014 are therefore now ordinary `DASH` members with
-    // no special-cased token-level guard — ordinary hyphen-promotion applies to them exactly as
-    // it does to U+002D, and length is corrected along with spacing.
-    //
-    // §3.2 step 3 — outer spacing. SPACE means U+0020 and nothing else: this rule normalises
-    // ordinary sentence spacing, and a no-break space beside a dash belongs to whoever put it
-    // there. It therefore falls through to `cp[L]`/`cp[R]`, where step 6 declines the token as
-    // space-like — so a dash touching a U+00A0 or U+202F is inert on either side. That makes
-    // every code point `nbsp` (order 70) can emit inert here, which discharges the composition
-    // obligation against it structurally (pipeline-idempotency.md §5.1a, CO-S) rather than by
-    // the case analysis that produced three successive defects.
-    const lsp = s > 0 && cp[s - 1] === SPACE ? 1 : 0;
-    const rsp = e < n && cp[e] === SPACE ? 1 : 0;
-
-    // §3.2 step 4 — symmetry guard.
-    if (lsp !== rsp) continue;
-
-    // §3.2 step 5 — content on both sides, on the same line.
-    let left = s - 1 - lsp;
-    let right = e + rsp;
-    if (left < 0 || right >= n) continue;
-
-    // §3.2a — joiner neighbours. Walk across them, then admit the token only if what lies
-    // beyond is a digit on both sides: that is this rule's own bound range coming back for a
-    // second pass. Any other joiner was placed by the author and makes the token inert.
-    let joinStart = left + 1;
-    let joinEnd = right;
-    while (left >= 0 && cp[left] === WORD_JOINER) left -= 1;
-    while (right < n && cp[right] === WORD_JOINER) right += 1;
-    if (left < 0 || right >= n) continue;
-    const crossedJoiner = left + 1 !== joinStart || right !== joinEnd;
-    joinStart = left + 1;
-    joinEnd = right;
-
-    const leftCp = cp[left] as number;
-    const rightCp = cp[right] as number;
-    if (crossedJoiner && !(isDigit(leftCp) && isDigit(rightCp))) continue;
-    if (isBreak(leftCp) || isBreak(rightCp)) continue;
-
-    // §3.2 step 6 — isolation guard. An INERT-DASH neighbour was written deliberately; a DASH
-    // neighbour is the `dash space dash` shape, whose two runs would merge on the next pass
-    // (defect (b)) and whose edit spans would overlap; a space-like neighbour means two
-    // consecutive space-like code points, whose spacing this rule does not own.
-    if (isInertDash(leftCp) || isInertDash(rightCp)) continue;
-    if (isDash(leftCp) || isDash(rightCp)) continue;
-    if (leftCp === SPACE || isNoBreakSpace(leftCp)) continue;
-    if (rightCp === SPACE || isNoBreakSpace(rightCp)) continue;
-
-    // §3.2 step 7 — cluster guard (defect (a)).
-    if (isClusterInert(cp, s, e)) continue;
-
-    // The span swallows any joiner already adjacent, so a second pass rewrites the same span
-    // with the same content and `sameContent` below declines it.
-    const spanStart = Math.min(s - lsp, joinStart);
-    const spanEnd = Math.max(e + rsp, joinEnd);
-
-    let style: DashStyle;
-    let isRange = false;
-    if (isDigit(leftCp) && isDigit(rightCp)) {
-      isRange = true;
-      // §3.3 — the range branch is terminal: a digit-flanked stroke is a range or nothing.
-      if (!rangeGuardsPass(cp, left, right)) continue;
-      style = ctx.locale.dash.range;
-    } else {
-      // §3.4 P1 — a bare hyphen-shaped stroke must be spaced (the compound-word guard). A tight
-      // U+2010 or U+2212 between letters reads exactly like a tight U+002D — `well‐known`,
-      // `a−b` — the same compound-word or attached-token shape, so both stay guarded the same
-      // way. Nobody writes a compound word with a real U+2013/U+2014, so P1 never covers them.
-      if (
-        e - s === 1 &&
-        (cp[s] === HYPHEN_MINUS || cp[s] === HYPHEN || cp[s] === MINUS_SIGN) &&
-        lsp === 0
-      ) {
-        continue;
-      }
-      // §3.4 P4 — Roman-numeral veto.
-      if (lsp === 0 && rsp === 0 && isRomanFlanked(cp, left, right)) continue;
-      style = ctx.locale.dash.parenthetical;
-    }
-
-    // `none`: the locale has no verified convention, so nothing is substituted.
+    // `"none"`: the locale has no verified convention, so nothing is substituted.
     if (style === "none") continue;
 
-    // §3.2 steps 8 and 9 — evaluated here, because both depend on the chosen form.
     if (isSpaced(style)) {
       // T1: a tight token may not become spaced across a digit run that has a far dash.
       if (lsp === 0 && rsp === 0 && isSpacingTransitionBlocked(cp, left, right)) continue;
-      // T2: the emitted U+0020 must not land where `spaces` (order 10) would delete it, or the
-      // next pipeline pass undoes it and this rule then declines the token
-      // (pipeline-idempotency.md §4, family 1).
+      // T2: the emitted U+0020 must not land where `spaces` (order 10) would delete it.
       if (isStripBeforeOrCloseBracket(rightCp)) continue;
       if (isOpenBracket(leftCp)) continue;
     }
 
-    // §3.3.1: this rule never makes an edit whose entire content is invisible. A hyphen-typed
-    // tight range always earns its U+2060 binding, because the dash glyph itself is also
-    // changing (U+002D never equals U+2013/U+2014), so the edit is visible regardless. A dash
-    // that was *already* the target glyph and spacing needs only the binding to reach its final
-    // form, and adding just a joiner pair to otherwise-unchanged text is exactly the
-    // invisible-only edit §3.3.1 forbids — so binding is withheld in precisely that one case,
-    // detected structurally rather than by asking whether the token was authored: try the
-    // unbound replacement first, and if it would already be a no-op, stay unbound.
-    const unbound = buildReplacement(style, false);
-    const onlyBindingWouldChange =
-      isRange && !isSpaced(style) && sameContent(cp, spanStart, spanEnd, unbound);
-    const bind = isRange && !isSpaced(style) && !onlyBindingWouldChange;
-    const replacement = bind ? buildReplacement(style, true) : unbound;
+    // `dashes` never binds: an interrupting dash is exactly where a line may break
+    // (dashes.md 3.3.1's binding is `ranges`-only).
+    const replacement = buildReplacement(style, false);
+    const spanStart = s - lsp;
+    const spanEnd = e + rsp;
     if (sameContent(cp, spanStart, spanEnd, replacement)) continue;
 
-    // Spans are pairwise disjoint by §3.5: the `dash space dash` shape that would share a
-    // space is already inert at step 6, so no first-claim-wins fallback is reachable here.
     edits.push({ start: spanStart, end: spanEnd, replacement, ruleId: "dashes" });
   }
 

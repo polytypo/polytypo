@@ -60,7 +60,7 @@ Out of scope are Arabic glyph shaping, kashida justification, visual RTL reorder
 
 ## Capability-Based Rules
 
-Rules should declare where they apply instead of assuming that every locale supports the same eight transformations. Suggested scopes are:
+Rules should declare where they apply instead of assuming that every locale supports the same nine transformations. Suggested scopes are:
 
 - **universal:** behavior safe across Unicode text;
 - **script:** shared conventions for `Arab`, `Hans`, `Hant`, `Jpan`, `Deva`, etc.;

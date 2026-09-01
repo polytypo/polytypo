@@ -1,0 +1,915 @@
+:root {
+  color-scheme: light dark;
+
+  --color-ink: #14161a;
+  --color-paper: #fbfaf7;
+  --color-accent: #d64027;
+  --color-grey-700: #5a6068;
+  --color-grey-500: #8b9098;
+  --color-grey-300: #c8cbcf;
+
+  --bg: var(--color-paper);
+  --fg: var(--color-ink);
+  --muted: var(--color-grey-700);
+  --line: rgb(20 22 26 / 14%);
+  --surface: #f2f0ea;
+  --surface-strong: #e9e6df;
+  --tok-string: #2f7a44;
+
+  --font-sans: "Inter Brand", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JB Mono Brand", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --content-width: 1000px;
+  --text-width: 68ch;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+
+  --space-1: 6px;
+  --space-2: 8px;
+  --space-3: 10px;
+  --space-4: 12px;
+  --space-5: 14px;
+  --space-6: 16px;
+  --space-7: 18px;
+  --space-8: 20px;
+  --space-9: 22px;
+  --space-10: 24px;
+  --space-11: 26px;
+  --space-12: 28px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1013;
+    --fg: #edebe6;
+    --muted: #9aa0a8;
+    --line: rgb(237 235 230 / 16%);
+    --surface: #181b20;
+    --surface-strong: #22262c;
+    --tok-string: #8fc79a;
+  }
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #fbfaf7;
+  --fg: #14161a;
+  --muted: #5a6068;
+  --line: rgb(20 22 26 / 14%);
+  --surface: #f2f0ea;
+  --surface-strong: #e9e6df;
+  --tok-string: #2f7a44;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0e1013;
+  --fg: #edebe6;
+  --muted: #9aa0a8;
+  --line: rgb(237 235 230 / 16%);
+  --surface: #181b20;
+  --surface-strong: #22262c;
+  --tok-string: #8fc79a;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* The native `hidden` attribute must always win over an author `display` rule — otherwise a
+   selector like `.pg-bar label { display: flex }` can silently keep a `hidden` element visible
+   and keyboard/screen-reader reachable (found on the playground's Markdown-dialect control,
+   which stayed on screen and in the tab order in every mode, not just "markdown"). This is a
+   blanket safeguard, not a one-off fix scoped to that selector, so the same class of bug can't
+   recur wherever `hidden` and a component's own `display` rule collide next. */
+[hidden] {
+  display: none !important;
+}
+
+/* One consistent, visible keyboard-focus treatment for every interactive control on the site —
+   links, buttons (language tabs, code-sample tabs, playground call-code tabs), and form controls
+   (select, textarea). `:focus-visible` (not `:focus`) so the ring appears for keyboard/AT users
+   without also showing on an ordinary mouse click. Nothing here removes an outline without
+   substituting this ring — see textarea.pg-textarea:focus-visible below for its own, layout-aware
+   variant of the same treatment. */
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+@supports (font-variation-settings: normal) {
+  html {
+    font-family:
+      InterVariable,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.wrap {
+  width: min(100% - 56px, var(--content-width));
+  margin-inline: auto;
+  padding-bottom: 120px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  max-width: 20ch;
+  font-size: clamp(28px, 4.4vw, 40px);
+}
+
+h2 {
+  margin-bottom: var(--space-2);
+  font-size: 30px;
+}
+
+h3 {
+  margin: 34px 0 var(--space-3);
+  font-size: 18px;
+}
+
+p,
+ul {
+  max-width: var(--text-width);
+}
+
+p {
+  margin: 0 0 var(--space-6);
+}
+
+ul {
+  margin: 0 0 var(--space-6);
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: var(--space-1);
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--color-grey-300);
+  text-underline-offset: 3px;
+}
+
+code,
+.mono {
+  font-family: var(--font-mono);
+}
+
+code {
+  font-size: 0.9em;
+}
+
+/* Prose inline code (e.g. `promo/vendor/polytypo.browser.js` in a <p>) has no horizontal-scroll
+   affordance of its own, unlike a <pre><code> block — so at narrow viewports a long identifier
+   can push the whole document wider than the viewport (found: 320px viewport, clientWidth 305px
+   after the vertical scrollbar, scrollWidth 312px). `pre code` keeps pre's own overflow-x: auto
+   and must not wrap, hence :not(pre) > code rather than a blanket `code` rule. */
+:not(pre) > code {
+  overflow-wrap: anywhere;
+}
+
+section {
+  padding: 70px 0 10px;
+  border-top: 1px solid var(--line);
+}
+
+.eyebrow {
+  margin: 0 0 var(--space-4);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.small {
+  font-size: 13px;
+}
+
+/* ---------- top nav ---------- */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.site-nav .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding-top: var(--space-5);
+  padding-bottom: var(--space-5);
+}
+
+.site-nav .brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--fg);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.site-nav .brand svg {
+  width: 28px;
+  height: auto;
+  color: var(--fg);
+}
+
+.site-nav .links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.site-nav .links a {
+  display: inline-flex;
+  align-items: center;
+  /* Vertical padding widens the tap target well past the text's own line-height (WCAG 2.5.8
+     "Target Size (Minimum)" — 24px is the AA minimum; this keeps some margin above it) without
+     changing the link's visible size or the brand's compact nav look. */
+  padding: 10px 0;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.site-nav .links a:hover {
+  color: var(--fg);
+}
+
+.site-nav .links a[aria-current="page"] {
+  color: var(--fg);
+  border-bottom: 2px solid var(--color-accent);
+  /* Same total tap-target height as every other nav link: the 2px border eats into the 10px
+     base padding rather than shrinking it, so the active link isn't the one exception with a
+     smaller touch target. */
+  padding-bottom: 8px;
+}
+
+/* ---------- hero ---------- */
+.hero {
+  padding: 56px 0 64px;
+}
+
+.hero .tagline {
+  max-width: 56ch;
+  margin-top: var(--space-7);
+  color: var(--muted);
+  font-size: 19px;
+}
+
+.hero .cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  margin-top: var(--space-9);
+}
+
+.btn {
+  display: inline-block;
+  padding: 11px 20px;
+  border: 1px solid var(--fg);
+  border-radius: 999px;
+  color: var(--bg);
+  background: var(--fg);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.btn.secondary {
+  color: var(--fg);
+  background: none;
+}
+
+/* ---------- interactive demo / playground ---------- */
+.demo {
+  margin-top: 44px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.demo .bar,
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.demo .bar {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--line);
+}
+
+.demo .bar button,
+.tabs button {
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+}
+
+.demo .bar button {
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  background: none;
+  color: var(--muted);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+}
+
+.demo .bar button:hover {
+  color: var(--fg);
+}
+
+.demo .bar button[aria-pressed="true"],
+.tabs button[aria-pressed="true"] {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.split .pane-l,
+.split .pane-r {
+  min-width: 0;
+  padding: 24px 26px 30px;
+}
+
+.split .pane-l {
+  border-right: 1px solid var(--line);
+}
+
+.split .who {
+  margin-bottom: var(--space-5);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.split .txt {
+  overflow-wrap: anywhere;
+}
+
+.split .txt.raw {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.split .txt.set {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.demo .foot {
+  padding: var(--space-4) 26px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+
+.chg {
+  border-radius: 3px;
+  background: rgb(214 64 39 / 16%);
+  box-shadow: 0 0 0 1px rgb(214 64 39 / 22%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .chg {
+    background: rgb(214 64 39 / 30%);
+    box-shadow: 0 0 0 1px rgb(214 64 39 / 38%);
+  }
+}
+
+:root[data-theme="dark"] .chg {
+  background: rgb(214 64 39 / 30%);
+  box-shadow: 0 0 0 1px rgb(214 64 39 / 38%);
+}
+
+.nb {
+  border-bottom: 2px solid var(--color-accent);
+  color: var(--color-accent);
+}
+
+.bound {
+  border-bottom: 2px dotted var(--color-accent);
+}
+
+/* ---------- card grids ---------- */
+.card-grid {
+  display: grid;
+  gap: var(--space-5);
+  margin: var(--space-8) 0 var(--space-2);
+}
+
+.card-grid--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.card-grid--responsive {
+  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+}
+
+.card {
+  padding: var(--space-7) var(--space-8);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.card .lang {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.card .pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+  align-items: start;
+  margin-top: var(--space-3);
+}
+
+.card .in,
+.card .out {
+  overflow-wrap: anywhere;
+}
+
+.card .in {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+.card .out {
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+/* ---------- tables ---------- */
+.scroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: auto;
+  max-width: 100%;
+  margin: var(--space-5) 0 var(--space-9);
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th,
+td {
+  padding: var(--space-3) var(--space-5) var(--space-3) 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+td.mono,
+.mono {
+  font-size: 13px;
+  /* Table auto-layout sizes a column by its cells' min-content width; overflow-wrap:anywhere
+     lets that shrink to a single character, which collapses these columns to nothing. These
+     are short tokens (rule ids, error codes, option names) that should never wrap — nowrap
+     keeps them at their natural width, and the .scroll wrapper around every such table
+     handles the case where that's still too wide for a narrow viewport. */
+  white-space: nowrap;
+}
+
+.rule-in {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.rule-out {
+  font-size: 16px;
+}
+
+.kv {
+  border-collapse: collapse;
+  width: auto;
+  max-width: 100%;
+  margin: var(--space-5) 0 var(--space-9);
+  font-size: 14px;
+}
+
+.kv th,
+.kv td {
+  padding: var(--space-3) var(--space-5) var(--space-3) 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.ready-cite {
+  max-width: 42ch;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+/* ---------- code ---------- */
+.tabs {
+  margin-top: var(--space-7);
+}
+
+.tabs button {
+  padding: 7px 13px;
+  border: 1px solid var(--line);
+  background: none;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.tabs button[aria-pressed="true"] {
+  border-color: var(--fg);
+}
+
+pre {
+  margin: var(--space-5) 0 0;
+  padding: var(--space-8) var(--space-9);
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* Minimal hand-rolled highlighting for the generated call samples — no highlighter
+   dependency, just two token classes (string literals, line comments); everything else
+   stays the code block's own foreground color. */
+.tok-str {
+  color: var(--tok-string);
+}
+
+.tok-com {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.pane[hidden] {
+  display: none;
+}
+
+.status {
+  display: inline-block;
+  margin-left: var(--space-3);
+  padding: 3px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  vertical-align: 2px;
+}
+
+.status.live {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.note {
+  max-width: 66ch;
+  margin: var(--space-10) 0;
+  padding-left: var(--space-7);
+  border-left: 2px solid var(--color-accent);
+}
+
+/* ---------- playground ---------- */
+.pg-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--line);
+}
+
+.pg-bar label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pg-bar select {
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: none;
+}
+
+textarea.pg-textarea {
+  display: block;
+  width: 100%;
+  height: 320px;
+  margin-top: var(--space-4);
+  resize: vertical;
+  border: 1px solid var(--line);
+  outline: 0;
+  border-radius: 8px;
+  padding: var(--space-5);
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.7;
+  box-shadow: inset 0 1px 2px rgb(20 22 26 / 6%);
+}
+
+textarea.pg-textarea::placeholder {
+  color: var(--muted);
+}
+
+textarea.pg-textarea:focus-visible {
+  /* Overrides the generic outline ring above with a layout-aware one: an outline would sit
+     outside the textarea's rounded border and clip against the surrounding panel padding, so
+     this uses the same accent color as a border-color change plus an inset-safe box-shadow ring
+     instead — still a clearly visible replacement, not merely "no outline". */
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgb(214 64 39 / 14%);
+}
+
+@media (prefers-color-scheme: dark) {
+  textarea.pg-textarea {
+    box-shadow: inset 0 1px 2px rgb(0 0 0 / 30%);
+  }
+}
+
+.pg-output {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.pg-output.error {
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.pg-note {
+  margin-top: var(--space-4);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.pg-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 26px;
+  border-top: 1px solid var(--line);
+}
+
+.pg-actions button {
+  padding: 7px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: none;
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.pg-actions button:hover {
+  border-color: var(--fg);
+}
+
+.pg-action-status {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+/* ---------- steps ---------- */
+.steps {
+  counter-reset: step;
+  margin: var(--space-8) 0 var(--space-2);
+  padding: 0;
+  list-style: none;
+}
+
+.steps > li {
+  position: relative;
+  margin: 0 0 var(--space-7);
+  padding-left: 38px;
+}
+
+.steps > li::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--surface-strong);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.steps h4 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+
+.steps p {
+  margin: 0;
+}
+
+/* ---------- footer ---------- */
+footer {
+  padding-top: 70px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+footer p {
+  margin: 0;
+}
+
+footer p + p {
+  margin-top: var(--space-2);
+}
+
+footer a {
+  color: inherit;
+  text-underline-offset: 0.18em;
+}
+
+footer a:hover {
+  color: var(--fg);
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 720px) {
+  .card-grid--two,
+  .split {
+    grid-template-columns: 1fr;
+  }
+
+  .split .pane-l {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .card .pair {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+}
+
+@media (max-width: 640px) {
+  .wrap {
+    width: min(100% - 36px, var(--content-width));
+    padding-bottom: 88px;
+  }
+
+  /* Below 640px, four nav links plus the logo no longer fit on one row. Rather than let them
+     wrap wherever the text happens to break (previously: three links on row one, "Locales"
+     stranded alone on row two — the same awkward split repeated at narrower widths, e.g. two
+     links stranding at 320px), commit to an intentional two-row layout: the logo on its own
+     row, the full set of links on the row below it, evenly spread across the same width so
+     the wrap point is a deliberate row boundary, not leftover text-wrap behaviour. */
+  .site-nav .wrap {
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+
+  .site-nav .brand {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .site-nav .links {
+    width: 100%;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .hero {
+    padding: 36px 0 48px;
+  }
+
+  section {
+    padding-top: 56px;
+  }
+
+  .split .txt.raw {
+    font-size: 14px;
+  }
+
+  .split .txt.set {
+    font-size: 19px;
+  }
+}

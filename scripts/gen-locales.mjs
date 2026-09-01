@@ -6,6 +6,7 @@
 import { readdirSync, readFileSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isAllLetters } from "./lib/is-letter.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const localesDir = join(root, "spec", "locales");
@@ -64,9 +65,11 @@ const specVersion = readFileSync(join(root, "spec", "VERSION"), "utf8").trim();
 const QUOTE_INNER_SPACE = ["none", "nbsp", "narrow-nbsp"];
 const PARENTHETICAL = ["em-tight", "em-spaced", "en-tight", "en-spaced", "none"];
 const RANGE = ["em-tight", "em-spaced", "en-tight", "en-spaced", "none"];
+const INITIAL_BINDING = ["none", "chain", "single"];
 const SOURCE_RULES = [
   "quotes",
   "dashes",
+  "ranges",
   "ellipsis",
   "hyphen",
   "nbsp",
@@ -89,6 +92,38 @@ function checkQuotePair(file, path, value) {
   return { open: value.open, close: value.close, innerSpace: value.innerSpace };
 }
 
+// quotes.md 3.2's listed elision veto: matching `elided` alone cannot distinguish an idiom
+// from an arbitrary quoted word, so all three fields are required and non-empty. `left`/`right`
+// are defined as whole LETTER-run words (quotes.md 3.2's Word definition) — but the engine's
+// matcher is a literal comparison, not a LETTER-class check, so a digit or punctuation code
+// point in either field would NOT be silently unmatchable: it would match, exactly as
+// configured, on any input containing that literal string. That is precisely the problem —
+// runtime behaviour would then exceed what the normative Word definition authorises, matching
+// text no citation was ever checked against. This rejects such an entry at the data boundary
+// instead. `elided` has no such constraint: the veto's exact-match test never classifies its
+// code points by LETTER, and the normative contract does not require it to.
+function checkElisionIdioms(file, value) {
+  if (!Array.isArray(value)) fail(`${file}: quotes.elisionIdioms must be an array`);
+  return value.map((entry, i) => {
+    const path = `quotes.elisionIdioms[${i}]`;
+    if (!isPlainObject(entry)) fail(`${file}: ${path} must be an object`);
+    for (const key of ["left", "elided", "right"]) {
+      if (typeof entry[key] !== "string" || entry[key].length === 0) {
+        fail(`${file}: ${path}.${key} must be a non-empty string`);
+      }
+    }
+    for (const key of ["left", "right"]) {
+      if (typeof entry[key] === "string" && !isAllLetters(entry[key])) {
+        fail(
+          `${file}: ${path}.${key} must consist entirely of LETTER code points ` +
+            `(quotes.md 3.2's Word definition) — got ${JSON.stringify(entry[key])}`,
+        );
+      }
+    }
+    return { left: entry.left, elided: entry.elided, right: entry.right };
+  });
+}
+
 function checkLocale(file, data) {
   for (const key of ["locale", "name", "quotes", "dash", "ellipsis", "hyphen", "nbsp", "sources"]) {
     if (!(key in data)) fail(`${file}: missing required field \`${key}\``);
@@ -97,6 +132,7 @@ function checkLocale(file, data) {
     fail(`${file}: \`locale\` and \`name\` must be strings`);
   }
   if (!isPlainObject(data.quotes)) fail(`${file}: \`quotes\` must be an object`);
+  const elisionIdioms = checkElisionIdioms(file, data.quotes.elisionIdioms);
   if (!isPlainObject(data.dash)) fail(`${file}: \`dash\` must be an object`);
   if (!PARENTHETICAL.includes(data.dash.parenthetical)) {
     fail(`${file}: dash.parenthetical must be one of ${PARENTHETICAL.join(", ")}`);
@@ -128,8 +164,8 @@ function checkLocale(file, data) {
   ]) {
     if (!isStringArray(data.nbsp[key])) fail(`${file}: nbsp.${key} must be an array of strings`);
   }
-  if (typeof data.nbsp.bindInitials !== "boolean") {
-    fail(`${file}: nbsp.bindInitials must be a boolean`);
+  if (!INITIAL_BINDING.includes(data.nbsp.initialBinding)) {
+    fail(`${file}: nbsp.initialBinding must be one of ${INITIAL_BINDING.join(", ")}`);
   }
   if (!Array.isArray(data.sources) || data.sources.length === 0) {
     fail(`${file}: \`sources\` must be a non-empty array (docs/PLAN.md 6.1)`);
@@ -149,6 +185,7 @@ function checkLocale(file, data) {
     quotes: {
       primary: checkQuotePair(file, "quotes.primary", data.quotes.primary),
       secondary: checkQuotePair(file, "quotes.secondary", data.quotes.secondary),
+      elisionIdioms,
     },
     dash: { parenthetical: data.dash.parenthetical, range: data.dash.range },
     ellipsis: { abbreviatedAfterTerminal: data.ellipsis.abbreviatedAfterTerminal },
@@ -166,7 +203,7 @@ function checkLocale(file, data) {
       beforeNumber: data.nbsp.beforeNumber,
       beforeWord: data.nbsp.beforeWord,
       afterSymbols: data.nbsp.afterSymbols,
-      bindInitials: data.nbsp.bindInitials,
+      initialBinding: data.nbsp.initialBinding,
     },
     sources: data.sources.map((source) => {
       const out = { rule: source.rule, cite: source.cite };

@@ -203,7 +203,7 @@ describe("nbsp — worked examples, spec §6 (fr beforeWord)", () => {
   });
 
   it("22. the sub-rule does nothing without an entry", () => {
-    const noBeforeWord = withNbsp(fr, { beforeWord: [], bindInitials: false });
+    const noBeforeWord = withNbsp(fr, { beforeWord: [], initialBinding: "none" });
     const input = "M. Dupont";
     expect(run(input, noBeforeWord)).toBe(input);
   });
@@ -307,12 +307,26 @@ describe("nbsp — G-D and the sentence-boundary miss (spec §3.13, §7.9)", () 
   });
 
   it("G-D still makes an UPPER one-letter form inert in N10 (N7 owns that shape)", () => {
-    const locale = withNbsp(ru, { beforeWord: ["М."], bindInitials: true });
+    // spec 0.6.0: G-D fires whenever `initialBinding !== "none"`, regardless of which mode. This
+    // test's claim is about G-D/N10, not about "chain" vs "single" — `initialBinding: "single"`
+    // is used explicitly here (ru's own default is "chain", under which a lone `М.` would not
+    // bind to a following word at all; see the "chain" mode test below for that case).
+    const locale = withNbsp(ru, { beforeWord: ["М."], initialBinding: "single" });
     // N7 C1 needs UPPER after the space, so a lower-case following word binds nowhere —
     // the documented residual gap, §6 case 22 / §7.10.
     expect(run("М. петров", locale)).toBe("М. петров");
     // With an upper-case surname N7 C1 reaches the same U+00A0 by the other route.
     expect(run("М. Петров", locale)).toBe(`М.${NBSP}Петров`);
+  });
+
+  it("under \"chain\" mode, a lone initial does not bind to a following word at all (spec 0.6.0)", () => {
+    // Same shape as above, but with ru's own real default (`chain`): no preceding initial and no
+    // second initial on the right, so C1 does not fire — G-D therefore does not apply either
+    // (`k === 2` UPPER-dot forms only route to N7 when N7 itself would actually bind them is not
+    // required by G-D's own condition, but N10's `beforeWord` list is empty here, so there is
+    // nothing for N10 to do regardless).
+    const locale = withNbsp(ru, { beforeWord: ["М."] });
+    expect(run("М. Петров", locale)).toBe("М. Петров");
   });
 
   /** §7.9: N10 has no sentence-boundary test, and with G-D repaired this is reachable again. */
@@ -364,7 +378,7 @@ describe("nbsp — round trip", () => {
 
   it("a locale with nothing to do is a total no-op", () => {
     const input = "The plan - if there is one - fails: 12:30, 50%, A. B. Smith, «mot»!";
-    // `en-US` is absent: it sets `bindInitials`, so `A. B. Smith` is not a no-op there.
+    // `en-US` is absent: it sets `initialBinding: "chain"`, so `A. B. Smith` is not a no-op there.
     for (const tag of ["en-GB", "sv"]) {
       const locale = localeOf(tag);
       const cp = toCodePoints(input);
@@ -377,7 +391,7 @@ describe("nbsp — round trip", () => {
 describe("nbsp — UPPER table", () => {
   it("matches the host runtime's Lu/Lt classification at every range boundary", () => {
     // The table is private; N7's behaviour is the observable proxy for it.
-    const locale = withNbsp(ru, { bindInitials: true });
+    const locale = withNbsp(ru, { initialBinding: "chain" });
     const upper = ["A", "Ǆ", "А", "Ω", "Ա", "Ⰰ"];
     for (const letter of upper) {
       expect(run(`${letter}. ${letter}. Х`, locale)).toBe(`${letter}.${NBSP}${letter}.${NBSP}Х`);
@@ -522,6 +536,99 @@ describe("nbsp — idempotency", () => {
         }),
         { numRuns: 300 },
       );
+    }
+  });
+});
+
+/**
+ * nbsp.md §3.9, `initialBinding` (spec 0.6.0, replaces the boolean `bindInitials`) — the fix for
+ * the M4 reject `"...take the top N. It runs..."`. C1 used to bind the space after ANY lone
+ * initial next to an uppercase-starting word, with no check that the right side was itself an
+ * initial or that the left side was preceded by one — broader than Chicago's own "two or more
+ * initials" citation already on file for en-US. `"chain"` requires a confirmed sequence of two;
+ * `"single"` keeps the old permissive shape (needed for fr/fr-CA's own cited single-initial
+ * cases, `N. Bourbaki` and `M. Dupont`); `"none"` disables N7 entirely.
+ */
+describe("nbsp — initialBinding (spec 0.6.0)", () => {
+  const enUS = localeOf("en-US");
+  const enGB = localeOf("en-GB");
+
+  it("the exact M4 witness: a lone initial ending a sentence does not bind to the next sentence, under \"chain\"", () => {
+    expect(enUS.nbsp.initialBinding).toBe("chain");
+    const input = "take the top N. It runs across four relationship types";
+    expect(run(input, enUS)).toBe(input);
+  });
+
+  it("isolated \"A. Smith\" does not bind under \"chain\" — the deliberate, accepted false negative", () => {
+    const input = "A. Smith built the original prototype.";
+    expect(run(input, enUS)).toBe(input);
+  });
+
+  it("\"E. B. White\" fully binds under \"chain\" — a confirmed two-initial sequence", () => {
+    expect(run("E. B. White wrote it", enUS)).toBe(`E.${NBSP}B.${NBSP}White wrote it`);
+  });
+
+  it("between-initials binding is unconditional in every non-\"none\" mode, even without a further preceding chain", () => {
+    // The space strictly BETWEEN two initials (not the one leading into a following plain word)
+    // never depends on chain confirmation — it is always the between-initials case.
+    const single = withNbsp(fr, { initialBinding: "single" });
+    expect(run("X. Y. Z.", single)).toBe(`X.${NBSP}Y.${NBSP}Z.`);
+    const chain = withNbsp(fr, { initialBinding: "chain" });
+    expect(run("X. Y. Z.", chain)).toBe(`X.${NBSP}Y.${NBSP}Z.`);
+  });
+
+  it("German and Russian: multi-initial chains bind fully under \"chain\", their own real default", () => {
+    expect(localeOf("de-DE").nbsp.initialBinding).toBe("chain");
+    expect(localeOf("de-CH").nbsp.initialBinding).toBe("chain");
+    expect(localeOf("ru").nbsp.initialBinding).toBe("chain");
+    expect(run("J. K. Rowling schrieb es", localeOf("de-DE"))).toBe(
+      `J.${NBSP}K.${NBSP}Rowling schrieb es`,
+    );
+    expect(run("А. С. Пушкин родился", localeOf("ru"))).toBe(`А.${NBSP}С.${NBSP}Пушкин родился`);
+  });
+
+  it("French and fr-CA: \"single\" preserves the cited single-initial cases (André §5.1.3)", () => {
+    expect(fr.nbsp.initialBinding).toBe("single");
+    expect(localeOf("fr-CA").nbsp.initialBinding).toBe("single");
+    expect(run("N. Bourbaki a écrit ceci", fr)).toBe(`N.${NBSP}Bourbaki a écrit ceci`);
+    expect(run("M. Dupont est arrivé", fr)).toBe(`M.${NBSP}Dupont est arrivé`);
+  });
+
+  it("French \"single\" cannot structurally tell a genuine name from a sentence-boundary collision (nbsp.md §7)", () => {
+    // The same shape as the English M4 witness, translated: a lone initial ending a sentence,
+    // followed by a capitalized word starting a new one. "single" mode binds it anyway — this is
+    // the documented, accepted limitation of "single", not a regression introduced here.
+    const input = "vu la lettre N. Il continue son travail";
+    expect(run(input, fr)).not.toBe(input);
+  });
+
+  it("\"none\" (en-GB, el, fi, sv) disables N7 entirely, including a confirmed two-initial chain", () => {
+    for (const tag of ["en-GB", "el", "fi", "sv"]) {
+      const locale = localeOf(tag);
+      expect(locale.nbsp.initialBinding).toBe("none");
+      expect(run("E. B. White wrote it", locale)).toBe("E. B. White wrote it");
+    }
+    expect(run("E. B. White wrote it", enGB)).toBe("E. B. White wrote it");
+  });
+
+  it("idempotency: every mode, every witness above, transform(transform(x)) === transform(x)", () => {
+    const witnesses: [string, LocaleData][] = [
+      ["take the top N. It runs across four relationship types", enUS],
+      ["A. Smith built the original prototype.", enUS],
+      ["E. B. White wrote it", enUS],
+      ["J. K. Rowling schrieb es", localeOf("de-DE")],
+      ["А. С. Пушкин родился", localeOf("ru")],
+      ["N. Bourbaki a écrit ceci", fr],
+      ["M. Dupont est arrivé", fr],
+      ["vu la lettre N. Il continue son travail", fr],
+      ["E. B. White wrote it", enGB],
+    ];
+    for (const [input, locale] of witnesses) {
+      const once = run(input, locale);
+      expect(run(once, locale), JSON.stringify(input)).toBe(once);
+      // Full pipeline too, not just the rule in isolation.
+      const onceFull = transform(input, { locale: locale.locale });
+      expect(transform(onceFull, { locale: locale.locale })).toBe(onceFull);
     }
   });
 });

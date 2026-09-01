@@ -1,5 +1,5 @@
 {
-  "spec": "0.2.0",
+  "spec": "1.0.0",
   "locale": "fr-CA",
   "cases": [
     {
@@ -41,11 +41,23 @@
       "note": "Identical to fr: no Quebec-specific dash source found."
     },
     {
-      "id": "fr-ca-dashes-range-none-years",
+      "id": "fr-ca-dashes-authored-en-dash-declined",
       "rule": "dashes",
       "mode": "text",
+      "in": "Le plan–peut-être–échoue.",
+      "out": "Le plan–peut-être–échoue.",
+      "note": "dashes.md §3.4 P5 (spec 0.6.0), identical to fr-dashes-authored-en-dash-declined: no Quebec-specific dash source found, so the behaviour is inherited unchanged. A pure single authored U+2013 is declined unconditionally, even though fr-CA's `dash.parenthetical` is `em-spaced`. Correction pass (spec 0.6.0): re-witnessed with `peut-être` instead of `s'il` to remove the unrelated apostrophe conversion, so the whole-output `transform(in) === in` assertion isolates the P5 claim alone."
+    },
+    {
+      "id": "fr-ca-ranges-none-years",
+      "rule": "ranges",
+      "mode": "text",
       "in": "Les années 1914-1918 furent longues.",
-      "out": "Les années 1914-1918 furent longues."
+      "out": "Les années 1914-1918 furent longues.",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. ranges.md §2 is the current normative source for the `range: \"none\"` no-op."
     },
     {
       "id": "fr-ca-hyphen-noop-compounds",
@@ -68,7 +80,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "\"Il a dit 'oui' hier.\"",
-      "out": "« Il a dit “oui” hier. »"
+      "out": "« Il a dit 'oui' hier. »",
+      "note": "spec 0.5.0: same as fr-quotes-nested — 'oui' is preserved by the general ambiguous-medial-span veto."
     },
     {
       "id": "fr-ca-apostrophe-elision",
@@ -190,7 +203,7 @@
       "mode": "text",
       "in": "N. Bourbaki",
       "out": "N. Bourbaki",
-      "note": "Inherited from fr's André citation (bindInitials)."
+      "note": "Inherited from fr's André citation (initialBinding: \"single\", spec 0.6.0 — the field used to be the boolean bindInitials)."
     },
     {
       "id": "fr-ca-nbsp-abbreviation",
@@ -231,6 +244,25 @@
       "in": "«a“b«c»d”e»",
       "out": "« a“b« c »d”e »",
       "note": "quotes.md §6, ru/el/fr/fr-CA adversarial sweep: already-curly interleaved WIDE-only text, mirroring fr's own case."
+    },
+    {
+      "id": "fr-ca-quotes-rock-n-roll",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "rock 'n' roll",
+      "out": "rock 'n' roll",
+      "note": "spec 0.5.0: fr-CA has no cited quotes.elisionIdioms entry for this idiom (quotes.md §7 item 8 — only en-US does, via Chicago Manual of Style Online and the American Heritage Dictionary). The general ambiguous-medial-span veto (quotes.md 3.2) preserves both marks as literal U+0027 rather than pairing them as an ordinary quotation, closing the false positive AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 3.1 named for \"equivalent cases in several locales.\""
+    },
+    {
+      "id": "fr-ca-ranges-none",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "Les années 1914-1918",
+      "out": "Les années 1914-1918",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0: fr-CA's dash.range is \"none\" (no verified convention), so `ranges` substitutes nothing even when explicitly enabled (ranges.md §2, §3.3) — the same invariant the pre-0.5.0 `dashes`-tagged no-op fixtures for this locale already proved for the combined rule."
     }
   ]
 }

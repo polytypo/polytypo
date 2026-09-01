@@ -1,20 +1,83 @@
 {
   "name": "polytypo",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Multilingual microtypography: locale-correct quotes, dashes, ellipses and no-break spaces.",
+  "keywords": [
+    "typography",
+    "microtypography",
+    "i18n",
+    "l10n",
+    "locale",
+    "quotes",
+    "smart-quotes",
+    "dashes",
+    "em-dash",
+    "ellipsis",
+    "apostrophe",
+    "punctuation",
+    "unicode",
+    "markdown",
+    "html"
+  ],
+  "homepage": "https://polytypo.js.org/",
+  "bugs": {
+    "url": "https://github.com/polytypo/polytypo/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polytypo/polytypo.git"
+  },
   "license": "MIT",
   "author": "Iurii Rogulia",
   "type": "module",
   "private": false,
   "sideEffects": false,
+  "publishConfig": {
+    "provenance": true
+  },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./text": {
+      "import": {
+        "types": "./dist/text.d.ts",
+        "default": "./dist/text.js"
+      },
+      "require": {
+        "types": "./dist/text.d.cts",
+        "default": "./dist/text.cjs"
+      }
+    },
+    "./html": {
+      "import": {
+        "types": "./dist/html.d.ts",
+        "default": "./dist/html.js"
+      },
+      "require": {
+        "types": "./dist/html.d.cts",
+        "default": "./dist/html.cjs"
+      }
+    },
+    "./markdown": {
+      "import": {
+        "types": "./dist/markdown.d.ts",
+        "default": "./dist/markdown.js"
+      },
+      "require": {
+        "types": "./dist/markdown.d.cts",
+        "default": "./dist/markdown.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
@@ -26,11 +89,25 @@
   },
   "scripts": {
     "gen": "node scripts/gen-locales.mjs",
-    "gen:docs": "npx tsx brand/tools/gen_examples.ts && python3 brand/tools/gen_readmes.py && python3 brand/tools/build_promo.py",
+    "gen:docs": "npm run gen && npx tsx brand/tools/gen_examples.ts && python3 brand/tools/gen_readmes.py && python3 brand/tools/build_promo.py",
     "gen:promo-bundle": "npm run gen && esbuild src/index.ts --bundle --format=iife --global-name=PolytypoBrowser --platform=browser --outfile=promo/vendor/polytypo.browser.js --minify",
+    "gen:brandbook": "python3 brand/tools/build_brandbook.py",
+    "generate:all": "npm run gen:docs && npm run gen:promo-bundle && npm run gen:brandbook",
     "validate:spec": "node scripts/validate-spec.mjs",
     "test": "npm run gen && vitest run",
     "build": "npm run gen && tsup",
+    "check:entry-reach": "node scripts/check-entry-reach.mjs",
+    "check:declaration-resolution": "npx tsc -p tests/packaging/tsconfig.nodenext.json && node scripts/check-declaration-resolution.mjs",
+    "check:bundle-size": "node scripts/check-bundle-size.mjs",
+    "check:install-footprint": "node scripts/check-install-footprint.mjs",
+    "check:package-contents": "node scripts/check-package-contents.mjs",
+    "check:workflow-shell-safety": "node scripts/check-workflow-shell-safety.mjs",
+    "check:actions-pinned": "node scripts/check-actions-pinned.mjs",
+    "test:packaging": "npm run build && node tests/packaging/run.mjs",
+    "test:packed-tarball": "node tests/packaging/packed-tarball.mjs",
+    "test:readme-gen": "python3 brand/tools/test_gen_readmes.py",
+    "test:font-acquisition": "python3 brand/tools/test_gen_svg.py",
+    "dogfood:m4": "npx tsx scripts/dogfood-m4.ts",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
@@ -39,6 +116,8 @@
     "@types/node": "^26.2.0",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
+    "diff": "^9.0.0",
+    "esbuild": "^0.27.7",
     "eslint": "^10.8.1",
     "fast-check": "^4.9.0",
     "globals": "^17.11.0",
@@ -48,7 +127,8 @@
     "tsx": "^4.23.12",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.67.0",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "yaml": "^2.9.0"
   },
   "dependencies": {
     "micromark": "^4.0.2",

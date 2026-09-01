@@ -127,8 +127,9 @@ The HTML mode must never serialize-and-reparse in a way that alters unrelated ma
 > strained: the *lists* are data, the scanning and the U+2011 substitution are code. The rule is
 > also not Russian-specific by construction — it is a no-op for every locale whose three lists are
 > empty, which is most of them. It runs after `dashes`, which has already declined every
-> letter-adjacent hyphen. The rule set is **eight**; `order.json` is the source of truth and this
-> list is a description of it.
+> letter-adjacent hyphen. The rule set was **eight** at the time this line was written; spec
+> 0.5.0 split `ranges` out of `dashes` (order 25, off by default), making it **nine**.
+> `order.json` is the source of truth and this list is a description of it.
 
 ### 3.4 The idempotency contract
 
@@ -168,7 +169,8 @@ Adding any of these without an explicit operator decision is scope creep and mus
 > reaches the build through `src/generated/locales.ts`; fixtures live in `spec/fixtures/`;
 > validation is JSON Schema in `spec/schema/`, not a `src/schema.ts` zod file (ARCHITECTURE.md §L0);
 > there is no `engine/idempotent.ts` — idempotency is a property of the pipeline, proven by tests,
-> not a helper module; and `rules/` has eight files, including the `hyphen.ts` missing below.
+> not a helper module; and `rules/` has nine files as of spec 0.5.0 (eight when this line was
+> written), including the `hyphen.ts` and `ranges.ts` missing below.
 
 ```
 src/
@@ -286,9 +288,17 @@ This is the credibility differentiator. No competing package does it. It is also
 > The reason is that evidentiary burden must track expressive power. There is no field in which a
 > locale can say "bind these units" or "do not bind them"; the schema offers a list and nothing
 > else. A locale therefore cannot vary the mechanism, cannot be wrong about it, and cannot
-> sensibly be asked to cite it. `bindInitials` is the reductio: it is a boolean whose entire
-> content is mechanism, and no typographic authority names a code point for it, so under the
-> opposite reading it would be unciteable in principle.
+> sensibly be asked to cite it. `nbsp.initialBinding` is the reductio, and worth stating precisely
+> because it changed shape (spec 0.6.0: the field used to be the boolean `bindInitials`, now the
+> enum `"none" | "chain" | "single"`). No typographic authority names a code point for any of the
+> three values — the mechanism itself (which code point, which sub-rule) is still entirely the
+> rule's, not the locale's, and none of the three values escapes that. What changed is that the
+> enum, unlike the boolean, now lets a locale attest a real, citable *distinction in scope*: `"chain"`
+> matches Chicago's own wording ("between two or more initials in a name"), `"single"` matches
+> André's ("un prénom abrégé et le nom", one abbreviated first name), and `"none"` remains the
+> uncitable negative the boolean's `false` always was. A locale is still not asked to cite the
+> mechanism — U+00A0, which sub-rule clause fires — only which of the three *scopes* its own
+> source actually describes.
 >
 > This does not lower the bar on membership. A source that shows two tokens side by side does not
 > attest that they are one bound unit; a source describing the internal shape of a single

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="polytypo — locale-correct quotes, dashes, ellipses and no-break spaces for 10 locales. One runtime today. One portable spec designed for five.">
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/style.css">
+<title>polytypo — Manifesto</title>
+</head>
+<body>
+<nav class="site-nav"><div class="wrap"><a class="brand" href="index.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="9.5 37.5 181.0 45.0" role="img" aria-labelledby="t6 d6">
+  <title id="t6">polytypo</title>
+  <desc id="d6">Guillemets enclosing an em dash.</desc>
+  <g fill="none" stroke="currentColor" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M28 42 L14 60 L28 78"/>
+    <path d="M44 42 L30 60 L44 78"/>
+    <path d="M172 42 L186 60 L172 78"/>
+    <path d="M156 42 L170 60 L156 78"/>
+  </g>
+  <rect x="58.0" y="55.5" width="84.0" height="9.0" fill="currentColor"/>
+</svg>polytypo</a><div class="links"><a href="index.html">Home</a><a href="docs.html">Docs</a><a href="playground.html">Playground</a><a href="locales.html">Locales</a></div></div></nav>
+<div class="wrap">
+<header class="hero" style="padding: 40px 0 24px">
+  <p class="eyebrow">Manifesto</p>
+  <h1 style="max-width: none">The em dash was mine before AI.</h1>
+  <p class="tagline" style="margin-top: var(--space-3); font-size: 20px">
+    <code>—</code> is typography, not a watermark.
+  </p>
+</header>
+
+<section id="thesis" style="padding-top: 0">
+  <p>
+    A sentence with an em dash, a curly quote, or a non-breaking space is not evidence that a
+    language model wrote it. Publishers, typesetters, and copyeditors have set these marks —
+    deliberately, and by locale-specific convention — since long before any language model
+    existed. Reading them as an "AI tell" mistakes a craft that predates the technology for a
+    fingerprint it left behind.
+  </p>
+  <p>
+    That misreading has a cost. When correct punctuation gets treated as suspicious, writers get
+    pushed toward flatter, safer punctuation to avoid the accusation — the wrong incentive, aimed
+    at the wrong target.
+  </p>
+  <p>
+    Polytypo exists because the craft underneath is mechanical, well documented, and worth
+    automating correctly: quotes, dashes, ellipses, apostrophes, symbols, and no-break spaces,
+    applied the way a locale's own style guide — Duden, Imprimerie nationale, Kotus, Chicago,
+    Мильчин — actually specifies them, not the way one universal style would guess.
+  </p>
+</section>
+
+<section id="not-one-style">
+  <p class="eyebrow">Not one universal style</p>
+  <h2>Correct typography isn't an "AI style." It's several different, locale-specific ones.</h2>
+  <p class="small muted" style="max-width: 60ch">
+    Every card below runs the exact same input string — straight quotes, a straight hyphen —
+    through <code>transform()</code>. Nothing is typed by hand. Only the locale changes; quote
+    style, dash style, and spacing all follow.
+  </p>
+  <div class="card-grid card-grid--responsive"><div class="card" data-locale="en-US"><div class="lang">English (US) · en-US</div><div class="pair"><div class="in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="out">She said: <span class="chg">“</span>The em dash was mine before AI<span class="chg">”—</span>and she meant it.</div></div></div><div class="card" data-locale="de-DE"><div class="lang">German · de-DE</div><div class="pair"><div class="in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="out">She said: <span class="chg">„</span>The em dash was mine before AI<span class="chg">“</span> <span class="chg">–</span> and she meant it.</div></div></div><div class="card" data-locale="fr"><div class="lang">French · fr</div><div class="pair"><div class="in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="out">She said<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>: <span class="chg">«<span class="nb" title="U+00A0 no-break space"> </span></span>The em dash was mine before AI<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span>»</span> <span class="chg">—</span> and she meant it.</div></div></div><div class="card" data-locale="ru"><div class="lang">Russian · ru</div><div class="pair"><div class="in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="out">She said: <span class="chg">«</span>The em dash was mine before AI<span class="chg">»</span> <span class="chg">—</span> and she meant it.</div></div></div></div>
+  <div class="small muted proof-legend" style="max-width: 60ch">Invisible characters in these outputs (always shown here — tooltips above are an optional extra, not required to understand them):<ul><li><span class="mono"> </span> — U+00A0 no-break space</li></ul></div>
+  <p class="small muted">
+    Full locale reference, citations, and how a locale gets added —
+    <a href="locales.html">Locales</a>.
+  </p>
+</section>
+
+<section id="try">
+  <p class="eyebrow">See it on your own text</p>
+  <h2>Paste a paragraph. Watch what changes, and why.</h2>
+  <p>
+    The playground runs the real engine in your browser — what you type is never sent anywhere.
+  </p>
+  <div class="cta-row">
+    <a class="btn" href="playground.html">Open the Playground →</a>
+    <a class="btn secondary" href="docs.html">Read the Docs</a>
+  </div>
+</section>
+
+<footer><div class="wrap"><p>polytypo · spec 1.0.0 · MIT for the code, separate terms for the brand assets · every before/after typography example on this site is generated with the engine.</p><p><a href="manifesto.html">Manifesto</a></p><p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p></div></footer>
+</div>
+<script src="assets/site.js"></script>
+<script>
+Polytypo.bootTabs("lang-tabs", "lang-panes");
+Polytypo.bootTabs("build-tabs", "build-panes");
+</script>
+</body>
+</html>

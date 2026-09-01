@@ -1,19 +1,44 @@
 #!/usr/bin/env python3
 """Build brand/BRANDBOOK.html: inlines every SVG asset and subsets both brand fonts,
-so the document is a single self-contained file."""
+so the document is a single self-contained file.
+
+Current locale/rule counts are read from spec/ on every build, the same way
+brand/tools/gen_readmes.py and brand/tools/build_promo.py do, so a fact quoted in the brandbook
+cannot go stale independently of the spec it describes. Explicitly hypothetical mockup content
+(future version tags like "v1.0.0", illustrative CLI output) is not spec data and stays as
+hand-authored placeholder content — see app_readme()/app_cli()."""
 import base64
 import io
+import json
 import os
 import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BRAND = os.path.dirname(HERE)
+REPO = os.path.dirname(BRAND)
+SPEC = os.path.join(REPO, "spec")
 sys.path.insert(0, HERE)
 import gen_svg as G  # noqa: E402
 
 INK, PAPER, RED, GREY = G.INK, G.PAPER, G.RED, "#8B9098"
 MX, MY, MW, MH = G.MARK_BBOX
+
+with open(os.path.join(SPEC, "locales", "registry.json"), encoding="utf-8") as f:
+    _REGISTRY = json.load(f)
+with open(os.path.join(SPEC, "rules", "order.json"), encoding="utf-8") as f:
+    _ORDER = json.load(f)
+LOCALE_COUNT = len(_REGISTRY["locales"])
+RULE_COUNT = len(_ORDER["rules"])
+
+# Spelled out rather than hardcoded, same convention as brand/tools/gen_readmes.py: the count
+# changes whenever a locale or a rule lands, and a stale word would contradict the number.
+_COUNT_WORDS = {
+    1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six",
+    7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven", 12: "twelve",
+}
+LOCALE_COUNT_WORD = _COUNT_WORDS.get(LOCALE_COUNT, str(LOCALE_COUNT))
+RULE_COUNT_WORD = _COUNT_WORDS.get(RULE_COUNT, str(RULE_COUNT))
 
 UNICODES = (
     "U+0020-007E,U+00A0-00FF,U+0100-017F,U+0300-0301,U+0400-045F,"
@@ -183,7 +208,11 @@ def app_readme():
     badges = "".join(
         f'<span style="display:inline-block;background:#E6E3DC;color:#5A6068;border-radius:4px;'
         f'padding:3px 9px;font-size:9px;font-family:var(--mono);margin:0 4px 0 0">{t}</span>'
-        for t in ("npm v1.0.0", "MIT", "spec 1.0", "6 locales")
+        # "npm v1.0.0" and "spec 1.0" are an illustrative future-release mockup, not a claim
+        # about today's package (still unpublished, still spec 0.x) — kept as hypothetical
+        # placeholder content on purpose. The locale count is not hypothetical, so it is read
+        # from spec/locales/registry.json rather than hand-typed alongside them.
+        for t in ("npm v1.0.0", "MIT", "spec 1.0", f"{LOCALE_COUNT} locales")
     )
     return (
         f'<div style="background:{PAPER};padding:34px 26px;text-align:center;color:{INK}">'
@@ -217,6 +246,10 @@ def app_browser():
 
 
 def app_cli():
+    # "v1.0.0" and "spec 1.0" are the same illustrative future-release mockup as app_readme()'s
+    # badges — this CLI does not exist yet (PLAN.md §4: no CLI in v1). "42 edits" and "0
+    # warnings" are arbitrary flavour for a plausible-looking run and have no canonical source
+    # to check against. The rule count is not hypothetical, so it is read live.
     return (
         f'<div style="background:{INK};color:{PAPER};padding:22px 20px;font-family:var(--mono);'
         f'font-size:11.5px;line-height:1.85">'
@@ -224,7 +257,7 @@ def app_cli():
         f'<div style="margin-top:10px;font-size:15px;letter-spacing:.02em">«—» polytypo '
         f'<span style="color:#8B9098;font-size:11.5px">v1.0.0</span></div>'
         f'<div style="color:#8B9098">spec 1.0 · locale de · mode markdown</div>'
-        f'<div style="margin-top:8px">42 edits · 7 rules · 0 warnings</div></div>'
+        f'<div style="margin-top:8px">42 edits · {RULE_COUNT} rules · 0 warnings</div></div>'
     )
 
 
@@ -233,6 +266,7 @@ def build():
     with open(os.path.join(HERE, "brandbook.template.html"), encoding="utf-8") as f:
         html = f.read()
 
+    html = html.replace("{{Locale_count}}", LOCALE_COUNT_WORD.capitalize())
     html = html.replace("{{fonts}}", fonts_css())
     html = html.replace("{{construction}}", construction())
     html = html.replace("{{clearspace}}", clearspace())

@@ -1,10 +1,15 @@
 import { toCodePoints } from "../engine/codepoints.js";
 import { isLetter } from "../engine/unicode.js";
 import { LINE_MARKER, MARKER, NONE } from "../engine/sentinels.js";
-import type { Edit, LocaleData, QuotePair, Rule, RuleContext } from "../types.js";
+import type { Edit, ElisionIdiom, LocaleData, QuotePair, Rule, RuleContext } from "../types.js";
+import {
+  NARROW,
+  computeAmbiguousShapeIndices,
+  computeIdiomMatchedIndices,
+} from "./quote-ambiguity.js";
 
 /**
- * `quotes` — spec/rules/quotes.md (spec 0.3.0), order 40.
+ * `quotes` — spec/rules/quotes.md (spec 0.4.1), order 40.
  *
  * Mandate 1 (every existing quote glyph is a re-typesetting candidate) and mandate 2 (a space
  * touching a quote mark is sloppiness, not evidence) replace 0.1.0's whole architecture, whose
@@ -16,11 +21,41 @@ import type { Edit, LocaleData, QuotePair, Rule, RuleContext } from "../types.js
 const DIGIT_ZERO = 0x30;
 const DIGIT_NINE = 0x39;
 
-/** spec 3.1 `WIDE` / `NARROW`. `WIDE ∪ NARROW = QUOTEMARK`, and the two are disjoint. */
+/**
+ * spec 3.2 `V1ID` (spec 0.4.1) — a **conservative over-approximation**, not a claim that every
+ * U+0027 becomes U+2019. `apostrophe` (R₆) only ever *emits* U+2019 for a U+0027 (never any
+ * other code point), but its own case ladder leaves a U+0027 unedited under the prime guard
+ * (case 1: `6' 2"`) and case 5 (`a ' b`, `''`) — `apostrophe.md` §5 names both as surviving to
+ * the second run unedited. `V1ID` cannot know, from inside `quotes`, which outcome a given
+ * U+0027 will get without re-deriving `apostrophe`'s verdict against `quotes`' own final output
+ * — circular, since that output is what this rule is computing — so it treats every U+0027 as
+ * *possibly* about to become U+2019 and every U+2019 as *possibly* a U+0027 that already did.
+ *
+ * **What "conservative" bounds, and what it does not.** At this single comparison, `V1ID` can
+ * only ever *add* a veto (merge two identities that raw equality would have kept apart) — it
+ * never grants `canOpen`/`canClose` to a candidate that would not otherwise have had it. It does
+ * **not** follow that the rule's final output only ever declines more and converts less: pass 2
+ * (`pairCandidates`) and pass 4 (`certify`) are global over the whole candidate list, and removing
+ * one candidate can remove a crossing pair, a nesting conflict, or a certification-gate
+ * instability that was previously making a *different, unrelated* pair fail to certify. An extra
+ * local veto can therefore *indirectly* let another pair certify, reassign depth/glyphs, or
+ * change what `nbsp` (order 70) later inserts — the reported counterexample is exactly this: V1ID
+ * declining the crossing `NARROW` pair is what lets the `WIDE` pair certify on pass 1 instead of
+ * being caught in the same gate rejection. See quotes.md §5, Lemma A / Corollary A1 and the "V1ID
+ * empirical audit" section for the bound this actually rests on — inspection of every globally
+ * changed output within a reproducible sweep, not a monotonicity claim.
+ */
+const SQ = 0x27;
+const RIGHT_SINGLE_QUOTE = 0x2019;
+function v1Identity(cp: number): number {
+  return cp === SQ ? RIGHT_SINGLE_QUOTE : cp;
+}
+
+/** spec 3.1 `WIDE` / `NARROW`. `WIDE ∪ NARROW = QUOTEMARK`, and the two are disjoint. `NARROW`
+ * is imported from `./quote-ambiguity.js`, shared with `apostrophe` (spec 0.5.0). */
 const WIDE: ReadonlySet<number> = new Set([
   0x22, 0xab, 0xbb, 0x201c, 0x201d, 0x201e, 0x201f, 0x301d, 0x301e, 0x301f,
 ]);
-const NARROW: ReadonlySet<number> = new Set([0x27, 0x2018, 0x2019, 0x201a, 0x201b, 0x2039, 0x203a]);
 
 function isQuoteMark(cp: number): boolean {
   return WIDE.has(cp) || NARROW.has(cp);
@@ -157,9 +192,26 @@ function computeSkipSets(locale: LocaleData): SkipSets {
  * `nbsp` can reach it (the locale-derived `spaceRight`/`spaceLeft` sets), which is what keeps
  * every verdict inert to `nbsp` (Lemma B).
  */
-function collectCandidates(arr: readonly number[], skip: SkipSets): Candidate[] {
+function collectCandidates(
+  arr: readonly number[],
+  skip: SkipSets,
+  elisionIdioms: readonly ElisionIdiom[],
+): Candidate[] {
   const n = arr.length;
   const candidates: Candidate[] = [];
+  // spec 0.5.0: the veto set is the UNION of the cited-idiom match (unchanged since 0.4.0) and
+  // the general ambiguous-medial-span shape (quotes.md 3.2a) — `quotes` must decline pairing for
+  // both, so that `apostrophe`'s own case ladder never independently "fixes" a shape `quotes`
+  // left alone (the shared-predicate module's own doc comment explains why that would
+  // reintroduce the class of bug the listed-idiom design exists to prevent).
+  const idiomMatched = computeIdiomMatchedIndices(arr, elisionIdioms);
+  const ambiguousShape = computeAmbiguousShapeIndices(arr);
+  const elisionVetoed =
+    ambiguousShape.size === 0
+      ? idiomMatched
+      : idiomMatched.size === 0
+        ? ambiguousShape
+        : new Set([...idiomMatched, ...ambiguousShape]);
 
   for (let i = 0; i < n; i += 1) {
     const g = at(arr, i);
@@ -198,9 +250,18 @@ function collectCandidates(arr: readonly number[], skip: SkipSets): Candidate[] 
       canClose = false;
     }
 
-    // V1 — same-code-point adjacency veto (spec 3.2), both widths: `""`, `''`, `««`, `””` —
-    // literal adjacency, **plus** the same shape separated by exactly one INLINE-SPACE code
-    // point at a position `nbsp` can insert or remove. The second clause is narrow on purpose:
+    // Listed elision veto (spec 3.2, spec 0.4.0): both capabilities of a mark found by the
+    // pre-pass above are forced false, overriding every other test in this loop.
+    if (elisionVetoed.has(i)) {
+      canOpen = false;
+      canClose = false;
+    }
+
+    // V1 — same-V1-identity adjacency veto (spec 3.2), both widths: `""`, `''`, `««`, `””` —
+    // literal adjacency under `v1Identity` (`v1Identity` is the identity function everywhere
+    // except U+0027, see its definition above), **plus** the same shape separated by exactly one
+    // INLINE-SPACE code point at a position `nbsp` can insert or remove. The second clause is
+    // narrow on purpose:
     // it fires only when the space-or-not gap sits immediately after a `SPACE-RIGHT` glyph (on
     // the left) or immediately before a `SPACE-LEFT` glyph (on the right) — the two positions
     // Lemma B (spec 5) enumerates as `nbsp`'s entire insertion surface next to a quote mark.
@@ -216,11 +277,29 @@ function collectCandidates(arr: readonly number[], skip: SkipSets): Candidate[] 
     // skip, so it does not matter here which of the two sits on which side of the gap: nbsp
     // can insert there iff `g` plays *either* spaced role (it opens on its own right, or closes
     // on its own left) for this locale.
+    //
+    // Every comparison below reads `v1Identity`, not the raw code point (spec 3.2 `V1ID`, spec
+    // 0.4.1) — a *conservative* closure, not a claim that every U+0027 becomes U+2019.
+    // `apostrophe` (R₆) only ever emits U+2019 for a U+0027, but its own case ladder leaves some
+    // U+0027s unedited (prime guard, case 5); `v1Identity`'s definition above explains why
+    // `quotes` cannot know which without a circular re-derivation of `apostrophe`'s verdict
+    // against its own output. Without this closure, a literal U+0027-vs-U+2019 comparison here
+    // gives a different verdict before and after `apostrophe` edits a neighbour between two
+    // pipeline passes — a composition-obligation violation against this rule's own idempotency
+    // (quotes.md §5, Lemma A / Corollary A1). At *this* comparison the effect is one-directional
+    // — an extra veto on a mixed U+0027/U+2019 adjacency, never a granted capability — but that is
+    // a local fact about this line, not a claim about the rule's final output: declining one
+    // candidate here can remove a crossing/nesting/certification conflict downstream (passes 2
+    // and 4 are global over the whole candidate list) and thereby let a *different* pair certify
+    // that previously could not. See the module comment on `v1Identity` above.
+    const gV1 = v1Identity(g);
     const gapIsNbspInsertable = skip.spaceRight.has(g) || skip.spaceLeft.has(g);
     const leftVetoed =
-      lLit === g || (lLit !== NONE && INLINE_SPACE.has(lLit) && lSkip === g && gapIsNbspInsertable);
+      v1Identity(lLit) === gV1 ||
+      (lLit !== NONE && INLINE_SPACE.has(lLit) && v1Identity(lSkip) === gV1 && gapIsNbspInsertable);
     const rightVetoed =
-      rLit === g || (rLit !== NONE && INLINE_SPACE.has(rLit) && rSkip === g && gapIsNbspInsertable);
+      v1Identity(rLit) === gV1 ||
+      (rLit !== NONE && INLINE_SPACE.has(rLit) && v1Identity(rSkip) === gV1 && gapIsNbspInsertable);
     if (leftVetoed || rightVetoed) {
       canOpen = false;
       canClose = false;
@@ -394,7 +473,7 @@ function certify(
 
     const plan = computeRenderPlan(arr, accepted, ctx);
     const { y, map } = applyRenderPlan(arr, plan);
-    const rederived = pairCandidates(y, collectCandidates(y, skip));
+    const rederived = pairCandidates(y, collectCandidates(y, skip, ctx.locale.quotes.elisionIdioms));
     const bSet = new Set(rederived.map((p) => pairKey(p.open, p.close)));
 
     const projected = accepted.map((p) => ({
@@ -467,7 +546,7 @@ export const quotesRule: Rule = {
     const cp = ctx.cp;
     const skip = computeSkipSets(ctx.locale);
 
-    const candidates = collectCandidates(cp, skip);
+    const candidates = collectCandidates(cp, skip, ctx.locale.quotes.elisionIdioms);
     if (candidates.length === 0) return [];
 
     const initialPairs = pairCandidates(cp, candidates);

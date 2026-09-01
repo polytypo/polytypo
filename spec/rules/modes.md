@@ -714,3 +714,68 @@ rule-local.
     so the two agree. It may nonetheless be wrong in both, and `quotes.md` §7.5 already records
     the multi-paragraph question. If that is ever resolved, it must be resolved for `text` and
     the modes together, not here.
+
+## 8. Fixture coverage strategy (non-normative)
+
+This section records why `spec/fixtures/` does not carry the full ten-locales × three-modes
+Cartesian product, and what a smaller set must still prove instead. It has **no normative
+force** — it does not change §§1–7 — and if it drifts out of sync with the actual fixtures, that
+is a defect in this section, not license to distrust the fixtures.
+
+**Why the full product is not required.** §3.2–§3.5 establish that a mode adapter's only job is
+to identify which spans of the source are processable text and which are structural markup:
+locating skip-list boundaries, computing marker gaps, and reassembling by offset. Once a span is
+handed off, `runOverSpans` (`src/engine/span-runner.ts`, used by `html` and `markdown`) calls
+exactly the same per-rule `apply()` functions, against the same locale data, that `text` mode's
+`runRules` (`src/engine/text-pipeline.ts`) calls — there is one implementation per rule id,
+shared by every mode, not one per mode. A locale's quote glyphs, dash conventions, or `nbsp`
+targets are therefore already fully exercised by `text`-mode fixtures; an `html`/`markdown`
+fixture in the same locale mostly re-tests that same rule logic through an extra layer of span
+bookkeeping, not something the locale itself changes about it.
+
+What *does* vary by mode is the span-selection and reassembly machinery, and that machinery is
+locale-agnostic: the HTML skip list and the CommonMark/MDX skip lists never consult `LocaleData`.
+A representative sample proves the machinery correct; the full product would mostly multiply
+proof of the same machinery by locale count, without adding coverage of anything the locale
+changes.
+
+**What representative coverage requires instead**, and where it currently lives:
+
+1. **HTML span selection** — the skip list, character-reference handling, and round-trip
+   guarantee, exercised directly (`tests/modes/html.test.ts`) and via fixtures.
+2. **CommonMark span selection** — fenced/indented/inline code, autolinks, link destinations and
+   titles, reference-link definitions, and the round-trip guarantee
+   (`tests/modes/markdown.test.ts`).
+3. **MDX span selection** — expression containers, JSX attributes and children, ESM export
+   blocks, and the JSX-vs-skipped-element case distinction (`tests/modes/markdown.test.ts`).
+4. **At least two materially different locale outputs per mode/dialect**, so a fixture is not
+   merely "the same English output with a different `locale` field": `spec/fixtures/fr.json` and
+   `fr-CA.json` carry `html`/`markdown`/`mdx` cases whose guillemets-plus-U+00A0 output is
+   structurally different from `en-US`'s curly quotes, not just a different glyph in the same
+   shape.
+5. **Non-ASCII text and code-point/offset boundaries** — an astral-character (surrogate-pair)
+   preservation case in HTML mode, and genuinely accented non-ASCII prose exercised through the
+   French MDX and CommonMark fixtures and round-trip tests.
+6. **Byte-identical skipped regions** — the round-trip guarantee ("returns a document/article
+   that needs no changes byte for byte") asserted directly for HTML, CommonMark, and MDX.
+7. **Every locale-specific transformation independently covered through `text`-mode fixtures** —
+   the conformance suite's own per-locale, per-rule coverage, not this file.
+
+**Enforcement**, split across the two places that actually check each item — neither file alone
+covers all seven:
+
+- `tests/conformance/mode-fixture-strategy.test.ts` reads `spec/fixtures/*.json` directly and
+  protects item 4 (at least two distinct locales carry `html`, `markdown`/`commonmark`, and
+  `markdown`/`mdx` fixtures), the code-point half of item 5 (at least one fixture per mode
+  contains a non-ASCII code point), and item 7 (every locale has a `text`-mode fixture for
+  *every* canonical rule id in `spec/rules/order.json`, checked per locale/rule id pair, not
+  merely "the locale has a fixture for some rule"). It does not inspect span selection or
+  round-trip behaviour at all.
+- `tests/modes/html.test.ts` and `tests/modes/markdown.test.ts` protect items 1–3 (HTML,
+  CommonMark, and MDX span selection respectively), the parser-boundary half of item 5 (an
+  astral-character/surrogate-pair preservation case in HTML mode), and item 6 (the round-trip
+  guarantee — "returns a document/article that needs no changes byte for byte" — asserted
+  directly for HTML, CommonMark, and MDX).
+
+If a future edit narrows fixture coverage, or removes a span-selection or round-trip assertion,
+the corresponding test above fails before this section's claim goes silently stale.

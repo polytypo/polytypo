@@ -1,5 +1,5 @@
 {
-  "spec": "0.1.0",
+  "spec": "1.0.0",
   "locale": "en-US",
   "cases": [
     {
@@ -283,12 +283,15 @@
       "note": "dashes.md §6 case 2: guard P3."
     },
     {
-      "id": "en-us-dashes-ranges",
-      "rule": "dashes",
+      "id": "en-us-ranges",
+      "rule": "ranges",
       "mode": "text",
       "in": "1914-1918 and pp. 34-36",
       "out": "1914⁠–⁠1918 and pp. 34⁠–⁠36",
-      "note": "dashes.md §6 case 3: range branch, G4 equal-length branch and G5 pass. dashes.md §3.3.1: a TIGHT range is emitted as JOINER dash JOINER (U+2060 on each side), because UAX #14 gives U+2013 the line-break class BA and a renderer would otherwise be free to break the range after the dash. The joiner is zero-width, so this is invisible on screen and invisible in a plain diff — read spec/fixtures/.escaped/ to review it. A spaced range form is NOT bound, and the parenthetical branch never emits a joiner."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). ranges.md §6 row 3 (relocated from dashes.md §6 case 3 through spec 0.4.1): range branch, G4 equal-length branch and G5 pass. ranges.md §3.3.1 (relocated from dashes.md §3.3.1 through spec 0.4.1): a TIGHT range is emitted as JOINER dash JOINER (U+2060 on each side), because UAX #14 gives U+2013 the line-break class BA and a renderer would otherwise be free to break the range after the dash. The joiner is zero-width, so this is invisible on screen and invisible in a plain diff — read spec/fixtures/.escaped/ to review it. A spaced range form is NOT bound, and the parenthetical branch never emits a joiner.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "en-us-dashes-compound-hyphens",
@@ -323,12 +326,15 @@
       "note": "dashes.md §3.1 (spec 0.2.0): U+2212 (minus sign) joined `DASH`. Spaced and flanked by letters, it converts to the locale's parenthetical form — this is the operator's explicit example (\"минус\") of a dash-like glyph that should no longer be silently ignored."
     },
     {
-      "id": "en-us-dashes-minus-sign-glyph-range",
-      "rule": "dashes",
+      "id": "en-us-ranges-minus-sign-glyph-range",
+      "rule": "ranges",
       "mode": "text",
       "in": "1990−2000",
       "out": "1990⁠–⁠2000",
-      "note": "dashes.md §3.1 (spec 0.2.0): U+2212 between two equal-length digit runs is a range candidate, subject to the same G1-G5 guards as U+002D, and gets en-US's `en-tight` form with joiner binding (§3.3.1)."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). dashes.md §3.1 (spec 0.2.0): U+2212 between two equal-length digit runs is a range candidate, subject to the same G1-G5 guards as U+002D, and gets en-US's `en-tight` form with joiner binding (ranges.md §3.3.1, relocated from dashes.md §3.3.1 through spec 0.4.1).",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "en-us-dashes-minus-sign-glyph-compound-guarded",
@@ -339,28 +345,45 @@
       "note": "dashes.md §3.4 P1 (spec 0.2.0): P1's hyphen-shaped set includes U+2212, so a tight, unspaced minus sign between letters is guarded as a compound-word shape exactly like U+002D, on the view that this reads the same way `well-known` does — stays untouched."
     },
     {
-      "id": "en-us-dashes-covid-and-iso",
+      "id": "en-us-dashes-covid",
       "rule": "dashes",
       "mode": "text",
-      "in": "COVID-19 and ISO 8859-1",
-      "out": "COVID-19 and ISO 8859-1",
-      "note": "dashes.md §6 case 5."
+      "in": "COVID-19",
+      "out": "COVID-19",
+      "note": "spec 0.5.0 ownership correction: split from the former combined `en-us-dashes-covid-and-iso` case (which bundled a genuine `dashes` witness with a genuine `ranges` witness in one string, letting one no-op stand in for two independent guarantees). This half tests `dashes` alone: `cp[L]` is the letter `D`, so the hyphen is a mixed letter/digit token, P1's compound-word guard declines it (dashes.md §3.4) — never a range candidate, since a range candidate needs a `DIGIT` on *both* sides (dashes.md §3.3, first paragraph). See `en-us-ranges-iso-8859` for the range-guard half."
     },
     {
-      "id": "en-us-dashes-iso-date-and-isbn",
-      "rule": "dashes",
+      "id": "en-us-ranges-iso-8859",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "ISO 8859-1",
+      "out": "ISO 8859-1",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0 ownership correction: split from the former combined `en-us-dashes-covid-and-iso` case. This half tests `ranges` alone, explicitly enabled: `8859-1` is digit-flanked, a genuine range candidate — G4 (equal-run-length, or the (1,2) branch) fails on (4,1), so it is declined (ranges.md §3.2). Without `rules: {ranges: true}` this input is already a no-op for the unrelated reason that `dashes` never reaches a digit-flanked token at all (dashes.md §1) — asserting it under `rule: \"dashes\"` would prove nothing about G4."
+    },
+    {
+      "id": "en-us-ranges-iso-date-and-isbn",
+      "rule": "ranges",
       "mode": "text",
       "in": "Released 2026-08-15, ISBN 978-3-16-148410-0",
       "out": "Released 2026-08-15, ISBN 978-3-16-148410-0",
-      "note": "dashes.md §6 case 6: guard G2 and the cluster guard."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 6: guard G2 and the cluster guard. ranges.md §3.2's G2 (chain) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-us-dashes-phone-number",
-      "rule": "dashes",
+      "id": "en-us-ranges-phone-number",
+      "rule": "ranges",
       "mode": "text",
       "in": "Call 212-555-1234",
       "out": "Call 212-555-1234",
-      "note": "dashes.md §6 case 7."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 7. ranges.md §3.2's G2 (chain) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "en-us-dashes-cli-flag",
@@ -379,12 +402,15 @@
       "note": "dashes.md §6 case 9: no content to the left on the line."
     },
     {
-      "id": "en-us-dashes-descending-score",
-      "rule": "dashes",
+      "id": "en-us-ranges-descending-score",
+      "rule": "ranges",
       "mode": "text",
       "in": "Scores: 20-10",
       "out": "Scores: 20-10",
-      "note": "dashes.md §6 case 10: guard G5."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 10: guard G5. ranges.md §3.2's G5 (non-decreasing) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "en-us-dashes-dash-space-dash",
@@ -411,6 +437,17 @@
       "note": "dashes.md §6 case 20: one cluster, three dash runs → entirely inert."
     },
     {
+      "id": "en-us-ranges-cluster-multi-run",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "1914-1918--annexation",
+      "out": "1914-1918--annexation",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0 ownership correction: companion to `en-us-dashes-cluster-multi-run`, covering the range-candidate half of the same cluster honestly. Explicitly opted in (`rules: {ranges: true}`): `1914-1918` sits in the same three-dash-run cluster as the `--` before `annexation`, so `ranges`' own cluster guard declines it too (ranges.md §3.1)."
+    },
+    {
       "id": "en-us-dashes-cluster-tight-sibling",
       "rule": "dashes",
       "mode": "text",
@@ -419,12 +456,34 @@
       "note": "dashes.md §3.2 step 7: one cluster (–, 1, -, 1) with two dash runs, so the whole cluster is inert. Since the narrowing the authored `–` is additionally declined at step 2a, which reaches it first; both guards hold and either alone is sufficient."
     },
     {
-      "id": "en-us-dashes-em-tight-converts-freely",
+      "id": "en-us-ranges-cluster-tight-sibling",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "a–1-1",
+      "out": "a–1-1",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0 ownership correction: companion to `en-us-dashes-cluster-tight-sibling`. Explicitly opted in (`rules: {ranges: true}`): `1-1` is a genuine range candidate; the whole `–1-1` span is one cluster with two dash runs, so `ranges`' own cluster guard declines it too (ranges.md §3.1)."
+    },
+    {
+      "id": "en-us-dashes-t1-inapplicable-em-tight-converts-freely",
       "rule": "dashes",
       "mode": "text",
-      "in": "a–1 - 1",
+      "in": "a--1 - 1",
       "out": "a—1 - 1",
-      "note": "dashes.md §6 case 27, spec 0.2.0. en-US's parenthetical is `em-tight` — not spaced — so guard T1 (which only blocks a tight-to-spaced transition) never engages, and the token converts its length freely. Compare `de-DE`'s `en-spaced` parenthetical on the same input, where T1 blocks the conversion because it would insert a U+0020 next to a digit run with a dash two positions further out."
+      "note": "dashes.md §6 case 27, spec 0.2.0, RENAMED and re-witnessed spec 0.6.0 (Correction pass). Was `en-us-dashes-em-tight-converts-freely` with an EN witness (`a–1 - 1`); that witness is now decided by P5 (§3.4/§8.8) alone regardless of T1, which tests P5, not T1. This ASCII hyphen-run witness (`a--1`, P3, k=2) is untouched by P5 and still demonstrates the original claim: en-US's parenthetical is `em-tight` — not spaced — so T1 (which only guards a tight-to-spaced transition, dashes.md §3.2 step 8) never engages here, and the token converts its length freely to `—`. The trailing `1 - 1` is separately declined at the `dashes`/`ranges` ownership boundary (both digit-flanked, `ranges` off by default) — unrelated to T1."
+    },
+    {
+      "id": "en-us-ranges-far-dash-still-rejects-g2",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "a--1 - 1",
+      "out": "a—1 - 1",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.6.0 correction (Correction pass): the original witness (`a–1 - 1`) used an authored EN dash for the first token, which P5 (dashes.md §3.4/§8.8) now also declines — leaving two independent reasons for the range to stay unbound and no longer isolating G2 as the decisive one. Re-witnessed with an ASCII hyphen run (`a--1`, P3, k=2) instead: P5 never applies to it (not a pure single U+2013), so `dashes` freely converts it to `a—1` on its own ordinary path, exactly as `en-us-dashes-t1-inapplicable-em-tight-converts-freely` demonstrates. G2 is therefore the *sole* reason the trailing `1 - 1` range candidate — explicitly opted in via `rules: {ranges: true}` — stays unbound: its effective left neighbour (`ranges` runs at order 25, before `dashes` at order 30, so it reads the original hyphen-minus, still `DASH`-class) triggers G2's \"no chain\" rejection (ranges.md §3.2)."
     },
     {
       "id": "en-us-dashes-t2-not-needed-em-tight",
@@ -440,7 +499,23 @@
       "mode": "text",
       "in": "documents — PDFs, invoices — and you",
       "out": "documents—PDFs, invoices—and you",
-      "note": "dashes.md §6 case 38, THE M4 BLOCKER, verbatim, and its final repair (spec 0.2.0). en-US declares `em-tight`; this input's dash is already EM, so only spacing changes — length happens to already match. It is not a special case: `documents – PDFs, invoices – and you` (EN dash) converts to the same output, because spec 0.2.0 retired the authored-dash guard outright and U+2013/U+2014 are now ordinary `DASH` members with no token-level distinction (dashes.md §3.2 step 2a). See `en-us-dashes-mixed-run-converts` for a run mixing dash glyphs, and `en-us-dashes-already-correct-range-unbound` for why an already-exactly-correct range still gets no joiners (§3.3.1's invisible-edit test, unrelated to authorship)."
+      "note": "dashes.md §6 case 38, THE M4 BLOCKER, verbatim, and its final repair (spec 0.2.0). en-US declares `em-tight`; this input's dash is already EM, so only spacing changes — length happens to already match. STALE CLAIM CORRECTED (spec 0.6.0): this note used to say the EN-dash variant (`documents – PDFs, invoices – and you`) converts to the same output. It no longer does — P5 (dashes.md §3.4, §8.8) declines a pure single authored U+2013 unconditionally, so that EN-dash input is now returned unchanged; see `en-us-dashes-authored-en-dash-declined`. This fixture's own EM-dash input is unaffected by P5 (it never applies to U+2014) and still converts exactly as before. See `en-us-dashes-mixed-run-converts` for a run mixing dash glyphs (also unaffected by P5, since it is not a pure single-U+2013 run), and `en-us-dashes-already-correct-range-unbound` for why an already-exactly-correct range still gets no joiners (§3.3.1's invisible-edit test, unrelated to authorship)."
+    },
+    {
+      "id": "en-us-dashes-authored-en-dash-declined",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "documents – PDFs, invoices – and you",
+      "out": "documents – PDFs, invoices – and you",
+      "note": "dashes.md §3.4 P5 (spec 0.6.0): a pure single authored U+2013 is declined unconditionally, even in en-US (`em-tight`), where P2 would otherwise promote it to U+2014 exactly as the em-dash sibling `en-us-dashes-authored-em-dash-respaced` converts. Fresh M4 corpus evidence (§8.8) found 8/8 such conversions in real prose were range or joint-name damage and 0/8589 other accepted edits touched an authored en-dash at all — the bounded false negative this fixture pins is the deliberate cost."
+    },
+    {
+      "id": "en-us-dashes-authored-en-dash-tight-declined",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a word–word pair",
+      "out": "a word–word pair",
+      "note": "dashes.md §3.4 P5: the tight form of the same veto — `k = 1`, `cp[s] = U+2013`, `lsp = rsp = 0`. Structurally identical to the corpus witnesses (`18 Oct–2 Nov`, `Fowler–Noll–Vo`): P5 does not distinguish a genuine range/name from ordinary tight prose use, by design (§8.8) — it protects the glyph unconditionally rather than guessing at semantics."
     },
     {
       "id": "en-us-dashes-mixed-run-converts",
@@ -448,103 +523,136 @@
       "mode": "text",
       "in": "a-–b",
       "out": "a—b",
-      "note": "dashes.md §6 case 42 (spec 0.2.0). A run mixing `DASH` glyphs — U+002D and U+2013 here — is a single token, treated exactly like the same run typed entirely with hyphens (`a--b`): P3 admits a `k = 2` run regardless of spacing, and the whole run is promoted to the locale's form. Before 0.2.0's authored-dash guard was retired, any run containing U+2013/U+2014 was declined whole; a port implementing spec 0.1.0's step 2a must not do that under 0.2.0."
+      "note": "dashes.md §6 case 42 (spec 0.2.0). A run mixing `DASH` glyphs — U+002D and U+2013 here — is a single token, treated exactly like the same run typed entirely with hyphens (`a--b`): P3 admits a `k = 2` run regardless of spacing, and the whole run is promoted to the locale's form. Before 0.2.0's authored-dash guard was retired, any run containing U+2013/U+2014 was declined whole; a port implementing spec 0.1.0's step 2a must not do that under 0.2.0. P5 (spec 0.6.0) does not apply here either — it only ever covers a *pure* single-U+2013 run (`k = 1`), never a mixed one."
     },
     {
-      "id": "en-us-dashes-already-correct-range-unbound",
-      "rule": "dashes",
+      "id": "en-us-ranges-already-correct-range-unbound",
+      "rule": "ranges",
       "mode": "text",
       "in": "1914–1918",
       "out": "1914–1918",
-      "note": "dashes.md §6 case 43: en-US's range is `en-tight`, and this token is already exactly correct — glyph, length and spacing — so it is left alone. The general principle, which is worth carrying into any new rule: THIS RULE NEVER MAKES AN EDIT WHOSE ENTIRE CONTENT IS INVISIBLE. A joiner may ride along with a visible conversion, but it must never be the only thing an edit does — an invisible-only edit to already-correct text cannot be reviewed by hand at all, which is exactly what the M4 gate is. This is decided by §3.3.1's invisible-edit test (compute the unbound form; bind only if that would itself change something visible), not by whether the original dash was authored — `1941—1945` (em dash) in this same locale converts to a bound en dash, because its length is visibly wrong and the edit is not invisible-only."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 43: en-US's range is `en-tight`, and this token is already exactly correct — glyph, length and spacing — so it is left alone. The general principle, which is worth carrying into any new rule: THIS RULE NEVER MAKES AN EDIT WHOSE ENTIRE CONTENT IS INVISIBLE. A joiner may ride along with a visible conversion, but it must never be the only thing an edit does — an invisible-only edit to already-correct text cannot be reviewed by hand at all, which is exactly what the M4 gate is. This is decided by §3.3.1's invisible-edit test (compute the unbound form; bind only if that would itself change something visible), not by whether the original dash was authored — `1941—1945` (em dash) in this same locale converts to a bound en dash, because its length is visibly wrong and the edit is not invisible-only. ranges.md §3.3.1's invisible-edit test is the current normative source for why this stays unbound.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-us-dashes-hyphen-range-bound",
-      "rule": "dashes",
+      "id": "en-us-ranges-hyphen-range-bound",
+      "rule": "ranges",
       "mode": "text",
       "in": "1914-1918",
       "out": "1914⁠–⁠1918",
-      "note": "dashes.md §6 case 44, the pair to the previous case. A hyphen-typed range still converts AND still binds, because the joiners ride along with a visible conversion. The two outputs are visually identical yet only one may break across lines — §7.14 calls this the least comfortable consequence of the narrowing and the one most likely to be reported as a bug, so it is pinned in the suite rather than left to be discovered."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). ranges.md §6 row 44 (relocated from dashes.md §6 case 44 through spec 0.4.1), the pair to the previous case. A hyphen-typed range still converts AND still binds, because the joiners ride along with a visible conversion. The two outputs are visually identical yet only one may break across lines — §7.14 calls this the least comfortable consequence of the narrowing and the one most likely to be reported as a bug, so it is pinned in the suite rather than left to be discovered.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-us-dashes-range-one-two-digits",
-      "rule": "dashes",
+      "id": "en-us-ranges-one-two-digits",
+      "rule": "ranges",
       "mode": "text",
       "in": "Takes 5-10 days",
       "out": "Takes 5⁠–⁠10 days",
-      "note": "dashes.md §6 case 3a: G4's (1,2) branch — Lrun is one digit, Rrun is two digits with no leading zero. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). ranges.md §6 row 3a (relocated from dashes.md §6 case 3a through spec 0.4.1): G4's (1,2) branch — Lrun is one digit, Rrun is two digits with no leading zero. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-us-dashes-range-nine-ten",
-      "rule": "dashes",
+      "id": "en-us-ranges-nine-ten",
+      "rule": "ranges",
       "mode": "text",
       "in": "aged 9-10 years",
       "out": "aged 9⁠–⁠10 years",
-      "note": "dashes.md §6 case 3b: the largest one-digit run against the smallest two-digit run, the tightest point of the (1,2) branch. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). ranges.md §6 row 3b (relocated from dashes.md §6 case 3b through spec 0.4.1): the largest one-digit run against the smallest two-digit run, the tightest point of the (1,2) branch. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-us-dashes-range-one-twelve",
-      "rule": "dashes",
+      "id": "en-us-ranges-one-twelve",
+      "rule": "ranges",
       "mode": "text",
       "in": "chapters 1-12",
       "out": "chapters 1⁠–⁠12",
-      "note": "dashes.md §6 case 3c: (1,2). A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). ranges.md §6 row 3c (relocated from dashes.md §6 case 3c through spec 0.4.1): (1,2). A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-us-dashes-range-zero-sixty",
-      "rule": "dashes",
+      "id": "en-us-ranges-zero-sixty",
+      "rule": "ranges",
       "mode": "text",
       "in": "0-60 in six seconds",
       "out": "0⁠–⁠60 in six seconds",
-      "note": "dashes.md §6 case 3d: Lrun may be `0` — the leading-zero clause constrains Rrun only. `before` is NONE here, so G1 and G3 pass. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). ranges.md §6 row 3d (relocated from dashes.md §6 case 3d through spec 0.4.1): Lrun may be `0` — the leading-zero clause constrains Rrun only. `before` is NONE here, so G1 and G3 pass. A port that widens G4 but transcribes G5 literally silently DECLINES this case, because the lexicographic comparison it inherited yields \"5\" > \"1\". G5 is vacuous in the (1,2) branch — a one-digit run is at most 9 and a two-digit run without a leading zero is at least 10 — and dashes.md §6 cases 3a–3d exist to catch exactly that port.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-us-dashes-range-two-one-digits-rejected",
-      "rule": "dashes",
+      "id": "en-us-ranges-two-one-digits-rejected",
+      "rule": "ranges",
       "mode": "text",
       "in": "won 10-7",
       "out": "won 10-7",
-      "note": "dashes.md §6 case 3e: (2,1). G4's new branch is DIRECTIONAL and does not admit it — G4 gets there before G5. A port that reads the branch as \"small magnitudes are fine\" and also allows (2,1) breaks G5 without touching it: G5's left-to-right comparison would conclude \"10\" < \"7\" because '1' < '7', and nothing in G5 would look wrong (dashes.md §3.3, G4)."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 3e: (2,1). G4's new branch is DIRECTIONAL and does not admit it — G4 gets there before G5. A port that reads the branch as \"small magnitudes are fine\" and also allows (2,1) breaks G5 without touching it: G5's left-to-right comparison would conclude \"10\" < \"7\" because '1' < '7', and nothing in G5 would look wrong (dashes.md §3.3, G4). ranges.md §3.2's G5 (non-decreasing) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-us-dashes-range-leading-zero-rejected",
-      "rule": "dashes",
+      "id": "en-us-ranges-leading-zero-rejected",
+      "rule": "ranges",
       "mode": "text",
       "in": "code 9-05",
       "out": "code 9-05",
-      "note": "dashes.md §6 case 3f: (1,2) but Rrun begins with U+0030. This is the pair G5 could not have caught — `05` has the value 5, so the pair is descending, and G5 is specified only for equal-length runs. The leading-zero clause is what keeps G5 vacuous in the new branch."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 3f: (1,2) but Rrun begins with U+0030. This is the pair G5 could not have caught — `05` has the value 5, so the pair is descending, and G5 is specified only for equal-length runs. The leading-zero clause is what keeps G5 vacuous in the new branch. ranges.md §3.2's G4 (run lengths) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-us-dashes-range-phone-seven-digits",
-      "rule": "dashes",
+      "id": "en-us-ranges-phone-seven-digits",
+      "rule": "ranges",
       "mode": "text",
       "in": "Call 555-1234",
       "out": "Call 555-1234",
-      "note": "dashes.md §6 case 3g: (3,4), neither branch. The phone-number case G4 exists for."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 3g: (3,4), neither branch. The phone-number case G4 exists for. ranges.md §3.2's G2 (chain) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-us-dashes-range-one-three-digits-rejected",
-      "rule": "dashes",
+      "id": "en-us-ranges-one-three-digits-rejected",
+      "rule": "ranges",
       "mode": "text",
       "in": "Call 1-800 now",
       "out": "Call 1-800 now",
-      "note": "dashes.md §6 case 3h: (1,3). The new branch requires length(Rrun) = 2 exactly, so a toll-free number is still protected."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 3h: (1,3). The new branch requires length(Rrun) = 2 exactly, so a toll-free number is still protected. ranges.md §3.2's G4 (run lengths) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-us-dashes-range-abbreviated-years-rejected",
-      "rule": "dashes",
+      "id": "en-us-ranges-abbreviated-years-rejected",
+      "rule": "ranges",
       "mode": "text",
       "in": "the 2020-24 season",
       "out": "the 2020-24 season",
-      "note": "dashes.md §6 case 3i: (4,2). The abbreviated year range remains a recorded miss (dashes.md §7.3); the widening is directional and does not reach it."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 3i: (4,2). The abbreviated year range remains a recorded miss (dashes.md §7.3); the widening is directional and does not reach it. ranges.md §3.2's G4 (run lengths) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "en-us-dashes-range-compound-label-known-wrong",
+      "id": "en-us-dashes-range-compound-label-safe-default",
       "rule": "dashes",
       "mode": "text",
       "in": "Figure 5-10",
-      "out": "Figure 5⁠–⁠10",
-      "note": "PINNED AS KNOWN-WRONG, dashes.md §6 case 3j and §7.11. A compound label means \"chapter 5, figure 10\" — it is not a range — and converting the hyphen to an en dash is incorrect. It is asserted here deliberately so the exposure is visible in the conformance suite rather than discovered in someone's content. §7.11 records that the exposure is pre-existing rather than introduced: `Figure 3-7` is (1,1) and has converted since the first version of this rule; the (1,2) branch widens it to `Figure 5-10`. Separating a label from a range needs the preceding noun (Figure, Table, Section), an open-ended per-locale word list the schema deliberately does not carry. Same standing as the `rock 'n' roll` quotes cases."
+      "out": "Figure 5-10",
+      "note": "spec 0.5.0: compound labels (`chapter 5, figure 10`, not a range) are no longer converted with default options. `dashes` never processes a digit-flanked token (dashes.md 1, 3.4), and `ranges` — the only rule that could convert this shape — is off by default (ranges.md 1). Canonical fixtures no longer assert the converted form as a successful output under any option set; what the explicit opt-in (`rules: {ranges: true}`) does with this same input is a documented limitation of that rule, characterized in tests/rules/ranges.test.ts, not portable conformance evidence."
     },
     {
       "id": "en-us-hyphen-empty-lists-noop",
@@ -591,8 +699,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "\"He said 'no' to me,\" she noted.",
-      "out": "“He said ‘no’ to me,” she noted.",
-      "note": "quotes.md §6 case 2: one stack, inner pair at depth 2 → secondary."
+      "out": "“He said 'no' to me,” she noted.",
+      "note": "quotes.md §6 case 2: one stack, inner pair at depth 2 → secondary. spec 0.5.0: the inner 'no' is now an ambiguous medial span (2 letters, space-flanked, no matching en-US elisionIdioms entry — the idiom list holds only rock/n/roll) and is preserved as literal U+0027 rather than paired as a nested quotation (quotes.md 3.2, general ambiguous-medial-span veto). A documented false negative, not a regression: quotes.md 3.2 explains why a structural, portable predicate cannot distinguish this from rock 'n' roll's shape."
     },
     {
       "id": "en-us-quotes-nested-inverted-input",
@@ -671,8 +779,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "rock 'n' roll",
-      "out": "rock “n” roll",
-      "note": "quotes.md §7.1, a known defect recorded as such: both marks are candidates and pair at depth 1, so they take the PRIMARY pair. Correct English typography is `rock ’n’ roll`; fixing it needs a per-locale elision list the schema does not have."
+      "out": "rock ’n’ roll",
+      "note": "quotes.md §3.2's listed elision veto (spec 0.4.0): quotes.elisionIdioms = [{ left: \"rock\", elided: \"n\", right: \"roll\" }] (en-US.json sources: Chicago Manual of Style Online on the mark's function, American Heritage Dictionary on the spaced variant) makes both marks decline pairing when the full left/elided/right context matches, so they survive to apostrophe (order 50), which independently renders each as U+2019 — leading elision (case 4) then trailing elision (case 3). apostrophe.md §6 row 11a. Contrast en-GB/fi/sv, which have no citable elisionIdioms entry: the general ambiguous-medial-span veto (quotes.md §3.2) preserves the same bytes unconverted there instead — see en-gb-quotes-rock-n-roll. Matching elided content alone (a bare word list) was tried first and withdrawn: it falsely elided ordinary quotations of the letter n — see en-us-quotes-letter-n-not-elided and en-us-quotes-nested-quote-n-not-elided."
     },
     {
       "id": "en-us-quotes-elision-inside-quotation",
@@ -680,7 +788,7 @@
       "mode": "text",
       "in": "She said \"it's the '90s\" and left.",
       "out": "She said “it’s the ’90s” and left.",
-      "note": "quotes.md §3.3 and §5.5: pass 2 keeps TWO STACKS, one per kind, and a candidate only ever touches the stack for its own kind — no reader opens with `\"` and closes with `'`, in any language. So the two DQ marks pair with each other, and the SQ elision marks find no SQ partner, survive unmatched, and `apostrophe` renders them U+2019. A PORT WITH ONE SHARED STACK PRODUCES `She said \"it’s the “90s” and left.` — the `'` of `'90s` is canClose, it pops the opening `\"`, and the real closing `\"` is stranded. That is damage rather than a miss (§5.5 calls it a release blocker), and this case was itself pinned known-wrong until the per-kind split landed. Contrast the `rock 'n' roll` case, which is a MEDIAL elision between two SQ marks and is still wrong."
+      "note": "quotes.md §3.3 and §5.5: pass 2 keeps TWO STACKS, one per kind, and a candidate only ever touches the stack for its own kind — no reader opens with `\"` and closes with `'`, in any language. So the two DQ marks pair with each other, and the SQ elision marks find no SQ partner, survive unmatched, and `apostrophe` renders them U+2019. A PORT WITH ONE SHARED STACK PRODUCES `She said \"it’s the “90s” and left.` — the `'` of `'90s` is canClose, it pops the opening `\"`, and the real closing `\"` is stranded. That is damage rather than a miss (§5.5 calls it a release blocker). Contrast the `rock 'n' roll` case, which is a MEDIAL elision between two SQ marks, not this rule's leading/trailing single-mark elision shape — see en-us-quotes-rock-n-roll for how spec 0.5.0's general ambiguous-medial-span veto handles that different shape. History: before the per-kind stack split landed (pre-0.3.0), this exact case's canonical fixture asserted the single-shared-stack damage shown above (the stranded-quote output) as its expected `out` — a previous implementation defect, not a documented limitation; the two-stack design fixed it, and the `out` actually asserted above (the correct, two-stack form) has been correct ever since."
     },
     {
       "id": "en-us-quotes-adjacent-to-punctuation",
@@ -1168,7 +1276,23 @@
       "mode": "text",
       "in": "E. B. White wrote it",
       "out": "E. B. White wrote it",
-      "note": "nbsp N7 clause C1, twice. en-US has bindInitials: true, cited to Chicago; en-GB has it false, so the same input is unchanged there."
+      "note": "nbsp N7 clause C1, twice: `E.`→`B.` is the between-initials case (unconditional in every mode), `B.`→`White` binds because `chain` mode (spec 0.6.0, cited to Chicago's own \"two or more initials\") confirms `B.` is itself preceded by another initial (`E.`). en-GB has initialBinding: \"none\", so the same input is unchanged there."
+    },
+    {
+      "id": "en-us-nbsp-initial-sentence-boundary-declined",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "take the top N. It runs across four relationship types",
+      "out": "take the top N. It runs across four relationship types",
+      "note": "The exact M4 reject witness (Pass A, reviewed run). `N.` is a lone initial with no preceding initial (the character before it is a space from \"top\", not another initial's full stop), so `chain` mode's C1 does not bind the space before `It` — nbsp.md §3.9, spec 0.6.0. Under the old boolean `bindInitials: true`, C1 checked only \"is the right side uppercase,\" which fired here exactly as it does for a genuine name, producing a false positive across a sentence boundary."
+    },
+    {
+      "id": "en-us-nbsp-isolated-initial-declined",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "A. Smith built the original prototype.",
+      "out": "A. Smith built the original prototype.",
+      "note": "nbsp.md §3.9: an isolated single initial does not bind to a following word under `chain` mode — the deliberate false negative this mode accepts, matching Chicago's own \"two or more initials\" wording rather than the broader shape the old boolean allowed."
     },
     {
       "id": "en-us-nbsp-initials-already-bound",
@@ -1200,7 +1324,10 @@
       "mode": "text",
       "in": "\"We walked 5 km -- maybe more...\" she said, \"in 1914-1918 weather.\"",
       "out": "“We walked 5 km—maybe more…” she said, “in 1914⁠–⁠1918 weather.”",
-      "note": "Real prose exercising quotes, dashes, ellipsis and a number-plus-unit at once. The same input appears in en-GB.json with single-first quotes and a spaced en dash."
+      "note": "Real prose exercising quotes, dashes, ellipsis and a number-plus-unit at once. The same input appears in en-GB.json with single-first quotes and a spaced en dash. spec 0.5.0: explicit `rules: {ranges: true}` added — this fixture's embedded numeric range (e.g. 1914-1918) is off by default now that range detection moved to the `ranges` rule; the fixture keeps its original comprehensive nbsp-positioning coverage by opting in explicitly rather than dropping the range from the sentence.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
       "id": "en-us-nbsp-prose-report",
@@ -1321,6 +1448,304 @@
       "in": "'90s were fun,' he said",
       "out": "“90s were fun,” he said",
       "note": "quotes.md §6 row E1s, the straight-input control for E1: the identical corruption already existed under spec 0.1.0's per-kind stacks (both marks are SQ and pair on the same stack), confirming E1 is not new damage introduced by mandate 1."
+    },
+    {
+      "id": "en-us-markdown-commonmark-prose",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Is this \"polytypo\"?\n",
+      "out": "Is this “polytypo”?\n",
+      "note": "modes.md §3.5: ordinary prose is a processable span and converts exactly as text mode does."
+    },
+    {
+      "id": "en-us-markdown-commonmark-inline-code",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Use `\"raw\"` here but not \"this\" here.\n",
+      "out": "Use `\"raw\"` here but not “this” here.\n",
+      "note": "modes.md §3.7.3: an inline code span, including its backticks, is skipped whole; surrounding prose still converts."
+    },
+    {
+      "id": "en-us-markdown-commonmark-fenced-code",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "```js\nconst s = \"raw\";\n```\n\nBut \"this\" converts.\n",
+      "out": "```js\nconst s = \"raw\";\n```\n\nBut “this” converts.\n",
+      "note": "modes.md §3.7.3: a fenced code block, its info string and its fences are skipped whole."
+    },
+    {
+      "id": "en-us-markdown-commonmark-link-text-and-destination",
+      "rule": "ellipsis",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "[te...xt](http://a...b \"ti...tle\")\n",
+      "out": "[te…xt](http://a...b \"ti...tle\")\n",
+      "note": "modes.md §3.7.3: link text is processable; the destination and title in parentheses are skipped whole. The destination and title each contain \"...\" that would become the ellipsis character if processed, so an unconverted \"...\" there proves the skip rather than merely surviving because the characters happened not to change."
+    },
+    {
+      "id": "en-us-markdown-commonmark-autolink",
+      "rule": "ellipsis",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "See <https://example.com/a...b> and also a...b here.\n",
+      "out": "See <https://example.com/a...b> and also a…b here.\n",
+      "note": "modes.md §3.7.3: an autolink is CommonMark-only and is skipped whole; identical dots outside it still convert to the ellipsis character."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "---\ntitle: \"Une note\"\n---\n\nBody has \"quotes\" here.\n",
+      "out": "---\ntitle: \"Une note\"\n---\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.3: a frontmatter block delimited by --- is skipped whole, including its delimiters, so the machine-read title field is left untouched while body prose converts."
+    },
+    {
+      "id": "en-us-markdown-commonmark-raw-html",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "<div class=\"x\">\n  Body \"text\" inside.\n</div>\n\nAlso <b>\"kept\"</b> outside \"here\".\n",
+      "out": "<div class=\"x\">\n  Body “text” inside.\n</div>\n\nAlso <b>“kept”</b> outside “here”.\n",
+      "note": "modes.md §3.7.3: raw HTML blocks and inline HTML are handed to the html skip list of §3.6 — attributes are skipped, element text content converts."
+    },
+    {
+      "id": "en-us-markdown-commonmark-boundary-nested-quotes",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "\"He said *'hi'* loudly\"\n",
+      "out": "“He said *‘hi’* loudly”\n",
+      "note": "modes.md §3.2 Model C, the worked \"He said <em>'hi'</em> loudly\" example restated for markdown emphasis instead of an HTML element: the outer double-quote pair spans the emphasis boundary and becomes primary, the inner single-quote pair nests inside it at depth 2 and becomes secondary. Per-span processing (Model A) would get this wrong."
+    },
+    {
+      "id": "en-us-markdown-commonmark-noop",
+      "rule": "dashes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "# A Title\n\nA paragraph that needs nothing done to it—already correct.\n\n> A quoted line with “nothing” to fix.\n",
+      "out": "# A Title\n\nA paragraph that needs nothing done to it—already correct.\n\n> A quoted line with “nothing” to fix.\n",
+      "note": "modes.md §4: an already-typeset document is returned byte for byte, including the em-tight parenthetical dash en-US uses and the already-curly quotes in the blockquote."
+    },
+    {
+      "id": "en-us-markdown-commonmark-indented-code-block",
+      "rule": "ellipsis",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "para...graph\n\n    indented... code\n",
+      "out": "para…graph\n\n    indented... code\n",
+      "note": "modes.md §3.7.3: an indented code block exists only in commonmark and is skipped; compare en-us-markdown-mdx-indented-code-block-is-prose, the identical bytes under \"mdx\"."
+    },
+    {
+      "id": "en-us-markdown-mdx-indented-code-block-is-prose",
+      "rule": "ellipsis",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "para...graph\n\n    indented... code\n",
+      "out": "para…graph\n\n    indented… code\n",
+      "note": "modes.md §3.7.1/§3.7.3: MDX has no indented code blocks, so the identical bytes that are skipped under \"commonmark\" (see en-us-markdown-commonmark-indented-code-block) are ordinary prose here and convert. This is the concrete case §3.7.1 gives for why dialect must never be detected."
+    },
+    {
+      "id": "en-us-markdown-mdx-jsx-expression-and-attributes",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "<Callout title=\"a'b\" n={1}>Some \"text\" here</Callout>\n",
+      "out": "<Callout title=\"a'b\" n={1}>Some “text” here</Callout>\n",
+      "note": "modes.md §3.7.3: MDX-only. JSX attributes and {…} expression containers are skipped whole; JSX element children are processable prose."
+    },
+    {
+      "id": "en-us-markdown-mdx-malformed-throws",
+      "rule": "ellipsis",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "text with {an unterminated expression...\n",
+      "throws": "POLYTYPO_MALFORMED_INPUT",
+      "note": "modes.md §3.7.2: a document that does not parse as its declared dialect throws POLYTYPO_MALFORMED_INPUT with the parser's own error type never escaping. Reachable only for dialect \"mdx\", which embeds JavaScript; every byte sequence is valid CommonMark."
+    },
+    {
+      "id": "en-us-markdown-mdx-noop",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "<Callout title=\"a\">Some text—already correct.</Callout>\n",
+      "out": "<Callout title=\"a\">Some text—already correct.</Callout>\n",
+      "note": "modes.md §4: an already-typeset MDX document, including an untouched attribute value, is returned byte for byte."
+    },
+    {
+      "id": "en-us-quotes-rock-n-roll-capitalized",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Rock 'n' roll is great.",
+      "out": "Rock ’n’ roll is great.",
+      "note": "quotes.md §3.2, §6 row P2: sentence-initial capital on `left` matches via the first-code-point leniency (nbsp.afterShortWords precedent); `elided` and `right` still match exactly."
+    },
+    {
+      "id": "en-us-quotes-rock-n-roll-trailing-punctuation",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "I love rock 'n' roll.",
+      "out": "I love rock ’n’ roll.",
+      "note": "quotes.md §3.2, §6 row P3: trailing punctuation after `right` does not block the whole-word boundary test — the code point after `roll` need only be non-LETTER/non-DIGIT, and a full stop satisfies that."
+    },
+    {
+      "id": "en-us-quotes-rock-n-roll-already-curly",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "rock ’n’ roll",
+      "out": "rock ’n’ roll",
+      "note": "quotes.md §3.2/§5, §6 row P4: U+2019 is NARROW, so the veto fires identically on already-correct input — a fixed point. Discharges the idempotency argument's second-pipeline-pass case for this construction."
+    },
+    {
+      "id": "en-us-quotes-letter-n-not-elided",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "The letter 'n' is common.",
+      "out": "The letter 'n' is common.",
+      "note": "quotes.md §3.2: no `left`/`right` context matches (\"letter\" is not \"rock\"), so the listed-idiom veto does not fire — but 'n' (1 letter, space-flanked) is preserved by the general ambiguous-medial-span veto regardless (quotes.md §3.2), which does not require a citable idiom, only the structural shape. Pinned because this exact input was falsely elided by the first, context-free `elisionForms` design (spec 0.4.0, withdrawn before release) — see quotes.md §7 item 8. Contrast en-us-quotes-rock-n-roll, where the full left/elided/right context does match a cited idiom and apostrophe independently converts both marks."
+    },
+    {
+      "id": "en-us-quotes-nested-quote-n-not-elided",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "He said \"press 'n' now\".",
+      "out": "He said “press 'n' now”.",
+      "note": "quotes.md §3.2: same reason as en-us-quotes-letter-n-not-elided (\"press\" is not \"rock\"), nested one level deeper inside a resolved outer quotation. The inner 'n' (1 letter, space-flanked) is preserved by the general ambiguous-medial-span veto — quotes.md §3.2's predicate is local to the mark's own immediate neighbours, not aware of enclosing pairs, so nesting depth is irrelevant to it. Also pinned as a regression witness for the withdrawn context-free `elisionForms` design (quotes.md §7 item 8)."
+    },
+    {
+      "id": "en-us-quotes-rock-n-pop-not-elided",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "rock 'n' pop",
+      "out": "rock 'n' pop",
+      "note": "quotes.md §3.2, §6 row N3: `right` is \"pop\", not \"roll\" — no configured idiom matches. 'n' (1 letter, space-flanked) is preserved by the general ambiguous-medial-span veto instead (quotes.md §3.2), which does not require a citable idiom to fire, only the structural shape — a documented false negative rather than a pairing."
+    },
+    {
+      "id": "en-us-quotes-fish-n-chips-not-elided",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "fish 'n' chips",
+      "out": "fish 'n' chips",
+      "note": "quotes.md §3.2, §6 row N4: not sourced or listed. en-US.json's AHD citation attests only rock/n/roll; no { left: \"fish\", elided: \"n\", right: \"chips\" } entry exists. 'n' is preserved by the general ambiguous-medial-span veto instead (quotes.md §3.2), the same mechanism as en-us-quotes-rock-n-pop-not-elided — no idiom is required for it to fire."
+    },
+    {
+      "id": "en-us-quotes-rock-cap-n-roll-not-elided",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "rock 'N' roll",
+      "out": "rock 'N' roll",
+      "note": "quotes.md §3.2, §6 row N5: `elided` is matched exactly, with no case leniency at all — the first-code-point leniency applies only to `left`/`right`. `N` ≠ `n`, so no idiom matches (the en-US elisionIdioms entry requires exactly lower-case \"n\"). 'N' is preserved by the general ambiguous-medial-span veto instead (quotes.md §3.2), which is case-insensitive to the enclosed letter — this fixture is the witness that idiom-matching stays case-sensitive even though the general veto covering the same bytes is not."
+    },
+    {
+      "id": "en-us-quotes-rock-n-roll-html",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "<p>rock 'n' roll</p>",
+      "out": "<p>rock ’n’ roll</p>",
+      "note": "quotes.md §3.2, §6 row H0: idiom whole within one text node — positive control for the html-mode boundary cases below."
+    },
+    {
+      "id": "en-us-quotes-rock-n-roll-html-left-split",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "<p><em>rock</em> 'n' roll</p>",
+      "out": "<p><em>rock</em> 'n' roll</p>",
+      "note": "quotes.md §3.2, §6 row H1: modes.md §3.2's boundary marker is not INLINE-SPACE, so `left`'s word is unreachable across the <em> span boundary and the veto does not fire — matches text mode's own boundary behaviour on split input. spec 0.5.0: the general ambiguous-medial-span veto's left-context test only reads the single INLINE-SPACE code point immediately before the mark (quotes.md 3.2), which sits inside the same prose span as the mark itself — unlike idiom word-matching (wordEndsAt), it does not need to see past the span-boundary marker to \"rock\" in the preceding <em> span, so it fires here even though the idiom match (pre-0.5.0 behaviour, still correctly not firing) does not."
+    },
+    {
+      "id": "en-us-quotes-rock-n-roll-html-right-split",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "<p>rock 'n' <em>roll</em></p>",
+      "out": "<p>rock 'n' <em>roll</em></p>",
+      "note": "quotes.md §3.2, §6 row H2: mirror case on `right`. spec 0.5.0: symmetric case to the left-split row above — the general veto's right-context test reads the INLINE-SPACE immediately after the mark, inside the same span, and fires regardless of \"roll\" sitting in a following <em> span."
+    },
+    {
+      "id": "en-us-quotes-rock-n-roll-markdown-left-split",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "*rock* 'n' roll\n",
+      "out": "*rock* 'n' roll\n",
+      "note": "quotes.md §3.2, §6 row H3: `left`'s word sits inside an emphasis span; the boundary marker between spans is not INLINE-SPACE, so the veto does not cross it. spec 0.5.0: same mechanism as the HTML left-split row — Markdown emphasis creates a span boundary before \"rock\", but the general veto's left-context test only needs the immediately-preceding INLINE-SPACE, which is in the same span as the mark."
+    },
+    {
+      "id": "en-us-quotes-ambiguous-single-letter",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "She chose 'A' today",
+      "out": "She chose 'A' today",
+      "note": "spec 0.5.0, general ambiguous-medial-span veto (quotes.md 3.2): 1 LETTER enclosed, space-flanked on both sides, no matching elisionIdioms entry — preserved as literal U+0027 on both marks. A documented false negative: this reads as a plausible genuine quotation of the letter A, but the structural predicate cannot distinguish it from rock 'n' roll's shape without reasoning about meaning, which is out of scope (AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 3.1: false negatives are preferable to text damage)."
+    },
+    {
+      "id": "en-us-quotes-ambiguous-two-letter",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "They said 'no' yesterday",
+      "out": "They said 'no' yesterday",
+      "note": "spec 0.5.0, general ambiguous-medial-span veto: 2 LETTERs enclosed, same reasoning as en-us-quotes-ambiguous-single-letter."
+    },
+    {
+      "id": "en-us-quotes-ambiguous-three-letter",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "say 'yes' now",
+      "out": "say 'yes' now",
+      "note": "spec 0.5.0, general ambiguous-medial-span veto: 3 LETTERs enclosed — the upper bound of the shape (quotes.md 3.2, MAX_ENCLOSED). Preserved."
+    },
+    {
+      "id": "en-us-quotes-ambiguous-four-letter-not-caught",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "say 'like' now",
+      "out": "say “like” now",
+      "note": "spec 0.5.0: 4 LETTERs enclosed is past the veto's bound (1-3, quotes.md 3.2) — a deliberate, documented false negative in the other direction: this is the boundary case the veto does NOT catch, so the marks pair as an ordinary quotation exactly as before 0.5.0. Pinned so the exact boundary is visible in the conformance suite."
+    },
+    {
+      "id": "en-us-quotes-ambiguous-astral-letter",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "say '𐐀' now",
+      "out": "say '𐐀' now",
+      "note": "spec 0.5.0: the enclosed code point is U+10400 (DESERET CAPITAL LETTER LONG A, astral plane) — general category Lu, a member of LETTER. The veto's LETTER test (engine/unicode.js isLetter) operates on full code points, not UTF-16 units, so this is treated identically to an ASCII letter and preserved."
+    },
+    {
+      "id": "en-us-quotes-ambiguous-digit-not-letter",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "say '12' now",
+      "out": "say “12” now",
+      "note": "spec 0.5.0: the enclosed code points are DIGIT, not LETTER, so the general ambiguous-medial-span veto does not fire — digits must not accidentally qualify as a LETTER sequence (quotes.md 3.2). Pairs as an ordinary quotation exactly as before 0.5.0."
+    },
+    {
+      "id": "en-us-quotes-ambiguous-punctuation-not-letter",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "say '@' now",
+      "out": "say “@” now",
+      "note": "spec 0.5.0: the enclosed code point is punctuation, not LETTER, so the veto does not fire — punctuation must not accidentally qualify as a LETTER sequence (quotes.md 3.2). Pairs as an ordinary quotation."
+    },
+    {
+      "id": "en-us-quotes-ambiguous-already-curly-no-idiom",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "She chose ’A’ today",
+      "out": "She chose “A” today",
+      "note": "spec 0.5.0: the general ambiguous-medial-span veto matches straight ASCII U+0027 pairs only (quotes.md 3.2) — an already-curly U+2019 pair is out of its scope by construction, so this falls through to ordinary NARROW-pair quotation exactly as it did before 0.5.0. Documents the chosen contract deliberately, so the ASCII-only scope is not silently broadened later."
+    },
+    {
+      "id": "en-us-ranges-decimal-and-path-rejected",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "prices 1.5-2.5 and paths 01/02-03/04",
+      "out": "prices 1.5-2.5 and paths 01/02-03/04",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2, G3 — not part of a decimal or a path. `before` is U+002E (.) for the first candidate and U+002F (/) for the second; `after` is U+002F (/) for the second. This is currently the only canonical fixture exercising G3 — previously untested by any canonical case even before the spec 0.5.0 ownership correction (dashes.test.ts's engine-level 'must not touch' list covered it, but no fixture did)."
     }
   ]
 }

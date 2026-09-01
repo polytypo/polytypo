@@ -2,8 +2,17 @@
   "locale": "de-CH",
   "name": "German (Switzerland)",
   "quotes": {
-    "primary": { "open": "«", "close": "»", "innerSpace": "none" },
-    "secondary": { "open": "‹", "close": "›", "innerSpace": "none" }
+    "primary": {
+      "open": "«",
+      "close": "»",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "‹",
+      "close": "›",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": []
   },
   "dash": {
     "parenthetical": "en-spaced",
@@ -26,7 +35,7 @@
     "beforeNumber": ["Art.", "Abs.", "Ziff.", "Kap.", "S."],
     "beforeWord": ["St."],
     "afterSymbols": ["§", "§§"],
-    "bindInitials": true
+    "initialBinding": "chain"
   },
   "sources": [
     {
@@ -50,7 +59,7 @@
       "rule": "nbsp",
       "cite": "Schweizerische Bundeskanzlei, Schreibweisungen, Rz. 251 (Festabstand hält Zusammengehöriges zusammen: Ziffer und Masseinheit, Abkürzung und Ortsname, Teile mehrgliedriger Abkürzungen, Gliederungseinheit und Ziffer — „20 km“, „St. Gallen“, „Artikel 35“), Rz. 438 (mehrgliedrige Abkürzungen: d. h. / z. B. / u. a. / u. U. / m. a. W. / m. w. H.), Rz. 549–550 (Festabstand zwischen Zahl und Einheit), Rz. 554 (Festabstand vor % und ‰)",
       "url": "https://www.bk.admin.ch/dam/bk/de/dokumente/sprachdienste/sprachdienst_de/schreibweisungen.pdf.download.pdf/schreibweisungen.pdf",
-      "note": "bindInitials ist eine Ableitung, keine wörtliche Weisung: Rz. 251 nennt „eine Abkürzung und ein Ortsname“ (St. Gallen) und Rz. 438 die Teile mehrgliedriger Abkürzungen; die Bindung Initiale–Nachname ist dieselbe Konstruktion, wird aber in den Schreibweisungen nicht ausdrücklich erwähnt. Die Einheitenliste ist bewusst kurz und enthält keine einbuchstabigen Einheitenzeichen. Der Schweizer Verzicht auf ß (ss statt ß, Amtliches Regelwerk § 25 E2) lässt sich im Schema nicht ausdrücken und ist deshalb hier nicht abgebildet."
+      "note": "initialBinding: \"chain\" (spec 0.6.0: das Feld hieß zuvor das boolesche bindInitials) ist eine Ableitung, keine wörtliche Weisung: Rz. 251 nennt „eine Abkürzung und ein Ortsname“ (St. Gallen) und Rz. 438 die Teile mehrgliedriger Abkürzungen; die Bindung Initiale–Nachname ist dieselbe Konstruktion, wird aber in den Schreibweisungen nicht ausdrücklich erwähnt. Keine Quelle belegt eine einzelne Initiale (\"single\"); \"chain\" folgt derselben Zwei-oder-mehr-Logik wie de-DE/ru. Die Einheitenliste ist bewusst kurz und enthält keine einbuchstabigen Einheitenzeichen. Der Schweizer Verzicht auf ß (ss statt ß, Amtliches Regelwerk § 25 E2) lässt sich im Schema nicht ausdrücken und ist deshalb hier nicht abgebildet."
     },
     {
       "rule": "nbsp",

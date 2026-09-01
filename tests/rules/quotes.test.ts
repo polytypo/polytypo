@@ -110,7 +110,7 @@ describe("quotes — fi worked examples: the primary open glyph equals the prima
   });
 
   it("a same-glyph locale still resolves nesting the reader sees", () => {
-    expect(run(`"a 'b' c"`, "fi")).toBe("”a ’b’ c”");
+    expect(run(`"a 'beta' c"`, "fi")).toBe("”a ’beta’ c”");
   });
 });
 
@@ -138,7 +138,7 @@ describe("quotes — fr, fr-CA and ru worked examples", () => {
   });
 
   it("case 14 — ru primary « » and secondary „ “", () => {
-    expect(run(`Он сказал: "это 'моё' дело".`, "ru")).toBe("Он сказал: «это „моё“ дело».");
+    expect(run(`Он сказал: "это 'моего' дело".`, "ru")).toBe("Он сказал: «это „моего“ дело».");
   });
 
   it("row B1 — the bug-1 witness: width drift with an unmatched candidate declines to ∅", () => {
@@ -147,8 +147,8 @@ describe("quotes — fr, fr-CA and ru worked examples", () => {
   });
 
   it("de-DE and de-CH take their glyphs from the locale file, nothing else changes", () => {
-    expect(run(`Er sagte "hallo 'du' dort".`, "de-DE")).toBe("Er sagte „hallo ‚du‘ dort“.");
-    expect(run(`Er sagte "hallo 'du' dort".`, "de-CH")).toBe("Er sagte «hallo ‹du› dort».");
+    expect(run(`Er sagte "hallo 'dort' heute".`, "de-DE")).toBe("Er sagte „hallo ‚dort‘ heute“.");
+    expect(run(`Er sagte "hallo 'dort' heute".`, "de-CH")).toBe("Er sagte «hallo ‹dort› heute».");
   });
 
   it("row C — mandate 1: foreign guillemets convert (required scenario c)", () => {
@@ -167,7 +167,7 @@ describe("quotes — fr, fr-CA and ru worked examples", () => {
 
 describe("quotes — el worked examples", () => {
   it("row 16 — width drift with no gate intervention: the gate's cost is near zero", () => {
-    expect(run(`"Είπε 'όχι' σε μένα", σημείωσε.`, "el")).toBe("«Είπε “όχι” σε μένα», σημείωσε.");
+    expect(run(`"Είπε 'κάτι' σε μένα", σημείωσε.`, "el")).toBe("«Είπε “κάτι” σε μένα», σημείωσε.");
   });
 
   it("row 18 — the elision is NARROW, the quotation WIDE, different stacks", () => {
@@ -183,7 +183,7 @@ describe("quotes — nesting", () => {
 
   it("depth is counted over the accepted set, not stack height or the raw pass-2 output", () => {
     expect(run('He said "hi. She said "bye."', "en-US")).toBe('He said "hi. She said “bye.”');
-    expect(run(`"unmatched. "a 'b' c"`, "en-US")).toBe(`"unmatched. “a ‘b’ c”`);
+    expect(run(`"unmatched. "a 'beta' c"`, "en-US")).toBe(`"unmatched. “a ‘beta’ c”`);
   });
 
   it("closing takes precedence over opening when a candidate could be either (spec 3.3)", () => {
@@ -408,6 +408,150 @@ describe("quotes — V1's gapInsertable clause: a composition-obligation fix fou
   });
 });
 
+describe("quotes — V1ID: apostrophe's U+0027→U+2019 edit is inert to V1 (Corollary A1 fix, spec 0.4.1)", () => {
+  // pipeline-idempotency.md §2's composition obligation, violated against I5 by apostrophe (R6)
+  // before this fix: V1 compared raw code points, so a NARROW candidate g = U+2019 standing
+  // literally next to an *unmatched* U+0027 read a different neighbour on pass 1 (U+0027 ≠
+  // U+2019, V1 silent) than on pass 2, after apostrophe converted that neighbour to U+2019
+  // (U+2019 = U+2019, V1 fires) — same position, same candidate, different verdict, purely
+  // because of what a *later* rule did between the two runs. Found by the fast-check idempotency
+  // sweep in de-CH; reproduces deterministically, not a flaky/seed-dependent finding — the exact
+  // witness below is the one fast-check reported. Pinned as spec/fixtures/de-CH.json
+  // de-ch-quotes-041-cobug-apostrophe-v1; this test additionally asserts the exact normative
+  // pass-1 output (which the fixture runner also checks) plus the literal idempotency equality
+  // the bug report specifically demanded, and a small bounded family of structurally related
+  // witnesses across other locales.
+
+  it("the exact reported counterexample: de-CH, U+0022 B U+0027 U+2019 U+0022 U+2039", () => {
+    const input = ch(0x22) + "B" + ch(0x27) + ch(0x2019) + ch(0x22) + ch(0x2039);
+    const options = { locale: "de-CH", mode: "text" } as const;
+
+    const once = transform(input, options);
+    // Normative first-pass output: the outer U+0022 pair certifies as de-CH's primary « » on
+    // pass 1 already (it no longer waits for a second pass to become stable), and the sole
+    // unmatched U+0027 is picked up by `apostrophe` in the same pass.
+    expect(once).toBe(ch(0xab) + "B" + ch(0x2019) + ch(0x2019) + ch(0xbb) + ch(0x2039));
+
+    // The exact assertion the bug report demanded.
+    expect(transform(once, options)).toBe(once);
+  });
+
+  it("quotes alone (no apostrophe) is already a no-op on the pass-1 output — I5 holds", () => {
+    // Isolates the claim this fix is actually about: quotes' own re-derivation of its pass-1
+    // output must not want to change anything, independent of apostrophe running again.
+    const once = transform(
+      ch(0x22) + "B" + ch(0x27) + ch(0x2019) + ch(0x22) + ch(0x2039),
+      { locale: "de-CH", mode: "text" },
+    );
+    expect(run(once, "de-CH")).toBe(once);
+  });
+
+  it("reproduces, and is fixed, in every shipped locale — not a de-CH/B/U+2039 special case", () => {
+    const input = ch(0x22) + "B" + ch(0x27) + ch(0x2019) + ch(0x22) + ch(0x2039);
+    for (const tag of KNOWN_LOCALES) {
+      const once = transform(input, { locale: tag, mode: "text" });
+      expect(transform(once, { locale: tag, mode: "text" }), tag).toBe(once);
+    }
+  });
+
+  it("bounded family: an unmatched U+0027 literally adjacent to a U+2019 candidate, several shapes", () => {
+    // Not exhaustive — a small, targeted family around the same shape (a NARROW U+2019 or
+    // U+2018/U+2039/U+203a candidate directly beside an unmatched straight apostrophe), across
+    // locales whose own primary/secondary pair is genuinely U+2019 (en-GB, fi, sv) as well as
+    // one that isn't (en-US), so the fix is checked both where the shape is adversarial and
+    // where it is reachable from ordinary correctly-typed content.
+    const family: readonly [string, string][] = [
+      [ch(0x78) + ch(0x27) + ch(0x2019) + ch(0x79) + ch(0x2039) + ch(0x7a) + ch(0x2039), "en-GB"],
+      [ch(0x22) + ch(0x27) + ch(0x2019) + ch(0x22) + ch(0x2039) + "w", "en-US"],
+      [ch(0x22) + "a" + ch(0x22) + ch(0x27) + ch(0x2019) + ch(0x2039), "fi"],
+      [ch(0x2039) + ch(0x27) + ch(0x2019) + ch(0x22) + "a" + ch(0x22), "sv"],
+    ];
+    for (const [input, tag] of family) {
+      const once = transform(input, { locale: tag, mode: "text" });
+      expect(transform(once, { locale: tag, mode: "text" }), `${tag}: ${JSON.stringify(input)}`).toBe(once);
+    }
+  });
+
+  // V1ID's "conservative" bound is a *local* fact about a single comparison (it can only add a
+  // veto there, never grant a capability) — it is NOT a claim about the rule's global output.
+  // Passes 2 and 4 operate over the whole candidate list at once, so declining one candidate can
+  // remove a crossing/nesting/certification conflict and let a *different* pair certify, get
+  // reassigned different glyphs/depth, or change what `nbsp` inserts downstream. The five tests
+  // below pin one permanent regression case per distinct mechanism found by exhaustively diffing
+  // the pre-0.4.1 raw-comparison V1 against V1ID over a bounded alphabet (all against the current,
+  // fixed engine — see quotes.md §5's "V1ID empirical audit" for the full classification):
+  //   1–2. pure conservative veto (prime guard, case 5): the mark itself is never corrupted;
+  //   3. the reported counterexample's own shape: vetoing a competing candidate *enables* a
+  //      different pair to certify that previously could not (indirect newly-enabled conversion);
+  //   4. a pairing reassignment: the same input pairs differently, not more or less;
+  //   5. the fr/fr-CA downstream `nbsp` consequence of a differently accepted/declined pair.
+  // Every assertion is the exact full output, not a substring or single indexed character — the
+  // whole point is proving nothing else in the string was touched.
+  it("conservative-veto case: a prime-guard-protected U+0027 (digit left, non-letter right) stays U+0027", () => {
+    // "2'" is a foot/inch mark (apostrophe.md §3.3 case 1) directly adjacent to a U+2019
+    // candidate; V1ID's closure still declines the surrounding pairing, but the mark itself must
+    // never be corrupted into a quote glyph or otherwise altered.
+    const input = ch(0x22) + "2" + ch(0x27) + ch(0x2019) + ch(0x22) + ch(0x2039);
+    const once = transform(input, { locale: "de-CH", mode: "text" });
+    expect(once).toBe(ch(0xab) + "2" + ch(0x27) + ch(0x2019) + ch(0xbb) + ch(0x2039));
+    expect(transform(once, { locale: "de-CH", mode: "text" })).toBe(once);
+  });
+
+  it("conservative-veto case: a case-5 U+0027 (nothing inferable) stays U+0027", () => {
+    const input = ch(0x22) + ch(0x27) + ch(0x2019) + ch(0x22) + ch(0x2039);
+    const once = transform(input, { locale: "de-CH", mode: "text" });
+    expect(once).toBe(ch(0xab) + ch(0x27) + ch(0x2019) + ch(0xbb) + ch(0x2039));
+    expect(transform(once, { locale: "de-CH", mode: "text" })).toBe(once);
+  });
+
+  it("indirect mechanism: vetoing one candidate lets an unrelated outer pair certify (not a local grant)", () => {
+    // Simpler than the full reported counterexample, same mechanism: under the pre-0.4.1 raw
+    // comparison this input is left entirely untouched (the inner U+0027/U+2019 pair and the
+    // outer NARROW marks destabilise each other's certification, exactly as in the reported
+    // counterexample); V1ID vetoing the inner pair removes that instability and lets the outer
+    // pair certify on the very first pass.
+    const input = ch(0x2018) + ch(0x27) + ch(0x2019) + ch(0x2018);
+    const once = transform(input, { locale: "en-US", mode: "text" });
+    expect(once).toBe(ch(0x201c) + ch(0x27) + ch(0x2019) + ch(0x201d));
+    expect(transform(once, { locale: "en-US", mode: "text" })).toBe(once);
+  });
+
+  it("pairing reassignment: the same input pairs differently, not more or less", () => {
+    const input = ch(0x27) + "a" + ch(0x27) + ch(0x2019);
+    const once = transform(input, { locale: "en-US", mode: "text" });
+    // Pre-0.4.1: the two U+0027 pair as a NARROW pair, promoted to en-US's WIDE primary
+    // (“a”), leaving the trailing U+2019 untouched: "“a”’". V1ID vetoes the second U+0027
+    // (its own literal right neighbour is already U+2019) before it can ever reach pairing, so
+    // both U+0027s instead fall through to `apostrophe`'s case ladder independently — leading
+    // elision on the first, trailing elision on the second — and the original U+2019 is
+    // untouched: "’a’’". Neither output is corrupted; the pairing choice differs.
+    expect(once).toBe(ch(0x2019) + "a" + ch(0x2019) + ch(0x2019));
+    expect(transform(once, { locale: "en-US", mode: "text" })).toBe(once);
+  });
+
+  it("fr/fr-CA downstream nbsp consequence of a differently declined pair", () => {
+    // Pre-0.4.1: the two U+2019 pair (NARROW), promoted to fr's WIDE primary « », and `nbsp`
+    // (order 70) inserts its required inner no-break spaces around the newly-formed pair:
+    // "« ’’ »" (U+00A0 on both sides). V1ID vetoes the pairing entirely (the same "own literal
+    // neighbour is already U+2019" mechanism as the reassignment case above, mirrored at both
+    // ends), so `quotes` makes no edit and `nbsp` has no pair to insert spacing around: the
+    // input passes through byte-identical.
+    const input = ch(0x27) + ch(0x2019) + ch(0x2019) + ch(0x27);
+    const once = transform(input, { locale: "fr", mode: "text" });
+    expect(once).toBe(input);
+    expect(transform(once, { locale: "fr", mode: "text" })).toBe(once);
+  });
+
+  it("the U+0027/U+2019 distinction still governs outside V1 — not globally normalized by V1ID", () => {
+    // V1ID is scoped to V1's own comparison; it must not leak into apostrophe's case ladder (which
+    // only ever scans literal U+0027, apostrophe.ts's `at(cp, i) !== SQ`) or into anything treating
+    // an already-curly U+2019 as if it were still convertible.
+    const options = { locale: "en-US", mode: "text" } as const;
+    expect(transform("don't", options)).toBe("don’t"); // literal U+0027, medial: converted
+    expect(transform("don’t", options)).toBe("don’t"); // already U+2019: untouched, not "reconverted"
+  });
+});
+
 describe("quotes — the elision-vs-closer tradeoff (Corollary A1, spec 4/5/6)", () => {
   // An already-curly leading elision can be paired as an opener by a later unrelated closer.
   // Verified by running the implementation: the same corruption already existed for straight
@@ -438,7 +582,7 @@ describe("quotes — the elision-vs-closer tradeoff (Corollary A1, spec 4/5/6)",
   it("fi/sv's own same-glyph secondary pair (U+2019 both sides) is still recognised as a pair", () => {
     // The scenario Corollary A1 was weighed against: forcing canOpen = false for every U+2019
     // would make this input un-recognisable as a pair at all.
-    expect(run(`"a 'b' c"`, "fi")).toBe("”a ’b’ c”");
+    expect(run(`"a 'beta' c"`, "fi")).toBe("”a ’beta’ c”");
     expect(run("”a ’b’ c”", "fi")).toBe("”a ’b’ c”");
   });
 });
@@ -647,4 +791,83 @@ describe("quotes — idempotency", () => {
       );
     });
   }
+});
+
+describe("quotes — DOCUMENTED LIMITATION (not portable conformance evidence): identical bytes, different authorial intent", () => {
+  it("the idiom matcher cannot read a sentence's own stated intent, only its code points", () => {
+    // This test characterizes a known, accepted limitation of the listed-idiom mechanism
+    // (quotes.md §3.2's residual-ambiguity note) — it does NOT assert that the output below is
+    // the correct interpretation of the input's meaning. Canonical conformance fixtures
+    // (spec/fixtures/*.json) never assert this converted form as a successful expected output;
+    // only this implementation-level test does, specifically to pin the exposure.
+    //
+    // The sentence explicitly states it means three separate tokens — the word "rock", a
+    // genuinely quoted letter "n", and the word "roll" — then reproduces the identical surface
+    // sequence "rock 'n' roll" for illustration. The matcher has no way to read that stated
+    // intent: it matches code points against `quotes.elisionIdioms`' left/elided/right shape,
+    // not meaning. The first `'n'` is correctly NOT vetoed (its left context is "letter", not
+    // "rock", and a comma follows rather than a space), so it pairs as an ordinary depth-1
+    // quotation — proving the matcher works exactly as its own N1/N2 counter-examples show. The
+    // final "rock 'n' roll" IS vetoed: left/elided/right all match verbatim, even though the
+    // sentence's own stated intent is that this is a literal concatenation, not a fresh
+    // invocation of the idiom.
+    const input =
+      "The sequence is the word rock, the quoted letter 'n', and the word roll: rock 'n' roll.";
+    const expected =
+      "The sequence is the word rock, the quoted letter “n”, and the word roll: rock ’n’ roll.";
+    expect(transform(input, { locale: "en-US" })).toBe(expected);
+    // Idempotent, as every output must be — the limitation is in what is asserted as "correct",
+    // not in the pipeline's stability.
+    expect(transform(expected, { locale: "en-US" })).toBe(expected);
+  });
+});
+
+describe("quotes — ambiguity veto: at least one inline space, not exactly one (spec 0.5.0 correction)", () => {
+  // `spaces` (order 10) ordinarily collapses a doubled space before `quotes` (order 40) ever
+  // sees it, so a doubled space surviving to the ambiguity veto's own check only happens when
+  // `spaces` is disabled — an uncommon but fully supported configuration (`rules: { spaces:
+  // false }`), and the one that actually exercises this predicate's own multi-space behaviour
+  // rather than `spaces`' collapsing behaviour.
+  const noSpacesCollapse = { rules: { spaces: false } } as const;
+
+  it("en-US (cited idiom): a doubled space still preserves the input unchanged, full pipeline", () => {
+    // The idiom matcher itself does not match doubled-space input (tests/rules/quote-ambiguity
+    // .test.ts), but the general ambiguity veto still does, so the observable result is the same
+    // "preserved" outcome as an uncited locale — not a fallback conversion, not a crash.
+    for (const input of ["rock  'n' roll", "rock 'n'  roll", "rock  'n'  roll"]) {
+      expect(transform(input, { locale: "en-US", ...noSpacesCollapse })).toBe(input);
+    }
+  });
+
+  it("en-GB/fi/sv (no cited idiom): a doubled space still preserves the input unchanged, full pipeline", () => {
+    for (const locale of ["en-GB", "fi", "sv"]) {
+      for (const input of ["rock  'n' roll", "rock 'n'  roll", "rock  'n'  roll"]) {
+        expect(transform(input, { locale, ...noSpacesCollapse })).toBe(input);
+      }
+    }
+  });
+
+  it("2- and 3-letter ambiguous forms are also preserved with a doubled space, full pipeline", () => {
+    expect(transform("say  'no'  now", { locale: "en-US", ...noSpacesCollapse })).toBe(
+      "say  'no'  now",
+    );
+    expect(transform("say  'yes'  now", { locale: "en-US", ...noSpacesCollapse })).toBe(
+      "say  'yes'  now",
+    );
+  });
+
+  it("stable through a second full-pipeline run", () => {
+    for (const input of ["rock  'n' roll", "rock 'n'  roll", "say  'no'  now"]) {
+      const once = transform(input, { locale: "en-US", ...noSpacesCollapse });
+      expect(transform(once, { locale: "en-US", ...noSpacesCollapse })).toBe(once);
+    }
+  });
+
+  it("with default options (`spaces` enabled), a doubled space collapses first, then the ordinary single-space contract applies", () => {
+    // Not a special case of the ambiguity veto — `spaces` (order 10) runs before `quotes`
+    // (order 40) and collapses "rock  'n' roll" to "rock 'n' roll" first, so en-US's cited idiom
+    // still matches and converts, exactly as it does for genuinely single-spaced input.
+    expect(transform("rock  'n' roll", { locale: "en-US" })).toBe("rock ’n’ roll");
+    expect(transform("rock  'n' roll", { locale: "en-GB" })).toBe("rock 'n' roll");
+  });
 });

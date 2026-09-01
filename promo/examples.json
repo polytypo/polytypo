@@ -1,18 +1,28 @@
 {
-  "spec": "0.1.0",
+  "spec": "1.0.0",
+  "proofLocales": [
+    "en-US",
+    "de-DE",
+    "fr",
+    "ru"
+  ],
   "locales": [
     {
       "locale": "en-US",
       "name": "English (US)",
       "hero": {
         "in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.",
-        "out": "Is this “polytypo”?—No, it’s “polytypo”! She said, “He replied ‘never’ twice”… The release—all 5 km of it—covers 1914⁠–⁠1918. Copyright © 2026, at 1920×1080."
+        "out": "Is this “polytypo”?—No, it’s “polytypo”! She said, “He replied ‘never’ twice”… The release—all 5 km of it—covers 1914-1918. Copyright © 2026, at 1920×1080."
+      },
+      "proof": {
+        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
+        "out": "She said: “The em dash was mine before AI”—and she meant it."
       },
       "cases": [
         {
           "rule": "quotes",
           "in": "\"He said 'no' to me,\" she noted.",
-          "out": "“He said ‘no’ to me,” she noted."
+          "out": "“He said 'no' to me,” she noted."
         },
         {
           "rule": "dashes",
@@ -22,7 +32,7 @@
         {
           "rule": "dashes",
           "in": "1914-1918 and pp. 34-36",
-          "out": "1914⁠–⁠1918 and pp. 34⁠–⁠36"
+          "out": "1914-1918 and pp. 34-36"
         },
         {
           "rule": "ellipsis",
@@ -51,13 +61,17 @@
       "name": "English (UK)",
       "hero": {
         "in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.",
-        "out": "Is this ‘polytypo’? – No, it’s ‘polytypo’! She said, ‘He replied “never” twice’… The release – all 5 km of it – covers 1914⁠–⁠1918. Copyright © 2026, at 1920×1080."
+        "out": "Is this ‘polytypo’? – No, it’s ‘polytypo’! She said, ‘He replied “never” twice’… The release – all 5 km of it – covers 1914-1918. Copyright © 2026, at 1920×1080."
+      },
+      "proof": {
+        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
+        "out": "She said: ‘The em dash was mine before AI’ – and she meant it."
       },
       "cases": [
         {
           "rule": "quotes",
           "in": "\"He said 'no' to me,\" she noted.",
-          "out": "‘He said “no” to me,’ she noted."
+          "out": "‘He said 'no' to me,’ she noted."
         },
         {
           "rule": "dashes",
@@ -81,7 +95,11 @@
       "name": "German",
       "hero": {
         "in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.",
-        "out": "Ist das „polytypo“? – Nein, das ist „polytypo“! Sie sagte: „Er hat ‚nie‘ geantwortet“… Die Ausgabe – z. B. die Jahre 1939⁠–⁠1945 – erscheint in 1920×1080. Copyright © 2026."
+        "out": "Ist das „polytypo“? – Nein, das ist „polytypo“! Sie sagte: „Er hat 'nie' geantwortet“… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026."
+      },
+      "proof": {
+        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
+        "out": "She said: „The em dash was mine before AI“ – and she meant it."
       },
       "cases": [
         {
@@ -97,7 +115,7 @@
         {
           "rule": "dashes",
           "in": "Die Jahre 1939-1945",
-          "out": "Die Jahre 1939⁠–⁠1945"
+          "out": "Die Jahre 1939-1945"
         },
         {
           "rule": "nbsp",
@@ -116,7 +134,11 @@
       "name": "Swiss German",
       "hero": {
         "in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.",
-        "out": "Ist das «polytypo»? – Nein, das ist «polytypo»! Sie sagte: «Er hat ‹nie› geantwortet»… Die Ausgabe – z. B. die Jahre 1939⁠–⁠1945 – erscheint in 1920×1080. Copyright © 2026."
+        "out": "Ist das «polytypo»? – Nein, das ist «polytypo»! Sie sagte: «Er hat 'nie' geantwortet»… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026."
+      },
+      "proof": {
+        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
+        "out": "She said: «The em dash was mine before AI» – and she meant it."
       },
       "cases": [
         {
@@ -143,6 +165,10 @@
         "in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.",
         "out": "C’est « polytypo » ? — Non, c’est « polytypo » ! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm ; c’est tout. Copyright © 2026."
       },
+      "proof": {
+        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
+        "out": "She said : « The em dash was mine before AI » — and she meant it."
+      },
       "cases": [
         {
           "rule": "quotes",
@@ -152,7 +178,7 @@
         {
           "rule": "quotes",
           "in": "\"Il a dit 'oui' hier.\"",
-          "out": "« Il a dit “oui” hier. »"
+          "out": "« Il a dit 'oui' hier. »"
         },
         {
           "rule": "nbsp",
@@ -176,13 +202,17 @@
       "name": "French (Canada)",
       "hero": {
         "in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.",
-        "out": "C’est « polytypo »? — Non, c’est « polytypo »! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm; c’est tout. Copyright © 2026."
+        "out": "C’est « polytypo »? — Non, c’est « polytypo »! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm; c’est tout. Copyright © 2026."
+      },
+      "proof": {
+        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
+        "out": "She said : « The em dash was mine before AI » — and she meant it."
       },
       "cases": [
         {
           "rule": "quotes",
           "in": "Il a dit \"bonjour\".",
-          "out": "Il a dit « bonjour »."
+          "out": "Il a dit « bonjour »."
         },
         {
           "rule": "dashes",
@@ -197,7 +227,7 @@
         {
           "rule": "nbsp",
           "in": "Rendez-vous à 15 h: bureau 204.",
-          "out": "Rendez-vous à 15 h : bureau 204."
+          "out": "Rendez-vous à 15 h : bureau 204."
         }
       ]
     },
@@ -206,13 +236,17 @@
       "name": "Russian",
       "hero": {
         "in": "Это \"полиштамп\"? - Нет, это \"полиштамп\"! Она сказала: \"он ответил 'никогда'\"... Достал из-под стола - в 1941-1945 годах - размер 10 x 20 см. Все права защищены (c) 2026.",
-        "out": "Это «полиштамп»? — Нет, это «полиштамп»! Она сказала: «он ответил „никогда“»… Достал из‑под стола — в 1941⁠—⁠1945 годах — размер 10 × 20 см. Все права защищены © 2026."
+        "out": "Это «полиштамп»? — Нет, это «полиштамп»! Она сказала: «он ответил „никогда“»… Достал из‑под стола — в 1941-1945 годах — размер 10 × 20 см. Все права защищены © 2026."
+      },
+      "proof": {
+        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
+        "out": "She said: «The em dash was mine before AI» — and she meant it."
       },
       "cases": [
         {
           "rule": "quotes",
           "in": "Он сказал: \"это 'моё' дело\".",
-          "out": "Он сказал: «это „моё“ дело»."
+          "out": "Он сказал: «это 'моё' дело»."
         },
         {
           "rule": "dashes",
@@ -222,7 +256,7 @@
         {
           "rule": "dashes",
           "in": "Годы 1941-1945 были тяжёлыми",
-          "out": "Годы 1941⁠—⁠1945 были тяжёлыми"
+          "out": "Годы 1941-1945 были тяжёлыми"
         },
         {
           "rule": "hyphen",
@@ -246,7 +280,11 @@
       "name": "Finnish",
       "hero": {
         "in": "Onko tämä \"polytypo\"? - Ei, tämä on \"polytypo\"! Hän sanoi: \"hän vastasi 'ei koskaan'\"... Matkaa on 20 km - vuosina 1914-1918 - ja hinta nousi 10,5 %. Copyright (c) 2026.",
-        "out": "Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän sanoi: ”hän vastasi ’ei koskaan’”… Matkaa on 20 km – vuosina 1914⁠–⁠1918 – ja hinta nousi 10,5 %. Copyright © 2026."
+        "out": "Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän sanoi: ”hän vastasi ’ei koskaan’”… Matkaa on 20 km – vuosina 1914-1918 – ja hinta nousi 10,5 %. Copyright © 2026."
+      },
+      "proof": {
+        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
+        "out": "She said: ”The em dash was mine before AI” – and she meant it."
       },
       "cases": [
         {
@@ -271,7 +309,11 @@
       "name": "Swedish",
       "hero": {
         "in": "Är det här \"polytypo\"? - Nej, det är \"polytypo\"! Hon sa: \"han svarade 'aldrig'\"... Vi gick 5 km - åren 1914-1918 - och det kostar 100 kr. Copyright (c) 2026.",
-        "out": "Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914⁠–⁠1918 – och det kostar 100 kr. Copyright © 2026."
+        "out": "Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914-1918 – och det kostar 100 kr. Copyright © 2026."
+      },
+      "proof": {
+        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
+        "out": "She said: ”The em dash was mine before AI” – and she meant it."
       },
       "cases": [
         {
@@ -297,6 +339,10 @@
       "hero": {
         "in": "Είναι αυτό \"polytypo\"; - Όχι, αυτό είναι \"polytypo\"! Είπε: \"απάντησε “ποτέ”\"... Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright (c) 2026, σε 1920x1080.",
         "out": "Είναι αυτό «polytypo»; - Όχι, αυτό είναι «polytypo»! Είπε: «απάντησε “ποτέ”»… Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright © 2026, σε 1920×1080."
+      },
+      "proof": {
+        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
+        "out": "She said: «The em dash was mine before AI» - and she meant it."
       },
       "cases": [
         {

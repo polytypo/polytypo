@@ -1,0 +1,15 @@
+# Pinned Python dependencies for brand/promo/brandbook generation (gen_svg.py,
+# build_brandbook.py, build_promo.py, gen_readmes.py). Exact versions, so generation is
+# reproducible from a clean virtual environment, not whatever happens to be on the host's
+# global site-packages.
+#
+# fonttools: font instancing (gen_svg.py), subsetting and WOFF2 compression (build_brandbook.py).
+# brotli: WOFF2's compression codec — fonttools's WOFF2 support silently degrades or fails
+#   without it (this is why a fresh `npm ci` alone was previously insufficient: it installs no
+#   Python packages at all, and generation would only appear to work if the host's global
+#   site-packages happened to already have both of these).
+#
+# Supported Python: 3.10 or newer (fonttools 4.61.1's own stated minimum); verified against
+# 3.14.4 in the fresh-environment proof for this change.
+fonttools==4.61.1
+brotli==1.2.0

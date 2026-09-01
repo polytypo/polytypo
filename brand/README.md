@@ -21,18 +21,44 @@ file with the fonts embedded.
 
 ## Regenerating
 
+### Python environment (required before any of the commands below)
+
+`gen_svg.py` and `build_brandbook.py` need `fonttools` (font instancing, subsetting, WOFF2) and
+`brotli` (WOFF2's compression codec) — packages this repository's `npm ci` does not, and should
+not, install. A fresh checkout has neither until you set up a Python environment for them:
+
 ```bash
-python3 brand/tools/gen_svg.py        # vectors (fetches Inter on first run)
+python3 -m venv .venv-brand           # Python 3.10+ (tested on 3.14)
+source .venv-brand/bin/activate       # .venv-brand\Scripts\activate on Windows
+pip install -r brand/tools/requirements.txt
+```
+
+`brand/tools/requirements.txt` pins exact versions, so generation is reproducible from a clean
+environment rather than whatever happens to already be on the host's global site-packages —
+running the commands below against a machine's ambient Python install (no venv, no pinned
+requirements) is unsupported and not guaranteed to produce byte-identical output. `npm run
+generate:all` (below) covers `gen:docs`/`gen:promo-bundle`/`gen:brandbook`, in that order, using
+whichever `python3` is first on `PATH` — activate the venv above before running it.
+
+### Commands
+
+```bash
+python3 brand/tools/gen_svg.py        # vectors (fetches Inter on first run, then caches it)
 npm i --no-save @resvg/resvg-js       # one-off, PNG rasteriser
 node brand/tools/render.mjs           # PNG exports + social card
-python3 brand/tools/build_brandbook.py # BRANDBOOK.html
+npm run gen:brandbook                 # BRANDBOOK.html — also part of `npm run generate:all`
 npx tsx brand/tools/gen_examples.ts   # promo/examples.json, straight from the engine
-python3 brand/tools/build_promo.py    # promo/index.html
+python3 brand/tools/build_promo.py    # promo/index.html and the other four promo pages
 python3 brand/tools/gen_readmes.py    # README.md + docs/ports/README.*.md
 ```
 
-Fonts (Inter, JetBrains Mono — both SIL OFL 1.1) are downloaded into `tools/` on demand and are not
-committed. The wordmark is outlined at build time, so no delivered asset needs a font installed.
+Fonts (Inter, JetBrains Mono — both SIL OFL 1.1) are fetched from one immutable, checksum-verified
+`google/fonts` commit per font (never the mutable `main` branch — see `gen_svg.py`'s `FONTS`
+table) into `tools/` on first run, cached there, and are not committed. Every subsequent build,
+online or offline, re-verifies the cached bytes against the pinned checksum before using them and
+refuses to proceed on a mismatch — see `gen_svg.py`'s `ensure_font()` and `test_gen_svg.py`. The
+wordmark is outlined and embedded as WOFF2 at build time, so no delivered asset needs a font
+installed, and the generated site never loads a font from a third party.
 
 ## Rules, in one screen
 

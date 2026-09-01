@@ -2,8 +2,17 @@
   "locale": "fr-CA",
   "name": "French (Canada)",
   "quotes": {
-    "primary": { "open": "«", "close": "»", "innerSpace": "nbsp" },
-    "secondary": { "open": "“", "close": "”", "innerSpace": "none" }
+    "primary": {
+      "open": "«",
+      "close": "»",
+      "innerSpace": "nbsp"
+    },
+    "secondary": {
+      "open": "“",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": []
   },
   "dash": {
     "parenthetical": "em-spaced",
@@ -26,7 +35,7 @@
     "beforeNumber": ["art.", "fig."],
     "beforeWord": ["M.", "MM.", "Mme", "Mmes", "Mlle", "Mlles"],
     "afterSymbols": ["§"],
-    "bindInitials": true
+    "initialBinding": "single"
   },
   "sources": [
     {
@@ -39,7 +48,7 @@
       "rule": "nbsp",
       "cite": "Jacques André, Petites leçons de typographie, éd. du jobet, § 5.1.3 « Autres emplois de l'espace insécable » — voir spec/locales/fr.json pour la citation complète",
       "url": "http://jacques-andre.fr/faqtypo/lessons.pdf",
-      "note": "beforeUnits, beforeNumber, beforeWord, abbreviations et bindInitials sont repris tels quels de spec/locales/fr.json : aucune source spécifiquement québécoise n'a été consultée pour ces cas (seuls le point-virgule/point d'exclamation/point d'interrogation et le deux-points ont été vérifiés séparément auprès de l'OQLF, voir l'entrée précédente). L'OQLF confirme par ailleurs, sur la même page que l'entrée précédente, une espace insécable devant les symboles d'unités SI et le pourcentage, ce qui corrobore — sans le prouver intégralement — le maintien de ces listes pour fr-CA."
+      "note": "beforeUnits, beforeNumber, beforeWord, abbreviations et initialBinding (spec 0.6.0 : le champ s'appelait auparavant le booléen bindInitials ; fr conserve \"single\", cité au § 5.1.3 d'André pour « N. Bourbaki ») sont repris tels quels de spec/locales/fr.json : aucune source spécifiquement québécoise n'a été consultée pour ces cas (seuls le point-virgule/point d'exclamation/point d'interrogation et le deux-points ont été vérifiés séparément auprès de l'OQLF, voir l'entrée précédente). L'OQLF confirme par ailleurs, sur la même page que l'entrée précédente, une espace insécable devant les symboles d'unités SI et le pourcentage, ce qui corrobore — sans le prouver intégralement — le maintien de ces listes pour fr-CA."
     },
     {
       "rule": "quotes",

@@ -1,5 +1,5 @@
 {
-  "spec": "0.1.0",
+  "spec": "1.0.0",
   "locale": "de-DE",
   "cases": [
     {
@@ -91,36 +91,64 @@
       "note": "dashes.md §6 case 12: already the target form."
     },
     {
-      "id": "de-de-dashes-range",
+      "id": "de-de-dashes-authored-en-dash-tight-declined",
       "rule": "dashes",
+      "mode": "text",
+      "in": "ein Wort–Wort Paar",
+      "out": "ein Wort–Wort Paar",
+      "note": "dashes.md §3.4 P5 (spec 0.6.0): a pure single authored U+2013 is declined unconditionally, even though de-DE's own `dash.parenthetical` target glyph is already U+2013 (`en-spaced`). Before P5, this tight authored en-dash would have been *re-spaced* (glyph already correct, only spacing missing) — P5 protects the token wholesale, spacing included, on the same operator decision recorded in dashes.md §8.8: the risk P5 guards against (an authored range/name dash silently read as ordinary parenthetical punctuation) is exactly as real when only spacing changes as when the glyph does too."
+    },
+    {
+      "id": "de-de-ranges",
+      "rule": "ranges",
       "mode": "text",
       "in": "Seiten 34-36",
       "out": "Seiten 34⁠–⁠36",
-      "note": "dashes.md §6 case 13 and case 44: dash.range = en-tight (Bundeskanzlei Rz. 234, „die Jahre 1939–1945“) — contrast ru, which sets an em dash here. The converted range is additionally wrapped in U+2060 word joiners (§3.3.1) so the interval cannot break across lines. The joiners are zero-width; spec/fixtures/.escaped/ is the only place they are visible."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). ranges.md §6 row 13 and case 44 (relocated from dashes.md §6 case 13 and case 44 through spec 0.4.1): dash.range = en-tight (Bundeskanzlei Rz. 234, „die Jahre 1939–1945“) — contrast ru, which sets an em dash here. The converted range is additionally wrapped in U+2060 word joiners (§3.3.1) so the interval cannot break across lines. The joiners are zero-width; spec/fixtures/.escaped/ is the only place they are visible.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "de-de-dashes-range-years",
-      "rule": "dashes",
+      "id": "de-de-ranges-years",
+      "rule": "ranges",
       "mode": "text",
       "in": "Die Jahre 1939-1945",
       "out": "Die Jahre 1939⁠–⁠1945",
-      "note": "Guards G4 (4,4) and G5 (non-decreasing) both pass, and the converted form carries its U+2060 joiners."
+      "note": "Moved from `dashes` to `ranges` (spec 0.5.0, opt-in — `rules: {ranges: true}` explicit here since `ranges` defaults off). Guards G4 (4,4) and G5 (non-decreasing) both pass (ranges.md §3.2), and the converted form carries its U+2060 joiners (ranges.md §3.3.1).",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "de-de-dashes-iso-date-and-isbn",
-      "rule": "dashes",
+      "id": "de-de-ranges-iso-date-and-isbn",
+      "rule": "ranges",
       "mode": "text",
       "in": "Erschienen 2026-08-15, ISBN 978-3-16-148410-0",
       "out": "Erschienen 2026-08-15, ISBN 978-3-16-148410-0",
-      "note": "dashes.md §6 case 6: guard G2 and the cluster guard."
+      "note": "spec 0.5.0 ownership correction: moved from `dashes` to `ranges` (`rules: {ranges: true}` explicit — `ranges` defaults off) — this case tests G1-G5/cluster/binding behaviour that `dashes` no longer evaluates at all for a digit-flanked token; it was vacuous under `rule: \"dashes\"` after the split. dashes.md §6 case 6: guard G2 and the cluster guard. ranges.md §3.2's G2 (chain) is the current normative guard rejecting this.",
+      "rules": {
+        "ranges": true
+      }
     },
     {
-      "id": "de-de-dashes-product-names",
+      "id": "de-de-dashes-covid",
       "rule": "dashes",
       "mode": "text",
-      "in": "COVID-19 und ISO 8859-1",
-      "out": "COVID-19 und ISO 8859-1",
-      "note": "dashes.md §6 case 5: cp[L] is a letter for the first, G4 fails (4 vs 1) for the second."
+      "in": "COVID-19",
+      "out": "COVID-19",
+      "note": "spec 0.5.0 ownership correction: split from the former combined `de-de-dashes-product-names` case (which bundled a genuine `dashes` witness with a genuine `ranges` witness in one string, letting one no-op stand in for two independent guarantees). This half tests `dashes` alone: `cp[L]` is the letter `D`, so the hyphen is a mixed letter/digit token, P1's compound-word guard declines it (dashes.md §3.4) — never a range candidate, since a range candidate needs a `DIGIT` on *both* sides (dashes.md §3.3, first paragraph). See `de-de-ranges-iso-8859` for the range-guard half."
+    },
+    {
+      "id": "de-de-ranges-iso-8859",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "ISO 8859-1",
+      "out": "ISO 8859-1",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0 ownership correction: split from the former combined `de-de-dashes-product-names` case. This half tests `ranges` alone, explicitly enabled: `8859-1` is digit-flanked, a genuine range candidate — G4 (equal-run-length, or the (1,2) branch) fails on (4,1), so it is declined (ranges.md §3.2). Without `rules: {ranges: true}` this input is already a no-op for the unrelated reason that `dashes` never reaches a digit-flanked token at all (dashes.md §1) — asserting it under `rule: \"dashes\"` would prove nothing about G4."
     },
     {
       "id": "de-de-dashes-authored-em-dash-converts",
@@ -155,6 +183,17 @@
       "note": "dashes.md §6 case 20, shipped idempotency defect (a): one cluster with three dash runs is inert in its entirety."
     },
     {
+      "id": "de-de-ranges-cluster-inert",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "1914-1918--annexation",
+      "out": "1914-1918--annexation",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0 ownership correction: companion to `de-de-dashes-cluster-inert`, added so the range-candidate half of the same cluster is honestly covered too (one no-op must not stand in for two independent guarantees). Explicitly opted in (`rules: {ranges: true}`): the `1914-1918` range candidate sits in the same three-dash-run cluster as the `--` before `annexation`, so `ranges`' own cluster guard (dash-shared.ts, shared with `dashes`) declines it too — cluster guard, ranges.md §3.1."
+    },
+    {
       "id": "de-de-dashes-spacing-transition-guard-spaced",
       "rule": "dashes",
       "mode": "text",
@@ -163,12 +202,34 @@
       "note": "dashes.md §6 case 24, shipped idempotency defect (c): guard T1 at distance 2."
     },
     {
+      "id": "de-de-ranges-spacing-transition-guard-spaced",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "a–1 - 1",
+      "out": "a–1 - 1",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0 ownership correction: companion to `de-de-dashes-spacing-transition-guard-spaced`. Explicitly opted in (`rules: {ranges: true}`): the trailing `1 - 1` is a genuine range candidate (spaced, digit-flanked), and it is declined independently of `dashes`' own T1 guard — G2 (\"no chain\", ranges.md §3.2) rejects it directly, because its effective left neighbour is the earlier em/en dash."
+    },
+    {
       "id": "de-de-dashes-spacing-transition-guard-tight",
       "rule": "dashes",
       "mode": "text",
       "in": "a–1-1",
       "out": "a–1-1",
       "note": "dashes.md §6 case 26: the tight sibling, guard T1 at distance 1."
+    },
+    {
+      "id": "de-de-ranges-spacing-transition-guard-tight",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "a–1-1",
+      "out": "a–1-1",
+      "rules": {
+        "ranges": true
+      },
+      "note": "spec 0.5.0 ownership correction: companion to `de-de-dashes-spacing-transition-guard-tight`. Explicitly opted in (`rules: {ranges: true}`): `1-1` is a genuine range candidate, and the whole `–1-1` span is one cluster with two dash runs, so `ranges`' own cluster guard declines it independently of `dashes`' step (cluster guard, ranges.md §3.1)."
     },
     {
       "id": "de-de-dashes-composition-guard-t2-dot",
@@ -473,6 +534,14 @@
       "in": "Er sagte « Wort » leise.",
       "out": "Er sagte „Wort“ leise.",
       "note": "quotes.md §6 row C2: same as the previous case, plus both inner runs are deleted (landings W and t, both in DELETE-LANDING) since de-DE's innerSpace is none."
+    },
+    {
+      "id": "de-de-quotes-rock-n-roll",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "rock 'n' roll",
+      "out": "rock 'n' roll",
+      "note": "spec 0.5.0: de-DE has no cited quotes.elisionIdioms entry for this idiom (quotes.md §7 item 8 — only en-US does, via Chicago Manual of Style Online and the American Heritage Dictionary). The general ambiguous-medial-span veto (quotes.md 3.2) preserves both marks as literal U+0027 rather than pairing them as an ordinary quotation, closing the false positive AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 3.1 named for \"equivalent cases in several locales.\""
     }
   ]
 }
