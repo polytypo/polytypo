@@ -264,31 +264,42 @@ describe.skipIf(!hasLocales)("idempotency across every rule subset", () => {
   }
 
   for (const locale of locales) {
-    it(`holds for all ${1 << ids.length} rule subsets in ${locale}`, () => {
-      const failures: Array<{ label: string; input: string }> = [];
-      for (const { label, rules } of subsets()) {
-        for (const input of subsetStrings()) {
-          const once = transform(input, { locale, rules });
-          if (transform(once, { locale, rules }) !== once) {
-            failures.push({ label, input });
+    // Exhaustively evaluates all 1 << ids.length rule subsets against the complete bounded
+    // input set (subsetStrings() over SUBSET_ALPHABET up to MAX_LENGTH) for this one locale —
+    // that workload size is intentional and release-blocking (idempotency across every rule
+    // combination is a hard invariant, not sampled). On the shared GitHub Actions runners this
+    // legitimately runs past Vitest's generic 5000ms default even though nothing is wrong; the
+    // explicit per-test timeout absorbs that infrastructure-speed variance without shrinking
+    // the enumeration itself.
+    it(
+      `holds for all ${1 << ids.length} rule subsets in ${locale}`,
+      () => {
+        const failures: Array<{ label: string; input: string }> = [];
+        for (const { label, rules } of subsets()) {
+          for (const input of subsetStrings()) {
+            const once = transform(input, { locale, rules });
+            if (transform(once, { locale, rules }) !== once) {
+              failures.push({ label, input });
+            }
           }
         }
-      }
 
-      // Shortest witness per input, with the subsets that exhibit it — the same shape of
-      // report the earlier rounds used, so a failure is actionable without a rerun.
-      const families = new Map<string, string[]>();
-      for (const failure of failures) {
-        const key = JSON.stringify(failure.input);
-        families.set(key, [...(families.get(key) ?? []), failure.label]);
-      }
-      const report = [...families.entries()]
-        .sort(([a], [b]) => a.length - b.length || (a < b ? -1 : 1))
-        .slice(0, 10)
-        .map(([input, labels]) => `${input} in ${labels.length} subset(s), e.g. ${labels[0]}`);
+        // Shortest witness per input, with the subsets that exhibit it — the same shape of
+        // report the earlier rounds used, so a failure is actionable without a rerun.
+        const families = new Map<string, string[]>();
+        for (const failure of failures) {
+          const key = JSON.stringify(failure.input);
+          families.set(key, [...(families.get(key) ?? []), failure.label]);
+        }
+        const report = [...families.entries()]
+          .sort(([a], [b]) => a.length - b.length || (a < b ? -1 : 1))
+          .slice(0, 10)
+          .map(([input, labels]) => `${input} in ${labels.length} subset(s), e.g. ${labels[0]}`);
 
-      expect(report, `non-idempotent (subset, input) in ${locale}`).toEqual([]);
-    });
+        expect(report, `non-idempotent (subset, input) in ${locale}`).toEqual([]);
+      },
+      30_000,
+    );
   }
 });
 
