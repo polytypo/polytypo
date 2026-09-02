@@ -179,6 +179,62 @@
       "note": "spaces.md §6 case 13d: the code point after the colon is a space, not EMOTICON-MOUTH, so the guard does not fire and ordinary STRIP-BEFORE behaviour is unaffected by its introduction."
     },
     {
+      "id": "en-us-spaces-emoticon-mouth-keeps-following-space",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Sorry :( it happens",
+      "out": "Sorry :( it happens",
+      "note": "spaces.md §6 case 13e / §3.6 mouth side: `(` is the mouth of a recognised emoticon, so the OPEN-BRACKET clause does not delete the space after it. This produced `Sorry :(it happens` before the mouth side existed, and `Sorry:(it happens` on a second pass."
+    },
+    {
+      "id": "en-us-spaces-emoticon-mouth-square-bracket",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Hmm :[ well",
+      "out": "Hmm :[ well",
+      "note": "spaces.md §6 case 13f: U+005B is the other EMOTICON-MOUTH member that is also an OPEN-BRACKET member, so it has the identical defect and the identical fix."
+    },
+    {
+      "id": "en-us-spaces-emoticon-mouth-with-nose",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Well :-( then",
+      "out": "Well :-( then",
+      "note": "spaces.md §6 case 13g: the backward walk steps over the nose and finds EMOTICON-EYE at cp[s-3]."
+    },
+    {
+      "id": "en-us-spaces-emoticon-mouth-semicolon",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Sure ;( again",
+      "out": "Sure ;( again",
+      "note": "spaces.md §3.6: U+003B is EMOTICON-EYE on the mouth side too, exactly as it is on the eye side."
+    },
+    {
+      "id": "en-us-spaces-nose-without-eye-not-emoticon",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "a -( b",
+      "out": "a -(b",
+      "note": "spaces.md §6 case 13h: a nose with no eye behind it is not a face, so the mouth side does not fire and the ordinary OPEN-BRACKET clause deletes the space. The discriminating negative case for the backward walk."
+    },
+    {
+      "id": "en-us-spaces-bracket-inner-not-a-mouth",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "word ( note )",
+      "out": "word (note)",
+      "note": "spaces.md §6 case 13i: the mouth side changes nothing for an ordinary bracket pair — this `(` is preceded by a space, not by an eye."
+    },
+    {
+      "id": "en-us-spaces-emoticon-mouth-eye-attached-to-word",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Note:( x )",
+      "out": "Note:( x)",
+      "note": "spaces.md §6 case 13j / §7 item 11: the mouth side puts no condition on what precedes the eye, so it fires here too and the space after the mouth survives while the one before the closer still goes. The asymmetry is the deliberate, conservative reading — a port that required the eye to start a token would pass every other fixture and diverge here."
+    },
+    {
       "id": "en-us-ellipsis-three-dots",
       "rule": "ellipsis",
       "mode": "text",
