@@ -214,6 +214,83 @@ describe.skipIf(!hasLocales)("mixed-kind straight marks are idempotent", () => {
 });
 
 /**
+ * The emoticon sweep. Neither alphabet above contains `:`, `;`, `(`, `)`, `!` or `?`, so no
+ * deterministic sweep in this file could reach a Western text emoticon — and the mouth-side defect
+ * in `spaces` (spec/rules/spaces.md 3.6) lived there: `a :( b` became `a :(b` on the first pass,
+ * damaging the text, and `a:(b` on the second. The only test that found it was an unseeded
+ * `fc.assert` in tests/rules/spaces.test.ts, so discovery was a matter of seed. Enumeration is what
+ * turns that into a guarantee.
+ *
+ * Length 6 is forced by the shortest witness — CONTENT, SPACE, eye, mouth, SPACE, LETTER — and the
+ * alphabet is the one the guard, the two bracket clauses and STRIP-BEFORE compete over. `[`, the
+ * other mouth that is also an OPEN-BRACKET member, is swept at rule level in
+ * tests/rules/spaces.test.ts, where a wider alphabet is affordable; this sweep is the end-to-end
+ * one, so it runs in every locale rather than trusting that `spaces` reads no locale data.
+ */
+describe.skipIf(!hasLocales)("emoticon-shaped inputs are idempotent", () => {
+  const EMOTICON_ALPHABET = [":", ";", "-", "(", ")", " ", "a", "!"];
+  const MAX_LENGTH = 6;
+
+  function* strings(): Generator<string> {
+    let frontier = [""];
+    yield "";
+    for (let length = 1; length <= MAX_LENGTH; length += 1) {
+      const next: string[] = [];
+      for (const prefix of frontier) {
+        for (const char of EMOTICON_ALPHABET) {
+          next.push(prefix + char);
+          yield prefix + char;
+        }
+      }
+      frontier = next;
+    }
+  }
+
+  for (const locale of locales) {
+    it(`every string up to ${MAX_LENGTH} characters over the emoticon alphabet is idempotent in ${locale}`, () => {
+      const broken: string[] = [];
+      for (const input of strings()) {
+        const once = transform(input, { locale });
+        // `transform` is pure (ARCHITECTURE.md §4: no I/O, no globals, no module-level mutable
+        // state), so a first pass that changed nothing makes the second pass the same call on the
+        // same input. Skipping it is sound and cuts this sweep's cost roughly in half — three
+        // quarters of 299_593 strings are already fixed points. The sweeps above still call
+        // `transform` twice unconditionally, so a stateful implementation is caught there.
+        if (once === input) continue;
+        if (transform(once, { locale }) !== once) {
+          broken.push(JSON.stringify(input));
+          if (broken.length >= 10) break;
+        }
+      }
+      expect(broken, `first non-idempotent emoticon-alphabet inputs in ${locale}`).toEqual([]);
+    });
+  }
+
+  // The invariant idempotency cannot see: `a :(b` is a fixed point and still damaged text.
+  // Only the space *after* the mouth is asserted end to end. The one before the eye is [R]
+  // (spaces.md §4): in a locale whose `nbsp.beforePunctuation` lists U+003A, `nbsp` (R₈) converts
+  // it to a no-break form when the mouth is a closing bracket — French `a :) b`. Nothing touches
+  // the space after the mouth, so that is the one this guard owns end to end.
+  it("keeps the space after an emoticon's mouth in every locale", () => {
+    const damaged: string[] = [];
+    for (const locale of locales) {
+      for (const eye of [":", ";"]) {
+        for (const nose of ["", "-"]) {
+          for (const mouth of ["(", ")", "[", "]", "D", "P"]) {
+            const input = `a ${eye}${nose}${mouth} b`;
+            const output = transform(input, { locale });
+            if (!output.endsWith(`${mouth} b`)) {
+              damaged.push(`${locale}: ${JSON.stringify(input)} -> ${JSON.stringify(output)}`);
+            }
+          }
+        }
+      }
+    }
+    expect(damaged, "emoticons that lost the space after the mouth").toEqual([]);
+  });
+});
+
+/**
  * The composition argument in spec/rules/pipeline-idempotency.md is made for the default rule
  * set, but `rules` is public API: 2^n configurations are reachable, and switching a rule off
  * exposes the rules after it to text the disabled one would have normalised (no `spaces` means

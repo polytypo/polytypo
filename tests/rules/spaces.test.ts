@@ -47,6 +47,12 @@ describe("spaces — worked examples (spec/rules/spaces.md 6)", () => {
     ["13b", "Hello :Deal with it", "Hello:Deal with it"],
     ["13c", "10:30", "10:30"],
     ["13d", "See you at 10 : 30", "See you at 10: 30"],
+    ["13e", "Sorry :( it happens", "Sorry :( it happens"],
+    ["13f", "Hmm :[ well", "Hmm :[ well"],
+    ["13g", "Well :-( then", "Well :-( then"],
+    ["13h", "a -( b", "a -(b"],
+    ["13i", "word ( note )", "word (note)"],
+    ["13j", "Note:( x )", "Note:( x)"],
   ];
 
   for (const [n, input, expected] of cases) {
@@ -92,6 +98,116 @@ describe("spaces — the emoticon guard (spec/rules/spaces.md 3.6)", () => {
       const once = run(input);
       expect(run(once)).toBe(once);
     }
+  });
+});
+
+// The mouth side. `(` and `[` are EMOTICON-MOUTH and OPEN-BRACKET at once, and step 5's
+// opening-bracket clause used to win: `a :( b` -> `a :(b` (text damage) -> `a:(b` (a second-pass
+// divergence, because a letter after the mouth stops the eye side firing).
+describe("spaces — the emoticon guard, mouth side (spec/rules/spaces.md 3.6)", () => {
+  it("keeps the space after a mouth that is also an opening bracket", () => {
+    for (const eye of [":", ";"]) {
+      for (const nose of ["", "-", "^"]) {
+        for (const mouth of ["(", "["]) {
+          const input = `a ${eye}${nose}${mouth} b`;
+          expect(run(input)).toBe(input);
+        }
+      }
+    }
+  });
+
+  // The reading a narrower port would take — "the eye must begin a token" — passes every other
+  // case here and diverges on this one (spec/rules/spaces.md §7 item 11).
+  it("asks nothing about what precedes the eye", () => {
+    expect(run("Note:( x )")).toBe("Note:( x)");
+    expect(run("Hi!:( yes")).toBe("Hi!:( yes");
+    expect(run("a:[ b")).toBe("a:[ b");
+  });
+
+  it("does not fire without an eye behind the mouth", () => {
+    expect(run("a -( b")).toBe("a -(b");
+    expect(run("a ^[ b")).toBe("a ^[b");
+    expect(run("a ( b")).toBe("a (b");
+    expect(run("word ( note )")).toBe("word (note)");
+  });
+
+  it("suppresses the opening-bracket clause only", () => {
+    // CLOSE-BRACKET and STRIP-BEFORE still delete; neither can strand a letter after the mouth.
+    expect(run("a :) )")).toBe("a :))");
+    expect(run("a :) !")).toBe("a :)!");
+    // The empty-bracket guard still collapses rather than skips (spec/rules/spaces.md 3.3).
+    expect(run("a :(  )")).toBe("a :( )");
+    expect(run("- [ ] item")).toBe("- [ ] item");
+  });
+
+  it("is idempotent on the shapes that used to diverge", () => {
+    for (const input of ["a :( b", "! :( a", "x :( y", "! ;( a", "! :-( a", "a :[ b"]) {
+      expect(run(input)).toBe(input);
+      expect(run(run(input))).toBe(input);
+    }
+  });
+});
+
+/**
+ * Deterministic and exhaustive, because the seeded kind is not enough: the mouth-side defect was
+ * discovered by the unseeded `fc.assert` at the foot of this file and hidden from most of its
+ * seeds, and none of the three sweep alphabets in tests/engine/idempotency.test.ts contains an
+ * emoticon character at all. A pinned regression seed would record one witness, not the class.
+ *
+ * The shortest witness is six code points — CONTENT, SPACE, eye, mouth, SPACE, LETTER — so the
+ * enumeration runs to length 6. It is rule-local (`run` drives `spacesRule.apply` directly), which
+ * is where the defect lives and is cheap enough to afford both mouths that are also brackets:
+ * `[` is in the alphabet, and the pipeline-level sweep in tests/engine/idempotency.test.ts covers
+ * `(` end to end in every locale.
+ */
+describe("spaces — bounded exhaustive sweep over the emoticon alphabet", () => {
+  const SWEEP_ALPHABET = [":", ";", "-", "(", ")", "[", "]", " ", "a", "!"];
+  const MAX_LENGTH = 6;
+
+  function* strings(): Generator<string> {
+    let frontier = [""];
+    yield "";
+    for (let length = 1; length <= MAX_LENGTH; length += 1) {
+      const next: string[] = [];
+      for (const prefix of frontier) {
+        for (const char of SWEEP_ALPHABET) {
+          next.push(prefix + char);
+          yield prefix + char;
+        }
+      }
+      frontier = next;
+    }
+  }
+
+  it(`every string up to ${MAX_LENGTH} characters is a fixed point of apply`, () => {
+    const broken: string[] = [];
+    for (const input of strings()) {
+      const once = run(input);
+      if (run(once) !== once) {
+        broken.push(JSON.stringify(input));
+        if (broken.length >= 10) break;
+      }
+    }
+    expect(broken, "first non-idempotent inputs over the emoticon alphabet").toEqual([]);
+  });
+
+  // Idempotency alone would accept `a :(b` — stable, and still damaged. This is the other half:
+  // the space after a recognised mouth survives whenever what follows it is ordinary word text.
+  it("never deletes the space after a recognised mouth", () => {
+    const damaged: string[] = [];
+    for (const before of ["a", "1", "!", "x."]) {
+      for (const eye of [":", ";"]) {
+        for (const nose of ["", "-", "^"]) {
+          for (const mouth of ["(", ")", "[", "]", "D", "P", "o", "/", "*"]) {
+            for (const after of ["b", "1", "a b", "ok"]) {
+              const input = `${before} ${eye}${nose}${mouth} ${after}`;
+              if (run(input) !== input) damaged.push(JSON.stringify(input));
+            }
+          }
+        }
+      }
+    }
+    expect(damaged, "emoticons whose surrounding word spacing was not preserved").toEqual([]);
   });
 });
 

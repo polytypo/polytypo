@@ -171,11 +171,39 @@ function isEmoticon(cp: readonly number[], e: number): boolean {
   return !isLetter(after) && !isDigitAscii(after);
 }
 
-function replacementLength(cp: readonly number[], e: number, left: number, right: number): number {
+/**
+ * spec/rules/spaces.md 3.6, the mouth side. `(` and `[` are EMOTICON-MOUTH members and
+ * OPEN-BRACKET members at once, so without this the opening-bracket clause deleted the space
+ * after an emoticon the eye side had just recognised: `a :( b` became `a :(b`, and then `a:(b`
+ * on a second pass, because a letter after the mouth stops the eye side firing.
+ *
+ * The walk is the eye side's, backwards from `s`, and it needs no trailing check: the code point
+ * after the mouth is the space run itself, which is neither a letter nor a digit. A nose with no
+ * eye behind it is not a face — EMOTICON-NOSE and EMOTICON-EYE are disjoint, so the walk cannot
+ * mistake one for the other.
+ */
+function isEmoticonEnd(cp: readonly number[], s: number): boolean {
+  if (!isEmoticonMouth(at(cp, s - 1))) return false;
+
+  let j = s - 2;
+  const nose = at(cp, j);
+  if (nose === HYPHEN_MINUS || nose === CARET) j -= 1;
+
+  const eye = at(cp, j);
+  return eye === COLON || eye === SEMICOLON;
+}
+
+function replacementLength(
+  cp: readonly number[],
+  s: number,
+  e: number,
+  left: number,
+  right: number,
+): number {
   // The guard is a clause of this decision, not a "skip the run" branch: `(  )` collapses to
   // `( )` (spec/rules/spaces.md 3.3, normative reading).
   if (isEmptyBracketGuarded(left, right)) return 1;
-  if (isOpenBracket(left)) return 0;
+  if (isOpenBracket(left) && !isEmoticonEnd(cp, s)) return 0;
   if (isCloseBracket(right)) return 0;
   if (isStripBefore(right) && isLoneDot(cp, e) && !isEmoticon(cp, e)) return 0;
   return 1;
@@ -221,7 +249,7 @@ export const spacesRule: Rule = {
         continue;
       }
 
-      const length = replacementLength(cp, e, left, right);
+      const length = replacementLength(cp, s, e, left, right);
       if (length !== k) {
         edits.push({
           start: s,

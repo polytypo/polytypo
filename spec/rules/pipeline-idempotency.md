@@ -94,12 +94,20 @@ that `y` contains **no U+0020 in any of these positions**:
 - **S-b** a U+0020 whose right neighbour is in `STRIP-BEFORE` = { U+002C, U+002E, U+003B,
   U+003A, U+0021, U+003F } and whose left neighbour is `CONTENT` — **and**, when that right
   neighbour is U+002E, the maximal run of { U+002E, U+2026 } beginning there has length exactly
-  1 (`spaces.md` §3.4). U+2026 is not a member of `STRIP-BEFORE`;
+  1 (`spaces.md` §3.4) — **and** unless the emoticon guard's eye side fires, i.e. that right
+  neighbour is the eye of a recognised emoticon (`spaces.md` §3.6);
+  U+2026 is not a member of `STRIP-BEFORE`;
 - **S-c** a U+0020 whose left neighbour is in { U+0028, U+005B, U+007B } — unless the
-  empty-bracket guard applies;
-- **S-d** a U+0020 whose right neighbour is in { U+0029, U+005D, U+007D } — same proviso.
+  empty-bracket guard applies, and unless the emoticon guard's mouth side fires, i.e. that left
+  neighbour is the mouth of a recognised emoticon (`spaces.md` §3.6);
+- **S-d** a U+0020 whose right neighbour is in { U+0029, U+005D, U+007D } — same
+  empty-bracket proviso. The emoticon guard does not apply here: it suppresses the
+  `STRIP-BEFORE` and `OPEN-BRACKET` clauses only, never this one.
 
-See `spaces.md` §3.1–§3.3 for the exact definitions of `CONTENT` and the guard.
+See `spaces.md` §3.1–§3.3 for the exact definitions of `CONTENT` and the guard, and §3.6 for the
+emoticon guard's two sides. Both emoticon provisos narrow the forbidden set, so every discharge
+already written against S-b, S-c or S-d stays valid without re-derivation — a rule that emits no
+U+0020 in the wider set emits none in the narrower one.
 
 **Who can violate it.** Only a rule that emits U+0020. In the current pipeline that is
 `dashes` alone (`-spaced` forms). `nbsp` emits U+00A0 and U+202F, which are `CONTENT` to
