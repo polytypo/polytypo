@@ -1,7 +1,8 @@
 # Rule: `spaces`
 
 **Order:** 10 (first). **Default:** on. **Modes:** text, html, markdown.
-**Spec version:** 0.2.0.
+**Spec version:** 1.0.0 (0.2.0 for everything except §3.6's mouth side and the clause it adds to
+§3.2 step 5, noted inline).
 
 ---
 
@@ -49,7 +50,7 @@ The input is a code-point array `cp[0 … n-1]`. Indices below are code-point in
 | `CLOSE-BRACKET`   | U+0029 `)` U+005D `]` U+007D `}`                                                                                                                                                                                                                         |
 | `EMOTICON-EYE`    | U+003A (:), U+003B (;) — a subset of `STRIP-BEFORE`, not a new code point this rule reads outside it. See §3.6                                                                                                                                          |
 | `EMOTICON-NOSE`   | U+002D (-), U+005E (^). Optional. See §3.6                                                                                                                                                                                                               |
-| `EMOTICON-MOUTH`  | U+0028 `(`, U+0029 `)`, U+005B `[`, U+005D `]`, U+0044 `D`, U+0064 `d`, U+0050 `P`, U+0070 `p`, U+004F `O`, U+006F `o`, U+002F `/`, U+005C `\`, U+007C `|`, U+002A `*`. See §3.6                                                                          |
+| `EMOTICON-MOUTH`  | U+0028 `(`, U+0029 `)`, U+005B `[`, U+005D `]`, U+0044 `D`, U+0064 `d`, U+0050 `P`, U+0070 `p`, U+004F `O`, U+006F `o`, U+002F `/`, U+005C `\`, U+007C `|`, U+002A `*`. U+0028 and U+005B are `OPEN-BRACKET` members too, and U+0029 and U+005D are `CLOSE-BRACKET` members — the overlap is what §3.6's mouth side exists for. See §3.6 |
 
 `STRIP-BEFORE` contains only these **six** code points. It deliberately excludes closing
 quotation marks and guillemets: their inner spacing is `nbsp`'s business (`quotes.innerSpace`),
@@ -85,10 +86,11 @@ and stripping there would fight with it.
      insertion is then refused at the span edge.
 5. **Decide the replacement length in one step** (never two passes — see §5):
    - If the _empty-bracket guard_ (§3.3) fires → replacement length **1**.
-   - Else if `left` is in `OPEN-BRACKET` → replacement length 0.
+   - Else if `left` is in `OPEN-BRACKET` **and the emoticon guard's mouth side (§3.6) does not
+     fire** → replacement length 0.
    - Else if `right` is in `CLOSE-BRACKET` → replacement length 0.
    - Else if `right` is in `STRIP-BEFORE` **and the lone-dot condition (§3.4) holds and the
-     emoticon guard (§3.6) does not fire** → replacement length 0.
+     emoticon guard's eye side (§3.6) does not fire** → replacement length 0.
    - Else → replacement length 1.
      The guard is a clause of this decision, not a separate "skip the run" branch. **This
      reading is normative**; see §3.3.
@@ -112,8 +114,9 @@ normative. Reasons: the guard exists to prevent _deletion_, and collapsing a dou
 the rule's ordinary business everywhere else; a run of two spaces inside an empty bracket pair
 carries no structural meaning in any of the three modes (the GFM task-list marker is
 `"[ ]"` with exactly one space — `"[  ]"` is not a checkbox in any implementation); and the
-one-clause form keeps §3.2 step 5 a single total function of `left` and `right`, which is what
-the idempotency argument in §5 relies on. The two-space case is a fixture.
+one-clause form keeps §3.2 step 5 a single total function of the run's context — `left`, `right`
+and the bounded lookaround of §3.4 and §3.6 — rather than a decision plus a separate skip branch,
+which is what the idempotency argument in §5 relies on. The two-space case is a fixture.
 
 The guard exists for one specific ship-blocking reason: the GitHub-Flavoured Markdown
 task-list marker `"- [ ] item"`. Collapsing that space is a no-op; _deleting_ it produces
@@ -233,13 +236,50 @@ punctuation never wants a preceding space (hence `STRIP-BEFORE`), but an emotico
 its own right and the space before it is ordinary word spacing that must survive — `Привет :-)`
 must not become `Привет:-)`.
 
-> **Emoticon guard.** For a run whose `right` (at index `e`) is in `EMOTICON-EYE`, walk forward:
+Two of the mouth glyphs, U+0028 `(` and U+005B `[`, are also `OPEN-BRACKET` members, so the same
+token has to be protected from the other end as well: the space **after** the mouth is ordinary
+word spacing too, and the opening-bracket clause of §3.2 step 5 must not eat it. The guard
+therefore has two sides. They recognise the same shape — `EMOTICON-EYE`, optional
+`EMOTICON-NOSE`, `EMOTICON-MOUTH` — and differ only in which end of the space run it sits at, and
+in which clause of step 5 they suppress.
+
+> **Emoticon guard, eye side.** For a run whose `right` (at index `e`) is in `EMOTICON-EYE`, walk
+> forward:
 >
 > 1. Let `i = e + 1`. If `cp[i]` is in `EMOTICON-NOSE`, set `i = i + 1`.
 > 2. If `cp[i]` is not in `EMOTICON-MOUTH`, the guard does not fire.
 > 3. Otherwise let `after = cp[i + 1]` (or `NONE`). If `after` is a `LETTER` (ARCHITECTURE.md
 >    §4.1's Unicode category test, as used throughout this spec) or an ASCII digit, the guard
->    does not fire. Otherwise **the guard fires**, and step 5 of §3.2 does not strip the space.
+>    does not fire. Otherwise **the guard fires**, and the `STRIP-BEFORE` clause of §3.2 step 5
+>    does not strip the space.
+
+> **Emoticon guard, mouth side.** For a run whose `left` (at index `s-1`) is in `EMOTICON-MOUTH`,
+> walk backward:
+>
+> 1. Let `j = s - 2`. If `cp[j]` is in `EMOTICON-NOSE`, set `j = j - 1`.
+> 2. If `cp[j]` is not in `EMOTICON-EYE`, the guard does not fire.
+> 3. Otherwise **the guard fires**, and the `OPEN-BRACKET` clause of §3.2 step 5 does not delete
+>    the run.
+>
+> There is no trailing check on this side and none is needed: the code point after the mouth is
+> the space run itself, which is neither a `LETTER` nor an ASCII digit, so the eye side's step 3
+> is satisfied here by construction.
+
+**What the mouth side fixes.** Without it the two clauses of step 5 contradicted each other about
+the same character: the eye side recognised `(` as a mouth while the opening-bracket clause went on
+reading it as a bracket. `a :( b` became `a :(b`, gluing the next word onto the emoticon — a false
+positive of exactly the kind the M4 gate (`docs/ROADMAP.md`) forbids — and the damage propagated,
+because with no space after the mouth `after` is a `LETTER`, the eye side stops firing, and a second
+pass strips the space in front of the eye as well: `a:(b`. That is a two-pass divergence, a release
+blocker under [pipeline-idempotency.md](pipeline-idempotency.md), and the eye side's own idempotency
+claim was what had been wrong.
+
+**Only the `OPEN-BRACKET` clause is suppressed.** The wider reading — "a run abutting a recognised
+emoticon is always length 1" — was considered and rejected as broader than the defect. It would also
+silence the `CLOSE-BRACKET` clause (`a :) )` would stay as typed instead of becoming `a :))`) and the
+`STRIP-BEFORE` clause (`a :) , b`), neither of which damages the emoticon or the words around it,
+and each of which would need its own composition argument. The mouth side is the smallest change
+that closes the defect.
 
 **Why the trailing check.** Without it, `:D` inside an ordinary word — `:Deal with it`,
 `;Design review` — would read as an emoticon and keep a space that sentence punctuation never
@@ -256,10 +296,32 @@ exists because `STRIP-BEFORE`'s membership of U+003A and U+003B was already norm
 locale-independent (§2), and an emoticon eye is the one shape that class was silently getting
 wrong; it is not a general-purpose emoticon detector and does not try to be one.
 
-**Idempotency.** The guard reads only `cp[e]`, `cp[e+1]` and `cp[e+2]`, none of which this rule
-or any earlier rule (`spaces` is R₁, §5) ever modifies, so its verdict is stable across a
-re-run for the same reason every other clause of §3.2 step 5 is: it is a pure function of
-code points this rule does not write.
+**Both sides require an eye.** The backward walk is unambiguous because `EMOTICON-NOSE` and
+`EMOTICON-EYE` are disjoint, and a nose on its own is not a face: `a -( b` still becomes `a -(b`
+under the ordinary opening-bracket clause.
+
+**Idempotency.** An earlier revision claimed here that the guard "reads only `cp[e]`, `cp[e+1]` and
+`cp[e+2]`, none of which this rule … ever modifies". Both halves were false: with a nose the eye
+side reads through `cp[e+3]`, and step 3's `after` is, in precisely the shape that broke, the U+0020
+run step 5 was about to delete — so the verdict was not a pure function of code points this rule
+does not write. The correct argument has one part per side.
+
+- **Mouth side.** It reads `cp[s-1]`, `cp[s-2]` and `cp[s-3]`, and in no position it accepts is that
+  a U+0020: an eye, a nose and a mouth are all `CONTENT` and must be adjacent. This rule never
+  inserts a code point and never removes a non-space one, so a shape it recognised in the input is
+  still contiguous and unchanged in the output. The verdict can therefore only move from "does not
+  fire" to "fires" — never the reverse — and firing only ever preserves a run, so neither direction
+  can produce a second-pass edit.
+- **Eye side.** Whenever the eye side fires, the mouth side recognises the same three code points
+  from the other end: the two walks read `EMOTICON-NOSE` and `EMOTICON-EYE`, which are disjoint, so
+  the backward walk's optional step over a nose cannot swallow the eye and the two sides cannot
+  disagree about the shape. A run whose `left` is that mouth is therefore protected from the
+  `OPEN-BRACKET` clause, and the only clauses of step 5 that can still delete it are the
+  `CLOSE-BRACKET` clause and the `STRIP-BEFORE` clause. The code point that comes to sit after the
+  mouth is then one of `)` `]` `}` or one of `STRIP-BEFORE`'s six; none of those nine is a `LETTER`
+  or an ASCII digit, so step 3 still passes on the re-run. Every other outcome — the empty-bracket
+  guard, a collapse to length 1, a run skipped by the boundary guard of §3.2 step 4 — leaves the
+  U+0020 in place, so `after` is unchanged. Either way the eye side's verdict survives the re-run.
 
 ### 3.7 Worked trace
 
@@ -308,8 +370,15 @@ here; but later rules touch some of the same characters, and those bullets are m
 - **[P] `"[ ]"`, `"( )"`, `"{ }"`** — see §3.3.
 - **[R] Spaces before a closing quotation mark or guillemet.** Owned by `nbsp` via
   `quotes.innerSpace`.
-- **[R] A space before an emoticon's eye.** §3.6. `Привет :-)` keeps its space in every locale;
-  this rule reads no locale data (§2) and the guard is not locale-dependent either.
+- **[R] A space before an emoticon's eye, and a space after an emoticon's mouth.** §3.6.
+  `Привет :-)` keeps its space in every locale, and so does `Привет :-( снова`, whose second space
+  would otherwise go to the opening-bracket clause. This rule reads no locale data (§2) and neither
+  side of the guard is locale-dependent either.
+  _[R]: `nbsp` (R₈) may convert the space **before** the eye to a no-break form in a locale whose
+  `nbsp.beforePunctuation` lists U+003A or U+003B — French `a :) b` yields `a⍽:) b`, because
+  [nbsp.md](nbsp.md) §3.3 step 2's right-context guard admits `CLOSEISH` after the mark. The run is never
+  deleted, so word spacing survives; one code point changes class. The space **after** the mouth
+  is touched by no later rule._
 - **[P] U+037E, U+0387, U+00B7.** In no class of this rule and of no other. A space before an
   άνω τελεία survives, and a Greek compatibility code point is never rewritten to the character
   it canonically decomposes to — §3.5. Note that the Greek ερωτηματικό is _not_ an exception
@@ -334,9 +403,10 @@ zero or one U+0020. Consider the output `T(x)` and re-run the scan.
   `CONTENT`. No new `SPACE` run has been created — deletion cannot create a space — so
   there is nothing to re-examine at that position.
 - A run replaced by one space is now a run of length `k' = 1` with the same `left` and
-  `right`. Re-running step 5 on it yields the same decision (the decision is a pure function
-  of `left` and `right` only), namely replacement length 1, and step 6 then emits nothing
-  because `k' = 1` already equals the replacement length.
+  `right`. Re-running step 5 on it yields the same decision — it is a function of `left`, `right`
+  and the bounded lookaround of §3.4 and §3.6, each of which argues its own window's stability —
+  namely replacement length 1, and step 6 then emits nothing because `k' = 1` already equals the
+  replacement length.
 - A skipped run is skipped again for the same reason (its guard condition depends only on
   `left`, `right` and bracket matching, all unchanged).
 
@@ -405,8 +475,14 @@ verdict here, so naming the locale is what makes the claim checkable.
 | 13b | `Hello␣:Deal␣with␣it`  | `Hello:Deal␣with␣it` | `D` is `EMOTICON-MOUTH`, but `e` immediately after it is a `LETTER` — the guard does not fire, and ordinary `STRIP-BEFORE` behaviour applies                        |
 | 13c | `10:30`                | ⟶                  | no space run at all — outside this rule's scope regardless of the guard                                                                                             |
 | 13d | `See␣you␣at␣10␣:␣30`  | `See␣you␣at␣10:␣30` | `:` is `EMOTICON-EYE`, but the very next code point is a space, not `EMOTICON-MOUTH` — the guard does not fire; ordinary `STRIP-BEFORE` strips the leading space, and the trailing space (right neighbour `3`, not `STRIP-BEFORE`) is untouched |
+| 13e | `Sorry␣:(␣it␣happens`  | ⟶                  | **mouth side (§3.6).** `(` is the mouth of a recognised emoticon, so the opening-bracket clause does not delete the space after it. Previously produced `Sorry␣:(it␣happens`, and then `Sorry:(it␣happens` on a second pass |
+| 13f | `Hmm␣:[␣well`          | ⟶                  | same, for the other mouth that is also an `OPEN-BRACKET` member — `[` |
+| 13g | `Well␣:-(␣then`        | ⟶                  | same, with a nose: the backward walk steps over `-` and finds the eye at `cp[s-3]`                                                                                                                                                   |
+| 13h | `a␣-(␣b`               | `a␣-(b`            | a nose with no eye behind it is not a face — the mouth side does not fire and the opening-bracket clause applies as usual                                                                                                            |
+| 13i | `word␣(␣note␣)`        | `word␣(note)`      | the ordinary bracket-inner case, unchanged by the mouth side: `(` here is preceded by a space, not by an eye                                                                                                                          |
+| 13j | `Note:(␣x␣)`           | `Note:(␣x)`        | the mouth side puts **no** condition on what precedes the eye, so it fires on a word-attached eye too: the space after the mouth survives while the one before the closer still goes — §7 item 11                                    |
 
-Cases 4, 5, 6, 8, 10a, 10b, 10c, 10e, 11, 13 and 13a are "no change" cases.
+Cases 4, 5, 6, 8, 10a, 10b, 10c, 10e, 11, 13, 13a, 13e, 13f and 13g are "no change" cases.
 
 ---
 
@@ -509,3 +585,19 @@ Cases 4, 5, 6, 8, 10a, 10b, 10c, 10e, 11, 13 and 13a are "no change" cases.
    and at that point the right shape is `ellipsis.noSpaceBefore` consumed by `ellipsis` — which
    already reads locale data — rather than anything in this rule. Recorded in `ellipsis.md` §7 and
    in `spec/locales/el.json`'s `ellipsis` note, so that all three say the same thing.
+10. **An emoticon directly inside a bracket pair still loses the space before its eye.**
+    `(␣:(␣b␣)` yields `(:(␣b)`: the opening-bracket clause acts on the outer `(`, and §3.6's eye
+    side never sees that run because it only suppresses the `STRIP-BEFORE` clause. Pre-existing
+    behaviour, identical for `(␣:)␣b␣)`, and it is a bracket-inner deletion of exactly the kind
+    case 3 asks for — so it was left alone rather than folded into the mouth-side fix. Recorded so
+    that anyone tempted to widen the guard "for symmetry" starts from the fact that it is the outer
+    bracket, not the emoticon, that owns that space.
+11. **The mouth side asks nothing about what precedes the eye, and that is deliberate.** `Note:( x )`
+    yields `Note:( x)` — asymmetric, because the mouth side keeps the inner space on the left while
+    the `CLOSE-BRACKET` clause still takes the one on the right. The alternative, requiring the eye
+    to begin a token (`SPACE`, `BREAK` or `NONE` before it), would restore the symmetry for that
+    input and lose `Hi!:( yes`, where the eye is attached to the preceding word and the shape is
+    still a face. Deleting is the irreversible direction, so the reading that deletes less wins —
+    the same principle as §3.4 and §7.9. Pinned by the fixture `en-us-spaces-emoticon-mouth-eye-attached-to-word`,
+    which is the case that discriminates the two readings; without it a port could take the narrower
+    one and still pass the whole suite.
