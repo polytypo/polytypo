@@ -1,0 +1,80 @@
+<!-- Shared by the home page and /playground via the {{playground}} token — see build_promo.py. -->
+<div class="demo" id="pg-demo">
+  <div class="pg-bar">
+    <label
+      title="Which locale's quotes, dashes and spacing to apply. Required — no fallback to English."
+    >
+      Locale
+      <select id="pg-locale"></select>
+    </label>
+    <label
+      title="text: no markup parsing, the whole input is prose. html: parse5 touches only text nodes, never tags or attributes. markdown: micromark touches only prose, never code spans/blocks or front matter."
+    >
+      Mode
+      <select id="pg-mode">
+        <option value="text">text</option>
+        <option value="html">html</option>
+        <option value="markdown">markdown</option>
+      </select>
+    </label>
+    <label
+      id="pg-dialect-wrap"
+      hidden
+      title="Markdown-only, no default. commonmark vs mdx changes how ambiguous syntax like &lt;https://…&gt; is parsed — the two disagree, so this can't be auto-detected."
+    >
+      Dialect
+      <select id="pg-dialect">
+        <option value="commonmark">commonmark</option>
+        <option value="mdx">mdx</option>
+      </select>
+    </label>
+  </div>
+  <div class="split">
+    <div class="pane-l">
+      <label class="who" for="pg-input">Input <span id="pg-count"></span></label>
+      <textarea
+        id="pg-input"
+        class="pg-textarea"
+        spellcheck="false"
+        autocapitalize="off"
+        placeholder='Paste or type text here — try: "It&apos;s a test" - said no one -- ever...'
+      ></textarea>
+    </div>
+    <div class="pane-r">
+      <div class="who pg-out-head">
+        <span id="pg-output-label">Output</span>
+        <button type="button" class="pg-copy" id="pg-copy-output">Copy Output</button>
+      </div>
+      <div
+        class="txt set pg-output"
+        id="pg-output"
+        role="region"
+        aria-labelledby="pg-output-label"
+      ></div>
+      <p class="pg-action-status" id="pg-action-status" role="status" aria-atomic="true"></p>
+    </div>
+  </div>
+  <div class="foot" id="pg-foot" role="status" aria-atomic="true"></div>
+</div>
+
+<p class="eyebrow" style="margin-top: var(--space-7)">
+  The call the form above is making, right now
+</p>
+<div class="tabs" id="call-tabs"></div>
+<div id="call-panes">
+  <div class="pane" data-label="JavaScript / TypeScript">
+    <pre><code id="call-code-js"></code></pre>
+  </div>
+  <div class="pane" data-label="Python">
+    <pre><code id="call-code-py"></code></pre>
+  </div>
+  <div class="pane" data-label="Go">
+    <pre><code id="call-code-go"></code></pre>
+  </div>
+  <div class="pane" data-label="Ruby">
+    <pre><code id="call-code-rb"></code></pre>
+  </div>
+  <div class="pane" data-label="PHP">
+    <pre><code id="call-code-php"></code></pre>
+  </div>
+</div>

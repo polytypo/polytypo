@@ -131,15 +131,28 @@ describe("promo pages — no analytics, trackers, cookies, or remote sharing SDK
     }
   });
 
-  it("permalink sharing never sends input anywhere — no fetch()/XMLHttpRequest in the playground", () => {
-    const html = readPromoPage("playground/index.html");
-    expect(html).not.toContain("fetch(");
-    expect(html).not.toContain("XMLHttpRequest");
-    expect(html).not.toContain("new WebSocket");
-  });
+  // Both pages that embed the playground, not just /playground: the home page now carries the
+  // same form, so the "what you type never leaves your browser" property has to hold on two pages.
+  // This replaces the previous check that the removed Copy Link feature *documented* itself as
+  // fragment-only — the prose is gone with the feature, so the property is asserted directly, on
+  // more pages than before, instead of via a claim about wording.
+  it.each(["index.html", "playground/index.html"])(
+    "%s never sends input anywhere — no fetch()/XMLHttpRequest/WebSocket/form submission",
+    (page) => {
+      const html = readPromoPage(page);
+      expect(html).not.toContain("fetch(");
+      expect(html).not.toContain("XMLHttpRequest");
+      expect(html).not.toContain("new WebSocket");
+      expect(html).not.toMatch(/<form[\s>]/i);
+    },
+  );
 
-  it("the Copy Link permalink is documented as fragment-only, never sent to a server", () => {
-    const html = readPromoPage("playground/index.html");
-    expect(html).toMatch(/never sent to any server/);
+  it("the lazily loaded engine bundle arrives as a <script> element, not an outbound request API", () => {
+    // The home page fetches the engine on first interaction. Doing that with fetch()/XHR would
+    // both break the assertion above and be a genuinely different privacy posture (a request body
+    // this page could put anything into), so the loader is pinned to script-element injection.
+    const html = readPromoPage("index.html");
+    expect(html).toContain("script.src = ENGINE_SRC");
+    expect(html).toContain('document.createElement("script")');
   });
 });

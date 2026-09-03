@@ -7,49 +7,47 @@
     <code>—</code> is typography, not a watermark.
   </p>
   <p class="tagline" style="margin-top: var(--space-7)">
+    Polytypo automates typographic craft correctly: {{locale_count}} locales, one portable spec,
+    {{rules_count}} rules — quotes, dashes, ellipses, apostrophes, symbols, and the no-break spaces
+    nobody sees until they're missing. JavaScript is the implemented runtime today; four more ports
+    are planned from the same spec.
+  </p>
+</header>
+
+{{playground}}
+
+<p class="small muted" style="margin-top: var(--space-4)">
+  Every field's own comment carries its type, default and allowed values.
+  <strong>None of them fall back to a default when the value is wrong or missing</strong> — each
+  throws its own error, with a machine-readable <code>code</code>, rather than guessing what you
+  meant. Full option and error-code reference — <a href="{{prefix}}docs/#use">Docs</a>.
+</p>
+
+<section id="why-it-exists">
+  <p>
     A dash, a curly quote, or a non-breaking space in your text isn't proof a model wrote it —
     publishers, typesetters, and copyeditors have set them this way, deliberately and by
     locale-specific convention, since long before any language model existed. When correct
     punctuation gets read as an AI signal, writers get pushed toward flatter, safer punctuation —
     the wrong incentive.
   </p>
-  <p class="tagline" style="margin-top: 8px">
-    Polytypo automates that craft correctly instead: {{locale_count}} locales, one portable spec,
-    {{rules_count}} rules — quotes, dashes, ellipses, apostrophes, symbols, and the no-break spaces
-    nobody sees until they're missing. JavaScript is the implemented runtime today; four more ports
-    are planned from the same spec.
-  </p>
 
   <div class="cta-row">
-    <a class="btn" href="{{prefix}}playground/">Try It in the Browser →</a>
+    <a class="btn" href="{{prefix}}playground/">Open the Full Playground →</a>
     <a class="btn secondary" href="{{prefix}}docs/">Read the Docs</a>
     <a class="btn secondary" href="{{prefix}}manifesto/">Read the Manifesto</a>
   </div>
-</header>
+</section>
 
-<section id="proof" style="padding-top: 40px">
-  <p class="eyebrow">Real engine output, not a mockup</p>
-  <h2>The same sentence. Four different, correct answers.</h2>
+<section id="proof">
+  <h2>The same sentence. {{Proof_count}} different, correct answers.</h2>
   <p class="small muted" style="max-width: 60ch">
-    Every card below runs the exact same input string — straight quotes, a straight hyphen —
-    through <code>transform()</code>. Nothing is typed by hand. Only the locale changes; quote
-    style, dash style, and spacing all follow.
+    Every card below runs the exact same input string — straight quotes, a straight hyphen — through
+    <code>transform()</code>. Nothing is typed by hand. Only the locale changes; quote style, dash
+    style, and spacing all follow.
   </p>
   <div class="card-grid card-grid--responsive">{{proof_grid}}</div>
   {{proof_legend}}
-</section>
-
-<section id="languages">
-  <p class="eyebrow" style="margin-top: 0">
-    JavaScript today. Four planned ports — pick a preview
-  </p>
-  <div class="tabs" id="lang-tabs"></div>
-  <div id="lang-panes">{{code_panes}}</div>
-</section>
-
-<section id="languages-detail">
-  <p class="eyebrow">The same sentence, {{locale_count}} locales</p>
-  <h2>Nobody agrees about quotation marks.</h2>
   <p>
     German lowers the opening quote. Swiss German turns it into guillemets pointing outward. French
     puts a no-break space <em>inside</em> them (U+00A0) and a narrow one before
@@ -57,10 +55,16 @@
     British English swaps the primary and secondary levels round. Every one of these is correct — in
     exactly one place.
   </p>
-  <div class="card-grid card-grid--two">{{home_locale_cards}}</div>
   <p class="small muted">
-    Full coverage table, citations and how a locale gets added — <a href="{{prefix}}locales/">Locales</a>.
+    Full coverage table, citations and how a locale gets added —
+    <a href="{{prefix}}locales/">Locales</a>.
   </p>
+</section>
+
+<section id="languages">
+  <p class="eyebrow" style="margin-top: 0">JavaScript today. Four planned ports — pick a preview</p>
+  <div class="tabs" id="lang-tabs"></div>
+  <div id="lang-panes">{{code_panes}}</div>
 </section>
 
 <section id="why">
@@ -105,7 +109,6 @@
 </section>
 
 <section id="status">
-  <p class="eyebrow">Status — read this before installing</p>
   <h2>Spec {{spec_version}}. One runtime, today.</h2>
   <p>
     This project publishes what exists and says plainly what does not. Nothing below is a roadmap

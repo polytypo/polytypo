@@ -41,42 +41,142 @@
     <code>—</code> is typography, not a watermark.
   </p>
   <p class="tagline" style="margin-top: var(--space-7)">
+    Polytypo automates typographic craft correctly: ten locales, one portable spec,
+    nine rules — quotes, dashes, ellipses, apostrophes, symbols, and the no-break spaces
+    nobody sees until they're missing. JavaScript is the implemented runtime today; four more ports
+    are planned from the same spec.
+  </p>
+</header>
+
+<!-- Shared by the home page and /playground via the {{playground}} token — see build_promo.py. -->
+<div class="demo" id="pg-demo">
+  <div class="pg-bar">
+    <label
+      title="Which locale's quotes, dashes and spacing to apply. Required — no fallback to English."
+    >
+      Locale
+      <select id="pg-locale"></select>
+    </label>
+    <label
+      title="text: no markup parsing, the whole input is prose. html: parse5 touches only text nodes, never tags or attributes. markdown: micromark touches only prose, never code spans/blocks or front matter."
+    >
+      Mode
+      <select id="pg-mode">
+        <option value="text">text</option>
+        <option value="html">html</option>
+        <option value="markdown">markdown</option>
+      </select>
+    </label>
+    <label
+      id="pg-dialect-wrap"
+      hidden
+      title="Markdown-only, no default. commonmark vs mdx changes how ambiguous syntax like &lt;https://…&gt; is parsed — the two disagree, so this can't be auto-detected."
+    >
+      Dialect
+      <select id="pg-dialect">
+        <option value="commonmark">commonmark</option>
+        <option value="mdx">mdx</option>
+      </select>
+    </label>
+  </div>
+  <div class="split">
+    <div class="pane-l">
+      <label class="who" for="pg-input">Input <span id="pg-count"></span></label>
+      <textarea
+        id="pg-input"
+        class="pg-textarea"
+        spellcheck="false"
+        autocapitalize="off"
+        placeholder='Paste or type text here — try: "It&apos;s a test" - said no one -- ever...'
+      ></textarea>
+    </div>
+    <div class="pane-r">
+      <div class="who pg-out-head">
+        <span id="pg-output-label">Output</span>
+        <button type="button" class="pg-copy" id="pg-copy-output">Copy Output</button>
+      </div>
+      <div
+        class="txt set pg-output"
+        id="pg-output"
+        role="region"
+        aria-labelledby="pg-output-label"
+      ></div>
+      <p class="pg-action-status" id="pg-action-status" role="status" aria-atomic="true"></p>
+    </div>
+  </div>
+  <div class="foot" id="pg-foot" role="status" aria-atomic="true"></div>
+</div>
+
+<p class="eyebrow" style="margin-top: var(--space-7)">
+  The call the form above is making, right now
+</p>
+<div class="tabs" id="call-tabs"></div>
+<div id="call-panes">
+  <div class="pane" data-label="JavaScript / TypeScript">
+    <pre><code id="call-code-js"></code></pre>
+  </div>
+  <div class="pane" data-label="Python">
+    <pre><code id="call-code-py"></code></pre>
+  </div>
+  <div class="pane" data-label="Go">
+    <pre><code id="call-code-go"></code></pre>
+  </div>
+  <div class="pane" data-label="Ruby">
+    <pre><code id="call-code-rb"></code></pre>
+  </div>
+  <div class="pane" data-label="PHP">
+    <pre><code id="call-code-php"></code></pre>
+  </div>
+</div>
+
+
+<p class="small muted" style="margin-top: var(--space-4)">
+  Every field's own comment carries its type, default and allowed values.
+  <strong>None of them fall back to a default when the value is wrong or missing</strong> — each
+  throws its own error, with a machine-readable <code>code</code>, rather than guessing what you
+  meant. Full option and error-code reference — <a href="docs/#use">Docs</a>.
+</p>
+
+<section id="why-it-exists">
+  <p>
     A dash, a curly quote, or a non-breaking space in your text isn't proof a model wrote it —
     publishers, typesetters, and copyeditors have set them this way, deliberately and by
     locale-specific convention, since long before any language model existed. When correct
     punctuation gets read as an AI signal, writers get pushed toward flatter, safer punctuation —
     the wrong incentive.
   </p>
-  <p class="tagline" style="margin-top: 8px">
-    Polytypo automates that craft correctly instead: ten locales, one portable spec,
-    nine rules — quotes, dashes, ellipses, apostrophes, symbols, and the no-break spaces
-    nobody sees until they're missing. JavaScript is the implemented runtime today; four more ports
-    are planned from the same spec.
-  </p>
 
   <div class="cta-row">
-    <a class="btn" href="playground/">Try It in the Browser →</a>
+    <a class="btn" href="playground/">Open the Full Playground →</a>
     <a class="btn secondary" href="docs/">Read the Docs</a>
     <a class="btn secondary" href="manifesto/">Read the Manifesto</a>
   </div>
-</header>
+</section>
 
-<section id="proof" style="padding-top: 40px">
-  <p class="eyebrow">Real engine output, not a mockup</p>
+<section id="proof">
   <h2>The same sentence. Four different, correct answers.</h2>
   <p class="small muted" style="max-width: 60ch">
-    Every card below runs the exact same input string — straight quotes, a straight hyphen —
-    through <code>transform()</code>. Nothing is typed by hand. Only the locale changes; quote
-    style, dash style, and spacing all follow.
+    Every card below runs the exact same input string — straight quotes, a straight hyphen — through
+    <code>transform()</code>. Nothing is typed by hand. Only the locale changes; quote style, dash
+    style, and spacing all follow.
   </p>
   <div class="card-grid card-grid--responsive"><div class="card" data-locale="en-US"><div class="lang">English (US) · en-US</div><div class="pair"><div class="in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="out">She said: <span class="chg">“</span>The em dash was mine before AI<span class="chg">”—</span>and she meant it.</div></div></div><div class="card" data-locale="de-DE"><div class="lang">German · de-DE</div><div class="pair"><div class="in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="out">She said: <span class="chg">„</span>The em dash was mine before AI<span class="chg">“</span> <span class="chg">–</span> and she meant it.</div></div></div><div class="card" data-locale="fr"><div class="lang">French · fr</div><div class="pair"><div class="in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="out">She said<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>: <span class="chg">«<span class="nb" title="U+00A0 no-break space"> </span></span>The em dash was mine before AI<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span>»</span> <span class="chg">—</span> and she meant it.</div></div></div><div class="card" data-locale="ru"><div class="lang">Russian · ru</div><div class="pair"><div class="in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="out">She said: <span class="chg">«</span>The em dash was mine before AI<span class="chg">»</span> <span class="chg">—</span> and she meant it.</div></div></div></div>
   <div class="small muted proof-legend" style="max-width: 60ch">Invisible characters in these outputs (always shown here — tooltips above are an optional extra, not required to understand them):<ul><li><span class="mono"> </span> — U+00A0 no-break space</li></ul></div>
+  <p>
+    German lowers the opening quote. Swiss German turns it into guillemets pointing outward. French
+    puts a no-break space <em>inside</em> them (U+00A0) and a narrow one before
+    <code>! ? ;</code> (U+202F). Finnish and Swedish close with the same glyph they open with.
+    British English swaps the primary and secondary levels round. Every one of these is correct — in
+    exactly one place.
+  </p>
+  <p class="small muted">
+    Full coverage table, citations and how a locale gets added —
+    <a href="locales/">Locales</a>.
+  </p>
 </section>
 
 <section id="languages">
-  <p class="eyebrow" style="margin-top: 0">
-    JavaScript today. Four planned ports — pick a preview
-  </p>
+  <p class="eyebrow" style="margin-top: 0">JavaScript today. Four planned ports — pick a preview</p>
   <div class="tabs" id="lang-tabs"></div>
   <div id="lang-panes"><div class="pane" data-label="JavaScript / TypeScript"><h3 style="margin:22px 0 0">JavaScript / TypeScript<span class="status live">npm — not yet published</span></h3><pre><code><span class="tok-com">// npm install polytypo</span>
 import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;
@@ -162,22 +262,6 @@ try {
 }</code></pre></div></div>
 </section>
 
-<section id="languages-detail">
-  <p class="eyebrow">The same sentence, ten locales</p>
-  <h2>Nobody agrees about quotation marks.</h2>
-  <p>
-    German lowers the opening quote. Swiss German turns it into guillemets pointing outward. French
-    puts a no-break space <em>inside</em> them (U+00A0) and a narrow one before
-    <code>! ? ;</code> (U+202F). Finnish and Swedish close with the same glyph they open with.
-    British English swaps the primary and secondary levels round. Every one of these is correct — in
-    exactly one place.
-  </p>
-  <div class="card-grid card-grid--two"><div class="card"><div class="lang">English (US) · en-US</div><div class="pair"><div class="in">Is this &quot;polytypo&quot;? - No, it&#x27;s &quot;polytypo&quot;! She said, &quot;He replied &#x27;never&#x27; twice&quot;... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.</div><div class="out">Is this <span class="chg">“</span>polytypo<span class="chg">”</span>?<span class="chg">—</span>No, it<span class="chg">’</span>s <span class="chg">“</span>polytypo<span class="chg">”</span>! She said, <span class="chg">“</span>He replied <span class="chg">‘</span>never<span class="chg">’</span> twice<span class="chg">”…</span> The release<span class="chg">—</span>all 5<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>km of it<span class="chg">—</span>covers 1914-1918. Copyright <span class="chg">©</span> 2026, at 1920<span class="chg">×</span>1080.</div></div></div><div class="card"><div class="lang">German · de-DE</div><div class="pair"><div class="in">Ist das &quot;polytypo&quot;? - Nein, das ist &quot;polytypo&quot;! Sie sagte: &quot;Er hat &#x27;nie&#x27; geantwortet&quot;... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.</div><div class="out">Ist das <span class="chg">„</span>polytypo<span class="chg">“</span>? <span class="chg">–</span> Nein, das ist <span class="chg">„</span>polytypo<span class="chg">“</span>! Sie sagte: <span class="chg">„</span>Er hat &#x27;nie&#x27; geantwortet<span class="chg">“…</span> Die Ausgabe <span class="chg">–</span> z.<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>B. die Jahre 1939-1945 <span class="chg">–</span> erscheint in 1920<span class="chg">×</span>1080. Copyright <span class="chg">©</span> 2026.</div></div></div><div class="card"><div class="lang">French · fr</div><div class="pair"><div class="in">C&#x27;est &quot;polytypo&quot; ? - Non, c&#x27;est &quot;polytypo&quot; ! Elle a dit : &quot;Il a répondu &#x27;jamais&#x27;&quot;... L&#x27;édition - celle de l&#x27;été - fait 3x5 cm ; c&#x27;est tout. Copyright (c) 2026.</div><div class="out">C<span class="chg">’</span>est <span class="chg">«<span class="nb" title="U+00A0 no-break space"> </span></span>polytypo<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span>»<span class="nb" title="U+202F narrow no-break space"> </span></span>? <span class="chg">—</span> Non, c<span class="chg">’</span>est <span class="chg">«<span class="nb" title="U+00A0 no-break space"> </span></span>polytypo<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span>»<span class="nb" title="U+202F narrow no-break space"> </span></span>! Elle a dit<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>: <span class="chg">«<span class="nb" title="U+00A0 no-break space"> </span></span>Il a répondu <span class="chg">“</span>jamais<span class="chg">”<span class="nb" title="U+00A0 no-break space"> </span>»…</span> L<span class="chg">’</span>édition <span class="chg">—</span> celle de l<span class="chg">’</span>été <span class="chg">—</span> fait 3<span class="chg">×</span>5<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>cm<span class="chg"><span class="nb" title="U+202F narrow no-break space"> </span></span>; c<span class="chg">’</span>est tout. Copyright <span class="chg">©</span> 2026.</div></div></div><div class="card"><div class="lang">Russian · ru</div><div class="pair"><div class="in">Это &quot;полиштамп&quot;? - Нет, это &quot;полиштамп&quot;! Она сказала: &quot;он ответил &#x27;никогда&#x27;&quot;... Достал из-под стола - в 1941-1945 годах - размер 10 x 20 см. Все права защищены (c) 2026.</div><div class="out">Это <span class="chg">«</span>полиштамп<span class="chg">»</span>? <span class="chg">—</span> Нет, это <span class="chg">«</span>полиштамп<span class="chg">»</span>! Она сказала: <span class="chg">«</span>он ответил <span class="chg">„</span>никогда<span class="chg">“»…</span> Достал из<span class="chg"><span class="nb" title="U+2011 non-breaking hyphen">‑</span></span>под стола <span class="chg">—</span> в<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>1941-1945 годах <span class="chg">—</span> размер 10 <span class="chg">×</span> 20<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>см. Все права защищены <span class="chg">©</span> 2026.</div></div></div></div>
-  <p class="small muted">
-    Full coverage table, citations and how a locale gets added — <a href="locales/">Locales</a>.
-  </p>
-</section>
-
 <section id="why">
   <p class="eyebrow">Why this and not a regex</p>
   <h2>Because the fifth port is where regex-based typography dies.</h2>
@@ -220,7 +304,6 @@ try {
 </section>
 
 <section id="status">
-  <p class="eyebrow">Status — read this before installing</p>
   <h2>Spec 1.0.0. One runtime, today.</h2>
   <p>
     This project publishes what exists and says plainly what does not. Nothing below is a roadmap
@@ -241,6 +324,336 @@ try {
 <script>
 Polytypo.bootTabs("lang-tabs", "lang-panes");
 Polytypo.bootTabs("build-tabs", "build-panes");
+</script>
+<script>
+const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "locales": [{"locale": "en-US", "name": "English (US)", "hero": {"in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.", "out": "Is this “polytypo”?—No, it’s “polytypo”! She said, “He replied ‘never’ twice”… The release—all 5 km of it—covers 1914-1918. Copyright © 2026, at 1920×1080."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: “The em dash was mine before AI”—and she meant it."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "“He said 'no' to me,” she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan—if there is one—fails."}, {"rule": "dashes", "in": "1914-1918 and pp. 34-36", "out": "1914-1918 and pp. 34-36"}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "apostrophe", "in": "don't", "out": "don’t"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}, {"rule": "symbols", "in": "Copyright (c) 2026, 1920x1080", "out": "Copyright © 2026, 1920×1080"}]}, {"locale": "en-GB", "name": "English (UK)", "hero": {"in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.", "out": "Is this ‘polytypo’? – No, it’s ‘polytypo’! She said, ‘He replied “never” twice’… The release – all 5 km of it – covers 1914-1918. Copyright © 2026, at 1920×1080."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: ‘The em dash was mine before AI’ – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "‘He said 'no' to me,’ she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan – if there is one – fails."}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}]}, {"locale": "de-DE", "name": "German", "hero": {"in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.", "out": "Ist das „polytypo“? – Nein, das ist „polytypo“! Sie sagte: „Er hat 'nie' geantwortet“… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: „The em dash was mine before AI“ – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "„Er sagte ‚nein‘ zu mir“, notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "dashes", "in": "Die Jahre 1939-1945", "out": "Die Jahre 1939-1945"}, {"rule": "nbsp", "in": "z. B. Berlin", "out": "z. B. Berlin"}, {"rule": "symbols", "in": "Auflösung 1920x1080", "out": "Auflösung 1920×1080"}]}, {"locale": "de-CH", "name": "Swiss German", "hero": {"in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.", "out": "Ist das «polytypo»? – Nein, das ist «polytypo»! Sie sagte: «Er hat 'nie' geantwortet»… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: «The em dash was mine before AI» – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "«Er sagte ‹nein› zu mir», notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "nbsp", "in": "z. B. Bern", "out": "z. B. Bern"}]}, {"locale": "fr", "name": "French", "hero": {"in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.", "out": "C’est « polytypo » ? — Non, c’est « polytypo » ! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm ; c’est tout. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said : « The em dash was mine before AI » — and she meant it."}, "cases": [{"rule": "quotes", "in": "Il a dit \"bonjour\".", "out": "Il a dit « bonjour »."}, {"rule": "quotes", "in": "\"Il a dit 'oui' hier.\"", "out": "« Il a dit 'oui' hier. »"}, {"rule": "nbsp", "in": "Ça va ? Bonjour !", "out": "Ça va ? Bonjour !"}, {"rule": "dashes", "in": "Le plan - il existe - échoue.", "out": "Le plan — il existe — échoue."}, {"rule": "apostrophe", "in": "l'été et l'hiver", "out": "l’été et l’hiver"}]}, {"locale": "fr-CA", "name": "French (Canada)", "hero": {"in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.", "out": "C’est « polytypo »? — Non, c’est « polytypo »! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm; c’est tout. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said : « The em dash was mine before AI » — and she meant it."}, "cases": [{"rule": "quotes", "in": "Il a dit \"bonjour\".", "out": "Il a dit « bonjour »."}, {"rule": "dashes", "in": "Le plan - il existe - échoue.", "out": "Le plan — il existe — échoue."}, {"rule": "nbsp", "in": "Ça va? Bonjour!", "out": "Ça va? Bonjour!"}, {"rule": "nbsp", "in": "Rendez-vous à 15 h: bureau 204.", "out": "Rendez-vous à 15 h : bureau 204."}]}, {"locale": "ru", "name": "Russian", "hero": {"in": "Это \"полиштамп\"? - Нет, это \"полиштамп\"! Она сказала: \"он ответил 'никогда'\"... Достал из-под стола - в 1941-1945 годах - размер 10 x 20 см. Все права защищены (c) 2026.", "out": "Это «полиштамп»? — Нет, это «полиштамп»! Она сказала: «он ответил „никогда“»… Достал из‑под стола — в 1941-1945 годах — размер 10 × 20 см. Все права защищены © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: «The em dash was mine before AI» — and she meant it."}, "cases": [{"rule": "quotes", "in": "Он сказал: \"это 'моё' дело\".", "out": "Он сказал: «это 'моё' дело»."}, {"rule": "dashes", "in": "Москва - столица", "out": "Москва — столица"}, {"rule": "dashes", "in": "Годы 1941-1945 были тяжёлыми", "out": "Годы 1941-1945 были тяжёлыми"}, {"rule": "hyphen", "in": "Достал из-под стола", "out": "Достал из‑под стола"}, {"rule": "ellipsis", "in": "Что?...", "out": "Что?.."}, {"rule": "nbsp", "in": "Он живёт в Москве", "out": "Он живёт в Москве"}]}, {"locale": "fi", "name": "Finnish", "hero": {"in": "Onko tämä \"polytypo\"? - Ei, tämä on \"polytypo\"! Hän sanoi: \"hän vastasi 'ei koskaan'\"... Matkaa on 20 km - vuosina 1914-1918 - ja hinta nousi 10,5 %. Copyright (c) 2026.", "out": "Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän sanoi: ”hän vastasi ’ei koskaan’”… Matkaa on 20 km – vuosina 1914-1918 – ja hinta nousi 10,5 %. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: ”The em dash was mine before AI” – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Hän sanoi 'moi'\", totesin.", "out": "”Hän sanoi ’moi’”, totesin."}, {"rule": "dashes", "in": "Suunnitelma - jos sellainen on - kaatuu.", "out": "Suunnitelma – jos sellainen on – kaatuu."}, {"rule": "nbsp", "in": "Hinta nousi 10,5 %", "out": "Hinta nousi 10,5 %"}]}, {"locale": "sv", "name": "Swedish", "hero": {"in": "Är det här \"polytypo\"? - Nej, det är \"polytypo\"! Hon sa: \"han svarade 'aldrig'\"... Vi gick 5 km - åren 1914-1918 - och det kostar 100 kr. Copyright (c) 2026.", "out": "Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914-1918 – och det kostar 100 kr. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: ”The em dash was mine before AI” – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Han sa 'hej'\", sa jag.", "out": "”Han sa ’hej’”, sa jag."}, {"rule": "dashes", "in": "Planen - om det finns en - misslyckas.", "out": "Planen – om det finns en – misslyckas."}, {"rule": "nbsp", "in": "Det kostar 100 kr", "out": "Det kostar 100 kr"}]}, {"locale": "el", "name": "Greek", "hero": {"in": "Είναι αυτό \"polytypo\"; - Όχι, αυτό είναι \"polytypo\"! Είπε: \"απάντησε “ποτέ”\"... Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright (c) 2026, σε 1920x1080.", "out": "Είναι αυτό «polytypo»; - Όχι, αυτό είναι «polytypo»! Είπε: «απάντησε “ποτέ”»… Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright © 2026, σε 1920×1080."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: «The em dash was mine before AI» - and she meant it."}, "cases": [{"rule": "quotes", "in": "Είπε \"καλημέρα\" και έφυγε.", "out": "Είπε «καλημέρα» και έφυγε."}, {"rule": "quotes", "in": "\"Είπε “όχι” σε μένα\", σημείωσε.", "out": "«Είπε “όχι” σε μένα», σημείωσε."}, {"rule": "apostrophe", "in": "γι' αυτό και απ' την αρχή", "out": "γι’ αυτό και απ’ την αρχή"}, {"rule": "spaces", "in": "Τι κάνεις ;", "out": "Τι κάνεις;"}, {"rule": "ellipsis", "in": "Περίμενε... τι έγινε", "out": "Περίμενε… τι έγινε"}, {"rule": "symbols", "in": "Ανάλυση 1920x1080", "out": "Ανάλυση 1920×1080"}]}]};
+(function playground() {
+  const {
+    mark, diff, paint, highlight, bootTabs, summarizeChange, summarizeError, copyStatusText,
+  } = window.Polytypo;
+  const LAZY = true;
+  const ENGINE_SRC = "vendor/polytypo.browser.js";
+  const LOCALES = DATA.locales.map((l) => [l.locale, l.name]);
+  const DIFF_CAP = 4000; // above this, skip character-level highlighting (O(n*m) LCS)
+
+  const $demo = document.getElementById("pg-demo");
+  const $locale = document.getElementById("pg-locale");
+  const $mode = document.getElementById("pg-mode");
+  const $dialectWrap = document.getElementById("pg-dialect-wrap");
+  const $dialect = document.getElementById("pg-dialect");
+  const $input = document.getElementById("pg-input");
+  const $output = document.getElementById("pg-output");
+  const $count = document.getElementById("pg-count");
+  const $foot = document.getElementById("pg-foot");
+  const $copyOutput = document.getElementById("pg-copy-output");
+  const $actionStatus = document.getElementById("pg-action-status");
+
+  for (const [code, name] of LOCALES) {
+    const o = document.createElement("option");
+    o.value = code; o.textContent = code + " — " + name;
+    $locale.appendChild(o);
+  }
+
+  const FALLBACK_SAMPLE =
+    `Is this "polytypo"? - No, it's "polytypo"! She said, "He replied 'never' twice"... ` +
+    `The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.`;
+
+  /** This locale's recorded { in, out } pair from examples.json — the real engine run captured at
+   * build time, which is the only output this page may show before the engine itself is here. */
+  function recordedFor(code) {
+    const entry = DATA.locales.find((l) => l.locale === code);
+    return entry ? entry.hero : null;
+  }
+
+  function defaultFor(code) {
+    const recorded = recordedFor(code);
+    return recorded ? recorded.in : FALLBACK_SAMPLE;
+  }
+
+  let lastDefault = defaultFor($locale.value);
+  $input.value = lastDefault;
+
+  // "idle" is reachable only on the lazy page: on the eager one the bundle has either already
+  // evaluated (ready) or failed outright, and there is nothing left to wait for.
+  let engine = window.PolytypoBrowser || null;
+  let engineState = engine ? "ready" : LAZY ? "idle" : "failed";
+  let isLoadSlow = false;
+
+  const RECORDED_NOTE = {
+    idle: " · recorded example — the engine loads when you use the form",
+    loading: " · recorded example — the engine is loading",
+    failed: " · recorded example — the engine bundle did not load",
+  };
+
+  function startEngineLoad() {
+    if (engineState !== "idle") return;
+    engineState = "loading";
+    // No spinner: on a fast connection it would appear and vanish before anyone could read it. If
+    // the bundle is still in flight after 250ms, the status line already on the page says so.
+    const slowTimer = setTimeout(() => { isLoadSlow = true; render(); }, 250);
+    const script = document.createElement("script");
+    script.src = ENGINE_SRC;
+    const settle = () => {
+      clearTimeout(slowTimer);
+      isLoadSlow = false;
+      engine = window.PolytypoBrowser || null;
+      engineState = engine ? "ready" : "failed";
+      // Nothing needs queueing and nothing is lost: render() reads $input.value and every <select>
+      // at call time, so whatever was typed while the bundle was in flight is what gets typeset.
+      render();
+    };
+    script.addEventListener("load", settle);
+    script.addEventListener("error", settle);
+    document.head.appendChild(script);
+  }
+
+  let timer = null;
+  const run = () => { clearTimeout(timer); timer = setTimeout(render, 120); };
+
+  const $callJs = document.getElementById("call-code-js");
+  const $callPy = document.getElementById("call-code-py");
+  const $callGo = document.getElementById("call-code-go");
+  const $callRb = document.getElementById("call-code-rb");
+  const $callPhp = document.getElementById("call-code-php");
+
+  const strLit = (s) => JSON.stringify(s);
+  const rubyStrLit = (s) => strLit(s).replace(/#\{/g, "\\#{");
+  const phpStrLit = (s) => "'" + s.replace(/\\/g, "\\\\").replace(/'/g, "\\'") + "'";
+
+  const LOCALE_LIST = LOCALES.map(([code]) => code).join(", ");
+
+  function renderCallCode(options) {
+    const showDialect = options.mode === "markdown";
+    const locale = strLit(options.locale);
+    const mode = strLit(options.mode);
+    const dialect = strLit(options.dialect || "commonmark");
+
+    const jsCode =
+      `import { transform } from "polytypo";\n\n` +
+      `transform(\n` +
+      `  input, // your text, type: string\n` +
+      `  {\n` +
+      `    locale: ${locale}, // required, type: string — one of: ${LOCALE_LIST}\n` +
+      `    mode: ${mode}, // type: string, default: "text" — "text" | "html" | "markdown"\n` +
+      (showDialect
+        ? `    dialect: ${dialect}, // type: string, required because mode is "markdown" — "commonmark" | "mdx"\n`
+        : `    // dialect: "commonmark", // required only when mode is "markdown"; ignored otherwise\n`) +
+      `  },\n` +
+      `);`;
+    $callJs.innerHTML = highlight(jsCode, "//");
+
+    const pyCode =
+      `from polytypo import transform\n\n` +
+      `transform(\n` +
+      `    input,  # your text, type: str\n` +
+      `    locale=${locale},  # required, type: str — one of: ${LOCALE_LIST}\n` +
+      `    mode=${mode},  # type: str, default: "text" — "text" | "html" | "markdown"\n` +
+      (showDialect
+        ? `    dialect=${dialect},  # type: str, required because mode is "markdown" — "commonmark" | "mdx"\n`
+        : `    # dialect="commonmark",  # required only when mode is "markdown"; ignored otherwise\n`) +
+      `)`;
+    $callPy.innerHTML = highlight(pyCode, "#");
+
+    const goCode =
+      `out, err := polytypo.Transform(\n` +
+      `    input, // your text, type: string\n` +
+      `    polytypo.Options{\n` +
+      `        Locale:  ${locale}, // required, type: string — one of: ${LOCALE_LIST}\n` +
+      `        Mode:    ${mode}, // type: string, default: "text" — "text" | "html" | "markdown"\n` +
+      (showDialect
+        ? `        Dialect: ${dialect}, // type: string, required because Mode is "markdown" — "commonmark" | "mdx"\n`
+        : `        // Dialect: "commonmark", // required only when Mode is "markdown"; ignored otherwise\n`) +
+      `    },\n` +
+      `)`;
+    $callGo.innerHTML = highlight(goCode, "//");
+
+    const rbCode =
+      `require "polytypo"\n\n` +
+      `Polytypo.transform(\n` +
+      `  input, # your text, type: String\n` +
+      `  locale: ${rubyStrLit(options.locale)}, # required, type: String — one of: ${LOCALE_LIST}\n` +
+      `  mode: ${rubyStrLit(options.mode)}, # type: String, default: "text" — "text" | "html" | "markdown"\n` +
+      (showDialect
+        ? `  dialect: ${rubyStrLit(options.dialect)}, # type: String, required because mode is "markdown" — "commonmark" | "mdx"\n`
+        : `  # dialect: "commonmark", # required only when mode is "markdown"; ignored otherwise\n`) +
+      `)`;
+    $callRb.innerHTML = highlight(rbCode, "#");
+
+    const phpCode =
+      `Polytypo::transform(\n` +
+      `    $input, // your text, type: string\n` +
+      `    [\n` +
+      `        'locale' => ${phpStrLit(options.locale)}, // required, type: string — one of: ${LOCALE_LIST}\n` +
+      `        'mode' => ${phpStrLit(options.mode)}, // type: string, default: 'text' — 'text' | 'html' | 'markdown'\n` +
+      (showDialect
+        ? `        'dialect' => ${phpStrLit(options.dialect)}, // type: string, required because mode is 'markdown' — 'commonmark' | 'mdx'\n`
+        : `        // 'dialect' => 'commonmark', // required only when mode is 'markdown'; ignored otherwise\n`) +
+      `    ],\n` +
+      `);`;
+    $callPhp.innerHTML = highlight(phpCode, "//");
+  }
+
+  function clearCallCode() {
+    for (const el of [$callJs, $callPy, $callGo, $callRb, $callPhp]) el.textContent = "";
+  }
+
+  /** Paints one before/after pair into the output pane and returns the tail of #pg-foot's status
+   * line. Shared by the live-engine path and the recorded-example path so both render identically —
+   * the recorded example is real engine output and is shown as such, not as a lesser placeholder. */
+  function paintPair(before, after) {
+    if (before.length <= DIFF_CAP) {
+      const segments = diff([...before], [...after]);
+      $output.innerHTML = paint(segments);
+      return summarizeChange(before, after, segments);
+    }
+    $output.innerHTML = mark(after);
+    return before.length.toLocaleString("en-US") +
+      " chars — change-highlighting skipped above " + DIFF_CAP.toLocaleString("en-US") + " chars";
+  }
+
+  /** Everything the page can honestly show before, or without, the engine.
+   *
+   * The seeded state — this locale's own default example, in text mode — is exactly what
+   * examples.json recorded a real engine run for, so it renders precisely as the engine would.
+   * Any other state has no recorded answer: while the bundle is still in flight the pane is left
+   * empty rather than passing off a previous input's result as this one's, and if the bundle
+   * failed the pane falls back to the recorded example and says plainly that it is not your text. */
+  function renderWithoutEngine(options, text) {
+    const recorded = recordedFor(options.locale);
+    const isRecordedState = Boolean(recorded) && options.mode === "text" && text === recorded.in;
+    $output.classList.remove("error");
+
+    if (isRecordedState) {
+      const summary = paintPair(recorded.in, recorded.out);
+      $foot.textContent =
+        options.locale + " · text · " + summary + (RECORDED_NOTE[engineState] || "");
+      return;
+    }
+
+    if (engineState === "failed") {
+      if (recorded) paintPair(recorded.in, recorded.out);
+      else $output.innerHTML = "";
+      $foot.textContent =
+        "The engine bundle (" + ENGINE_SRC + ") did not load — the output above is the recorded " +
+        options.locale + " example, not your own text.";
+      return;
+    }
+
+    $output.innerHTML = "";
+    $foot.textContent = isLoadSlow
+      ? "Loading the engine — your text is typeset the moment it arrives."
+      : "";
+  }
+
+  function render() {
+    const text = $input.value;
+    const n = text.length;
+    $count.textContent = n ? n.toLocaleString("en-US") + " chars" : "";
+    $dialectWrap.hidden = $mode.value !== "markdown";
+
+    if (!text) {
+      $output.classList.remove("error");
+      $output.innerHTML = "";
+      $foot.textContent = "";
+      clearCallCode();
+      return;
+    }
+
+    const options = { locale: $locale.value, mode: $mode.value };
+    if ($mode.value === "markdown") options.dialect = $dialect.value;
+
+    // The call block describes what the form is set to, not what the engine returned — it is pure
+    // string building. Rendered before every engine branch below so it tracks the controls even
+    // while the bundle is still loading, and still shows the call that threw when one does.
+    renderCallCode(options);
+
+    if (engineState !== "ready") {
+      renderWithoutEngine(options, text);
+      return;
+    }
+
+    let out;
+    try {
+      out = engine.transform(text, options);
+    } catch (error) {
+      $output.classList.add("error");
+      const code = error && error.code ? error.code : "Error";
+      $output.textContent = code + ": " + (error && error.message ? error.message : String(error));
+      $foot.textContent = summarizeError(code);
+      return;
+    }
+
+    $output.classList.remove("error");
+    const summary = paintPair(text, out);
+    $foot.textContent = $locale.value + " · " + $mode.value + " · " + summary;
+  }
+
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  $copyOutput.addEventListener("click", async () => {
+    const text = $output.textContent;
+    if (!text) {
+      $actionStatus.textContent = "Nothing to copy yet.";
+      return;
+    }
+    const ok = await copyText(text);
+    $actionStatus.textContent = copyStatusText("Output", ok);
+  });
+
+  // startEngineLoad() returns immediately unless the engine is still unrequested, so wiring it to
+  // every control costs nothing on the eager page and needs no LAZY branch here.
+  $locale.addEventListener("change", () => {
+    startEngineLoad();
+    if ($input.value === lastDefault) {
+      lastDefault = defaultFor($locale.value);
+      $input.value = lastDefault;
+    }
+    render();
+  });
+  $mode.addEventListener("change", () => {
+    startEngineLoad();
+    render();
+  });
+  $dialect.addEventListener("change", () => {
+    startEngineLoad();
+    render();
+  });
+  $input.addEventListener("input", () => {
+    // Requested from the raw event, not from run()'s 120ms-debounced render(), so the bundle is
+    // already in flight during the debounce window rather than 120ms behind it.
+    startEngineLoad();
+    run();
+  });
+
+  if (LAZY) {
+    // First sign of intent, whichever comes first: focusing the input (before a single character
+    // is typed), changing a control, or the section nearing the viewport.
+    $input.addEventListener("focus", startEngineLoad, { once: true });
+    if (typeof IntersectionObserver === "function" && $demo) {
+      const observer = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        startEngineLoad();
+      }, { rootMargin: "400px" });
+      // Armed only once the page has finished loading. The playground sits one paragraph below the
+      // headline, so it is above the fold on an ordinary viewport and would otherwise intersect
+      // during first paint — which is precisely what this page must not spend 680 KB on.
+      const arm = () => { if (engineState === "idle") observer.observe($demo); };
+      if (document.readyState === "complete") arm();
+      else window.addEventListener("load", arm, { once: true });
+    }
+  }
+
+  bootTabs("call-tabs", "call-panes");
+  render();
+})();
 </script>
 </body>
 </html>

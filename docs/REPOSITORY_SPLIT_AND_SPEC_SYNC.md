@@ -40,12 +40,12 @@ its parent directory's row.
 | `docs/ports/README.python.md`, `README.go.md`, `README.ruby.md`, `README.php.md` | Each file's own text says it is "kept in the spec repository so the API is agreed before any code exists." Pre-implementation public-surface specs, canonical by their own stated purpose, not implementation READMEs. |
 | `brand/` (logos, favicon, merch, `BRANDBOOK.html`, `brand/README.md`) | Brand identity applies to every runtime equally; no engine dependency. |
 | `brand/tools/build_brandbook.py`, `gen_svg.py`, `render.mjs`, `Inter.ttf`, `JBMono.ttf`, `brand/tools/.gitignore` | Brandbook/asset generation, no `src/` import. |
-| `promo/` (all generated output) and `brand/tools/promo/*.body.html`, `site.js`, `style.css` | The public site belongs to canonical per §7. `site.js`'s permalink/diff/paint helpers are pure, with zero `src/` dependency; only the never-invoked `bootTabs` touches `document`. |
+| `promo/` (all generated output) and `brand/tools/promo/*.body.html`, `playground.partial.html`, `site.js`, `style.css` | The public site belongs to canonical per §7. `site.js`'s escaping/diff/paint helpers are pure, with zero `src/` dependency; only the never-invoked `bootTabs` touches `document`. |
 | `brand/tools/build_promo.py` | Renders the site from `promo/examples.json` and the `.body.html` templates. Its one real coupling to the JS repo is covered in §1.3. |
 | `LICENSE` | Doesn't fit any of the six buckets — see the note at the end of this table. |
 | `scripts/validate-spec.mjs` | Validates `spec/` against `spec/schema/`; writes `spec/fixtures/.escaped/`. Its one dependency outside `spec/` is covered in §1.3(d). |
-| `tests/promo/load-site-js.ts`, `style.test.ts`, `status-summary.test.ts`, `copy-link-order.test.ts`, `generated-pages.test.ts`, `hostile-output.test.ts` | None import from `src/`; they exercise `brand/tools/promo/site.js` in a Node `vm` sandbox and parse generated HTML with `parse5`. |
-| `tests/promo/proof-grid.test.ts` | Belongs here by subject, but has one line coupling it to `src/` today — resolved in §1.3, not simply "canonical-only" as it stands. |
+| `tests/promo/load-site-js.ts`, `style.test.ts`, `status-summary.test.ts`, `no-permalink.test.ts`, `link-depth.test.ts`, `generated-pages.test.ts`, `hostile-output.test.ts` | None import from `src/`; they exercise `brand/tools/promo/site.js` in a Node `vm` sandbox and parse generated HTML with `parse5`. |
+| `tests/promo/proof-grid.test.ts`, `playground-embed.test.ts` | Belong here by subject, but each has a line coupling it to `src/` today — resolved in §1.3, not simply "canonical-only" as they stand. |
 
 **`LICENSE` note:** it isn't vendored data, isn't independently generated, and "temporarily
 duplicated during migration" is inaccurate because the duplication is permanent by design — every
@@ -238,8 +238,9 @@ github.com/polytypo/polytypo                    (canonical)
 
   tests/
     promo/
-      load-site-js.ts, style.test.ts, status-summary.test.ts, copy-link-order.test.ts,
-      generated-pages.test.ts, hostile-output.test.ts, proof-grid.test.ts   (import changed, see 1.3c)
+      load-site-js.ts, style.test.ts, status-summary.test.ts, no-permalink.test.ts,
+      link-depth.test.ts, generated-pages.test.ts, hostile-output.test.ts,
+      proof-grid.test.ts, playground-embed.test.ts   (imports changed, see 1.3c)
 
   scripts/
     validate-spec.mjs

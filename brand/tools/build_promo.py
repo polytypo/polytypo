@@ -63,6 +63,11 @@ PAGES = [
 # the root resolves "docs/" directly; a page one directory down needs "../docs/".
 PAGE_PREFIXES = {"": "", **{slug: "../" for slug, _label, _body in PAGES if slug}}
 
+# Pages that embed the playground (brand/tools/promo/playground.partial.html, substituted into both
+# bodies via {{playground}}) and therefore need its script. The home page carries it so a first-time
+# visitor can try the engine before reading anything; /playground is the same component at full size.
+PLAYGROUND_SLUGS = ("", "playground")
+
 
 def page_href(prefix, slug):
     """Document-relative href for a page, from a page whose depth prefix is `prefix`. Trailing
@@ -209,7 +214,10 @@ try {
     ),
 ]
 
-NUMBER_WORDS = {6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven", 12: "twelve"}
+NUMBER_WORDS = {
+    1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six",
+    7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven", 12: "twelve",
+}
 
 
 def load_examples():
@@ -379,12 +387,8 @@ def locale_card(loc):
     )
 
 
-def locale_cards(data, only=None):
-    locales = data["locales"]
-    if only:
-        by_code = {loc["locale"]: loc for loc in locales}
-        locales = [by_code[code] for code in only if code in by_code]
-    return "".join(locale_card(loc) for loc in locales)
+def locale_cards(data):
+    return "".join(locale_card(loc) for loc in data["locales"])
 
 
 def proof_grid(data):
@@ -478,6 +482,10 @@ def build():
     n = len(data["locales"])
     locale_count_word = NUMBER_WORDS.get(n, str(n))
     rules_count_word = NUMBER_WORDS.get(RULE_COUNT, str(RULE_COUNT))
+    # The proof grid's own card count, so the heading above it ("The same sentence. Four different,
+    # correct answers.") is derived from the same proofLocales the grid is built from and cannot
+    # promise a number the page does not show.
+    proof_count_word = NUMBER_WORDS.get(len(data["proofLocales"]), str(len(data["proofLocales"])))
 
     out_dir = os.path.join(REPO, "promo")
     assets_dir = os.path.join(out_dir, "assets")
@@ -489,17 +497,34 @@ def build():
     with open(os.path.join(assets_dir, "fonts.css"), "w", encoding="utf-8") as f:
         f.write(fonts_css())
 
+    # The playground form and the code block describing it, substituted verbatim into BOTH
+    # home.body.html and playground.body.html — one source file, so the two instances cannot drift
+    # apart. Home carries it so a first-time visitor can try the engine without navigating
+    # anywhere; /playground is the same component at full size, with the technical notes.
+    #
+    # The call block lives in this partial rather than in each page's own body template on purpose:
+    # nothing may sit between the form and the code that describes it, and keeping them in one file
+    # makes that structural instead of a convention two templates have to remember separately.
+    #
+    # Both pages therefore carry the same element ids. They are separate documents, so that is not
+    # a collision — build_playground_script() emits one script per page, differing only in `prefix`
+    # and `lazy`.
+    with open(os.path.join(PROMO_SRC, "playground.partial.html"), encoding="utf-8") as f:
+        playground_markup = f.read()
+
     replacements = {
         "{{rules_table}}": rules_table(data),
         "{{code_panes}}": code_panes(),
         "{{build_panes}}": build_panes(),
+        "{{playground}}": playground_markup,
         "{{locale_count}}": locale_count_word,
         "{{Locale_count}}": locale_count_word.capitalize(),
         "{{rules_count}}": rules_count_word,
         "{{Rules_count}}": rules_count_word.capitalize(),
+        "{{proof_count}}": proof_count_word,
+        "{{Proof_count}}": proof_count_word.capitalize(),
         "{{spec_version}}": data["spec"],
         "{{status_table}}": status_table(data),
-        "{{home_locale_cards}}": locale_cards(data, only=["en-US", "de-DE", "fr", "ru"]),
         "{{locale_cards}}": locale_cards(data),
         "{{proof_grid}}": proof_grid(data),
         "{{proof_legend}}": proof_legend(data),
@@ -537,15 +562,21 @@ def build():
             f'<script src="{prefix}assets/site.js"></script>\n'
         )
 
-        if slug == "playground":
-            doc += build_playground_script(data, prefix)
-        else:
-            doc += (
-                "<script>\n"
-                'Polytypo.bootTabs("lang-tabs", "lang-panes");\n'
-                'Polytypo.bootTabs("build-tabs", "build-panes");\n'
-                "</script>\n"
-            )
+        # bootTabs() is a no-op for a tab set this page doesn't have, so one call per known tab set
+        # is emitted everywhere rather than a per-page list that has to be kept in sync.
+        doc += (
+            "<script>\n"
+            'Polytypo.bootTabs("lang-tabs", "lang-panes");\n'
+            'Polytypo.bootTabs("build-tabs", "build-panes");\n'
+            "</script>\n"
+        )
+
+        # Both pages that carry the playground get the same script. They differ in ONE thing: the
+        # home page loads the ~680 KB engine bundle lazily (first interaction, or the section
+        # nearing the viewport) because a visitor did not ask for it by arriving there, while
+        # /playground — which they did choose — loads it eagerly with an ordinary <script src>.
+        if slug in PLAYGROUND_SLUGS:
+            doc += build_playground_script(data, prefix, lazy=slug != "playground")
 
         doc += "</body>\n</html>\n"
 
@@ -557,22 +588,39 @@ def build():
         print(f"  promo/{rel_path.replace(os.sep, '/')}  {os.path.getsize(out_path) / 1024:.0f} KB")
 
 
-def build_playground_script(data, prefix):
+def build_playground_script(data, prefix, lazy):
+    """The playground's inline script, emitted for every page that embeds the playground.
+
+    `lazy` changes exactly one thing: how the ~680 KB engine bundle arrives.
+
+    Eager (/playground) — an ordinary <script src> tag, so the engine is already evaluated by the
+    time this script runs. The visitor navigated to a page whose entire purpose is the engine.
+
+    Lazy (home) — the bundle is not referenced by the markup at all; a <script> element is injected
+    on the first sign the visitor wants it (touching the form, or the section nearing the viewport
+    after the page has finished loading). Until then the output pane shows the output
+    promo/examples.json RECORDED for the seeded example — a real engine run captured at build time
+    by brand/tools/gen_examples.ts (`transform(HERO[locale], {locale})`, i.e. text mode), never a
+    hand-written approximation. That is also why the recorded result may only be shown for exactly
+    that state: this locale's own default example, in text mode. Anything else has no recorded
+    answer and must not be guessed at.
+    """
     payload = json.dumps(data, ensure_ascii=False)
-    return f"""<script src="{prefix}vendor/polytypo.browser.js"></script>
-<script>
+    engine_src = f"{prefix}vendor/polytypo.browser.js"
+    eager_script = "" if lazy else f'<script src="{engine_src}"></script>\n'
+    lazy_literal = "true" if lazy else "false"
+    return f"""{eager_script}<script>
 const DATA = {payload};
 (function playground() {{
-  const engine = window.PolytypoBrowser;
   const {{
-    mark, diff, paint, highlight, bootTabs, summarizeChange, summarizeError,
-    encodePermalinkFragment, decodePermalinkFragment, copyStatusText, permalinkStatusText,
-    shareStatusText, buildPermalinkUrl, stripPermalinkFragment, validateRestoredState,
-    MAX_PERMALINK_LENGTH,
+    mark, diff, paint, highlight, bootTabs, summarizeChange, summarizeError, copyStatusText,
   }} = window.Polytypo;
+  const LAZY = {lazy_literal};
+  const ENGINE_SRC = "{engine_src}";
   const LOCALES = DATA.locales.map((l) => [l.locale, l.name]);
   const DIFF_CAP = 4000; // above this, skip character-level highlighting (O(n*m) LCS)
 
+  const $demo = document.getElementById("pg-demo");
   const $locale = document.getElementById("pg-locale");
   const $mode = document.getElementById("pg-mode");
   const $dialectWrap = document.getElementById("pg-dialect-wrap");
@@ -581,10 +629,7 @@ const DATA = {payload};
   const $output = document.getElementById("pg-output");
   const $count = document.getElementById("pg-count");
   const $foot = document.getElementById("pg-foot");
-  const $permalinkNotice = document.getElementById("pg-permalink-notice");
   const $copyOutput = document.getElementById("pg-copy-output");
-  const $copyLink = document.getElementById("pg-copy-link");
-  const $share = document.getElementById("pg-share");
   const $actionStatus = document.getElementById("pg-action-status");
 
   for (const [code, name] of LOCALES) {{
@@ -597,76 +642,53 @@ const DATA = {payload};
     `Is this "polytypo"? - No, it's "polytypo"! She said, "He replied 'never' twice"... ` +
     `The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.`;
 
+  /** This locale's recorded {{ in, out }} pair from examples.json — the real engine run captured at
+   * build time, which is the only output this page may show before the engine itself is here. */
+  function recordedFor(code) {{
+    const entry = DATA.locales.find((l) => l.locale === code);
+    return entry ? entry.hero : null;
+  }}
+
   function defaultFor(code) {{
-    const e = DATA.locales.find((l) => l.locale === code);
-    return e ? e.hero.in : FALLBACK_SAMPLE;
+    const recorded = recordedFor(code);
+    return recorded ? recorded.in : FALLBACK_SAMPLE;
   }}
 
   let lastDefault = defaultFor($locale.value);
   $input.value = lastDefault;
 
-  if (!engine) {{
-    $output.classList.add("error");
-    $output.textContent =
-      "The engine bundle (promo/vendor/polytypo.browser.js) failed to load — nothing else on " +
-      "this page depends on it, but the playground does. Run npm run gen:promo-bundle.";
-    $foot.textContent = summarizeError("PolytypoEngineMissing");
-    return;
-  }}
+  // "idle" is reachable only on the lazy page: on the eager one the bundle has either already
+  // evaluated (ready) or failed outright, and there is nothing left to wait for.
+  let engine = window.PolytypoBrowser || null;
+  let engineState = engine ? "ready" : LAZY ? "idle" : "failed";
+  let isLoadSlow = false;
 
-  // Fix #4 (stale-permalink invalidation): once the address bar's hash was set by either a
-  // restore-on-load below or a later "Copy Link" click, it must be removed the FIRST time the
-  // user changes state afterward (input/locale/mode/dialect) — and only once, not on every
-  // keystroke. `hashArmed` tracks whether there is currently a hash to invalidate;
-  // `clearStaleFragmentOnce()` is the single place that does it, called from every state-change
-  // handler below, and it is idempotent per arming (checks-then-clears the flag).
-  let hashArmed = location.hash.length > 1;
-  function clearStaleFragmentOnce() {{
-    if (!hashArmed) return;
-    hashArmed = false;
-    history.replaceState(null, "", stripPermalinkFragment(location.href));
-  }}
+  const RECORDED_NOTE = {{
+    idle: " · recorded example — the engine loads when you use the form",
+    loading: " · recorded example — the engine is loading",
+    failed: " · recorded example — the engine bundle did not load",
+  }};
 
-  // Restore playground state from a "Copy Link" permalink, if the page was opened with one.
-  // Any validation failure (malformed encoding, unknown version, oversized fragment, a
-  // locale/mode/dialect this build doesn't actually offer, or — fix #5 — a non-markdown mode
-  // paired with a non-empty dialect) falls back to the normal default example rather than
-  // partially applying untrusted state. decodePermalinkFragment only checks shape/type;
-  // validateRestoredState (shared with the unit tests in tests/promo/permalink.test.ts) is what
-  // confirms the decoded values are ones this page's own <select> option lists actually support,
-  // and that mode/dialect form a sensible pair — REQUIRING dialect === "" outside markdown mode
-  // rather than merely ignoring a stray value, so e.g. [1, "en-US", "text", "mdx", "hello"] is
-  // rejected outright instead of silently dropping the "mdx".
-  {{
-    const fragment = location.hash.slice(1);
-    if (fragment) {{
-      const decoded = decodePermalinkFragment(fragment);
-      let restored = false;
-      if (decoded.ok) {{
-        const options = {{
-          locales: LOCALES.map(([code]) => code),
-          modes: [...$mode.options].map((o) => o.value),
-          dialects: [...$dialect.options].map((o) => o.value),
-        }};
-        if (validateRestoredState(decoded.state, options)) {{
-          const {{ locale, mode, dialect, input }} = decoded.state;
-          $locale.value = locale;
-          $mode.value = mode;
-          if (mode === "markdown") $dialect.value = dialect;
-          $input.value = input;
-          lastDefault = defaultFor(locale);
-          restored = true;
-        }}
-      }}
-      if (!restored) {{
-        $permalinkNotice.hidden = false;
-        $permalinkNotice.textContent =
-          "This link's shared state could not be restored — showing the default example instead.";
-        // hashArmed is already true from the initial `location.hash.length > 1` check above:
-        // even an unrestorable hash is still sitting in the address bar and is just as
-        // misleading as a stale one, so it gets the same one-shot removal on the next edit.
-      }}
-    }}
+  function startEngineLoad() {{
+    if (engineState !== "idle") return;
+    engineState = "loading";
+    // No spinner: on a fast connection it would appear and vanish before anyone could read it. If
+    // the bundle is still in flight after 250ms, the status line already on the page says so.
+    const slowTimer = setTimeout(() => {{ isLoadSlow = true; render(); }}, 250);
+    const script = document.createElement("script");
+    script.src = ENGINE_SRC;
+    const settle = () => {{
+      clearTimeout(slowTimer);
+      isLoadSlow = false;
+      engine = window.PolytypoBrowser || null;
+      engineState = engine ? "ready" : "failed";
+      // Nothing needs queueing and nothing is lost: render() reads $input.value and every <select>
+      // at call time, so whatever was typed while the bundle was in flight is what gets typeset.
+      render();
+    }};
+    script.addEventListener("load", settle);
+    script.addEventListener("error", settle);
+    document.head.appendChild(script);
   }}
 
   let timer = null;
@@ -759,6 +781,54 @@ const DATA = {payload};
     for (const el of [$callJs, $callPy, $callGo, $callRb, $callPhp]) el.textContent = "";
   }}
 
+  /** Paints one before/after pair into the output pane and returns the tail of #pg-foot's status
+   * line. Shared by the live-engine path and the recorded-example path so both render identically —
+   * the recorded example is real engine output and is shown as such, not as a lesser placeholder. */
+  function paintPair(before, after) {{
+    if (before.length <= DIFF_CAP) {{
+      const segments = diff([...before], [...after]);
+      $output.innerHTML = paint(segments);
+      return summarizeChange(before, after, segments);
+    }}
+    $output.innerHTML = mark(after);
+    return before.length.toLocaleString("en-US") +
+      " chars — change-highlighting skipped above " + DIFF_CAP.toLocaleString("en-US") + " chars";
+  }}
+
+  /** Everything the page can honestly show before, or without, the engine.
+   *
+   * The seeded state — this locale's own default example, in text mode — is exactly what
+   * examples.json recorded a real engine run for, so it renders precisely as the engine would.
+   * Any other state has no recorded answer: while the bundle is still in flight the pane is left
+   * empty rather than passing off a previous input's result as this one's, and if the bundle
+   * failed the pane falls back to the recorded example and says plainly that it is not your text. */
+  function renderWithoutEngine(options, text) {{
+    const recorded = recordedFor(options.locale);
+    const isRecordedState = Boolean(recorded) && options.mode === "text" && text === recorded.in;
+    $output.classList.remove("error");
+
+    if (isRecordedState) {{
+      const summary = paintPair(recorded.in, recorded.out);
+      $foot.textContent =
+        options.locale + " · text · " + summary + (RECORDED_NOTE[engineState] || "");
+      return;
+    }}
+
+    if (engineState === "failed") {{
+      if (recorded) paintPair(recorded.in, recorded.out);
+      else $output.innerHTML = "";
+      $foot.textContent =
+        "The engine bundle (" + ENGINE_SRC + ") did not load — the output above is the recorded " +
+        options.locale + " example, not your own text.";
+      return;
+    }}
+
+    $output.innerHTML = "";
+    $foot.textContent = isLoadSlow
+      ? "Loading the engine — your text is typeset the moment it arrives."
+      : "";
+  }}
+
   function render() {{
     const text = $input.value;
     const n = text.length;
@@ -776,6 +846,16 @@ const DATA = {payload};
     const options = {{ locale: $locale.value, mode: $mode.value }};
     if ($mode.value === "markdown") options.dialect = $dialect.value;
 
+    // The call block describes what the form is set to, not what the engine returned — it is pure
+    // string building. Rendered before every engine branch below so it tracks the controls even
+    // while the bundle is still loading, and still shows the call that threw when one does.
+    renderCallCode(options);
+
+    if (engineState !== "ready") {{
+      renderWithoutEngine(options, text);
+      return;
+    }}
+
     let out;
     try {{
       out = engine.transform(text, options);
@@ -784,23 +864,12 @@ const DATA = {payload};
       const code = error && error.code ? error.code : "Error";
       $output.textContent = code + ": " + (error && error.message ? error.message : String(error));
       $foot.textContent = summarizeError(code);
-      clearCallCode();
       return;
     }}
 
-    renderCallCode(options);
     $output.classList.remove("error");
-    if (n <= DIFF_CAP) {{
-      const segments = diff([...text], [...out]);
-      $output.innerHTML = paint(segments);
-      $foot.textContent =
-        $locale.value + " · " + $mode.value + " · " + summarizeChange(text, out, segments);
-    }} else {{
-      $output.innerHTML = mark(out);
-      $foot.textContent =
-        $locale.value + " · " + $mode.value + " · " + n.toLocaleString("en-US") +
-        " chars — change-highlighting skipped above " + DIFF_CAP.toLocaleString("en-US") + " chars";
-    }}
+    const summary = paintPair(text, out);
+    $foot.textContent = $locale.value + " · " + $mode.value + " · " + summary;
   }}
 
   async function copyText(text) {{
@@ -810,19 +879,6 @@ const DATA = {payload};
     }} catch {{
       return false;
     }}
-  }}
-
-  function buildPermalink() {{
-    const encoded = encodePermalinkFragment({{
-      locale: $locale.value,
-      mode: $mode.value,
-      dialect: $mode.value === "markdown" ? $dialect.value : "",
-      input: $input.value,
-    }});
-    // buildPermalinkUrl uses the URL API against the CURRENT full href — not
-    // `location.origin + location.pathname` string concatenation, which breaks under file://
-    // (location.origin is the string "null" there). See tests/promo/permalink.test.ts.
-    return {{ encoded, url: buildPermalinkUrl(location.href, encoded) }};
   }}
 
   $copyOutput.addEventListener("click", async () => {{
@@ -835,58 +891,10 @@ const DATA = {payload};
     $actionStatus.textContent = copyStatusText("Output", ok);
   }});
 
-  $copyLink.addEventListener("click", async () => {{
-    const {{ encoded, url }} = buildPermalink();
-    if (encoded.length > MAX_PERMALINK_LENGTH) {{
-      // Oversized state must not touch the address bar at all — checked, and returns, before
-      // any history mutation.
-      $actionStatus.textContent = permalinkStatusText("too-long");
-      return;
-    }}
-    // Fix #3 (race condition): the address bar is updated SYNCHRONOUSLY, before awaiting
-    // Clipboard — not after. `navigator.clipboard.writeText()` can stay pending for a while (a
-    // real permission prompt, a slow platform call), and the address-bar fallback this promises
-    // (fix #3 of the previous pass) has to already be true DURING that window, not only once the
-    // promise settles. Doing this after the await also raced the stale-fragment-invalidation
-    // logic below: an edit made while Clipboard was still pending could have its "clear the
-    // stale hash" run BEFORE this handler's own (delayed) history.replaceState, so the edit's
-    // clear would be immediately undone by a hash that was already stale the moment it landed.
-    // Reusing `url` (built via buildPermalinkUrl, not string concatenation) as the
-    // history.replaceState target keeps the copied string and the address-bar string
-    // byte-identical for https/localhost/query-string/file:// alike.
-    history.replaceState(null, "", url);
-    hashArmed = true; // re-arm: the next edit should invalidate THIS fresh fragment, once.
-    const ok = await copyText(url);
-    // Nothing below this line touches history/hashArmed — by the time this await resolves, the
-    // user may already have edited state and cleared the fragment (clearStaleFragmentOnce()),
-    // and this handler must not re-apply the stale `url` captured before the await.
-    $actionStatus.textContent = permalinkStatusText(ok ? "copied" : "clipboard-unavailable");
-  }});
-
-  // Progressive enhancement only — every action above already works without it.
-  if (navigator.share) {{
-    $share.hidden = false;
-    $share.addEventListener("click", async () => {{
-      const {{ encoded, url }} = buildPermalink();
-      if (encoded.length > MAX_PERMALINK_LENGTH) {{
-        $actionStatus.textContent = permalinkStatusText("too-long");
-        return;
-      }}
-      try {{
-        await navigator.share({{ url, title: "polytypo playground" }});
-        $actionStatus.textContent = shareStatusText("shared");
-      }} catch (error) {{
-        // AbortError: the user dismissed the share sheet — reported neutrally, not as a
-        // failure. Anything else is a real API failure and must be visible, not silent.
-        $actionStatus.textContent = shareStatusText(
-          error && error.name === "AbortError" ? "cancelled" : "failed",
-        );
-      }}
-    }});
-  }}
-
+  // startEngineLoad() returns immediately unless the engine is still unrequested, so wiring it to
+  // every control costs nothing on the eager page and needs no LAZY branch here.
   $locale.addEventListener("change", () => {{
-    clearStaleFragmentOnce();
+    startEngineLoad();
     if ($input.value === lastDefault) {{
       lastDefault = defaultFor($locale.value);
       $input.value = lastDefault;
@@ -894,19 +902,39 @@ const DATA = {payload};
     render();
   }});
   $mode.addEventListener("change", () => {{
-    clearStaleFragmentOnce();
+    startEngineLoad();
     render();
   }});
   $dialect.addEventListener("change", () => {{
-    clearStaleFragmentOnce();
+    startEngineLoad();
     render();
   }});
   $input.addEventListener("input", () => {{
-    // Cleared here, in the raw event handler — not inside run()'s 120ms-debounced render() —
-    // so the stale fragment is gone on the FIRST keystroke, not 120ms after the last one.
-    clearStaleFragmentOnce();
+    // Requested from the raw event, not from run()'s 120ms-debounced render(), so the bundle is
+    // already in flight during the debounce window rather than 120ms behind it.
+    startEngineLoad();
     run();
   }});
+
+  if (LAZY) {{
+    // First sign of intent, whichever comes first: focusing the input (before a single character
+    // is typed), changing a control, or the section nearing the viewport.
+    $input.addEventListener("focus", startEngineLoad, {{ once: true }});
+    if (typeof IntersectionObserver === "function" && $demo) {{
+      const observer = new IntersectionObserver((entries) => {{
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        startEngineLoad();
+      }}, {{ rootMargin: "400px" }});
+      // Armed only once the page has finished loading. The playground sits one paragraph below the
+      // headline, so it is above the fold on an ordinary viewport and would otherwise intersect
+      // during first paint — which is precisely what this page must not spend 680 KB on.
+      const arm = () => {{ if (engineState === "idle") observer.observe($demo); }};
+      if (document.readyState === "complete") arm();
+      else window.addEventListener("load", arm, {{ once: true }});
+    }}
+  }}
+
   bootTabs("call-tabs", "call-panes");
   render();
 }})();

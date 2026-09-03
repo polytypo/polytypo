@@ -321,7 +321,9 @@ section {
   font-size: 19px;
 }
 
-.hero .cta-row {
+/* Not scoped to .hero: the home page's CTA row now sits below the playground, and the manifesto's
+   has always been inside an ordinary <section>. Same row, wherever it is used. */
+.cta-row {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-5);
@@ -757,16 +759,18 @@ textarea.pg-textarea:focus-visible {
   font-size: 12px;
 }
 
-.pg-actions {
+/* Copy Output lives in the output pane's own header, on the same row as the label for the thing
+   it copies — not in a separate action bar below the whole panel. Same pill the removed action bar
+   used; `.who` above it is uppercase mono, which the button must not inherit. */
+.pg-out-head {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-4) 26px;
-  border-top: 1px solid var(--line);
+  justify-content: space-between;
+  gap: var(--space-3);
 }
 
-.pg-actions button {
+.pg-copy {
   padding: 7px 13px;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -774,14 +778,17 @@ textarea.pg-textarea:focus-visible {
   color: var(--fg);
   font-family: var(--font-mono);
   font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
   cursor: pointer;
 }
 
-.pg-actions button:hover {
+.pg-copy:hover {
   border-color: var(--fg);
 }
 
 .pg-action-status {
+  margin: var(--space-4) 0 0;
   color: var(--muted);
   font-size: 12.5px;
 }

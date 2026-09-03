@@ -32,7 +32,8 @@
   </p>
 </header>
 
-<div class="demo">
+<!-- Shared by the home page and /playground via the {{playground}} token — see build_promo.py. -->
+<div class="demo" id="pg-demo">
   <div class="pg-bar">
     <label
       title="Which locale's quotes, dashes and spacing to apply. Required — no fallback to English."
@@ -74,43 +75,25 @@
       ></textarea>
     </div>
     <div class="pane-r">
-      <span class="who" id="pg-output-label">Output</span>
+      <div class="who pg-out-head">
+        <span id="pg-output-label">Output</span>
+        <button type="button" class="pg-copy" id="pg-copy-output">Copy Output</button>
+      </div>
       <div
         class="txt set pg-output"
         id="pg-output"
         role="region"
         aria-labelledby="pg-output-label"
       ></div>
+      <p class="pg-action-status" id="pg-action-status" role="status" aria-atomic="true"></p>
     </div>
   </div>
   <div class="foot" id="pg-foot" role="status" aria-atomic="true"></div>
-  <div class="pg-actions">
-    <button type="button" id="pg-copy-output">Copy Output</button>
-    <button type="button" id="pg-copy-link">Copy Link</button>
-    <button type="button" id="pg-share" hidden>Share</button>
-    <span class="pg-action-status" id="pg-action-status" role="status" aria-atomic="true"></span>
-  </div>
 </div>
-<p class="pg-note" id="pg-permalink-notice" role="status" hidden></p>
-<p class="pg-note">
-  <strong>Copy Link</strong> puts locale, mode, dialect and your input in the URL's
-  <code>#</code> fragment — never sent to any server, not even ours; the fragment never leaves
-  your browser in an ordinary request. Opening a copied link restores exactly what was shared.
-</p>
-<p class="pg-note">
-  Idempotency is a headline claim, not just a property test: paste the output back into the input
-  and nothing should change.
-</p>
-<p class="pg-note">
-  No hard size limit on <code>transform()</code> — ordinary prose runs at roughly 250K characters
-  per second, so even a full novel pasted in typesets in a couple of seconds. Pathological input
-  (long runs of alternating quote or dash characters with no real content between them) is
-  measurably slower, since a couple of rules re-check their own output to guarantee idempotency —
-  real text never has that shape, so this only matters if you're piping in machine-generated or
-  adversarial input.
-</p>
 
-<p class="eyebrow" style="margin-top: var(--space-8)">The call that just ran</p>
+<p class="eyebrow" style="margin-top: var(--space-7)">
+  The call the form above is making, right now
+</p>
 <div class="tabs" id="call-tabs"></div>
 <div id="call-panes">
   <div class="pane" data-label="JavaScript / TypeScript">
@@ -130,6 +113,7 @@
   </div>
 </div>
 
+
 <p class="small muted" style="margin-top: var(--space-4)">
   Every field's own comment carries its type, default and allowed values.
   <strong>None of them fall back to a default when the value is wrong or missing</strong> — each
@@ -137,23 +121,39 @@
   meant. Full option and error-code reference — <a href="../docs/#use">Docs</a>.
 </p>
 
+<p class="pg-note">
+  Idempotency is a headline claim, not just a property test: paste the output back into the input
+  and nothing should change.
+</p>
+<p class="pg-note">
+  No hard size limit on <code>transform()</code> — ordinary prose runs at roughly 250K characters
+  per second, so even a full novel pasted in typesets in a couple of seconds. Pathological input
+  (long runs of alternating quote or dash characters with no real content between them) is
+  measurably slower, since a couple of rules re-check their own output to guarantee idempotency —
+  real text never has that shape, so this only matters if you're piping in machine-generated or
+  adversarial input.
+</p>
+
 <footer><div class="wrap"><p>polytypo · spec 1.0.0 · MIT for the code, separate terms for the brand assets · every before/after typography example on this site is generated with the engine.</p><p><a href="../manifesto/">Manifesto</a></p><p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p></div></footer>
 </div>
 <script src="../assets/site.js"></script>
+<script>
+Polytypo.bootTabs("lang-tabs", "lang-panes");
+Polytypo.bootTabs("build-tabs", "build-panes");
+</script>
 <script src="../vendor/polytypo.browser.js"></script>
 <script>
 const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "locales": [{"locale": "en-US", "name": "English (US)", "hero": {"in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.", "out": "Is this “polytypo”?—No, it’s “polytypo”! She said, “He replied ‘never’ twice”… The release—all 5 km of it—covers 1914-1918. Copyright © 2026, at 1920×1080."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: “The em dash was mine before AI”—and she meant it."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "“He said 'no' to me,” she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan—if there is one—fails."}, {"rule": "dashes", "in": "1914-1918 and pp. 34-36", "out": "1914-1918 and pp. 34-36"}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "apostrophe", "in": "don't", "out": "don’t"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}, {"rule": "symbols", "in": "Copyright (c) 2026, 1920x1080", "out": "Copyright © 2026, 1920×1080"}]}, {"locale": "en-GB", "name": "English (UK)", "hero": {"in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.", "out": "Is this ‘polytypo’? – No, it’s ‘polytypo’! She said, ‘He replied “never” twice’… The release – all 5 km of it – covers 1914-1918. Copyright © 2026, at 1920×1080."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: ‘The em dash was mine before AI’ – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "‘He said 'no' to me,’ she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan – if there is one – fails."}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}]}, {"locale": "de-DE", "name": "German", "hero": {"in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.", "out": "Ist das „polytypo“? – Nein, das ist „polytypo“! Sie sagte: „Er hat 'nie' geantwortet“… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: „The em dash was mine before AI“ – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "„Er sagte ‚nein‘ zu mir“, notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "dashes", "in": "Die Jahre 1939-1945", "out": "Die Jahre 1939-1945"}, {"rule": "nbsp", "in": "z. B. Berlin", "out": "z. B. Berlin"}, {"rule": "symbols", "in": "Auflösung 1920x1080", "out": "Auflösung 1920×1080"}]}, {"locale": "de-CH", "name": "Swiss German", "hero": {"in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.", "out": "Ist das «polytypo»? – Nein, das ist «polytypo»! Sie sagte: «Er hat 'nie' geantwortet»… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: «The em dash was mine before AI» – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "«Er sagte ‹nein› zu mir», notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "nbsp", "in": "z. B. Bern", "out": "z. B. Bern"}]}, {"locale": "fr", "name": "French", "hero": {"in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.", "out": "C’est « polytypo » ? — Non, c’est « polytypo » ! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm ; c’est tout. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said : « The em dash was mine before AI » — and she meant it."}, "cases": [{"rule": "quotes", "in": "Il a dit \"bonjour\".", "out": "Il a dit « bonjour »."}, {"rule": "quotes", "in": "\"Il a dit 'oui' hier.\"", "out": "« Il a dit 'oui' hier. »"}, {"rule": "nbsp", "in": "Ça va ? Bonjour !", "out": "Ça va ? Bonjour !"}, {"rule": "dashes", "in": "Le plan - il existe - échoue.", "out": "Le plan — il existe — échoue."}, {"rule": "apostrophe", "in": "l'été et l'hiver", "out": "l’été et l’hiver"}]}, {"locale": "fr-CA", "name": "French (Canada)", "hero": {"in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.", "out": "C’est « polytypo »? — Non, c’est « polytypo »! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm; c’est tout. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said : « The em dash was mine before AI » — and she meant it."}, "cases": [{"rule": "quotes", "in": "Il a dit \"bonjour\".", "out": "Il a dit « bonjour »."}, {"rule": "dashes", "in": "Le plan - il existe - échoue.", "out": "Le plan — il existe — échoue."}, {"rule": "nbsp", "in": "Ça va? Bonjour!", "out": "Ça va? Bonjour!"}, {"rule": "nbsp", "in": "Rendez-vous à 15 h: bureau 204.", "out": "Rendez-vous à 15 h : bureau 204."}]}, {"locale": "ru", "name": "Russian", "hero": {"in": "Это \"полиштамп\"? - Нет, это \"полиштамп\"! Она сказала: \"он ответил 'никогда'\"... Достал из-под стола - в 1941-1945 годах - размер 10 x 20 см. Все права защищены (c) 2026.", "out": "Это «полиштамп»? — Нет, это «полиштамп»! Она сказала: «он ответил „никогда“»… Достал из‑под стола — в 1941-1945 годах — размер 10 × 20 см. Все права защищены © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: «The em dash was mine before AI» — and she meant it."}, "cases": [{"rule": "quotes", "in": "Он сказал: \"это 'моё' дело\".", "out": "Он сказал: «это 'моё' дело»."}, {"rule": "dashes", "in": "Москва - столица", "out": "Москва — столица"}, {"rule": "dashes", "in": "Годы 1941-1945 были тяжёлыми", "out": "Годы 1941-1945 были тяжёлыми"}, {"rule": "hyphen", "in": "Достал из-под стола", "out": "Достал из‑под стола"}, {"rule": "ellipsis", "in": "Что?...", "out": "Что?.."}, {"rule": "nbsp", "in": "Он живёт в Москве", "out": "Он живёт в Москве"}]}, {"locale": "fi", "name": "Finnish", "hero": {"in": "Onko tämä \"polytypo\"? - Ei, tämä on \"polytypo\"! Hän sanoi: \"hän vastasi 'ei koskaan'\"... Matkaa on 20 km - vuosina 1914-1918 - ja hinta nousi 10,5 %. Copyright (c) 2026.", "out": "Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän sanoi: ”hän vastasi ’ei koskaan’”… Matkaa on 20 km – vuosina 1914-1918 – ja hinta nousi 10,5 %. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: ”The em dash was mine before AI” – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Hän sanoi 'moi'\", totesin.", "out": "”Hän sanoi ’moi’”, totesin."}, {"rule": "dashes", "in": "Suunnitelma - jos sellainen on - kaatuu.", "out": "Suunnitelma – jos sellainen on – kaatuu."}, {"rule": "nbsp", "in": "Hinta nousi 10,5 %", "out": "Hinta nousi 10,5 %"}]}, {"locale": "sv", "name": "Swedish", "hero": {"in": "Är det här \"polytypo\"? - Nej, det är \"polytypo\"! Hon sa: \"han svarade 'aldrig'\"... Vi gick 5 km - åren 1914-1918 - och det kostar 100 kr. Copyright (c) 2026.", "out": "Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914-1918 – och det kostar 100 kr. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: ”The em dash was mine before AI” – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Han sa 'hej'\", sa jag.", "out": "”Han sa ’hej’”, sa jag."}, {"rule": "dashes", "in": "Planen - om det finns en - misslyckas.", "out": "Planen – om det finns en – misslyckas."}, {"rule": "nbsp", "in": "Det kostar 100 kr", "out": "Det kostar 100 kr"}]}, {"locale": "el", "name": "Greek", "hero": {"in": "Είναι αυτό \"polytypo\"; - Όχι, αυτό είναι \"polytypo\"! Είπε: \"απάντησε “ποτέ”\"... Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright (c) 2026, σε 1920x1080.", "out": "Είναι αυτό «polytypo»; - Όχι, αυτό είναι «polytypo»! Είπε: «απάντησε “ποτέ”»… Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright © 2026, σε 1920×1080."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: «The em dash was mine before AI» - and she meant it."}, "cases": [{"rule": "quotes", "in": "Είπε \"καλημέρα\" και έφυγε.", "out": "Είπε «καλημέρα» και έφυγε."}, {"rule": "quotes", "in": "\"Είπε “όχι” σε μένα\", σημείωσε.", "out": "«Είπε “όχι” σε μένα», σημείωσε."}, {"rule": "apostrophe", "in": "γι' αυτό και απ' την αρχή", "out": "γι’ αυτό και απ’ την αρχή"}, {"rule": "spaces", "in": "Τι κάνεις ;", "out": "Τι κάνεις;"}, {"rule": "ellipsis", "in": "Περίμενε... τι έγινε", "out": "Περίμενε… τι έγινε"}, {"rule": "symbols", "in": "Ανάλυση 1920x1080", "out": "Ανάλυση 1920×1080"}]}]};
 (function playground() {
-  const engine = window.PolytypoBrowser;
   const {
-    mark, diff, paint, highlight, bootTabs, summarizeChange, summarizeError,
-    encodePermalinkFragment, decodePermalinkFragment, copyStatusText, permalinkStatusText,
-    shareStatusText, buildPermalinkUrl, stripPermalinkFragment, validateRestoredState,
-    MAX_PERMALINK_LENGTH,
+    mark, diff, paint, highlight, bootTabs, summarizeChange, summarizeError, copyStatusText,
   } = window.Polytypo;
+  const LAZY = false;
+  const ENGINE_SRC = "../vendor/polytypo.browser.js";
   const LOCALES = DATA.locales.map((l) => [l.locale, l.name]);
   const DIFF_CAP = 4000; // above this, skip character-level highlighting (O(n*m) LCS)
 
+  const $demo = document.getElementById("pg-demo");
   const $locale = document.getElementById("pg-locale");
   const $mode = document.getElementById("pg-mode");
   const $dialectWrap = document.getElementById("pg-dialect-wrap");
@@ -162,10 +162,7 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
   const $output = document.getElementById("pg-output");
   const $count = document.getElementById("pg-count");
   const $foot = document.getElementById("pg-foot");
-  const $permalinkNotice = document.getElementById("pg-permalink-notice");
   const $copyOutput = document.getElementById("pg-copy-output");
-  const $copyLink = document.getElementById("pg-copy-link");
-  const $share = document.getElementById("pg-share");
   const $actionStatus = document.getElementById("pg-action-status");
 
   for (const [code, name] of LOCALES) {
@@ -178,76 +175,53 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
     `Is this "polytypo"? - No, it's "polytypo"! She said, "He replied 'never' twice"... ` +
     `The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.`;
 
+  /** This locale's recorded { in, out } pair from examples.json — the real engine run captured at
+   * build time, which is the only output this page may show before the engine itself is here. */
+  function recordedFor(code) {
+    const entry = DATA.locales.find((l) => l.locale === code);
+    return entry ? entry.hero : null;
+  }
+
   function defaultFor(code) {
-    const e = DATA.locales.find((l) => l.locale === code);
-    return e ? e.hero.in : FALLBACK_SAMPLE;
+    const recorded = recordedFor(code);
+    return recorded ? recorded.in : FALLBACK_SAMPLE;
   }
 
   let lastDefault = defaultFor($locale.value);
   $input.value = lastDefault;
 
-  if (!engine) {
-    $output.classList.add("error");
-    $output.textContent =
-      "The engine bundle (promo/vendor/polytypo.browser.js) failed to load — nothing else on " +
-      "this page depends on it, but the playground does. Run npm run gen:promo-bundle.";
-    $foot.textContent = summarizeError("PolytypoEngineMissing");
-    return;
-  }
+  // "idle" is reachable only on the lazy page: on the eager one the bundle has either already
+  // evaluated (ready) or failed outright, and there is nothing left to wait for.
+  let engine = window.PolytypoBrowser || null;
+  let engineState = engine ? "ready" : LAZY ? "idle" : "failed";
+  let isLoadSlow = false;
 
-  // Fix #4 (stale-permalink invalidation): once the address bar's hash was set by either a
-  // restore-on-load below or a later "Copy Link" click, it must be removed the FIRST time the
-  // user changes state afterward (input/locale/mode/dialect) — and only once, not on every
-  // keystroke. `hashArmed` tracks whether there is currently a hash to invalidate;
-  // `clearStaleFragmentOnce()` is the single place that does it, called from every state-change
-  // handler below, and it is idempotent per arming (checks-then-clears the flag).
-  let hashArmed = location.hash.length > 1;
-  function clearStaleFragmentOnce() {
-    if (!hashArmed) return;
-    hashArmed = false;
-    history.replaceState(null, "", stripPermalinkFragment(location.href));
-  }
+  const RECORDED_NOTE = {
+    idle: " · recorded example — the engine loads when you use the form",
+    loading: " · recorded example — the engine is loading",
+    failed: " · recorded example — the engine bundle did not load",
+  };
 
-  // Restore playground state from a "Copy Link" permalink, if the page was opened with one.
-  // Any validation failure (malformed encoding, unknown version, oversized fragment, a
-  // locale/mode/dialect this build doesn't actually offer, or — fix #5 — a non-markdown mode
-  // paired with a non-empty dialect) falls back to the normal default example rather than
-  // partially applying untrusted state. decodePermalinkFragment only checks shape/type;
-  // validateRestoredState (shared with the unit tests in tests/promo/permalink.test.ts) is what
-  // confirms the decoded values are ones this page's own <select> option lists actually support,
-  // and that mode/dialect form a sensible pair — REQUIRING dialect === "" outside markdown mode
-  // rather than merely ignoring a stray value, so e.g. [1, "en-US", "text", "mdx", "hello"] is
-  // rejected outright instead of silently dropping the "mdx".
-  {
-    const fragment = location.hash.slice(1);
-    if (fragment) {
-      const decoded = decodePermalinkFragment(fragment);
-      let restored = false;
-      if (decoded.ok) {
-        const options = {
-          locales: LOCALES.map(([code]) => code),
-          modes: [...$mode.options].map((o) => o.value),
-          dialects: [...$dialect.options].map((o) => o.value),
-        };
-        if (validateRestoredState(decoded.state, options)) {
-          const { locale, mode, dialect, input } = decoded.state;
-          $locale.value = locale;
-          $mode.value = mode;
-          if (mode === "markdown") $dialect.value = dialect;
-          $input.value = input;
-          lastDefault = defaultFor(locale);
-          restored = true;
-        }
-      }
-      if (!restored) {
-        $permalinkNotice.hidden = false;
-        $permalinkNotice.textContent =
-          "This link's shared state could not be restored — showing the default example instead.";
-        // hashArmed is already true from the initial `location.hash.length > 1` check above:
-        // even an unrestorable hash is still sitting in the address bar and is just as
-        // misleading as a stale one, so it gets the same one-shot removal on the next edit.
-      }
-    }
+  function startEngineLoad() {
+    if (engineState !== "idle") return;
+    engineState = "loading";
+    // No spinner: on a fast connection it would appear and vanish before anyone could read it. If
+    // the bundle is still in flight after 250ms, the status line already on the page says so.
+    const slowTimer = setTimeout(() => { isLoadSlow = true; render(); }, 250);
+    const script = document.createElement("script");
+    script.src = ENGINE_SRC;
+    const settle = () => {
+      clearTimeout(slowTimer);
+      isLoadSlow = false;
+      engine = window.PolytypoBrowser || null;
+      engineState = engine ? "ready" : "failed";
+      // Nothing needs queueing and nothing is lost: render() reads $input.value and every <select>
+      // at call time, so whatever was typed while the bundle was in flight is what gets typeset.
+      render();
+    };
+    script.addEventListener("load", settle);
+    script.addEventListener("error", settle);
+    document.head.appendChild(script);
   }
 
   let timer = null;
@@ -340,6 +314,54 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
     for (const el of [$callJs, $callPy, $callGo, $callRb, $callPhp]) el.textContent = "";
   }
 
+  /** Paints one before/after pair into the output pane and returns the tail of #pg-foot's status
+   * line. Shared by the live-engine path and the recorded-example path so both render identically —
+   * the recorded example is real engine output and is shown as such, not as a lesser placeholder. */
+  function paintPair(before, after) {
+    if (before.length <= DIFF_CAP) {
+      const segments = diff([...before], [...after]);
+      $output.innerHTML = paint(segments);
+      return summarizeChange(before, after, segments);
+    }
+    $output.innerHTML = mark(after);
+    return before.length.toLocaleString("en-US") +
+      " chars — change-highlighting skipped above " + DIFF_CAP.toLocaleString("en-US") + " chars";
+  }
+
+  /** Everything the page can honestly show before, or without, the engine.
+   *
+   * The seeded state — this locale's own default example, in text mode — is exactly what
+   * examples.json recorded a real engine run for, so it renders precisely as the engine would.
+   * Any other state has no recorded answer: while the bundle is still in flight the pane is left
+   * empty rather than passing off a previous input's result as this one's, and if the bundle
+   * failed the pane falls back to the recorded example and says plainly that it is not your text. */
+  function renderWithoutEngine(options, text) {
+    const recorded = recordedFor(options.locale);
+    const isRecordedState = Boolean(recorded) && options.mode === "text" && text === recorded.in;
+    $output.classList.remove("error");
+
+    if (isRecordedState) {
+      const summary = paintPair(recorded.in, recorded.out);
+      $foot.textContent =
+        options.locale + " · text · " + summary + (RECORDED_NOTE[engineState] || "");
+      return;
+    }
+
+    if (engineState === "failed") {
+      if (recorded) paintPair(recorded.in, recorded.out);
+      else $output.innerHTML = "";
+      $foot.textContent =
+        "The engine bundle (" + ENGINE_SRC + ") did not load — the output above is the recorded " +
+        options.locale + " example, not your own text.";
+      return;
+    }
+
+    $output.innerHTML = "";
+    $foot.textContent = isLoadSlow
+      ? "Loading the engine — your text is typeset the moment it arrives."
+      : "";
+  }
+
   function render() {
     const text = $input.value;
     const n = text.length;
@@ -357,6 +379,16 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
     const options = { locale: $locale.value, mode: $mode.value };
     if ($mode.value === "markdown") options.dialect = $dialect.value;
 
+    // The call block describes what the form is set to, not what the engine returned — it is pure
+    // string building. Rendered before every engine branch below so it tracks the controls even
+    // while the bundle is still loading, and still shows the call that threw when one does.
+    renderCallCode(options);
+
+    if (engineState !== "ready") {
+      renderWithoutEngine(options, text);
+      return;
+    }
+
     let out;
     try {
       out = engine.transform(text, options);
@@ -365,23 +397,12 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
       const code = error && error.code ? error.code : "Error";
       $output.textContent = code + ": " + (error && error.message ? error.message : String(error));
       $foot.textContent = summarizeError(code);
-      clearCallCode();
       return;
     }
 
-    renderCallCode(options);
     $output.classList.remove("error");
-    if (n <= DIFF_CAP) {
-      const segments = diff([...text], [...out]);
-      $output.innerHTML = paint(segments);
-      $foot.textContent =
-        $locale.value + " · " + $mode.value + " · " + summarizeChange(text, out, segments);
-    } else {
-      $output.innerHTML = mark(out);
-      $foot.textContent =
-        $locale.value + " · " + $mode.value + " · " + n.toLocaleString("en-US") +
-        " chars — change-highlighting skipped above " + DIFF_CAP.toLocaleString("en-US") + " chars";
-    }
+    const summary = paintPair(text, out);
+    $foot.textContent = $locale.value + " · " + $mode.value + " · " + summary;
   }
 
   async function copyText(text) {
@@ -391,19 +412,6 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
     } catch {
       return false;
     }
-  }
-
-  function buildPermalink() {
-    const encoded = encodePermalinkFragment({
-      locale: $locale.value,
-      mode: $mode.value,
-      dialect: $mode.value === "markdown" ? $dialect.value : "",
-      input: $input.value,
-    });
-    // buildPermalinkUrl uses the URL API against the CURRENT full href — not
-    // `location.origin + location.pathname` string concatenation, which breaks under file://
-    // (location.origin is the string "null" there). See tests/promo/permalink.test.ts.
-    return { encoded, url: buildPermalinkUrl(location.href, encoded) };
   }
 
   $copyOutput.addEventListener("click", async () => {
@@ -416,58 +424,10 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
     $actionStatus.textContent = copyStatusText("Output", ok);
   });
 
-  $copyLink.addEventListener("click", async () => {
-    const { encoded, url } = buildPermalink();
-    if (encoded.length > MAX_PERMALINK_LENGTH) {
-      // Oversized state must not touch the address bar at all — checked, and returns, before
-      // any history mutation.
-      $actionStatus.textContent = permalinkStatusText("too-long");
-      return;
-    }
-    // Fix #3 (race condition): the address bar is updated SYNCHRONOUSLY, before awaiting
-    // Clipboard — not after. `navigator.clipboard.writeText()` can stay pending for a while (a
-    // real permission prompt, a slow platform call), and the address-bar fallback this promises
-    // (fix #3 of the previous pass) has to already be true DURING that window, not only once the
-    // promise settles. Doing this after the await also raced the stale-fragment-invalidation
-    // logic below: an edit made while Clipboard was still pending could have its "clear the
-    // stale hash" run BEFORE this handler's own (delayed) history.replaceState, so the edit's
-    // clear would be immediately undone by a hash that was already stale the moment it landed.
-    // Reusing `url` (built via buildPermalinkUrl, not string concatenation) as the
-    // history.replaceState target keeps the copied string and the address-bar string
-    // byte-identical for https/localhost/query-string/file:// alike.
-    history.replaceState(null, "", url);
-    hashArmed = true; // re-arm: the next edit should invalidate THIS fresh fragment, once.
-    const ok = await copyText(url);
-    // Nothing below this line touches history/hashArmed — by the time this await resolves, the
-    // user may already have edited state and cleared the fragment (clearStaleFragmentOnce()),
-    // and this handler must not re-apply the stale `url` captured before the await.
-    $actionStatus.textContent = permalinkStatusText(ok ? "copied" : "clipboard-unavailable");
-  });
-
-  // Progressive enhancement only — every action above already works without it.
-  if (navigator.share) {
-    $share.hidden = false;
-    $share.addEventListener("click", async () => {
-      const { encoded, url } = buildPermalink();
-      if (encoded.length > MAX_PERMALINK_LENGTH) {
-        $actionStatus.textContent = permalinkStatusText("too-long");
-        return;
-      }
-      try {
-        await navigator.share({ url, title: "polytypo playground" });
-        $actionStatus.textContent = shareStatusText("shared");
-      } catch (error) {
-        // AbortError: the user dismissed the share sheet — reported neutrally, not as a
-        // failure. Anything else is a real API failure and must be visible, not silent.
-        $actionStatus.textContent = shareStatusText(
-          error && error.name === "AbortError" ? "cancelled" : "failed",
-        );
-      }
-    });
-  }
-
+  // startEngineLoad() returns immediately unless the engine is still unrequested, so wiring it to
+  // every control costs nothing on the eager page and needs no LAZY branch here.
   $locale.addEventListener("change", () => {
-    clearStaleFragmentOnce();
+    startEngineLoad();
     if ($input.value === lastDefault) {
       lastDefault = defaultFor($locale.value);
       $input.value = lastDefault;
@@ -475,19 +435,39 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
     render();
   });
   $mode.addEventListener("change", () => {
-    clearStaleFragmentOnce();
+    startEngineLoad();
     render();
   });
   $dialect.addEventListener("change", () => {
-    clearStaleFragmentOnce();
+    startEngineLoad();
     render();
   });
   $input.addEventListener("input", () => {
-    // Cleared here, in the raw event handler — not inside run()'s 120ms-debounced render() —
-    // so the stale fragment is gone on the FIRST keystroke, not 120ms after the last one.
-    clearStaleFragmentOnce();
+    // Requested from the raw event, not from run()'s 120ms-debounced render(), so the bundle is
+    // already in flight during the debounce window rather than 120ms behind it.
+    startEngineLoad();
     run();
   });
+
+  if (LAZY) {
+    // First sign of intent, whichever comes first: focusing the input (before a single character
+    // is typed), changing a control, or the section nearing the viewport.
+    $input.addEventListener("focus", startEngineLoad, { once: true });
+    if (typeof IntersectionObserver === "function" && $demo) {
+      const observer = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        startEngineLoad();
+      }, { rootMargin: "400px" });
+      // Armed only once the page has finished loading. The playground sits one paragraph below the
+      // headline, so it is above the fold on an ordinary viewport and would otherwise intersect
+      // during first paint — which is precisely what this page must not spend 680 KB on.
+      const arm = () => { if (engineState === "idle") observer.observe($demo); };
+      if (document.readyState === "complete") arm();
+      else window.addEventListener("load", arm, { once: true });
+    }
+  }
+
   bootTabs("call-tabs", "call-panes");
   render();
 })();

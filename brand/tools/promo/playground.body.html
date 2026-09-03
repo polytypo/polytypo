@@ -9,71 +9,15 @@
   </p>
 </header>
 
-<div class="demo">
-  <div class="pg-bar">
-    <label
-      title="Which locale's quotes, dashes and spacing to apply. Required — no fallback to English."
-    >
-      Locale
-      <select id="pg-locale"></select>
-    </label>
-    <label
-      title="text: no markup parsing, the whole input is prose. html: parse5 touches only text nodes, never tags or attributes. markdown: micromark touches only prose, never code spans/blocks or front matter."
-    >
-      Mode
-      <select id="pg-mode">
-        <option value="text">text</option>
-        <option value="html">html</option>
-        <option value="markdown">markdown</option>
-      </select>
-    </label>
-    <label
-      id="pg-dialect-wrap"
-      hidden
-      title="Markdown-only, no default. commonmark vs mdx changes how ambiguous syntax like &lt;https://…&gt; is parsed — the two disagree, so this can't be auto-detected."
-    >
-      Dialect
-      <select id="pg-dialect">
-        <option value="commonmark">commonmark</option>
-        <option value="mdx">mdx</option>
-      </select>
-    </label>
-  </div>
-  <div class="split">
-    <div class="pane-l">
-      <label class="who" for="pg-input">Input <span id="pg-count"></span></label>
-      <textarea
-        id="pg-input"
-        class="pg-textarea"
-        spellcheck="false"
-        autocapitalize="off"
-        placeholder='Paste or type text here — try: "It&apos;s a test" - said no one -- ever...'
-      ></textarea>
-    </div>
-    <div class="pane-r">
-      <span class="who" id="pg-output-label">Output</span>
-      <div
-        class="txt set pg-output"
-        id="pg-output"
-        role="region"
-        aria-labelledby="pg-output-label"
-      ></div>
-    </div>
-  </div>
-  <div class="foot" id="pg-foot" role="status" aria-atomic="true"></div>
-  <div class="pg-actions">
-    <button type="button" id="pg-copy-output">Copy Output</button>
-    <button type="button" id="pg-copy-link">Copy Link</button>
-    <button type="button" id="pg-share" hidden>Share</button>
-    <span class="pg-action-status" id="pg-action-status" role="status" aria-atomic="true"></span>
-  </div>
-</div>
-<p class="pg-note" id="pg-permalink-notice" role="status" hidden></p>
-<p class="pg-note">
-  <strong>Copy Link</strong> puts locale, mode, dialect and your input in the URL's
-  <code>#</code> fragment — never sent to any server, not even ours; the fragment never leaves
-  your browser in an ordinary request. Opening a copied link restores exactly what was shared.
+{{playground}}
+
+<p class="small muted" style="margin-top: var(--space-4)">
+  Every field's own comment carries its type, default and allowed values.
+  <strong>None of them fall back to a default when the value is wrong or missing</strong> — each
+  throws its own error, with a machine-readable <code>code</code>, rather than guessing what you
+  meant. Full option and error-code reference — <a href="{{prefix}}docs/#use">Docs</a>.
 </p>
+
 <p class="pg-note">
   Idempotency is a headline claim, not just a property test: paste the output back into the input
   and nothing should change.
@@ -85,31 +29,4 @@
   measurably slower, since a couple of rules re-check their own output to guarantee idempotency —
   real text never has that shape, so this only matters if you're piping in machine-generated or
   adversarial input.
-</p>
-
-<p class="eyebrow" style="margin-top: var(--space-8)">The call that just ran</p>
-<div class="tabs" id="call-tabs"></div>
-<div id="call-panes">
-  <div class="pane" data-label="JavaScript / TypeScript">
-    <pre><code id="call-code-js"></code></pre>
-  </div>
-  <div class="pane" data-label="Python">
-    <pre><code id="call-code-py"></code></pre>
-  </div>
-  <div class="pane" data-label="Go">
-    <pre><code id="call-code-go"></code></pre>
-  </div>
-  <div class="pane" data-label="Ruby">
-    <pre><code id="call-code-rb"></code></pre>
-  </div>
-  <div class="pane" data-label="PHP">
-    <pre><code id="call-code-php"></code></pre>
-  </div>
-</div>
-
-<p class="small muted" style="margin-top: var(--space-4)">
-  Every field's own comment carries its type, default and allowed values.
-  <strong>None of them fall back to a default when the value is wrong or missing</strong> — each
-  throws its own error, with a machine-readable <code>code</code>, rather than guessing what you
-  meant. Full option and error-code reference — <a href="{{prefix}}docs/#use">Docs</a>.
 </p>
