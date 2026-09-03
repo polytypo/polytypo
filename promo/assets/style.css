@@ -14,7 +14,30 @@
   --line: rgb(20 22 26 / 14%);
   --surface: #f2f0ea;
   --surface-strong: #e9e6df;
-  --tok-string: #2f7a44;
+
+  /* Code surface. Every example block on this site — real code samples AND prose specimens —
+     sits on a dark ground in both themes, so everything drawn on it is theme-independent and
+     lives here rather than in the four theme blocks. Only --code-bg and --code-line vary, and
+     they vary to stay distinguishable from the page: a dark panel on the light page, a deeper
+     well on the dark one (where --surface, #181b20, is what the cards around them use). */
+  --code-bg: #15181d;
+  --code-fg: #e9e7e2;
+  --code-line: rgb(255 255 255 / 12%);
+  --code-gutter: #7d848e;
+  --code-dim: #98a0aa;
+  --tok-string: #8fc79a;
+  --tok-comment: #8b939d;
+  /* The brand accent lightened for the dark ground: #d64027 on #15181d is 3.6:1, below the 4.5:1
+     an underline-and-glyph mark needs to stay readable. Derived from the palette, not a new
+     colour in it. */
+  --code-accent: color-mix(in srgb, var(--color-accent) 78%, white);
+
+  /* Line-number gutter. --ln-pad is the panel's own left inset, re-declared per panel type;
+     --ln-total re-computes from it wherever it is used, so one geometry serves both. */
+  --ln-w: 2.5ch;
+  --ln-gap: 1.1ch;
+  --ln-pad: var(--space-4);
+  --ln-total: calc(var(--ln-pad) + var(--ln-w) + var(--ln-gap));
 
   --font-sans: "Inter Brand", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JB Mono Brand", ui-monospace, "SF Mono", Menlo, monospace;
@@ -46,7 +69,8 @@
     --line: rgb(237 235 230 / 16%);
     --surface: #181b20;
     --surface-strong: #22262c;
-    --tok-string: #8fc79a;
+    --code-bg: #07090c;
+    --code-line: rgb(237 235 230 / 14%);
   }
 }
 
@@ -58,7 +82,8 @@
   --line: rgb(20 22 26 / 14%);
   --surface: #f2f0ea;
   --surface-strong: #e9e6df;
-  --tok-string: #2f7a44;
+  --code-bg: #15181d;
+  --code-line: rgb(255 255 255 / 12%);
 }
 
 :root[data-theme="dark"] {
@@ -69,7 +94,8 @@
   --line: rgb(237 235 230 / 16%);
   --surface: #181b20;
   --surface-strong: #22262c;
-  --tok-string: #8fc79a;
+  --code-bg: #07090c;
+  --code-line: rgb(237 235 230 / 14%);
 }
 
 *,
@@ -418,23 +444,6 @@ section {
   text-transform: uppercase;
 }
 
-.split .txt {
-  overflow-wrap: anywhere;
-}
-
-.split .txt.raw {
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 16px;
-  line-height: 1.75;
-}
-
-.split .txt.set {
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 1.5;
-}
-
 .demo .foot {
   padding: var(--space-4) 26px;
   border-top: 1px solid var(--line);
@@ -443,31 +452,22 @@ section {
   font-size: 11.5px;
 }
 
+/* Every change mark now sits on the code ground, in both themes, so these no longer need a
+   per-theme variant — the previous light-theme values (16%/22%, tuned for the light --surface)
+   are simply wrong against it and are gone rather than kept as a dead branch. */
 .chg {
   border-radius: 3px;
-  background: rgb(214 64 39 / 16%);
-  box-shadow: 0 0 0 1px rgb(214 64 39 / 22%);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .chg {
-    background: rgb(214 64 39 / 30%);
-    box-shadow: 0 0 0 1px rgb(214 64 39 / 38%);
-  }
-}
-
-:root[data-theme="dark"] .chg {
   background: rgb(214 64 39 / 30%);
   box-shadow: 0 0 0 1px rgb(214 64 39 / 38%);
 }
 
 .nb {
-  border-bottom: 2px solid var(--color-accent);
-  color: var(--color-accent);
+  border-bottom: 2px solid var(--code-accent);
+  color: var(--code-accent);
 }
 
 .bound {
-  border-bottom: 2px dotted var(--color-accent);
+  border-bottom: 2px dotted var(--code-accent);
 }
 
 /* ---------- card grids ---------- */
@@ -508,21 +508,15 @@ section {
   margin-top: var(--space-3);
 }
 
-.card .in,
-.card .out {
-  overflow-wrap: anywhere;
-}
-
+/* Both halves of a card's before/after pair are code panels at the same size, so the input is
+   dimmed instead — that is what still distinguishes "what was typed" from "what the engine set"
+   now that the two no longer differ in typeface or scale. */
 .card .in {
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  line-height: 1.7;
+  color: var(--code-dim);
 }
 
 .card .out {
-  font-size: 16px;
-  line-height: 1.55;
+  color: var(--code-fg);
 }
 
 /* ---------- tables ---------- */
@@ -567,14 +561,17 @@ td.mono,
   white-space: nowrap;
 }
 
-.rule-in {
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 13px;
+/* The rules table's In/Out cells hold a code panel each, so the cell itself only has to give it
+   room — everything visual comes from .specimen. min-width keeps a one-word specimen from being
+   squeezed to the width of its own gutter by table auto-layout. */
+.rule-in,
+.rule-out {
+  min-width: 20ch;
+  padding-right: var(--space-3);
 }
 
-.rule-out {
-  font-size: 16px;
+.rule-in .specimen {
+  color: var(--code-dim);
 }
 
 .kv {
@@ -616,16 +613,78 @@ td.mono,
   border-color: var(--fg);
 }
 
+/* A real code sample. Left padding is 0 here and carried by `pre > code` instead, so the
+   line-number gutter can sit inside it — see .ln::before. */
 pre {
+  --ln-pad: var(--space-5);
+
   margin: var(--space-5) 0 0;
-  padding: var(--space-8) var(--space-9);
+  padding: var(--space-8) var(--space-9) var(--space-8) 0;
   overflow-x: auto;
-  border: 1px solid var(--line);
+  border: 1px solid var(--code-line);
   border-radius: var(--radius-md);
-  background: var(--surface);
+  background: var(--code-bg);
+  color: var(--code-fg);
+  counter-reset: ln;
   font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.7;
+}
+
+pre > code {
+  display: block;
+  padding-left: var(--ln-total);
+}
+
+/* A prose specimen — a before/after example — presented on the same ground as a code sample.
+   Deliberately not a <pre>: specimen text is prose and has to wrap, where a code sample must
+   not (it scrolls instead). Everything else about the two is shared. */
+.specimen {
+  --ln-pad: var(--space-3);
+
+  overflow-x: auto;
+  padding: var(--space-3) var(--space-4) var(--space-3) 0;
+  border: 1px solid var(--code-line);
+  border-radius: 8px;
+  background: var(--code-bg);
+  color: var(--code-fg);
+  counter-reset: ln;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.75;
+}
+
+.specimen > code {
+  display: block;
+  padding-left: var(--ln-total);
+  font-size: inherit;
+  /* pre-wrap, not the surrounding prose's collapsing whitespace: a specimen for the `spaces`
+     rule is about repeated spaces, and collapsing them hides the very thing it demonstrates. */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* One source line of a code panel. The number is CSS generated content and is marked
+   unselectable, so it is not a text node and does not reach the clipboard: selecting a block
+   and copying yields the text alone. The negative margin pulls the number back into the panel's
+   left inset — which is why the inset lives on the code element as padding rather than on the
+   panel — so a wrapped specimen line aligns under its own first character, not under the
+   gutter. `sticky` keeps the number in view while a wide code sample scrolls sideways. */
+.ln::before {
+  counter-increment: ln;
+  content: counter(ln);
+  position: sticky;
+  left: 0;
+  display: inline-block;
+  width: var(--ln-total);
+  padding-right: var(--ln-gap);
+  padding-left: var(--ln-pad);
+  margin-left: calc(-1 * var(--ln-total));
+  background: var(--code-bg);
+  color: var(--code-gutter);
+  text-align: right;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* Minimal hand-rolled highlighting for the generated call samples — no highlighter
@@ -636,7 +695,7 @@ pre {
 }
 
 .tok-com {
-  color: var(--muted);
+  color: var(--tok-comment);
   font-style: italic;
 }
 
@@ -701,26 +760,30 @@ pre {
   text-transform: none;
 }
 
+/* The input is a real <textarea>, on the same ground and in the same face as the output panel so
+   the two read as one unit — but deliberately without a line-number gutter. A gutter cannot stay
+   aligned with a soft-wrapping textarea without reimplementing text editing, and a gutter that
+   drifts out of step with its own text is worse than none. */
 textarea.pg-textarea {
   display: block;
   width: 100%;
   height: 320px;
   margin-top: var(--space-4);
   resize: vertical;
-  border: 1px solid var(--line);
+  border: 1px solid var(--code-line);
   outline: 0;
   border-radius: 8px;
-  padding: var(--space-5);
-  background: var(--bg);
-  color: var(--fg);
+  padding: var(--space-4);
+  background: var(--code-bg);
+  color: var(--code-fg);
   font-family: var(--font-mono);
   font-size: 14px;
   line-height: 1.7;
-  box-shadow: inset 0 1px 2px rgb(20 22 26 / 6%);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 30%);
 }
 
 textarea.pg-textarea::placeholder {
-  color: var(--muted);
+  color: var(--code-gutter);
 }
 
 textarea.pg-textarea:focus-visible {
@@ -733,22 +796,28 @@ textarea.pg-textarea:focus-visible {
   box-shadow: 0 0 0 3px rgb(214 64 39 / 14%);
 }
 
-@media (prefers-color-scheme: dark) {
-  textarea.pg-textarea {
-    box-shadow: inset 0 1px 2px rgb(0 0 0 / 30%);
-  }
-}
-
+/* Same code panel as .specimen, but declared here rather than shared: the script writes innerHTML
+   straight into this element, so there is no inner <code> to carry the gutter inset. */
 .pg-output {
+  --ln-pad: var(--space-3);
+
+  margin-top: var(--space-4);
+  overflow-x: auto;
+  padding: var(--space-4) var(--space-4) var(--space-4) var(--ln-total);
+  border: 1px solid var(--code-line);
+  border-radius: 8px;
+  background: var(--code-bg);
+  color: var(--code-fg);
+  counter-reset: ln;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
-  font-size: 17px;
-  line-height: 1.6;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.7;
 }
 
 .pg-output.error {
-  color: var(--color-accent);
-  font-family: var(--font-mono);
+  color: var(--code-accent);
   font-size: 13px;
   line-height: 1.6;
 }
@@ -910,13 +979,5 @@ footer a:hover {
 
   section {
     padding-top: 56px;
-  }
-
-  .split .txt.raw {
-    font-size: 14px;
-  }
-
-  .split .txt.set {
-    font-size: 19px;
   }
 }

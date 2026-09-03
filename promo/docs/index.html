@@ -33,88 +33,88 @@
 
 <section id="use" style="border-top: 0; padding-top: 0">
   <div class="tabs" id="lang-tabs"></div>
-  <div id="lang-panes"><div class="pane" data-label="JavaScript / TypeScript"><h3 style="margin:22px 0 0">JavaScript / TypeScript<span class="status live">npm — not yet published</span></h3><pre><code><span class="tok-com">// npm install polytypo</span>
-import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;
-
-transform(`Is this <span class="tok-str">&quot;polytypo&quot;</span>? - No, it&#x27;s <span class="tok-str">&quot;polytypo&quot;</span>!`, { locale: <span class="tok-str">&quot;de&quot;</span> });
-<span class="tok-com">// → Ist das „polytypo“? – Nein, das ist „polytypo“!</span>
-
-transform(<span class="tok-str">&quot;Il a dit \&quot;bonjour\&quot;.&quot;</span>, { locale: <span class="tok-str">&quot;fr&quot;</span> });
-<span class="tok-com">// → Il a dit «\u202fbonjour\u202f».</span>
-
-<span class="tok-com">// opt out of a single rule; the order of the rest never changes</span>
-transform(<span class="tok-str">&quot;1914-1918&quot;</span>, { locale: <span class="tok-str">&quot;en-US&quot;</span>, rules: { dashes: false } });
-
-try {
-  transform(<span class="tok-str">&quot;x&quot;</span>, { locale: <span class="tok-str">&quot;xx&quot;</span> });
-} catch (error) {
-  error.code; <span class="tok-com">// &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span>
-}</code></pre></div><div class="pane" data-label="Python"><h3 style="margin:22px 0 0">Python<span class="status">PyPI — planned</span></h3><pre><code><span class="tok-com"># pip install polytypo</span>
-from polytypo import transform, PolytypoError
-
-transform(<span class="tok-str">&#x27;Is this &quot;polytypo&quot;? - No, it\&#x27;s &quot;polytypo&quot;!&#x27;</span>, locale=<span class="tok-str">&quot;de&quot;</span>)
-<span class="tok-com"># → Ist das „polytypo“? – Nein, das ist „polytypo“!</span>
-
-transform(<span class="tok-str">&#x27;Il a dit &quot;bonjour&quot;.&#x27;</span>, locale=<span class="tok-str">&quot;fr&quot;</span>)
-<span class="tok-com"># → Il a dit «\u202fbonjour\u202f».</span>
-
-transform(<span class="tok-str">&quot;1914-1918&quot;</span>, locale=<span class="tok-str">&quot;en-US&quot;</span>, rules={<span class="tok-str">&quot;dashes&quot;</span>: False})
-
-try:
-    transform(<span class="tok-str">&quot;x&quot;</span>, locale=<span class="tok-str">&quot;xx&quot;</span>)
-except PolytypoError as error:
-    error.code  <span class="tok-com"># &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></code></pre></div><div class="pane" data-label="Go"><h3 style="margin:22px 0 0">Go<span class="status">Go modules — planned</span></h3><pre><code><span class="tok-com">// go get github.com/polytypo/polytypo-go</span>
-package main
-
-import (
-    <span class="tok-str">&quot;fmt&quot;</span>
-    <span class="tok-str">&quot;github.com/polytypo/polytypo-go&quot;</span>
-)
-
-func main() {
-    out, err := polytypo.Transform(
-        `Is this <span class="tok-str">&quot;polytypo&quot;</span>? - No, it&#x27;s <span class="tok-str">&quot;polytypo&quot;</span>!`,
-        polytypo.Options{Locale: <span class="tok-str">&quot;de&quot;</span>},
-    )
-    if err != nil {
-        var perr *polytypo.Error
-        if errors.As(err, &amp;perr) {
-            _ = perr.Code <span class="tok-com">// &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span>
-        }
-    }
-    fmt.Println(out)
-    <span class="tok-com">// Ist das „polytypo“? – Nein, das ist „polytypo“!</span>
-}</code></pre></div><div class="pane" data-label="Ruby"><h3 style="margin:22px 0 0">Ruby<span class="status">RubyGems — planned</span></h3><pre><code><span class="tok-com"># gem install polytypo</span>
-require <span class="tok-str">&quot;polytypo&quot;</span>
-
-Polytypo.transform(%q{Is this <span class="tok-str">&quot;polytypo&quot;</span>? - No, it<span class="tok-str">&#x27;s &quot;polytypo&quot;!}, locale: &quot;de&quot;)
-# =&gt; &quot;Ist das „polytypo“? – Nein, das ist „polytypo“!&quot;
-
-Polytypo.transform(&#x27;</span>Il a dit <span class="tok-str">&quot;bonjour&quot;</span>.&#x27;, locale: <span class="tok-str">&quot;fr&quot;</span>)
-<span class="tok-com"># =&gt; &quot;Il a dit «\u202fbonjour\u202f».&quot;</span>
-
-Polytypo.transform(<span class="tok-str">&quot;1914-1918&quot;</span>, locale: <span class="tok-str">&quot;en-US&quot;</span>, rules: { dashes: false })
-
-begin
-  Polytypo.transform(<span class="tok-str">&quot;x&quot;</span>, locale: <span class="tok-str">&quot;xx&quot;</span>)
-rescue Polytypo::Error =&gt; error
-  error.code <span class="tok-com"># =&gt; &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span>
-end</code></pre></div><div class="pane" data-label="PHP"><h3 style="margin:22px 0 0">PHP<span class="status">Packagist — planned</span></h3><pre><code>&lt;?php
-<span class="tok-com">// composer require polytypo/polytypo</span>
-use Polytypo\Polytypo;
-use Polytypo\PolytypoException;
-
-Polytypo::transform(<span class="tok-str">&#x27;Is this &quot;polytypo&quot;? - No, it\&#x27;s &quot;polytypo&quot;!&#x27;</span>, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;de&#x27;</span>]);
-<span class="tok-com">// → Ist das „polytypo“? – Nein, das ist „polytypo“!</span>
-
-Polytypo::transform(<span class="tok-str">&#x27;Il a dit &quot;bonjour&quot;.&#x27;</span>, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;fr&#x27;</span>]);
-<span class="tok-com">// → Il a dit «\u{202f}bonjour\u{202f}».</span>
-
-try {
-    Polytypo::transform(<span class="tok-str">&#x27;x&#x27;</span>, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;xx&#x27;</span>]);
-} catch (PolytypoException $error) {
-    $error-&gt;errorCode; <span class="tok-com">// &#x27;POLYTYPO_UNKNOWN_LOCALE&#x27;</span>
-}</code></pre></div></div>
+  <div id="lang-panes"><div class="pane" data-label="JavaScript / TypeScript"><h3 style="margin:22px 0 0">JavaScript / TypeScript<span class="status live">npm — not yet published</span></h3><pre><code><span class="ln"><span class="tok-com">// npm install polytypo</span></span>
+<span class="ln">import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;</span>
+<span class="ln"></span>
+<span class="ln">transform(`Is this <span class="tok-str">&quot;polytypo&quot;</span>? - No, it&#x27;s <span class="tok-str">&quot;polytypo&quot;</span>!`, { locale: <span class="tok-str">&quot;de&quot;</span> });</span>
+<span class="ln"><span class="tok-com">// → Ist das „polytypo“? – Nein, das ist „polytypo“!</span></span>
+<span class="ln"></span>
+<span class="ln">transform(<span class="tok-str">&quot;Il a dit \&quot;bonjour\&quot;.&quot;</span>, { locale: <span class="tok-str">&quot;fr&quot;</span> });</span>
+<span class="ln"><span class="tok-com">// → Il a dit «\u202fbonjour\u202f».</span></span>
+<span class="ln"></span>
+<span class="ln"><span class="tok-com">// opt out of a single rule; the order of the rest never changes</span></span>
+<span class="ln">transform(<span class="tok-str">&quot;1914-1918&quot;</span>, { locale: <span class="tok-str">&quot;en-US&quot;</span>, rules: { dashes: false } });</span>
+<span class="ln"></span>
+<span class="ln">try {</span>
+<span class="ln">  transform(<span class="tok-str">&quot;x&quot;</span>, { locale: <span class="tok-str">&quot;xx&quot;</span> });</span>
+<span class="ln">} catch (error) {</span>
+<span class="ln">  error.code; <span class="tok-com">// &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span>
+<span class="ln">}</span></code></pre></div><div class="pane" data-label="Python"><h3 style="margin:22px 0 0">Python<span class="status">PyPI — planned</span></h3><pre><code><span class="ln"><span class="tok-com"># pip install polytypo</span></span>
+<span class="ln">from polytypo import transform, PolytypoError</span>
+<span class="ln"></span>
+<span class="ln">transform(<span class="tok-str">&#x27;Is this &quot;polytypo&quot;? - No, it\&#x27;s &quot;polytypo&quot;!&#x27;</span>, locale=<span class="tok-str">&quot;de&quot;</span>)</span>
+<span class="ln"><span class="tok-com"># → Ist das „polytypo“? – Nein, das ist „polytypo“!</span></span>
+<span class="ln"></span>
+<span class="ln">transform(<span class="tok-str">&#x27;Il a dit &quot;bonjour&quot;.&#x27;</span>, locale=<span class="tok-str">&quot;fr&quot;</span>)</span>
+<span class="ln"><span class="tok-com"># → Il a dit «\u202fbonjour\u202f».</span></span>
+<span class="ln"></span>
+<span class="ln">transform(<span class="tok-str">&quot;1914-1918&quot;</span>, locale=<span class="tok-str">&quot;en-US&quot;</span>, rules={<span class="tok-str">&quot;dashes&quot;</span>: False})</span>
+<span class="ln"></span>
+<span class="ln">try:</span>
+<span class="ln">    transform(<span class="tok-str">&quot;x&quot;</span>, locale=<span class="tok-str">&quot;xx&quot;</span>)</span>
+<span class="ln">except PolytypoError as error:</span>
+<span class="ln">    error.code  <span class="tok-com"># &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span></code></pre></div><div class="pane" data-label="Go"><h3 style="margin:22px 0 0">Go<span class="status">Go modules — planned</span></h3><pre><code><span class="ln"><span class="tok-com">// go get github.com/polytypo/polytypo-go</span></span>
+<span class="ln">package main</span>
+<span class="ln"></span>
+<span class="ln">import (</span>
+<span class="ln">    <span class="tok-str">&quot;fmt&quot;</span></span>
+<span class="ln">    <span class="tok-str">&quot;github.com/polytypo/polytypo-go&quot;</span></span>
+<span class="ln">)</span>
+<span class="ln"></span>
+<span class="ln">func main() {</span>
+<span class="ln">    out, err := polytypo.Transform(</span>
+<span class="ln">        `Is this <span class="tok-str">&quot;polytypo&quot;</span>? - No, it&#x27;s <span class="tok-str">&quot;polytypo&quot;</span>!`,</span>
+<span class="ln">        polytypo.Options{Locale: <span class="tok-str">&quot;de&quot;</span>},</span>
+<span class="ln">    )</span>
+<span class="ln">    if err != nil {</span>
+<span class="ln">        var perr *polytypo.Error</span>
+<span class="ln">        if errors.As(err, &amp;perr) {</span>
+<span class="ln">            _ = perr.Code <span class="tok-com">// &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span>
+<span class="ln">        }</span>
+<span class="ln">    }</span>
+<span class="ln">    fmt.Println(out)</span>
+<span class="ln">    <span class="tok-com">// Ist das „polytypo“? – Nein, das ist „polytypo“!</span></span>
+<span class="ln">}</span></code></pre></div><div class="pane" data-label="Ruby"><h3 style="margin:22px 0 0">Ruby<span class="status">RubyGems — planned</span></h3><pre><code><span class="ln"><span class="tok-com"># gem install polytypo</span></span>
+<span class="ln">require <span class="tok-str">&quot;polytypo&quot;</span></span>
+<span class="ln"></span>
+<span class="ln">Polytypo.transform(%q{Is this <span class="tok-str">&quot;polytypo&quot;</span>? - No, it&#x27;s <span class="tok-str">&quot;polytypo&quot;</span>!}, locale: <span class="tok-str">&quot;de&quot;</span>)</span>
+<span class="ln"><span class="tok-com"># =&gt; &quot;Ist das „polytypo“? – Nein, das ist „polytypo“!&quot;</span></span>
+<span class="ln"></span>
+<span class="ln">Polytypo.transform(<span class="tok-str">&#x27;Il a dit &quot;bonjour&quot;.&#x27;</span>, locale: <span class="tok-str">&quot;fr&quot;</span>)</span>
+<span class="ln"><span class="tok-com"># =&gt; &quot;Il a dit «\u202fbonjour\u202f».&quot;</span></span>
+<span class="ln"></span>
+<span class="ln">Polytypo.transform(<span class="tok-str">&quot;1914-1918&quot;</span>, locale: <span class="tok-str">&quot;en-US&quot;</span>, rules: { dashes: false })</span>
+<span class="ln"></span>
+<span class="ln">begin</span>
+<span class="ln">  Polytypo.transform(<span class="tok-str">&quot;x&quot;</span>, locale: <span class="tok-str">&quot;xx&quot;</span>)</span>
+<span class="ln">rescue Polytypo::Error =&gt; error</span>
+<span class="ln">  error.code <span class="tok-com"># =&gt; &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span>
+<span class="ln">end</span></code></pre></div><div class="pane" data-label="PHP"><h3 style="margin:22px 0 0">PHP<span class="status">Packagist — planned</span></h3><pre><code><span class="ln">&lt;?php</span>
+<span class="ln"><span class="tok-com">// composer require polytypo/polytypo</span></span>
+<span class="ln">use Polytypo\Polytypo;</span>
+<span class="ln">use Polytypo\PolytypoException;</span>
+<span class="ln"></span>
+<span class="ln">Polytypo::transform(<span class="tok-str">&#x27;Is this &quot;polytypo&quot;? - No, it\&#x27;s &quot;polytypo&quot;!&#x27;</span>, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;de&#x27;</span>]);</span>
+<span class="ln"><span class="tok-com">// → Ist das „polytypo“? – Nein, das ist „polytypo“!</span></span>
+<span class="ln"></span>
+<span class="ln">Polytypo::transform(<span class="tok-str">&#x27;Il a dit &quot;bonjour&quot;.&#x27;</span>, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;fr&#x27;</span>]);</span>
+<span class="ln"><span class="tok-com">// → Il a dit «\u{202f}bonjour\u{202f}».</span></span>
+<span class="ln"></span>
+<span class="ln">try {</span>
+<span class="ln">    Polytypo::transform(<span class="tok-str">&#x27;x&#x27;</span>, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;xx&#x27;</span>]);</span>
+<span class="ln">} catch (PolytypoException $error) {</span>
+<span class="ln">    $error-&gt;errorCode; <span class="tok-com">// &#x27;POLYTYPO_UNKNOWN_LOCALE&#x27;</span></span>
+<span class="ln">}</span></code></pre></div></div>
   <p class="small muted" style="margin-top: 14px">
     Error codes are part of the contract in every runtime — full list below. Messages are English
     and are not part of the contract.
@@ -241,28 +241,28 @@ try {
     your content at build time.
   </p>
   <div class="tabs" id="build-tabs"></div>
-  <div id="build-panes"><div class="pane" data-label="Markdown / MDX pipeline"><pre><code><span class="tok-com">// e.g. a remark/unified plugin, or any step that reads .md/.mdx files</span>
-import { readFile, writeFile } from <span class="tok-str">&quot;node:fs/promises&quot;</span>;
-import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;
-
-const path = <span class="tok-str">&quot;content/posts/hello-world.mdx&quot;</span>;
-const source = await readFile(path, <span class="tok-str">&quot;utf8&quot;</span>);
-const dialect = path.endsWith(<span class="tok-str">&quot;.mdx&quot;</span>) ? <span class="tok-str">&quot;mdx&quot;</span> : <span class="tok-str">&quot;commonmark&quot;</span>;
-
-await writeFile(path, transform(source, { locale: <span class="tok-str">&quot;en-US&quot;</span>, mode: <span class="tok-str">&quot;markdown&quot;</span>, dialect }));
-<span class="tok-com">// transform(transform(x)) === transform(x) — safe to run on every build, not just once.</span></code></pre></div><div class="pane" data-label="CMS field on save"><pre><code><span class="tok-com">// wherever a rich-text field is persisted — a webhook handler, a save hook</span>
-import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;
-
-function sanitizeBody(html, locale) {
-  <span class="tok-com">// html parsing is recovery-based and never throws POLYTYPO_MALFORMED_INPUT — that code is</span>
-  <span class="tok-com">// reachable only for markdown&#x27;s mdx dialect, which embeds JavaScript. Nothing to catch here.</span>
-  return transform(html, { locale, mode: <span class="tok-str">&quot;html&quot;</span> });
-}</code></pre></div><div class="pane" data-label="React / templating"><pre><code><span class="tok-com">// call it wherever untrusted or imported copy reaches a render — not on every keystroke</span>
-import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;
-
-function Byline({ text, locale }) {
-  return &lt;p&gt;{transform(text, { locale })}&lt;/p&gt;;
-}</code></pre></div></div>
+  <div id="build-panes"><div class="pane" data-label="Markdown / MDX pipeline"><pre><code><span class="ln"><span class="tok-com">// e.g. a remark/unified plugin, or any step that reads .md/.mdx files</span></span>
+<span class="ln">import { readFile, writeFile } from <span class="tok-str">&quot;node:fs/promises&quot;</span>;</span>
+<span class="ln">import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;</span>
+<span class="ln"></span>
+<span class="ln">const path = <span class="tok-str">&quot;content/posts/hello-world.mdx&quot;</span>;</span>
+<span class="ln">const source = await readFile(path, <span class="tok-str">&quot;utf8&quot;</span>);</span>
+<span class="ln">const dialect = path.endsWith(<span class="tok-str">&quot;.mdx&quot;</span>) ? <span class="tok-str">&quot;mdx&quot;</span> : <span class="tok-str">&quot;commonmark&quot;</span>;</span>
+<span class="ln"></span>
+<span class="ln">await writeFile(path, transform(source, { locale: <span class="tok-str">&quot;en-US&quot;</span>, mode: <span class="tok-str">&quot;markdown&quot;</span>, dialect }));</span>
+<span class="ln"><span class="tok-com">// transform(transform(x)) === transform(x) — safe to run on every build, not just once.</span></span></code></pre></div><div class="pane" data-label="CMS field on save"><pre><code><span class="ln"><span class="tok-com">// wherever a rich-text field is persisted — a webhook handler, a save hook</span></span>
+<span class="ln">import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;</span>
+<span class="ln"></span>
+<span class="ln">function sanitizeBody(html, locale) {</span>
+<span class="ln">  <span class="tok-com">// html parsing is recovery-based and never throws POLYTYPO_MALFORMED_INPUT — that code is</span></span>
+<span class="ln">  <span class="tok-com">// reachable only for markdown&#x27;s mdx dialect, which embeds JavaScript. Nothing to catch here.</span></span>
+<span class="ln">  return transform(html, { locale, mode: <span class="tok-str">&quot;html&quot;</span> });</span>
+<span class="ln">}</span></code></pre></div><div class="pane" data-label="React / templating"><pre><code><span class="ln"><span class="tok-com">// call it wherever untrusted or imported copy reaches a render — not on every keystroke</span></span>
+<span class="ln">import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;</span>
+<span class="ln"></span>
+<span class="ln">function Byline({ text, locale }) {</span>
+<span class="ln">  return &lt;p&gt;{transform(text, { locale })}&lt;/p&gt;;</span>
+<span class="ln">}</span></code></pre></div></div>
 </section>
 
 <section id="rules">
@@ -273,7 +273,7 @@ function Byline({ text, locale }) {
     registration order, not map-iteration order. Any rule can be switched off; nothing else moves
     when you do.
   </p>
-  <div class="scroll"><table><tr><th>Rule</th><th>Locale</th><th>In</th><th>Out</th><th>What it does</th></tr><tr><td class="mono">spaces</td><td class="mono">en-US</td><td class="rule-in">Hello  ,   world !</td><td class="rule-out">Hello, world!</td><td class="small muted">Collapse repeated spaces, strip the space before punctuation.</td></tr><tr><td class="mono">ellipsis</td><td class="mono">en-US</td><td class="rule-in">Wait... what?</td><td class="rule-out">Wait<span class="chg">…</span> what?</td><td class="small muted">Three dots become U+2026.</td></tr><tr><td class="mono">ellipsis</td><td class="mono">ru</td><td class="rule-in">Что?...</td><td class="rule-out">Что?..</td><td class="small muted">Russian keeps the abbreviated form after terminal punctuation.</td></tr><tr><td class="mono">dashes</td><td class="mono">en-US</td><td class="rule-in">The plan - if there is one - fails.</td><td class="rule-out">The plan<span class="chg">—</span>if there is one<span class="chg">—</span>fails.</td><td class="small muted">Parenthetical dash, per locale: em tight, en spaced, em spaced.</td></tr><tr><td class="mono">dashes</td><td class="mono">en-US</td><td class="rule-in">1914-1918 and pp. 34-36</td><td class="rule-out">1914-1918 and pp. 34-36</td><td class="small muted">Numeric and date ranges take an en dash, unspaced.</td></tr><tr><td class="mono">hyphen</td><td class="mono">ru</td><td class="rule-in">Достал из-под стола</td><td class="rule-out">Достал из<span class="chg"><span class="nb" title="U+2011 non-breaking hyphen">‑</span></span>под стола</td><td class="small muted">Morphological hyphens bound with U+2011 so they cannot break.</td></tr><tr><td class="mono">quotes</td><td class="mono">de-DE</td><td class="rule-in">&quot;Er sagte &#x27;nein&#x27; zu mir&quot;, notierte sie.</td><td class="rule-out"><span class="chg">„</span>Er sagte <span class="chg">‚</span>nein<span class="chg">‘</span> zu mir<span class="chg">“</span>, notierte sie.</td><td class="small muted">Primary and secondary quotes, with nesting resolved.</td></tr><tr><td class="mono">apostrophe</td><td class="mono">en-US</td><td class="rule-in">don&#x27;t</td><td class="rule-out">don<span class="chg">’</span>t</td><td class="small muted">Straight apostrophe to U+2019, contractions intact.</td></tr><tr><td class="mono">symbols</td><td class="mono">en-US</td><td class="rule-in">Copyright (c) 2026, 1920x1080</td><td class="rule-out">Copyright <span class="chg">©</span> 2026, 1920<span class="chg">×</span>1080</td><td class="small muted">(c) (r) (tm) and the multiplication sign between numerals.</td></tr><tr><td class="mono">nbsp</td><td class="mono">fr</td><td class="rule-in">Ça va ? Bonjour !</td><td class="rule-out">Ça va<span class="chg"><span class="nb" title="U+202F narrow no-break space"> </span></span>? Bonjour<span class="chg"><span class="nb" title="U+202F narrow no-break space"> </span></span>!</td><td class="small muted">No-break and narrow no-break spaces, inserted per locale.</td></tr></table></div>
+  <div class="scroll"><table><tr><th>Rule</th><th>Locale</th><th>In</th><th>Out</th><th>What it does</th></tr><tr><td class="mono">spaces</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen"><code><span class="ln">Hello  ,   world !</span></code></div></td><td class="rule-out"><div class="specimen"><code><span class="ln">Hello, world!</span></code></div></td><td class="small muted">Collapse repeated spaces, strip the space before punctuation.</td></tr><tr><td class="mono">ellipsis</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen"><code><span class="ln">Wait... what?</span></code></div></td><td class="rule-out"><div class="specimen"><code><span class="ln">Wait<span class="chg">…</span> what?</span></code></div></td><td class="small muted">Three dots become U+2026.</td></tr><tr><td class="mono">ellipsis</td><td class="mono">ru</td><td class="rule-in"><div class="specimen"><code><span class="ln">Что?...</span></code></div></td><td class="rule-out"><div class="specimen"><code><span class="ln">Что?..</span></code></div></td><td class="small muted">Russian keeps the abbreviated form after terminal punctuation.</td></tr><tr><td class="mono">dashes</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen"><code><span class="ln">The plan - if there is one - fails.</span></code></div></td><td class="rule-out"><div class="specimen"><code><span class="ln">The plan<span class="chg">—</span>if there is one<span class="chg">—</span>fails.</span></code></div></td><td class="small muted">Parenthetical dash, per locale: em tight, en spaced, em spaced.</td></tr><tr><td class="mono">dashes</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen"><code><span class="ln">1914-1918 and pp. 34-36</span></code></div></td><td class="rule-out"><div class="specimen"><code><span class="ln">1914-1918 and pp. 34-36</span></code></div></td><td class="small muted">Numeric and date ranges take an en dash, unspaced.</td></tr><tr><td class="mono">hyphen</td><td class="mono">ru</td><td class="rule-in"><div class="specimen"><code><span class="ln">Достал из-под стола</span></code></div></td><td class="rule-out"><div class="specimen"><code><span class="ln">Достал из<span class="chg"><span class="nb" title="U+2011 non-breaking hyphen">‑</span></span>под стола</span></code></div></td><td class="small muted">Morphological hyphens bound with U+2011 so they cannot break.</td></tr><tr><td class="mono">quotes</td><td class="mono">de-DE</td><td class="rule-in"><div class="specimen"><code><span class="ln">&quot;Er sagte &#x27;nein&#x27; zu mir&quot;, notierte sie.</span></code></div></td><td class="rule-out"><div class="specimen"><code><span class="ln"><span class="chg">„</span>Er sagte <span class="chg">‚</span>nein<span class="chg">‘</span> zu mir<span class="chg">“</span>, notierte sie.</span></code></div></td><td class="small muted">Primary and secondary quotes, with nesting resolved.</td></tr><tr><td class="mono">apostrophe</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen"><code><span class="ln">don&#x27;t</span></code></div></td><td class="rule-out"><div class="specimen"><code><span class="ln">don<span class="chg">’</span>t</span></code></div></td><td class="small muted">Straight apostrophe to U+2019, contractions intact.</td></tr><tr><td class="mono">symbols</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen"><code><span class="ln">Copyright (c) 2026, 1920x1080</span></code></div></td><td class="rule-out"><div class="specimen"><code><span class="ln">Copyright <span class="chg">©</span> 2026, 1920<span class="chg">×</span>1080</span></code></div></td><td class="small muted">(c) (r) (tm) and the multiplication sign between numerals.</td></tr><tr><td class="mono">nbsp</td><td class="mono">fr</td><td class="rule-in"><div class="specimen"><code><span class="ln">Ça va ? Bonjour !</span></code></div></td><td class="rule-out"><div class="specimen"><code><span class="ln">Ça va<span class="chg"><span class="nb" title="U+202F narrow no-break space"> </span></span>? Bonjour<span class="chg"><span class="nb" title="U+202F narrow no-break space"> </span></span>!</span></code></div></td><td class="small muted">No-break and narrow no-break spaces, inserted per locale.</td></tr></table></div>
   <p class="small muted">
     Examples are real engine output for the locale named in each row. Grey marks what was typed; red
     marks what the engine set instead. Try any of these live in the

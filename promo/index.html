@@ -96,7 +96,7 @@
         <button type="button" class="pg-copy" id="pg-copy-output">Copy Output</button>
       </div>
       <div
-        class="txt set pg-output"
+        class="pg-output"
         id="pg-output"
         role="region"
         aria-labelledby="pg-output-label"
@@ -160,7 +160,7 @@
     <code>transform()</code>. Nothing is typed by hand. Only the locale changes; quote style, dash
     style, and spacing all follow.
   </p>
-  <div class="card-grid card-grid--responsive"><div class="card" data-locale="en-US"><div class="lang">English (US) · en-US</div><div class="pair"><div class="in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="out">She said: <span class="chg">“</span>The em dash was mine before AI<span class="chg">”—</span>and she meant it.</div></div></div><div class="card" data-locale="de-DE"><div class="lang">German · de-DE</div><div class="pair"><div class="in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="out">She said: <span class="chg">„</span>The em dash was mine before AI<span class="chg">“</span> <span class="chg">–</span> and she meant it.</div></div></div><div class="card" data-locale="fr"><div class="lang">French · fr</div><div class="pair"><div class="in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="out">She said<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>: <span class="chg">«<span class="nb" title="U+00A0 no-break space"> </span></span>The em dash was mine before AI<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span>»</span> <span class="chg">—</span> and she meant it.</div></div></div><div class="card" data-locale="ru"><div class="lang">Russian · ru</div><div class="pair"><div class="in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="out">She said: <span class="chg">«</span>The em dash was mine before AI<span class="chg">»</span> <span class="chg">—</span> and she meant it.</div></div></div></div>
+  <div class="card-grid card-grid--responsive"><div class="card" data-locale="en-US"><div class="lang">English (US) · en-US</div><div class="pair"><div class="specimen in"><code><span class="ln">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</span></code></div><div class="specimen out"><code><span class="ln">She said: <span class="chg">“</span>The em dash was mine before AI<span class="chg">”—</span>and she meant it.</span></code></div></div></div><div class="card" data-locale="de-DE"><div class="lang">German · de-DE</div><div class="pair"><div class="specimen in"><code><span class="ln">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</span></code></div><div class="specimen out"><code><span class="ln">She said: <span class="chg">„</span>The em dash was mine before AI<span class="chg">“</span> <span class="chg">–</span> and she meant it.</span></code></div></div></div><div class="card" data-locale="fr"><div class="lang">French · fr</div><div class="pair"><div class="specimen in"><code><span class="ln">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</span></code></div><div class="specimen out"><code><span class="ln">She said<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>: <span class="chg">«<span class="nb" title="U+00A0 no-break space"> </span></span>The em dash was mine before AI<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span>»</span> <span class="chg">—</span> and she meant it.</span></code></div></div></div><div class="card" data-locale="ru"><div class="lang">Russian · ru</div><div class="pair"><div class="specimen in"><code><span class="ln">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</span></code></div><div class="specimen out"><code><span class="ln">She said: <span class="chg">«</span>The em dash was mine before AI<span class="chg">»</span> <span class="chg">—</span> and she meant it.</span></code></div></div></div></div>
   <div class="small muted proof-legend" style="max-width: 60ch">Invisible characters in these outputs (always shown here — tooltips above are an optional extra, not required to understand them):<ul><li><span class="mono"> </span> — U+00A0 no-break space</li></ul></div>
   <p>
     German lowers the opening quote. Swiss German turns it into guillemets pointing outward. French
@@ -178,88 +178,88 @@
 <section id="languages">
   <p class="eyebrow" style="margin-top: 0">JavaScript today. Four planned ports — pick a preview</p>
   <div class="tabs" id="lang-tabs"></div>
-  <div id="lang-panes"><div class="pane" data-label="JavaScript / TypeScript"><h3 style="margin:22px 0 0">JavaScript / TypeScript<span class="status live">npm — not yet published</span></h3><pre><code><span class="tok-com">// npm install polytypo</span>
-import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;
-
-transform(`Is this <span class="tok-str">&quot;polytypo&quot;</span>? - No, it&#x27;s <span class="tok-str">&quot;polytypo&quot;</span>!`, { locale: <span class="tok-str">&quot;de&quot;</span> });
-<span class="tok-com">// → Ist das „polytypo“? – Nein, das ist „polytypo“!</span>
-
-transform(<span class="tok-str">&quot;Il a dit \&quot;bonjour\&quot;.&quot;</span>, { locale: <span class="tok-str">&quot;fr&quot;</span> });
-<span class="tok-com">// → Il a dit «\u202fbonjour\u202f».</span>
-
-<span class="tok-com">// opt out of a single rule; the order of the rest never changes</span>
-transform(<span class="tok-str">&quot;1914-1918&quot;</span>, { locale: <span class="tok-str">&quot;en-US&quot;</span>, rules: { dashes: false } });
-
-try {
-  transform(<span class="tok-str">&quot;x&quot;</span>, { locale: <span class="tok-str">&quot;xx&quot;</span> });
-} catch (error) {
-  error.code; <span class="tok-com">// &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span>
-}</code></pre></div><div class="pane" data-label="Python"><h3 style="margin:22px 0 0">Python<span class="status">PyPI — planned</span></h3><pre><code><span class="tok-com"># pip install polytypo</span>
-from polytypo import transform, PolytypoError
-
-transform(<span class="tok-str">&#x27;Is this &quot;polytypo&quot;? - No, it\&#x27;s &quot;polytypo&quot;!&#x27;</span>, locale=<span class="tok-str">&quot;de&quot;</span>)
-<span class="tok-com"># → Ist das „polytypo“? – Nein, das ist „polytypo“!</span>
-
-transform(<span class="tok-str">&#x27;Il a dit &quot;bonjour&quot;.&#x27;</span>, locale=<span class="tok-str">&quot;fr&quot;</span>)
-<span class="tok-com"># → Il a dit «\u202fbonjour\u202f».</span>
-
-transform(<span class="tok-str">&quot;1914-1918&quot;</span>, locale=<span class="tok-str">&quot;en-US&quot;</span>, rules={<span class="tok-str">&quot;dashes&quot;</span>: False})
-
-try:
-    transform(<span class="tok-str">&quot;x&quot;</span>, locale=<span class="tok-str">&quot;xx&quot;</span>)
-except PolytypoError as error:
-    error.code  <span class="tok-com"># &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></code></pre></div><div class="pane" data-label="Go"><h3 style="margin:22px 0 0">Go<span class="status">Go modules — planned</span></h3><pre><code><span class="tok-com">// go get github.com/polytypo/polytypo-go</span>
-package main
-
-import (
-    <span class="tok-str">&quot;fmt&quot;</span>
-    <span class="tok-str">&quot;github.com/polytypo/polytypo-go&quot;</span>
-)
-
-func main() {
-    out, err := polytypo.Transform(
-        `Is this <span class="tok-str">&quot;polytypo&quot;</span>? - No, it&#x27;s <span class="tok-str">&quot;polytypo&quot;</span>!`,
-        polytypo.Options{Locale: <span class="tok-str">&quot;de&quot;</span>},
-    )
-    if err != nil {
-        var perr *polytypo.Error
-        if errors.As(err, &amp;perr) {
-            _ = perr.Code <span class="tok-com">// &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span>
-        }
-    }
-    fmt.Println(out)
-    <span class="tok-com">// Ist das „polytypo“? – Nein, das ist „polytypo“!</span>
-}</code></pre></div><div class="pane" data-label="Ruby"><h3 style="margin:22px 0 0">Ruby<span class="status">RubyGems — planned</span></h3><pre><code><span class="tok-com"># gem install polytypo</span>
-require <span class="tok-str">&quot;polytypo&quot;</span>
-
-Polytypo.transform(%q{Is this <span class="tok-str">&quot;polytypo&quot;</span>? - No, it<span class="tok-str">&#x27;s &quot;polytypo&quot;!}, locale: &quot;de&quot;)
-# =&gt; &quot;Ist das „polytypo“? – Nein, das ist „polytypo“!&quot;
-
-Polytypo.transform(&#x27;</span>Il a dit <span class="tok-str">&quot;bonjour&quot;</span>.&#x27;, locale: <span class="tok-str">&quot;fr&quot;</span>)
-<span class="tok-com"># =&gt; &quot;Il a dit «\u202fbonjour\u202f».&quot;</span>
-
-Polytypo.transform(<span class="tok-str">&quot;1914-1918&quot;</span>, locale: <span class="tok-str">&quot;en-US&quot;</span>, rules: { dashes: false })
-
-begin
-  Polytypo.transform(<span class="tok-str">&quot;x&quot;</span>, locale: <span class="tok-str">&quot;xx&quot;</span>)
-rescue Polytypo::Error =&gt; error
-  error.code <span class="tok-com"># =&gt; &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span>
-end</code></pre></div><div class="pane" data-label="PHP"><h3 style="margin:22px 0 0">PHP<span class="status">Packagist — planned</span></h3><pre><code>&lt;?php
-<span class="tok-com">// composer require polytypo/polytypo</span>
-use Polytypo\Polytypo;
-use Polytypo\PolytypoException;
-
-Polytypo::transform(<span class="tok-str">&#x27;Is this &quot;polytypo&quot;? - No, it\&#x27;s &quot;polytypo&quot;!&#x27;</span>, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;de&#x27;</span>]);
-<span class="tok-com">// → Ist das „polytypo“? – Nein, das ist „polytypo“!</span>
-
-Polytypo::transform(<span class="tok-str">&#x27;Il a dit &quot;bonjour&quot;.&#x27;</span>, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;fr&#x27;</span>]);
-<span class="tok-com">// → Il a dit «\u{202f}bonjour\u{202f}».</span>
-
-try {
-    Polytypo::transform(<span class="tok-str">&#x27;x&#x27;</span>, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;xx&#x27;</span>]);
-} catch (PolytypoException $error) {
-    $error-&gt;errorCode; <span class="tok-com">// &#x27;POLYTYPO_UNKNOWN_LOCALE&#x27;</span>
-}</code></pre></div></div>
+  <div id="lang-panes"><div class="pane" data-label="JavaScript / TypeScript"><h3 style="margin:22px 0 0">JavaScript / TypeScript<span class="status live">npm — not yet published</span></h3><pre><code><span class="ln"><span class="tok-com">// npm install polytypo</span></span>
+<span class="ln">import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;</span>
+<span class="ln"></span>
+<span class="ln">transform(`Is this <span class="tok-str">&quot;polytypo&quot;</span>? - No, it&#x27;s <span class="tok-str">&quot;polytypo&quot;</span>!`, { locale: <span class="tok-str">&quot;de&quot;</span> });</span>
+<span class="ln"><span class="tok-com">// → Ist das „polytypo“? – Nein, das ist „polytypo“!</span></span>
+<span class="ln"></span>
+<span class="ln">transform(<span class="tok-str">&quot;Il a dit \&quot;bonjour\&quot;.&quot;</span>, { locale: <span class="tok-str">&quot;fr&quot;</span> });</span>
+<span class="ln"><span class="tok-com">// → Il a dit «\u202fbonjour\u202f».</span></span>
+<span class="ln"></span>
+<span class="ln"><span class="tok-com">// opt out of a single rule; the order of the rest never changes</span></span>
+<span class="ln">transform(<span class="tok-str">&quot;1914-1918&quot;</span>, { locale: <span class="tok-str">&quot;en-US&quot;</span>, rules: { dashes: false } });</span>
+<span class="ln"></span>
+<span class="ln">try {</span>
+<span class="ln">  transform(<span class="tok-str">&quot;x&quot;</span>, { locale: <span class="tok-str">&quot;xx&quot;</span> });</span>
+<span class="ln">} catch (error) {</span>
+<span class="ln">  error.code; <span class="tok-com">// &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span>
+<span class="ln">}</span></code></pre></div><div class="pane" data-label="Python"><h3 style="margin:22px 0 0">Python<span class="status">PyPI — planned</span></h3><pre><code><span class="ln"><span class="tok-com"># pip install polytypo</span></span>
+<span class="ln">from polytypo import transform, PolytypoError</span>
+<span class="ln"></span>
+<span class="ln">transform(<span class="tok-str">&#x27;Is this &quot;polytypo&quot;? - No, it\&#x27;s &quot;polytypo&quot;!&#x27;</span>, locale=<span class="tok-str">&quot;de&quot;</span>)</span>
+<span class="ln"><span class="tok-com"># → Ist das „polytypo“? – Nein, das ist „polytypo“!</span></span>
+<span class="ln"></span>
+<span class="ln">transform(<span class="tok-str">&#x27;Il a dit &quot;bonjour&quot;.&#x27;</span>, locale=<span class="tok-str">&quot;fr&quot;</span>)</span>
+<span class="ln"><span class="tok-com"># → Il a dit «\u202fbonjour\u202f».</span></span>
+<span class="ln"></span>
+<span class="ln">transform(<span class="tok-str">&quot;1914-1918&quot;</span>, locale=<span class="tok-str">&quot;en-US&quot;</span>, rules={<span class="tok-str">&quot;dashes&quot;</span>: False})</span>
+<span class="ln"></span>
+<span class="ln">try:</span>
+<span class="ln">    transform(<span class="tok-str">&quot;x&quot;</span>, locale=<span class="tok-str">&quot;xx&quot;</span>)</span>
+<span class="ln">except PolytypoError as error:</span>
+<span class="ln">    error.code  <span class="tok-com"># &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span></code></pre></div><div class="pane" data-label="Go"><h3 style="margin:22px 0 0">Go<span class="status">Go modules — planned</span></h3><pre><code><span class="ln"><span class="tok-com">// go get github.com/polytypo/polytypo-go</span></span>
+<span class="ln">package main</span>
+<span class="ln"></span>
+<span class="ln">import (</span>
+<span class="ln">    <span class="tok-str">&quot;fmt&quot;</span></span>
+<span class="ln">    <span class="tok-str">&quot;github.com/polytypo/polytypo-go&quot;</span></span>
+<span class="ln">)</span>
+<span class="ln"></span>
+<span class="ln">func main() {</span>
+<span class="ln">    out, err := polytypo.Transform(</span>
+<span class="ln">        `Is this <span class="tok-str">&quot;polytypo&quot;</span>? - No, it&#x27;s <span class="tok-str">&quot;polytypo&quot;</span>!`,</span>
+<span class="ln">        polytypo.Options{Locale: <span class="tok-str">&quot;de&quot;</span>},</span>
+<span class="ln">    )</span>
+<span class="ln">    if err != nil {</span>
+<span class="ln">        var perr *polytypo.Error</span>
+<span class="ln">        if errors.As(err, &amp;perr) {</span>
+<span class="ln">            _ = perr.Code <span class="tok-com">// &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span>
+<span class="ln">        }</span>
+<span class="ln">    }</span>
+<span class="ln">    fmt.Println(out)</span>
+<span class="ln">    <span class="tok-com">// Ist das „polytypo“? – Nein, das ist „polytypo“!</span></span>
+<span class="ln">}</span></code></pre></div><div class="pane" data-label="Ruby"><h3 style="margin:22px 0 0">Ruby<span class="status">RubyGems — planned</span></h3><pre><code><span class="ln"><span class="tok-com"># gem install polytypo</span></span>
+<span class="ln">require <span class="tok-str">&quot;polytypo&quot;</span></span>
+<span class="ln"></span>
+<span class="ln">Polytypo.transform(%q{Is this <span class="tok-str">&quot;polytypo&quot;</span>? - No, it&#x27;s <span class="tok-str">&quot;polytypo&quot;</span>!}, locale: <span class="tok-str">&quot;de&quot;</span>)</span>
+<span class="ln"><span class="tok-com"># =&gt; &quot;Ist das „polytypo“? – Nein, das ist „polytypo“!&quot;</span></span>
+<span class="ln"></span>
+<span class="ln">Polytypo.transform(<span class="tok-str">&#x27;Il a dit &quot;bonjour&quot;.&#x27;</span>, locale: <span class="tok-str">&quot;fr&quot;</span>)</span>
+<span class="ln"><span class="tok-com"># =&gt; &quot;Il a dit «\u202fbonjour\u202f».&quot;</span></span>
+<span class="ln"></span>
+<span class="ln">Polytypo.transform(<span class="tok-str">&quot;1914-1918&quot;</span>, locale: <span class="tok-str">&quot;en-US&quot;</span>, rules: { dashes: false })</span>
+<span class="ln"></span>
+<span class="ln">begin</span>
+<span class="ln">  Polytypo.transform(<span class="tok-str">&quot;x&quot;</span>, locale: <span class="tok-str">&quot;xx&quot;</span>)</span>
+<span class="ln">rescue Polytypo::Error =&gt; error</span>
+<span class="ln">  error.code <span class="tok-com"># =&gt; &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span>
+<span class="ln">end</span></code></pre></div><div class="pane" data-label="PHP"><h3 style="margin:22px 0 0">PHP<span class="status">Packagist — planned</span></h3><pre><code><span class="ln">&lt;?php</span>
+<span class="ln"><span class="tok-com">// composer require polytypo/polytypo</span></span>
+<span class="ln">use Polytypo\Polytypo;</span>
+<span class="ln">use Polytypo\PolytypoException;</span>
+<span class="ln"></span>
+<span class="ln">Polytypo::transform(<span class="tok-str">&#x27;Is this &quot;polytypo&quot;? - No, it\&#x27;s &quot;polytypo&quot;!&#x27;</span>, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;de&#x27;</span>]);</span>
+<span class="ln"><span class="tok-com">// → Ist das „polytypo“? – Nein, das ist „polytypo“!</span></span>
+<span class="ln"></span>
+<span class="ln">Polytypo::transform(<span class="tok-str">&#x27;Il a dit &quot;bonjour&quot;.&#x27;</span>, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;fr&#x27;</span>]);</span>
+<span class="ln"><span class="tok-com">// → Il a dit «\u{202f}bonjour\u{202f}».</span></span>
+<span class="ln"></span>
+<span class="ln">try {</span>
+<span class="ln">    Polytypo::transform(<span class="tok-str">&#x27;x&#x27;</span>, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;xx&#x27;</span>]);</span>
+<span class="ln">} catch (PolytypoException $error) {</span>
+<span class="ln">    $error-&gt;errorCode; <span class="tok-com">// &#x27;POLYTYPO_UNKNOWN_LOCALE&#x27;</span></span>
+<span class="ln">}</span></code></pre></div></div>
 </section>
 
 <section id="why">
@@ -329,7 +329,8 @@ Polytypo.bootTabs("build-tabs", "build-panes");
 const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "locales": [{"locale": "en-US", "name": "English (US)", "hero": {"in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.", "out": "Is this “polytypo”?—No, it’s “polytypo”! She said, “He replied ‘never’ twice”… The release—all 5 km of it—covers 1914-1918. Copyright © 2026, at 1920×1080."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: “The em dash was mine before AI”—and she meant it."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "“He said 'no' to me,” she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan—if there is one—fails."}, {"rule": "dashes", "in": "1914-1918 and pp. 34-36", "out": "1914-1918 and pp. 34-36"}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "apostrophe", "in": "don't", "out": "don’t"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}, {"rule": "symbols", "in": "Copyright (c) 2026, 1920x1080", "out": "Copyright © 2026, 1920×1080"}]}, {"locale": "en-GB", "name": "English (UK)", "hero": {"in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.", "out": "Is this ‘polytypo’? – No, it’s ‘polytypo’! She said, ‘He replied “never” twice’… The release – all 5 km of it – covers 1914-1918. Copyright © 2026, at 1920×1080."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: ‘The em dash was mine before AI’ – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "‘He said 'no' to me,’ she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan – if there is one – fails."}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}]}, {"locale": "de-DE", "name": "German", "hero": {"in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.", "out": "Ist das „polytypo“? – Nein, das ist „polytypo“! Sie sagte: „Er hat 'nie' geantwortet“… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: „The em dash was mine before AI“ – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "„Er sagte ‚nein‘ zu mir“, notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "dashes", "in": "Die Jahre 1939-1945", "out": "Die Jahre 1939-1945"}, {"rule": "nbsp", "in": "z. B. Berlin", "out": "z. B. Berlin"}, {"rule": "symbols", "in": "Auflösung 1920x1080", "out": "Auflösung 1920×1080"}]}, {"locale": "de-CH", "name": "Swiss German", "hero": {"in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.", "out": "Ist das «polytypo»? – Nein, das ist «polytypo»! Sie sagte: «Er hat 'nie' geantwortet»… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: «The em dash was mine before AI» – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "«Er sagte ‹nein› zu mir», notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "nbsp", "in": "z. B. Bern", "out": "z. B. Bern"}]}, {"locale": "fr", "name": "French", "hero": {"in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.", "out": "C’est « polytypo » ? — Non, c’est « polytypo » ! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm ; c’est tout. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said : « The em dash was mine before AI » — and she meant it."}, "cases": [{"rule": "quotes", "in": "Il a dit \"bonjour\".", "out": "Il a dit « bonjour »."}, {"rule": "quotes", "in": "\"Il a dit 'oui' hier.\"", "out": "« Il a dit 'oui' hier. »"}, {"rule": "nbsp", "in": "Ça va ? Bonjour !", "out": "Ça va ? Bonjour !"}, {"rule": "dashes", "in": "Le plan - il existe - échoue.", "out": "Le plan — il existe — échoue."}, {"rule": "apostrophe", "in": "l'été et l'hiver", "out": "l’été et l’hiver"}]}, {"locale": "fr-CA", "name": "French (Canada)", "hero": {"in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.", "out": "C’est « polytypo »? — Non, c’est « polytypo »! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm; c’est tout. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said : « The em dash was mine before AI » — and she meant it."}, "cases": [{"rule": "quotes", "in": "Il a dit \"bonjour\".", "out": "Il a dit « bonjour »."}, {"rule": "dashes", "in": "Le plan - il existe - échoue.", "out": "Le plan — il existe — échoue."}, {"rule": "nbsp", "in": "Ça va? Bonjour!", "out": "Ça va? Bonjour!"}, {"rule": "nbsp", "in": "Rendez-vous à 15 h: bureau 204.", "out": "Rendez-vous à 15 h : bureau 204."}]}, {"locale": "ru", "name": "Russian", "hero": {"in": "Это \"полиштамп\"? - Нет, это \"полиштамп\"! Она сказала: \"он ответил 'никогда'\"... Достал из-под стола - в 1941-1945 годах - размер 10 x 20 см. Все права защищены (c) 2026.", "out": "Это «полиштамп»? — Нет, это «полиштамп»! Она сказала: «он ответил „никогда“»… Достал из‑под стола — в 1941-1945 годах — размер 10 × 20 см. Все права защищены © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: «The em dash was mine before AI» — and she meant it."}, "cases": [{"rule": "quotes", "in": "Он сказал: \"это 'моё' дело\".", "out": "Он сказал: «это 'моё' дело»."}, {"rule": "dashes", "in": "Москва - столица", "out": "Москва — столица"}, {"rule": "dashes", "in": "Годы 1941-1945 были тяжёлыми", "out": "Годы 1941-1945 были тяжёлыми"}, {"rule": "hyphen", "in": "Достал из-под стола", "out": "Достал из‑под стола"}, {"rule": "ellipsis", "in": "Что?...", "out": "Что?.."}, {"rule": "nbsp", "in": "Он живёт в Москве", "out": "Он живёт в Москве"}]}, {"locale": "fi", "name": "Finnish", "hero": {"in": "Onko tämä \"polytypo\"? - Ei, tämä on \"polytypo\"! Hän sanoi: \"hän vastasi 'ei koskaan'\"... Matkaa on 20 km - vuosina 1914-1918 - ja hinta nousi 10,5 %. Copyright (c) 2026.", "out": "Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän sanoi: ”hän vastasi ’ei koskaan’”… Matkaa on 20 km – vuosina 1914-1918 – ja hinta nousi 10,5 %. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: ”The em dash was mine before AI” – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Hän sanoi 'moi'\", totesin.", "out": "”Hän sanoi ’moi’”, totesin."}, {"rule": "dashes", "in": "Suunnitelma - jos sellainen on - kaatuu.", "out": "Suunnitelma – jos sellainen on – kaatuu."}, {"rule": "nbsp", "in": "Hinta nousi 10,5 %", "out": "Hinta nousi 10,5 %"}]}, {"locale": "sv", "name": "Swedish", "hero": {"in": "Är det här \"polytypo\"? - Nej, det är \"polytypo\"! Hon sa: \"han svarade 'aldrig'\"... Vi gick 5 km - åren 1914-1918 - och det kostar 100 kr. Copyright (c) 2026.", "out": "Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914-1918 – och det kostar 100 kr. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: ”The em dash was mine before AI” – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Han sa 'hej'\", sa jag.", "out": "”Han sa ’hej’”, sa jag."}, {"rule": "dashes", "in": "Planen - om det finns en - misslyckas.", "out": "Planen – om det finns en – misslyckas."}, {"rule": "nbsp", "in": "Det kostar 100 kr", "out": "Det kostar 100 kr"}]}, {"locale": "el", "name": "Greek", "hero": {"in": "Είναι αυτό \"polytypo\"; - Όχι, αυτό είναι \"polytypo\"! Είπε: \"απάντησε “ποτέ”\"... Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright (c) 2026, σε 1920x1080.", "out": "Είναι αυτό «polytypo»; - Όχι, αυτό είναι «polytypo»! Είπε: «απάντησε “ποτέ”»… Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright © 2026, σε 1920×1080."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: «The em dash was mine before AI» - and she meant it."}, "cases": [{"rule": "quotes", "in": "Είπε \"καλημέρα\" και έφυγε.", "out": "Είπε «καλημέρα» και έφυγε."}, {"rule": "quotes", "in": "\"Είπε “όχι” σε μένα\", σημείωσε.", "out": "«Είπε “όχι” σε μένα», σημείωσε."}, {"rule": "apostrophe", "in": "γι' αυτό και απ' την αρχή", "out": "γι’ αυτό και απ’ την αρχή"}, {"rule": "spaces", "in": "Τι κάνεις ;", "out": "Τι κάνεις;"}, {"rule": "ellipsis", "in": "Περίμενε... τι έγινε", "out": "Περίμενε… τι έγινε"}, {"rule": "symbols", "in": "Ανάλυση 1920x1080", "out": "Ανάλυση 1920×1080"}]}]};
 (function playground() {
   const {
-    mark, diff, paint, highlight, bootTabs, summarizeChange, summarizeError, copyStatusText,
+    markLines, diff, paintLines, highlightLines, bootTabs, summarizeChange, summarizeError,
+    copyStatusText,
   } = window.Polytypo;
   const LAZY = true;
   const ENGINE_SRC = "vendor/polytypo.browser.js";
@@ -440,7 +441,7 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
         : `    // dialect: "commonmark", // required only when mode is "markdown"; ignored otherwise\n`) +
       `  },\n` +
       `);`;
-    $callJs.innerHTML = highlight(jsCode, "//");
+    $callJs.innerHTML = highlightLines(jsCode, "//");
 
     const pyCode =
       `from polytypo import transform\n\n` +
@@ -452,7 +453,7 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
         ? `    dialect=${dialect},  # type: str, required because mode is "markdown" — "commonmark" | "mdx"\n`
         : `    # dialect="commonmark",  # required only when mode is "markdown"; ignored otherwise\n`) +
       `)`;
-    $callPy.innerHTML = highlight(pyCode, "#");
+    $callPy.innerHTML = highlightLines(pyCode, "#");
 
     const goCode =
       `out, err := polytypo.Transform(\n` +
@@ -465,7 +466,7 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
         : `        // Dialect: "commonmark", // required only when Mode is "markdown"; ignored otherwise\n`) +
       `    },\n` +
       `)`;
-    $callGo.innerHTML = highlight(goCode, "//");
+    $callGo.innerHTML = highlightLines(goCode, "//");
 
     const rbCode =
       `require "polytypo"\n\n` +
@@ -477,7 +478,7 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
         ? `  dialect: ${rubyStrLit(options.dialect)}, # type: String, required because mode is "markdown" — "commonmark" | "mdx"\n`
         : `  # dialect: "commonmark", # required only when mode is "markdown"; ignored otherwise\n`) +
       `)`;
-    $callRb.innerHTML = highlight(rbCode, "#");
+    $callRb.innerHTML = highlightLines(rbCode, "#");
 
     const phpCode =
       `Polytypo::transform(\n` +
@@ -490,7 +491,7 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
         : `        // 'dialect' => 'commonmark', // required only when mode is 'markdown'; ignored otherwise\n`) +
       `    ],\n` +
       `);`;
-    $callPhp.innerHTML = highlight(phpCode, "//");
+    $callPhp.innerHTML = highlightLines(phpCode, "//");
   }
 
   function clearCallCode() {
@@ -503,10 +504,10 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
   function paintPair(before, after) {
     if (before.length <= DIFF_CAP) {
       const segments = diff([...before], [...after]);
-      $output.innerHTML = paint(segments);
+      $output.innerHTML = paintLines(segments);
       return summarizeChange(before, after, segments);
     }
-    $output.innerHTML = mark(after);
+    $output.innerHTML = markLines(after);
     return before.length.toLocaleString("en-US") +
       " chars — change-highlighting skipped above " + DIFF_CAP.toLocaleString("en-US") + " chars";
   }

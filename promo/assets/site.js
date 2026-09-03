@@ -96,6 +96,42 @@ window.Polytypo = (function () {
   }
 
   /**
+   * Wraps one already-escaped HTML fragment per source line into the numbered line spans every
+   * code panel on this site is built from. The number itself is never emitted here: it is CSS
+   * generated content on `.ln::before` (see style.css), so it is not a text node, is not part of
+   * `textContent`, and does not reach the clipboard when a block is selected and copied.
+   *
+   * The literal "\n" between spans is what makes that true — the line break has to be real text
+   * for a copy to reproduce it, which is also why `.ln` stays inline rather than becoming a block.
+   */
+  function numberLines(lineHtmls) {
+    return lineHtmls.map((html) => '<span class="ln">' + html + "</span>").join("\n");
+  }
+
+  /** mark(), split into numbered lines — the diff-skipped path's code-panel form. */
+  function markLines(text) {
+    return numberLines(text.split("\n").map(mark));
+  }
+
+  /**
+   * paint(), split into numbered lines. Segments are cut at newlines FIRST so a highlighted span
+   * can never straddle a line boundary; each line is then painted by paint() itself, so the
+   * escaping and wrapper-class rules are exactly the ones hostile-output.test.ts already pins
+   * down rather than a second implementation of them.
+   */
+  function paintLines(segments) {
+    const lines = [[]];
+    for (const [changed, text] of segments) {
+      const parts = text.split("\n");
+      for (let i = 0; i < parts.length; i++) {
+        if (i > 0) lines.push([]);
+        if (parts[i]) lines[lines.length - 1].push([changed, parts[i]]);
+      }
+    }
+    return numberLines(lines.map(paint));
+  }
+
+  /**
    * The playground's `#pg-foot` status line, factored out so it's testable without parsing
    * generated page source. `segments` is diff(a, b)'s OUTPUT-only representation — it has no
    * way to represent characters removed from `text` with nothing put back in their place, so a
@@ -142,6 +178,13 @@ window.Polytypo = (function () {
     return html;
   }
 
+  /** highlight(), split into numbered lines. Tokenising each line on its own is what keeps a
+   * token from straddling a line boundary: line comments are line-scoped already, and an
+   * unterminated quote can then only mis-colour its own line instead of swallowing the next. */
+  function highlightLines(code, commentToken) {
+    return numberLines(code.split("\n").map((line) => highlight(line, commentToken)));
+  }
+
   /** Wires a `.tabs` bar + a set of `.pane[data-label]` elements into a click-to-switch tab set. */
   function bootTabs(tabsId, panesId) {
     const tabs = document.getElementById(tabsId);
@@ -166,10 +209,13 @@ window.Polytypo = (function () {
   return {
     esc,
     mark,
+    markLines,
     diff,
     paint,
+    paintLines,
     describeChange,
     highlight,
+    highlightLines,
     bootTabs,
     summarizeChange,
     summarizeError,

@@ -257,6 +257,28 @@ def reveal(text):
     )
 
 
+def number_lines(line_htmls):
+    """Wraps one already-escaped HTML fragment per source line into the numbered line spans every
+    code panel on this site is built from. The number itself is never emitted here: it is CSS
+    generated content on `.ln::before` (brand/tools/promo/style.css), so it is not a text node,
+    is not part of the element's text content, and does not reach the clipboard when a reader
+    selects a block and copies it. The literal newline between spans is what makes a copied block
+    keep its line breaks. Server-side twin of site.js's numberLines()."""
+    return "\n".join(f'<span class="ln">{html}</span>' for html in line_htmls)
+
+
+def specimen(numbered_html, extra_class=""):
+    """A prose before/after example, presented on the same ground as a code sample."""
+    cls = f"specimen {extra_class}".rstrip()
+    return f'<div class="{cls}"><code>{numbered_html}</code></div>'
+
+
+def highlight_lines(code, comment_token):
+    """highlight(), split into numbered lines. Tokenising each line on its own is what keeps a
+    token from straddling a line boundary; mirrors site.js's highlightLines()."""
+    return number_lines(highlight(line, comment_token) for line in code.split("\n"))
+
+
 def highlight(code, comment_token):
     """Minimal syntax highlighting for a static code sample: string literals and line
     comments only, in source order — everything else keeps the block's plain foreground
@@ -280,15 +302,27 @@ def highlight(code, comment_token):
 
 
 def diff_html(a, b):
-    """Highlight the output only — the input column is shown exactly as it was typed."""
+    """Highlight the output only — the input column is shown exactly as it was typed. Both sides
+    come back as numbered line spans, ready to drop into a code panel.
+
+    Chunks are cut at newlines BEFORE reveal() runs, so a highlighted span can never straddle a
+    line boundary — the same split site.js's paintLines() makes, so a specimen rendered here and
+    the playground's live output are built the same way rather than two ways that agree by luck."""
     sm = difflib.SequenceMatcher(None, a, b, autojunk=False)
-    right = []
+    right = [[]]
     for tag, _i1, _i2, j1, j2 in sm.get_opcodes():
         if j1 == j2:
             continue
-        chunk = reveal(b[j1:j2])
-        right.append(chunk if tag == "equal" else f'<span class="chg">{chunk}</span>')
-    return reveal(a), "".join(right)
+        for i, part in enumerate(b[j1:j2].split("\n")):
+            if i:
+                right.append([])
+            if part:
+                chunk = reveal(part)
+                right[-1].append(chunk if tag == "equal" else f'<span class="chg">{chunk}</span>')
+    return (
+        number_lines(reveal(line) for line in a.split("\n")),
+        number_lines("".join(line) for line in right),
+    )
 
 
 def rules_table(data):
@@ -305,8 +339,8 @@ def rules_table(data):
         before, after = diff_html(case["in"], case["out"])
         rows.append(
             f'<tr><td class="mono">{rule}</td><td class="mono">{locale}</td>'
-            f'<td class="rule-in">{before}</td>'
-            f'<td class="rule-out">{after}</td>'
+            f'<td class="rule-in">{specimen(before)}</td>'
+            f'<td class="rule-out">{specimen(after)}</td>'
             f'<td class="small muted">{note}</td></tr>'
         )
     return (
@@ -324,7 +358,7 @@ def code_panes():
             f'<div class="pane" data-label="{H.escape(label)}">'
             f'<h3 style="margin:22px 0 0">{H.escape(label)}'
             f'<span class="{cls}">{H.escape(status)}</span></h3>'
-            f"<pre><code>{highlight(code, comment_token)}</code></pre></div>"
+            f"<pre><code>{highlight_lines(code, comment_token)}</code></pre></div>"
         )
     return "".join(panes)
 
@@ -372,7 +406,7 @@ def build_panes():
     for label, code in BUILD_CODE:
         panes.append(
             f'<div class="pane" data-label="{H.escape(label)}">'
-            f"<pre><code>{highlight(code, '//')}</code></pre></div>"
+            f"<pre><code>{highlight_lines(code, '//')}</code></pre></div>"
         )
     return "".join(panes)
 
@@ -382,8 +416,7 @@ def locale_card(loc):
     return (
         '<div class="card"><div class="lang">'
         f'{H.escape(loc["name"])} · {H.escape(loc["locale"])}</div>'
-        f'<div class="pair"><div class="in">{before}</div>'
-        f'<div class="out">{after}</div></div></div>'
+        f'<div class="pair">{specimen(before, "in")}{specimen(after, "out")}</div></div>'
     )
 
 
@@ -408,8 +441,7 @@ def proof_grid(data):
         cards.append(
             f'<div class="card" data-locale="{H.escape(code)}"><div class="lang">'
             f'{H.escape(loc["name"])} · {H.escape(code)}</div>'
-            f'<div class="pair"><div class="in">{before}</div>'
-            f'<div class="out">{after}</div></div></div>'
+            f'<div class="pair">{specimen(before, "in")}{specimen(after, "out")}</div></div>'
         )
     return "".join(cards)
 
@@ -613,7 +645,8 @@ def build_playground_script(data, prefix, lazy):
 const DATA = {payload};
 (function playground() {{
   const {{
-    mark, diff, paint, highlight, bootTabs, summarizeChange, summarizeError, copyStatusText,
+    markLines, diff, paintLines, highlightLines, bootTabs, summarizeChange, summarizeError,
+    copyStatusText,
   }} = window.Polytypo;
   const LAZY = {lazy_literal};
   const ENGINE_SRC = "{engine_src}";
@@ -724,7 +757,7 @@ const DATA = {payload};
         : `    // dialect: "commonmark", // required only when mode is "markdown"; ignored otherwise\\n`) +
       `  }},\\n` +
       `);`;
-    $callJs.innerHTML = highlight(jsCode, "//");
+    $callJs.innerHTML = highlightLines(jsCode, "//");
 
     const pyCode =
       `from polytypo import transform\\n\\n` +
@@ -736,7 +769,7 @@ const DATA = {payload};
         ? `    dialect=${{dialect}},  # type: str, required because mode is "markdown" — "commonmark" | "mdx"\\n`
         : `    # dialect="commonmark",  # required only when mode is "markdown"; ignored otherwise\\n`) +
       `)`;
-    $callPy.innerHTML = highlight(pyCode, "#");
+    $callPy.innerHTML = highlightLines(pyCode, "#");
 
     const goCode =
       `out, err := polytypo.Transform(\\n` +
@@ -749,7 +782,7 @@ const DATA = {payload};
         : `        // Dialect: "commonmark", // required only when Mode is "markdown"; ignored otherwise\\n`) +
       `    }},\\n` +
       `)`;
-    $callGo.innerHTML = highlight(goCode, "//");
+    $callGo.innerHTML = highlightLines(goCode, "//");
 
     const rbCode =
       `require "polytypo"\\n\\n` +
@@ -761,7 +794,7 @@ const DATA = {payload};
         ? `  dialect: ${{rubyStrLit(options.dialect)}}, # type: String, required because mode is "markdown" — "commonmark" | "mdx"\\n`
         : `  # dialect: "commonmark", # required only when mode is "markdown"; ignored otherwise\\n`) +
       `)`;
-    $callRb.innerHTML = highlight(rbCode, "#");
+    $callRb.innerHTML = highlightLines(rbCode, "#");
 
     const phpCode =
       `Polytypo::transform(\\n` +
@@ -774,7 +807,7 @@ const DATA = {payload};
         : `        // 'dialect' => 'commonmark', // required only when mode is 'markdown'; ignored otherwise\\n`) +
       `    ],\\n` +
       `);`;
-    $callPhp.innerHTML = highlight(phpCode, "//");
+    $callPhp.innerHTML = highlightLines(phpCode, "//");
   }}
 
   function clearCallCode() {{
@@ -787,10 +820,10 @@ const DATA = {payload};
   function paintPair(before, after) {{
     if (before.length <= DIFF_CAP) {{
       const segments = diff([...before], [...after]);
-      $output.innerHTML = paint(segments);
+      $output.innerHTML = paintLines(segments);
       return summarizeChange(before, after, segments);
     }}
-    $output.innerHTML = mark(after);
+    $output.innerHTML = markLines(after);
     return before.length.toLocaleString("en-US") +
       " chars — change-highlighting skipped above " + DIFF_CAP.toLocaleString("en-US") + " chars";
   }}
