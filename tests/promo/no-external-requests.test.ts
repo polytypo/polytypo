@@ -4,10 +4,18 @@
 // generated promo/assets/fonts.css, which already embeds both brand fonts as data URLs and must
 // remain the only font source).
 //
-// Parses the actual generated promo/*.html (not the .body.html templates) with parse5, so a
+// Parses the actual generated promo pages (not the .body.html templates) with parse5, so a
 // broken generator-side change is caught here too, not just in the source, and follows every
 // locally linked stylesheet (style.css, fonts.css) to scan its actual content as well — a clean
 // HTML document with a dirty linked CSS file would otherwise pass unnoticed.
+//
+// Pages are directory indexes served at directory URLs (promo/docs/index.html → /docs), and their
+// asset references are document-relative — "assets/style.css" from the home page,
+// "../assets/style.css" from a nested one. Stylesheet resolution therefore has TWO roots, not
+// one: hrefs resolve against the *page's own directory*, while containment is still enforced
+// against promo/ as a whole. See resolveContainedStylesheetPath's `containmentRoot`. Because this
+// file follows and reads every linked stylesheet, it is also what would catch the most likely
+// defect of the directory-URL layout: a wrong-depth "../assets/style.css" that does not exist.
 //
 // CSS `@import` policy: fail-closed. This project's generated promo CSS has no reason to import
 // anything — `fonts.css` embeds both fonts as data URLs, `style.css` needs nothing external — so
@@ -47,10 +55,27 @@ type Element = DefaultTreeAdapterMap["element"];
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const PROMO_DIR = path.join(ROOT, "promo");
 
-const PAGES = ["index.html", "manifesto.html", "docs.html", "playground.html", "locales.html"];
+const PAGES = [
+  "index.html",
+  "manifesto/index.html",
+  "docs/index.html",
+  "playground/index.html",
+  "locales/index.html",
+];
+
+/** Depth prefix a page's own document-relative asset references carry: "" at the promo root,
+ * "../" for a directory index one level down. */
+function assetPrefix(page: string): string {
+  return page.includes("/") ? "../" : "";
+}
+
+/** The directory a page's own relative hrefs resolve against — its containing directory. */
+function pageDir(page: string): string {
+  return path.dirname(path.join(PROMO_DIR, ...page.split("/")));
+}
 
 function readPromoPage(name: string): string {
-  const p = path.join(PROMO_DIR, name);
+  const p = path.join(PROMO_DIR, ...name.split("/"));
   if (!existsSync(p)) {
     throw new Error(
       `${p} does not exist — run "npm run generate:all" (or "npm run gen:docs") before ` +
@@ -182,26 +207,34 @@ function collectLocalStylesheetHrefs(document: Node): string[] {
   return hrefs;
 }
 
-/** Resolves and validates a local stylesheet `href` against `baseDir`. This function — and only
- * this function — consults the real filesystem (`fs.realpathSync`, `fs.statSync`) to do so, even
- * when `StylesheetSource.readFile` below is injected: `baseDir` selects *where* it looks, not
- * *whether* it looks at a real filesystem. Every failure mode is returned as a typed
- * `{ ok: false, reason }` value, never thrown, so a caller can always turn it into a violation
- * instead of crashing `checkPage()`.
+/** Resolves a local stylesheet `href` against `baseDir` and validates that it stays inside
+ * `containmentRoot`. The two are separate because a directory-index page's own relative hrefs
+ * resolve against its own directory (`promo/docs/`) while the boundary they may not escape is the
+ * whole site root (`promo/`) — resolving `../assets/style.css` against `promo/docs/` is legitimate
+ * and lands inside `promo/`, whereas resolving it against `promo/` itself would escape. When
+ * `containmentRoot` is omitted it defaults to `baseDir`, which is the single-root behaviour every
+ * synthetic negative control below relies on.
+ *
+ * This function — and only this function — consults the real filesystem (`fs.realpathSync`,
+ * `fs.statSync`) to do so, even when `StylesheetSource.readFile` below is injected: `baseDir`
+ * selects *where* it looks, not *whether* it looks at a real filesystem. Every failure mode is
+ * returned as a typed `{ ok: false, reason }` value, never thrown, so a caller can always turn it
+ * into a violation instead of crashing `checkPage()`.
  *
  * Rejected, in order, and never read:
  *  - an absolute path;
  *  - an empty pathname once any `?query`/`#fragment` suffix is stripped (a query-only or
  *    fragment-only href, or `href="."`, both reduce to this);
- *  - a path that resolves outside `baseDir` — via `../`, or a symlink at or inside the resolved
- *    path pointing outside it;
- *  - a path that resolves to `baseDir` itself (a directory, never a stylesheet);
+ *  - a path that resolves outside `containmentRoot` — via `../`, or a symlink at or inside the
+ *    resolved path pointing outside it;
+ *  - a path that resolves to `containmentRoot` itself (a directory, never a stylesheet);
  *  - anything that does not exist, cannot be canonicalised, or exists but is not a regular file
  *    (a directory, a device, a socket, …).
  */
 function resolveContainedStylesheetPath(
   href: string,
   baseDir: string,
+  containmentRoot: string = baseDir,
 ): { ok: true; path: string } | { ok: false; reason: string } {
   const withoutFragment = (href.split("#")[0] ?? href).split("?")[0] ?? href;
   if (path.isAbsolute(withoutFragment)) {
@@ -218,29 +251,40 @@ function resolveContainedStylesheetPath(
     return { ok: false, reason: `base directory "${baseDir}" could not be resolved: ${String(error)}` };
   }
 
+  let resolvedRoot: string;
+  try {
+    resolvedRoot = realpathSync(containmentRoot);
+  } catch (error) {
+    return {
+      ok: false,
+      reason: `containment root "${containmentRoot}" could not be resolved: ${String(error)}`,
+    };
+  }
+
   // Stage 1: a plain-path containment check on the *unresolved* candidate, independent of
   // whether it exists. This catches ordinary `../` traversal even when the target is missing —
   // deferring straight to `realpathSync` (stage 2) would instead report a nonexistent traversal
   // target as "could not be resolved," which is true but a strictly weaker, less specific
   // finding than "this href escapes the promo root" for an href that plainly does.
   const candidate = path.resolve(resolvedBase, withoutFragment);
-  const rawRel = path.relative(resolvedBase, candidate);
+  const rawRel = path.relative(resolvedRoot, candidate);
   if (rawRel === "" || rawRel.startsWith("..") || path.isAbsolute(rawRel)) {
-    return { ok: false, reason: `"${href}" resolves outside the promo root (${baseDir})` };
+    return { ok: false, reason: `"${href}" resolves outside the promo root (${containmentRoot})` };
   }
 
   // Stage 2: resolve symlinks at or inside the candidate and re-check containment against the
-  // *real* path — a symlink that sits inside `baseDir` (so stage 1 saw it as contained) but
-  // points outside it must still be rejected, and this is also where nonexistence surfaces.
+  // *real* path — a symlink that sits inside the containment root (so stage 1 saw it as
+  // contained) but points outside it must still be rejected, and this is also where nonexistence
+  // surfaces.
   let real: string;
   try {
     real = realpathSync(candidate);
   } catch (error) {
     return { ok: false, reason: `"${href}" could not be resolved: ${String(error)}` };
   }
-  const rel = path.relative(resolvedBase, real);
+  const rel = path.relative(resolvedRoot, real);
   if (rel === "" || rel.startsWith("..") || path.isAbsolute(rel)) {
-    return { ok: false, reason: `"${href}" resolves outside the promo root (${baseDir})` };
+    return { ok: false, reason: `"${href}" resolves outside the promo root (${containmentRoot})` };
   }
 
   let stats;
@@ -336,12 +380,17 @@ function checkNode(node: Node, page: string, violations: Violation[]): void {
 }
 
 interface StylesheetSource {
-  /** Directory local stylesheet hrefs resolve against — defaults to the real promo/ output.
-   * This selects *where* `resolveContainedStylesheetPath` looks; the containment and
-   * regular-file checks it performs (`realpathSync`, `statSync`) always run against the real
-   * filesystem at that location, for every caller, real or synthetic — they are not part of
-   * this injectable surface. */
+  /** Directory local stylesheet hrefs resolve against — for a real page, that page's own
+   * directory, since its hrefs are document-relative. This selects *where*
+   * `resolveContainedStylesheetPath` looks; the containment and regular-file checks it performs
+   * (`realpathSync`, `statSync`) always run against the real filesystem at that location, for
+   * every caller, real or synthetic — they are not part of this injectable surface. */
   baseDir: string;
+  /** Boundary a resolved stylesheet may not escape — the promo root for a real page, so a
+   * nested page's legitimate `../assets/style.css` is contained while a genuine escape still is
+   * not. Omitted means "same as `baseDir`", the single-root behaviour the synthetic negative
+   * controls below are written against. */
+  containmentRoot?: string;
   /** Reads a path that has already passed containment and regular-file validation — defaults to
    * real `fs.readFileSync`. This is the one operation that's actually mockable: a test can
    * substitute a controlled failure or a synthetic body here without needing to fake
@@ -351,19 +400,24 @@ interface StylesheetSource {
   readFile: (resolvedPath: string) => string;
 }
 
-const REAL_STYLESHEET_SOURCE: StylesheetSource = {
-  baseDir: PROMO_DIR,
-  readFile: (p) => readFileSync(p, "utf8"),
-};
+/** The real-filesystem source for one generated page: resolve against the page's own directory,
+ * contain within promo/. */
+function realStylesheetSource(page: string): StylesheetSource {
+  return {
+    baseDir: pageDir(page),
+    containmentRoot: PROMO_DIR,
+    readFile: (p) => readFileSync(p, "utf8"),
+  };
+}
 
 function checkLinkedStylesheets(
   document: Node,
   page: string,
   violations: Violation[],
-  source: StylesheetSource = REAL_STYLESHEET_SOURCE,
+  source: StylesheetSource,
 ): void {
   for (const href of collectLocalStylesheetHrefs(document)) {
-    const resolved = resolveContainedStylesheetPath(href, source.baseDir);
+    const resolved = resolveContainedStylesheetPath(href, source.baseDir, source.containmentRoot);
     if (!resolved.ok) {
       violations.push({ page, description: `linked stylesheet "${href}": ${resolved.reason}` });
       continue; // never read or scanned: containment/regular-file validation already failed
@@ -389,7 +443,11 @@ function checkLinkedStylesheets(
   }
 }
 
-function checkPage(html: string, page: string, source: StylesheetSource = REAL_STYLESHEET_SOURCE): Violation[] {
+function checkPage(
+  html: string,
+  page: string,
+  source: StylesheetSource = realStylesheetSource(page),
+): Violation[] {
   const document = parse(html);
   const violations: Violation[] = [];
   checkNode(document, page, violations);
@@ -397,7 +455,7 @@ function checkPage(html: string, page: string, source: StylesheetSource = REAL_S
   return violations;
 }
 
-describe("promo/*.html — zero third-party page-load requests", () => {
+describe("promo pages — zero third-party page-load requests", () => {
   it.each(PAGES)(
     "%s makes no external stylesheet/preconnect/script/media/frame/style request, inline or linked, and no @import",
     (page) => {
@@ -413,7 +471,7 @@ describe("promo/*.html — zero third-party page-load requests", () => {
   });
 
   it("still contains legitimate outbound citation hyperlinks (proves the check isn't vacuous by rejecting everything)", () => {
-    const html = readPromoPage("locales.html");
+    const html = readPromoPage("locales/index.html");
     expect(html).toMatch(/<a[^>]+href="https:\/\/[^"]+"/);
   });
 
@@ -426,7 +484,10 @@ describe("promo/*.html — zero third-party page-load requests", () => {
     expect(scanCssForViolations(css)).toEqual([]);
     for (const page of PAGES) {
       const html = readPromoPage(page);
-      expect(html).toContain('<link rel="stylesheet" href="assets/fonts.css">');
+      // Depth-exact, not a loosened pattern: the home page links "assets/fonts.css" and a
+      // directory-index page "../assets/fonts.css", and linking the wrong one is precisely the
+      // regression this asserts against.
+      expect(html).toContain(`<link rel="stylesheet" href="${assetPrefix(page)}assets/fonts.css">`);
     }
   });
 
@@ -436,11 +497,34 @@ describe("promo/*.html — zero third-party page-load requests", () => {
       const hrefs = collectLocalStylesheetHrefs(document);
       expect(hrefs.length, `${page}: expected at least one local stylesheet link`).toBeGreaterThan(0);
       for (const href of hrefs) {
-        const resolved = resolveContainedStylesheetPath(href, PROMO_DIR);
-        expect(resolved.ok, `${page}: "${href}" must resolve inside promo/`).toBe(true);
+        // Resolved from the page's own directory (its hrefs are document-relative) but contained
+        // within promo/ — so a wrong-depth "../assets/style.css" fails here as nonexistent.
+        const resolved = resolveContainedStylesheetPath(href, pageDir(page), PROMO_DIR);
+        expect(
+          resolved.ok,
+          `${page}: "${href}" must resolve inside promo/` +
+            (resolved.ok ? "" : ` — ${resolved.reason}`),
+        ).toBe(true);
         if (resolved.ok) {
           expect(existsSync(resolved.path), `${page}: linked stylesheet "${href}" must exist`).toBe(true);
         }
+      }
+    }
+  });
+
+  it("every page's own <script src> resolves to a file that exists inside promo/", () => {
+    for (const page of PAGES) {
+      const srcs = [...readPromoPage(page).matchAll(/<script\s+src="([^"]+)"/g)].map((m) => m[1]!);
+      expect(srcs.length, `${page}: expected at least one local script`).toBeGreaterThan(0);
+      for (const src of srcs) {
+        // Same two-root resolution as stylesheets; scripts are the other depth-sensitive asset
+        // reference the generator emits (assets/site.js, and the playground's engine bundle).
+        const resolved = resolveContainedStylesheetPath(src, pageDir(page), PROMO_DIR);
+        expect(
+          resolved.ok,
+          `${page}: <script src="${src}"> must resolve to an existing file inside promo/` +
+            (resolved.ok ? "" : ` — ${resolved.reason}`),
+        ).toBe(true);
       }
     }
   });
@@ -552,6 +636,20 @@ describe("no-external-requests detector — end-to-end linked-stylesheet negativ
     } finally {
       rmSync(outside, { force: true });
     }
+  });
+
+  it("two-root resolution: a nested page's ../ href is contained, but one that escapes promo/ is still rejected", () => {
+    // The directory-URL layout's own case, against the real promo/ output: resolving from
+    // promo/docs/ with promo/ as the containment root must accept "../assets/style.css" and
+    // still reject an href that climbs past promo/ entirely. Without the second root the first
+    // would be a false positive; without the first root the second would be a false negative.
+    const docsDir = path.join(PROMO_DIR, "docs");
+    const contained = resolveContainedStylesheetPath("../assets/style.css", docsDir, PROMO_DIR);
+    expect(contained.ok, JSON.stringify(contained)).toBe(true);
+
+    const escaping = resolveContainedStylesheetPath("../../package.json", docsDir, PROMO_DIR);
+    expect(escaping.ok).toBe(false);
+    if (!escaping.ok) expect(escaping.reason).toContain("resolves outside the promo root");
   });
 
   it("path containment: rejects an absolute-path href", () => {

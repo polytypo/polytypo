@@ -180,60 +180,60 @@ describe("brand/tools/promo/site.js — shareStatusText()", () => {
 describe("brand/tools/promo/site.js — buildPermalinkUrl()", () => {
   it("builds an https URL without relying on location.origin", () => {
     const url = Polytypo.buildPermalinkUrl(
-      "https://polytypo.js.org/playground.html",
+      "https://polytypo.js.org/playground/",
       "abc123",
     );
-    expect(url).toBe("https://polytypo.js.org/playground.html#abc123");
+    expect(url).toBe("https://polytypo.js.org/playground/#abc123");
   });
 
   it("builds a URL for localhost with a port", () => {
-    const url = Polytypo.buildPermalinkUrl("http://127.0.0.1:8080/playground.html", "xyz");
-    expect(url).toBe("http://127.0.0.1:8080/playground.html#xyz");
+    const url = Polytypo.buildPermalinkUrl("http://127.0.0.1:8080/playground/", "xyz");
+    expect(url).toBe("http://127.0.0.1:8080/playground/#xyz");
   });
 
   it("builds a correct URL for a file:// page, where location.origin would be the string 'null'", () => {
     const url = Polytypo.buildPermalinkUrl(
-      "file:///home/iuriirogulia/Projects/polytypo/promo/playground.html",
+      "file:///home/iuriirogulia/Projects/polytypo/promo/playground/index.html",
       "deadbeef",
     );
-    expect(url).toBe("file:///home/iuriirogulia/Projects/polytypo/promo/playground.html#deadbeef");
+    expect(url).toBe("file:///home/iuriirogulia/Projects/polytypo/promo/playground/index.html#deadbeef");
   });
 
   it("replaces an existing fragment rather than appending to it", () => {
     const url = Polytypo.buildPermalinkUrl(
-      "https://polytypo.js.org/playground.html#oldfragment",
+      "https://polytypo.js.org/playground/#oldfragment",
       "newfragment",
     );
-    expect(url).toBe("https://polytypo.js.org/playground.html#newfragment");
+    expect(url).toBe("https://polytypo.js.org/playground/#newfragment");
   });
 
   it("preserves an existing query string", () => {
     const url = Polytypo.buildPermalinkUrl(
-      "https://polytypo.js.org/playground.html?foo=bar",
+      "https://polytypo.js.org/playground/?foo=bar",
       "frag",
     );
-    expect(url).toBe("https://polytypo.js.org/playground.html?foo=bar#frag");
+    expect(url).toBe("https://polytypo.js.org/playground/?foo=bar#frag");
   });
 });
 
 describe("brand/tools/promo/site.js — stripPermalinkFragment()", () => {
   it("removes a fragment, preserving the rest of the URL", () => {
     const url = Polytypo.stripPermalinkFragment(
-      "https://polytypo.js.org/playground.html?foo=bar#somefragment",
+      "https://polytypo.js.org/playground/?foo=bar#somefragment",
     );
-    expect(url).toBe("https://polytypo.js.org/playground.html?foo=bar");
+    expect(url).toBe("https://polytypo.js.org/playground/?foo=bar");
   });
 
   it("is a no-op (structurally) when there is no fragment to strip", () => {
-    const url = Polytypo.stripPermalinkFragment("https://polytypo.js.org/playground.html");
-    expect(url).toBe("https://polytypo.js.org/playground.html");
+    const url = Polytypo.stripPermalinkFragment("https://polytypo.js.org/playground/");
+    expect(url).toBe("https://polytypo.js.org/playground/");
   });
 
   it("works for a file:// URL", () => {
     const url = Polytypo.stripPermalinkFragment(
-      "file:///home/iuriirogulia/Projects/polytypo/promo/playground.html#stale",
+      "file:///home/iuriirogulia/Projects/polytypo/promo/playground/index.html#stale",
     );
-    expect(url).toBe("file:///home/iuriirogulia/Projects/polytypo/promo/playground.html");
+    expect(url).toBe("file:///home/iuriirogulia/Projects/polytypo/promo/playground/index.html");
   });
 });
 

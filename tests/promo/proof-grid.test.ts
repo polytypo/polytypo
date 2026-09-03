@@ -10,7 +10,7 @@
 // no second, independently-maintained locale list anywhere to drift out of sync.
 //
 // Critically, this file does not just re-check examples.json in isolation — it parses the ACTUAL
-// generated promo/index.html and promo/manifesto.html (each proof <div class="card"> carries a
+// generated promo/index.html and promo/manifesto/index.html (each proof <div class="card"> carries a
 // data-locale attribute for exactly this purpose) and asserts against what is really rendered,
 // so a builder bug that renders a locale outside the intended set, renders mismatched input text
 // in one card, or silently falls out of sync with examples.json's `proof` data would fail here.
@@ -44,7 +44,7 @@ function readExamples(): ExamplesJson {
 }
 
 function readPromoPage(name: string): string {
-  const p = path.join(ROOT, "promo", name);
+  const p = path.join(ROOT, "promo", ...name.split("/"));
   if (!existsSync(p)) {
     throw new Error(
       `${p} does not exist — run "npm run generate:all" before running this test file, which ` +
@@ -114,7 +114,7 @@ describe("promo/examples.json — proofLocales is the single source of truth", (
   });
 });
 
-describe.each(["index.html", "manifesto.html"])("promo/%s — rendered proof grid", (page) => {
+describe.each(["index.html", "manifesto/index.html"])("promo/%s — rendered proof grid", (page) => {
   const data = readExamples();
   const byLocale = new Map(data.locales.map((l) => [l.locale, l]));
   const html = readPromoPage(page);
@@ -166,9 +166,9 @@ describe.each(["index.html", "manifesto.html"])("promo/%s — rendered proof gri
   });
 });
 
-describe("promo/index.html vs promo/manifesto.html — same proof set on both pages", () => {
+describe("promo/index.html vs promo/manifesto/index.html — same proof set on both pages", () => {
   const indexCards = parseProofCards(readPromoPage("index.html"));
-  const manifestoCards = parseProofCards(readPromoPage("manifesto.html"));
+  const manifestoCards = parseProofCards(readPromoPage("manifesto/index.html"));
 
   it("both pages render the same locales in the same order", () => {
     expect(manifestoCards.map((c) => c.locale)).toEqual(indexCards.map((c) => c.locale));

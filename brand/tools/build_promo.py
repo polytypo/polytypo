@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Build the promo site — promo/index.html, docs.html, playground.html, locales.html —
-in the brand book's visual system.
+"""Build the promo site — promo/index.html plus promo/{docs,playground,locales,manifesto}/index.html,
+served at the directory URLs /, /docs, /playground, /locales, /manifesto — in the brand book's
+visual system.
 
 Before/after pairs come from promo/examples.json, produced by running the real engine
 (`npx tsx brand/tools/gen_examples.ts`); nothing here invents one. Counts that change with the
@@ -40,17 +41,34 @@ def fixture_count(locale):
     with open(os.path.join(FIXTURES_DIR, f"{locale}.json"), encoding="utf-8") as f:
         return len(json.load(f)["cases"])
 
+# (slug, nav label, body template). The slug is the page's directory under promo/ and its URL
+# path — "" is the site root (promo/index.html, served at /), anything else is a directory index
+# (promo/docs/index.html, served at /docs). Directory URLs, not .html filenames, so the public
+# paths stay clean and stable.
 PAGES = [
-    ("index.html", "Home", "home.body.html"),
-    ("docs.html", "Docs", "docs.body.html"),
-    ("playground.html", "Playground", "playground.body.html"),
-    ("locales.html", "Locales", "locales.body.html"),
-    # Deliberately not in the primary nav (nav_html's own hardcoded 4-link list, unchanged) — a
+    ("", "Home", "home.body.html"),
+    ("docs", "Docs", "docs.body.html"),
+    ("playground", "Playground", "playground.body.html"),
+    ("locales", "Locales", "locales.body.html"),
+    # Deliberately not in the primary nav (NAV_LINKS' own hardcoded 4-link list, unchanged) — a
     # 5th link there would re-break the Stage-7 fix for the 320px mobile nav, which fits exactly
     # 4 links + the logo on one row. Reachable instead from the home hero's CTA row and the
     # sitewide footer (footer_html).
-    ("manifesto.html", "Manifesto", "manifesto.body.html"),
+    ("manifesto", "Manifesto", "manifesto.body.html"),
 ]
+
+# Depth prefix every link and asset reference on a page is written relative to. Document-relative,
+# never root-relative: before a custom domain exists the site is served from
+# polytypo.github.io/polytypo/, where an absolute "/docs/" would point outside the site. A page at
+# the root resolves "docs/" directly; a page one directory down needs "../docs/".
+PAGE_PREFIXES = {"": "", **{slug: "../" for slug, _label, _body in PAGES if slug}}
+
+
+def page_href(prefix, slug):
+    """Document-relative href for a page, from a page whose depth prefix is `prefix`. Trailing
+    slash so both python3 -m http.server and GitHub Pages serve the directory index without a
+    redirect; the root page is "./" (or "../" from one level down), never an empty href."""
+    return f"{prefix}{slug}/" if slug else (prefix or "./")
 
 # Which locales the proof grid renders is NOT decided here — it is read from examples.json's
 # `proofLocales` field (single source of truth, written by brand/tools/gen_examples.ts, also
@@ -426,31 +444,30 @@ def status_table(data):
     return f"<table><tr><th>Thing</th><th>State</th></tr>{body}</table>"
 
 
-def nav_html(active):
+NAV_LINKS = [("", "Home"), ("docs", "Docs"), ("playground", "Playground"), ("locales", "Locales")]
+
+
+def nav_html(active_slug, prefix):
     links = "".join(
-        f'<a href="{href}"{" aria-current=\"page\"" if href == active else ""}>{label}</a>'
-        for href, label in [
-            ("index.html", "Home"),
-            ("docs.html", "Docs"),
-            ("playground.html", "Playground"),
-            ("locales.html", "Locales"),
-        ]
+        f'<a href="{page_href(prefix, slug)}"'
+        f'{" aria-current=\"page\"" if slug == active_slug else ""}>{label}</a>'
+        for slug, label in NAV_LINKS
     )
     mark = inline("logo/polytypo-mark-current.svg")
     return (
         '<nav class="site-nav"><div class="wrap">'
-        f'<a class="brand" href="index.html">{mark}polytypo</a>'
+        f'<a class="brand" href="{page_href(prefix, "")}">{mark}polytypo</a>'
         f'<div class="links">{links}</div>'
         "</div></nav>"
     )
 
 
-def footer_html(data):
+def footer_html(data, prefix):
     return (
         "<footer><div class=\"wrap\"><p>"
         f'polytypo · spec {data["spec"]} · MIT for the code, separate terms for the brand assets · '
         "every before/after typography example on this site is generated with the engine.</p>"
-        '<p><a href="manifesto.html">Manifesto</a></p>'
+        f'<p><a href="{page_href(prefix, "manifesto")}">Manifesto</a></p>'
         '<p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p>'
         "</div></footer>"
     )
@@ -493,11 +510,15 @@ def build():
         code = loc["locale"]
         replacements[f"{{{{fixtures:{code}}}}}"] = str(fixture_count(code))
 
-    for filename, title, body_file in PAGES:
+    for slug, title, body_file in PAGES:
+        prefix = PAGE_PREFIXES[slug]
         with open(os.path.join(PROMO_SRC, body_file), encoding="utf-8") as f:
             body = f.read()
         for key, val in replacements.items():
             body = body.replace(key, val)
+        # Every cross-page href in a body template is written "{{prefix}}docs/" so one token
+        # carries the page's depth; the root page substitutes "" and a nested page "../".
+        body = body.replace("{{prefix}}", prefix)
         body = re.sub(r"\{\{svg:([^}]+)\}\}", lambda m: inline(m.group(1)), body)
 
         page_title = "polytypo" if title == "Home" else f"polytypo — {title}"
@@ -507,17 +528,17 @@ def build():
             f'<meta name="description" content="polytypo — locale-correct quotes, dashes, '
             f'ellipses and no-break spaces for {n} locales. One runtime today. One portable '
             f'spec designed for five.">\n'
-            '<link rel="stylesheet" href="assets/fonts.css">\n'
-            '<link rel="stylesheet" href="assets/style.css">\n'
+            f'<link rel="stylesheet" href="{prefix}assets/fonts.css">\n'
+            f'<link rel="stylesheet" href="{prefix}assets/style.css">\n'
             f"<title>{H.escape(page_title)}</title>\n"
             "</head>\n<body>\n"
-            f"{nav_html(filename)}\n"
-            f'<div class="wrap">\n{body}\n{footer_html(data)}\n</div>\n'
-            f'<script src="assets/site.js"></script>\n'
+            f"{nav_html(slug, prefix)}\n"
+            f'<div class="wrap">\n{body}\n{footer_html(data, prefix)}\n</div>\n'
+            f'<script src="{prefix}assets/site.js"></script>\n'
         )
 
-        if filename == "playground.html":
-            doc += build_playground_script(data)
+        if slug == "playground":
+            doc += build_playground_script(data, prefix)
         else:
             doc += (
                 "<script>\n"
@@ -528,15 +549,17 @@ def build():
 
         doc += "</body>\n</html>\n"
 
-        out_path = os.path.join(out_dir, filename)
+        rel_path = os.path.join(slug, "index.html") if slug else "index.html"
+        out_path = os.path.join(out_dir, rel_path)
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
         with open(out_path, "w", encoding="utf-8") as f:
             f.write(doc)
-        print(f"  promo/{filename}  {os.path.getsize(out_path) / 1024:.0f} KB")
+        print(f"  promo/{rel_path.replace(os.sep, '/')}  {os.path.getsize(out_path) / 1024:.0f} KB")
 
 
-def build_playground_script(data):
+def build_playground_script(data, prefix):
     payload = json.dumps(data, ensure_ascii=False)
-    return f"""<script src="vendor/polytypo.browser.js"></script>
+    return f"""<script src="{prefix}vendor/polytypo.browser.js"></script>
 <script>
 const DATA = {payload};
 (function playground() {{

@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="polytypo — locale-correct quotes, dashes, ellipses and no-break spaces for 10 locales. One runtime today. One portable spec designed for five.">
-<link rel="stylesheet" href="assets/fonts.css">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="../assets/fonts.css">
+<link rel="stylesheet" href="../assets/style.css">
 <title>polytypo — Docs</title>
 </head>
 <body>
-<nav class="site-nav"><div class="wrap"><a class="brand" href="index.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="9.5 37.5 181.0 45.0" role="img" aria-labelledby="t3 d3">
+<nav class="site-nav"><div class="wrap"><a class="brand" href="../"><svg xmlns="http://www.w3.org/2000/svg" viewBox="9.5 37.5 181.0 45.0" role="img" aria-labelledby="t3 d3">
   <title id="t3">polytypo</title>
   <desc id="d3">Guillemets enclosing an em dash.</desc>
   <g fill="none" stroke="currentColor" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round">
@@ -19,7 +19,7 @@
     <path d="M156 42 L170 60 L156 78"/>
   </g>
   <rect x="58.0" y="55.5" width="84.0" height="9.0" fill="currentColor"/>
-</svg>polytypo</a><div class="links"><a href="index.html">Home</a><a href="docs.html" aria-current="page">Docs</a><a href="playground.html">Playground</a><a href="locales.html">Locales</a></div></div></nav>
+</svg>polytypo</a><div class="links"><a href="../">Home</a><a href="../docs/" aria-current="page">Docs</a><a href="../playground/">Playground</a><a href="../locales/">Locales</a></div></div></nav>
 <div class="wrap">
 <header class="hero" style="padding: 40px 0 24px">
   <p class="eyebrow">Reference</p>
@@ -236,7 +236,7 @@ try {
   <h3>Wiring it into a build step</h3>
   <p>
     There is no CLI, no plugin API and no hosted service in v1 — that is a deliberate non-goal (see
-    <a href="locales.html#extend">Locales → What v1 deliberately does not do</a>).
+    <a href="../locales/#extend">Locales → What v1 deliberately does not do</a>).
     <code>transform()</code> is a plain pure function, so it drops into whatever already touches
     your content at build time.
   </p>
@@ -277,7 +277,7 @@ function Byline({ text, locale }) {
   <p class="small muted">
     Examples are real engine output for the locale named in each row. Grey marks what was typed; red
     marks what the engine set instead. Try any of these live in the
-    <a href="playground.html">Playground</a>.
+    <a href="../playground/">Playground</a>.
   </p>
 </section>
 
@@ -386,9 +386,9 @@ function Byline({ text, locale }) {
   </p>
 </section>
 
-<footer><div class="wrap"><p>polytypo · spec 1.0.0 · MIT for the code, separate terms for the brand assets · every before/after typography example on this site is generated with the engine.</p><p><a href="manifesto.html">Manifesto</a></p><p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p></div></footer>
+<footer><div class="wrap"><p>polytypo · spec 1.0.0 · MIT for the code, separate terms for the brand assets · every before/after typography example on this site is generated with the engine.</p><p><a href="../manifesto/">Manifesto</a></p><p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p></div></footer>
 </div>
-<script src="assets/site.js"></script>
+<script src="../assets/site.js"></script>
 <script>
 Polytypo.bootTabs("lang-tabs", "lang-panes");
 Polytypo.bootTabs("build-tabs", "build-panes");

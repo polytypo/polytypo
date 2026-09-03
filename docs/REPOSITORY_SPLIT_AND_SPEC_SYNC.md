@@ -224,7 +224,7 @@ github.com/polytypo/polytypo                    (canonical)
         site.js, style.css
 
   promo/                                          generated output, unchanged shape
-    index.html, manifesto.html, locales.html, docs.html, playground.html
+    index.html, manifesto/index.html, locales/index.html, docs/index.html, playground/index.html
     examples.json
     assets/
     vendor/polytypo.browser.js                    now built from node_modules/polytypo, not ../src
@@ -1574,10 +1574,13 @@ published package is the target post-split state, made a hard precondition of th
   point; this document does not claim the Settings UI action creates one.
 - **HTTPS:** "Enforce HTTPS" enabled in the same panel once available; not settable from this
   document.
-- **Relative links and direct-page URLs:** `promo/`'s generated pages already use relative,
-  extension-inclusive links between pages (`playground.html`, `locales.html`, `manifesto.html`, …),
-  which needs no rewriting for a root-path custom-domain deploy (`polytypo.js.org/`, not
-  `polytypo.js.org/polytypo/`).
+- **Relative links and direct-page URLs:** `promo/`'s generated pages are directory indexes served
+  at directory URLs (`/docs`, `/playground`, `/locales`, `/manifesto`; home at `/`), and link to
+  each other with document-relative, trailing-slash hrefs (`docs/` from the root page,
+  `../docs/` from a nested one). Being document-relative rather than root-relative, they need no
+  rewriting either for a root-path custom-domain deploy (`polytypo.js.org/`) or for the
+  project-page path the site would be served from before js.org approves
+  (`polytypo.github.io/polytypo/`).
 - **Cache-safe asset naming — a required pre-launch gate, not one of two equally acceptable
   options.** Today's generated filenames (`promo/vendor/polytypo.browser.js`, `promo/assets/site.js`,
   `promo/assets/style.css`) are fixed, not content-addressed — a changed bundle keeps the same
@@ -1589,7 +1592,7 @@ published package is the target post-split state, made a hard precondition of th
   extended to emit content-hashed filenames for every mutable JS/CSS asset — the browser engine
   bundle, the shared site JavaScript, and the shared stylesheet — with the generated HTML referencing
   the matching hashes deterministically, the same content-derived-hash discipline already required
-  of `tsup`'s own chunk output (§2.12). Stable page names (`index.html`, `playground.html`, …) are
+  of `tsup`'s own chunk output (§2.12). Stable page URLs (`/`, `/playground`, …) are
   unaffected and remain unchanged. Because HTML and its referenced assets deploy atomically as one
   Pages artifact, an old hashed asset file that no HTML in the new artifact references anymore may
   simply be dropped from that artifact — there is no orphaned-reference risk, since nothing in the

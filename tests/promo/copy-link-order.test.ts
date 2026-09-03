@@ -16,7 +16,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const PLAYGROUND_PATH = path.join(ROOT, "promo", "playground.html");
+const PLAYGROUND_PATH = path.join(ROOT, "promo", "playground", "index.html");
 
 function readPlayground(): string {
   if (!existsSync(PLAYGROUND_PATH)) {
@@ -29,13 +29,13 @@ function readPlayground(): string {
 
 function copyLinkHandlerBody(html: string): string {
   const start = html.indexOf('$copyLink.addEventListener("click"');
-  expect(start, "could not find the $copyLink click handler in promo/playground.html").toBeGreaterThan(-1);
+  expect(start, "could not find the $copyLink click handler in promo/playground/index.html").toBeGreaterThan(-1);
   const nextHandler = html.indexOf("if (navigator.share)", start);
   expect(nextHandler, "could not find the end of the $copyLink handler").toBeGreaterThan(start);
   return html.slice(start, nextHandler);
 }
 
-describe("promo/playground.html — Copy Link address-bar update happens before awaiting Clipboard", () => {
+describe("promo/playground/index.html — Copy Link address-bar update happens before awaiting Clipboard", () => {
   const html = readPlayground();
   const body = copyLinkHandlerBody(html);
 
