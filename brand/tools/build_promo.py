@@ -97,9 +97,15 @@ RULE_ROWS = [
 
 SPACES_ROW = {"in": "Hello  ,   world !", "out": "Hello, world!"}
 
-# label, status, code — used for the "Using it" tabs on Docs, and the JS one doubles as the
-# quickstart snippet on Home.
-# label, status, line-comment token (for syntax highlighting), code
+# label, status, line-comment token (for syntax highlighting), code — the "Using it" tabs on Docs,
+# and the JS one doubles as the quickstart snippet on Home.
+#
+# A pane here shows the CALL and its settings, nothing else. No sample sentence is inlined into a
+# snippet and no `// →` comment states an output: the text is always referred to as `input`, the
+# same variable the playground's live call block uses. What the engine actually does to a sentence
+# is shown where it can be read as typography — the proof grid on Home, the per-locale cards on
+# /locales, the rules table on /docs — not in a fixed-width code block that flattens the very
+# glyphs the example is about.
 CODE = [
     (
         "JavaScript / TypeScript",
@@ -108,17 +114,16 @@ CODE = [
         """// npm install polytypo
 import { transform } from "polytypo";
 
-transform(`Is this "polytypo"? - No, it's "polytypo"!`, { locale: "de" });
-// → Ist das „polytypo“? – Nein, das ist „polytypo“!
+const output = transform(input, { locale: "de" });
 
-transform("Il a dit \\"bonjour\\".", { locale: "fr" });
-// → Il a dit «\\u202fbonjour\\u202f».
+// mode "markdown" requires an explicit dialect; "text" and "html" ignore it
+transform(input, { locale: "fr", mode: "markdown", dialect: "commonmark" });
 
 // opt out of a single rule; the order of the rest never changes
-transform("1914-1918", { locale: "en-US", rules: { dashes: false } });
+transform(input, { locale: "en-US", rules: { dashes: false } });
 
 try {
-  transform("x", { locale: "xx" });
+  transform(input, { locale: "xx" });
 } catch (error) {
   error.code; // "POLYTYPO_UNKNOWN_LOCALE"
 }""",
@@ -130,16 +135,15 @@ try {
         """# pip install polytypo
 from polytypo import transform, PolytypoError
 
-transform('Is this "polytypo"? - No, it\\'s "polytypo"!', locale="de")
-# → Ist das „polytypo“? – Nein, das ist „polytypo“!
+output = transform(input, locale="de")
 
-transform('Il a dit "bonjour".', locale="fr")
-# → Il a dit «\\u202fbonjour\\u202f».
+# mode "markdown" requires an explicit dialect; "text" and "html" ignore it
+transform(input, locale="fr", mode="markdown", dialect="commonmark")
 
-transform("1914-1918", locale="en-US", rules={"dashes": False})
+transform(input, locale="en-US", rules={"dashes": False})
 
 try:
-    transform("x", locale="xx")
+    transform(input, locale="xx")
 except PolytypoError as error:
     error.code  # "POLYTYPO_UNKNOWN_LOCALE\"""",
     ),
@@ -151,15 +155,14 @@ except PolytypoError as error:
 package main
 
 import (
+    "errors"
     "fmt"
+
     "github.com/polytypo/polytypo-go"
 )
 
 func main() {
-    out, err := polytypo.Transform(
-        `Is this "polytypo"? - No, it's "polytypo"!`,
-        polytypo.Options{Locale: "de"},
-    )
+    out, err := polytypo.Transform(input, polytypo.Options{Locale: "de"})
     if err != nil {
         var perr *polytypo.Error
         if errors.As(err, &perr) {
@@ -167,7 +170,13 @@ func main() {
         }
     }
     fmt.Println(out)
-    // Ist das „polytypo“? – Nein, das ist „polytypo“!
+
+    // Mode "markdown" requires an explicit Dialect; "text" and "html" ignore it
+    _, _ = polytypo.Transform(input, polytypo.Options{
+        Locale:  "fr",
+        Mode:    "markdown",
+        Dialect: "commonmark",
+    })
 }""",
     ),
     (
@@ -177,16 +186,15 @@ func main() {
         """# gem install polytypo
 require "polytypo"
 
-Polytypo.transform(%q{Is this "polytypo"? - No, it's "polytypo"!}, locale: "de")
-# => "Ist das „polytypo“? – Nein, das ist „polytypo“!"
+output = Polytypo.transform(input, locale: "de")
 
-Polytypo.transform('Il a dit "bonjour".', locale: "fr")
-# => "Il a dit «\\u202fbonjour\\u202f»."
+# mode "markdown" requires an explicit dialect; "text" and "html" ignore it
+Polytypo.transform(input, locale: "fr", mode: "markdown", dialect: "commonmark")
 
-Polytypo.transform("1914-1918", locale: "en-US", rules: { dashes: false })
+Polytypo.transform(input, locale: "en-US", rules: { dashes: false })
 
 begin
-  Polytypo.transform("x", locale: "xx")
+  Polytypo.transform(input, locale: "xx")
 rescue Polytypo::Error => error
   error.code # => "POLYTYPO_UNKNOWN_LOCALE"
 end""",
@@ -200,14 +208,13 @@ end""",
 use Polytypo\\Polytypo;
 use Polytypo\\PolytypoException;
 
-Polytypo::transform('Is this "polytypo"? - No, it\\'s "polytypo"!', ['locale' => 'de']);
-// → Ist das „polytypo“? – Nein, das ist „polytypo“!
+$output = Polytypo::transform($input, ['locale' => 'de']);
 
-Polytypo::transform('Il a dit "bonjour".', ['locale' => 'fr']);
-// → Il a dit «\\u{202f}bonjour\\u{202f}».
+// mode 'markdown' requires an explicit dialect; 'text' and 'html' ignore it
+Polytypo::transform($input, ['locale' => 'fr', 'mode' => 'markdown', 'dialect' => 'commonmark']);
 
 try {
-    Polytypo::transform('x', ['locale' => 'xx']);
+    Polytypo::transform($input, ['locale' => 'xx']);
 } catch (PolytypoException $error) {
     $error->errorCode; // 'POLYTYPO_UNKNOWN_LOCALE'
 }""",
@@ -267,10 +274,15 @@ def number_lines(line_htmls):
     return "\n".join(f'<span class="ln">{html}</span>' for html in line_htmls)
 
 
-def specimen(numbered_html, extra_class=""):
-    """A prose before/after example, presented on the same ground as a code sample."""
+def specimen(marked_html, extra_class=""):
+    """A prose before/after example. Deliberately NOT a code panel and deliberately without a
+    line-number gutter: a specimen is set in the page's reading face because that is the only way
+    it can do its job. In a fixed-width face `“ ” „ « »` all take the same advance and lose their
+    shapes, `—` and `–` become near-identical, and U+202F — whose entire point is being narrower
+    than U+00A0 — is invisible. The change marks and revealed invisible characters carry over from
+    the code-panel treatment; the face and the gutter do not."""
     cls = f"specimen {extra_class}".rstrip()
-    return f'<div class="{cls}"><code>{numbered_html}</code></div>'
+    return f'<div class="{cls}">{marked_html}</div>'
 
 
 def highlight_lines(code, comment_token):
@@ -303,26 +315,17 @@ def highlight(code, comment_token):
 
 def diff_html(a, b):
     """Highlight the output only — the input column is shown exactly as it was typed. Both sides
-    come back as numbered line spans, ready to drop into a code panel.
-
-    Chunks are cut at newlines BEFORE reveal() runs, so a highlighted span can never straddle a
-    line boundary — the same split site.js's paintLines() makes, so a specimen rendered here and
-    the playground's live output are built the same way rather than two ways that agree by luck."""
+    come back as one flat marked-up run, for a specimen rather than a code panel: without a gutter
+    there are no line boxes to keep a span inside, so a changed region spanning a newline stays one
+    span and `white-space: pre-wrap` on `.specimen` renders the break."""
     sm = difflib.SequenceMatcher(None, a, b, autojunk=False)
-    right = [[]]
+    right = []
     for tag, _i1, _i2, j1, j2 in sm.get_opcodes():
         if j1 == j2:
             continue
-        for i, part in enumerate(b[j1:j2].split("\n")):
-            if i:
-                right.append([])
-            if part:
-                chunk = reveal(part)
-                right[-1].append(chunk if tag == "equal" else f'<span class="chg">{chunk}</span>')
-    return (
-        number_lines(reveal(line) for line in a.split("\n")),
-        number_lines("".join(line) for line in right),
-    )
+        chunk = reveal(b[j1:j2])
+        right.append(chunk if tag == "equal" else f'<span class="chg">{chunk}</span>')
+    return reveal(a), "".join(right)
 
 
 def rules_table(data):
@@ -645,8 +648,7 @@ def build_playground_script(data, prefix, lazy):
 const DATA = {payload};
 (function playground() {{
   const {{
-    markLines, diff, paintLines, highlightLines, bootTabs, summarizeChange, summarizeError,
-    copyStatusText,
+    mark, diff, paint, highlightLines, bootTabs, summarizeChange, summarizeError, copyStatusText,
   }} = window.Polytypo;
   const LAZY = {lazy_literal};
   const ENGINE_SRC = "{engine_src}";
@@ -820,10 +822,10 @@ const DATA = {payload};
   function paintPair(before, after) {{
     if (before.length <= DIFF_CAP) {{
       const segments = diff([...before], [...after]);
-      $output.innerHTML = paintLines(segments);
+      $output.innerHTML = paint(segments);
       return summarizeChange(before, after, segments);
     }}
-    $output.innerHTML = markLines(after);
+    $output.innerHTML = mark(after);
     return before.length.toLocaleString("en-US") +
       " chars — change-highlighting skipped above " + DIFF_CAP.toLocaleString("en-US") + " chars";
   }}

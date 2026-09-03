@@ -108,29 +108,6 @@ window.Polytypo = (function () {
     return lineHtmls.map((html) => '<span class="ln">' + html + "</span>").join("\n");
   }
 
-  /** mark(), split into numbered lines — the diff-skipped path's code-panel form. */
-  function markLines(text) {
-    return numberLines(text.split("\n").map(mark));
-  }
-
-  /**
-   * paint(), split into numbered lines. Segments are cut at newlines FIRST so a highlighted span
-   * can never straddle a line boundary; each line is then painted by paint() itself, so the
-   * escaping and wrapper-class rules are exactly the ones hostile-output.test.ts already pins
-   * down rather than a second implementation of them.
-   */
-  function paintLines(segments) {
-    const lines = [[]];
-    for (const [changed, text] of segments) {
-      const parts = text.split("\n");
-      for (let i = 0; i < parts.length; i++) {
-        if (i > 0) lines.push([]);
-        if (parts[i]) lines[lines.length - 1].push([changed, parts[i]]);
-      }
-    }
-    return numberLines(lines.map(paint));
-  }
-
   /**
    * The playground's `#pg-foot` status line, factored out so it's testable without parsing
    * generated page source. `segments` is diff(a, b)'s OUTPUT-only representation — it has no
@@ -209,10 +186,8 @@ window.Polytypo = (function () {
   return {
     esc,
     mark,
-    markLines,
     diff,
     paint,
-    paintLines,
     describeChange,
     highlight,
     highlightLines,

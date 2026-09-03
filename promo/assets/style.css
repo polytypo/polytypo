@@ -15,22 +15,22 @@
   --surface: #f2f0ea;
   --surface-strong: #e9e6df;
 
-  /* Code surface. Every example block on this site — real code samples AND prose specimens —
-     sits on a dark ground in both themes, so everything drawn on it is theme-independent and
-     lives here rather than in the four theme blocks. Only --code-bg and --code-line vary, and
-     they vary to stay distinguishable from the page: a dark panel on the light page, a deeper
-     well on the dark one (where --surface, #181b20, is what the cards around them use). */
+  /* Code surface. A CODE block — and only a code block — sits on a dark ground in both themes,
+     so everything drawn on it is theme-independent and lives here rather than in the four theme
+     blocks. Only --code-bg and --code-line vary, and they vary to stay distinguishable from the
+     page: a dark panel on the light page, a deeper well on the dark one (where --surface,
+     #181b20, is what the cards around them use).
+
+     A prose specimen is NOT drawn from these. It is set in the page's own reading face on the
+     page's own ground, because a fixed-width face is exactly where `“ ” „ « »` lose their shapes,
+     `—` and `–` stop differing, and U+202F stops being visibly narrow — the three things a
+     specimen exists to show. */
   --code-bg: #15181d;
   --code-fg: #e9e7e2;
   --code-line: rgb(255 255 255 / 12%);
   --code-gutter: #7d848e;
-  --code-dim: #98a0aa;
   --tok-string: #8fc79a;
   --tok-comment: #8b939d;
-  /* The brand accent lightened for the dark ground: #d64027 on #15181d is 3.6:1, below the 4.5:1
-     an underline-and-glyph mark needs to stay readable. Derived from the palette, not a new
-     colour in it. */
-  --code-accent: color-mix(in srgb, var(--color-accent) 78%, white);
 
   /* Line-number gutter. --ln-pad is the panel's own left inset, re-declared per panel type;
      --ln-total re-computes from it wherever it is used, so one geometry serves both. */
@@ -452,22 +452,35 @@ section {
   font-size: 11.5px;
 }
 
-/* Every change mark now sits on the code ground, in both themes, so these no longer need a
-   per-theme variant — the previous light-theme values (16%/22%, tuned for the light --surface)
-   are simply wrong against it and are gone rather than kept as a dead branch. */
+/* Change marks and revealed invisible characters. These appear only in prose specimens and in the
+   playground's output pane — never in a code panel, since highlight() emits token classes only —
+   so they are tuned for the page's own ground and need the per-theme pair back: the 30%/38% wash
+   is right on a dark page and too loud on the light one. */
 .chg {
   border-radius: 3px;
+  background: rgb(214 64 39 / 16%);
+  box-shadow: 0 0 0 1px rgb(214 64 39 / 22%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .chg {
+    background: rgb(214 64 39 / 30%);
+    box-shadow: 0 0 0 1px rgb(214 64 39 / 38%);
+  }
+}
+
+:root[data-theme="dark"] .chg {
   background: rgb(214 64 39 / 30%);
   box-shadow: 0 0 0 1px rgb(214 64 39 / 38%);
 }
 
 .nb {
-  border-bottom: 2px solid var(--code-accent);
-  color: var(--code-accent);
+  border-bottom: 2px solid var(--color-accent);
+  color: var(--color-accent);
 }
 
 .bound {
-  border-bottom: 2px dotted var(--code-accent);
+  border-bottom: 2px dotted var(--color-accent);
 }
 
 /* ---------- card grids ---------- */
@@ -508,15 +521,19 @@ section {
   margin-top: var(--space-3);
 }
 
-/* Both halves of a card's before/after pair are code panels at the same size, so the input is
-   dimmed instead — that is what still distinguishes "what was typed" from "what the engine set"
-   now that the two no longer differ in typeface or scale. */
+/* The two halves of a card's before/after pair differ in typeface and scale, and that is the whole
+   argument: "what was typed" is raw source, so it is small, grey and monospaced; "what the engine
+   set" is typography, so it is set in the reading face at a size where a quote glyph has a shape. */
 .card .in {
-  color: var(--code-dim);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.7;
 }
 
 .card .out {
-  color: var(--code-fg);
+  font-size: 16px;
+  line-height: 1.55;
 }
 
 /* ---------- tables ---------- */
@@ -561,17 +578,21 @@ td.mono,
   white-space: nowrap;
 }
 
-/* The rules table's In/Out cells hold a code panel each, so the cell itself only has to give it
-   room — everything visual comes from .specimen. min-width keeps a one-word specimen from being
-   squeezed to the width of its own gutter by table auto-layout. */
+/* Same split as a card's pair: the In cell is raw source, the Out cell is typography. min-width
+   keeps a short specimen from being squeezed to its own longest word by table auto-layout. */
 .rule-in,
 .rule-out {
   min-width: 20ch;
-  padding-right: var(--space-3);
 }
 
-.rule-in .specimen {
-  color: var(--code-dim);
+.rule-in {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.rule-out {
+  font-size: 16px;
 }
 
 .kv {
@@ -636,30 +657,17 @@ pre > code {
   padding-left: var(--ln-total);
 }
 
-/* A prose specimen — a before/after example — presented on the same ground as a code sample.
-   Deliberately not a <pre>: specimen text is prose and has to wrap, where a code sample must
-   not (it scrolls instead). Everything else about the two is shared. */
+/* A prose specimen — a before/after example. No ground, no border, no gutter and no monospace: it
+   inherits the face and colour of whatever card or table cell holds it, and those are the page's
+   own. The only thing it declares is how the text has to behave.
+
+   pre-wrap, not the surrounding prose's collapsing whitespace: a specimen for the `spaces` rule
+   is about repeated spaces, and collapsing them hides the very thing it demonstrates. It also
+   keeps a multi-line example's line breaks, which is what the removed line spans used to do.
+
+   overflow-wrap:anywhere, so a long unbroken run wraps inside the card instead of widening it and
+   pushing the page into a horizontal scroll. */
 .specimen {
-  --ln-pad: var(--space-3);
-
-  overflow-x: auto;
-  padding: var(--space-3) var(--space-4) var(--space-3) 0;
-  border: 1px solid var(--code-line);
-  border-radius: 8px;
-  background: var(--code-bg);
-  color: var(--code-fg);
-  counter-reset: ln;
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  line-height: 1.75;
-}
-
-.specimen > code {
-  display: block;
-  padding-left: var(--ln-total);
-  font-size: inherit;
-  /* pre-wrap, not the surrounding prose's collapsing whitespace: a specimen for the `spaces`
-     rule is about repeated spaces, and collapsing them hides the very thing it demonstrates. */
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -668,8 +676,8 @@ pre > code {
    unselectable, so it is not a text node and does not reach the clipboard: selecting a block
    and copying yields the text alone. The negative margin pulls the number back into the panel's
    left inset — which is why the inset lives on the code element as padding rather than on the
-   panel — so a wrapped specimen line aligns under its own first character, not under the
-   gutter. `sticky` keeps the number in view while a wide code sample scrolls sideways. */
+   panel — so a wrapped line aligns under its own first character, not under the gutter.
+   `sticky` keeps the number in view while a wide code sample scrolls sideways. */
 .ln::before {
   counter-increment: ln;
   content: counter(ln);
@@ -796,29 +804,31 @@ textarea.pg-textarea:focus-visible {
   box-shadow: 0 0 0 3px rgb(214 64 39 / 14%);
 }
 
-/* Same code panel as .specimen, but declared here rather than shared: the script writes innerHTML
-   straight into this element, so there is no inner <code> to carry the gutter inset. */
-.pg-output {
-  --ln-pad: var(--space-3);
+/* The typeset result. This is the largest text on the site on purpose: it is the one place a
+   visitor comes specifically to see what the engine did to a quote glyph, a dash and a narrow
+   space, and none of those survive being set at code size in a fixed-width face. The size lived on
+   `.split .txt.set` before and is declared here now — that selector had exactly one user, this
+   element, so the indirection is not worth restoring with it.
 
+   margin-top matches textarea.pg-textarea's, so the two panes of the split start on the same line.
+   pre-wrap keeps the input's own line breaks and repeated spaces; overflow-wrap keeps a long
+   unbroken run from widening the pane. */
+.pg-output {
   margin-top: var(--space-4);
-  overflow-x: auto;
-  padding: var(--space-4) var(--space-4) var(--space-4) var(--ln-total);
-  border: 1px solid var(--code-line);
-  border-radius: 8px;
-  background: var(--code-bg);
-  color: var(--code-fg);
-  counter-reset: ln;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
-  font-family: var(--font-mono);
-  font-size: 14px;
-  line-height: 1.7;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
+/* An error is a machine code and an English message — code, not a specimen — so it drops out of
+   the display setting above rather than being shown at 22px. */
 .pg-output.error {
-  color: var(--code-accent);
+  color: var(--color-accent);
+  font-family: var(--font-mono);
   font-size: 13px;
+  font-weight: 400;
   line-height: 1.6;
 }
 
@@ -979,5 +989,10 @@ footer a:hover {
 
   section {
     padding-top: 56px;
+  }
+
+  /* Still the largest text on the page, but 22px starts forcing awkward breaks in a 320px column. */
+  .pg-output {
+    font-size: 19px;
   }
 }

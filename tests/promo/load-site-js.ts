@@ -18,10 +18,8 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..")
 export interface PolytypoSiteJs {
   esc: (s: string) => string;
   mark: (s: string) => string;
-  markLines: (s: string) => string;
   diff: (a: string[], b: string[]) => Array<[boolean, string]>;
   paint: (segments: Array<[boolean, string]>) => string;
-  paintLines: (segments: Array<[boolean, string]>) => string;
   describeChange: (text: string) => string | undefined;
   highlight: (code: string, commentToken: string) => string;
   highlightLines: (code: string, commentToken: string) => string;
