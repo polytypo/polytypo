@@ -148,7 +148,6 @@ jobs:
           npm run generate:all
           git diff --exit-code -- \
             README.md \
-            docs/ports \
             promo/examples.json \
             promo/index.html \
             promo/docs/index.html \

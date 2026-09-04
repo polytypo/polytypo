@@ -89,7 +89,7 @@
   },
   "scripts": {
     "gen": "node scripts/gen-locales.mjs",
-    "gen:docs": "npm run gen && npx tsx brand/tools/gen_examples.ts && python3 brand/tools/gen_readmes.py && python3 brand/tools/build_promo.py",
+    "gen:docs": "npm run gen && npx tsx brand/tools/gen_examples.ts && prettier --write promo/examples.json && python3 brand/tools/gen_readmes.py && python3 brand/tools/build_promo.py",
     "gen:promo-bundle": "npm run gen && esbuild src/index.ts --bundle --format=iife --global-name=PolytypoBrowser --platform=browser --outfile=promo/vendor/polytypo.browser.js --minify",
     "gen:brandbook": "python3 brand/tools/build_brandbook.py",
     "generate:all": "npm run gen:docs && npm run gen:promo-bundle && npm run gen:brandbook",

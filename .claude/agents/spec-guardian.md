@@ -133,7 +133,7 @@ once since M0 (`el` added) — expect it to grow again.
 
 ### Generated public artifacts
 
-`README.md`, `docs/ports/README.*.md`, `promo/examples.json` and `promo/index.html` are generated
+`README.md`, `promo/examples.json` and `promo/index.html` are generated
 from `spec/` and from live engine output (`brand/tools/gen_readmes.py`, `gen_examples.ts`,
 `build_promo.py`; see `brand/README.md` "Regenerating"). A spec or locale change that lands without
 these being regenerated → `BLOCK`. Check by running the generators and diffing; if the generators

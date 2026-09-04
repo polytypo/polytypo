@@ -49,7 +49,7 @@ node brand/tools/render.mjs           # PNG exports + social card
 npm run gen:brandbook                 # BRANDBOOK.html — also part of `npm run generate:all`
 npx tsx brand/tools/gen_examples.ts   # promo/examples.json, straight from the engine
 python3 brand/tools/build_promo.py    # promo/index.html and the other four promo pages
-python3 brand/tools/gen_readmes.py    # README.md + docs/ports/README.*.md
+python3 brand/tools/gen_readmes.py    # README.md
 ```
 
 Fonts (Inter, JetBrains Mono — both SIL OFL 1.1) are fetched from one immutable, checksum-verified

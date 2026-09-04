@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
-"""Deterministic test for js_status_and_install() and js_metadata_line() in gen_readmes.py (Stage
-6 follow-up review, item 3; corrected first in the versioning-corrections pass that removed the
-false npm-publication inference, then in the final wording pass that made the real-version
-metadata line registry-state-neutral instead of asserting "not yet on npm" — a claim that is true
-before `npm publish` and permanently false, inside an immutable tarball, the moment after). Proves
-both the placeholder-version rendering and a representative real-version rendering, without ever
-touching the real package.json — both functions are pure functions of their arguments, so every
-case is exercised by calling them directly with literal arguments, and without any network access.
+"""Tests for gen_readmes.py — the repository's own README.md, generated from spec/ and
+promo/examples.json. This generator names no runtime, no registry, and no install command: each
+runtime gets its own repository, added one at a time as it actually exists (see the module
+docstring in gen_readmes.py). These tests exist mainly to lock that property in, plus basic
+correctness for the shared table-building helpers.
 
 Run:
     python3 brand/tools/test_gen_readmes.py
@@ -19,255 +16,111 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import gen_readmes  # noqa: E402
 
-# build_promo defines CODE (and its own hard-coded "npm — not yet published" status string) as
-# module-level state evaluated at import time, exactly like gen_readmes — imported directly, not
-# re-parsed, so the no-contradiction check compares the real generator output on both sides.
-import build_promo  # noqa: E402
-
-# Every phrase asserting either presence OR absence in the npm registry — a real-version README
-# must contain none of them, case-insensitively, since Markdown bolding/casing must not be able to
-# dodge the check. Order matters for substring containment below: "not yet published" and
-# "not yet on npm" must be checked before their shorter substrings ("published", "on npm") would
-# otherwise already have matched, so this list is checked as whole phrases, not via the shorter
-# entries' accidental containment.
-_REGISTRY_STATE_CLAIMS = [
+# Case-insensitive substrings that would assert something about a package/registry/install state
+# this repository does not control and today has none of. If any of these ever appear in the
+# generated README again, that is a regression back to writing about what doesn't exist.
+_FORBIDDEN_MENTIONS = [
+    "npm",
+    "pypi",
+    "packagist",
+    "rubygems",
+    "go modules",
+    "go get",
+    "pip install",
+    "gem install",
+    "composer require",
     "not yet published",
-    "not yet on npm",
-    "released",
-    "published",
-    "on npm",
+    "coming soon",
+    "planned, not yet started",
+    "## runtimes",
 ]
 
 
-def _assert_registry_state_neutral(testcase, text):
-    lowered = text.lower()
-    for claim in _REGISTRY_STATE_CLAIMS:
-        testcase.assertNotIn(claim, lowered, f'registry-state claim "{claim}" must not appear: {text!r}')
+class HeroBlockTest(unittest.TestCase):
+    def test_renders_the_input_once_as_a_blockquote(self):
+        block = gen_readmes.hero_block()
+        self.assertIn("**Input**", block)
+        self.assertIn(f"> {gen_readmes.HERO['en-US']['hero']['in']}", block)
+        # The input string must appear exactly once — it is not repeated per locale row.
+        self.assertEqual(block.count(gen_readmes.HERO["en-US"]["hero"]["in"]), 1)
+
+    def test_renders_one_table_row_per_registry_locale_in_registry_order(self):
+        block = gen_readmes.hero_block()
+        lines = [l for l in block.splitlines() if l.startswith("| `")]
+        codes = [l.split("`")[1] for l in lines]
+        self.assertEqual(codes, gen_readmes.REGISTRY["locales"])
+
+    def test_every_row_shows_that_locales_own_real_output(self):
+        block = gen_readmes.hero_block()
+        for code in gen_readmes.REGISTRY["locales"]:
+            self.assertIn(gen_readmes.HERO[code]["hero"]["out"], block)
 
 
-class JsStatusAndInstallTest(unittest.TestCase):
-    def test_placeholder_version_is_honestly_unpublished(self):
-        status, install = gen_readmes.js_status_and_install("0.0.0", "ten")
-        self.assertIn("not yet published", status)
-        self.assertNotIn("Status: released", status)
-        self.assertIn("has not been published to npm yet", install)
-        self.assertIn("npm install polytypo", install)  # still shown, as the *future* step
+class LocaleTableTest(unittest.TestCase):
+    def test_has_one_row_per_registry_locale(self):
+        table = gen_readmes.locale_table()
+        for code in gen_readmes.REGISTRY["locales"]:
+            self.assertIn(f"| `{code}` |", table)
 
-    def test_placeholder_version_does_not_claim_the_name_is_reserved(self):
-        # A registry 404 only proves the name is currently unclaimed, not that it is reserved for
-        # this project — nothing prevents someone else from publishing it first. "reserved" is a
-        # stronger claim than a 404 supports.
-        _, install = gen_readmes.js_status_and_install("0.0.0", "ten")
-        self.assertNotIn("reserved", install)
-
-    def test_placeholder_version_points_clone_at_canonical_repository(self):
-        _, install = gen_readmes.js_status_and_install("0.0.0", "ten")
-        self.assertIn("git clone https://github.com/polytypo/polytypo ", install)
-        self.assertNotIn("polytypo-js", install)
-
-    def test_real_version_is_described_as_stable_release_ready(self):
-        status, _ = gen_readmes.js_status_and_install("1.0.0", "ten")
-        self.assertIn("stable", status.lower())
-
-    def test_real_version_status_and_install_are_registry_state_neutral(self):
-        for version in ["1.0.0", "2.3.4", "0.0.1"]:
-            status, install = gen_readmes.js_status_and_install(version, "ten")
-            _assert_registry_state_neutral(self, status)
-            _assert_registry_state_neutral(self, install)
-
-    def test_real_version_does_not_falsely_claim_the_placeholder(self):
-        status, install = gen_readmes.js_status_and_install("1.0.0", "ten")
-        self.assertNotIn("0.0.0", status)
-        self.assertNotIn("0.0.0", install)
-
-    def test_real_version_exposes_the_real_package_version_in_status(self):
-        status, _ = gen_readmes.js_status_and_install("1.0.0", "ten")
-        self.assertIn("1.0.0", status)
-        status2, _ = gen_readmes.js_status_and_install("2.3.4", "ten")
-        self.assertIn("2.3.4", status2)
-
-    def test_real_version_has_no_clone_requirement(self):
-        _, install = gen_readmes.js_status_and_install("0.1.0", "ten")
-        self.assertNotIn("git clone", install)
-        self.assertNotIn("has not been published", install)
-
-    def test_real_version_install_is_the_normal_npm_install(self):
-        _, install = gen_readmes.js_status_and_install("0.1.0", "ten")
-        self.assertEqual(install, "```bash\nnpm install polytypo\n```")
-
-    def test_mode_sentence_reflects_the_given_locale_count_word_in_both_states(self):
-        placeholder_status, _ = gen_readmes.js_status_and_install("0.0.0", "seven")
-        real_status, _ = gen_readmes.js_status_and_install("1.0.0", "seven")
-        self.assertIn("seven locales", placeholder_status)
-        self.assertIn("seven locales", real_status)
-
-    def test_does_not_mutate_the_real_package_json(self):
-        # js_status_and_install() takes version as a parameter; this test only ever passes
-        # literals, so nothing here can touch the checked-out package.json regardless of order.
-        real_version = gen_readmes.PACKAGE_VERSION
-        gen_readmes.js_status_and_install("9.9.9", "ten")
-        self.assertEqual(gen_readmes.PACKAGE_VERSION, real_version)
+    def test_states_alias_resolution(self):
+        table = gen_readmes.locale_table()
+        for alias, target in gen_readmes.REGISTRY["aliases"].items():
+            self.assertIn(f"`{alias}` → `{target}`", table)
 
 
-class JsMetadataLineTest(unittest.TestCase):
-    """js_metadata_line() builds the one line that states spec/package version, locale, and rule
-    counts for JS's own README section — the exact text that changed in the final wording
-    correction, from a binary "on npm."/"not yet on npm." claim to a registry-state-neutral one
-    for a real version."""
-
-    def test_placeholder_version_keeps_the_not_yet_on_npm_wording(self):
-        # This branch is never packed as a real release candidate, so its honest negative claim
-        # carries no future-tarball risk and may state it plainly, unchanged from before.
-        line = gen_readmes.js_metadata_line("0.0.0", "1.0.0", 10, 9)
-        self.assertIn("not yet on npm", line)
-        self.assertIn("Spec version: **1.0.0**", line)
-
-    def test_real_version_is_registry_state_neutral(self):
-        line = gen_readmes.js_metadata_line("1.0.0", "1.0.0", 10, 9)
-        _assert_registry_state_neutral(self, line)
-
-    def test_real_version_states_both_spec_version_and_package_version(self):
-        line = gen_readmes.js_metadata_line("1.0.0", "1.0.0", 10, 9)
-        self.assertIn("Spec version: **1.0.0**", line)
-        self.assertIn("package version: **1.0.0**", line)
-
-    def test_real_version_with_diverging_spec_and_package_versions_states_both_correctly(self):
-        # Spec version and package version are independent identifiers (docs/ARCHITECTURE.md
-        # section 3.1) — this line must never conflate them even when they happen to be equal.
-        line = gen_readmes.js_metadata_line("1.4.0", "1.2.0", 10, 9)
-        self.assertIn("Spec version: **1.2.0**", line)
-        self.assertIn("package version: **1.4.0**", line)
-        _assert_registry_state_neutral(self, line)
-
-    def test_real_version_states_locale_and_rule_counts(self):
-        line = gen_readmes.js_metadata_line("1.0.0", "1.0.0", 10, 9)
-        self.assertIn("locales: **10**", line)
-        self.assertIn("rules: **9**", line)
-
-    def test_does_not_mutate_real_module_state(self):
-        real_line = gen_readmes._JS_METADATA_LINE
-        gen_readmes.js_metadata_line("9.9.9", "9.9.9", 1, 1)
-        self.assertEqual(gen_readmes._JS_METADATA_LINE, real_line)
+class RulesTableTest(unittest.TestCase):
+    def test_has_one_row_per_spec_rule_in_order(self):
+        table = gen_readmes.rules_table()
+        rows = [l for l in table.splitlines() if l.startswith("| ") and "Order" not in l and "---" not in l]
+        ids = [r.split("`")[1] for r in rows]
+        self.assertEqual(ids, [r["id"] for r in gen_readmes.ORDER["rules"]])
 
 
-class JsAndPromoRegistryClaimsTest(unittest.TestCase):
-    """Both surfaces make no registry-state claim at all: README's metadata line is neutral (see
-    below), and promo's code panel (build_promo.CODE) carries only the call itself — no install
-    command, no "planned"/"coming soon" status — so there is nothing on either side for the other
-    to contradict, before or after a real npm publish. Checked against the real, current
-    PACKAGE_VERSION (non-placeholder) and the real CODE tuples, so this proves the actual generated
-    README and promo panel, not just a literal function call."""
+class ExamplesTableTest(unittest.TestCase):
+    def test_plain_table_has_no_nbsp_marker_or_note(self):
+        table = gen_readmes.examples_table("en-US", mark_invisible=False)
+        self.assertNotIn("⍽", table)
+        self.assertNotIn("NO-BREAK SPACE", table)
 
-    def test_real_generated_readme_metadata_line_is_registry_state_neutral(self):
-        self.assertNotEqual(gen_readmes.PACKAGE_VERSION, gen_readmes.PLACEHOLDER_VERSION)
-        _assert_registry_state_neutral(self, gen_readmes.LANGS["js"]["metadata_line"])
-        _assert_registry_state_neutral(self, gen_readmes.LANGS["js"]["status"])
-
-    def test_promo_code_panel_makes_no_install_or_registry_claim_for_any_language(self):
-        for label, _comment_token, code in build_promo.CODE:
-            for term in ("install", "coming soon", "planned", "pypi", "packagist", "rubygems"):
-                self.assertNotIn(
-                    term, code.lower(), f"{label}'s code panel should not mention {term!r}: {code!r}"
-                )
-
-    def test_readmes_silence_never_contradicts_promos_silence(self):
-        # Neither surface asserts a registry state, so neither can contradict the other.
-        metadata_line = gen_readmes.LANGS["js"]["metadata_line"]
-        js_row = next(row for row in build_promo.CODE if row[0] == "JavaScript / TypeScript")
-        _assert_registry_state_neutral(self, metadata_line)
-        _assert_registry_state_neutral(self, js_row[2])  # the code itself
+    def test_marked_table_replaces_spaces_with_the_visible_placeholder_and_adds_the_note(self):
+        table = gen_readmes.examples_table("en-US", mark_invisible=True)
+        self.assertIn("⍽", table)
+        self.assertIn("U+00A0 NO-BREAK SPACE", table)
 
 
-class JsSubpathEntryPointsTest(unittest.TestCase):
-    """Stage 10 correction pass 2: README.md must document all four published entry points, not
-    only the aggregate one. Reads gen_readmes.LANGS["js"]["extra"] directly — the same string
-    build() writes into README.md — so a regression here means a regression in the real file."""
+class RootReadmeContentTest(unittest.TestCase):
+    """Renders the real template with the real data (no file I/O) and checks the actual generated
+    text, not just the building blocks in isolation."""
 
     def setUp(self):
-        self.extra = gen_readmes.LANGS["js"]["extra"]
+        self.body = gen_readmes.TEMPLATE.format(
+            logo="brand/logo/polytypo-lockup-stacked.svg",
+            spec_version=gen_readmes.SPEC_VERSION,
+            n_locales=len(gen_readmes.REGISTRY["locales"]),
+            n_rules=len(gen_readmes.ORDER["rules"]),
+            hero=gen_readmes.hero_block(),
+            locales=gen_readmes.locale_table(),
+            rules=gen_readmes.rules_table(),
+            examples=gen_readmes.examples_table("en-US", mark_invisible=True),
+            modes=gen_readmes.MODES,
+        )
 
-    def test_documents_all_four_entry_points(self):
-        for path in ['"polytypo"', '"polytypo/text"', '"polytypo/html"', '"polytypo/markdown"']:
-            self.assertIn(path, self.extra, f"missing import example for {path}")
+    def test_title_names_no_runtime(self):
+        self.assertIn("<h1 align=\"center\">polytypo</h1>", self.body)
 
-    def test_states_every_subpath_ships_esm_cjs_and_typescript_declarations(self):
-        self.assertIn("ESM, CommonJS, and their own TypeScript", self.extra)
+    def test_mentions_no_package_registry_install_command_or_runtime_status(self):
+        lowered = self.body.lower()
+        for term in _FORBIDDEN_MENTIONS:
+            self.assertNotIn(term, lowered, f'forbidden mention "{term}" found in generated README')
 
-    def test_mode_specific_entries_do_not_imply_a_still_needed_mode_argument(self):
-        # The whole point of a fixed-mode entry point is that `mode` is not a parameter at all —
-        # the doc must say so explicitly, not just show an example that happens to omit it.
-        self.assertIn("`mode` is not a parameter of `TextOptions` or `HtmlOptions`", self.extra)
-        self.assertIn("POLYTYPO_INVALID_MODE", self.extra)
+    def test_modes_table_names_no_runtime_either(self):
+        self.assertNotIn("javascript", gen_readmes.MODES.lower())
+        self.assertIn("Implemented", gen_readmes.MODES)
 
-    def test_states_the_exact_three_way_runtime_mode_check_not_a_blanket_throw(self):
-        # assertFixedMode() (src/engine/assert-fixed-mode.ts) accepts an omitted mode, tolerates
-        # the entry's own fixed mode, and only throws on a genuinely conflicting one — the doc
-        # must not read as "supplying a runtime mode throws," which would be wrong for the
-        # tolerated case.
-        self.assertIn("omitting it is the normal case", self.extra)
-        self.assertIn("redundant but tolerated", self.extra)
-        self.assertIn("supplying any other mode throws", self.extra)
-
-    def test_markdown_entry_keeps_the_required_no_default_dialect_contract(self):
-        self.assertIn("`dialect` contract exactly: required, no default", self.extra)
-
-    def test_states_subpaths_narrow_reach_not_a_guaranteed_smaller_bundle_and_not_install_footprint(self):
-        # Reach is mechanically provable (check:entry-reach); a smaller resulting bundle depends
-        # on the consumer's own bundler and configuration and must not be stated categorically.
-        self.assertIn("narrows what a bundler can *reach*", self.extra)
-        self.assertIn("depends on your bundler and its\nconfiguration", self.extra)
-        self.assertNotIn("A subpath shrinks your bundle", self.extra)
-        self.assertIn("does **not** change what `npm install polytypo` puts", self.extra)
-
-
-class PortDialectApiTest(unittest.TestCase):
-    """Fails if `dialect` disappears from any planned port's own API section — the shared
-    ERRORS table (present on every language's page regardless) does not satisfy this; each
-    language's own `api` string must independently document it."""
-
-    PORTS = ["python", "go", "ruby", "php"]
-
-    def test_dialect_is_present_in_every_ports_own_api_section(self):
-        for lang in self.PORTS:
-            api = gen_readmes.LANGS[lang]["api"]
-            self.assertIn("dialect", api.lower(), f"{lang}: 'dialect' missing from its api section")
-            self.assertIn("commonmark", api.lower(), f"{lang}: no commonmark mention")
-            self.assertIn("mdx", api.lower(), f"{lang}: no mdx mention")
-
-    def test_every_port_has_a_markdown_call_example_and_a_missing_dialect_error_example(self):
-        for lang in self.PORTS:
-            api = gen_readmes.LANGS[lang]["api"]
-            self.assertIn(
-                "POLYTYPO_INVALID_DIALECT", api, f"{lang}: no missing-dialect error example"
-            )
-            self.assertIn("markdown", api.lower(), f"{lang}: no markdown-mode call example")
-
-    def test_every_port_states_dialect_is_required_with_no_default_for_markdown(self):
-        for lang in self.PORTS:
-            api = gen_readmes.LANGS[lang]["api"].lower()
-            self.assertIn("required", api, f"{lang}: does not state dialect is required")
-            self.assertTrue(
-                "not defaulted" in api or "no default" in api,
-                f"{lang}: does not state dialect has no default",
-            )
-
-    def test_every_port_states_dialect_detection_is_refused(self):
-        for lang in self.PORTS:
-            api = gen_readmes.LANGS[lang]["api"].lower()
-            self.assertIn(
-                "detection is refused", api, f"{lang}: does not state detection is refused"
-            )
-
-    def test_go_defines_an_explicit_dialect_type_rather_than_a_bare_string(self):
-        api = gen_readmes.LANGS["go"]["api"]
-        self.assertIn("type Dialect", api)
-        self.assertIn("DialectCommonMark", api)
-        self.assertIn("DialectMDX", api)
-
-    def test_no_port_claims_to_be_currently_installable(self):
-        for lang in self.PORTS:
-            self.assertFalse(gen_readmes.LANGS[lang]["on_registry"], f"{lang}: on_registry must stay False")
-            self.assertIn("not installable", gen_readmes.LANGS[lang]["install"].lower())
+    def test_states_the_real_spec_version_and_counts(self):
+        self.assertIn(f"Spec version: **{gen_readmes.SPEC_VERSION}**", self.body)
+        self.assertIn(f"locales: **{len(gen_readmes.REGISTRY['locales'])}**", self.body)
+        self.assertIn(f"rules: **{len(gen_readmes.ORDER['rules'])}**", self.body)
 
 
 if __name__ == "__main__":
