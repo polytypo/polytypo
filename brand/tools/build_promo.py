@@ -63,6 +63,23 @@ PAGES = [
 # the root resolves "docs/" directly; a page one directory down needs "../docs/".
 PAGE_PREFIXES = {"": "", **{slug: "../" for slug, _label, _body in PAGES if slug}}
 
+# brand/favicon/'s exact committed contents (brand/README.md documents this set); listed here
+# rather than globbed so an accidental extra file in that directory doesn't silently ship.
+FAVICON_FILES = [
+    "favicon.svg",
+    "favicon.ico",
+    "favicon-16.png",
+    "favicon-32.png",
+    "favicon-48.png",
+    "apple-touch-icon-180.png",
+]
+
+# Single source of truth for the canonical site origin — package.json's "homepage", not a second
+# hardcoded copy. Used only by sitemap.xml/robots.txt, which need an absolute URL; every in-page
+# link stays document-relative (see PAGE_PREFIXES's own comment on why).
+with open(os.path.join(REPO, "package.json"), encoding="utf-8") as f:
+    SITE_ORIGIN = json.load(f)["homepage"].rstrip("/")
+
 # Pages that embed the playground (brand/tools/promo/playground.partial.html, substituted into both
 # bodies via {{playground}}) and therefore need its script. The home page carries it so a first-time
 # visitor can try the engine before reading anything; /playground is the same component at full size.
@@ -97,22 +114,22 @@ RULE_ROWS = [
 
 SPACES_ROW = {"in": "Hello  ,   world !", "out": "Hello, world!"}
 
-# label, status, line-comment token (for syntax highlighting), code — the "Using it" tabs on Docs,
-# and the JS one doubles as the quickstart snippet on Home.
+# label, line-comment token (for syntax highlighting), code — the "Using it" tabs on Docs, and the
+# JS one doubles as the quickstart snippet on Home.
 #
-# A pane here shows the CALL and its settings, nothing else. No sample sentence is inlined into a
-# snippet and no `// →` comment states an output: the text is always referred to as `input`, the
-# same variable the playground's live call block uses. What the engine actually does to a sentence
-# is shown where it can be read as typography — the proof grid on Home, the per-locale cards on
-# /locales, the rules table on /docs — not in a fixed-width code block that flattens the very
-# glyphs the example is about.
+# A pane here shows the CALL and its settings, nothing else — no install command, no publish/
+# registry status, nothing about a package that does not exist yet: this project ships what exists
+# and says nothing about what doesn't, rather than pre-announcing a release. No sample sentence is
+# inlined into a snippet and no `// →` comment states an output: the text is always referred to as
+# `input`, the same variable the playground's live call block uses. What the engine actually does
+# to a sentence is shown where it can be read as typography — the proof grid on Home, the per-locale
+# cards on /locales, the rules table on /docs — not in a fixed-width code block that flattens the
+# very glyphs the example is about.
 CODE = [
     (
         "JavaScript / TypeScript",
-        "npm — not yet published",
         "//",
-        """// npm install polytypo
-import { transform } from "polytypo";
+        """import { transform } from "polytypo";
 
 const output = transform(input, { locale: "de" });
 
@@ -130,10 +147,8 @@ try {
     ),
     (
         "Python",
-        "PyPI — planned",
         "#",
-        """# pip install polytypo
-from polytypo import transform, PolytypoError
+        """from polytypo import transform, PolytypoError
 
 output = transform(input, locale="de")
 
@@ -149,10 +164,8 @@ except PolytypoError as error:
     ),
     (
         "Go",
-        "Go modules — planned",
         "//",
-        """// go get github.com/polytypo/polytypo-go
-package main
+        """package main
 
 import (
     "errors"
@@ -181,10 +194,8 @@ func main() {
     ),
     (
         "Ruby",
-        "RubyGems — planned",
         "#",
-        """# gem install polytypo
-require "polytypo"
+        """require "polytypo"
 
 output = Polytypo.transform(input, locale: "de")
 
@@ -201,10 +212,8 @@ end""",
     ),
     (
         "PHP",
-        "Packagist — planned",
         "//",
         """<?php
-// composer require polytypo/polytypo
 use Polytypo\\Polytypo;
 use Polytypo\\PolytypoException;
 
@@ -354,13 +363,14 @@ def rules_table(data):
 
 
 def code_panes():
+    # No repeated label heading here — the tab button above the pane already shows and highlights
+    # it (bootTabs sets the active tab's own text from data-label); build_panes() below never
+    # repeated it either. Only this one drifted, since Home used to also render this label
+    # standalone as its own quickstart heading — the drift point is gone along with that section.
     panes = []
-    for label, status, comment_token, code in CODE:
-        cls = "status live" if "not yet published" in status else "status"
+    for label, comment_token, code in CODE:
         panes.append(
             f'<div class="pane" data-label="{H.escape(label)}">'
-            f'<h3 style="margin:22px 0 0">{H.escape(label)}'
-            f'<span class="{cls}">{H.escape(status)}</span></h3>'
             f"<pre><code>{highlight_lines(code, comment_token)}</code></pre></div>"
         )
     return "".join(panes)
@@ -427,6 +437,18 @@ def locale_cards(data):
     return "".join(locale_card(loc) for loc in data["locales"])
 
 
+def proof_input(data):
+    """The one shared input every proof-grid card runs through transform() — rendered once, not
+    once per card, since PROOF_INPUT (gen_examples.ts) is by construction the identical literal
+    string behind every entry in data["proofLocales"]."""
+    by_locale = {loc["locale"]: loc for loc in data["locales"]}
+    text = by_locale[data["proofLocales"][0]]["proof"]["in"]
+    return (
+        '<p class="small muted" style="margin: 0 0 8px">Input, unchanged</p>'
+        f"{specimen(reveal(text), 'proof-shared-input')}"
+    )
+
+
 def proof_grid(data):
     """The home page's and manifesto's "not one universal style" evidence: the SAME input string
     (examples.json's generated `proof` field — one PROOF_INPUT run through every locale by the
@@ -434,53 +456,24 @@ def proof_grid(data):
     source of truth for this selection, also read directly by tests/promo/proof-grid.test.ts),
     same card markup as locale_card() so it fits the existing visual system without new CSS.
     Each card carries data-locale so a test can parse the ACTUAL generated HTML rather than
-    trust any independently-declared list of what should be there."""
+    trust any independently-declared list of what should be there.
+
+    Only the OUTPUT is shown per card — the shared input is proof_input()'s job, rendered once
+    above the grid, not repeated verbatim in every one of these narrow cards. diff_html still
+    computes against the input so the "chg" highlight marks survive; only the "before" half of
+    its return value is unused here."""
     by_locale = {loc["locale"]: loc for loc in data["locales"]}
     cards = []
     for code in data["proofLocales"]:
         loc = by_locale[code]
         case = loc["proof"]
-        before, after = diff_html(case["in"], case["out"])
+        _before, after = diff_html(case["in"], case["out"])
         cards.append(
             f'<div class="card" data-locale="{H.escape(code)}"><div class="lang">'
             f'{H.escape(loc["name"])} · {H.escape(code)}</div>'
-            f'<div class="pair">{specimen(before, "in")}{specimen(after, "out")}</div></div>'
+            f'<div class="pair pair--solo">{specimen(after, "out")}</div></div>'
         )
     return "".join(cards)
-
-
-def proof_legend(data):
-    """Always-visible (not hover-only) explanation of the invisible characters actually present
-    in the proof grid's rendered outputs — built from the real generated data so it can never
-    describe a character that isn't there. Order follows INVISIBLE's iteration (code point
-    order in that dict's own definition), so the legend is deterministic across builds."""
-    by_locale = {loc["locale"]: loc for loc in data["locales"]}
-    outputs = "".join(by_locale[code]["proof"]["out"] for code in data["proofLocales"])
-    present = [(ch, title) for ch, title in INVISIBLE.items() if ch in outputs]
-    if not present:
-        return ""
-    items = "".join(f"<li><span class=\"mono\">{H.escape(ch)}</span> — {H.escape(title)}</li>" for ch, title in present)
-    return (
-        '<div class="small muted proof-legend" style="max-width: 60ch">'
-        f"Invisible characters in these outputs (always shown here — tooltips above are an "
-        f"optional extra, not required to understand them):<ul>{items}</ul></div>"
-    )
-
-
-def status_table(data):
-    n = len(data["locales"])
-    rows = [
-        ("Spec — locale data, rule semantics, fixtures", f'{data["spec"]}, {n} locales, {RULE_COUNT} rules, in the repository'),
-        (
-            "JavaScript / TypeScript engine — <code>text</code>, <code>html</code>, <code>markdown</code> modes",
-            "Implemented, passing the conformance suite (spec/rules/modes.md)",
-        ),
-        ("npm package", "Not published yet — planned API only, no installable package"),
-        ("Python, Go, Ruby, PHP ports", "Planned APIs, no installable package for any of them. No port starts before the JS package clears its own dogfooding gate"),
-        ("CMS plugins, hosted API, CLI", "Not in v1, by decision"),
-    ]
-    body = "".join(f"<tr><td>{thing}</td><td>{state}</td></tr>" for thing, state in rows)
-    return f"<table><tr><th>Thing</th><th>State</th></tr>{body}</table>"
 
 
 NAV_LINKS = [("", "Home"), ("docs", "Docs"), ("playground", "Playground"), ("locales", "Locales")]
@@ -502,13 +495,18 @@ def nav_html(active_slug, prefix):
 
 
 def footer_html(data, prefix):
+    # No nested .wrap here: footer_html()'s output is placed inside build()'s own outer .wrap
+    # (see the f'<div class="wrap">...{footer_html(...)}...</div>' below), so a second .wrap
+    # around this content would apply that class's width-inset and bottom-padding rules twice —
+    # once from the page's wrap, once from this one — narrowing and right-shifting the footer
+    # relative to the content above it, and doubling the page's bottom whitespace.
     return (
-        "<footer><div class=\"wrap\"><p>"
+        "<footer><p>"
         f'polytypo · spec {data["spec"]} · MIT for the code, separate terms for the brand assets · '
         "every before/after typography example on this site is generated with the engine.</p>"
         f'<p><a href="{page_href(prefix, "manifesto")}">Manifesto</a></p>'
         '<p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p>'
-        "</div></footer>"
+        "</footer>"
     )
 
 
@@ -527,6 +525,13 @@ def build():
     os.makedirs(assets_dir, exist_ok=True)
     shutil.copyfile(os.path.join(PROMO_SRC, "style.css"), os.path.join(assets_dir, "style.css"))
     shutil.copyfile(os.path.join(PROMO_SRC, "site.js"), os.path.join(assets_dir, "site.js"))
+    # brand/favicon/ is a committed, hand-produced asset set (brand/README.md documents its
+    # contents) — nothing here generates it, this just copies it into the served tree.
+    favicon_src = os.path.join(BRAND, "favicon")
+    favicon_dir = os.path.join(assets_dir, "favicon")
+    os.makedirs(favicon_dir, exist_ok=True)
+    for name in FAVICON_FILES:
+        shutil.copyfile(os.path.join(favicon_src, name), os.path.join(favicon_dir, name))
     # Shared, cacheable, linked (not inlined) — so nav between the five pages doesn't re-download
     # ~170 KB of embedded woff2 on every click.
     with open(os.path.join(assets_dir, "fonts.css"), "w", encoding="utf-8") as f:
@@ -558,11 +563,9 @@ def build():
         "{{Rules_count}}": rules_count_word.capitalize(),
         "{{proof_count}}": proof_count_word,
         "{{Proof_count}}": proof_count_word.capitalize(),
-        "{{spec_version}}": data["spec"],
-        "{{status_table}}": status_table(data),
         "{{locale_cards}}": locale_cards(data),
+        "{{proof_input}}": proof_input(data),
         "{{proof_grid}}": proof_grid(data),
-        "{{proof_legend}}": proof_legend(data),
     }
     # Per-locale fixture totals — read live from spec/fixtures/, never hand-maintained, so the
     # coverage table on the Locales page cannot drift from the conformance suite it describes.
@@ -588,10 +591,13 @@ def build():
             f'<meta name="description" content="polytypo — locale-correct quotes, dashes, '
             f'ellipses and no-break spaces for {n} locales. One runtime today. One portable '
             f'spec designed for five.">\n'
+            f'<link rel="icon" href="{prefix}assets/favicon/favicon.svg" type="image/svg+xml">\n'
+            f'<link rel="icon" href="{prefix}assets/favicon/favicon.ico" sizes="16x16 32x32 48x48">\n'
+            f'<link rel="apple-touch-icon" href="{prefix}assets/favicon/apple-touch-icon-180.png">\n'
             f'<link rel="stylesheet" href="{prefix}assets/fonts.css">\n'
             f'<link rel="stylesheet" href="{prefix}assets/style.css">\n'
             f"<title>{H.escape(page_title)}</title>\n"
-            "</head>\n<body>\n"
+            f'</head>\n<body class="page-{slug or "home"}">\n'
             f"{nav_html(slug, prefix)}\n"
             f'<div class="wrap">\n{body}\n{footer_html(data, prefix)}\n</div>\n'
             f'<script src="{prefix}assets/site.js"></script>\n'
@@ -621,6 +627,31 @@ def build():
         with open(out_path, "w", encoding="utf-8") as f:
             f.write(doc)
         print(f"  promo/{rel_path.replace(os.sep, '/')}  {os.path.getsize(out_path) / 1024:.0f} KB")
+
+    write_robots_and_sitemap(out_dir)
+
+
+def write_robots_and_sitemap(out_dir):
+    """robots.txt and sitemap.xml — the only two files on the site that need an absolute URL
+    (SITE_ORIGIN, from package.json's "homepage"); every page URL below is one of PAGES' own
+    slugs, so this cannot list a page the build didn't actually generate."""
+    with open(os.path.join(out_dir, "robots.txt"), "w", encoding="utf-8") as f:
+        f.write(f"User-agent: *\nAllow: /\n\nSitemap: {SITE_ORIGIN}/sitemap.xml\n")
+
+    urls = "".join(
+        f"<url><loc>{SITE_ORIGIN}/{slug + '/' if slug else ''}</loc></url>\n"
+        for slug, _label, _body in PAGES
+    )
+    sitemap = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{urls}"
+        "</urlset>\n"
+    )
+    with open(os.path.join(out_dir, "sitemap.xml"), "w", encoding="utf-8") as f:
+        f.write(sitemap)
+    print("  promo/robots.txt")
+    print("  promo/sitemap.xml")
 
 
 def build_playground_script(data, prefix, lazy):
@@ -654,6 +685,8 @@ const DATA = {payload};
   const ENGINE_SRC = "{engine_src}";
   const LOCALES = DATA.locales.map((l) => [l.locale, l.name]);
   const DIFF_CAP = 4000; // above this, skip character-level highlighting (O(n*m) LCS)
+  const TA_MIN_H = 120; // keep in sync with textarea.pg-textarea / .pg-output in style.css
+  const TA_MAX_H = 320;
 
   const $demo = document.getElementById("pg-demo");
   const $locale = document.getElementById("pg-locale");
@@ -663,6 +696,7 @@ const DATA = {payload};
   const $input = document.getElementById("pg-input");
   const $output = document.getElementById("pg-output");
   const $count = document.getElementById("pg-count");
+  const $outputSummary = document.getElementById("pg-output-summary");
   const $foot = document.getElementById("pg-foot");
   const $copyOutput = document.getElementById("pg-copy-output");
   const $actionStatus = document.getElementById("pg-action-status");
@@ -673,9 +707,12 @@ const DATA = {payload};
     $locale.appendChild(o);
   }}
 
+  // Mirrors HERO["en-US"] in gen_examples.ts — unreachable in practice (every locale in the
+  // dropdown has its own recorded hero), kept in sync anyway so it isn't a stale copy of text
+  // that no longer exists anywhere else if it's ever hit for a locale code with no recording.
   const FALLBACK_SAMPLE =
-    `Is this "polytypo"? - No, it's "polytypo"! She said, "He replied 'never' twice"... ` +
-    `The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.`;
+    `She asked, "Isn't this the shop they call 'round the corner'?" ... We'd walked - nearly 3 ` +
+    `km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.`;
 
   /** This locale's recorded {{ in, out }} pair from examples.json — the real engine run captured at
    * build time, which is the only output this page may show before the engine itself is here. */
@@ -699,9 +736,9 @@ const DATA = {payload};
   let isLoadSlow = false;
 
   const RECORDED_NOTE = {{
-    idle: " · recorded example — the engine loads when you use the form",
-    loading: " · recorded example — the engine is loading",
-    failed: " · recorded example — the engine bundle did not load",
+    idle: "recorded example — the engine loads when you use the form",
+    loading: "recorded example — the engine is loading",
+    failed: "recorded example — the engine bundle did not load",
   }};
 
   function startEngineLoad() {{
@@ -756,7 +793,7 @@ const DATA = {payload};
       `    mode: ${{mode}}, // type: string, default: "text" — "text" | "html" | "markdown"\\n` +
       (showDialect
         ? `    dialect: ${{dialect}}, // type: string, required because mode is "markdown" — "commonmark" | "mdx"\\n`
-        : `    // dialect: "commonmark", // required only when mode is "markdown"; ignored otherwise\\n`) +
+        : "") +
       `  }},\\n` +
       `);`;
     $callJs.innerHTML = highlightLines(jsCode, "//");
@@ -769,7 +806,7 @@ const DATA = {payload};
       `    mode=${{mode}},  # type: str, default: "text" — "text" | "html" | "markdown"\\n` +
       (showDialect
         ? `    dialect=${{dialect}},  # type: str, required because mode is "markdown" — "commonmark" | "mdx"\\n`
-        : `    # dialect="commonmark",  # required only when mode is "markdown"; ignored otherwise\\n`) +
+        : "") +
       `)`;
     $callPy.innerHTML = highlightLines(pyCode, "#");
 
@@ -781,7 +818,7 @@ const DATA = {payload};
       `        Mode:    ${{mode}}, // type: string, default: "text" — "text" | "html" | "markdown"\\n` +
       (showDialect
         ? `        Dialect: ${{dialect}}, // type: string, required because Mode is "markdown" — "commonmark" | "mdx"\\n`
-        : `        // Dialect: "commonmark", // required only when Mode is "markdown"; ignored otherwise\\n`) +
+        : "") +
       `    }},\\n` +
       `)`;
     $callGo.innerHTML = highlightLines(goCode, "//");
@@ -794,7 +831,7 @@ const DATA = {payload};
       `  mode: ${{rubyStrLit(options.mode)}}, # type: String, default: "text" — "text" | "html" | "markdown"\\n` +
       (showDialect
         ? `  dialect: ${{rubyStrLit(options.dialect)}}, # type: String, required because mode is "markdown" — "commonmark" | "mdx"\\n`
-        : `  # dialect: "commonmark", # required only when mode is "markdown"; ignored otherwise\\n`) +
+        : "") +
       `)`;
     $callRb.innerHTML = highlightLines(rbCode, "#");
 
@@ -806,7 +843,7 @@ const DATA = {payload};
       `        'mode' => ${{phpStrLit(options.mode)}}, // type: string, default: 'text' — 'text' | 'html' | 'markdown'\\n` +
       (showDialect
         ? `        'dialect' => ${{phpStrLit(options.dialect)}}, // type: string, required because mode is 'markdown' — 'commonmark' | 'mdx'\\n`
-        : `        // 'dialect' => 'commonmark', // required only when mode is 'markdown'; ignored otherwise\\n`) +
+        : "") +
       `    ],\\n` +
       `);`;
     $callPhp.innerHTML = highlightLines(phpCode, "//");
@@ -843,15 +880,15 @@ const DATA = {payload};
     $output.classList.remove("error");
 
     if (isRecordedState) {{
-      const summary = paintPair(recorded.in, recorded.out);
-      $foot.textContent =
-        options.locale + " · text · " + summary + (RECORDED_NOTE[engineState] || "");
+      $outputSummary.textContent = paintPair(recorded.in, recorded.out);
+      $foot.textContent = RECORDED_NOTE[engineState] || "";
       return;
     }}
 
     if (engineState === "failed") {{
       if (recorded) paintPair(recorded.in, recorded.out);
       else $output.innerHTML = "";
+      $outputSummary.textContent = "";
       $foot.textContent =
         "The engine bundle (" + ENGINE_SRC + ") did not load — the output above is the recorded " +
         options.locale + " example, not your own text.";
@@ -859,52 +896,74 @@ const DATA = {payload};
     }}
 
     $output.innerHTML = "";
+    $outputSummary.textContent = "";
     $foot.textContent = isLoadSlow
       ? "Loading the engine — your text is typeset the moment it arrives."
       : "";
   }}
 
+  // Fits both panes to whichever needs more room, between TA_MIN_H and TA_MAX_H, instead of
+  // sizing off the textarea alone: the mono input face and the output's larger reading face wrap
+  // the same character count into a different number of lines, so matching heights off only one
+  // side can clip the other. Called from render()'s `finally` below, so it runs after every exit
+  // path — including the early returns — has already finished setting both panes' content.
+  function fitPanes() {{
+    $input.style.height = "auto";
+    $output.style.height = "auto";
+    const needed = Math.max($input.scrollHeight, $output.scrollHeight);
+    const h = Math.min(Math.max(needed, TA_MIN_H), TA_MAX_H);
+    $input.style.height = h + "px";
+    $output.style.height = h + "px";
+  }}
+
   function render() {{
-    const text = $input.value;
-    const n = text.length;
-    $count.textContent = n ? n.toLocaleString("en-US") + " chars" : "";
-    $dialectWrap.hidden = $mode.value !== "markdown";
-
-    if (!text) {{
-      $output.classList.remove("error");
-      $output.innerHTML = "";
-      $foot.textContent = "";
-      clearCallCode();
-      return;
-    }}
-
-    const options = {{ locale: $locale.value, mode: $mode.value }};
-    if ($mode.value === "markdown") options.dialect = $dialect.value;
-
-    // The call block describes what the form is set to, not what the engine returned — it is pure
-    // string building. Rendered before every engine branch below so it tracks the controls even
-    // while the bundle is still loading, and still shows the call that threw when one does.
-    renderCallCode(options);
-
-    if (engineState !== "ready") {{
-      renderWithoutEngine(options, text);
-      return;
-    }}
-
-    let out;
     try {{
-      out = engine.transform(text, options);
-    }} catch (error) {{
-      $output.classList.add("error");
-      const code = error && error.code ? error.code : "Error";
-      $output.textContent = code + ": " + (error && error.message ? error.message : String(error));
-      $foot.textContent = summarizeError(code);
-      return;
-    }}
+      const text = $input.value;
+      const n = text.length;
+      $count.textContent = n ? n.toLocaleString("en-US") + " chars" : "";
+      $dialectWrap.hidden = $mode.value !== "markdown";
 
-    $output.classList.remove("error");
-    const summary = paintPair(text, out);
-    $foot.textContent = $locale.value + " · " + $mode.value + " · " + summary;
+      if (!text) {{
+        $output.classList.remove("error");
+        $output.innerHTML = "";
+        $outputSummary.textContent = "";
+        $foot.textContent = "";
+        clearCallCode();
+        return;
+      }}
+
+      const options = {{ locale: $locale.value, mode: $mode.value }};
+      if ($mode.value === "markdown") options.dialect = $dialect.value;
+
+      // The call block describes what the form is set to, not what the engine returned — it is
+      // pure string building. Rendered before every engine branch below so it tracks the controls
+      // even while the bundle is still loading, and still shows the call that threw when one does.
+      renderCallCode(options);
+
+      if (engineState !== "ready") {{
+        renderWithoutEngine(options, text);
+        return;
+      }}
+
+      let out;
+      try {{
+        out = engine.transform(text, options);
+      }} catch (error) {{
+        $output.classList.add("error");
+        const code = error && error.code ? error.code : "Error";
+        $output.textContent =
+          code + ": " + (error && error.message ? error.message : String(error));
+        $outputSummary.textContent = "";
+        $foot.textContent = summarizeError(code);
+        return;
+      }}
+
+      $output.classList.remove("error");
+      $outputSummary.textContent = paintPair(text, out);
+      $foot.textContent = "";
+    }} finally {{
+      fitPanes();
+    }}
   }}
 
   async function copyText(text) {{
@@ -950,6 +1009,31 @@ const DATA = {payload};
     startEngineLoad();
     run();
   }});
+
+  // Both panes are capped at the same height (see .pg-output in style.css) and scroll on their
+  // own past that — without this, comparing a long before/after means scrolling one pane, losing
+  // your place, and hunting for it again in the other. Guarded by a lock rather than removing the
+  // listener mid-callback, since scrolling `to` fires `to`'s own scroll event straight back in.
+  let syncingScroll = false;
+  function syncScroll(from, to) {{
+    if (syncingScroll) return;
+    const fromMax = from.scrollHeight - from.clientHeight;
+    const toMax = to.scrollHeight - to.clientHeight;
+    if (fromMax <= 0 || toMax <= 0) return;
+    syncingScroll = true;
+    to.scrollTop = (from.scrollTop / fromMax) * toMax;
+    syncingScroll = false;
+  }}
+  $input.addEventListener("scroll", () => syncScroll($input, $output));
+  $output.addEventListener("scroll", () => syncScroll($output, $input));
+
+  // `resize: vertical` on the textarea (style.css) only resizes the textarea itself; mirror
+  // whatever height a visitor drags it to onto the output pane so the two stay matched.
+  if (typeof ResizeObserver === "function") {{
+    new ResizeObserver(() => {{
+      $output.style.height = $input.offsetHeight + "px";
+    }}).observe($input);
+  }}
 
   if (LAZY) {{
     // First sign of intent, whichever comes first: focusing the input (before a single character

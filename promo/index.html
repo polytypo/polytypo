@@ -4,11 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="polytypo — locale-correct quotes, dashes, ellipses and no-break spaces for 10 locales. One runtime today. One portable spec designed for five.">
+<link rel="icon" href="assets/favicon/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon-180.png">
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="assets/style.css">
 <title>polytypo</title>
 </head>
-<body>
+<body class="page-home">
 <nav class="site-nav"><div class="wrap"><a class="brand" href="./"><svg xmlns="http://www.w3.org/2000/svg" viewBox="9.5 37.5 181.0 45.0" role="img" aria-labelledby="t2 d2">
   <title id="t2">polytypo</title>
   <desc id="d2">Guillemets enclosing an em dash.</desc>
@@ -37,17 +40,15 @@
 </svg>
   </div>
   <h1>The em dash was mine before AI.</h1>
-  <p class="tagline" style="margin-top: var(--space-3); font-size: 20px">
-    <code>—</code> is typography, not a watermark.
+  <p class="tagline" style="margin-top: var(--space-3)">
+    <code>«—»</code> is typography, not an AI watermark.
   </p>
-  <p class="tagline" style="margin-top: var(--space-7)">
-    Polytypo automates typographic craft correctly: ten locales, one portable spec,
-    nine rules — quotes, dashes, ellipses, apostrophes, symbols, and the no-break spaces
-    nobody sees until they're missing. JavaScript is the implemented runtime today; four more ports
-    are planned from the same spec.
+  <p class="tagline" style="margin-top: var(--space-6)">
+    Paste your own text below and pick a locale — this is the real engine, running in your browser.
   </p>
 </header>
 
+<p class="eyebrow" style="margin-top: var(--space-9)">Try it</p>
 <!-- Shared by the home page and /playground via the {{playground}} token — see build_promo.py. -->
 <div class="demo" id="pg-demo">
   <div class="pg-bar">
@@ -92,24 +93,20 @@
     </div>
     <div class="pane-r">
       <div class="who pg-out-head">
-        <span id="pg-output-label">Output</span>
+        <span>
+          <span id="pg-output-label">Output</span>
+          <span id="pg-output-summary" role="status" aria-atomic="true"></span>
+        </span>
         <button type="button" class="pg-copy" id="pg-copy-output">Copy Output</button>
       </div>
-      <div
-        class="pg-output"
-        id="pg-output"
-        role="region"
-        aria-labelledby="pg-output-label"
-      ></div>
+      <div class="pg-output" id="pg-output" role="region" aria-labelledby="pg-output-label"></div>
       <p class="pg-action-status" id="pg-action-status" role="status" aria-atomic="true"></p>
     </div>
   </div>
   <div class="foot" id="pg-foot" role="status" aria-atomic="true"></div>
 </div>
 
-<p class="eyebrow" style="margin-top: var(--space-7)">
-  The call the form above is making, right now
-</p>
+<p class="eyebrow sr-only">The call the form above is making, right now</p>
 <div class="tabs" id="call-tabs"></div>
 <div id="call-panes">
   <div class="pane" data-label="JavaScript / TypeScript">
@@ -129,45 +126,26 @@
   </div>
 </div>
 
-
 <p class="small muted" style="margin-top: var(--space-4)">
-  Every field's own comment carries its type, default and allowed values.
-  <strong>None of them fall back to a default when the value is wrong or missing</strong> — each
-  throws its own error, with a machine-readable <code>code</code>, rather than guessing what you
-  meant. Full option and error-code reference — <a href="docs/#use">Docs</a>.
+  Full call reference — <a href="docs/">Docs</a>.
 </p>
 
-<section id="why-it-exists">
-  <p>
-    A dash, a curly quote, or a non-breaking space in your text isn't proof a model wrote it —
-    publishers, typesetters, and copyeditors have set them this way, deliberately and by
-    locale-specific convention, since long before any language model existed. When correct
-    punctuation gets read as an AI signal, writers get pushed toward flatter, safer punctuation —
-    the wrong incentive.
-  </p>
-
-  <div class="cta-row">
-    <a class="btn" href="playground/">Open the Full Playground →</a>
-    <a class="btn secondary" href="docs/">Read the Docs</a>
-    <a class="btn secondary" href="manifesto/">Read the Manifesto</a>
-  </div>
-</section>
-
 <section id="proof">
-  <h2>The same sentence. Four different, correct answers.</h2>
+  <p class="eyebrow" style="margin-top: 0">Proof</p>
+  <h2>The same sentence. Six different, correct answers.</h2>
   <p class="small muted" style="max-width: 60ch">
-    Every card below runs the exact same input string — straight quotes, a straight hyphen — through
-    <code>transform()</code>. Nothing is typed by hand. Only the locale changes; quote style, dash
-    style, and spacing all follow.
+    Every card below runs the exact same input string through <code>transform()</code>. Only the
+    locale changes; quote style, dash style, and spacing all follow.
   </p>
-  <div class="card-grid card-grid--responsive"><div class="card" data-locale="en-US"><div class="lang">English (US) · en-US</div><div class="pair"><div class="specimen in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="specimen out">She said: <span class="chg">“</span>The em dash was mine before AI<span class="chg">”—</span>and she meant it.</div></div></div><div class="card" data-locale="de-DE"><div class="lang">German · de-DE</div><div class="pair"><div class="specimen in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="specimen out">She said: <span class="chg">„</span>The em dash was mine before AI<span class="chg">“</span> <span class="chg">–</span> and she meant it.</div></div></div><div class="card" data-locale="fr"><div class="lang">French · fr</div><div class="pair"><div class="specimen in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="specimen out">She said<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>: <span class="chg">«<span class="nb" title="U+00A0 no-break space"> </span></span>The em dash was mine before AI<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span>»</span> <span class="chg">—</span> and she meant it.</div></div></div><div class="card" data-locale="ru"><div class="lang">Russian · ru</div><div class="pair"><div class="specimen in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="specimen out">She said: <span class="chg">«</span>The em dash was mine before AI<span class="chg">»</span> <span class="chg">—</span> and she meant it.</div></div></div></div>
-  <div class="small muted proof-legend" style="max-width: 60ch">Invisible characters in these outputs (always shown here — tooltips above are an optional extra, not required to understand them):<ul><li><span class="mono"> </span> — U+00A0 no-break space</li></ul></div>
-  <p>
-    German lowers the opening quote. Swiss German turns it into guillemets pointing outward. French
-    puts a no-break space <em>inside</em> them (U+00A0) and a narrow one before
-    <code>! ? ;</code> (U+202F). Finnish and Swedish close with the same glyph they open with.
-    British English swaps the primary and secondary levels round. Every one of these is correct — in
-    exactly one place.
+  <p class="small muted" style="margin: 0 0 8px">Input, unchanged</p><div class="specimen proof-shared-input">She asked, &quot;Isn&#x27;t this the shop they call &#x27;round the corner&#x27;?&quot; ... We&#x27;d walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.</div>
+  <div class="card-grid card-grid--six"><div class="card" data-locale="en-US"><div class="lang">English (US) · en-US</div><div class="pair pair--solo"><div class="specimen out">She asked, <span class="chg">“</span>Isn<span class="chg">’</span>t this the shop they call <span class="chg">‘</span>round the corner<span class="chg">’</span>?<span class="chg">”</span> <span class="chg">…</span> We<span class="chg">’</span>d walked<span class="chg">—</span>nearly 3<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>km<span class="chg">—</span>just to find it closed. Copyright <span class="chg">©</span> 2026; the print measures 40<span class="chg">×</span>60<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>cm.</div></div></div><div class="card" data-locale="en-GB"><div class="lang">English (UK) · en-GB</div><div class="pair pair--solo"><div class="specimen out">She asked, <span class="chg">‘</span>Isn<span class="chg">’</span>t this the shop they call <span class="chg">“</span>round the corner<span class="chg">”</span>?<span class="chg">’</span> <span class="chg">…</span> We<span class="chg">’</span>d walked <span class="chg">–</span> nearly 3<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>km <span class="chg">–</span> just to find it closed. Copyright <span class="chg">©</span> 2026; the print measures 40<span class="chg">×</span>60<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>cm.</div></div></div><div class="card" data-locale="de-DE"><div class="lang">German · de-DE</div><div class="pair pair--solo"><div class="specimen out">She asked, <span class="chg">„</span>Isn<span class="chg">’</span>t this the shop they call <span class="chg">‚</span>round the corner<span class="chg">‘</span>?<span class="chg">“</span> <span class="chg">…</span> We<span class="chg">’</span>d walked <span class="chg">–</span> nearly 3<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>km <span class="chg">–</span> just to find it closed. Copyright <span class="chg">©</span> 2026; the print measures 40<span class="chg">×</span>60<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>cm.</div></div></div><div class="card" data-locale="de-CH"><div class="lang">Swiss German · de-CH</div><div class="pair pair--solo"><div class="specimen out">She asked, <span class="chg">«</span>Isn<span class="chg">’</span>t this the shop they call <span class="chg">‹</span>round the corner<span class="chg">›</span>?<span class="chg">»</span> <span class="chg">…</span> We<span class="chg">’</span>d walked <span class="chg">–</span> nearly 3<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>km <span class="chg">–</span> just to find it closed. Copyright <span class="chg">©</span> 2026; the print measures 40<span class="chg">×</span>60<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>cm.</div></div></div><div class="card" data-locale="fr"><div class="lang">French · fr</div><div class="pair pair--solo"><div class="specimen out">She asked, <span class="chg">«<span class="nb" title="U+00A0 no-break space"> </span></span>Isn<span class="chg">’</span>t this the shop they call <span class="chg">“</span>round the corner<span class="chg">”<span class="nb" title="U+202F narrow no-break space"> </span></span>?<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span>»</span> <span class="chg">…</span> We<span class="chg">’</span>d walked <span class="chg">—</span> nearly 3<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>km <span class="chg">—</span> just to find it closed. Copyright <span class="chg">©</span> 2026<span class="chg"><span class="nb" title="U+202F narrow no-break space"> </span></span>; the print measures 40<span class="chg">×</span>60<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>cm.</div></div></div><div class="card" data-locale="ru"><div class="lang">Russian · ru</div><div class="pair pair--solo"><div class="specimen out">She asked, <span class="chg">«</span>Isn<span class="chg">’</span>t this the shop they call <span class="chg">„</span>round the corner<span class="chg">“</span>?<span class="chg">»</span> <span class="chg">…</span> We<span class="chg">’</span>d walked <span class="chg">—</span> nearly 3 km <span class="chg">—</span> just to find it closed. Copyright <span class="chg">©</span> 2026; the print measures 40<span class="chg">×</span>60 cm.</div></div></div></div>
+  <p class="small muted" style="max-width: 60ch">
+    English (US) opens with a curly double quote and a tight em dash. British English swaps the
+    primary and secondary levels round, with a spaced en dash instead. German lowers the opening
+    quote. Swiss German turns it into guillemets pointing outward. French puts a no-break space
+    inside its guillemets (U+00A0) and a narrow one before <code>! ? ;</code> (U+202F). Russian
+    pairs French-style guillemets with German's low-high secondary marks. Every one of these is
+    correct — in exactly one place.
   </p>
   <p class="small muted">
     Full coverage table, citations and how a locale gets added —
@@ -175,151 +153,7 @@
   </p>
 </section>
 
-<section id="languages">
-  <p class="eyebrow" style="margin-top: 0">JavaScript today. Four planned ports — pick a preview</p>
-  <div class="tabs" id="lang-tabs"></div>
-  <div id="lang-panes"><div class="pane" data-label="JavaScript / TypeScript"><h3 style="margin:22px 0 0">JavaScript / TypeScript<span class="status live">npm — not yet published</span></h3><pre><code><span class="ln"><span class="tok-com">// npm install polytypo</span></span>
-<span class="ln">import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;</span>
-<span class="ln"></span>
-<span class="ln">const output = transform(input, { locale: <span class="tok-str">&quot;de&quot;</span> });</span>
-<span class="ln"></span>
-<span class="ln"><span class="tok-com">// mode &quot;markdown&quot; requires an explicit dialect; &quot;text&quot; and &quot;html&quot; ignore it</span></span>
-<span class="ln">transform(input, { locale: <span class="tok-str">&quot;fr&quot;</span>, mode: <span class="tok-str">&quot;markdown&quot;</span>, dialect: <span class="tok-str">&quot;commonmark&quot;</span> });</span>
-<span class="ln"></span>
-<span class="ln"><span class="tok-com">// opt out of a single rule; the order of the rest never changes</span></span>
-<span class="ln">transform(input, { locale: <span class="tok-str">&quot;en-US&quot;</span>, rules: { dashes: false } });</span>
-<span class="ln"></span>
-<span class="ln">try {</span>
-<span class="ln">  transform(input, { locale: <span class="tok-str">&quot;xx&quot;</span> });</span>
-<span class="ln">} catch (error) {</span>
-<span class="ln">  error.code; <span class="tok-com">// &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span>
-<span class="ln">}</span></code></pre></div><div class="pane" data-label="Python"><h3 style="margin:22px 0 0">Python<span class="status">PyPI — planned</span></h3><pre><code><span class="ln"><span class="tok-com"># pip install polytypo</span></span>
-<span class="ln">from polytypo import transform, PolytypoError</span>
-<span class="ln"></span>
-<span class="ln">output = transform(input, locale=<span class="tok-str">&quot;de&quot;</span>)</span>
-<span class="ln"></span>
-<span class="ln"><span class="tok-com"># mode &quot;markdown&quot; requires an explicit dialect; &quot;text&quot; and &quot;html&quot; ignore it</span></span>
-<span class="ln">transform(input, locale=<span class="tok-str">&quot;fr&quot;</span>, mode=<span class="tok-str">&quot;markdown&quot;</span>, dialect=<span class="tok-str">&quot;commonmark&quot;</span>)</span>
-<span class="ln"></span>
-<span class="ln">transform(input, locale=<span class="tok-str">&quot;en-US&quot;</span>, rules={<span class="tok-str">&quot;dashes&quot;</span>: False})</span>
-<span class="ln"></span>
-<span class="ln">try:</span>
-<span class="ln">    transform(input, locale=<span class="tok-str">&quot;xx&quot;</span>)</span>
-<span class="ln">except PolytypoError as error:</span>
-<span class="ln">    error.code  <span class="tok-com"># &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span></code></pre></div><div class="pane" data-label="Go"><h3 style="margin:22px 0 0">Go<span class="status">Go modules — planned</span></h3><pre><code><span class="ln"><span class="tok-com">// go get github.com/polytypo/polytypo-go</span></span>
-<span class="ln">package main</span>
-<span class="ln"></span>
-<span class="ln">import (</span>
-<span class="ln">    <span class="tok-str">&quot;errors&quot;</span></span>
-<span class="ln">    <span class="tok-str">&quot;fmt&quot;</span></span>
-<span class="ln"></span>
-<span class="ln">    <span class="tok-str">&quot;github.com/polytypo/polytypo-go&quot;</span></span>
-<span class="ln">)</span>
-<span class="ln"></span>
-<span class="ln">func main() {</span>
-<span class="ln">    out, err := polytypo.Transform(input, polytypo.Options{Locale: <span class="tok-str">&quot;de&quot;</span>})</span>
-<span class="ln">    if err != nil {</span>
-<span class="ln">        var perr *polytypo.Error</span>
-<span class="ln">        if errors.As(err, &amp;perr) {</span>
-<span class="ln">            _ = perr.Code <span class="tok-com">// &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span>
-<span class="ln">        }</span>
-<span class="ln">    }</span>
-<span class="ln">    fmt.Println(out)</span>
-<span class="ln"></span>
-<span class="ln">    <span class="tok-com">// Mode &quot;markdown&quot; requires an explicit Dialect; &quot;text&quot; and &quot;html&quot; ignore it</span></span>
-<span class="ln">    _, _ = polytypo.Transform(input, polytypo.Options{</span>
-<span class="ln">        Locale:  <span class="tok-str">&quot;fr&quot;</span>,</span>
-<span class="ln">        Mode:    <span class="tok-str">&quot;markdown&quot;</span>,</span>
-<span class="ln">        Dialect: <span class="tok-str">&quot;commonmark&quot;</span>,</span>
-<span class="ln">    })</span>
-<span class="ln">}</span></code></pre></div><div class="pane" data-label="Ruby"><h3 style="margin:22px 0 0">Ruby<span class="status">RubyGems — planned</span></h3><pre><code><span class="ln"><span class="tok-com"># gem install polytypo</span></span>
-<span class="ln">require <span class="tok-str">&quot;polytypo&quot;</span></span>
-<span class="ln"></span>
-<span class="ln">output = Polytypo.transform(input, locale: <span class="tok-str">&quot;de&quot;</span>)</span>
-<span class="ln"></span>
-<span class="ln"><span class="tok-com"># mode &quot;markdown&quot; requires an explicit dialect; &quot;text&quot; and &quot;html&quot; ignore it</span></span>
-<span class="ln">Polytypo.transform(input, locale: <span class="tok-str">&quot;fr&quot;</span>, mode: <span class="tok-str">&quot;markdown&quot;</span>, dialect: <span class="tok-str">&quot;commonmark&quot;</span>)</span>
-<span class="ln"></span>
-<span class="ln">Polytypo.transform(input, locale: <span class="tok-str">&quot;en-US&quot;</span>, rules: { dashes: false })</span>
-<span class="ln"></span>
-<span class="ln">begin</span>
-<span class="ln">  Polytypo.transform(input, locale: <span class="tok-str">&quot;xx&quot;</span>)</span>
-<span class="ln">rescue Polytypo::Error =&gt; error</span>
-<span class="ln">  error.code <span class="tok-com"># =&gt; &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span>
-<span class="ln">end</span></code></pre></div><div class="pane" data-label="PHP"><h3 style="margin:22px 0 0">PHP<span class="status">Packagist — planned</span></h3><pre><code><span class="ln">&lt;?php</span>
-<span class="ln"><span class="tok-com">// composer require polytypo/polytypo</span></span>
-<span class="ln">use Polytypo\Polytypo;</span>
-<span class="ln">use Polytypo\PolytypoException;</span>
-<span class="ln"></span>
-<span class="ln">$output = Polytypo::transform($input, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;de&#x27;</span>]);</span>
-<span class="ln"></span>
-<span class="ln"><span class="tok-com">// mode &#x27;markdown&#x27; requires an explicit dialect; &#x27;text&#x27; and &#x27;html&#x27; ignore it</span></span>
-<span class="ln">Polytypo::transform($input, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;fr&#x27;</span>, <span class="tok-str">&#x27;mode&#x27;</span> =&gt; <span class="tok-str">&#x27;markdown&#x27;</span>, <span class="tok-str">&#x27;dialect&#x27;</span> =&gt; <span class="tok-str">&#x27;commonmark&#x27;</span>]);</span>
-<span class="ln"></span>
-<span class="ln">try {</span>
-<span class="ln">    Polytypo::transform($input, [<span class="tok-str">&#x27;locale&#x27;</span> =&gt; <span class="tok-str">&#x27;xx&#x27;</span>]);</span>
-<span class="ln">} catch (PolytypoException $error) {</span>
-<span class="ln">    $error-&gt;errorCode; <span class="tok-com">// &#x27;POLYTYPO_UNKNOWN_LOCALE&#x27;</span></span>
-<span class="ln">}</span></code></pre></div></div>
-</section>
-
-<section id="why">
-  <p class="eyebrow">Why this and not a regex</p>
-  <h2>Because the fifth port is where regex-based typography dies.</h2>
-  <div class="card-grid card-grid--responsive">
-    <div class="card">
-      <h3 style="margin: 0 0 6px">The spec is the product</h3>
-      <p class="small muted" style="margin: 0">
-        Locale data, rule semantics and conformance fixtures live in one repository. An
-        implementation is polytypo <em>iff</em> it passes the suite for the spec version it claims.
-        Runtimes are replaceable; the spec is not.
-      </p>
-    </div>
-    <div class="card">
-      <h3 style="margin: 0 0 6px">No regex in the core</h3>
-      <p class="small muted" style="margin: 0">
-        Go's RE2 has no lookbehind. A rule written as a clever regex in one language is a rule
-        rewritten from scratch in the next. Rules are a single left-to-right scan over code points
-        with explicit lookaround.
-      </p>
-    </div>
-    <div class="card">
-      <h3 style="margin: 0 0 6px">Idempotent by contract</h3>
-      <p class="small muted" style="margin: 0">
-        <code>transform(transform(x)) === transform(x)</code>, proven by property-based tests, not
-        hoped for. Running it twice — in a CMS, in CI, in a build step — cannot corrupt text.
-      </p>
-    </div>
-    <div class="card">
-      <h3 style="margin: 0 0 6px">Every locale is cited</h3>
-      <p class="small muted" style="margin: 0">
-        Duden, Imprimerie nationale, Kotus, Språkrådet, Chicago, Мильчин. A locale ships only as a
-        triple: data, fixtures, citation. Disagreements are settled by source, not by preference.
-      </p>
-    </div>
-  </div>
-  <p class="small muted">
-    Full list of reasons, including how coverage grows —
-    <a href="docs/#why">Docs → Why this and not a regex</a>.
-  </p>
-</section>
-
-<section id="status">
-  <h2>Spec 1.0.0. One runtime, today.</h2>
-  <p>
-    This project publishes what exists and says plainly what does not. Nothing below is a roadmap
-    promise with a date attached.
-  </p>
-  <table><tr><th>Thing</th><th>State</th></tr><tr><td>Spec — locale data, rule semantics, fixtures</td><td>1.0.0, 10 locales, 9 rules, in the repository</td></tr><tr><td>JavaScript / TypeScript engine — <code>text</code>, <code>html</code>, <code>markdown</code> modes</td><td>Implemented, passing the conformance suite (spec/rules/modes.md)</td></tr><tr><td>npm package</td><td>Not published yet — planned API only, no installable package</td></tr><tr><td>Python, Go, Ruby, PHP ports</td><td>Planned APIs, no installable package for any of them. No port starts before the JS package clears its own dogfooding gate</td></tr><tr><td>CMS plugins, hosted API, CLI</td><td>Not in v1, by decision</td></tr></table>
-  <div class="note">
-    <p>
-      A behaviour change is a spec change first and code second. If you find a bug, the fix begins
-      with a fixture — that is how five implementations stay the same implementation.
-    </p>
-  </div>
-</section>
-
-<footer><div class="wrap"><p>polytypo · spec 1.0.0 · MIT for the code, separate terms for the brand assets · every before/after typography example on this site is generated with the engine.</p><p><a href="manifesto/">Manifesto</a></p><p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p></div></footer>
+<footer><p>polytypo · spec 1.0.0 · MIT for the code, separate terms for the brand assets · every before/after typography example on this site is generated with the engine.</p><p><a href="manifesto/">Manifesto</a></p><p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p></footer>
 </div>
 <script src="assets/site.js"></script>
 <script>
@@ -327,7 +161,7 @@ Polytypo.bootTabs("lang-tabs", "lang-panes");
 Polytypo.bootTabs("build-tabs", "build-panes");
 </script>
 <script>
-const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "locales": [{"locale": "en-US", "name": "English (US)", "hero": {"in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.", "out": "Is this “polytypo”?—No, it’s “polytypo”! She said, “He replied ‘never’ twice”… The release—all 5 km of it—covers 1914-1918. Copyright © 2026, at 1920×1080."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: “The em dash was mine before AI”—and she meant it."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "“He said 'no' to me,” she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan—if there is one—fails."}, {"rule": "dashes", "in": "1914-1918 and pp. 34-36", "out": "1914-1918 and pp. 34-36"}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "apostrophe", "in": "don't", "out": "don’t"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}, {"rule": "symbols", "in": "Copyright (c) 2026, 1920x1080", "out": "Copyright © 2026, 1920×1080"}]}, {"locale": "en-GB", "name": "English (UK)", "hero": {"in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.", "out": "Is this ‘polytypo’? – No, it’s ‘polytypo’! She said, ‘He replied “never” twice’… The release – all 5 km of it – covers 1914-1918. Copyright © 2026, at 1920×1080."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: ‘The em dash was mine before AI’ – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "‘He said 'no' to me,’ she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan – if there is one – fails."}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}]}, {"locale": "de-DE", "name": "German", "hero": {"in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.", "out": "Ist das „polytypo“? – Nein, das ist „polytypo“! Sie sagte: „Er hat 'nie' geantwortet“… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: „The em dash was mine before AI“ – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "„Er sagte ‚nein‘ zu mir“, notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "dashes", "in": "Die Jahre 1939-1945", "out": "Die Jahre 1939-1945"}, {"rule": "nbsp", "in": "z. B. Berlin", "out": "z. B. Berlin"}, {"rule": "symbols", "in": "Auflösung 1920x1080", "out": "Auflösung 1920×1080"}]}, {"locale": "de-CH", "name": "Swiss German", "hero": {"in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.", "out": "Ist das «polytypo»? – Nein, das ist «polytypo»! Sie sagte: «Er hat 'nie' geantwortet»… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: «The em dash was mine before AI» – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "«Er sagte ‹nein› zu mir», notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "nbsp", "in": "z. B. Bern", "out": "z. B. Bern"}]}, {"locale": "fr", "name": "French", "hero": {"in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.", "out": "C’est « polytypo » ? — Non, c’est « polytypo » ! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm ; c’est tout. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said : « The em dash was mine before AI » — and she meant it."}, "cases": [{"rule": "quotes", "in": "Il a dit \"bonjour\".", "out": "Il a dit « bonjour »."}, {"rule": "quotes", "in": "\"Il a dit 'oui' hier.\"", "out": "« Il a dit 'oui' hier. »"}, {"rule": "nbsp", "in": "Ça va ? Bonjour !", "out": "Ça va ? Bonjour !"}, {"rule": "dashes", "in": "Le plan - il existe - échoue.", "out": "Le plan — il existe — échoue."}, {"rule": "apostrophe", "in": "l'été et l'hiver", "out": "l’été et l’hiver"}]}, {"locale": "fr-CA", "name": "French (Canada)", "hero": {"in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.", "out": "C’est « polytypo »? — Non, c’est « polytypo »! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm; c’est tout. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said : « The em dash was mine before AI » — and she meant it."}, "cases": [{"rule": "quotes", "in": "Il a dit \"bonjour\".", "out": "Il a dit « bonjour »."}, {"rule": "dashes", "in": "Le plan - il existe - échoue.", "out": "Le plan — il existe — échoue."}, {"rule": "nbsp", "in": "Ça va? Bonjour!", "out": "Ça va? Bonjour!"}, {"rule": "nbsp", "in": "Rendez-vous à 15 h: bureau 204.", "out": "Rendez-vous à 15 h : bureau 204."}]}, {"locale": "ru", "name": "Russian", "hero": {"in": "Это \"полиштамп\"? - Нет, это \"полиштамп\"! Она сказала: \"он ответил 'никогда'\"... Достал из-под стола - в 1941-1945 годах - размер 10 x 20 см. Все права защищены (c) 2026.", "out": "Это «полиштамп»? — Нет, это «полиштамп»! Она сказала: «он ответил „никогда“»… Достал из‑под стола — в 1941-1945 годах — размер 10 × 20 см. Все права защищены © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: «The em dash was mine before AI» — and she meant it."}, "cases": [{"rule": "quotes", "in": "Он сказал: \"это 'моё' дело\".", "out": "Он сказал: «это 'моё' дело»."}, {"rule": "dashes", "in": "Москва - столица", "out": "Москва — столица"}, {"rule": "dashes", "in": "Годы 1941-1945 были тяжёлыми", "out": "Годы 1941-1945 были тяжёлыми"}, {"rule": "hyphen", "in": "Достал из-под стола", "out": "Достал из‑под стола"}, {"rule": "ellipsis", "in": "Что?...", "out": "Что?.."}, {"rule": "nbsp", "in": "Он живёт в Москве", "out": "Он живёт в Москве"}]}, {"locale": "fi", "name": "Finnish", "hero": {"in": "Onko tämä \"polytypo\"? - Ei, tämä on \"polytypo\"! Hän sanoi: \"hän vastasi 'ei koskaan'\"... Matkaa on 20 km - vuosina 1914-1918 - ja hinta nousi 10,5 %. Copyright (c) 2026.", "out": "Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän sanoi: ”hän vastasi ’ei koskaan’”… Matkaa on 20 km – vuosina 1914-1918 – ja hinta nousi 10,5 %. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: ”The em dash was mine before AI” – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Hän sanoi 'moi'\", totesin.", "out": "”Hän sanoi ’moi’”, totesin."}, {"rule": "dashes", "in": "Suunnitelma - jos sellainen on - kaatuu.", "out": "Suunnitelma – jos sellainen on – kaatuu."}, {"rule": "nbsp", "in": "Hinta nousi 10,5 %", "out": "Hinta nousi 10,5 %"}]}, {"locale": "sv", "name": "Swedish", "hero": {"in": "Är det här \"polytypo\"? - Nej, det är \"polytypo\"! Hon sa: \"han svarade 'aldrig'\"... Vi gick 5 km - åren 1914-1918 - och det kostar 100 kr. Copyright (c) 2026.", "out": "Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914-1918 – och det kostar 100 kr. Copyright © 2026."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: ”The em dash was mine before AI” – and she meant it."}, "cases": [{"rule": "quotes", "in": "\"Han sa 'hej'\", sa jag.", "out": "”Han sa ’hej’”, sa jag."}, {"rule": "dashes", "in": "Planen - om det finns en - misslyckas.", "out": "Planen – om det finns en – misslyckas."}, {"rule": "nbsp", "in": "Det kostar 100 kr", "out": "Det kostar 100 kr"}]}, {"locale": "el", "name": "Greek", "hero": {"in": "Είναι αυτό \"polytypo\"; - Όχι, αυτό είναι \"polytypo\"! Είπε: \"απάντησε “ποτέ”\"... Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright (c) 2026, σε 1920x1080.", "out": "Είναι αυτό «polytypo»; - Όχι, αυτό είναι «polytypo»! Είπε: «απάντησε “ποτέ”»… Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright © 2026, σε 1920×1080."}, "proof": {"in": "She said: \"The em dash was mine before AI\" - and she meant it.", "out": "She said: «The em dash was mine before AI» - and she meant it."}, "cases": [{"rule": "quotes", "in": "Είπε \"καλημέρα\" και έφυγε.", "out": "Είπε «καλημέρα» και έφυγε."}, {"rule": "quotes", "in": "\"Είπε “όχι” σε μένα\", σημείωσε.", "out": "«Είπε “όχι” σε μένα», σημείωσε."}, {"rule": "apostrophe", "in": "γι' αυτό και απ' την αρχή", "out": "γι’ αυτό και απ’ την αρχή"}, {"rule": "spaces", "in": "Τι κάνεις ;", "out": "Τι κάνεις;"}, {"rule": "ellipsis", "in": "Περίμενε... τι έγινε", "out": "Περίμενε… τι έγινε"}, {"rule": "symbols", "in": "Ανάλυση 1920x1080", "out": "Ανάλυση 1920×1080"}]}]};
+const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "en-GB", "de-DE", "de-CH", "fr", "ru"], "locales": [{"locale": "en-US", "name": "English (US)", "hero": {"in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.", "out": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm."}, "proof": {"in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.", "out": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "“He said 'no' to me,” she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan—if there is one—fails."}, {"rule": "dashes", "in": "chapters 3-5 and pp. 34-36", "out": "chapters 3-5 and pp. 34-36"}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "apostrophe", "in": "don't", "out": "don’t"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}, {"rule": "symbols", "in": "Copyright (c) 2026, 1920x1080", "out": "Copyright © 2026, 1920×1080"}]}, {"locale": "en-GB", "name": "English (UK)", "hero": {"in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.", "out": "She asked, ‘Isn’t this the shop they call “round the corner”?’ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."}, "proof": {"in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.", "out": "She asked, ‘Isn’t this the shop they call “round the corner”?’ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."}, "cases": [{"rule": "quotes", "in": "\"He said 'no' to me,\" she noted.", "out": "‘He said 'no' to me,’ she noted."}, {"rule": "dashes", "in": "The plan - if there is one - fails.", "out": "The plan – if there is one – fails."}, {"rule": "ellipsis", "in": "Wait... what?", "out": "Wait… what?"}, {"rule": "nbsp", "in": "It is 20 km to the coast", "out": "It is 20 km to the coast"}]}, {"locale": "de-DE", "name": "German", "hero": {"in": "Sie fragte: \"Ist das nicht der Laden namens 'an der Ecke'?\" ... Wir liefen -- fast 3 km -- und fanden ihn leider geschlossen. Copyright (c) 2026, Format 40x60 cm, z. B. für Poster.", "out": "Sie fragte: „Ist das nicht der Laden namens ‚an der Ecke‘?“ … Wir liefen – fast 3 km – und fanden ihn leider geschlossen. Copyright © 2026, Format 40×60 cm, z. B. für Poster."}, "proof": {"in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.", "out": "She asked, „Isn’t this the shop they call ‚round the corner‘?“ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "„Er sagte ‚nein‘ zu mir“, notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "dashes", "in": "Die Jahre 2019-2023", "out": "Die Jahre 2019-2023"}, {"rule": "nbsp", "in": "z. B. Berlin", "out": "z. B. Berlin"}, {"rule": "symbols", "in": "Auflösung 1920x1080", "out": "Auflösung 1920×1080"}]}, {"locale": "de-CH", "name": "Swiss German", "hero": {"in": "Sie fragte: \"Ist das nicht der Laden namens 'an der Ecke'?\" ... Wir liefen -- fast 3 km -- und fanden ihn leider geschlossen. Copyright (c) 2026, Format 40x60 cm, z. B. für Poster.", "out": "Sie fragte: «Ist das nicht der Laden namens ‹an der Ecke›?» … Wir liefen – fast 3 km – und fanden ihn leider geschlossen. Copyright © 2026, Format 40×60 cm, z. B. für Poster."}, "proof": {"in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.", "out": "She asked, «Isn’t this the shop they call ‹round the corner›?» … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."}, "cases": [{"rule": "quotes", "in": "\"Er sagte 'nein' zu mir\", notierte sie.", "out": "«Er sagte ‹nein› zu mir», notierte sie."}, {"rule": "dashes", "in": "Der Plan--falls es einen gibt--scheitert.", "out": "Der Plan – falls es einen gibt – scheitert."}, {"rule": "nbsp", "in": "z. B. Bern", "out": "z. B. Bern"}]}, {"locale": "fr", "name": "French", "hero": {"in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.", "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm."}, "proof": {"in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.", "out": "She asked, « Isn’t this the shop they call “round the corner” ? » … We’d walked — nearly 3 km — just to find it closed. Copyright © 2026 ; the print measures 40×60 cm."}, "cases": [{"rule": "quotes", "in": "Il a dit \"bonjour\".", "out": "Il a dit « bonjour »."}, {"rule": "quotes", "in": "\"Il a dit 'oui' hier.\"", "out": "« Il a dit 'oui' hier. »"}, {"rule": "nbsp", "in": "Ça va ? Bonjour !", "out": "Ça va ? Bonjour !"}, {"rule": "dashes", "in": "Le plan - il existe - échoue.", "out": "Le plan — il existe — échoue."}, {"rule": "apostrophe", "in": "l'été et l'hiver", "out": "l’été et l’hiver"}]}, {"locale": "fr-CA", "name": "French (Canada)", "hero": {"in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.", "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm."}, "proof": {"in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.", "out": "She asked, « Isn’t this the shop they call “round the corner”? » … We’d walked — nearly 3 km — just to find it closed. Copyright © 2026; the print measures 40×60 cm."}, "cases": [{"rule": "quotes", "in": "Il a dit \"bonjour\".", "out": "Il a dit « bonjour »."}, {"rule": "dashes", "in": "Le plan - il existe - échoue.", "out": "Le plan — il existe — échoue."}, {"rule": "nbsp", "in": "Ça va? Bonjour!", "out": "Ça va? Bonjour!"}, {"rule": "nbsp", "in": "Rendez-vous à 15 h: bureau 204.", "out": "Rendez-vous à 15 h : bureau 204."}]}, {"locale": "ru", "name": "Russian", "hero": {"in": "Она спросила: \"Это не тот магазинчик, который называют 'за углом'?\" ... Мы прошли - почти 3 км - и нашли его закрытым, а что-то достали из-под прилавка. Copyright (c) 2026, формат 40x60 см.", "out": "Она спросила: «Это не тот магазинчик, который называют „за углом“?» … Мы прошли — почти 3 км — и нашли его закрытым, а что‑то достали из‑под прилавка. Copyright © 2026, формат 40×60 см."}, "proof": {"in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.", "out": "She asked, «Isn’t this the shop they call „round the corner“?» … We’d walked — nearly 3 km — just to find it closed. Copyright © 2026; the print measures 40×60 cm."}, "cases": [{"rule": "quotes", "in": "Он сказал: \"это 'моё' дело\".", "out": "Он сказал: «это 'моё' дело»."}, {"rule": "dashes", "in": "Москва - столица", "out": "Москва — столица"}, {"rule": "dashes", "in": "Годы 2019-2023 были насыщенными", "out": "Годы 2019-2023 были насыщенными"}, {"rule": "hyphen", "in": "Достал из-под стола", "out": "Достал из‑под стола"}, {"rule": "ellipsis", "in": "Что?...", "out": "Что?.."}, {"rule": "nbsp", "in": "Он живёт в Москве", "out": "Он живёт в Москве"}]}, {"locale": "fi", "name": "Finnish", "hero": {"in": "Hän kysyi: \"Eikö tämä ole se 'nurkan' kirjakauppa?\" ... Kävelimme - lähes 3 km - ja löysimme sen kiinni. Copyright (c) 2026; tulosteen koko on 40x60 cm, hinta nousi 10,5 %.", "out": "Hän kysyi: ”Eikö tämä ole se ’nurkan’ kirjakauppa?” … Kävelimme – lähes 3 km – ja löysimme sen kiinni. Copyright © 2026; tulosteen koko on 40×60 cm, hinta nousi 10,5 %."}, "proof": {"in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.", "out": "She asked, ”Isn’t this the shop they call ’round the corner’?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."}, "cases": [{"rule": "quotes", "in": "\"Hän sanoi 'moi'\", totesin.", "out": "”Hän sanoi ’moi’”, totesin."}, {"rule": "dashes", "in": "Suunnitelma - jos sellainen on - kaatuu.", "out": "Suunnitelma – jos sellainen on – kaatuu."}, {"rule": "nbsp", "in": "Hinta nousi 10,5 %", "out": "Hinta nousi 10,5 %"}]}, {"locale": "sv", "name": "Swedish", "hero": {"in": "Hon frågade: \"Är det inte affären i 'hörnet'?\" ... Vi gick - nästan 3 km - och hittade den stängd. Copyright (c) 2026; trycket mäter 40x60 cm och kostar 10,5 % mer.", "out": "Hon frågade: ”Är det inte affären i ’hörnet’?” … Vi gick – nästan 3 km – och hittade den stängd. Copyright © 2026; trycket mäter 40×60 cm och kostar 10,5 % mer."}, "proof": {"in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.", "out": "She asked, ”Isn’t this the shop they call ’round the corner’?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."}, "cases": [{"rule": "quotes", "in": "\"Han sa 'hej'\", sa jag.", "out": "”Han sa ’hej’”, sa jag."}, {"rule": "dashes", "in": "Planen - om det finns en - misslyckas.", "out": "Planen – om det finns en – misslyckas."}, {"rule": "nbsp", "in": "Det kostar 100 kr", "out": "Det kostar 100 kr"}]}, {"locale": "el", "name": "Greek", "hero": {"in": "Ρώτησε: \"Δεν είναι αυτό το μαγαζί 'στη γωνία';\" ... Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright (c) 2026, μέγεθος 40x60 cm.", "out": "Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm."}, "proof": {"in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.", "out": "She asked, «Isn’t this the shop they call “round the corner”?» … We’d walked - nearly 3 km - just to find it closed. Copyright © 2026; the print measures 40×60 cm."}, "cases": [{"rule": "quotes", "in": "Είπε \"καλημέρα\" και έφυγε.", "out": "Είπε «καλημέρα» και έφυγε."}, {"rule": "quotes", "in": "\"Είπε “όχι” σε μένα\", σημείωσε.", "out": "«Είπε “όχι” σε μένα», σημείωσε."}, {"rule": "apostrophe", "in": "γι' αυτό και απ' την αρχή", "out": "γι’ αυτό και απ’ την αρχή"}, {"rule": "spaces", "in": "Τι κάνεις ;", "out": "Τι κάνεις;"}, {"rule": "ellipsis", "in": "Περίμενε... τι έγινε", "out": "Περίμενε… τι έγινε"}, {"rule": "symbols", "in": "Ανάλυση 1920x1080", "out": "Ανάλυση 1920×1080"}]}]};
 (function playground() {
   const {
     mark, diff, paint, highlightLines, bootTabs, summarizeChange, summarizeError, copyStatusText,
@@ -336,6 +170,8 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
   const ENGINE_SRC = "vendor/polytypo.browser.js";
   const LOCALES = DATA.locales.map((l) => [l.locale, l.name]);
   const DIFF_CAP = 4000; // above this, skip character-level highlighting (O(n*m) LCS)
+  const TA_MIN_H = 120; // keep in sync with textarea.pg-textarea / .pg-output in style.css
+  const TA_MAX_H = 320;
 
   const $demo = document.getElementById("pg-demo");
   const $locale = document.getElementById("pg-locale");
@@ -345,6 +181,7 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
   const $input = document.getElementById("pg-input");
   const $output = document.getElementById("pg-output");
   const $count = document.getElementById("pg-count");
+  const $outputSummary = document.getElementById("pg-output-summary");
   const $foot = document.getElementById("pg-foot");
   const $copyOutput = document.getElementById("pg-copy-output");
   const $actionStatus = document.getElementById("pg-action-status");
@@ -355,9 +192,12 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
     $locale.appendChild(o);
   }
 
+  // Mirrors HERO["en-US"] in gen_examples.ts — unreachable in practice (every locale in the
+  // dropdown has its own recorded hero), kept in sync anyway so it isn't a stale copy of text
+  // that no longer exists anywhere else if it's ever hit for a locale code with no recording.
   const FALLBACK_SAMPLE =
-    `Is this "polytypo"? - No, it's "polytypo"! She said, "He replied 'never' twice"... ` +
-    `The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.`;
+    `She asked, "Isn't this the shop they call 'round the corner'?" ... We'd walked - nearly 3 ` +
+    `km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.`;
 
   /** This locale's recorded { in, out } pair from examples.json — the real engine run captured at
    * build time, which is the only output this page may show before the engine itself is here. */
@@ -381,9 +221,9 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
   let isLoadSlow = false;
 
   const RECORDED_NOTE = {
-    idle: " · recorded example — the engine loads when you use the form",
-    loading: " · recorded example — the engine is loading",
-    failed: " · recorded example — the engine bundle did not load",
+    idle: "recorded example — the engine loads when you use the form",
+    loading: "recorded example — the engine is loading",
+    failed: "recorded example — the engine bundle did not load",
   };
 
   function startEngineLoad() {
@@ -438,7 +278,7 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
       `    mode: ${mode}, // type: string, default: "text" — "text" | "html" | "markdown"\n` +
       (showDialect
         ? `    dialect: ${dialect}, // type: string, required because mode is "markdown" — "commonmark" | "mdx"\n`
-        : `    // dialect: "commonmark", // required only when mode is "markdown"; ignored otherwise\n`) +
+        : "") +
       `  },\n` +
       `);`;
     $callJs.innerHTML = highlightLines(jsCode, "//");
@@ -451,7 +291,7 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
       `    mode=${mode},  # type: str, default: "text" — "text" | "html" | "markdown"\n` +
       (showDialect
         ? `    dialect=${dialect},  # type: str, required because mode is "markdown" — "commonmark" | "mdx"\n`
-        : `    # dialect="commonmark",  # required only when mode is "markdown"; ignored otherwise\n`) +
+        : "") +
       `)`;
     $callPy.innerHTML = highlightLines(pyCode, "#");
 
@@ -463,7 +303,7 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
       `        Mode:    ${mode}, // type: string, default: "text" — "text" | "html" | "markdown"\n` +
       (showDialect
         ? `        Dialect: ${dialect}, // type: string, required because Mode is "markdown" — "commonmark" | "mdx"\n`
-        : `        // Dialect: "commonmark", // required only when Mode is "markdown"; ignored otherwise\n`) +
+        : "") +
       `    },\n` +
       `)`;
     $callGo.innerHTML = highlightLines(goCode, "//");
@@ -476,7 +316,7 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
       `  mode: ${rubyStrLit(options.mode)}, # type: String, default: "text" — "text" | "html" | "markdown"\n` +
       (showDialect
         ? `  dialect: ${rubyStrLit(options.dialect)}, # type: String, required because mode is "markdown" — "commonmark" | "mdx"\n`
-        : `  # dialect: "commonmark", # required only when mode is "markdown"; ignored otherwise\n`) +
+        : "") +
       `)`;
     $callRb.innerHTML = highlightLines(rbCode, "#");
 
@@ -488,7 +328,7 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
       `        'mode' => ${phpStrLit(options.mode)}, // type: string, default: 'text' — 'text' | 'html' | 'markdown'\n` +
       (showDialect
         ? `        'dialect' => ${phpStrLit(options.dialect)}, // type: string, required because mode is 'markdown' — 'commonmark' | 'mdx'\n`
-        : `        // 'dialect' => 'commonmark', // required only when mode is 'markdown'; ignored otherwise\n`) +
+        : "") +
       `    ],\n` +
       `);`;
     $callPhp.innerHTML = highlightLines(phpCode, "//");
@@ -525,15 +365,15 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
     $output.classList.remove("error");
 
     if (isRecordedState) {
-      const summary = paintPair(recorded.in, recorded.out);
-      $foot.textContent =
-        options.locale + " · text · " + summary + (RECORDED_NOTE[engineState] || "");
+      $outputSummary.textContent = paintPair(recorded.in, recorded.out);
+      $foot.textContent = RECORDED_NOTE[engineState] || "";
       return;
     }
 
     if (engineState === "failed") {
       if (recorded) paintPair(recorded.in, recorded.out);
       else $output.innerHTML = "";
+      $outputSummary.textContent = "";
       $foot.textContent =
         "The engine bundle (" + ENGINE_SRC + ") did not load — the output above is the recorded " +
         options.locale + " example, not your own text.";
@@ -541,52 +381,74 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
     }
 
     $output.innerHTML = "";
+    $outputSummary.textContent = "";
     $foot.textContent = isLoadSlow
       ? "Loading the engine — your text is typeset the moment it arrives."
       : "";
   }
 
+  // Fits both panes to whichever needs more room, between TA_MIN_H and TA_MAX_H, instead of
+  // sizing off the textarea alone: the mono input face and the output's larger reading face wrap
+  // the same character count into a different number of lines, so matching heights off only one
+  // side can clip the other. Called from render()'s `finally` below, so it runs after every exit
+  // path — including the early returns — has already finished setting both panes' content.
+  function fitPanes() {
+    $input.style.height = "auto";
+    $output.style.height = "auto";
+    const needed = Math.max($input.scrollHeight, $output.scrollHeight);
+    const h = Math.min(Math.max(needed, TA_MIN_H), TA_MAX_H);
+    $input.style.height = h + "px";
+    $output.style.height = h + "px";
+  }
+
   function render() {
-    const text = $input.value;
-    const n = text.length;
-    $count.textContent = n ? n.toLocaleString("en-US") + " chars" : "";
-    $dialectWrap.hidden = $mode.value !== "markdown";
-
-    if (!text) {
-      $output.classList.remove("error");
-      $output.innerHTML = "";
-      $foot.textContent = "";
-      clearCallCode();
-      return;
-    }
-
-    const options = { locale: $locale.value, mode: $mode.value };
-    if ($mode.value === "markdown") options.dialect = $dialect.value;
-
-    // The call block describes what the form is set to, not what the engine returned — it is pure
-    // string building. Rendered before every engine branch below so it tracks the controls even
-    // while the bundle is still loading, and still shows the call that threw when one does.
-    renderCallCode(options);
-
-    if (engineState !== "ready") {
-      renderWithoutEngine(options, text);
-      return;
-    }
-
-    let out;
     try {
-      out = engine.transform(text, options);
-    } catch (error) {
-      $output.classList.add("error");
-      const code = error && error.code ? error.code : "Error";
-      $output.textContent = code + ": " + (error && error.message ? error.message : String(error));
-      $foot.textContent = summarizeError(code);
-      return;
-    }
+      const text = $input.value;
+      const n = text.length;
+      $count.textContent = n ? n.toLocaleString("en-US") + " chars" : "";
+      $dialectWrap.hidden = $mode.value !== "markdown";
 
-    $output.classList.remove("error");
-    const summary = paintPair(text, out);
-    $foot.textContent = $locale.value + " · " + $mode.value + " · " + summary;
+      if (!text) {
+        $output.classList.remove("error");
+        $output.innerHTML = "";
+        $outputSummary.textContent = "";
+        $foot.textContent = "";
+        clearCallCode();
+        return;
+      }
+
+      const options = { locale: $locale.value, mode: $mode.value };
+      if ($mode.value === "markdown") options.dialect = $dialect.value;
+
+      // The call block describes what the form is set to, not what the engine returned — it is
+      // pure string building. Rendered before every engine branch below so it tracks the controls
+      // even while the bundle is still loading, and still shows the call that threw when one does.
+      renderCallCode(options);
+
+      if (engineState !== "ready") {
+        renderWithoutEngine(options, text);
+        return;
+      }
+
+      let out;
+      try {
+        out = engine.transform(text, options);
+      } catch (error) {
+        $output.classList.add("error");
+        const code = error && error.code ? error.code : "Error";
+        $output.textContent =
+          code + ": " + (error && error.message ? error.message : String(error));
+        $outputSummary.textContent = "";
+        $foot.textContent = summarizeError(code);
+        return;
+      }
+
+      $output.classList.remove("error");
+      $outputSummary.textContent = paintPair(text, out);
+      $foot.textContent = "";
+    } finally {
+      fitPanes();
+    }
   }
 
   async function copyText(text) {
@@ -632,6 +494,31 @@ const DATA = {"spec": "1.0.0", "proofLocales": ["en-US", "de-DE", "fr", "ru"], "
     startEngineLoad();
     run();
   });
+
+  // Both panes are capped at the same height (see .pg-output in style.css) and scroll on their
+  // own past that — without this, comparing a long before/after means scrolling one pane, losing
+  // your place, and hunting for it again in the other. Guarded by a lock rather than removing the
+  // listener mid-callback, since scrolling `to` fires `to`'s own scroll event straight back in.
+  let syncingScroll = false;
+  function syncScroll(from, to) {
+    if (syncingScroll) return;
+    const fromMax = from.scrollHeight - from.clientHeight;
+    const toMax = to.scrollHeight - to.clientHeight;
+    if (fromMax <= 0 || toMax <= 0) return;
+    syncingScroll = true;
+    to.scrollTop = (from.scrollTop / fromMax) * toMax;
+    syncingScroll = false;
+  }
+  $input.addEventListener("scroll", () => syncScroll($input, $output));
+  $output.addEventListener("scroll", () => syncScroll($output, $input));
+
+  // `resize: vertical` on the textarea (style.css) only resizes the textarea itself; mirror
+  // whatever height a visitor drags it to onto the output pane so the two stay matched.
+  if (typeof ResizeObserver === "function") {
+    new ResizeObserver(() => {
+      $output.style.height = $input.offsetHeight + "px";
+    }).observe($input);
+  }
 
   if (LAZY) {
     // First sign of intent, whichever comes first: focusing the input (before a single character

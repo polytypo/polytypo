@@ -199,7 +199,7 @@ reach. Lead with the em-dash thesis instead of a generic typography heading. Can
 
 > The em dash was mine before AI.
 >
-> `—` is typography, not a watermark.
+> `«—»` is typography, not an AI watermark.
 
 Follow with a locale-aware demonstration, not an anti-AI rant. Useful share mechanics:
 

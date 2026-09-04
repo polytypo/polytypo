@@ -56,7 +56,10 @@ function hasNonAsciiCase(mode: string): boolean {
 describe("mode-fixture representative-coverage minimum (spec/rules/modes.md §8)", () => {
   it("carries html fixtures in at least two distinct locales", () => {
     const locales = localesWith("html");
-    expect(locales.size, `html-mode locales: ${[...locales].sort().join(", ")}`).toBeGreaterThanOrEqual(2);
+    expect(
+      locales.size,
+      `html-mode locales: ${[...locales].sort().join(", ")}`,
+    ).toBeGreaterThanOrEqual(2);
   });
 
   it("carries markdown/commonmark fixtures in at least two distinct locales", () => {
@@ -69,7 +72,10 @@ describe("mode-fixture representative-coverage minimum (spec/rules/modes.md §8)
 
   it("carries markdown/mdx fixtures in at least two distinct locales", () => {
     const locales = localesWith("markdown", "mdx");
-    expect(locales.size, `markdown/mdx locales: ${[...locales].sort().join(", ")}`).toBeGreaterThanOrEqual(2);
+    expect(
+      locales.size,
+      `markdown/mdx locales: ${[...locales].sort().join(", ")}`,
+    ).toBeGreaterThanOrEqual(2);
   });
 
   it("at least one html fixture exercises non-ASCII output (code-point/offset boundary coverage)", () => {
@@ -87,7 +93,9 @@ describe("mode-fixture representative-coverage minimum (spec/rules/modes.md §8)
     // rule" this test previously checked. Discovering and running whatever cases exist (the
     // conformance runner's own job) cannot by itself prove a *missing* case doesn't exist —
     // only an explicit cross-check against the canonical rule id list can.
-    expect(CANONICAL_RULE_IDS.length, "canonical rule id list must be non-empty").toBeGreaterThan(0);
+    expect(CANONICAL_RULE_IDS.length, "canonical rule id list must be non-empty").toBeGreaterThan(
+      0,
+    );
 
     const covered = new Map<string, Set<string>>(); // locale -> rule ids covered in text mode
     const locales = new Set<string>();
@@ -108,7 +116,10 @@ describe("mode-fixture representative-coverage minimum (spec/rules/modes.md §8)
       }
     }
 
-    expect(missing, `missing (locale/rule) text-mode fixture coverage: ${missing.join(", ")}`).toEqual([]);
+    expect(
+      missing,
+      `missing (locale/rule) text-mode fixture coverage: ${missing.join(", ")}`,
+    ).toEqual([]);
     expect(locales.size).toBeGreaterThanOrEqual(10);
   });
 

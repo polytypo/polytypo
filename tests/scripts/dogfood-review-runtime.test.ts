@@ -32,7 +32,13 @@ describe("createDefaultState / computeCounts / isFullyAccepted", () => {
       expect(decisions[id]).toBe("UNREVIEWED");
       expect(notes[id]).toBe("");
     }
-    expect(computeCounts(IDS, decisions)).toEqual({ total: 3, UNREVIEWED: 3, ACCEPT: 0, REJECT: 0, "NEEDS-DISCUSSION": 0 });
+    expect(computeCounts(IDS, decisions)).toEqual({
+      total: 3,
+      UNREVIEWED: 3,
+      ACCEPT: 0,
+      REJECT: 0,
+      "NEEDS-DISCUSSION": 0,
+    });
     expect(isFullyAccepted(IDS, decisions)).toBe(false);
   });
 
@@ -59,7 +65,13 @@ describe("serializeExportPayload: deterministic export", () => {
     const payload = serializeExportPayload(HASH, IDS, decisions, notes);
     expect(payload.decisions.map((d) => d.id)).toEqual(IDS);
     expect(payload.decisions.find((d) => d.id === "a#r2")!.decision).toBe("UNREVIEWED");
-    expect(payload.counts).toEqual({ total: 3, UNREVIEWED: 2, ACCEPT: 1, REJECT: 0, "NEEDS-DISCUSSION": 0 });
+    expect(payload.counts).toEqual({
+      total: 3,
+      UNREVIEWED: 2,
+      ACCEPT: 1,
+      REJECT: 0,
+      "NEEDS-DISCUSSION": 0,
+    });
   });
 
   it("export id order matches the canonical order given, regardless of decisions object key order", () => {
@@ -98,7 +110,12 @@ describe("validateImportPayload: fail-closed import", () => {
   });
 
   it("a partial import succeeds only when allowPartial is explicitly true", () => {
-    const exported = { schemaVersion: 1, evidenceReviewHash: HASH, counts: {}, decisions: [{ id: "a#r1", decision: "ACCEPT", note: "" }] };
+    const exported = {
+      schemaVersion: 1,
+      evidenceReviewHash: HASH,
+      counts: {},
+      decisions: [{ id: "a#r1", decision: "ACCEPT", note: "" }],
+    };
     const result = validateImportPayload(exported, HASH, IDS, { allowPartial: true });
     expect(result.ok).toBe(true);
     if (!result.ok) throw new Error("unreachable");
@@ -123,7 +140,12 @@ describe("validateImportPayload: fail-closed import", () => {
   });
 
   it("an unknown decision enum value is rejected", () => {
-    const exported = { schemaVersion: 1, evidenceReviewHash: HASH, counts: {}, decisions: [{ id: "a#r1", decision: "MAYBE", note: "" }] };
+    const exported = {
+      schemaVersion: 1,
+      evidenceReviewHash: HASH,
+      counts: {},
+      decisions: [{ id: "a#r1", decision: "MAYBE", note: "" }],
+    };
     const result = validateImportPayload(exported, HASH, IDS, { allowPartial: true });
     expect(result.ok).toBe(false);
     if (result.ok) throw new Error("unreachable");
@@ -131,7 +153,12 @@ describe("validateImportPayload: fail-closed import", () => {
   });
 
   it("an id the bundle never produced is rejected even under allowPartial", () => {
-    const exported = { schemaVersion: 1, evidenceReviewHash: HASH, counts: {}, decisions: [{ id: "not-a-real-id", decision: "ACCEPT", note: "" }] };
+    const exported = {
+      schemaVersion: 1,
+      evidenceReviewHash: HASH,
+      counts: {},
+      decisions: [{ id: "not-a-real-id", decision: "ACCEPT", note: "" }],
+    };
     const result = validateImportPayload(exported, HASH, IDS, { allowPartial: true });
     expect(result.ok).toBe(false);
     if (result.ok) throw new Error("unreachable");
@@ -141,7 +168,13 @@ describe("validateImportPayload: fail-closed import", () => {
   it("malformed JSON shape (not an object, decisions not an array) is rejected, never throws", () => {
     expect(validateImportPayload(null, HASH, IDS).ok).toBe(false);
     expect(validateImportPayload("just a string", HASH, IDS).ok).toBe(false);
-    expect(validateImportPayload({ schemaVersion: 1, evidenceReviewHash: HASH, decisions: "not-an-array" }, HASH, IDS).ok).toBe(false);
+    expect(
+      validateImportPayload(
+        { schemaVersion: 1, evidenceReviewHash: HASH, decisions: "not-an-array" },
+        HASH,
+        IDS,
+      ).ok,
+    ).toBe(false);
   });
 
   it("wrong schemaVersion is rejected", () => {
@@ -157,14 +190,20 @@ describe("mergeImportedState", () => {
     const existingNotes = { "a#r1": "", "a#r2": "", "a#r3": "" };
     const imported = { decisions: { "a#r2": "ACCEPT" }, notes: { "a#r2": "looks good" } };
     const merged = mergeImportedState(existingDecisions, existingNotes, imported);
-    expect(merged.decisions).toEqual({ "a#r1": "UNREVIEWED", "a#r2": "ACCEPT", "a#r3": "UNREVIEWED" });
+    expect(merged.decisions).toEqual({
+      "a#r1": "UNREVIEWED",
+      "a#r2": "ACCEPT",
+      "a#r3": "UNREVIEWED",
+    });
     expect(existingDecisions["a#r2"]).toBe("UNREVIEWED"); // original untouched
   });
 });
 
 describe("DECISIONS / isValidDecision", () => {
   it("the enum is exactly the four documented decisions", () => {
-    expect(DECISIONS.slice().sort()).toEqual(["ACCEPT", "NEEDS-DISCUSSION", "REJECT", "UNREVIEWED"].sort());
+    expect(DECISIONS.slice().sort()).toEqual(
+      ["ACCEPT", "NEEDS-DISCUSSION", "REJECT", "UNREVIEWED"].sort(),
+    );
     expect(isValidDecision("ACCEPT")).toBe(true);
     expect(isValidDecision("MAYBE")).toBe(false);
   });

@@ -6,7 +6,9 @@ export declare const EXPORT_SCHEMA_VERSION: number;
 export declare const STORAGE_KEY_PREFIX: string;
 
 export declare function storageKey(evidenceReviewHash: string): string;
-export declare function isValidDecision(value: unknown): value is "UNREVIEWED" | "ACCEPT" | "REJECT" | "NEEDS-DISCUSSION";
+export declare function isValidDecision(
+  value: unknown,
+): value is "UNREVIEWED" | "ACCEPT" | "REJECT" | "NEEDS-DISCUSSION";
 
 export interface ReviewDecisionState {
   decisions: Record<string, string>;
@@ -23,8 +25,14 @@ export interface DecisionCounts {
   "NEEDS-DISCUSSION": number;
 }
 
-export declare function computeCounts(ids: readonly string[], decisions: Record<string, string>): DecisionCounts;
-export declare function isFullyAccepted(ids: readonly string[], decisions: Record<string, string>): boolean;
+export declare function computeCounts(
+  ids: readonly string[],
+  decisions: Record<string, string>,
+): DecisionCounts;
+export declare function isFullyAccepted(
+  ids: readonly string[],
+  decisions: Record<string, string>,
+): boolean;
 
 export interface ExportPayload {
   schemaVersion: number;
@@ -41,7 +49,13 @@ export declare function serializeExportPayload(
 ): ExportPayload;
 
 export type ImportValidationResult =
-  | { ok: true; decisions: Record<string, string>; notes: Record<string, string>; importedCount: number; totalCount: number }
+  | {
+      ok: true;
+      decisions: Record<string, string>;
+      notes: Record<string, string>;
+      importedCount: number;
+      totalCount: number;
+    }
   | { ok: false; reason: string };
 
 export declare function validateImportPayload(

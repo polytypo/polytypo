@@ -65,7 +65,10 @@ describe("release-artifact checksum handoff (workflow's exact working directorie
     execFileSync("bash", ["-c", `sha256sum "${TARBALL_NAME}" > SHA256SUMS`], {
       cwd: releaseArtifactDir,
     });
-    const contents = execFileSync("cat", ["SHA256SUMS"], { cwd: releaseArtifactDir, encoding: "utf8" });
+    const contents = execFileSync("cat", ["SHA256SUMS"], {
+      cwd: releaseArtifactDir,
+      encoding: "utf8",
+    });
     expect(contents.trim().endsWith(`  ${TARBALL_NAME}`)).toBe(true);
     expect(contents).not.toContain("release-artifact/");
   });

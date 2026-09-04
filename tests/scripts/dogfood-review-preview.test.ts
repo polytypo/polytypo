@@ -11,7 +11,11 @@ import { getLocaleData } from "../../src/engine/locale.js";
 import { computeQuotePairing } from "../../scripts/dogfood/quote-pairing.js";
 
 const enUSLocale = getLocaleData("en-US");
-import { buildManifest, buildReviewChangeEntries, buildReviewMarkdown } from "../../scripts/dogfood/evidence.js";
+import {
+  buildManifest,
+  buildReviewChangeEntries,
+  buildReviewMarkdown,
+} from "../../scripts/dogfood/evidence.js";
 import {
   checkGlobalIdNamespaceUnique,
   checkHunkContainment,
@@ -20,34 +24,86 @@ import {
 } from "../../scripts/dogfood/consistency.js";
 import type { FileResult } from "../../scripts/dogfood/transform-corpus.js";
 
-function fakeResult(path: string, original: string, full: string, opts: { markdown?: boolean; ranges?: boolean } = {}): FileResult {
+function fakeResult(
+  path: string,
+  original: string,
+  full: string,
+  opts: { markdown?: boolean; ranges?: boolean } = {},
+): FileResult {
   const diff = computeFileDiff(path, original, full);
   const options = opts.markdown
     ? { locale: "en-US", mode: "markdown" as const, dialect: "mdx" as const }
-    : { locale: "en-US", mode: "text" as const, ...(opts.ranges ? { rules: { ranges: true } } : {}) };
+    : {
+        locale: "en-US",
+        mode: "text" as const,
+        ...(opts.ranges ? { rules: { ranges: true } } : {}),
+      };
   const attr = attributeReviewChanges(original, options, diff.reviewChanges);
   const riskTags = new Map(
     diff.reviewChanges.map((rc) => {
       const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-      return [rc.id, computeRiskTags({ oldText: original, newText: full, reviewChange: rc, atomicEdits: edits, attribution: attr.get(rc.id), locale: enUSLocale })] as const;
+      return [
+        rc.id,
+        computeRiskTags({
+          oldText: original,
+          newText: full,
+          reviewChange: rc,
+          atomicEdits: edits,
+          attribution: attr.get(rc.id),
+          locale: enUSLocale,
+        }),
+      ] as const;
     }),
   );
   const quotePairing = computeQuotePairing(original, diff.reviewChanges, attr);
-  return { path, bytes: 0, sha256: "x", status: "changed", idempotencyOk: true, diff, originalText: original, transformedText: full, attribution: attr, riskTags, quotePairing };
+  return {
+    path,
+    bytes: 0,
+    sha256: "x",
+    status: "changed",
+    idempotencyOk: true,
+    diff,
+    originalText: original,
+    transformedText: full,
+    attribution: attr,
+    riskTags,
+    quotePairing,
+  };
 }
 
-function fakeManifest(entries: ReturnType<typeof buildReviewChangeEntries>, hunkCount: number, atomicCount: number) {
+function fakeManifest(
+  entries: ReturnType<typeof buildReviewChangeEntries>,
+  hunkCount: number,
+  atomicCount: number,
+) {
   return buildManifest({
     provenance: {
-      argv: [], corpusRoot: "/x", outDir: "/y", locale: "en-US", localeRationale: "", mode: "markdown", dialect: "mdx",
-      nodeVersion: "v0", packageVersion: "0.0.0", specVersion: "0.0.0", gitHead: "x", gitDirty: false,
+      argv: [],
+      corpusRoot: "/x",
+      outDir: "/y",
+      locale: "en-US",
+      localeRationale: "",
+      mode: "markdown",
+      dialect: "mdx",
+      nodeVersion: "v0",
+      packageVersion: "0.0.0",
+      specVersion: "0.0.0",
+      gitHead: "x",
+      gitDirty: false,
     },
     implementationInputs: { roots: [], fileCount: 0, totalBytes: 0, aggregateHash: "x", files: [] },
     corpusPreRun: { files: [], fileCount: 0, totalBytes: 0, aggregateHash: "x" },
     corpusPostRun: { files: [], fileCount: 0, totalBytes: 0, aggregateHash: "x" },
     corpusManifestsEqual: true,
     results: [],
-    counts: { changedFileCount: 1, unchangedFileCount: 0, errorCount: 0, unifiedDiffHunkCount: hunkCount, atomicEditCount: atomicCount, reviewChangeCount: entries.length },
+    counts: {
+      changedFileCount: 1,
+      unchangedFileCount: 0,
+      errorCount: 0,
+      unifiedDiffHunkCount: hunkCount,
+      atomicEditCount: atomicCount,
+      reviewChangeCount: entries.length,
+    },
     idempotencyFailures: [],
     evidence: null,
   });
@@ -83,13 +139,18 @@ describe("acceptance 10: paired quote preview/link, or an honest unknown", () =>
     const full = transform(original, { locale: "en-US", mode: "text" });
     const result = fakeResult("f.md", original, full);
     const entries = buildReviewChangeEntries([result]);
-    const opening = entries.find((e) => e.quotePairing?.status === "paired" && e.quotePairing.role === "opening");
-    const closing = entries.find((e) => e.quotePairing?.status === "paired" && e.quotePairing.role === "closing");
+    const opening = entries.find(
+      (e) => e.quotePairing?.status === "paired" && e.quotePairing.role === "opening",
+    );
+    const closing = entries.find(
+      (e) => e.quotePairing?.status === "paired" && e.quotePairing.role === "closing",
+    );
     expect(opening).toBeDefined();
     expect(closing).toBeDefined();
     const openingPairing = opening!.quotePairing;
     const closingPairing = closing!.quotePairing;
-    if (openingPairing?.status !== "paired" || closingPairing?.status !== "paired") throw new Error("expected both to be paired");
+    if (openingPairing?.status !== "paired" || closingPairing?.status !== "paired")
+      throw new Error("expected both to be paired");
     expect(openingPairing.pairedReviewChangeId).toBe(closing!.id);
     expect(closingPairing.pairedReviewChangeId).toBe(opening!.id);
   });
@@ -103,7 +164,9 @@ describe("acceptance 10: paired quote preview/link, or an honest unknown", () =>
     expect(quoteEntries.length).toBeGreaterThan(0);
     // The single-curly-quote family here has an ambiguous closing mark (apostrophe-attributed,
     // not quotes-attributed) -- whatever single-curly candidates remain must never be paired.
-    const singleCurlyCandidates = quoteEntries.filter((e) => e.before === "'" || e.after === "‘" || e.after === "’");
+    const singleCurlyCandidates = quoteEntries.filter(
+      (e) => e.before === "'" || e.after === "‘" || e.after === "’",
+    );
     for (const e of singleCurlyCandidates) {
       expect(e.quotePairing!.status).not.toBe("paired");
     }
@@ -136,7 +199,9 @@ describe("acceptance 11: Markdown metacharacters never break the table", () => {
     const result = fakeResult("f.mdx", original, full, { markdown: true });
     const entries = buildReviewChangeEntries([result]);
     const md = buildReviewMarkdown(fakeManifest(entries, 1, entries.length), entries, [result]);
-    const tableLines = md.split("\n").filter((l) => l.startsWith("| <a id=") && l.includes("`f.mdx"));
+    const tableLines = md
+      .split("\n")
+      .filter((l) => l.startsWith("| <a id=") && l.includes("`f.mdx"));
     expect(tableLines.length).toBeGreaterThan(0);
     for (const line of tableLines) {
       // A well-formed GFM row: same cell count as the header (8 columns -> 9 pipes).
@@ -169,7 +234,10 @@ describe("acceptance 13: hunk containment", () => {
 
     const rc = result.diff!.reviewChanges[0]!;
     const corrupted = { ...rc, diffHunkId: "unknown" };
-    const badResult: FileResult = { ...result, diff: { ...result.diff!, reviewChanges: [corrupted] } };
+    const badResult: FileResult = {
+      ...result,
+      diff: { ...result.diff!, reviewChanges: [corrupted] },
+    };
     const issues = checkHunkContainment([badResult]);
     expect(issues.length).toBeGreaterThan(0);
   });
@@ -184,7 +252,10 @@ describe("acceptance 14: REVIEW.md summary counts are derived from entries, not 
     const md = buildReviewMarkdown(fakeManifest(entries, 1, entries.length), entries, [result]);
     expect(checkReviewMarkdownCountsMatchEntries(entries, md)).toEqual([]);
 
-    const corruptedMd = md.replace(/(- `dash-restyling`: )(\d+)( changes?)/, (_m, a, _n, c) => `${a}999${c}`);
+    const corruptedMd = md.replace(
+      /(- `dash-restyling`: )(\d+)( changes?)/,
+      (_m, a, _n, c) => `${a}999${c}`,
+    );
     const issues = checkReviewMarkdownCountsMatchEntries(entries, corruptedMd);
     expect(issues.length).toBeGreaterThan(0);
   });
@@ -204,8 +275,14 @@ describe("global id namespace uniqueness and preview-matches-source", () => {
     const full = transform(original, { locale: "en-US", mode: "text" });
     const result = fakeResult("f.md", original, full);
     const [rc, ...rest] = result.diff!.reviewChanges;
-    const corrupted = { ...rc!, previewOldLeading: { text: "totally wrong text", truncated: false } };
-    const badResult: FileResult = { ...result, diff: { ...result.diff!, reviewChanges: [corrupted, ...rest] } };
+    const corrupted = {
+      ...rc!,
+      previewOldLeading: { text: "totally wrong text", truncated: false },
+    };
+    const badResult: FileResult = {
+      ...result,
+      diff: { ...result.diff!, reviewChanges: [corrupted, ...rest] },
+    };
     expect(checkPreviewMatchesSource([badResult]).length).toBeGreaterThan(0);
   });
 });

@@ -46,7 +46,16 @@ afterEach(() => {
 
 function fakeResult(path_: string, original: string, full: string): FileResult {
   const diff = computeFileDiff(path_, original, full);
-  return { path: path_, bytes: 0, sha256: "x", status: "changed", idempotencyOk: true, diff, originalText: original, transformedText: full };
+  return {
+    path: path_,
+    bytes: 0,
+    sha256: "x",
+    status: "changed",
+    idempotencyOk: true,
+    diff,
+    originalText: original,
+    transformedText: full,
+  };
 }
 
 const enUSLocale = getLocaleData("en-US");
@@ -75,9 +84,9 @@ describe("AtomicEdit reconstruction property", () => {
 
   it("holds on real engine output across a realistic multi-paragraph fixture", () => {
     const original =
-      'That\'s roughly 75 hours a year - nearly two weeks - on "meetings" that could\'ve been an email.\n' +
+      "That's roughly 75 hours a year - nearly two weeks - on \"meetings\" that could've been an email.\n" +
       "Section 5-10 covers the details; Figure 5-10 has the chart.\n" +
-      'He said \'don\'t\' go, and left.\n';
+      "He said 'don't' go, and left.\n";
     const full = transform(original, { locale: "en-US", mode: "text" });
     const diff = computeFileDiff("f.md", original, full);
     expect(diff.reconstruction.ok, JSON.stringify(diff.reconstruction.issues)).toBe(true);
@@ -155,23 +164,39 @@ describe("acceptance 6-7: numeric-range risk tag is scoped to the intersecting a
     const diff = computeFileDiff("f.mdx", before, after);
     const rc = diff.reviewChanges[0] as (typeof diff.reviewChanges)[number];
     const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-    const tags = computeRiskTags({ oldText: before, newText: after, reviewChange: rc, atomicEdits: edits, attribution: undefined, locale: enUSLocale });
+    const tags = computeRiskTags({
+      oldText: before,
+      newText: after,
+      reviewChange: rc,
+      atomicEdits: edits,
+      attribution: undefined,
+      locale: enUSLocale,
+    });
     const numericTag = tags.find((t) => t.tag === "numeric-range-or-compound-label-candidate");
     expect(numericTag).toBeDefined();
-    const evidence = numericTag!.evidence as { tokenOldOffset: { codePointStart: number; codePointEnd: number } };
+    const evidence = numericTag!.evidence as {
+      tokenOldOffset: { codePointStart: number; codePointEnd: number };
+    };
     expect(evidence.tokenOldOffset.codePointStart).toBeLessThanOrEqual(rc.oldOffset.codePointStart);
     expect(evidence.tokenOldOffset.codePointEnd).toBeGreaterThanOrEqual(rc.oldOffset.codePointEnd);
   });
 
   it("7. a quote edit two lines away does not inherit the numeric-range tag from the same unified hunk", () => {
     const before = 'See "figure" note.\nkept.\nkept.\nSee Figure 5-10 for details.\n';
-    const after = 'See “figure” note.\nkept.\nkept.\nSee Figure 5–10 for details.\n';
+    const after = "See “figure” note.\nkept.\nkept.\nSee Figure 5–10 for details.\n";
     const diff = computeFileDiff("f.md", before, after);
     expect(diff.diffHunks).toHaveLength(1);
     const quoteChange = diff.reviewChanges.find((r) => r.before === '"');
     expect(quoteChange).toBeDefined();
     const edits = diff.atomicEdits.filter((e) => quoteChange!.atomicEditIds.includes(e.id));
-    const tags = computeRiskTags({ oldText: before, newText: after, reviewChange: quoteChange!, atomicEdits: edits, attribution: undefined, locale: enUSLocale });
+    const tags = computeRiskTags({
+      oldText: before,
+      newText: after,
+      reviewChange: quoteChange!,
+      atomicEdits: edits,
+      attribution: undefined,
+      locale: enUSLocale,
+    });
     expect(tags.map((t) => t.tag)).not.toContain("numeric-range-or-compound-label-candidate");
   });
 });
@@ -191,7 +216,14 @@ describe("acceptance 8: dash-restyling fires via proximity, even for a space-onl
     const rc = diff.reviewChanges[0]!;
     expect(rc.before).toBe(" "); // the atomic edit is just the removed space, not the dash itself
     const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-    const tags = computeRiskTags({ oldText, newText, reviewChange: rc, atomicEdits: edits, attribution: undefined, locale: enUSLocale });
+    const tags = computeRiskTags({
+      oldText,
+      newText,
+      reviewChange: rc,
+      atomicEdits: edits,
+      attribution: undefined,
+      locale: enUSLocale,
+    });
     expect(tags.map((t) => t.tag)).toContain("dash-restyling");
   });
 
@@ -201,7 +233,14 @@ describe("acceptance 8: dash-restyling fires via proximity, even for a space-onl
     const diff = computeFileDiff("f.md", oldText, newText);
     for (const rc of diff.reviewChanges) {
       const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-      const tags = computeRiskTags({ oldText, newText, reviewChange: rc, atomicEdits: edits, attribution: undefined, locale: enUSLocale });
+      const tags = computeRiskTags({
+        oldText,
+        newText,
+        reviewChange: rc,
+        atomicEdits: edits,
+        attribution: undefined,
+        locale: enUSLocale,
+      });
       expect(tags.map((t) => t.tag)).not.toContain("dash-restyling");
     }
   });
@@ -215,10 +254,21 @@ describe("acceptance 9-10: quote-pairing-candidate is attribution-honest", () =>
     const original = "It's fine.\n";
     const full = transform(original, { locale: "en-US", mode: "text" });
     const diff = computeFileDiff("f.md", original, full);
-    const attr = attributeReviewChanges(original, { locale: "en-US", mode: "text" }, diff.reviewChanges);
+    const attr = attributeReviewChanges(
+      original,
+      { locale: "en-US", mode: "text" },
+      diff.reviewChanges,
+    );
     for (const rc of diff.reviewChanges) {
       const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-      const tags = computeRiskTags({ oldText: original, newText: full, reviewChange: rc, atomicEdits: edits, attribution: attr.get(rc.id), locale: enUSLocale });
+      const tags = computeRiskTags({
+        oldText: original,
+        newText: full,
+        reviewChange: rc,
+        atomicEdits: edits,
+        attribution: attr.get(rc.id),
+        locale: enUSLocale,
+      });
       expect(tags.map((t) => t.tag)).not.toContain("quote-pairing-candidate");
     }
   });
@@ -227,11 +277,22 @@ describe("acceptance 9-10: quote-pairing-candidate is attribution-honest", () =>
     const original = 'He said "hi" today.\n';
     const full = transform(original, { locale: "en-US", mode: "text" });
     const diff = computeFileDiff("f.md", original, full);
-    const attr = attributeReviewChanges(original, { locale: "en-US", mode: "text" }, diff.reviewChanges);
+    const attr = attributeReviewChanges(
+      original,
+      { locale: "en-US", mode: "text" },
+      diff.reviewChanges,
+    );
     let sawQuotePairing = false;
     for (const rc of diff.reviewChanges) {
       const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-      const tags = computeRiskTags({ oldText: original, newText: full, reviewChange: rc, atomicEdits: edits, attribution: attr.get(rc.id), locale: enUSLocale });
+      const tags = computeRiskTags({
+        oldText: original,
+        newText: full,
+        reviewChange: rc,
+        atomicEdits: edits,
+        attribution: attr.get(rc.id),
+        locale: enUSLocale,
+      });
       if (tags.some((t) => t.tag === "quote-pairing-candidate")) sawQuotePairing = true;
     }
     expect(sawQuotePairing).toBe(true);
@@ -243,12 +304,21 @@ describe("acceptance 9-10: quote-pairing-candidate is attribution-honest", () =>
 // -------------------------------------------------------------------------------------------
 describe("acceptance 11-12: mdx-jsx-code-boundary-adjacent uses real offset distance", () => {
   it("11. a backtick far away on the same long line is a negative control", () => {
-    const oldText = "Prose ".repeat(30) + 'with "quotes" far from anything, then plenty more unrelated words follow along here to pad the distance out. `code`\n';
+    const oldText =
+      "Prose ".repeat(30) +
+      'with "quotes" far from anything, then plenty more unrelated words follow along here to pad the distance out. `code`\n';
     const newText = transform(oldText, { locale: "en-US", mode: "text" });
     const diff = computeFileDiff("f.md", oldText, newText);
     for (const rc of diff.reviewChanges) {
       const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-      const tags = computeRiskTags({ oldText, newText, reviewChange: rc, atomicEdits: edits, attribution: undefined, locale: enUSLocale });
+      const tags = computeRiskTags({
+        oldText,
+        newText,
+        reviewChange: rc,
+        atomicEdits: edits,
+        attribution: undefined,
+        locale: enUSLocale,
+      });
       expect(tags.map((t) => t.tag)).not.toContain("mdx-jsx-code-boundary-adjacent");
     }
   });
@@ -260,7 +330,14 @@ describe("acceptance 11-12: mdx-jsx-code-boundary-adjacent uses real offset dist
     let saw = false;
     for (const rc of diff.reviewChanges) {
       const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-      const tags = computeRiskTags({ oldText, newText, reviewChange: rc, atomicEdits: edits, attribution: undefined, locale: enUSLocale });
+      const tags = computeRiskTags({
+        oldText,
+        newText,
+        reviewChange: rc,
+        atomicEdits: edits,
+        attribution: undefined,
+        locale: enUSLocale,
+      });
       if (tags.some((t) => t.tag === "mdx-jsx-code-boundary-adjacent")) saw = true;
     }
     expect(saw).toBe(true);
@@ -292,12 +369,22 @@ describe("authored-en-dash-restyled: regression canary for P5 (dashes.md §3.4/�
       newText: after,
       reviewChange: rc,
       atomicEdits: edits,
-      attribution: { overlappingIsolatedRules: ["dashes"], category: "single-rule", singleRule: "dashes", composingRules: null, inferred: true },
+      attribution: {
+        overlappingIsolatedRules: ["dashes"],
+        category: "single-rule",
+        singleRule: "dashes",
+        composingRules: null,
+        inferred: true,
+      },
       locale: enUSLocale,
     });
     const tag = tags.find((t) => t.tag === "authored-en-dash-restyled");
     expect(tag).toBeDefined();
-    const ev = tag!.evidence as { sourceOldOffset: { codePointStart: number; codePointEnd: number }; sourceText: string; atomicEditId: string };
+    const ev = tag!.evidence as {
+      sourceOldOffset: { codePointStart: number; codePointEnd: number };
+      sourceText: string;
+      atomicEditId: string;
+    };
     expect(ev.sourceText).toBe("–");
     expect(ev.sourceOldOffset).toEqual({ codePointStart: 0, codePointEnd: 1 });
     expect(ev.atomicEditId).toBe(edits[0]!.id);
@@ -313,7 +400,16 @@ describe("authored-en-dash-restyled: regression canary for P5 (dashes.md §3.4/�
     const diff = computeFileDiff("f.md", before, after);
     const rc = diff.reviewChanges[0]!;
     const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-    const tampered = [{ tag: "authored-en-dash-restyled", evidence: { sourceOldOffset: { codePointStart: 0, codePointEnd: 1 }, sourceText: "—", atomicEditId: edits[0]!.id } }];
+    const tampered = [
+      {
+        tag: "authored-en-dash-restyled",
+        evidence: {
+          sourceOldOffset: { codePointStart: 0, codePointEnd: 1 },
+          sourceText: "—",
+          atomicEditId: edits[0]!.id,
+        },
+      },
+    ];
     const fake = fakeResult("f.md", before, after);
     fake.riskTags = new Map([[rc.id, tampered]]);
     const issues = checkRiskTagEvidence([fake], enUSLocale);
@@ -334,7 +430,16 @@ describe("authored-en-dash-restyled: regression canary for P5 (dashes.md §3.4/�
     const apostropheEdit = diff.atomicEdits.find((e) => e.before === "'")!;
     expect(apostropheEdit).toBeDefined();
     const enDashIndex = [...before].indexOf("–");
-    const dishonest = [{ tag: "authored-en-dash-restyled", evidence: { sourceOldOffset: { codePointStart: enDashIndex, codePointEnd: enDashIndex + 1 }, sourceText: "–", atomicEditId: apostropheEdit.id } }];
+    const dishonest = [
+      {
+        tag: "authored-en-dash-restyled",
+        evidence: {
+          sourceOldOffset: { codePointStart: enDashIndex, codePointEnd: enDashIndex + 1 },
+          sourceText: "–",
+          atomicEditId: apostropheEdit.id,
+        },
+      },
+    ];
     const fake = fakeResult("f.md", before, after);
     fake.riskTags = new Map([[rc.id, dishonest]]);
     const issues = checkRiskTagEvidence([fake], enUSLocale);
@@ -358,18 +463,32 @@ describe("single-initial-binding-candidate: nbsp.md §3.9's initial-to-word shap
   function tagFr(original: string) {
     const full = transform(original, { locale: "fr", mode: "text" });
     const diff = computeFileDiff("f.md", original, full);
-    const attr = attributeReviewChanges(original, { locale: "fr", mode: "text" }, diff.reviewChanges);
+    const attr = attributeReviewChanges(
+      original,
+      { locale: "fr", mode: "text" },
+      diff.reviewChanges,
+    );
     const byRc = new Map<string, ReturnType<typeof computeRiskTags>>();
     for (const rc of diff.reviewChanges) {
       const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-      byRc.set(rc.id, computeRiskTags({ oldText: original, newText: full, reviewChange: rc, atomicEdits: edits, attribution: attr.get(rc.id), locale: frLocale }));
+      byRc.set(
+        rc.id,
+        computeRiskTags({
+          oldText: original,
+          newText: full,
+          reviewChange: rc,
+          atomicEdits: edits,
+          attribution: attr.get(rc.id),
+          locale: frLocale,
+        }),
+      );
     }
     const fake = fakeResult("f.md", original, full);
     fake.riskTags = byRc;
     return { full, diff, byRc, fake };
   }
 
-  it("REPRODUCED VALIDATOR DISAGREEMENT, then fixed: \"xA. B. Word\" in fr -- checkRiskTagEvidence used to invent a confirmed chain from an embedded \"xA.\"", () => {
+  it('REPRODUCED VALIDATOR DISAGREEMENT, then fixed: "xA. B. Word" in fr -- checkRiskTagEvidence used to invent a confirmed chain from an embedded "xA."', () => {
     // Final Correction pass, item 1. Before this fix: `computeRiskTags` correctly declined to
     // treat "xA." as a preceding initial (it already used the full `isInitialAt` token-start
     // condition), so `single-initial-binding-candidate` correctly fired for the space after
@@ -387,8 +506,11 @@ describe("single-initial-binding-candidate: nbsp.md §3.9's initial-to-word shap
     expect(full.codePointAt(6)).toBe(0xa0); // the space after "B." became NBSP
     const allTags = [...byRc.values()].flat();
     const tag = allTags.find((t) => t.tag === "single-initial-binding-candidate");
-    expect(tag, "the tag must still fire -- \"xA.\" is not a valid preceding initial").toBeDefined();
-    const ev = tag!.evidence as { leftInitialCodePoint: string; noPrecedingChainConfirmed: boolean };
+    expect(tag, 'the tag must still fire -- "xA." is not a valid preceding initial').toBeDefined();
+    const ev = tag!.evidence as {
+      leftInitialCodePoint: string;
+      noPrecedingChainConfirmed: boolean;
+    };
     expect(ev.leftInitialCodePoint).toBe("B");
     expect(ev.noPrecedingChainConfirmed).toBe(true);
     // The corrected healthy evidence must pass with zero consistency issues -- this is the fix:
@@ -397,7 +519,7 @@ describe("single-initial-binding-candidate: nbsp.md §3.9's initial-to-word shap
     expect(checkRiskTagEvidence([fake], frLocale)).toEqual([]);
   });
 
-  it("REPRODUCED LIVE FAILURE, then fixed: \"N. Œuvre avance.\" in fr -- U+0152 Œ was missed by the old handwritten regex", () => {
+  it('REPRODUCED LIVE FAILURE, then fixed: "N. Œuvre avance." in fr -- U+0152 Œ was missed by the old handwritten regex', () => {
     // Before this correction, `/[A-ZÀ-ÖØ-ÞА-Я]/` did not match U+0152 (Œ is outside the Latin-1
     // Supplement block this regex covered), so the tag was silently absent for this exact input
     // even though the engine's own `isUpper` -- and therefore N7 itself -- correctly binds it.
@@ -408,17 +530,25 @@ describe("single-initial-binding-candidate: nbsp.md §3.9's initial-to-word shap
   });
 
   it("Unicode coverage: Ÿ, Ё, Greek Σ, and an astral uppercase letter (U+1D400) are all recognized", () => {
-    const witnesses = ["N. Ÿport avance.\n", "N. Ёж бежит.\n", "N. Σχήμα.\n", `N. ${String.fromCodePoint(0x1d400)}bc avance.\n`];
+    const witnesses = [
+      "N. Ÿport avance.\n",
+      "N. Ёж бежит.\n",
+      "N. Σχήμα.\n",
+      `N. ${String.fromCodePoint(0x1d400)}bc avance.\n`,
+    ];
     for (const original of witnesses) {
       const { allTags } = (() => {
         const r = tagFr(original);
         return { allTags: [...r.byRc.values()].flat() };
       })();
-      expect(allTags.map((t) => t.tag), JSON.stringify(original)).toContain("single-initial-binding-candidate");
+      expect(
+        allTags.map((t) => t.tag),
+        JSON.stringify(original),
+      ).toContain("single-initial-binding-candidate");
     }
   });
 
-  it("positive control: fr's \"single\" mode still binds a sentence-boundary collision, and the tag catches it with real, independently-checked evidence", () => {
+  it('positive control: fr\'s "single" mode still binds a sentence-boundary collision, and the tag catches it with real, independently-checked evidence', () => {
     const original = "vu la lettre N. Il continue son travail\n";
     const { full, byRc, fake } = tagFr(original);
     expect(full).not.toBe(original); // "single" mode still binds this ambiguous shape
@@ -456,32 +586,49 @@ describe("single-initial-binding-candidate: nbsp.md §3.9's initial-to-word shap
     expect(apostropheEdit, "expected a real apostrophe AtomicEdit").toBeDefined();
     const owningRc = diff.reviewChanges.find((rc) => rc.atomicEditIds.includes(spaceEdit.id))!;
     expect(owningRc, "expected a review change owning the space edit").toBeDefined();
-    expect(owningRc.atomicEditIds.length, "expected the space and apostrophe edits to be grouped together").toBeGreaterThan(1);
+    expect(
+      owningRc.atomicEditIds.length,
+      "expected the space and apostrophe edits to be grouped together",
+    ).toBeGreaterThan(1);
     expect(owningRc.atomicEditIds).toContain(apostropheEdit.id);
     const tags = fake.riskTags?.get(owningRc.id) ?? [];
     const tag = tags.find((t) => t.tag === "single-initial-binding-candidate");
     expect(tag).toBeDefined();
-    const ev = tag!.evidence as { spaceOldOffset: { codePointStart: number; codePointEnd: number }; atomicEditId: string };
+    const ev = tag!.evidence as {
+      spaceOldOffset: { codePointStart: number; codePointEnd: number };
+      atomicEditId: string;
+    };
     // The evidence names the space edit specifically, not the group's own (possibly different) start.
     expect(ev.atomicEditId).toBe(spaceEdit.id);
     expect(ev.spaceOldOffset.codePointStart).toBe(spaceEdit.oldOffset.codePointStart);
     expect(checkRiskTagEvidence([fake], frLocale)).toEqual([]);
   });
 
-  it("negative control: en-US \"chain\" mode's own confirmed two-initial binding is never tagged (E. B. White)", () => {
+  it('negative control: en-US "chain" mode\'s own confirmed two-initial binding is never tagged (E. B. White)', () => {
     const original = "E. B. White wrote it and left.\n";
     const full = transform(original, { locale: "en-US", mode: "text" });
     expect(full).not.toBe(original); // both spaces still bind, just not via the ambiguous shape
     const diff = computeFileDiff("f.md", original, full);
-    const attr = attributeReviewChanges(original, { locale: "en-US", mode: "text" }, diff.reviewChanges);
+    const attr = attributeReviewChanges(
+      original,
+      { locale: "en-US", mode: "text" },
+      diff.reviewChanges,
+    );
     for (const rc of diff.reviewChanges) {
       const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-      const tags = computeRiskTags({ oldText: original, newText: full, reviewChange: rc, atomicEdits: edits, attribution: attr.get(rc.id), locale: enUSLocale });
+      const tags = computeRiskTags({
+        oldText: original,
+        newText: full,
+        reviewChange: rc,
+        atomicEdits: edits,
+        attribution: attr.get(rc.id),
+        locale: enUSLocale,
+      });
       expect(tags.map((t) => t.tag)).not.toContain("single-initial-binding-candidate");
     }
   });
 
-  it("negative control: after the M4 fix, en-US \"chain\" mode produces no edit at all for the sentence-boundary shape, so there is nothing to tag", () => {
+  it('negative control: after the M4 fix, en-US "chain" mode produces no edit at all for the sentence-boundary shape, so there is nothing to tag', () => {
     const original = "take the top N. It runs across four relationship types\n";
     const full = transform(original, { locale: "en-US", mode: "text" });
     expect(full).toBe(original);
@@ -496,8 +643,15 @@ describe("single-initial-binding-candidate: nbsp.md §3.9's initial-to-word shap
     const real = allTags.find((t) => t.tag === "single-initial-binding-candidate")!;
     const ev = real.evidence as unknown as Record<string, unknown>;
     const tampered = { ...ev, leftInitialCodePoint: "n" }; // lower-case: not UPPER
-    const rcId = [...(fake.riskTags ?? new Map()).entries()].find(([, tags]) => tags.includes(real))![0]!;
-    fake.riskTags!.set(rcId, [{ tag: "single-initial-binding-candidate", evidence: tampered as unknown as RiskTag["evidence"] }]);
+    const rcId = [...(fake.riskTags ?? new Map()).entries()].find(([, tags]) =>
+      tags.includes(real),
+    )![0]!;
+    fake.riskTags!.set(rcId, [
+      {
+        tag: "single-initial-binding-candidate",
+        evidence: tampered as unknown as RiskTag["evidence"],
+      },
+    ]);
     const issues = checkRiskTagEvidence([fake], frLocale);
     expect(issues.length).toBeGreaterThan(0);
   });
@@ -511,7 +665,11 @@ describe("single-initial-binding-candidate: nbsp.md §3.9's initial-to-word shap
     const diff = computeFileDiff("f.md", original, full);
     const originalCps = [...original];
     const edit = diff.atomicEdits.find(
-      (e) => e.before === " " && e.after === " " && originalCps.slice(e.oldOffset.codePointStart - 2, e.oldOffset.codePointStart).join("") === "B.",
+      (e) =>
+        e.before === " " &&
+        e.after === " " &&
+        originalCps.slice(e.oldOffset.codePointStart - 2, e.oldOffset.codePointStart).join("") ===
+          "B.",
     )!;
     expect(edit, "expected to find the B.->White space conversion AtomicEdit").toBeDefined();
     const rc = diff.reviewChanges.find((r) => r.atomicEditIds.includes(edit.id))!;
@@ -560,11 +718,25 @@ describe("single-initial-binding-candidate: locale-aware OPENISH parity (item 2)
       const original = `${openGlyph}N. Word\n`;
       const full = transform(original, { locale: tag, mode: "text" });
       const diff = computeFileDiff("f.md", original, full);
-      const attr = attributeReviewChanges(original, { locale: tag, mode: "text" }, diff.reviewChanges);
+      const attr = attributeReviewChanges(
+        original,
+        { locale: tag, mode: "text" },
+        diff.reviewChanges,
+      );
       const riskTags = new Map<string, RiskTag[]>();
       for (const rc of diff.reviewChanges) {
         const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-        riskTags.set(rc.id, computeRiskTags({ oldText: original, newText: full, reviewChange: rc, atomicEdits: edits, attribution: attr.get(rc.id), locale }));
+        riskTags.set(
+          rc.id,
+          computeRiskTags({
+            oldText: original,
+            newText: full,
+            reviewChange: rc,
+            atomicEdits: edits,
+            attribution: attr.get(rc.id),
+            locale,
+          }),
+        );
       }
       const fake = fakeResult("f.md", original, full);
       fake.riskTags = riskTags;
@@ -587,11 +759,25 @@ describe("single-initial-binding-candidate: locale-aware OPENISH parity (item 2)
       const original = `x${foreignOpen}N. Word\n`;
       const full = transform(original, { locale: locale.locale, mode: "text" });
       const diff = computeFileDiff("f.md", original, full);
-      const attr = attributeReviewChanges(original, { locale: locale.locale, mode: "text" }, diff.reviewChanges);
+      const attr = attributeReviewChanges(
+        original,
+        { locale: locale.locale, mode: "text" },
+        diff.reviewChanges,
+      );
       const riskTags = new Map<string, RiskTag[]>();
       for (const rc of diff.reviewChanges) {
         const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-        riskTags.set(rc.id, computeRiskTags({ oldText: original, newText: full, reviewChange: rc, atomicEdits: edits, attribution: attr.get(rc.id), locale }));
+        riskTags.set(
+          rc.id,
+          computeRiskTags({
+            oldText: original,
+            newText: full,
+            reviewChange: rc,
+            atomicEdits: edits,
+            attribution: attr.get(rc.id),
+            locale,
+          }),
+        );
       }
       const fake = fakeResult("f.md", original, full);
       fake.riskTags = riskTags;
@@ -614,11 +800,25 @@ describe("single-initial-binding-candidate: locale-aware OPENISH parity (item 2)
     for (const original of witnesses) {
       const full = transform(original, { locale: "en-US", mode: "text" });
       const diff = computeFileDiff("f.md", original, full);
-      const attr = attributeReviewChanges(original, { locale: "en-US", mode: "text" }, diff.reviewChanges);
+      const attr = attributeReviewChanges(
+        original,
+        { locale: "en-US", mode: "text" },
+        diff.reviewChanges,
+      );
       const riskTags = new Map<string, RiskTag[]>();
       for (const rc of diff.reviewChanges) {
         const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-        riskTags.set(rc.id, computeRiskTags({ oldText: original, newText: full, reviewChange: rc, atomicEdits: edits, attribution: attr.get(rc.id), locale: enUSLocale }));
+        riskTags.set(
+          rc.id,
+          computeRiskTags({
+            oldText: original,
+            newText: full,
+            reviewChange: rc,
+            atomicEdits: edits,
+            attribution: attr.get(rc.id),
+            locale: enUSLocale,
+          }),
+        );
       }
       const fake = fakeResult("f.md", original, full);
       fake.riskTags = riskTags;
@@ -632,7 +832,11 @@ describe("single-initial-binding-candidate: locale-aware OPENISH parity (item 2)
 // non-object, or malformed evidence must produce an issue, never silently pass, never throw.
 // -------------------------------------------------------------------------------------------
 describe("fail-closed evidence validation (item 3): malformed/null evidence for the two new tags", () => {
-  function fakeWithTag(original: string, full: string, tag: RiskTag): { fake: FileResult; rc: ReturnType<typeof computeFileDiff>["reviewChanges"][number] } {
+  function fakeWithTag(
+    original: string,
+    full: string,
+    tag: RiskTag,
+  ): { fake: FileResult; rc: ReturnType<typeof computeFileDiff>["reviewChanges"][number] } {
     const diff = computeFileDiff("f.md", original, full);
     const rc = diff.reviewChanges[0]!;
     const fake = fakeResult("f.md", original, full);
@@ -643,15 +847,42 @@ describe("fail-closed evidence validation (item 3): malformed/null evidence for 
   const MALFORMED_CASES: [string, unknown][] = [
     ["null", null],
     ["empty object", {}],
-    ["missing atomicEditId", { sourceOldOffset: { codePointStart: 0, codePointEnd: 1 }, sourceText: "–" }],
-    ["non-string atomicEditId", { sourceOldOffset: { codePointStart: 0, codePointEnd: 1 }, sourceText: "–", atomicEditId: 42 }],
+    [
+      "missing atomicEditId",
+      { sourceOldOffset: { codePointStart: 0, codePointEnd: 1 }, sourceText: "–" },
+    ],
+    [
+      "non-string atomicEditId",
+      {
+        sourceOldOffset: { codePointStart: 0, codePointEnd: 1 },
+        sourceText: "–",
+        atomicEditId: 42,
+      },
+    ],
     ["missing sourceOldOffset", { sourceText: "–", atomicEditId: "x" }],
-    ["zero-length sourceOldOffset", { sourceOldOffset: { codePointStart: 0, codePointEnd: 0 }, sourceText: "–", atomicEditId: "x" }],
-    ["multi-code-point sourceOldOffset", { sourceOldOffset: { codePointStart: 0, codePointEnd: 3 }, sourceText: "–", atomicEditId: "x" }],
+    [
+      "zero-length sourceOldOffset",
+      {
+        sourceOldOffset: { codePointStart: 0, codePointEnd: 0 },
+        sourceText: "–",
+        atomicEditId: "x",
+      },
+    ],
+    [
+      "multi-code-point sourceOldOffset",
+      {
+        sourceOldOffset: { codePointStart: 0, codePointEnd: 3 },
+        sourceText: "–",
+        atomicEditId: "x",
+      },
+    ],
   ];
   for (const [label, evidence] of MALFORMED_CASES) {
     it(`authored-en-dash-restyled: ${label} does not throw and produces an issue`, () => {
-      const { fake } = fakeWithTag("–", "—", { tag: "authored-en-dash-restyled", evidence: evidence as RiskTag["evidence"] });
+      const { fake } = fakeWithTag("–", "—", {
+        tag: "authored-en-dash-restyled",
+        evidence: evidence as RiskTag["evidence"],
+      });
       let issues: string[] = [];
       expect(() => {
         issues = checkRiskTagEvidence([fake], enUSLocale);
@@ -663,7 +894,15 @@ describe("fail-closed evidence validation (item 3): malformed/null evidence for 
   it("authored-en-dash-restyled: evidence belonging to the wrong tag type (single-initial shape) is caught", () => {
     const { fake } = fakeWithTag("–", "—", {
       tag: "authored-en-dash-restyled",
-      evidence: { spaceOldOffset: { codePointStart: 0, codePointEnd: 1 }, atomicEditId: "x", leftInitialCodePoint: "A", leftInitialOldOffset: { codePointStart: 0, codePointEnd: 1 }, followingCodePoint: "B", followingOldOffset: { codePointStart: 2, codePointEnd: 3 }, noPrecedingChainConfirmed: true } as unknown as RiskTag["evidence"],
+      evidence: {
+        spaceOldOffset: { codePointStart: 0, codePointEnd: 1 },
+        atomicEditId: "x",
+        leftInitialCodePoint: "A",
+        leftInitialOldOffset: { codePointStart: 0, codePointEnd: 1 },
+        followingCodePoint: "B",
+        followingOldOffset: { codePointStart: 2, codePointEnd: 3 },
+        noPrecedingChainConfirmed: true,
+      } as unknown as RiskTag["evidence"],
     });
     const issues = checkRiskTagEvidence([fake], enUSLocale);
     expect(issues.length).toBeGreaterThan(0);
@@ -672,13 +911,88 @@ describe("fail-closed evidence validation (item 3): malformed/null evidence for 
   const SINGLE_INITIAL_MALFORMED: [string, unknown][] = [
     ["null", null],
     ["empty object", {}],
-    ["missing atomicEditId", { spaceOldOffset: { codePointStart: 4, codePointEnd: 5 }, leftInitialCodePoint: "N", leftInitialOldOffset: { codePointStart: 2, codePointEnd: 3 }, followingCodePoint: "I", followingOldOffset: { codePointStart: 5, codePointEnd: 6 }, noPrecedingChainConfirmed: true }],
-    ["non-string atomicEditId", { spaceOldOffset: { codePointStart: 4, codePointEnd: 5 }, atomicEditId: 42, leftInitialCodePoint: "N", leftInitialOldOffset: { codePointStart: 2, codePointEnd: 3 }, followingCodePoint: "I", followingOldOffset: { codePointStart: 5, codePointEnd: 6 }, noPrecedingChainConfirmed: true }],
-    ["missing leftInitialOldOffset", { spaceOldOffset: { codePointStart: 4, codePointEnd: 5 }, atomicEditId: "x", leftInitialCodePoint: "N", followingCodePoint: "I", followingOldOffset: { codePointStart: 5, codePointEnd: 6 }, noPrecedingChainConfirmed: true }],
-    ["zero-length followingOldOffset", { spaceOldOffset: { codePointStart: 4, codePointEnd: 5 }, atomicEditId: "x", leftInitialCodePoint: "N", leftInitialOldOffset: { codePointStart: 2, codePointEnd: 3 }, followingCodePoint: "I", followingOldOffset: { codePointStart: 5, codePointEnd: 5 }, noPrecedingChainConfirmed: true }],
-    ["multi-code-point leftInitialOldOffset", { spaceOldOffset: { codePointStart: 4, codePointEnd: 5 }, atomicEditId: "x", leftInitialCodePoint: "N", leftInitialOldOffset: { codePointStart: 2, codePointEnd: 4 }, followingCodePoint: "I", followingOldOffset: { codePointStart: 5, codePointEnd: 6 }, noPrecedingChainConfirmed: true }],
-    ["wrong literal noPrecedingChainConfirmed (false)", { spaceOldOffset: { codePointStart: 4, codePointEnd: 5 }, atomicEditId: "x", leftInitialCodePoint: "N", leftInitialOldOffset: { codePointStart: 2, codePointEnd: 3 }, followingCodePoint: "I", followingOldOffset: { codePointStart: 5, codePointEnd: 6 }, noPrecedingChainConfirmed: false }],
-    ["non-boolean noPrecedingChainConfirmed", { spaceOldOffset: { codePointStart: 4, codePointEnd: 5 }, atomicEditId: "x", leftInitialCodePoint: "N", leftInitialOldOffset: { codePointStart: 2, codePointEnd: 3 }, followingCodePoint: "I", followingOldOffset: { codePointStart: 5, codePointEnd: 6 }, noPrecedingChainConfirmed: "true" }],
+    [
+      "missing atomicEditId",
+      {
+        spaceOldOffset: { codePointStart: 4, codePointEnd: 5 },
+        leftInitialCodePoint: "N",
+        leftInitialOldOffset: { codePointStart: 2, codePointEnd: 3 },
+        followingCodePoint: "I",
+        followingOldOffset: { codePointStart: 5, codePointEnd: 6 },
+        noPrecedingChainConfirmed: true,
+      },
+    ],
+    [
+      "non-string atomicEditId",
+      {
+        spaceOldOffset: { codePointStart: 4, codePointEnd: 5 },
+        atomicEditId: 42,
+        leftInitialCodePoint: "N",
+        leftInitialOldOffset: { codePointStart: 2, codePointEnd: 3 },
+        followingCodePoint: "I",
+        followingOldOffset: { codePointStart: 5, codePointEnd: 6 },
+        noPrecedingChainConfirmed: true,
+      },
+    ],
+    [
+      "missing leftInitialOldOffset",
+      {
+        spaceOldOffset: { codePointStart: 4, codePointEnd: 5 },
+        atomicEditId: "x",
+        leftInitialCodePoint: "N",
+        followingCodePoint: "I",
+        followingOldOffset: { codePointStart: 5, codePointEnd: 6 },
+        noPrecedingChainConfirmed: true,
+      },
+    ],
+    [
+      "zero-length followingOldOffset",
+      {
+        spaceOldOffset: { codePointStart: 4, codePointEnd: 5 },
+        atomicEditId: "x",
+        leftInitialCodePoint: "N",
+        leftInitialOldOffset: { codePointStart: 2, codePointEnd: 3 },
+        followingCodePoint: "I",
+        followingOldOffset: { codePointStart: 5, codePointEnd: 5 },
+        noPrecedingChainConfirmed: true,
+      },
+    ],
+    [
+      "multi-code-point leftInitialOldOffset",
+      {
+        spaceOldOffset: { codePointStart: 4, codePointEnd: 5 },
+        atomicEditId: "x",
+        leftInitialCodePoint: "N",
+        leftInitialOldOffset: { codePointStart: 2, codePointEnd: 4 },
+        followingCodePoint: "I",
+        followingOldOffset: { codePointStart: 5, codePointEnd: 6 },
+        noPrecedingChainConfirmed: true,
+      },
+    ],
+    [
+      "wrong literal noPrecedingChainConfirmed (false)",
+      {
+        spaceOldOffset: { codePointStart: 4, codePointEnd: 5 },
+        atomicEditId: "x",
+        leftInitialCodePoint: "N",
+        leftInitialOldOffset: { codePointStart: 2, codePointEnd: 3 },
+        followingCodePoint: "I",
+        followingOldOffset: { codePointStart: 5, codePointEnd: 6 },
+        noPrecedingChainConfirmed: false,
+      },
+    ],
+    [
+      "non-boolean noPrecedingChainConfirmed",
+      {
+        spaceOldOffset: { codePointStart: 4, codePointEnd: 5 },
+        atomicEditId: "x",
+        leftInitialCodePoint: "N",
+        leftInitialOldOffset: { codePointStart: 2, codePointEnd: 3 },
+        followingCodePoint: "I",
+        followingOldOffset: { codePointStart: 5, codePointEnd: 6 },
+        noPrecedingChainConfirmed: "true",
+      },
+    ],
   ];
   // These malformed-evidence checks only need a real, existing review change to attach the
   // fabricated tag to -- its semantic content is irrelevant to what's being validated here, so
@@ -686,7 +1000,10 @@ describe("fail-closed evidence validation (item 3): malformed/null evidence for 
   // produces zero review changes and makes fakeWithTag's own `diff.reviewChanges[0]!` throw).
   for (const [label, evidence] of SINGLE_INITIAL_MALFORMED) {
     it(`single-initial-binding-candidate: ${label} does not throw and produces an issue`, () => {
-      const { fake } = fakeWithTag("–", "—", { tag: "single-initial-binding-candidate", evidence: evidence as RiskTag["evidence"] });
+      const { fake } = fakeWithTag("–", "—", {
+        tag: "single-initial-binding-candidate",
+        evidence: evidence as RiskTag["evidence"],
+      });
       let issues: string[] = [];
       expect(() => {
         issues = checkRiskTagEvidence([fake], enUSLocale);
@@ -698,7 +1015,11 @@ describe("fail-closed evidence validation (item 3): malformed/null evidence for 
   it("single-initial-binding-candidate: evidence belonging to the wrong tag type (authored-en-dash shape) is caught", () => {
     const { fake } = fakeWithTag("–", "—", {
       tag: "single-initial-binding-candidate",
-      evidence: { sourceOldOffset: { codePointStart: 0, codePointEnd: 1 }, sourceText: "–", atomicEditId: "x" } as unknown as RiskTag["evidence"],
+      evidence: {
+        sourceOldOffset: { codePointStart: 0, codePointEnd: 1 },
+        sourceText: "–",
+        atomicEditId: "x",
+      } as unknown as RiskTag["evidence"],
     });
     const issues = checkRiskTagEvidence([fake], enUSLocale);
     expect(issues.length).toBeGreaterThan(0);
@@ -710,7 +1031,10 @@ describe("fail-closed evidence validation (item 3): malformed/null evidence for 
   });
 
   it("an entirely unknown tag name with null evidence not on the legacy allowlist is caught, not silently passed", () => {
-    const { fake } = fakeWithTag("–", "—", { tag: "some-future-tag-nobody-added-to-the-allowlist", evidence: null });
+    const { fake } = fakeWithTag("–", "—", {
+      tag: "some-future-tag-nobody-added-to-the-allowlist",
+      evidence: null,
+    });
     const issues = checkRiskTagEvidence([fake], enUSLocale);
     expect(issues.length).toBeGreaterThan(0);
   });
@@ -730,13 +1054,24 @@ describe("single-initial-binding-candidate: exact anchoring to the converted spa
     const original = "Y. vu la lettre N. Il continue son travail\n"; // "Y." supplies a decoy real initial
     const full = transform(original, { locale: "fr", mode: "text" });
     const diff = computeFileDiff("f.md", original, full);
-    const attr = attributeReviewChanges(original, { locale: "fr", mode: "text" }, diff.reviewChanges);
+    const attr = attributeReviewChanges(
+      original,
+      { locale: "fr", mode: "text" },
+      diff.reviewChanges,
+    );
     const riskTags = new Map<string, RiskTag[]>();
     let ownerRcId = "";
     let realTag: RiskTag | undefined;
     for (const rc of diff.reviewChanges) {
       const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-      const tags = computeRiskTags({ oldText: original, newText: full, reviewChange: rc, atomicEdits: edits, attribution: attr.get(rc.id), locale: frLocale });
+      const tags = computeRiskTags({
+        oldText: original,
+        newText: full,
+        reviewChange: rc,
+        atomicEdits: edits,
+        attribution: attr.get(rc.id),
+        locale: frLocale,
+      });
       riskTags.set(rc.id, tags);
       const found = tags.find((t) => t.tag === "single-initial-binding-candidate");
       if (found) {
@@ -745,14 +1080,26 @@ describe("single-initial-binding-candidate: exact anchoring to the converted spa
       }
     }
     expect(realTag).toBeDefined();
-    const ev = realTag!.evidence as { leftInitialOldOffset: { codePointStart: number; codePointEnd: number }; leftInitialCodePoint: string };
+    const ev = realTag!.evidence as {
+      leftInitialOldOffset: { codePointStart: number; codePointEnd: number };
+      leftInitialCodePoint: string;
+    };
     // "Y" sits at code point 0 -- a real, different UPPER letter than the true left initial "N".
-    const tampered = { ...ev, leftInitialOldOffset: { codePointStart: 0, codePointEnd: 1 }, leftInitialCodePoint: "Y" };
-    const tamperedTag: RiskTag = { tag: "single-initial-binding-candidate", evidence: { ...(realTag!.evidence as object), ...tampered } as RiskTag["evidence"] };
+    const tampered = {
+      ...ev,
+      leftInitialOldOffset: { codePointStart: 0, codePointEnd: 1 },
+      leftInitialCodePoint: "Y",
+    };
+    const tamperedTag: RiskTag = {
+      tag: "single-initial-binding-candidate",
+      evidence: { ...(realTag!.evidence as object), ...tampered } as RiskTag["evidence"],
+    };
     const fake = fakeResult("f.md", original, full);
     fake.riskTags = new Map([[ownerRcId, [tamperedTag]]]);
     const issues = checkRiskTagEvidence([fake], frLocale);
-    expect(issues.some((i) => i.includes("leftInitialOldOffset") && i.includes("not anchored"))).toBe(true);
+    expect(
+      issues.some((i) => i.includes("leftInitialOldOffset") && i.includes("not anchored")),
+    ).toBe(true);
   });
 
   it("followingOldOffset pointing at a different valid uppercase letter elsewhere in the file is rejected", () => {
@@ -762,13 +1109,24 @@ describe("single-initial-binding-candidate: exact anchoring to the converted spa
     const original = "vu la lettre N. Il continue son travail, Zebra.\n";
     const full = transform(original, { locale: "fr", mode: "text" });
     const diff = computeFileDiff("f.md", original, full);
-    const attr = attributeReviewChanges(original, { locale: "fr", mode: "text" }, diff.reviewChanges);
+    const attr = attributeReviewChanges(
+      original,
+      { locale: "fr", mode: "text" },
+      diff.reviewChanges,
+    );
     const zIndex = original.indexOf("Zebra"); // ASCII-only witness: string index == code-point index
     let ownerRcId = "";
     let realTag: RiskTag | undefined;
     for (const rc of diff.reviewChanges) {
       const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-      const tags = computeRiskTags({ oldText: original, newText: full, reviewChange: rc, atomicEdits: edits, attribution: attr.get(rc.id), locale: frLocale });
+      const tags = computeRiskTags({
+        oldText: original,
+        newText: full,
+        reviewChange: rc,
+        atomicEdits: edits,
+        attribution: attr.get(rc.id),
+        locale: frLocale,
+      });
       const found = tags.find((t) => t.tag === "single-initial-binding-candidate");
       if (found) {
         realTag = found;
@@ -776,12 +1134,21 @@ describe("single-initial-binding-candidate: exact anchoring to the converted spa
       }
     }
     expect(realTag).toBeDefined();
-    const tampered = { ...(realTag!.evidence as object), followingCodePoint: "Z", followingOldOffset: { codePointStart: zIndex, codePointEnd: zIndex + 1 } };
-    const tamperedTag: RiskTag = { tag: "single-initial-binding-candidate", evidence: tampered as unknown as RiskTag["evidence"] };
+    const tampered = {
+      ...(realTag!.evidence as object),
+      followingCodePoint: "Z",
+      followingOldOffset: { codePointStart: zIndex, codePointEnd: zIndex + 1 },
+    };
+    const tamperedTag: RiskTag = {
+      tag: "single-initial-binding-candidate",
+      evidence: tampered as unknown as RiskTag["evidence"],
+    };
     const fake = fakeResult("f.md", original, full);
     fake.riskTags = new Map([[ownerRcId, [tamperedTag]]]);
     const issues = checkRiskTagEvidence([fake], frLocale);
-    expect(issues.some((i) => i.includes("followingOldOffset") && i.includes("not anchored"))).toBe(true);
+    expect(issues.some((i) => i.includes("followingOldOffset") && i.includes("not anchored"))).toBe(
+      true,
+    );
   });
 });
 
@@ -794,7 +1161,11 @@ describe("acceptance 13-14: attribution honesty", () => {
     const original = 'He said "hi" and left at 5-10 oclock.\n';
     const full = transform(original, { locale: "en-US", mode: "text" });
     const diff = computeFileDiff("f.md", original, full);
-    const attr = attributeReviewChanges(original, { locale: "en-US", mode: "text" }, diff.reviewChanges);
+    const attr = attributeReviewChanges(
+      original,
+      { locale: "en-US", mode: "text" },
+      diff.reviewChanges,
+    );
     for (const [, a] of attr) {
       expect(a.category).not.toBe("interaction-candidate");
       expect(["single-rule", "multi-rule-composition"]).toContain(a.category);
@@ -807,7 +1178,11 @@ describe("acceptance 13-14: attribution honesty", () => {
     const original = "He said 'don't' go.\n";
     const full = transform(original, { locale: "en-US", mode: "text" });
     const diff = computeFileDiff("f.md", original, full);
-    const attr = attributeReviewChanges(original, { locale: "en-US", mode: "text" }, diff.reviewChanges);
+    const attr = attributeReviewChanges(
+      original,
+      { locale: "en-US", mode: "text" },
+      diff.reviewChanges,
+    );
     let sawInteractionCandidate = false;
     for (const [, a] of attr) {
       expect(a.category).not.toBe("confirmed-interaction" as never);
@@ -831,7 +1206,10 @@ describe("acceptance 15-18: fail-closed checks on corrupted evidence", () => {
     const full = "line one “a” and “b”.\n";
     const result = fakeResult("f.md", original, full);
     expect(result.diff!.atomicEdits.length).toBeGreaterThanOrEqual(2);
-    const corrupted: FileResult = { ...result, diff: { ...result.diff!, atomicEdits: result.diff!.atomicEdits.slice(1) } };
+    const corrupted: FileResult = {
+      ...result,
+      diff: { ...result.diff!, atomicEdits: result.diff!.atomicEdits.slice(1) },
+    };
     const issues = checkIndependentReconstruction([corrupted]);
     expect(issues.length).toBeGreaterThan(0);
   });
@@ -842,7 +1220,13 @@ describe("acceptance 15-18: fail-closed checks on corrupted evidence", () => {
     const result = fakeResult("f.md", original, full);
     const rc = result.diff!.reviewChanges[0]!;
     const corruptedRc = { ...rc, before: "X" }; // same length (1 code point), wrong content
-    const corrupted: FileResult = { ...result, diff: { ...result.diff!, reviewChanges: [corruptedRc, ...result.diff!.reviewChanges.slice(1)] } };
+    const corrupted: FileResult = {
+      ...result,
+      diff: {
+        ...result.diff!,
+        reviewChanges: [corruptedRc, ...result.diff!.reviewChanges.slice(1)],
+      },
+    };
     const issues = checkReviewChangeSlicesMatchSource([corrupted]);
     expect(issues.length).toBeGreaterThan(0);
   });
@@ -852,8 +1236,18 @@ describe("acceptance 15-18: fail-closed checks on corrupted evidence", () => {
     const full = "café “test”.\n";
     const result = fakeResult("f.md", original, full);
     const edit = result.diff!.atomicEdits[0] as AtomicEdit;
-    const corruptedEdit: AtomicEdit = { ...edit, oldOffset: { ...edit.oldOffset, byteStart: edit.oldOffset.byteStart - 1, byteEnd: edit.oldOffset.byteEnd - 1 } };
-    const corrupted: FileResult = { ...result, diff: { ...result.diff!, atomicEdits: [corruptedEdit, ...result.diff!.atomicEdits.slice(1)] } };
+    const corruptedEdit: AtomicEdit = {
+      ...edit,
+      oldOffset: {
+        ...edit.oldOffset,
+        byteStart: edit.oldOffset.byteStart - 1,
+        byteEnd: edit.oldOffset.byteEnd - 1,
+      },
+    };
+    const corrupted: FileResult = {
+      ...result,
+      diff: { ...result.diff!, atomicEdits: [corruptedEdit, ...result.diff!.atomicEdits.slice(1)] },
+    };
     const issues = checkUtf8ByteBoundaries([corrupted]);
     expect(issues.length).toBeGreaterThan(0);
   });
@@ -866,7 +1260,10 @@ describe("acceptance 15-18: fail-closed checks on corrupted evidence", () => {
 
     const rcs = result.diff!.reviewChanges;
     const duplicated = { ...rcs[1]!, atomicEditIds: rcs[0]!.atomicEditIds }; // steal rc[0]'s edit
-    const corrupted: FileResult = { ...result, diff: { ...result.diff!, reviewChanges: [rcs[0]!, duplicated, ...rcs.slice(2)] } };
+    const corrupted: FileResult = {
+      ...result,
+      diff: { ...result.diff!, reviewChanges: [rcs[0]!, duplicated, ...rcs.slice(2)] },
+    };
     const issues = checkAtomicEditOwnership([corrupted]);
     expect(issues.length).toBeGreaterThan(0);
   });
@@ -882,11 +1279,20 @@ describe("acceptance 19: review-item maximum size cap", () => {
     const before = Array.from({ length: 120 }, () => '"').join("x") + "\n";
     const after = Array.from({ length: 120 }, () => "“").join("x") + "\n";
     const diff = computeFileDiff("f.md", before, after);
-    const result: FileResult = { path: "f.md", bytes: 0, sha256: "x", status: "changed", idempotencyOk: true, diff };
+    const result: FileResult = {
+      path: "f.md",
+      bytes: 0,
+      sha256: "x",
+      status: "changed",
+      idempotencyOk: true,
+      diff,
+    };
     const issues = checkReviewChangeSizeCap([result], REVIEW_CHANGE_MAX_OLD_SPAN_CODEPOINTS);
     expect(issues).toEqual([]);
     for (const rc of diff.reviewChanges) {
-      expect(rc.oldOffset.codePointEnd - rc.oldOffset.codePointStart).toBeLessThanOrEqual(REVIEW_CHANGE_MAX_OLD_SPAN_CODEPOINTS);
+      expect(rc.oldOffset.codePointEnd - rc.oldOffset.codePointStart).toBeLessThanOrEqual(
+        REVIEW_CHANGE_MAX_OLD_SPAN_CODEPOINTS,
+      );
     }
     // The cap actually forced more than one group, proving the split is exercised, not just untested.
     expect(diff.reviewChanges.length).toBeGreaterThan(1);
@@ -906,14 +1312,32 @@ describe("acceptance 20: repeat-run determinism", () => {
 
     const out1 = path.join(freshDir("dogfood-model-out1-"), "evidence");
     const out2 = path.join(freshDir("dogfood-model-out2-"), "evidence");
-    const summary1 = runDogfood({ corpusRoot: corpus, outDir: out1, locale: "en-US", dialect: "mdx", argv: [] });
-    const summary2 = runDogfood({ corpusRoot: corpus, outDir: out2, locale: "en-US", dialect: "mdx", argv: [] });
+    const summary1 = runDogfood({
+      corpusRoot: corpus,
+      outDir: out1,
+      locale: "en-US",
+      dialect: "mdx",
+      argv: [],
+    });
+    const summary2 = runDogfood({
+      corpusRoot: corpus,
+      outDir: out2,
+      locale: "en-US",
+      dialect: "mdx",
+      argv: [],
+    });
 
     expect(summary1.status).toBe("success");
     expect(summary2.status).toBe("success");
-    expect(readFileSync(path.join(out1, "changes.json"), "utf8")).toBe(readFileSync(path.join(out2, "changes.json"), "utf8"));
-    expect(readFileSync(path.join(out1, "REVIEW.md"), "utf8")).toBe(readFileSync(path.join(out2, "REVIEW.md"), "utf8"));
-    expect(readFileSync(path.join(out1, "full.diff"), "utf8")).toBe(readFileSync(path.join(out2, "full.diff"), "utf8"));
+    expect(readFileSync(path.join(out1, "changes.json"), "utf8")).toBe(
+      readFileSync(path.join(out2, "changes.json"), "utf8"),
+    );
+    expect(readFileSync(path.join(out1, "REVIEW.md"), "utf8")).toBe(
+      readFileSync(path.join(out2, "REVIEW.md"), "utf8"),
+    );
+    expect(readFileSync(path.join(out1, "full.diff"), "utf8")).toBe(
+      readFileSync(path.join(out2, "full.diff"), "utf8"),
+    );
     expect(readFileSync(path.join(postDir, "index.mdx"), "utf8")).toBe(content);
   });
 });
@@ -928,8 +1352,31 @@ describe("content-stable IDs", () => {
     // bug) -- run the same source through two different rule subsets and confirm any edit that
     // appears in both keeps the same id.
     const original = 'He said "hi" and left at 5-10 oclock.\n';
-    const quotesOnly = transform(original, { locale: "en-US", mode: "text", rules: { spaces: false, ellipsis: false, dashes: false, hyphen: false, apostrophe: false, symbols: false, nbsp: false } });
-    const quotesAndDashes = transform(original, { locale: "en-US", mode: "text", rules: { spaces: false, ellipsis: false, hyphen: false, apostrophe: false, symbols: false, nbsp: false } });
+    const quotesOnly = transform(original, {
+      locale: "en-US",
+      mode: "text",
+      rules: {
+        spaces: false,
+        ellipsis: false,
+        dashes: false,
+        hyphen: false,
+        apostrophe: false,
+        symbols: false,
+        nbsp: false,
+      },
+    });
+    const quotesAndDashes = transform(original, {
+      locale: "en-US",
+      mode: "text",
+      rules: {
+        spaces: false,
+        ellipsis: false,
+        hyphen: false,
+        apostrophe: false,
+        symbols: false,
+        nbsp: false,
+      },
+    });
     const diffA = computeFileDiff("f.md", original, quotesOnly);
     const diffB = computeFileDiff("f.md", original, quotesAndDashes);
     const quoteEditA = diffA.atomicEdits.find((e) => e.before === '"');

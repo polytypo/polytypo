@@ -43,7 +43,8 @@ export const RULE_IDS: readonly RuleId[] = [
   "nbsp",
 ];
 
-export type AttributionCategory = "single-rule" | "multi-rule-composition" | "interaction-candidate" | "ambiguous" | "unknown";
+export type AttributionCategory =
+  "single-rule" | "multi-rule-composition" | "interaction-candidate" | "ambiguous" | "unknown";
 
 export interface ReviewChangeAttribution {
   /** Rule ids whose isolated run (that rule alone, the other seven disabled) produced *some*
@@ -68,8 +69,16 @@ function rangesOverlap(aStart: number, aEnd: number, bStart: number, bEnd: numbe
  * applied left-to-right with no gaps unaccounted for, reproduce `expectedAfter` exactly over that
  * span. Returns `false` immediately if any two candidates overlap each other (rules touched the
  * same position -- cannot be a clean independent union by definition). */
-function sliceReproduces(oldText: string, start: number, end: number, expectedAfter: string, candidateEdits: readonly AtomicEdit[]): boolean {
-  const sorted = [...candidateEdits].sort((a, b) => a.oldOffset.codePointStart - b.oldOffset.codePointStart);
+function sliceReproduces(
+  oldText: string,
+  start: number,
+  end: number,
+  expectedAfter: string,
+  candidateEdits: readonly AtomicEdit[],
+): boolean {
+  const sorted = [...candidateEdits].sort(
+    (a, b) => a.oldOffset.codePointStart - b.oldOffset.codePointStart,
+  );
   for (let i = 1; i < sorted.length; i += 1) {
     const prev = sorted[i - 1] as AtomicEdit;
     const cur = sorted[i] as AtomicEdit;
@@ -110,9 +119,9 @@ export function attributeReviewChanges(
   if (reviewChanges.length === 0) return attribution;
 
   function isolatedTransform(ruleId: RuleId): string | null {
-    const rulesOption = Object.fromEntries(RULE_IDS.filter((id) => id !== ruleId).map((id) => [id, false])) as Partial<
-      Record<RuleId, boolean>
-    >;
+    const rulesOption = Object.fromEntries(
+      RULE_IDS.filter((id) => id !== ruleId).map((id) => [id, false]),
+    ) as Partial<Record<RuleId, boolean>>;
     try {
       return transform(original, { ...baseOptions, rules: rulesOption });
     } catch {
@@ -123,7 +132,12 @@ export function attributeReviewChanges(
   const isolatedEditsByRule = new Map<RuleId, AtomicEdit[]>();
   for (const ruleId of RULE_IDS) {
     const output = isolatedTransform(ruleId);
-    isolatedEditsByRule.set(ruleId, output === null || output === original ? [] : computeFileDiff("isolated", original, output).atomicEdits);
+    isolatedEditsByRule.set(
+      ruleId,
+      output === null || output === original
+        ? []
+        : computeFileDiff("isolated", original, output).atomicEdits,
+    );
   }
 
   for (const target of reviewChanges) {
@@ -131,7 +145,11 @@ export function attributeReviewChanges(
     const overlapping: RuleId[] = [];
     for (const ruleId of RULE_IDS) {
       const isolated = isolatedEditsByRule.get(ruleId) ?? [];
-      if (isolated.some((e) => rangesOverlap(e.oldOffset.codePointStart, e.oldOffset.codePointEnd, start, end))) {
+      if (
+        isolated.some((e) =>
+          rangesOverlap(e.oldOffset.codePointStart, e.oldOffset.codePointEnd, start, end),
+        )
+      ) {
         overlapping.push(ruleId);
       }
     }
@@ -159,7 +177,9 @@ export function attributeReviewChanges(
         category = "ambiguous";
       } else {
         const unionEdits = overlapping.flatMap((ruleId) =>
-          (isolatedEditsByRule.get(ruleId) ?? []).filter((e) => e.oldOffset.codePointStart >= start && e.oldOffset.codePointEnd <= end),
+          (isolatedEditsByRule.get(ruleId) ?? []).filter(
+            (e) => e.oldOffset.codePointStart >= start && e.oldOffset.codePointEnd <= end,
+          ),
         );
         if (sliceReproduces(original, start, end, target.after, unionEdits)) {
           category = "multi-rule-composition";

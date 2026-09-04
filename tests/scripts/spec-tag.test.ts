@@ -12,7 +12,11 @@ import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { deriveSpecTagName, parseStrictSpecVersion, verifySpecTag } from "../../scripts/lib/spec-tag.mjs";
+import {
+  deriveSpecTagName,
+  parseStrictSpecVersion,
+  verifySpecTag,
+} from "../../scripts/lib/spec-tag.mjs";
 import { findContextExpressionsInRunBlocks } from "../../scripts/lib/workflow-shell-safety.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
@@ -139,7 +143,7 @@ describe("scripts/lib/spec-tag.mjs — verifySpecTag() with an injected run() st
   });
 
   it("never passes a hostile expected SHA through anything but a discrete argv element", () => {
-    const hostile = '$(rm -rf /tmp/should-not-run); echo pwned; `id`';
+    const hostile = "$(rm -rf /tmp/should-not-run); echo pwned; `id`";
     let sawHostileAsWholeArg = false;
     const result = verifySpecTag({
       specVersionRaw: "1.0.0",
@@ -207,7 +211,11 @@ describe("scripts/lib/spec-tag.mjs — verifySpecTag() against disposable real g
     commit(tmpDir, "old commit");
     git(["tag", "spec-v1.0.0"], tmpDir);
     const releaseSha = commit(tmpDir, "release commit");
-    const result = verifySpecTag({ specVersionRaw: "1.0.0", expectedCommitSha: releaseSha, cwd: tmpDir });
+    const result = verifySpecTag({
+      specVersionRaw: "1.0.0",
+      expectedCommitSha: releaseSha,
+      cwd: tmpDir,
+    });
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.reason).toContain("must point at the exact same commit");
   });
@@ -261,7 +269,11 @@ describe("scripts/lib/spec-tag.mjs — verifySpecTag() against disposable real g
     git(["tag", "spec-v1.0.0"], tmpDir);
     const canaryPath = path.join(tmpDir, "should-not-exist");
     const hostile = `$(touch ${canaryPath})\`touch ${canaryPath}\`; touch ${canaryPath}`;
-    const result = verifySpecTag({ specVersionRaw: "1.0.0", expectedCommitSha: hostile, cwd: tmpDir });
+    const result = verifySpecTag({
+      specVersionRaw: "1.0.0",
+      expectedCommitSha: hostile,
+      cwd: tmpDir,
+    });
     expect(result.ok).toBe(false);
     expect(() => readFileSync(canaryPath)).toThrow();
   });
@@ -294,7 +306,9 @@ describe(".github/workflows/release.yml — spec-tag verification is wired in co
 
   it("does not add a package.json script for the spec-tag checker", () => {
     const pkg = JSON.parse(readFileSync(path.join(ROOT, "package.json"), "utf8"));
-    expect(Object.values(pkg.scripts ?? {}).some((s) => String(s).includes("verify-spec-tag"))).toBe(false);
+    expect(
+      Object.values(pkg.scripts ?? {}).some((s) => String(s).includes("verify-spec-tag")),
+    ).toBe(false);
   });
 
   it("still triggers only on the npm package tag pattern v*, not spec-v*", () => {

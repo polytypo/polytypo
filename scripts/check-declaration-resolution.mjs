@@ -66,13 +66,18 @@ for (const entry of ENTRIES) {
     }
     const resolvedPath = resolved.resolvedFileName;
     const expectedFile = `dist/${entry.name}${testCase.expectedExt}`;
-    if (!resolvedPath.endsWith(testCase.expectedExt) || !resolvedPath.includes(`/dist/${entry.name}`)) {
+    if (
+      !resolvedPath.endsWith(testCase.expectedExt) ||
+      !resolvedPath.includes(`/dist/${entry.name}`)
+    ) {
       failures.push(
         `${entry.specifier} under ${testCase.label}: expected .../${expectedFile}, got ${resolvedPath}`,
       );
       continue;
     }
-    console.log(`ok    ${entry.specifier.padEnd(20)} ${testCase.label.padEnd(16)} -> ${path.relative(ROOT, resolvedPath)}`);
+    console.log(
+      `ok    ${entry.specifier.padEnd(20)} ${testCase.label.padEnd(16)} -> ${path.relative(ROOT, resolvedPath)}`,
+    );
   }
 }
 
@@ -82,4 +87,6 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-console.log("\ndeclaration-resolution assertion passed: every entry resolves to the correct .d.ts/.d.cts under its matching condition.");
+console.log(
+  "\ndeclaration-resolution assertion passed: every entry resolves to the correct .d.ts/.d.cts under its matching condition.",
+);

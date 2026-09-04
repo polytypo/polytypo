@@ -319,7 +319,7 @@ describe("nbsp — G-D and the sentence-boundary miss (spec §3.13, §7.9)", () 
     expect(run("М. Петров", locale)).toBe(`М.${NBSP}Петров`);
   });
 
-  it("under \"chain\" mode, a lone initial does not bind to a following word at all (spec 0.6.0)", () => {
+  it('under "chain" mode, a lone initial does not bind to a following word at all (spec 0.6.0)', () => {
     // Same shape as above, but with ru's own real default (`chain`): no preceding initial and no
     // second initial on the right, so C1 does not fire — G-D therefore does not apply either
     // (`k === 2` UPPER-dot forms only route to N7 when N7 itself would actually bind them is not
@@ -553,22 +553,22 @@ describe("nbsp — initialBinding (spec 0.6.0)", () => {
   const enUS = localeOf("en-US");
   const enGB = localeOf("en-GB");
 
-  it("the exact M4 witness: a lone initial ending a sentence does not bind to the next sentence, under \"chain\"", () => {
+  it('the exact M4 witness: a lone initial ending a sentence does not bind to the next sentence, under "chain"', () => {
     expect(enUS.nbsp.initialBinding).toBe("chain");
     const input = "take the top N. It runs across four relationship types";
     expect(run(input, enUS)).toBe(input);
   });
 
-  it("isolated \"A. Smith\" does not bind under \"chain\" — the deliberate, accepted false negative", () => {
+  it('isolated "A. Smith" does not bind under "chain" — the deliberate, accepted false negative', () => {
     const input = "A. Smith built the original prototype.";
     expect(run(input, enUS)).toBe(input);
   });
 
-  it("\"E. B. White\" fully binds under \"chain\" — a confirmed two-initial sequence", () => {
+  it('"E. B. White" fully binds under "chain" — a confirmed two-initial sequence', () => {
     expect(run("E. B. White wrote it", enUS)).toBe(`E.${NBSP}B.${NBSP}White wrote it`);
   });
 
-  it("between-initials binding is unconditional in every non-\"none\" mode, even without a further preceding chain", () => {
+  it('between-initials binding is unconditional in every non-"none" mode, even without a further preceding chain', () => {
     // The space strictly BETWEEN two initials (not the one leading into a following plain word)
     // never depends on chain confirmation — it is always the between-initials case.
     const single = withNbsp(fr, { initialBinding: "single" });
@@ -577,7 +577,7 @@ describe("nbsp — initialBinding (spec 0.6.0)", () => {
     expect(run("X. Y. Z.", chain)).toBe(`X.${NBSP}Y.${NBSP}Z.`);
   });
 
-  it("German and Russian: multi-initial chains bind fully under \"chain\", their own real default", () => {
+  it('German and Russian: multi-initial chains bind fully under "chain", their own real default', () => {
     expect(localeOf("de-DE").nbsp.initialBinding).toBe("chain");
     expect(localeOf("de-CH").nbsp.initialBinding).toBe("chain");
     expect(localeOf("ru").nbsp.initialBinding).toBe("chain");
@@ -587,14 +587,14 @@ describe("nbsp — initialBinding (spec 0.6.0)", () => {
     expect(run("А. С. Пушкин родился", localeOf("ru"))).toBe(`А.${NBSP}С.${NBSP}Пушкин родился`);
   });
 
-  it("French and fr-CA: \"single\" preserves the cited single-initial cases (André §5.1.3)", () => {
+  it('French and fr-CA: "single" preserves the cited single-initial cases (André §5.1.3)', () => {
     expect(fr.nbsp.initialBinding).toBe("single");
     expect(localeOf("fr-CA").nbsp.initialBinding).toBe("single");
     expect(run("N. Bourbaki a écrit ceci", fr)).toBe(`N.${NBSP}Bourbaki a écrit ceci`);
     expect(run("M. Dupont est arrivé", fr)).toBe(`M.${NBSP}Dupont est arrivé`);
   });
 
-  it("French \"single\" cannot structurally tell a genuine name from a sentence-boundary collision (nbsp.md §7)", () => {
+  it('French "single" cannot structurally tell a genuine name from a sentence-boundary collision (nbsp.md §7)', () => {
     // The same shape as the English M4 witness, translated: a lone initial ending a sentence,
     // followed by a capitalized word starting a new one. "single" mode binds it anyway — this is
     // the documented, accepted limitation of "single", not a regression introduced here.
@@ -602,7 +602,7 @@ describe("nbsp — initialBinding (spec 0.6.0)", () => {
     expect(run(input, fr)).not.toBe(input);
   });
 
-  it("\"none\" (en-GB, el, fi, sv) disables N7 entirely, including a confirmed two-initial chain", () => {
+  it('"none" (en-GB, el, fi, sv) disables N7 entirely, including a confirmed two-initial chain', () => {
     for (const tag of ["en-GB", "el", "fi", "sv"]) {
       const locale = localeOf(tag);
       expect(locale.nbsp.initialBinding).toBe("none");

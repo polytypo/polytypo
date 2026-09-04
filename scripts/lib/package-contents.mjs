@@ -160,7 +160,8 @@ export async function assertPackageContents(files, pkg, readFileContent) {
     .filter((target) => target.startsWith("./") && target !== "./package.json")
     .map((target) => target.slice(2));
   for (const target of exportTargets) {
-    if (!files.has(target)) fail(`package.json "exports" target "${target}" does not exist in the tarball`);
+    if (!files.has(target))
+      fail(`package.json "exports" target "${target}" does not exist in the tarball`);
   }
 
   // --- chunk completeness and source-map integrity ---------------------------------------------
@@ -202,7 +203,9 @@ export async function assertPackageContents(files, pkg, readFileContent) {
 
     const mapRefs = extractSourceMappingRefs(content);
     if (mapRefs.length === 0) {
-      fail(`${filePath} has no "sourceMappingURL" comment — expected exactly one under this project's ship-maps policy`);
+      fail(
+        `${filePath} has no "sourceMappingURL" comment — expected exactly one under this project's ship-maps policy`,
+      );
     } else if (mapRefs.length > 1) {
       fail(
         `${filePath} has ${mapRefs.length} "sourceMappingURL" comments (${mapRefs.join(", ")}), expected exactly one`,
@@ -210,7 +213,9 @@ export async function assertPackageContents(files, pkg, readFileContent) {
     } else {
       const mapPath = `dist/${mapRefs[0]}`;
       if (!files.has(mapPath)) {
-        fail(`${filePath} references source map "${mapRefs[0]}", which is missing from the tarball (dangling reference)`);
+        fail(
+          `${filePath} references source map "${mapRefs[0]}", which is missing from the tarball (dangling reference)`,
+        );
       } else {
         const mapContent = await readFileContent(mapPath);
         if (mapContent == null) {

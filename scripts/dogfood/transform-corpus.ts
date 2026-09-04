@@ -117,7 +117,14 @@ export function transformCorpus(
       const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
       riskTags.set(
         rc.id,
-        computeRiskTags({ oldText: input, newText: output, reviewChange: rc, atomicEdits: edits, attribution: attribution.get(rc.id), locale: localeData }),
+        computeRiskTags({
+          oldText: input,
+          newText: output,
+          reviewChange: rc,
+          atomicEdits: edits,
+          attribution: attribution.get(rc.id),
+          locale: localeData,
+        }),
       );
     }
     const quotePairing = computeQuotePairing(input, diff.reviewChanges, attribution);

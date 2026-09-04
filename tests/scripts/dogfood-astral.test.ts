@@ -14,7 +14,18 @@ function tagsFor(before: string, after: string) {
   const diff = computeFileDiff("f.mdx", before, after);
   return diff.reviewChanges.map((rc) => {
     const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-    return { rc, edits, tags: computeRiskTags({ oldText: before, newText: after, reviewChange: rc, atomicEdits: edits, attribution: undefined, locale: enUSLocale }) };
+    return {
+      rc,
+      edits,
+      tags: computeRiskTags({
+        oldText: before,
+        newText: after,
+        reviewChange: rc,
+        atomicEdits: edits,
+        attribution: undefined,
+        locale: enUSLocale,
+      }),
+    };
   });
 }
 
@@ -33,16 +44,34 @@ describe("astral code-point offset probe (the exact case from the task)", () => 
     const before = "😀 See Figure 5-10 now.\n";
     const after = "😀 See Figure 5–10 now.\n";
     const { rc, edits, tags } = firstEntry(before, after);
-    expect(edits[0]!.oldOffset).toEqual({ codePointStart: 14, codePointEnd: 15, byteStart: 17, byteEnd: 18 });
+    expect(edits[0]!.oldOffset).toEqual({
+      codePointStart: 14,
+      codePointEnd: 15,
+      byteStart: 17,
+      byteEnd: 18,
+    });
     const numeric = tags.find((t) => t.tag === "numeric-range-or-compound-label-candidate")!;
     const figure = tags.find((t) => t.tag === "figure-label-shaped")!;
     const dash = tags.find((t) => t.tag === "dash-restyling")!;
-    expect((numeric.evidence as TokenEvidence).tokenOldOffset).toEqual({ codePointStart: 13, codePointEnd: 17 });
-    expect((figure.evidence as TokenEvidence).tokenOldOffset).toEqual({ codePointStart: 6, codePointEnd: 17 });
-    expect((dash.evidence as TokenEvidence).tokenOldOffset).toEqual({ codePointStart: 14, codePointEnd: 15 });
+    expect((numeric.evidence as TokenEvidence).tokenOldOffset).toEqual({
+      codePointStart: 13,
+      codePointEnd: 17,
+    });
+    expect((figure.evidence as TokenEvidence).tokenOldOffset).toEqual({
+      codePointStart: 6,
+      codePointEnd: 17,
+    });
+    expect((dash.evidence as TokenEvidence).tokenOldOffset).toEqual({
+      codePointStart: 14,
+      codePointEnd: 15,
+    });
     // The dash token must actually intersect the atomic edit it names.
-    expect((dash.evidence as TokenEvidence).tokenOldOffset.codePointStart).toBeLessThan(rc.oldOffset.codePointEnd);
-    expect((dash.evidence as TokenEvidence).tokenOldOffset.codePointEnd).toBeGreaterThan(rc.oldOffset.codePointStart);
+    expect((dash.evidence as TokenEvidence).tokenOldOffset.codePointStart).toBeLessThan(
+      rc.oldOffset.codePointEnd,
+    );
+    expect((dash.evidence as TokenEvidence).tokenOldOffset.codePointEnd).toBeGreaterThan(
+      rc.oldOffset.codePointStart,
+    );
   });
 
   it("2. emoji sits between the start of the lexical window and the token", () => {
@@ -51,8 +80,11 @@ describe("astral code-point offset probe (the exact case from the task)", () => 
     const after = "😀 " + "pad ".repeat(5) + "Figure 5–10 done.\n";
     const { tags } = firstEntry(before, after);
     const numeric = tags.find((t) => t.tag === "numeric-range-or-compound-label-candidate")!;
-    const expectedStart = [...before].join("").indexOf("5-10") === -1 ? -1 : [...("😀 " + "pad ".repeat(5))].length;
-    expect((numeric.evidence as TokenEvidence).tokenOldOffset.codePointStart).toBe(expectedStart + "Figure ".length);
+    const expectedStart =
+      [...before].join("").indexOf("5-10") === -1 ? -1 : [...("😀 " + "pad ".repeat(5))].length;
+    expect((numeric.evidence as TokenEvidence).tokenOldOffset.codePointStart).toBe(
+      expectedStart + "Figure ".length,
+    );
   });
 
   it("3. several astral code points before the token compound correctly", () => {
@@ -95,9 +127,14 @@ describe("astral code-point offset probe (the exact case from the task)", () => 
     expect(rc.before).toBe(" ");
     const dash = tags.find((t) => t.tag === "dash-restyling");
     expect(dash).toBeDefined();
-    const evidence = dash!.evidence as { tokenOldOffset: { codePointStart: number; codePointEnd: number } };
+    const evidence = dash!.evidence as {
+      tokenOldOffset: { codePointStart: number; codePointEnd: number };
+    };
     const expectedDashOffset = [..."😀 value 1 "].length;
-    expect(evidence.tokenOldOffset).toEqual({ codePointStart: expectedDashOffset, codePointEnd: expectedDashOffset + 1 });
+    expect(evidence.tokenOldOffset).toEqual({
+      codePointStart: expectedDashOffset,
+      codePointEnd: expectedDashOffset + 1,
+    });
   });
 
   it("7. token evidence range independently slices from the original text and equals tokenText exactly", () => {
@@ -105,9 +142,14 @@ describe("astral code-point offset probe (the exact case from the task)", () => 
     const after = "😀😀 Figure 5–10 for details.\n";
     const { tags } = firstEntry(before, after);
     for (const t of tags) {
-      const evidence = t.evidence as { tokenText?: string; tokenOldOffset?: { codePointStart: number; codePointEnd: number } } | null;
+      const evidence = t.evidence as {
+        tokenText?: string;
+        tokenOldOffset?: { codePointStart: number; codePointEnd: number };
+      } | null;
       if (!evidence?.tokenOldOffset) continue;
-      const slice = [...before].slice(evidence.tokenOldOffset.codePointStart, evidence.tokenOldOffset.codePointEnd).join("");
+      const slice = [...before]
+        .slice(evidence.tokenOldOffset.codePointStart, evidence.tokenOldOffset.codePointEnd)
+        .join("");
       expect(slice).toBe(evidence.tokenText);
     }
   });
@@ -118,7 +160,10 @@ describe("astral code-point offset probe (the exact case from the task)", () => 
     const { edits, tags } = firstEntry(before, after);
     const byId = new Map(edits.map((e) => [e.id, e] as const));
     for (const t of tags) {
-      const evidence = t.evidence as { tokenOldOffset?: { codePointStart: number; codePointEnd: number }; intersectingAtomicEditId?: string } | null;
+      const evidence = t.evidence as {
+        tokenOldOffset?: { codePointStart: number; codePointEnd: number };
+        intersectingAtomicEditId?: string;
+      } | null;
       if (!evidence?.tokenOldOffset || !evidence.intersectingAtomicEditId) continue;
       const edit = byId.get(evidence.intersectingAtomicEditId);
       expect(edit).toBeDefined();

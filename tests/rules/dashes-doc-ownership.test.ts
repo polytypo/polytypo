@@ -53,8 +53,7 @@ const SUBJECT_PATTERN = /\bdashes\b|\bthis rule\b/i;
 const TOPIC_PATTERN = /\bG[1-5]\b|dash\.range|U\+2060|\bJOINER\b|\bbinds?\b|\bbinding\b/i;
 const OWNERSHIP_VERB_PATTERN =
   /\b(reads?|emits?|evaluates?|owns?|binds?|performs?|checks?|consults?|processes?|is in|belongs? to|is part of)\b/i;
-const NEGATION_PATTERN =
-  /\b(no|not|never|cannot|can't|doesn't|does not|no longer|nothing|none)\b/i;
+const NEGATION_PATTERN = /\b(no|not|never|cannot|can't|doesn't|does not|no longer|nothing|none)\b/i;
 
 /**
  * Find sentences in `text` that positively attribute a range-owned behaviour (G1-G5, dash.range,
@@ -132,8 +131,7 @@ describe("dashes.md documentation topology", () => {
   it("explicit negative ownership statements are correctly allowed through (sanity check on the detector itself)", () => {
     const positive = "`dashes` emits U+2060 around a tight range.";
     const negative = "`dashes` emits no U+2060; `ranges` owns binding.";
-    const negativeWithBareMention =
-      "`dashes` emits U+2060; see ranges.md for the current owner.";
+    const negativeWithBareMention = "`dashes` emits U+2060; see ranges.md for the current owner.";
 
     expect(findOwnershipClaims(positive)).not.toEqual([]);
     expect(findOwnershipClaims(negative)).toEqual([]);
@@ -215,7 +213,9 @@ describe("dashes.md documentation topology: emission-alphabet consistency (§3.6
     // §5.4: "What this rule emits. U+2013 or U+2014 ... It never emits a no-break space, a
     // letter, a digit, a full stop, or U+2060."
     expect(five.body).toMatch(/What this rule emits\.\*\* U\+2013 or U\+2014/);
-    expect(five.body).toMatch(/It never emits a no-break\s*\n?space, a letter, a digit, a full stop, or U\+2060/);
+    expect(five.body).toMatch(
+      /It never emits a no-break\s*\n?space, a letter, a digit, a full stop, or U\+2060/,
+    );
   });
 
   it("negative control (in-memory only): reintroducing either false formulation is caught", () => {

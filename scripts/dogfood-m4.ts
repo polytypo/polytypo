@@ -56,7 +56,9 @@ try {
       `${summary.counts.reviewChangeCount} review change(s) -- three different counts; a hunk bundles several atomic edits, ` +
       "and one or more nearby atomic edits group into one review change",
   );
-  console.log(`dogfood:m4: corpus byte-identical before/after: ${summary.corpusByteIdenticalBeforeAndAfter}`);
+  console.log(
+    `dogfood:m4: corpus byte-identical before/after: ${summary.corpusByteIdenticalBeforeAndAfter}`,
+  );
   console.log(`dogfood:m4: review state: ${summary.reviewState}`);
 
   if (summary.status === "failed") {
@@ -76,7 +78,9 @@ try {
   if (error instanceof DogfoodSafetyError || error instanceof SymlinkEncounteredError) {
     console.error(`dogfood:m4: refused (fail-closed): ${error.message}`);
   } else {
-    console.error(`dogfood:m4: unexpected failure: ${error instanceof Error ? error.stack ?? error.message : String(error)}`);
+    console.error(
+      `dogfood:m4: unexpected failure: ${error instanceof Error ? (error.stack ?? error.message) : String(error)}`,
+    );
   }
   process.exit(1);
 }

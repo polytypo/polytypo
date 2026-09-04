@@ -1,22 +1,17 @@
 {
   "spec": "1.0.0",
-  "proofLocales": [
-    "en-US",
-    "de-DE",
-    "fr",
-    "ru"
-  ],
+  "proofLocales": ["en-US", "en-GB", "de-DE", "de-CH", "fr", "ru"],
   "locales": [
     {
       "locale": "en-US",
       "name": "English (US)",
       "hero": {
-        "in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.",
-        "out": "Is this “polytypo”?—No, it’s “polytypo”! She said, “He replied ‘never’ twice”… The release—all 5 km of it—covers 1914-1918. Copyright © 2026, at 1920×1080."
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm."
       },
       "proof": {
-        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
-        "out": "She said: “The em dash was mine before AI”—and she meant it."
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm."
       },
       "cases": [
         {
@@ -31,8 +26,8 @@
         },
         {
           "rule": "dashes",
-          "in": "1914-1918 and pp. 34-36",
-          "out": "1914-1918 and pp. 34-36"
+          "in": "chapters 3-5 and pp. 34-36",
+          "out": "chapters 3-5 and pp. 34-36"
         },
         {
           "rule": "ellipsis",
@@ -60,12 +55,12 @@
       "locale": "en-GB",
       "name": "English (UK)",
       "hero": {
-        "in": "Is this \"polytypo\"? - No, it's \"polytypo\"! She said, \"He replied 'never' twice\"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.",
-        "out": "Is this ‘polytypo’? – No, it’s ‘polytypo’! She said, ‘He replied “never” twice’… The release – all 5 km of it – covers 1914-1918. Copyright © 2026, at 1920×1080."
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, ‘Isn’t this the shop they call “round the corner”?’ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
       },
       "proof": {
-        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
-        "out": "She said: ‘The em dash was mine before AI’ – and she meant it."
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, ‘Isn’t this the shop they call “round the corner”?’ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
       },
       "cases": [
         {
@@ -94,12 +89,12 @@
       "locale": "de-DE",
       "name": "German",
       "hero": {
-        "in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.",
-        "out": "Ist das „polytypo“? – Nein, das ist „polytypo“! Sie sagte: „Er hat 'nie' geantwortet“… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026."
+        "in": "Sie fragte: \"Ist das nicht der Laden namens 'an der Ecke'?\" ... Wir liefen -- fast 3 km -- und fanden ihn leider geschlossen. Copyright (c) 2026, Format 40x60 cm, z. B. für Poster.",
+        "out": "Sie fragte: „Ist das nicht der Laden namens ‚an der Ecke‘?“ … Wir liefen – fast 3 km – und fanden ihn leider geschlossen. Copyright © 2026, Format 40×60 cm, z. B. für Poster."
       },
       "proof": {
-        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
-        "out": "She said: „The em dash was mine before AI“ – and she meant it."
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, „Isn’t this the shop they call ‚round the corner‘?“ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
       },
       "cases": [
         {
@@ -114,8 +109,8 @@
         },
         {
           "rule": "dashes",
-          "in": "Die Jahre 1939-1945",
-          "out": "Die Jahre 1939-1945"
+          "in": "Die Jahre 2019-2023",
+          "out": "Die Jahre 2019-2023"
         },
         {
           "rule": "nbsp",
@@ -133,12 +128,12 @@
       "locale": "de-CH",
       "name": "Swiss German",
       "hero": {
-        "in": "Ist das \"polytypo\"? - Nein, das ist \"polytypo\"! Sie sagte: \"Er hat 'nie' geantwortet\"... Die Ausgabe - z. B. die Jahre 1939-1945 - erscheint in 1920x1080. Copyright (c) 2026.",
-        "out": "Ist das «polytypo»? – Nein, das ist «polytypo»! Sie sagte: «Er hat 'nie' geantwortet»… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026."
+        "in": "Sie fragte: \"Ist das nicht der Laden namens 'an der Ecke'?\" ... Wir liefen -- fast 3 km -- und fanden ihn leider geschlossen. Copyright (c) 2026, Format 40x60 cm, z. B. für Poster.",
+        "out": "Sie fragte: «Ist das nicht der Laden namens ‹an der Ecke›?» … Wir liefen – fast 3 km – und fanden ihn leider geschlossen. Copyright © 2026, Format 40×60 cm, z. B. für Poster."
       },
       "proof": {
-        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
-        "out": "She said: «The em dash was mine before AI» – and she meant it."
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, «Isn’t this the shop they call ‹round the corner›?» … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
       },
       "cases": [
         {
@@ -162,12 +157,12 @@
       "locale": "fr",
       "name": "French",
       "hero": {
-        "in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.",
-        "out": "C’est « polytypo » ? — Non, c’est « polytypo » ! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm ; c’est tout. Copyright © 2026."
+        "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.",
+        "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm."
       },
       "proof": {
-        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
-        "out": "She said : « The em dash was mine before AI » — and she meant it."
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, « Isn’t this the shop they call “round the corner” ? » … We’d walked — nearly 3 km — just to find it closed. Copyright © 2026 ; the print measures 40×60 cm."
       },
       "cases": [
         {
@@ -201,12 +196,12 @@
       "locale": "fr-CA",
       "name": "French (Canada)",
       "hero": {
-        "in": "C'est \"polytypo\" ? - Non, c'est \"polytypo\" ! Elle a dit : \"Il a répondu 'jamais'\"... L'édition - celle de l'été - fait 3x5 cm ; c'est tout. Copyright (c) 2026.",
-        "out": "C’est « polytypo »? — Non, c’est « polytypo »! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm; c’est tout. Copyright © 2026."
+        "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.",
+        "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm."
       },
       "proof": {
-        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
-        "out": "She said : « The em dash was mine before AI » — and she meant it."
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, « Isn’t this the shop they call “round the corner”? » … We’d walked — nearly 3 km — just to find it closed. Copyright © 2026; the print measures 40×60 cm."
       },
       "cases": [
         {
@@ -235,12 +230,12 @@
       "locale": "ru",
       "name": "Russian",
       "hero": {
-        "in": "Это \"полиштамп\"? - Нет, это \"полиштамп\"! Она сказала: \"он ответил 'никогда'\"... Достал из-под стола - в 1941-1945 годах - размер 10 x 20 см. Все права защищены (c) 2026.",
-        "out": "Это «полиштамп»? — Нет, это «полиштамп»! Она сказала: «он ответил „никогда“»… Достал из‑под стола — в 1941-1945 годах — размер 10 × 20 см. Все права защищены © 2026."
+        "in": "Она спросила: \"Это не тот магазинчик, который называют 'за углом'?\" ... Мы прошли - почти 3 км - и нашли его закрытым, а что-то достали из-под прилавка. Copyright (c) 2026, формат 40x60 см.",
+        "out": "Она спросила: «Это не тот магазинчик, который называют „за углом“?» … Мы прошли — почти 3 км — и нашли его закрытым, а что‑то достали из‑под прилавка. Copyright © 2026, формат 40×60 см."
       },
       "proof": {
-        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
-        "out": "She said: «The em dash was mine before AI» — and she meant it."
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, «Isn’t this the shop they call „round the corner“?» … We’d walked — nearly 3 km — just to find it closed. Copyright © 2026; the print measures 40×60 cm."
       },
       "cases": [
         {
@@ -255,8 +250,8 @@
         },
         {
           "rule": "dashes",
-          "in": "Годы 1941-1945 были тяжёлыми",
-          "out": "Годы 1941-1945 были тяжёлыми"
+          "in": "Годы 2019-2023 были насыщенными",
+          "out": "Годы 2019-2023 были насыщенными"
         },
         {
           "rule": "hyphen",
@@ -279,12 +274,12 @@
       "locale": "fi",
       "name": "Finnish",
       "hero": {
-        "in": "Onko tämä \"polytypo\"? - Ei, tämä on \"polytypo\"! Hän sanoi: \"hän vastasi 'ei koskaan'\"... Matkaa on 20 km - vuosina 1914-1918 - ja hinta nousi 10,5 %. Copyright (c) 2026.",
-        "out": "Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän sanoi: ”hän vastasi ’ei koskaan’”… Matkaa on 20 km – vuosina 1914-1918 – ja hinta nousi 10,5 %. Copyright © 2026."
+        "in": "Hän kysyi: \"Eikö tämä ole se 'nurkan' kirjakauppa?\" ... Kävelimme - lähes 3 km - ja löysimme sen kiinni. Copyright (c) 2026; tulosteen koko on 40x60 cm, hinta nousi 10,5 %.",
+        "out": "Hän kysyi: ”Eikö tämä ole se ’nurkan’ kirjakauppa?” … Kävelimme – lähes 3 km – ja löysimme sen kiinni. Copyright © 2026; tulosteen koko on 40×60 cm, hinta nousi 10,5 %."
       },
       "proof": {
-        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
-        "out": "She said: ”The em dash was mine before AI” – and she meant it."
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, ”Isn’t this the shop they call ’round the corner’?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
       },
       "cases": [
         {
@@ -308,12 +303,12 @@
       "locale": "sv",
       "name": "Swedish",
       "hero": {
-        "in": "Är det här \"polytypo\"? - Nej, det är \"polytypo\"! Hon sa: \"han svarade 'aldrig'\"... Vi gick 5 km - åren 1914-1918 - och det kostar 100 kr. Copyright (c) 2026.",
-        "out": "Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914-1918 – och det kostar 100 kr. Copyright © 2026."
+        "in": "Hon frågade: \"Är det inte affären i 'hörnet'?\" ... Vi gick - nästan 3 km - och hittade den stängd. Copyright (c) 2026; trycket mäter 40x60 cm och kostar 10,5 % mer.",
+        "out": "Hon frågade: ”Är det inte affären i ’hörnet’?” … Vi gick – nästan 3 km – och hittade den stängd. Copyright © 2026; trycket mäter 40×60 cm och kostar 10,5 % mer."
       },
       "proof": {
-        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
-        "out": "She said: ”The em dash was mine before AI” – and she meant it."
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, ”Isn’t this the shop they call ’round the corner’?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
       },
       "cases": [
         {
@@ -337,12 +332,12 @@
       "locale": "el",
       "name": "Greek",
       "hero": {
-        "in": "Είναι αυτό \"polytypo\"; - Όχι, αυτό είναι \"polytypo\"! Είπε: \"απάντησε “ποτέ”\"... Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright (c) 2026, σε 1920x1080.",
-        "out": "Είναι αυτό «polytypo»; - Όχι, αυτό είναι «polytypo»! Είπε: «απάντησε “ποτέ”»… Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright © 2026, σε 1920×1080."
+        "in": "Ρώτησε: \"Δεν είναι αυτό το μαγαζί 'στη γωνία';\" ... Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright (c) 2026, μέγεθος 40x60 cm.",
+        "out": "Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm."
       },
       "proof": {
-        "in": "She said: \"The em dash was mine before AI\" - and she meant it.",
-        "out": "She said: «The em dash was mine before AI» - and she meant it."
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, «Isn’t this the shop they call “round the corner”?» … We’d walked - nearly 3 km - just to find it closed. Copyright © 2026; the print measures 40×60 cm."
       },
       "cases": [
         {

@@ -269,8 +269,8 @@ LANGS = {
         "quickstart": """```js
 import { transform } from "polytypo";
 
-transform(`Is this "polytypo"? - No, it's "polytypo"!`, { locale: "en-US" });
-// → Is this “polytypo”?—No, it’s “polytypo”!
+transform(`They said "don't" - not "won't".`, { locale: "en-US" });
+// → They said “don’t”—not “won’t”.
 
 transform(`Ist das "polytypo"?`, { locale: "de" });   // de → de-DE
 // → Ist das „polytypo“?
@@ -296,15 +296,15 @@ is the file extension, and the library cannot know it. Detection is deliberately
 ESM statement as prose.
 
 ```js
-transform('Is this "polytypo"? - No', { locale: "en-US", mode: "markdown", dialect: "commonmark" });
-// → Is this “polytypo”?—No
+transform("Wait - really", { locale: "en-US", mode: "markdown", dialect: "commonmark" });
+// → Wait—really
 
 transform("a", { locale: "en-US", mode: "markdown" });
 // throws PolytypoError { code: "POLYTYPO_INVALID_DIALECT" }
 ```""",
         "optout": """```js
-transform("1914-1918", { locale: "en-US", rules: { dashes: false } });
-// → 1914-1918   — every other rule still runs, in the same order
+transform("pp. 34-36", { locale: "en-US", rules: { dashes: false } });
+// → pp. 34-36   — every other rule still runs, in the same order
 ```""",
         "errors": """```js
 import { PolytypoError } from "polytypo";
@@ -373,7 +373,7 @@ which entry point your code imports from.""",
         "title": "Python",
         "package": "polytypo",
         "registry": "PyPI",
-        "logo": "assets/polytypo-lockup-stacked.svg",
+        "logo": "../../brand/logo/polytypo-lockup-stacked.svg",
         "on_registry": False,
         "status": (
             "**Status: planned, not yet started.** This document is the specification of the port's "
@@ -386,8 +386,8 @@ which entry point your code imports from.""",
         "quickstart": """```python
 from polytypo import transform
 
-transform('Is this "polytypo"? - No, it\\'s "polytypo"!', locale="en-US")
-# → Is this “polytypo”?—No, it’s “polytypo”!
+transform('They said "don\\'t" - not "won\\'t".', locale="en-US")
+# → They said “don’t”—not “won’t”.
 
 transform('Ist das "polytypo"?', locale="de")   # de → de-DE
 # → Ist das „polytypo“?
@@ -412,15 +412,15 @@ automatic dialect detection is refused, matching the JavaScript reference implem
 exactly.
 
 ```python
-transform('Is this "polytypo"? - No', locale="en-US", mode="markdown", dialect="commonmark")
-# → Is this “polytypo”?—No
+transform("Wait - really", locale="en-US", mode="markdown", dialect="commonmark")
+# → Wait—really
 
 transform("a", locale="en-US", mode="markdown")
 # raises PolytypoError with error.code == "POLYTYPO_INVALID_DIALECT"
 ```""",
         "optout": """```python
-transform("1914-1918", locale="en-US", rules={"dashes": False})
-# → 1914-1918   — every other rule still runs, in the same order
+transform("pp. 34-36", locale="en-US", rules={"dashes": False})
+# → pp. 34-36   — every other rule still runs, in the same order
 ```""",
         "errors": """```python
 from polytypo import PolytypoError
@@ -443,7 +443,7 @@ except PolytypoError as error:
         "title": "Go",
         "package": "github.com/polytypo/polytypo-go",
         "registry": "Go modules",
-        "logo": "assets/polytypo-lockup-stacked.svg",
+        "logo": "../../brand/logo/polytypo-lockup-stacked.svg",
         "on_registry": False,
         "status": (
             "**Status: planned, not yet started.** This document is the specification of the port's "
@@ -464,14 +464,14 @@ import (
 
 func main() {
     out, err := polytypo.Transform(
-        `Is this "polytypo"? - No, it's "polytypo"!`,
+        `They said "don't" - not "won't".`,
         polytypo.Options{Locale: "en-US"},
     )
     if err != nil {
         panic(err)
     }
     fmt.Println(out)
-    // Is this “polytypo”?—No, it’s “polytypo”!
+    // They said “don’t”—not “won’t”.
 }
 ```""",
         "api": """```go
@@ -500,22 +500,22 @@ about ordinary documents, so the caller states which one it has, matching the Ja
 implementation's contract exactly.
 
 ```go
-out, err := polytypo.Transform(`Is this "polytypo"? - No`, polytypo.Options{
+out, err := polytypo.Transform(`Wait - really`, polytypo.Options{
     Locale:  "en-US",
     Mode:    polytypo.ModeMarkdown,
     Dialect: polytypo.DialectCommonMark,
 })
-// out == `Is this “polytypo”?—No`
+// out == `Wait—really`
 
 _, err = polytypo.Transform("a", polytypo.Options{Locale: "en-US", Mode: polytypo.ModeMarkdown})
 // err wraps *polytypo.Error with Code == "POLYTYPO_INVALID_DIALECT"
 ```""",
         "optout": """```go
-out, err := polytypo.Transform("1914-1918", polytypo.Options{
+out, err := polytypo.Transform("pp. 34-36", polytypo.Options{
     Locale: "en-US",
     Rules:  map[polytypo.RuleID]bool{polytypo.RuleDashes: false},
 })
-// → 1914-1918   — every other rule still runs, in the same order
+// → pp. 34-36   — every other rule still runs, in the same order
 ```""",
         "errors": """```go
 _, err := polytypo.Transform("x", polytypo.Options{Locale: "xx"})
@@ -540,7 +540,7 @@ if errors.As(err, &perr) {
         "title": "Ruby",
         "package": "polytypo",
         "registry": "RubyGems",
-        "logo": "assets/polytypo-lockup-stacked.svg",
+        "logo": "../../brand/logo/polytypo-lockup-stacked.svg",
         "on_registry": False,
         "status": (
             "**Status: planned, not yet started.** This document is the specification of the port's "
@@ -553,8 +553,8 @@ if errors.As(err, &perr) {
         "quickstart": """```ruby
 require "polytypo"
 
-Polytypo.transform(%q{Is this "polytypo"? - No, it's "polytypo"!}, locale: "en-US")
-# => "Is this “polytypo”?—No, it’s “polytypo”!"
+Polytypo.transform(%q{They said "don't" - not "won't".}, locale: "en-US")
+# => "They said “don’t”—not “won’t”."
 
 Polytypo.transform('Ist das "polytypo"?', locale: "de")   # de → de-DE
 # => "Ist das „polytypo“?"
@@ -577,15 +577,15 @@ the caller states which one it has, matching the JavaScript reference implementa
 exactly.
 
 ```ruby
-Polytypo.transform('Is this "polytypo"? - No', locale: "en-US", mode: :markdown, dialect: :commonmark)
-# => "Is this “polytypo”?—No"
+Polytypo.transform("Wait - really", locale: "en-US", mode: :markdown, dialect: :commonmark)
+# => "Wait—really"
 
 Polytypo.transform("a", locale: "en-US", mode: :markdown)
 # raises Polytypo::Error, error.code => "POLYTYPO_INVALID_DIALECT"
 ```""",
         "optout": """```ruby
-Polytypo.transform("1914-1918", locale: "en-US", rules: { dashes: false })
-# => "1914-1918"   — every other rule still runs, in the same order
+Polytypo.transform("pp. 34-36", locale: "en-US", rules: { dashes: false })
+# => "pp. 34-36"   — every other rule still runs, in the same order
 ```""",
         "errors": """```ruby
 begin
@@ -608,7 +608,7 @@ end
         "title": "PHP",
         "package": "polytypo/polytypo",
         "registry": "Packagist",
-        "logo": "assets/polytypo-lockup-stacked.svg",
+        "logo": "../../brand/logo/polytypo-lockup-stacked.svg",
         "on_registry": False,
         "status": (
             "**Status: planned, not yet started.** This document is the specification of the port's "
@@ -622,8 +622,8 @@ end
 <?php
 use Polytypo\\Polytypo;
 
-Polytypo::transform('Is this "polytypo"? - No, it\\'s "polytypo"!', ['locale' => 'en-US']);
-// → Is this “polytypo”?—No, it’s “polytypo”!
+Polytypo::transform('They said "don\\'t" - not "won\\'t".', ['locale' => 'en-US']);
+// → They said “don’t”—not “won’t”.
 
 Polytypo::transform('Ist das "polytypo"?', ['locale' => 'de']);   // de → de-DE
 // → Ist das „polytypo“?
@@ -648,22 +648,22 @@ the caller states which one it has, matching the JavaScript reference implementa
 exactly.
 
 ```php
-Polytypo::transform('Is this "polytypo"? - No', [
+Polytypo::transform('Wait - really', [
     'locale'  => 'en-US',
     'mode'    => 'markdown',
     'dialect' => 'commonmark',
 ]);
-// → Is this “polytypo”?—No
+// → Wait—really
 
 Polytypo::transform('a', ['locale' => 'en-US', 'mode' => 'markdown']);
 // throws PolytypoException with errorCode 'POLYTYPO_INVALID_DIALECT'
 ```""",
         "optout": """```php
-Polytypo::transform('1914-1918', [
+Polytypo::transform('pp. 34-36', [
     'locale' => 'en-US',
     'rules'  => ['dashes' => false],
 ]);
-// → 1914-1918   — every other rule still runs, in the same order
+// → pp. 34-36   — every other rule still runs, in the same order
 ```""",
         "errors": """```php
 use Polytypo\\PolytypoException;

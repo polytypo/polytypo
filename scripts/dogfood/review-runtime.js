@@ -68,7 +68,11 @@ export function serializeExportPayload(evidenceReviewHash, ids, decisions, notes
     schemaVersion: EXPORT_SCHEMA_VERSION,
     evidenceReviewHash,
     counts: computeCounts(ids, decisions),
-    decisions: ids.map((id) => ({ id, decision: isValidDecision(decisions[id]) ? decisions[id] : "UNREVIEWED", note: notes[id] || "" })),
+    decisions: ids.map((id) => ({
+      id,
+      decision: isValidDecision(decisions[id]) ? decisions[id] : "UNREVIEWED",
+      note: notes[id] || "",
+    })),
   };
 }
 
@@ -87,12 +91,19 @@ export function validateImportPayload(raw, expectedEvidenceReviewHash, expectedI
   const allowPartial = !!(opts && opts.allowPartial);
   if (!raw || typeof raw !== "object") return { ok: false, reason: "not a JSON object" };
   if (raw.schemaVersion !== EXPORT_SCHEMA_VERSION) {
-    return { ok: false, reason: `unsupported schemaVersion (expected ${EXPORT_SCHEMA_VERSION}, got ${JSON.stringify(raw.schemaVersion)})` };
+    return {
+      ok: false,
+      reason: `unsupported schemaVersion (expected ${EXPORT_SCHEMA_VERSION}, got ${JSON.stringify(raw.schemaVersion)})`,
+    };
   }
   if (raw.evidenceReviewHash !== expectedEvidenceReviewHash) {
-    return { ok: false, reason: "evidenceReviewHash does not match this bundle -- this decisions file was exported from a different review (different code, corpus, locale/mode/dialect, or edited evidence)" };
+    return {
+      ok: false,
+      reason:
+        "evidenceReviewHash does not match this bundle -- this decisions file was exported from a different review (different code, corpus, locale/mode/dialect, or edited evidence)",
+    };
   }
-  if (!Array.isArray(raw.decisions)) return { ok: false, reason: "\"decisions\" is not an array" };
+  if (!Array.isArray(raw.decisions)) return { ok: false, reason: '"decisions" is not an array' };
 
   const expected = new Set(expectedIds);
   const seen = new Set();
@@ -100,19 +111,28 @@ export function validateImportPayload(raw, expectedEvidenceReviewHash, expectedI
   const notes = {};
   for (const row of raw.decisions) {
     if (!row || typeof row !== "object" || typeof row.id !== "string") {
-      return { ok: false, reason: "a decisions[] row is missing a string \"id\"" };
+      return { ok: false, reason: 'a decisions[] row is missing a string "id"' };
     }
     if (seen.has(row.id)) return { ok: false, reason: `duplicate id "${row.id}" in decisions[]` };
     seen.add(row.id);
-    if (!expected.has(row.id)) return { ok: false, reason: `id "${row.id}" does not exist in this bundle's review changes` };
-    if (!isValidDecision(row.decision)) return { ok: false, reason: `id "${row.id}" has an invalid decision ${JSON.stringify(row.decision)}` };
+    if (!expected.has(row.id))
+      return { ok: false, reason: `id "${row.id}" does not exist in this bundle's review changes` };
+    if (!isValidDecision(row.decision))
+      return {
+        ok: false,
+        reason: `id "${row.id}" has an invalid decision ${JSON.stringify(row.decision)}`,
+      };
     decisions[row.id] = row.decision;
     notes[row.id] = typeof row.note === "string" ? row.note : "";
   }
 
   if (!allowPartial) {
     for (const id of expectedIds) {
-      if (!seen.has(id)) return { ok: false, reason: `missing decision for id "${id}" -- import is partial; pass allowPartial to accept a partial import explicitly` };
+      if (!seen.has(id))
+        return {
+          ok: false,
+          reason: `missing decision for id "${id}" -- import is partial; pass allowPartial to accept a partial import explicitly`,
+        };
     }
   }
 

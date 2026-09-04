@@ -248,7 +248,10 @@ function resolveContainedStylesheetPath(
   try {
     resolvedBase = realpathSync(baseDir);
   } catch (error) {
-    return { ok: false, reason: `base directory "${baseDir}" could not be resolved: ${String(error)}` };
+    return {
+      ok: false,
+      reason: `base directory "${baseDir}" could not be resolved: ${String(error)}`,
+    };
   }
 
   let resolvedRoot: string;
@@ -321,7 +324,10 @@ function checkNode(node: Node, page: string, violations: Violation[]): void {
       if (type === "image") {
         const src = attr(node, "src");
         if (isExternalResourceUrl(src)) {
-          violations.push({ page, description: `<input type="image" src="${src}"> loads a third-party image` });
+          violations.push({
+            page,
+            description: `<input type="image" src="${src}"> loads a third-party image`,
+          });
         }
       }
     } else {
@@ -355,7 +361,10 @@ function checkNode(node: Node, page: string, violations: Violation[]): void {
         .map((c) => ("value" in c ? (c as { value: string }).value : ""))
         .join("");
       for (const v of scanCssForViolations(cssText)) {
-        violations.push({ page, description: `inline <style> ${v.kind} references a disallowed resource: ${v.raw}` });
+        violations.push({
+          page,
+          description: `inline <style> ${v.kind} references a disallowed resource: ${v.raw}`,
+        });
       }
     }
 
@@ -495,7 +504,9 @@ describe("promo pages — zero third-party page-load requests", () => {
     for (const page of PAGES) {
       const document = parse(readPromoPage(page));
       const hrefs = collectLocalStylesheetHrefs(document);
-      expect(hrefs.length, `${page}: expected at least one local stylesheet link`).toBeGreaterThan(0);
+      expect(hrefs.length, `${page}: expected at least one local stylesheet link`).toBeGreaterThan(
+        0,
+      );
       for (const href of hrefs) {
         // Resolved from the page's own directory (its hrefs are document-relative) but contained
         // within promo/ — so a wrong-depth "../assets/style.css" fails here as nonexistent.
@@ -506,7 +517,9 @@ describe("promo pages — zero third-party page-load requests", () => {
             (resolved.ok ? "" : ` — ${resolved.reason}`),
         ).toBe(true);
         if (resolved.ok) {
-          expect(existsSync(resolved.path), `${page}: linked stylesheet "${href}" must exist`).toBe(true);
+          expect(existsSync(resolved.path), `${page}: linked stylesheet "${href}" must exist`).toBe(
+            true,
+          );
         }
       }
     }
@@ -541,7 +554,9 @@ describe("no-external-requests detector — negative controls (each must be CAUG
   it("3. catches an external string-form @import", () => {
     const css = '@import "https://evil.example/reset.css";';
     const violations = scanCssForViolations(css);
-    expect(violations.some((v) => v.kind === "@import" && v.url.includes("evil.example"))).toBe(true);
+    expect(violations.some((v) => v.kind === "@import" && v.url.includes("evil.example"))).toBe(
+      true,
+    );
   });
 
   it("3b. catches an external url()-form @import too (both @import forms)", () => {
@@ -555,16 +570,16 @@ describe("no-external-requests detector — negative controls (each must be CAUG
     expect(violations.some((v) => v.kind === "@import" && v.url.includes("local.css"))).toBe(true);
   });
 
-  it("4. catches an external URL inside an inline style=\"\" attribute", () => {
+  it('4. catches an external URL inside an inline style="" attribute', () => {
     const html =
       '<!doctype html><html><body><div style="background-image:url(https://evil.example/bg.png)"></div></body></html>';
     const violations = checkPage(html, "synthetic");
     expect(violations.some((v) => v.description.includes("evil.example"))).toBe(true);
   });
 
-  it("does not flag a relative srcset or a relative style=\"\" url()", () => {
+  it('does not flag a relative srcset or a relative style="" url()', () => {
     const html =
-      '<!doctype html><html><body>' +
+      "<!doctype html><html><body>" +
       '<img src="a.png" srcset="a.png 1x, a-2x.png 2x">' +
       '<div style="background-image:url(assets/bg.png)"></div>' +
       "</body></html>";
@@ -573,7 +588,7 @@ describe("no-external-requests detector — negative controls (each must be CAUG
 
   it("does not flag a data: URL in url() or an <a href> citation link", () => {
     const html =
-      '<!doctype html><html><body>' +
+      "<!doctype html><html><body>" +
       '<div style="background:url(data:image/png;base64,AAAA)"></div>' +
       '<a href="https://example.com/citation">a source</a>' +
       "</body></html>";
@@ -601,10 +616,16 @@ describe("no-external-requests detector — end-to-end linked-stylesheet negativ
 
     // No `readFile` override — this exercises the real fs.readFileSync path, not an injected
     // mock, against the disposable directory via the `baseDir` override alone.
-    const violations = checkPage(html, "synthetic", { baseDir: tmpDir, readFile: (p) => readFileSync(p, "utf8") });
+    const violations = checkPage(html, "synthetic", {
+      baseDir: tmpDir,
+      readFile: (p) => readFileSync(p, "utf8"),
+    });
 
     expect(
-      violations.some((v) => v.description.includes("linked stylesheet") && v.description.includes("evil.example")),
+      violations.some(
+        (v) =>
+          v.description.includes("linked stylesheet") && v.description.includes("evil.example"),
+      ),
       JSON.stringify(violations, null, 2),
     ).toBe(true);
   });
@@ -614,7 +635,10 @@ describe("no-external-requests detector — end-to-end linked-stylesheet negativ
     writeFileSync(path.join(tmpDir, "clean.css"), ".brand { color: #000; }", "utf8");
     const html =
       '<!doctype html><html><head><link rel="stylesheet" href="clean.css"></head><body></body></html>';
-    const violations = checkPage(html, "synthetic", { baseDir: tmpDir, readFile: (p) => readFileSync(p, "utf8") });
+    const violations = checkPage(html, "synthetic", {
+      baseDir: tmpDir,
+      readFile: (p) => readFileSync(p, "utf8"),
+    });
     expect(violations).toEqual([]);
   });
 
@@ -625,7 +649,10 @@ describe("no-external-requests detector — end-to-end linked-stylesheet negativ
     writeFileSync(outside, "body{background:url(https://evil.example/x.png)}", "utf8");
     try {
       const html = `<!doctype html><html><head><link rel="stylesheet" href="../${path.basename(outside)}"></head><body></body></html>`;
-      const violations = checkPage(html, "synthetic", { baseDir: tmpDir, readFile: (p) => readFileSync(p, "utf8") });
+      const violations = checkPage(html, "synthetic", {
+        baseDir: tmpDir,
+        readFile: (p) => readFileSync(p, "utf8"),
+      });
       expect(
         violations.some((v) => v.description.includes("resolves outside the promo root")),
         JSON.stringify(violations, null, 2),
@@ -654,8 +681,12 @@ describe("no-external-requests detector — end-to-end linked-stylesheet negativ
 
   it("path containment: rejects an absolute-path href", () => {
     tmpDir = mkdtempSync(path.join(tmpdir(), "polytypo-no-external-requests-"));
-    const html = '<!doctype html><html><head><link rel="stylesheet" href="/etc/passwd"></head><body></body></html>';
-    const violations = checkPage(html, "synthetic", { baseDir: tmpDir, readFile: (p) => readFileSync(p, "utf8") });
+    const html =
+      '<!doctype html><html><head><link rel="stylesheet" href="/etc/passwd"></head><body></body></html>';
+    const violations = checkPage(html, "synthetic", {
+      baseDir: tmpDir,
+      readFile: (p) => readFileSync(p, "utf8"),
+    });
     expect(violations.some((v) => v.description.includes("absolute path"))).toBe(true);
   });
 
@@ -664,7 +695,10 @@ describe("no-external-requests detector — end-to-end linked-stylesheet negativ
     writeFileSync(path.join(tmpDir, "clean.css"), ".brand { color: #000; }", "utf8");
     const html =
       '<!doctype html><html><head><link rel="stylesheet" href="clean.css?v=1#frag"></head><body></body></html>';
-    const violations = checkPage(html, "synthetic", { baseDir: tmpDir, readFile: (p) => readFileSync(p, "utf8") });
+    const violations = checkPage(html, "synthetic", {
+      baseDir: tmpDir,
+      readFile: (p) => readFileSync(p, "utf8"),
+    });
     expect(violations).toEqual([]);
 
     const escapeHtml =
@@ -673,7 +707,9 @@ describe("no-external-requests detector — end-to-end linked-stylesheet negativ
       baseDir: tmpDir,
       readFile: (p) => readFileSync(p, "utf8"),
     });
-    expect(escapeViolations.some((v) => v.description.includes("resolves outside the promo root"))).toBe(true);
+    expect(
+      escapeViolations.some((v) => v.description.includes("resolves outside the promo root")),
+    ).toBe(true);
   });
 
   it("path containment: rejects a symlink inside the base directory that points outside it", () => {
@@ -693,7 +729,10 @@ describe("no-external-requests detector — end-to-end linked-stylesheet negativ
     try {
       const html =
         '<!doctype html><html><head><link rel="stylesheet" href="inside-link.css"></head><body></body></html>';
-      const violations = checkPage(html, "synthetic", { baseDir: tmpDir, readFile: (p) => readFileSync(p, "utf8") });
+      const violations = checkPage(html, "synthetic", {
+        baseDir: tmpDir,
+        readFile: (p) => readFileSync(p, "utf8"),
+      });
       expect(
         violations.some((v) => v.description.includes("resolves outside the promo root")),
         JSON.stringify(violations, null, 2),
@@ -704,15 +743,23 @@ describe("no-external-requests detector — end-to-end linked-stylesheet negativ
     }
   });
 
-  it("fail-closed: href=\".\" is reported as a violation and does not throw", () => {
+  it('fail-closed: href="." is reported as a violation and does not throw', () => {
     tmpDir = mkdtempSync(path.join(tmpdir(), "polytypo-no-external-requests-"));
-    const html = '<!doctype html><html><head><link rel="stylesheet" href="."></head><body></body></html>';
+    const html =
+      '<!doctype html><html><head><link rel="stylesheet" href="."></head><body></body></html>';
     let violations: Violation[] = [];
     expect(() => {
-      violations = checkPage(html, "synthetic", { baseDir: tmpDir as string, readFile: (p) => readFileSync(p, "utf8") });
+      violations = checkPage(html, "synthetic", {
+        baseDir: tmpDir as string,
+        readFile: (p) => readFileSync(p, "utf8"),
+      });
     }).not.toThrow();
     expect(
-      violations.some((v) => v.description.includes("resolves outside the promo root") || v.description.includes("has no path")),
+      violations.some(
+        (v) =>
+          v.description.includes("resolves outside the promo root") ||
+          v.description.includes("has no path"),
+      ),
       JSON.stringify(violations, null, 2),
     ).toBe(true);
   });

@@ -4,11 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="polytypo — locale-correct quotes, dashes, ellipses and no-break spaces for 10 locales. One runtime today. One portable spec designed for five.">
+<link rel="icon" href="../assets/favicon/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/favicon/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="../assets/favicon/apple-touch-icon-180.png">
 <link rel="stylesheet" href="../assets/fonts.css">
 <link rel="stylesheet" href="../assets/style.css">
 <title>polytypo — Manifesto</title>
 </head>
-<body>
+<body class="page-manifesto">
 <nav class="site-nav"><div class="wrap"><a class="brand" href="../"><svg xmlns="http://www.w3.org/2000/svg" viewBox="9.5 37.5 181.0 45.0" role="img" aria-labelledby="t6 d6">
   <title id="t6">polytypo</title>
   <desc id="d6">Guillemets enclosing an em dash.</desc>
@@ -25,7 +28,7 @@
   <p class="eyebrow">Manifesto</p>
   <h1 style="max-width: none">The em dash was mine before AI.</h1>
   <p class="tagline" style="margin-top: var(--space-3); font-size: 20px">
-    <code>—</code> is typography, not a watermark.
+    <code>«—»</code> is typography, not an AI watermark.
   </p>
 </header>
 
@@ -33,14 +36,14 @@
   <p>
     A sentence with an em dash, a curly quote, or a non-breaking space is not evidence that a
     language model wrote it. Publishers, typesetters, and copyeditors have set these marks —
-    deliberately, and by locale-specific convention — since long before any language model
-    existed. Reading them as an "AI tell" mistakes a craft that predates the technology for a
-    fingerprint it left behind.
+    deliberately, and by locale-specific convention — since long before any language model existed.
+    Reading them as an "AI tell" mistakes a craft that predates the technology for a fingerprint it
+    left behind.
   </p>
   <p>
     That misreading has a cost. When correct punctuation gets treated as suspicious, writers get
-    pushed toward flatter, safer punctuation to avoid the accusation — the wrong incentive, aimed
-    at the wrong target.
+    pushed toward flatter, safer punctuation to avoid the accusation — the wrong incentive, aimed at
+    the wrong target.
   </p>
   <p>
     Polytypo exists because the craft underneath is mechanical, well documented, and worth
@@ -54,12 +57,11 @@
   <p class="eyebrow">Not one universal style</p>
   <h2>Correct typography isn't an "AI style." It's several different, locale-specific ones.</h2>
   <p class="small muted" style="max-width: 60ch">
-    Every card below runs the exact same input string — straight quotes, a straight hyphen —
-    through <code>transform()</code>. Nothing is typed by hand. Only the locale changes; quote
-    style, dash style, and spacing all follow.
+    Every card below runs the exact same input string through <code>transform()</code>. Only the
+    locale changes; quote style, dash style, and spacing all follow.
   </p>
-  <div class="card-grid card-grid--responsive"><div class="card" data-locale="en-US"><div class="lang">English (US) · en-US</div><div class="pair"><div class="specimen in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="specimen out">She said: <span class="chg">“</span>The em dash was mine before AI<span class="chg">”—</span>and she meant it.</div></div></div><div class="card" data-locale="de-DE"><div class="lang">German · de-DE</div><div class="pair"><div class="specimen in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="specimen out">She said: <span class="chg">„</span>The em dash was mine before AI<span class="chg">“</span> <span class="chg">–</span> and she meant it.</div></div></div><div class="card" data-locale="fr"><div class="lang">French · fr</div><div class="pair"><div class="specimen in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="specimen out">She said<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>: <span class="chg">«<span class="nb" title="U+00A0 no-break space"> </span></span>The em dash was mine before AI<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span>»</span> <span class="chg">—</span> and she meant it.</div></div></div><div class="card" data-locale="ru"><div class="lang">Russian · ru</div><div class="pair"><div class="specimen in">She said: &quot;The em dash was mine before AI&quot; - and she meant it.</div><div class="specimen out">She said: <span class="chg">«</span>The em dash was mine before AI<span class="chg">»</span> <span class="chg">—</span> and she meant it.</div></div></div></div>
-  <div class="small muted proof-legend" style="max-width: 60ch">Invisible characters in these outputs (always shown here — tooltips above are an optional extra, not required to understand them):<ul><li><span class="mono"> </span> — U+00A0 no-break space</li></ul></div>
+  <p class="small muted" style="margin: 0 0 8px">Input, unchanged</p><div class="specimen proof-shared-input">She asked, &quot;Isn&#x27;t this the shop they call &#x27;round the corner&#x27;?&quot; ... We&#x27;d walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.</div>
+  <div class="card-grid card-grid--six"><div class="card" data-locale="en-US"><div class="lang">English (US) · en-US</div><div class="pair pair--solo"><div class="specimen out">She asked, <span class="chg">“</span>Isn<span class="chg">’</span>t this the shop they call <span class="chg">‘</span>round the corner<span class="chg">’</span>?<span class="chg">”</span> <span class="chg">…</span> We<span class="chg">’</span>d walked<span class="chg">—</span>nearly 3<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>km<span class="chg">—</span>just to find it closed. Copyright <span class="chg">©</span> 2026; the print measures 40<span class="chg">×</span>60<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>cm.</div></div></div><div class="card" data-locale="en-GB"><div class="lang">English (UK) · en-GB</div><div class="pair pair--solo"><div class="specimen out">She asked, <span class="chg">‘</span>Isn<span class="chg">’</span>t this the shop they call <span class="chg">“</span>round the corner<span class="chg">”</span>?<span class="chg">’</span> <span class="chg">…</span> We<span class="chg">’</span>d walked <span class="chg">–</span> nearly 3<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>km <span class="chg">–</span> just to find it closed. Copyright <span class="chg">©</span> 2026; the print measures 40<span class="chg">×</span>60<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>cm.</div></div></div><div class="card" data-locale="de-DE"><div class="lang">German · de-DE</div><div class="pair pair--solo"><div class="specimen out">She asked, <span class="chg">„</span>Isn<span class="chg">’</span>t this the shop they call <span class="chg">‚</span>round the corner<span class="chg">‘</span>?<span class="chg">“</span> <span class="chg">…</span> We<span class="chg">’</span>d walked <span class="chg">–</span> nearly 3<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>km <span class="chg">–</span> just to find it closed. Copyright <span class="chg">©</span> 2026; the print measures 40<span class="chg">×</span>60<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>cm.</div></div></div><div class="card" data-locale="de-CH"><div class="lang">Swiss German · de-CH</div><div class="pair pair--solo"><div class="specimen out">She asked, <span class="chg">«</span>Isn<span class="chg">’</span>t this the shop they call <span class="chg">‹</span>round the corner<span class="chg">›</span>?<span class="chg">»</span> <span class="chg">…</span> We<span class="chg">’</span>d walked <span class="chg">–</span> nearly 3<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>km <span class="chg">–</span> just to find it closed. Copyright <span class="chg">©</span> 2026; the print measures 40<span class="chg">×</span>60<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>cm.</div></div></div><div class="card" data-locale="fr"><div class="lang">French · fr</div><div class="pair pair--solo"><div class="specimen out">She asked, <span class="chg">«<span class="nb" title="U+00A0 no-break space"> </span></span>Isn<span class="chg">’</span>t this the shop they call <span class="chg">“</span>round the corner<span class="chg">”<span class="nb" title="U+202F narrow no-break space"> </span></span>?<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span>»</span> <span class="chg">…</span> We<span class="chg">’</span>d walked <span class="chg">—</span> nearly 3<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>km <span class="chg">—</span> just to find it closed. Copyright <span class="chg">©</span> 2026<span class="chg"><span class="nb" title="U+202F narrow no-break space"> </span></span>; the print measures 40<span class="chg">×</span>60<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>cm.</div></div></div><div class="card" data-locale="ru"><div class="lang">Russian · ru</div><div class="pair pair--solo"><div class="specimen out">She asked, <span class="chg">«</span>Isn<span class="chg">’</span>t this the shop they call <span class="chg">„</span>round the corner<span class="chg">“</span>?<span class="chg">»</span> <span class="chg">…</span> We<span class="chg">’</span>d walked <span class="chg">—</span> nearly 3 km <span class="chg">—</span> just to find it closed. Copyright <span class="chg">©</span> 2026; the print measures 40<span class="chg">×</span>60 cm.</div></div></div></div>
   <p class="small muted">
     Full locale reference, citations, and how a locale gets added —
     <a href="../locales/">Locales</a>.
@@ -69,16 +71,14 @@
 <section id="try">
   <p class="eyebrow">See it on your own text</p>
   <h2>Paste a paragraph. Watch what changes, and why.</h2>
-  <p>
-    The playground runs the real engine in your browser — what you type is never sent anywhere.
-  </p>
+  <p>The playground runs the real engine in your browser — what you type is never sent anywhere.</p>
   <div class="cta-row">
     <a class="btn" href="../playground/">Open the Playground →</a>
     <a class="btn secondary" href="../docs/">Read the Docs</a>
   </div>
 </section>
 
-<footer><div class="wrap"><p>polytypo · spec 1.0.0 · MIT for the code, separate terms for the brand assets · every before/after typography example on this site is generated with the engine.</p><p><a href="../manifesto/">Manifesto</a></p><p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p></div></footer>
+<footer><p>polytypo · spec 1.0.0 · MIT for the code, separate terms for the brand assets · every before/after typography example on this site is generated with the engine.</p><p><a href="../manifesto/">Manifesto</a></p><p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p></footer>
 </div>
 <script src="../assets/site.js"></script>
 <script>

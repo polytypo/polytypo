@@ -473,7 +473,10 @@ function certify(
 
     const plan = computeRenderPlan(arr, accepted, ctx);
     const { y, map } = applyRenderPlan(arr, plan);
-    const rederived = pairCandidates(y, collectCandidates(y, skip, ctx.locale.quotes.elisionIdioms));
+    const rederived = pairCandidates(
+      y,
+      collectCandidates(y, skip, ctx.locale.quotes.elisionIdioms),
+    );
     const bSet = new Set(rederived.map((p) => pairKey(p.open, p.close)));
 
     const projected = accepted.map((p) => ({

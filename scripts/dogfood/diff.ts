@@ -448,12 +448,22 @@ export function applyAtomicEditsBackward(newText: string, edits: readonly Atomic
   return result;
 }
 
-function verifyReconstruction(oldText: string, newText: string, edits: readonly AtomicEdit[]): CoverageResult {
+function verifyReconstruction(
+  oldText: string,
+  newText: string,
+  edits: readonly AtomicEdit[],
+): CoverageResult {
   const issues: string[] = [];
   const forward = applyAtomicEditsForward(oldText, edits);
-  if (forward !== newText) issues.push("applying atomic edits forward (old -> new) did not reproduce the transformed text exactly");
+  if (forward !== newText)
+    issues.push(
+      "applying atomic edits forward (old -> new) did not reproduce the transformed text exactly",
+    );
   const backward = applyAtomicEditsBackward(newText, edits);
-  if (backward !== oldText) issues.push("applying atomic edits backward (new -> old) did not reproduce the original text exactly");
+  if (backward !== oldText)
+    issues.push(
+      "applying atomic edits backward (new -> old) did not reproduce the original text exactly",
+    );
   for (let i = 1; i < edits.length; i += 1) {
     const prev = edits[i - 1] as AtomicEdit;
     const cur = edits[i] as AtomicEdit;
@@ -529,7 +539,11 @@ export function escapeNotable(text: string): { escaped: string; notable: Notable
   }
   const notable: NotableCodePoint[] = [...counts.entries()]
     .sort((a, b) => a[0] - b[0])
-    .map(([cp, count]) => ({ codePoint: codePointToken(cp), name: WATCHLIST.get(cp) as string, count }));
+    .map(([cp, count]) => ({
+      codePoint: codePointToken(cp),
+      name: WATCHLIST.get(cp) as string,
+      count,
+    }));
   return { escaped, notable };
 }
 
@@ -537,7 +551,10 @@ function mergeNotable(a: NotableCodePoint[], b: NotableCodePoint[]): NotableCode
   const merged = new Map<string, NotableCodePoint>();
   for (const entry of [...a, ...b]) {
     const existing = merged.get(entry.codePoint);
-    merged.set(entry.codePoint, existing ? { ...entry, count: existing.count + entry.count } : entry);
+    merged.set(
+      entry.codePoint,
+      existing ? { ...entry, count: existing.count + entry.count } : entry,
+    );
   }
   return [...merged.values()].sort((x, y) => (x.codePoint < y.codePoint ? -1 : 1));
 }
@@ -583,10 +600,16 @@ export function computeAlignedCodePointDelta(
     });
   }
   for (let i = pairs; i < bMid.length; i += 1) {
-    entries.push({ kind: "delete", from: codePointToken((bMid[i] as string).codePointAt(0) as number) });
+    entries.push({
+      kind: "delete",
+      from: codePointToken((bMid[i] as string).codePointAt(0) as number),
+    });
   }
   for (let i = pairs; i < aMid.length; i += 1) {
-    entries.push({ kind: "insert", to: codePointToken((aMid[i] as string).codePointAt(0) as number) });
+    entries.push({
+      kind: "insert",
+      to: codePointToken((aMid[i] as string).codePointAt(0) as number),
+    });
   }
   return { prefix, entries };
 }
@@ -627,7 +650,11 @@ interface AtomicEditGroup {
  * sit on the same old line *and* the same new line (guards against merging across a boundary that
  * an intervening, already-consumed edit relocated) and are within the adjacency gap on both
  * sides, and merging would not exceed the size cap. */
-function groupAtomicEdits(oldText: string, newText: string, atomicEdits: readonly AtomicEdit[]): AtomicEditGroup[] {
+function groupAtomicEdits(
+  oldText: string,
+  newText: string,
+  atomicEdits: readonly AtomicEdit[],
+): AtomicEditGroup[] {
   const groups: AtomicEditGroup[] = [];
   let current: AtomicEdit[] = [];
 
@@ -688,13 +715,22 @@ const WHITESPACE_CODEPOINTS = new Set([" ", "\t", "\n"]);
  * a newline outward (a line boundary is itself a natural, non-truncating cut). `direction: 1`
  * trims forward (used for the "before" context's leading edge); `direction: -1` trims backward
  * (used for the "after" context's trailing edge). */
-function trimToWordBoundary(cps: readonly string[], rawEdge: number, absoluteLimit: number, direction: 1 | -1): { edge: number; truncated: boolean } {
+function trimToWordBoundary(
+  cps: readonly string[],
+  rawEdge: number,
+  absoluteLimit: number,
+  direction: 1 | -1,
+): { edge: number; truncated: boolean } {
   if (rawEdge === absoluteLimit) return { edge: rawEdge, truncated: false }; // already at file start/end -- nothing omitted
-  const slackLimit = direction === 1 ? Math.max(absoluteLimit, rawEdge - PREVIEW_WORD_TRIM_SLACK) : Math.min(absoluteLimit, rawEdge + PREVIEW_WORD_TRIM_SLACK);
+  const slackLimit =
+    direction === 1
+      ? Math.max(absoluteLimit, rawEdge - PREVIEW_WORD_TRIM_SLACK)
+      : Math.min(absoluteLimit, rawEdge + PREVIEW_WORD_TRIM_SLACK);
   for (let i = rawEdge; direction === 1 ? i > slackLimit : i < slackLimit; i -= direction) {
     const ch = cps[direction === 1 ? i - 1 : i];
     if (ch === "\n") return { edge: direction === 1 ? i : i + 1, truncated: false }; // stop at the line boundary itself
-    if (ch !== undefined && WHITESPACE_CODEPOINTS.has(ch)) return { edge: direction === 1 ? i : i + 1, truncated: true };
+    if (ch !== undefined && WHITESPACE_CODEPOINTS.has(ch))
+      return { edge: direction === 1 ? i : i + 1, truncated: true };
   }
   return { edge: rawEdge, truncated: true }; // no boundary found within slack -- hard cut, honestly flagged
 }
@@ -720,7 +756,10 @@ export interface PreviewContext {
  * site, by reusing this exact same leading/trailing text (nothing outside `[oldOffset.start,
  * oldOffset.end)` is ever touched by this item's own edits, by construction -- `AtomicEdit`s
  * partition the file with no overlap) together with this item's own `after` text. */
-function buildSourcePreviewContext(oldText: string, oldOffset: OffsetRange): { leading: PreviewContext; trailing: PreviewContext } {
+function buildSourcePreviewContext(
+  oldText: string,
+  oldOffset: OffsetRange,
+): { leading: PreviewContext; trailing: PreviewContext } {
   const oldCps = [...oldText];
   const rawLeadingStart = Math.max(0, oldOffset.codePointStart - DISPLAY_CONTEXT_CHARS);
   const rawTrailingEnd = Math.min(oldCps.length, oldOffset.codePointEnd + DISPLAY_CONTEXT_CHARS);
@@ -729,8 +768,14 @@ function buildSourcePreviewContext(oldText: string, oldOffset: OffsetRange): { l
   const trailingTrim = trimToWordBoundary(oldCps, rawTrailingEnd, oldCps.length, -1);
 
   return {
-    leading: { text: oldCps.slice(leadingTrim.edge, oldOffset.codePointStart).join(""), truncated: leadingTrim.truncated },
-    trailing: { text: oldCps.slice(oldOffset.codePointEnd, trailingTrim.edge).join(""), truncated: trailingTrim.truncated },
+    leading: {
+      text: oldCps.slice(leadingTrim.edge, oldOffset.codePointStart).join(""),
+      truncated: leadingTrim.truncated,
+    },
+    trailing: {
+      text: oldCps.slice(oldOffset.codePointEnd, trailingTrim.edge).join(""),
+      truncated: trailingTrim.truncated,
+    },
   };
 }
 
@@ -750,7 +795,14 @@ function assignAtomicEditIds(path: string, edits: readonly RawAtomicEdit[]): Ato
     const n = (seen.get(base) ?? 0) + 1;
     seen.set(base, n);
     const id = n === 1 ? base : `${base}-dup${n}`;
-    return { id, path, oldOffset: e.oldOffset, newOffset: e.newOffset, before: e.before, after: e.after };
+    return {
+      id,
+      path,
+      oldOffset: e.oldOffset,
+      newOffset: e.newOffset,
+      before: e.before,
+      after: e.after,
+    };
   });
 }
 
@@ -758,7 +810,13 @@ function assignAtomicEditIds(path: string, edits: readonly RawAtomicEdit[]): Ato
 // Public entry point.
 // ---------------------------------------------------------------------------------------------
 
-function findEnclosingHunk(hunks: readonly DiffHunk[], oldStartLine: number, oldEndLine: number, newStartLine: number, newEndLine: number): string {
+function findEnclosingHunk(
+  hunks: readonly DiffHunk[],
+  oldStartLine: number,
+  oldEndLine: number,
+  newStartLine: number,
+  newEndLine: number,
+): string {
   for (const h of hunks) {
     const oldOk = oldStartLine >= h.oldStart && oldEndLine <= h.oldStart + h.oldLines - 1;
     const newOk = newStartLine >= h.newStart && newEndLine <= h.newStart + h.newLines - 1;
@@ -771,9 +829,17 @@ function findEnclosingHunk(hunks: readonly DiffHunk[], oldStartLine: number, old
  * `DiffHunk` list, the complete `AtomicEdit` set, and the grouped `ReviewChange` list from the
  * same underlying comparison. `relPath` must already be a stable POSIX-relative path. */
 export function computeFileDiff(relPath: string, before: string, after: string): FileDiff {
-  const patch = structuredPatch(`a/${relPath}`, `b/${relPath}`, before, after, undefined, undefined, {
-    context: DIFF_CONTEXT_LINES,
-  });
+  const patch = structuredPatch(
+    `a/${relPath}`,
+    `b/${relPath}`,
+    before,
+    after,
+    undefined,
+    undefined,
+    {
+      context: DIFF_CONTEXT_LINES,
+    },
+  );
   const diffHunks: DiffHunk[] = patch.hunks.map((h, index) => ({
     id: `${relPath}#h${index}`,
     oldStart: h.oldStart,
@@ -785,7 +851,8 @@ export function computeFileDiff(relPath: string, before: string, after: string):
   const bodyLines = patch.hunks.map(
     (h) => `@@ -${h.oldStart},${h.oldLines} +${h.newStart},${h.newLines} @@\n${h.lines.join("\n")}`,
   );
-  const unifiedText = patch.hunks.length === 0 ? "" : [...headerLines, ...bodyLines].join("\n") + "\n";
+  const unifiedText =
+    patch.hunks.length === 0 ? "" : [...headerLines, ...bodyLines].join("\n") + "\n";
 
   const rawEdits = buildAtomicEditsUnpathed(before, after);
   const atomicEdits = assignAtomicEditIds(relPath, rawEdits);
@@ -819,9 +886,17 @@ export function computeFileDiff(relPath: string, before: string, after: string):
     // uses the *last included* code point's line (inclusive), not the exclusive `end` reported to
     // callers above -- a change whose content ends exactly at a line boundary would otherwise
     // appear to start touching a line it never contains any text from.
-    const oldLastIncludedLine = offsetToLineCol(before, Math.max(oldOffset.codePointStart, oldOffset.codePointEnd - 1)).line;
-    const newLastIncludedLine = offsetToLineCol(after, Math.max(newOffset.codePointStart, newOffset.codePointEnd - 1)).line;
-    const crossLineEdit = group.edits.some((e) => e.before.includes("\n") || e.after.includes("\n"));
+    const oldLastIncludedLine = offsetToLineCol(
+      before,
+      Math.max(oldOffset.codePointStart, oldOffset.codePointEnd - 1),
+    ).line;
+    const newLastIncludedLine = offsetToLineCol(
+      after,
+      Math.max(newOffset.codePointStart, newOffset.codePointEnd - 1),
+    ).line;
+    const crossLineEdit = group.edits.some(
+      (e) => e.before.includes("\n") || e.after.includes("\n"),
+    );
     const src = buildSourcePreviewContext(before, oldOffset);
     // Marks are window-relative to `before`/`after` respectively -- each grouped AtomicEdit gets
     // its own mark, not one envelope over the whole group (task item 1's multi-atomic requirement).
@@ -837,7 +912,13 @@ export function computeFileDiff(relPath: string, before: string, after: string):
     return {
       id: idBase,
       path: relPath,
-      diffHunkId: findEnclosingHunk(diffHunks, oldStartLC.line, oldLastIncludedLine, newStartLC.line, newLastIncludedLine),
+      diffHunkId: findEnclosingHunk(
+        diffHunks,
+        oldStartLC.line,
+        oldLastIncludedLine,
+        newStartLC.line,
+        newLastIncludedLine,
+      ),
       atomicEditIds: group.edits.map((e) => e.id),
       oldOffset,
       newOffset,

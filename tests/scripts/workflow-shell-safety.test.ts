@@ -63,7 +63,7 @@ describe("scripts/lib/workflow-shell-safety.mjs — findContextExpressionsInRunB
   it("detects a GitHub expression whose argument contains a brace, e.g. format('{0}', ...)", () => {
     // A naive /\$\{\{[^}]*\}\}/ stops at the inner "}" in "{0}" and never finds the real close —
     // this checker only needs to find the opener, so it must still report this.
-    const yaml = yamlRunStep("|", 'echo "${{ format(\'{0}\', github.ref_name) }}"');
+    const yaml = yamlRunStep("|", "echo \"${{ format('{0}', github.ref_name) }}\"");
     const violations = findContextExpressionsInRunBlocks(yaml);
     expect(violations).toHaveLength(1);
     expect(violations.at(0)?.context).toContain("${{ format('{0}', github.ref_name) }}");

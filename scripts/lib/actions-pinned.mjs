@@ -45,7 +45,10 @@ function classifyReference(value) {
     const image = value.slice("docker://".length);
     const at = image.lastIndexOf("@");
     if (at === -1) {
-      return { ok: false, reason: `docker action "${value}" has no @digest — a bare tag is mutable` };
+      return {
+        ok: false,
+        reason: `docker action "${value}" has no @digest — a bare tag is mutable`,
+      };
     }
     const digest = image.slice(at + 1);
     if (!DOCKER_DIGEST.test(digest)) {
@@ -112,7 +115,11 @@ export function findUnpinnedActionUses(yamlText) {
         return;
       }
       if (isAlias(value)) {
-        violations.push({ lineNumber, reference: "", reason: "uses: value is a YAML alias, not a literal string" });
+        violations.push({
+          lineNumber,
+          reference: "",
+          reason: "uses: value is a YAML alias, not a literal string",
+        });
         return;
       }
       if (isMap(value) || isSeq(value)) {

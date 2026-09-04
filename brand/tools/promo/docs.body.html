@@ -120,10 +120,10 @@
         <td class="mono">POLYTYPO_MALFORMED_INPUT</td>
         <td class="small muted">
           Reachable only when <code>mode: "markdown"</code> and <code>dialect: "mdx"</code> — MDX
-          embeds JavaScript, so an unterminated JSX element or a broken <code>{…}</code>
-          expression can fail to parse. <code>html</code> parsing is recovery-based and never
-          throws this; plain CommonMark has no syntax errors at all. The underlying parser error
-          is wrapped either way, so no dependency's error type reaches the public surface.
+          embeds JavaScript, so an unterminated JSX element or a broken <code>{…}</code> expression
+          can fail to parse. <code>html</code> parsing is recovery-based and never throws this;
+          plain CommonMark has no syntax errors at all. The underlying parser error is wrapped
+          either way, so no dependency's error type reaches the public surface.
         </td>
       </tr>
     </table>
@@ -131,8 +131,6 @@
 
   <h3>Wiring it into a build step</h3>
   <p>
-    There is no CLI, no plugin API and no hosted service in v1 — that is a deliberate non-goal (see
-    <a href="{{prefix}}locales/#extend">Locales → What v1 deliberately does not do</a>).
     <code>transform()</code> is a plain pure function, so it drops into whatever already touches
     your content at build time.
   </p>
@@ -159,7 +157,7 @@
 <section id="why">
   <p class="eyebrow">Why this and not a regex</p>
   <h2>Because the fifth port is where regex-based typography dies.</h2>
-  <div class="card-grid card-grid--responsive">
+  <div class="card-grid card-grid--six">
     <div class="card">
       <h3 style="margin: 0 0 6px">The spec is the product</h3>
       <p class="small muted" style="margin: 0">

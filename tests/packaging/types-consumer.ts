@@ -34,5 +34,9 @@ transformMarkdown("x", markdownOptions);
 const markdownOptionsMissingDialect: MarkdownOptions = { locale: "en-US" };
 void markdownOptionsMissingDialect;
 // @ts-expect-error MarkdownOptions has no `mode` field — a literal with one is a compile error.
-const markdownOptionsBad: MarkdownOptions = { locale: "en-US", dialect: "commonmark", mode: "text" };
+const markdownOptionsBad: MarkdownOptions = {
+  locale: "en-US",
+  dialect: "commonmark",
+  mode: "text",
+};
 void markdownOptionsBad;

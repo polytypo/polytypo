@@ -146,7 +146,9 @@ for (const entry of ENTRIES) {
 if (!baseline) {
   console.log("\nno baseline recorded yet — run with --write-baseline to record one.");
 } else if (failed) {
-  console.error(`\nbundle-size regression exceeds the ${(REGRESSION_BUDGET * 100).toFixed(0)}% budget.`);
+  console.error(
+    `\nbundle-size regression exceeds the ${(REGRESSION_BUDGET * 100).toFixed(0)}% budget.`,
+  );
   process.exit(1);
 } else {
   console.log("\nall entries within the bundle-size regression budget.");

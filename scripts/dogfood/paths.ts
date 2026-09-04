@@ -54,7 +54,11 @@ export interface SafeOutputDirCheck {
  * Throws DogfoodSafetyError on any violation; never partially creates a directory it is about to
  * reject.
  */
-export function assertSafeOutputDir({ outDir, corpusRoot, forbiddenRoots }: SafeOutputDirCheck): void {
+export function assertSafeOutputDir({
+  outDir,
+  corpusRoot,
+  forbiddenRoots,
+}: SafeOutputDirCheck): void {
   assertAbsolute("--out", outDir);
   assertAbsolute("--corpus", corpusRoot);
   const resolvedOut = path.resolve(outDir);
@@ -68,14 +72,18 @@ export function assertSafeOutputDir({ outDir, corpusRoot, forbiddenRoots }: Safe
 
   for (const root of forbiddenRoots) {
     if (root && isPathInside(path.resolve(root), resolvedOut)) {
-      throw new DogfoodSafetyError(`--out "${resolvedOut}" must not be inside repository root "${root}"`);
+      throw new DogfoodSafetyError(
+        `--out "${resolvedOut}" must not be inside repository root "${root}"`,
+      );
     }
   }
 
   if (existsSync(resolvedOut)) {
     const stats = lstatSync(resolvedOut);
     if (stats.isSymbolicLink()) {
-      throw new DogfoodSafetyError(`--out "${resolvedOut}" is a symlink — refusing to write through it`);
+      throw new DogfoodSafetyError(
+        `--out "${resolvedOut}" is a symlink — refusing to write through it`,
+      );
     }
     if (!stats.isDirectory()) {
       throw new DogfoodSafetyError(`--out "${resolvedOut}" exists and is not a directory`);
@@ -96,14 +104,18 @@ export function assertSafeCorpusRoot(corpusRoot: string): void {
   assertAbsolute("--corpus", corpusRoot);
   const resolved = path.resolve(corpusRoot);
   if (resolved === path.parse(resolved).root) {
-    throw new DogfoodSafetyError(`--corpus "${resolved}" is a filesystem root — refusing to scan it`);
+    throw new DogfoodSafetyError(
+      `--corpus "${resolved}" is a filesystem root — refusing to scan it`,
+    );
   }
   if (!existsSync(resolved)) {
     throw new DogfoodSafetyError(`--corpus "${resolved}" does not exist`);
   }
   const stats = lstatSync(resolved);
   if (stats.isSymbolicLink()) {
-    throw new DogfoodSafetyError(`--corpus "${resolved}" is a symlink — refusing to scan through it (fail-closed symlink policy)`);
+    throw new DogfoodSafetyError(
+      `--corpus "${resolved}" is a symlink — refusing to scan through it (fail-closed symlink policy)`,
+    );
   }
   if (!stats.isDirectory()) {
     throw new DogfoodSafetyError(`--corpus "${resolved}" is not a directory`);

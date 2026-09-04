@@ -439,10 +439,10 @@ describe("quotes — V1ID: apostrophe's U+0027→U+2019 edit is inert to V1 (Cor
   it("quotes alone (no apostrophe) is already a no-op on the pass-1 output — I5 holds", () => {
     // Isolates the claim this fix is actually about: quotes' own re-derivation of its pass-1
     // output must not want to change anything, independent of apostrophe running again.
-    const once = transform(
-      ch(0x22) + "B" + ch(0x27) + ch(0x2019) + ch(0x22) + ch(0x2039),
-      { locale: "de-CH", mode: "text" },
-    );
+    const once = transform(ch(0x22) + "B" + ch(0x27) + ch(0x2019) + ch(0x22) + ch(0x2039), {
+      locale: "de-CH",
+      mode: "text",
+    });
     expect(run(once, "de-CH")).toBe(once);
   });
 
@@ -468,7 +468,10 @@ describe("quotes — V1ID: apostrophe's U+0027→U+2019 edit is inert to V1 (Cor
     ];
     for (const [input, tag] of family) {
       const once = transform(input, { locale: tag, mode: "text" });
-      expect(transform(once, { locale: tag, mode: "text" }), `${tag}: ${JSON.stringify(input)}`).toBe(once);
+      expect(
+        transform(once, { locale: tag, mode: "text" }),
+        `${tag}: ${JSON.stringify(input)}`,
+      ).toBe(once);
     }
   });
 

@@ -4,11 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="polytypo — locale-correct quotes, dashes, ellipses and no-break spaces for 10 locales. One runtime today. One portable spec designed for five.">
+<link rel="icon" href="../assets/favicon/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/favicon/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="../assets/favicon/apple-touch-icon-180.png">
 <link rel="stylesheet" href="../assets/fonts.css">
 <link rel="stylesheet" href="../assets/style.css">
 <title>polytypo — Docs</title>
 </head>
-<body>
+<body class="page-docs">
 <nav class="site-nav"><div class="wrap"><a class="brand" href="../"><svg xmlns="http://www.w3.org/2000/svg" viewBox="9.5 37.5 181.0 45.0" role="img" aria-labelledby="t3 d3">
   <title id="t3">polytypo</title>
   <desc id="d3">Guillemets enclosing an em dash.</desc>
@@ -33,8 +36,7 @@
 
 <section id="use" style="border-top: 0; padding-top: 0">
   <div class="tabs" id="lang-tabs"></div>
-  <div id="lang-panes"><div class="pane" data-label="JavaScript / TypeScript"><h3 style="margin:22px 0 0">JavaScript / TypeScript<span class="status live">npm — not yet published</span></h3><pre><code><span class="ln"><span class="tok-com">// npm install polytypo</span></span>
-<span class="ln">import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;</span>
+  <div id="lang-panes"><div class="pane" data-label="JavaScript / TypeScript"><pre><code><span class="ln">import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;</span>
 <span class="ln"></span>
 <span class="ln">const output = transform(input, { locale: <span class="tok-str">&quot;de&quot;</span> });</span>
 <span class="ln"></span>
@@ -48,8 +50,7 @@
 <span class="ln">  transform(input, { locale: <span class="tok-str">&quot;xx&quot;</span> });</span>
 <span class="ln">} catch (error) {</span>
 <span class="ln">  error.code; <span class="tok-com">// &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span>
-<span class="ln">}</span></code></pre></div><div class="pane" data-label="Python"><h3 style="margin:22px 0 0">Python<span class="status">PyPI — planned</span></h3><pre><code><span class="ln"><span class="tok-com"># pip install polytypo</span></span>
-<span class="ln">from polytypo import transform, PolytypoError</span>
+<span class="ln">}</span></code></pre></div><div class="pane" data-label="Python"><pre><code><span class="ln">from polytypo import transform, PolytypoError</span>
 <span class="ln"></span>
 <span class="ln">output = transform(input, locale=<span class="tok-str">&quot;de&quot;</span>)</span>
 <span class="ln"></span>
@@ -61,8 +62,7 @@
 <span class="ln">try:</span>
 <span class="ln">    transform(input, locale=<span class="tok-str">&quot;xx&quot;</span>)</span>
 <span class="ln">except PolytypoError as error:</span>
-<span class="ln">    error.code  <span class="tok-com"># &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span></code></pre></div><div class="pane" data-label="Go"><h3 style="margin:22px 0 0">Go<span class="status">Go modules — planned</span></h3><pre><code><span class="ln"><span class="tok-com">// go get github.com/polytypo/polytypo-go</span></span>
-<span class="ln">package main</span>
+<span class="ln">    error.code  <span class="tok-com"># &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span></code></pre></div><div class="pane" data-label="Go"><pre><code><span class="ln">package main</span>
 <span class="ln"></span>
 <span class="ln">import (</span>
 <span class="ln">    <span class="tok-str">&quot;errors&quot;</span></span>
@@ -87,8 +87,7 @@
 <span class="ln">        Mode:    <span class="tok-str">&quot;markdown&quot;</span>,</span>
 <span class="ln">        Dialect: <span class="tok-str">&quot;commonmark&quot;</span>,</span>
 <span class="ln">    })</span>
-<span class="ln">}</span></code></pre></div><div class="pane" data-label="Ruby"><h3 style="margin:22px 0 0">Ruby<span class="status">RubyGems — planned</span></h3><pre><code><span class="ln"><span class="tok-com"># gem install polytypo</span></span>
-<span class="ln">require <span class="tok-str">&quot;polytypo&quot;</span></span>
+<span class="ln">}</span></code></pre></div><div class="pane" data-label="Ruby"><pre><code><span class="ln">require <span class="tok-str">&quot;polytypo&quot;</span></span>
 <span class="ln"></span>
 <span class="ln">output = Polytypo.transform(input, locale: <span class="tok-str">&quot;de&quot;</span>)</span>
 <span class="ln"></span>
@@ -101,8 +100,7 @@
 <span class="ln">  Polytypo.transform(input, locale: <span class="tok-str">&quot;xx&quot;</span>)</span>
 <span class="ln">rescue Polytypo::Error =&gt; error</span>
 <span class="ln">  error.code <span class="tok-com"># =&gt; &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span>
-<span class="ln">end</span></code></pre></div><div class="pane" data-label="PHP"><h3 style="margin:22px 0 0">PHP<span class="status">Packagist — planned</span></h3><pre><code><span class="ln">&lt;?php</span>
-<span class="ln"><span class="tok-com">// composer require polytypo/polytypo</span></span>
+<span class="ln">end</span></code></pre></div><div class="pane" data-label="PHP"><pre><code><span class="ln">&lt;?php</span>
 <span class="ln">use Polytypo\Polytypo;</span>
 <span class="ln">use Polytypo\PolytypoException;</span>
 <span class="ln"></span>
@@ -225,10 +223,10 @@
         <td class="mono">POLYTYPO_MALFORMED_INPUT</td>
         <td class="small muted">
           Reachable only when <code>mode: "markdown"</code> and <code>dialect: "mdx"</code> — MDX
-          embeds JavaScript, so an unterminated JSX element or a broken <code>{…}</code>
-          expression can fail to parse. <code>html</code> parsing is recovery-based and never
-          throws this; plain CommonMark has no syntax errors at all. The underlying parser error
-          is wrapped either way, so no dependency's error type reaches the public surface.
+          embeds JavaScript, so an unterminated JSX element or a broken <code>{…}</code> expression
+          can fail to parse. <code>html</code> parsing is recovery-based and never throws this;
+          plain CommonMark has no syntax errors at all. The underlying parser error is wrapped
+          either way, so no dependency's error type reaches the public surface.
         </td>
       </tr>
     </table>
@@ -236,8 +234,6 @@
 
   <h3>Wiring it into a build step</h3>
   <p>
-    There is no CLI, no plugin API and no hosted service in v1 — that is a deliberate non-goal (see
-    <a href="../locales/#extend">Locales → What v1 deliberately does not do</a>).
     <code>transform()</code> is a plain pure function, so it drops into whatever already touches
     your content at build time.
   </p>
@@ -274,7 +270,7 @@
     registration order, not map-iteration order. Any rule can be switched off; nothing else moves
     when you do.
   </p>
-  <div class="scroll"><table><tr><th>Rule</th><th>Locale</th><th>In</th><th>Out</th><th>What it does</th></tr><tr><td class="mono">spaces</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen">Hello  ,   world !</div></td><td class="rule-out"><div class="specimen">Hello, world!</div></td><td class="small muted">Collapse repeated spaces, strip the space before punctuation.</td></tr><tr><td class="mono">ellipsis</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen">Wait... what?</div></td><td class="rule-out"><div class="specimen">Wait<span class="chg">…</span> what?</div></td><td class="small muted">Three dots become U+2026.</td></tr><tr><td class="mono">ellipsis</td><td class="mono">ru</td><td class="rule-in"><div class="specimen">Что?...</div></td><td class="rule-out"><div class="specimen">Что?..</div></td><td class="small muted">Russian keeps the abbreviated form after terminal punctuation.</td></tr><tr><td class="mono">dashes</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen">The plan - if there is one - fails.</div></td><td class="rule-out"><div class="specimen">The plan<span class="chg">—</span>if there is one<span class="chg">—</span>fails.</div></td><td class="small muted">Parenthetical dash, per locale: em tight, en spaced, em spaced.</td></tr><tr><td class="mono">dashes</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen">1914-1918 and pp. 34-36</div></td><td class="rule-out"><div class="specimen">1914-1918 and pp. 34-36</div></td><td class="small muted">Numeric and date ranges take an en dash, unspaced.</td></tr><tr><td class="mono">hyphen</td><td class="mono">ru</td><td class="rule-in"><div class="specimen">Достал из-под стола</div></td><td class="rule-out"><div class="specimen">Достал из<span class="chg"><span class="nb" title="U+2011 non-breaking hyphen">‑</span></span>под стола</div></td><td class="small muted">Morphological hyphens bound with U+2011 so they cannot break.</td></tr><tr><td class="mono">quotes</td><td class="mono">de-DE</td><td class="rule-in"><div class="specimen">&quot;Er sagte &#x27;nein&#x27; zu mir&quot;, notierte sie.</div></td><td class="rule-out"><div class="specimen"><span class="chg">„</span>Er sagte <span class="chg">‚</span>nein<span class="chg">‘</span> zu mir<span class="chg">“</span>, notierte sie.</div></td><td class="small muted">Primary and secondary quotes, with nesting resolved.</td></tr><tr><td class="mono">apostrophe</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen">don&#x27;t</div></td><td class="rule-out"><div class="specimen">don<span class="chg">’</span>t</div></td><td class="small muted">Straight apostrophe to U+2019, contractions intact.</td></tr><tr><td class="mono">symbols</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen">Copyright (c) 2026, 1920x1080</div></td><td class="rule-out"><div class="specimen">Copyright <span class="chg">©</span> 2026, 1920<span class="chg">×</span>1080</div></td><td class="small muted">(c) (r) (tm) and the multiplication sign between numerals.</td></tr><tr><td class="mono">nbsp</td><td class="mono">fr</td><td class="rule-in"><div class="specimen">Ça va ? Bonjour !</div></td><td class="rule-out"><div class="specimen">Ça va<span class="chg"><span class="nb" title="U+202F narrow no-break space"> </span></span>? Bonjour<span class="chg"><span class="nb" title="U+202F narrow no-break space"> </span></span>!</div></td><td class="small muted">No-break and narrow no-break spaces, inserted per locale.</td></tr></table></div>
+  <div class="scroll"><table><tr><th>Rule</th><th>Locale</th><th>In</th><th>Out</th><th>What it does</th></tr><tr><td class="mono">spaces</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen">Hello  ,   world !</div></td><td class="rule-out"><div class="specimen">Hello, world!</div></td><td class="small muted">Collapse repeated spaces, strip the space before punctuation.</td></tr><tr><td class="mono">ellipsis</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen">Wait... what?</div></td><td class="rule-out"><div class="specimen">Wait<span class="chg">…</span> what?</div></td><td class="small muted">Three dots become U+2026.</td></tr><tr><td class="mono">ellipsis</td><td class="mono">ru</td><td class="rule-in"><div class="specimen">Что?...</div></td><td class="rule-out"><div class="specimen">Что?..</div></td><td class="small muted">Russian keeps the abbreviated form after terminal punctuation.</td></tr><tr><td class="mono">dashes</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen">The plan - if there is one - fails.</div></td><td class="rule-out"><div class="specimen">The plan<span class="chg">—</span>if there is one<span class="chg">—</span>fails.</div></td><td class="small muted">Parenthetical dash, per locale: em tight, en spaced, em spaced.</td></tr><tr><td class="mono">dashes</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen">chapters 3-5 and pp. 34-36</div></td><td class="rule-out"><div class="specimen">chapters 3-5 and pp. 34-36</div></td><td class="small muted">Numeric and date ranges take an en dash, unspaced.</td></tr><tr><td class="mono">hyphen</td><td class="mono">ru</td><td class="rule-in"><div class="specimen">Достал из-под стола</div></td><td class="rule-out"><div class="specimen">Достал из<span class="chg"><span class="nb" title="U+2011 non-breaking hyphen">‑</span></span>под стола</div></td><td class="small muted">Morphological hyphens bound with U+2011 so they cannot break.</td></tr><tr><td class="mono">quotes</td><td class="mono">de-DE</td><td class="rule-in"><div class="specimen">&quot;Er sagte &#x27;nein&#x27; zu mir&quot;, notierte sie.</div></td><td class="rule-out"><div class="specimen"><span class="chg">„</span>Er sagte <span class="chg">‚</span>nein<span class="chg">‘</span> zu mir<span class="chg">“</span>, notierte sie.</div></td><td class="small muted">Primary and secondary quotes, with nesting resolved.</td></tr><tr><td class="mono">apostrophe</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen">don&#x27;t</div></td><td class="rule-out"><div class="specimen">don<span class="chg">’</span>t</div></td><td class="small muted">Straight apostrophe to U+2019, contractions intact.</td></tr><tr><td class="mono">symbols</td><td class="mono">en-US</td><td class="rule-in"><div class="specimen">Copyright (c) 2026, 1920x1080</div></td><td class="rule-out"><div class="specimen">Copyright <span class="chg">©</span> 2026, 1920<span class="chg">×</span>1080</div></td><td class="small muted">(c) (r) (tm) and the multiplication sign between numerals.</td></tr><tr><td class="mono">nbsp</td><td class="mono">fr</td><td class="rule-in"><div class="specimen">Ça va ? Bonjour !</div></td><td class="rule-out"><div class="specimen">Ça va<span class="chg"><span class="nb" title="U+202F narrow no-break space"> </span></span>? Bonjour<span class="chg"><span class="nb" title="U+202F narrow no-break space"> </span></span>!</div></td><td class="small muted">No-break and narrow no-break spaces, inserted per locale.</td></tr></table></div>
   <p class="small muted">
     Examples are real engine output for the locale named in each row. Grey marks what was typed; red
     marks what the engine set instead. Try any of these live in the
@@ -285,7 +281,7 @@
 <section id="why">
   <p class="eyebrow">Why this and not a regex</p>
   <h2>Because the fifth port is where regex-based typography dies.</h2>
-  <div class="card-grid card-grid--responsive">
+  <div class="card-grid card-grid--six">
     <div class="card">
       <h3 style="margin: 0 0 6px">The spec is the product</h3>
       <p class="small muted" style="margin: 0">
@@ -387,7 +383,7 @@
   </p>
 </section>
 
-<footer><div class="wrap"><p>polytypo · spec 1.0.0 · MIT for the code, separate terms for the brand assets · every before/after typography example on this site is generated with the engine.</p><p><a href="../manifesto/">Manifesto</a></p><p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p></div></footer>
+<footer><p>polytypo · spec 1.0.0 · MIT for the code, separate terms for the brand assets · every before/after typography example on this site is generated with the engine.</p><p><a href="../manifesto/">Manifesto</a></p><p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p></footer>
 </div>
 <script src="../assets/site.js"></script>
 <script>

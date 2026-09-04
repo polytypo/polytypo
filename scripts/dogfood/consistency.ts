@@ -35,7 +35,13 @@ import { isUpper } from "../../src/engine/unicode.js";
 // see the identical import in tagging.ts for why (it is the single source of truth both the
 // generator and this independent validator read, which is what makes "independent" meaningful
 // rather than "two reimplementations that happen to agree today").
-import { prepare, isInitialAt, isAbbreviationTail, hasPrecedingInitial, type Prepared } from "../../src/rules/nbsp.js";
+import {
+  prepare,
+  isInitialAt,
+  isAbbreviationTail,
+  hasPrecedingInitial,
+  type Prepared,
+} from "../../src/rules/nbsp.js";
 import type { LocaleData } from "../../src/types.js";
 
 const SPACE_CHAR = String.fromCodePoint(0x20);
@@ -78,12 +84,17 @@ export function checkIdsUnique(entries: readonly ReviewChangeEntry[]): string[] 
   const seen = new Map<string, number>();
   for (const e of entries) seen.set(e.id, (seen.get(e.id) ?? 0) + 1);
   const duplicates = [...seen.entries()].filter(([, count]) => count > 1);
-  return duplicates.map(([id, count]) => `duplicate review change id "${id}" appears ${count} times in changes.json`);
+  return duplicates.map(
+    ([id, count]) => `duplicate review change id "${id}" appears ${count} times in changes.json`,
+  );
 }
 
 /** `REVIEW.md`'s checklist must name exactly the same id set as `changes.json`, each exactly
  * once -- parsed from the markdown table itself, not assumed. */
-export function checkReviewMarkdownIds(entries: readonly ReviewChangeEntry[], reviewMarkdown: string): string[] {
+export function checkReviewMarkdownIds(
+  entries: readonly ReviewChangeEntry[],
+  reviewMarkdown: string,
+): string[] {
   const issues: string[] = [];
   const idPattern = /^\|\s*(?:<a id="[^"]*"><\/a>)?`([^`]+)`\s*\|/gm;
   const foundIds: string[] = [];
@@ -96,22 +107,30 @@ export function checkReviewMarkdownIds(entries: readonly ReviewChangeEntry[], re
   for (const id of foundIds) foundCounts.set(id, (foundCounts.get(id) ?? 0) + 1);
 
   for (const [id, count] of foundCounts) {
-    if (count > 1) issues.push(`REVIEW.md lists review change id "${id}" ${count} times, expected exactly once`);
-    if (!expected.has(id)) issues.push(`REVIEW.md lists review change id "${id}" which does not exist in changes.json`);
+    if (count > 1)
+      issues.push(`REVIEW.md lists review change id "${id}" ${count} times, expected exactly once`);
+    if (!expected.has(id))
+      issues.push(`REVIEW.md lists review change id "${id}" which does not exist in changes.json`);
   }
   for (const id of expected) {
     if (!foundCounts.has(id)) issues.push(`REVIEW.md is missing review change id "${id}"`);
   }
   if (foundIds.length !== entries.length) {
-    issues.push(`REVIEW.md lists ${foundIds.length} review change row(s) but changes.json has ${entries.length}`);
+    issues.push(
+      `REVIEW.md lists ${foundIds.length} review change row(s) but changes.json has ${entries.length}`,
+    );
   }
   return issues;
 }
 
 /** Every row REVIEW.md lists must start as `UNREVIEWED`. */
-export function checkReviewMarkdownAllUnreviewed(entries: readonly ReviewChangeEntry[], reviewMarkdown: string): string[] {
+export function checkReviewMarkdownAllUnreviewed(
+  entries: readonly ReviewChangeEntry[],
+  reviewMarkdown: string,
+): string[] {
   const issues: string[] = [];
-  const rowPattern = /^\|\s*(?:<a id="[^"]*"><\/a>)?`([^`]+)`\s*\|.*\|\s*([A-Za-z-]+)\s*\|\s*\|?\s*$/gm;
+  const rowPattern =
+    /^\|\s*(?:<a id="[^"]*"><\/a>)?`([^`]+)`\s*\|.*\|\s*([A-Za-z-]+)\s*\|\s*\|?\s*$/gm;
   const decisions = new Map<string, string>();
   for (const m of reviewMarkdown.matchAll(rowPattern)) {
     if (m[1] && m[2]) decisions.set(m[1], m[2]);
@@ -119,23 +138,36 @@ export function checkReviewMarkdownAllUnreviewed(entries: readonly ReviewChangeE
   for (const e of entries) {
     const decision = decisions.get(e.id);
     if (decision !== "UNREVIEWED") {
-      issues.push(`REVIEW.md row for "${e.id}" is not UNREVIEWED (found "${decision ?? "<not found>"}")`);
+      issues.push(
+        `REVIEW.md row for "${e.id}" is not UNREVIEWED (found "${decision ?? "<not found>"}")`,
+      );
     }
   }
   return issues;
 }
 
 /** manifest.json's counts must agree with the actual generated artifacts. */
-export function checkManifestCounts(manifestCounts: ManifestCounts, entries: readonly ReviewChangeEntry[], actualUnifiedDiffHunkCount: number, actualAtomicEditCount: number): string[] {
+export function checkManifestCounts(
+  manifestCounts: ManifestCounts,
+  entries: readonly ReviewChangeEntry[],
+  actualUnifiedDiffHunkCount: number,
+  actualAtomicEditCount: number,
+): string[] {
   const issues: string[] = [];
   if (manifestCounts.reviewChangeCount !== entries.length) {
-    issues.push(`manifest.json reviewChangeCount (${manifestCounts.reviewChangeCount}) does not match changes.json's entry count (${entries.length})`);
+    issues.push(
+      `manifest.json reviewChangeCount (${manifestCounts.reviewChangeCount}) does not match changes.json's entry count (${entries.length})`,
+    );
   }
   if (manifestCounts.unifiedDiffHunkCount !== actualUnifiedDiffHunkCount) {
-    issues.push(`manifest.json unifiedDiffHunkCount (${manifestCounts.unifiedDiffHunkCount}) does not match the actual unified diff hunk count (${actualUnifiedDiffHunkCount})`);
+    issues.push(
+      `manifest.json unifiedDiffHunkCount (${manifestCounts.unifiedDiffHunkCount}) does not match the actual unified diff hunk count (${actualUnifiedDiffHunkCount})`,
+    );
   }
   if (manifestCounts.atomicEditCount !== actualAtomicEditCount) {
-    issues.push(`manifest.json atomicEditCount (${manifestCounts.atomicEditCount}) does not match the actual atomic edit count (${actualAtomicEditCount})`);
+    issues.push(
+      `manifest.json atomicEditCount (${manifestCounts.atomicEditCount}) does not match the actual atomic edit count (${actualAtomicEditCount})`,
+    );
   }
   return issues;
 }
@@ -152,15 +184,33 @@ function codePointSliceOf(text: string, start: number, end: number): string {
 export function checkReviewChangeSlicesMatchSource(results: readonly FileResult[]): string[] {
   const issues: string[] = [];
   for (const r of results) {
-    if (r.status !== "changed" || !r.diff || r.originalText === undefined || r.transformedText === undefined) continue;
+    if (
+      r.status !== "changed" ||
+      !r.diff ||
+      r.originalText === undefined ||
+      r.transformedText === undefined
+    )
+      continue;
     for (const rc of r.diff.reviewChanges) {
-      const expectedBefore = codePointSliceOf(r.originalText, rc.oldOffset.codePointStart, rc.oldOffset.codePointEnd);
-      const expectedAfter = codePointSliceOf(r.transformedText, rc.newOffset.codePointStart, rc.newOffset.codePointEnd);
+      const expectedBefore = codePointSliceOf(
+        r.originalText,
+        rc.oldOffset.codePointStart,
+        rc.oldOffset.codePointEnd,
+      );
+      const expectedAfter = codePointSliceOf(
+        r.transformedText,
+        rc.newOffset.codePointStart,
+        rc.newOffset.codePointEnd,
+      );
       if (expectedBefore !== rc.before) {
-        issues.push(`review change "${rc.id}": before-text does not match an independent slice of the original file at its declared old offset`);
+        issues.push(
+          `review change "${rc.id}": before-text does not match an independent slice of the original file at its declared old offset`,
+        );
       }
       if (expectedAfter !== rc.after) {
-        issues.push(`review change "${rc.id}": after-text does not match an independent slice of the transformed file at its declared new offset`);
+        issues.push(
+          `review change "${rc.id}": after-text does not match an independent slice of the transformed file at its declared new offset`,
+        );
       }
     }
   }
@@ -199,7 +249,13 @@ function lineColInBounds(lines: readonly string[], lc: { line: number; column: n
 export function checkLineColMatchesOffsets(results: readonly FileResult[]): string[] {
   const issues: string[] = [];
   for (const r of results) {
-    if (r.status !== "changed" || !r.diff || r.originalText === undefined || r.transformedText === undefined) continue;
+    if (
+      r.status !== "changed" ||
+      !r.diff ||
+      r.originalText === undefined ||
+      r.transformedText === undefined
+    )
+      continue;
     const oldLines = codePointLinesOf(r.originalText);
     const newLines = codePointLinesOf(r.transformedText);
 
@@ -208,22 +264,46 @@ export function checkLineColMatchesOffsets(results: readonly FileResult[]): stri
       const expectedOldEnd = offsetToLineCol(r.originalText, rc.oldOffset.codePointEnd);
       const expectedNewStart = offsetToLineCol(r.transformedText, rc.newOffset.codePointStart);
       const expectedNewEnd = offsetToLineCol(r.transformedText, rc.newOffset.codePointEnd);
-      if (expectedOldStart.line !== rc.oldLineCol.start.line || expectedOldStart.column !== rc.oldLineCol.start.column) {
-        issues.push(`review change "${rc.id}": stored old start line/column does not match an independent recomputation from its offset`);
+      if (
+        expectedOldStart.line !== rc.oldLineCol.start.line ||
+        expectedOldStart.column !== rc.oldLineCol.start.column
+      ) {
+        issues.push(
+          `review change "${rc.id}": stored old start line/column does not match an independent recomputation from its offset`,
+        );
       }
-      if (expectedOldEnd.line !== rc.oldLineCol.end.line || expectedOldEnd.column !== rc.oldLineCol.end.column) {
-        issues.push(`review change "${rc.id}": stored old end line/column does not match an independent recomputation from its offset`);
+      if (
+        expectedOldEnd.line !== rc.oldLineCol.end.line ||
+        expectedOldEnd.column !== rc.oldLineCol.end.column
+      ) {
+        issues.push(
+          `review change "${rc.id}": stored old end line/column does not match an independent recomputation from its offset`,
+        );
       }
-      if (expectedNewStart.line !== rc.newLineCol.start.line || expectedNewStart.column !== rc.newLineCol.start.column) {
-        issues.push(`review change "${rc.id}": stored new start line/column does not match an independent recomputation from its offset`);
+      if (
+        expectedNewStart.line !== rc.newLineCol.start.line ||
+        expectedNewStart.column !== rc.newLineCol.start.column
+      ) {
+        issues.push(
+          `review change "${rc.id}": stored new start line/column does not match an independent recomputation from its offset`,
+        );
       }
-      if (expectedNewEnd.line !== rc.newLineCol.end.line || expectedNewEnd.column !== rc.newLineCol.end.column) {
-        issues.push(`review change "${rc.id}": stored new end line/column does not match an independent recomputation from its offset`);
+      if (
+        expectedNewEnd.line !== rc.newLineCol.end.line ||
+        expectedNewEnd.column !== rc.newLineCol.end.column
+      ) {
+        issues.push(
+          `review change "${rc.id}": stored new end line/column does not match an independent recomputation from its offset`,
+        );
       }
-      if (!lineColInBounds(oldLines, rc.oldLineCol.start)) issues.push(`review change "${rc.id}": old start column exceeds its own line's length`);
-      if (!lineColInBounds(oldLines, rc.oldLineCol.end)) issues.push(`review change "${rc.id}": old end column exceeds its own line's length`);
-      if (!lineColInBounds(newLines, rc.newLineCol.start)) issues.push(`review change "${rc.id}": new start column exceeds its own line's length`);
-      if (!lineColInBounds(newLines, rc.newLineCol.end)) issues.push(`review change "${rc.id}": new end column exceeds its own line's length`);
+      if (!lineColInBounds(oldLines, rc.oldLineCol.start))
+        issues.push(`review change "${rc.id}": old start column exceeds its own line's length`);
+      if (!lineColInBounds(oldLines, rc.oldLineCol.end))
+        issues.push(`review change "${rc.id}": old end column exceeds its own line's length`);
+      if (!lineColInBounds(newLines, rc.newLineCol.start))
+        issues.push(`review change "${rc.id}": new start column exceeds its own line's length`);
+      if (!lineColInBounds(newLines, rc.newLineCol.end))
+        issues.push(`review change "${rc.id}": new end column exceeds its own line's length`);
     }
 
     for (const e of r.diff.atomicEdits) {
@@ -231,10 +311,14 @@ export function checkLineColMatchesOffsets(results: readonly FileResult[]): stri
       const oldEnd = offsetToLineCol(r.originalText, e.oldOffset.codePointEnd);
       const newStart = offsetToLineCol(r.transformedText, e.newOffset.codePointStart);
       const newEnd = offsetToLineCol(r.transformedText, e.newOffset.codePointEnd);
-      if (!lineColInBounds(oldLines, oldStart)) issues.push(`atomic edit "${e.id}": old start offset resolves to an out-of-bounds column`);
-      if (!lineColInBounds(oldLines, oldEnd)) issues.push(`atomic edit "${e.id}": old end offset resolves to an out-of-bounds column`);
-      if (!lineColInBounds(newLines, newStart)) issues.push(`atomic edit "${e.id}": new start offset resolves to an out-of-bounds column`);
-      if (!lineColInBounds(newLines, newEnd)) issues.push(`atomic edit "${e.id}": new end offset resolves to an out-of-bounds column`);
+      if (!lineColInBounds(oldLines, oldStart))
+        issues.push(`atomic edit "${e.id}": old start offset resolves to an out-of-bounds column`);
+      if (!lineColInBounds(oldLines, oldEnd))
+        issues.push(`atomic edit "${e.id}": old end offset resolves to an out-of-bounds column`);
+      if (!lineColInBounds(newLines, newStart))
+        issues.push(`atomic edit "${e.id}": new start offset resolves to an out-of-bounds column`);
+      if (!lineColInBounds(newLines, newEnd))
+        issues.push(`atomic edit "${e.id}": new end offset resolves to an out-of-bounds column`);
     }
   }
   return issues;
@@ -269,7 +353,13 @@ function expectedByteOffsetForCodePoint(text: string, codePointOffset: number): 
 export function checkUtf8ByteBoundaries(results: readonly FileResult[]): string[] {
   const issues: string[] = [];
   for (const r of results) {
-    if (r.status !== "changed" || !r.diff || r.originalText === undefined || r.transformedText === undefined) continue;
+    if (
+      r.status !== "changed" ||
+      !r.diff ||
+      r.originalText === undefined ||
+      r.transformedText === undefined
+    )
+      continue;
     const oldBuf = Buffer.from(r.originalText, "utf8");
     const newBuf = Buffer.from(r.transformedText, "utf8");
     for (const e of r.diff.atomicEdits) {
@@ -278,23 +368,33 @@ export function checkUtf8ByteBoundaries(results: readonly FileResult[]): string[
         ["new", newBuf, r.transformedText, e.newOffset] as const,
       ]) {
         if (!isUtf8CharBoundary(buf, offset.byteStart)) {
-          issues.push(`atomic edit "${e.id}": ${side} byteStart (${offset.byteStart}) does not land on a UTF-8 character boundary`);
+          issues.push(
+            `atomic edit "${e.id}": ${side} byteStart (${offset.byteStart}) does not land on a UTF-8 character boundary`,
+          );
         }
         if (!isUtf8CharBoundary(buf, offset.byteEnd)) {
-          issues.push(`atomic edit "${e.id}": ${side} byteEnd (${offset.byteEnd}) does not land on a UTF-8 character boundary`);
+          issues.push(
+            `atomic edit "${e.id}": ${side} byteEnd (${offset.byteEnd}) does not land on a UTF-8 character boundary`,
+          );
         }
         const expectedStart = expectedByteOffsetForCodePoint(text, offset.codePointStart);
         const expectedEnd = expectedByteOffsetForCodePoint(text, offset.codePointEnd);
         if (offset.byteStart !== expectedStart) {
-          issues.push(`atomic edit "${e.id}": ${side} byteStart (${offset.byteStart}) does not match the byte offset independently computed for code-point ${offset.codePointStart} (expected ${expectedStart})`);
+          issues.push(
+            `atomic edit "${e.id}": ${side} byteStart (${offset.byteStart}) does not match the byte offset independently computed for code-point ${offset.codePointStart} (expected ${expectedStart})`,
+          );
         }
         if (offset.byteEnd !== expectedEnd) {
-          issues.push(`atomic edit "${e.id}": ${side} byteEnd (${offset.byteEnd}) does not match the byte offset independently computed for code-point ${offset.codePointEnd} (expected ${expectedEnd})`);
+          issues.push(
+            `atomic edit "${e.id}": ${side} byteEnd (${offset.byteEnd}) does not match the byte offset independently computed for code-point ${offset.codePointEnd} (expected ${expectedEnd})`,
+          );
         }
         const expectedText = side === "old" ? e.before : e.after;
         const byteSlice = buf.subarray(offset.byteStart, offset.byteEnd).toString("utf8");
         if (byteSlice !== expectedText) {
-          issues.push(`atomic edit "${e.id}": ${side} byte offset [${offset.byteStart}, ${offset.byteEnd}) does not decode to its own text`);
+          issues.push(
+            `atomic edit "${e.id}": ${side} byte offset [${offset.byteStart}, ${offset.byteEnd}) does not decode to its own text`,
+          );
         }
       }
     }
@@ -311,8 +411,16 @@ export function checkUtf8ByteBoundaries(results: readonly FileResult[]): string[
 export function checkIndependentReconstruction(results: readonly FileResult[]): string[] {
   const issues: string[] = [];
   for (const r of results) {
-    if (r.status !== "changed" || !r.diff || r.originalText === undefined || r.transformedText === undefined) continue;
-    const edits = [...r.diff.atomicEdits].sort((a, b) => a.oldOffset.codePointStart - b.oldOffset.codePointStart);
+    if (
+      r.status !== "changed" ||
+      !r.diff ||
+      r.originalText === undefined ||
+      r.transformedText === undefined
+    )
+      continue;
+    const edits = [...r.diff.atomicEdits].sort(
+      (a, b) => a.oldOffset.codePointStart - b.oldOffset.codePointStart,
+    );
 
     const oldCps = [...r.originalText];
     const forwardPieces: string[] = [];
@@ -328,13 +436,19 @@ export function checkIndependentReconstruction(results: readonly FileResult[]): 
     }
     forwardPieces.push(oldCps.slice(cursor).join(""));
     if (overlapFound) {
-      issues.push(`"${r.path}": atomic edits have overlapping old-offset ranges (independent reconstruction check)`);
+      issues.push(
+        `"${r.path}": atomic edits have overlapping old-offset ranges (independent reconstruction check)`,
+      );
     } else if (forwardPieces.join("") !== r.transformedText) {
-      issues.push(`"${r.path}": independently reconstructing forward (original + atomic edits) did not reproduce the transformed file exactly`);
+      issues.push(
+        `"${r.path}": independently reconstructing forward (original + atomic edits) did not reproduce the transformed file exactly`,
+      );
     }
 
     const newCps = [...r.transformedText];
-    const byNewStart = [...r.diff.atomicEdits].sort((a, b) => a.newOffset.codePointStart - b.newOffset.codePointStart);
+    const byNewStart = [...r.diff.atomicEdits].sort(
+      (a, b) => a.newOffset.codePointStart - b.newOffset.codePointStart,
+    );
     const backwardPieces: string[] = [];
     let bCursor = 0;
     for (const e of byNewStart) {
@@ -343,7 +457,9 @@ export function checkIndependentReconstruction(results: readonly FileResult[]): 
     }
     backwardPieces.push(newCps.slice(bCursor).join(""));
     if (backwardPieces.join("") !== r.originalText) {
-      issues.push(`"${r.path}": independently reconstructing backward (transformed + atomic edits) did not reproduce the original file exactly`);
+      issues.push(
+        `"${r.path}": independently reconstructing backward (transformed + atomic edits) did not reproduce the original file exactly`,
+      );
     }
   }
   return issues;
@@ -361,17 +477,27 @@ export function checkAtomicEditOwnership(results: readonly FileResult[]): string
       for (const id of rc.atomicEditIds) owned.set(id, (owned.get(id) ?? 0) + 1);
     }
     for (const [id, count] of owned) {
-      if (count > 1) issues.push(`"${r.path}": atomic edit "${id}" is owned by ${count} review changes, expected exactly 1`);
-      if (!allIds.has(id)) issues.push(`"${r.path}": review change references unknown atomic edit id "${id}"`);
+      if (count > 1)
+        issues.push(
+          `"${r.path}": atomic edit "${id}" is owned by ${count} review changes, expected exactly 1`,
+        );
+      if (!allIds.has(id))
+        issues.push(`"${r.path}": review change references unknown atomic edit id "${id}"`);
     }
     for (const id of allIds) {
-      if (!owned.has(id)) issues.push(`"${r.path}": atomic edit "${id}" is not owned by any review change`);
+      if (!owned.has(id))
+        issues.push(`"${r.path}": atomic edit "${id}" is not owned by any review change`);
     }
   }
   return issues;
 }
 
-function rangesIntersectConsistency(aStart: number, aEnd: number, bStart: number, bEnd: number): boolean {
+function rangesIntersectConsistency(
+  aStart: number,
+  aEnd: number,
+  bStart: number,
+  bEnd: number,
+): boolean {
   return aStart < bEnd && bStart < aEnd;
 }
 
@@ -392,11 +518,20 @@ function rangesIntersectConsistency(aStart: number, aEnd: number, bStart: number
  * the named `AtomicEdit`'s own `before`/`after` via the real `computeAlignedCodePointDelta` --
  * not a positional index compare, which an insertion/deletion earlier in the same edit can
  * desynchronize from the true substitution position. */
-function checkAuthoredEnDashEvidence(t: RiskTag, rc: ReviewChange, path: string, originalCps: readonly string[], editsById: ReadonlyMap<string, AtomicEdit>, ownEditIds: ReadonlySet<string>): string[] {
+function checkAuthoredEnDashEvidence(
+  t: RiskTag,
+  rc: ReviewChange,
+  path: string,
+  originalCps: readonly string[],
+  editsById: ReadonlyMap<string, AtomicEdit>,
+  ownEditIds: ReadonlySet<string>,
+): string[] {
   const issues: string[] = [];
   const label = `risk tag "${t.tag}" on "${rc.id}"`;
   if (t.evidence === null || typeof t.evidence !== "object") {
-    issues.push(`${label}: evidence is ${t.evidence === null ? "null" : "not an object"}, but this tag's contract requires real evidence identifying the source U+2013 and its atomic edit`);
+    issues.push(
+      `${label}: evidence is ${t.evidence === null ? "null" : "not an object"}, but this tag's contract requires real evidence identifying the source U+2013 and its atomic edit`,
+    );
     return issues;
   }
   const ev = t.evidence as unknown as Record<string, unknown>;
@@ -412,20 +547,29 @@ function checkAuthoredEnDashEvidence(t: RiskTag, rc: ReviewChange, path: string,
   }
   if (issues.length > 0) return issues; // cannot proceed without well-typed fields
 
-  const { codePointStart, codePointEnd } = ev.sourceOldOffset as { codePointStart: number; codePointEnd: number };
+  const { codePointStart, codePointEnd } = ev.sourceOldOffset as {
+    codePointStart: number;
+    codePointEnd: number;
+  };
   const sourceText = ev.sourceText as string;
   const atomicEditId = ev.atomicEditId as string;
 
   if (codePointStart < 0 || codePointEnd > originalCps.length || codePointStart > codePointEnd) {
-    issues.push(`${label}: sourceOldOffset [${codePointStart}, ${codePointEnd}) is out of bounds for "${path}"`);
+    issues.push(
+      `${label}: sourceOldOffset [${codePointStart}, ${codePointEnd}) is out of bounds for "${path}"`,
+    );
     return issues;
   }
   if (codePointEnd - codePointStart !== 1) {
-    issues.push(`${label}: sourceOldOffset must span exactly one code point, spans ${codePointEnd - codePointStart}`);
+    issues.push(
+      `${label}: sourceOldOffset must span exactly one code point, spans ${codePointEnd - codePointStart}`,
+    );
   }
   const slice = originalCps.slice(codePointStart, codePointEnd).join("");
   if (slice !== sourceText || sourceText !== "–") {
-    issues.push(`${label}: sourceOldOffset does not slice to a lone U+2013 ("${slice}" recorded as "${sourceText}")`);
+    issues.push(
+      `${label}: sourceOldOffset does not slice to a lone U+2013 ("${slice}" recorded as "${sourceText}")`,
+    );
   }
 
   const edit = editsById.get(atomicEditId);
@@ -436,8 +580,13 @@ function checkAuthoredEnDashEvidence(t: RiskTag, rc: ReviewChange, path: string,
   if (!ownEditIds.has(edit.id)) {
     issues.push(`${label}: atomicEditId "${edit.id}" does not belong to this review change`);
   }
-  if (codePointStart < edit.oldOffset.codePointStart || codePointEnd > edit.oldOffset.codePointEnd) {
-    issues.push(`${label}: sourceOldOffset [${codePointStart}, ${codePointEnd}) is not contained in atomic edit "${edit.id}"'s own old range`);
+  if (
+    codePointStart < edit.oldOffset.codePointStart ||
+    codePointEnd > edit.oldOffset.codePointEnd
+  ) {
+    issues.push(
+      `${label}: sourceOldOffset [${codePointStart}, ${codePointEnd}) is not contained in atomic edit "${edit.id}"'s own old range`,
+    );
     return issues;
   }
 
@@ -445,7 +594,9 @@ function checkAuthoredEnDashEvidence(t: RiskTag, rc: ReviewChange, path: string,
   // edit contains a genuine substitution FROM U+2013 at exactly the claimed absolute position.
   const aligned = computeAlignedCodePointDelta(edit.before, edit.after);
   if (!aligned) {
-    issues.push(`${label}: atomic edit "${edit.id}" is too long to independently verify via the aligned code-point delta`);
+    issues.push(
+      `${label}: atomic edit "${edit.id}" is too long to independently verify via the aligned code-point delta`,
+    );
     return issues;
   }
   let offsetWithinMid = 0;
@@ -459,7 +610,9 @@ function checkAuthoredEnDashEvidence(t: RiskTag, rc: ReviewChange, path: string,
     if (entry.kind !== "insert") offsetWithinMid += 1;
   }
   if (!found) {
-    issues.push(`${label}: atomic edit "${edit.id}" does not actually substitute FROM U+2013 at the claimed position under the aligned delta (before="${edit.before}", after="${edit.after}")`);
+    issues.push(
+      `${label}: atomic edit "${edit.id}" does not actually substitute FROM U+2013 at the claimed position under the aligned delta (before="${edit.before}", after="${edit.after}")`,
+    );
   }
   return issues;
 }
@@ -471,19 +624,33 @@ function checkAuthoredEnDashEvidence(t: RiskTag, rc: ReviewChange, path: string,
  * exact range equality, not merely "contains an uppercase letter somewhere" -- a tampered
  * `leftInitialOldOffset`/`followingOldOffset` pointing at a different valid uppercase character
  * elsewhere in the file must fail. */
-function checkSingleInitialBindingEvidence(t: RiskTag, rc: ReviewChange, path: string, originalCps: readonly string[], editsById: ReadonlyMap<string, AtomicEdit>, ownEditIds: ReadonlySet<string>, prep: Prepared): string[] {
+function checkSingleInitialBindingEvidence(
+  t: RiskTag,
+  rc: ReviewChange,
+  path: string,
+  originalCps: readonly string[],
+  editsById: ReadonlyMap<string, AtomicEdit>,
+  ownEditIds: ReadonlySet<string>,
+  prep: Prepared,
+): string[] {
   const issues: string[] = [];
   const label = `risk tag "${t.tag}" on "${rc.id}"`;
   if (t.evidence === null || typeof t.evidence !== "object") {
-    issues.push(`${label}: evidence is ${t.evidence === null ? "null" : "not an object"}, but this tag's contract requires real evidence identifying the converted space, the left initial and the following code point`);
+    issues.push(
+      `${label}: evidence is ${t.evidence === null ? "null" : "not an object"}, but this tag's contract requires real evidence identifying the converted space, the left initial and the following code point`,
+    );
     return issues;
   }
   const ev = t.evidence as unknown as Record<string, unknown>;
 
-  if (typeof ev.atomicEditId !== "string") issues.push(`${label}: atomicEditId is missing or not a string`);
-  if (typeof ev.leftInitialCodePoint !== "string") issues.push(`${label}: leftInitialCodePoint is missing or not a string`);
-  if (typeof ev.followingCodePoint !== "string") issues.push(`${label}: followingCodePoint is missing or not a string`);
-  if (typeof ev.noPrecedingChainConfirmed !== "boolean") issues.push(`${label}: noPrecedingChainConfirmed is missing or not a boolean`);
+  if (typeof ev.atomicEditId !== "string")
+    issues.push(`${label}: atomicEditId is missing or not a string`);
+  if (typeof ev.leftInitialCodePoint !== "string")
+    issues.push(`${label}: leftInitialCodePoint is missing or not a string`);
+  if (typeof ev.followingCodePoint !== "string")
+    issues.push(`${label}: followingCodePoint is missing or not a string`);
+  if (typeof ev.noPrecedingChainConfirmed !== "boolean")
+    issues.push(`${label}: noPrecedingChainConfirmed is missing or not a boolean`);
   const rangeFields: [string, unknown][] = [
     ["spaceOldOffset", ev.spaceOldOffset],
     ["leftInitialOldOffset", ev.leftInitialOldOffset],
@@ -495,8 +662,14 @@ function checkSingleInitialBindingEvidence(t: RiskTag, rc: ReviewChange, path: s
   if (issues.length > 0) return issues; // cannot proceed without well-typed fields
 
   const spaceOldOffset = ev.spaceOldOffset as { codePointStart: number; codePointEnd: number };
-  const leftInitialOldOffset = ev.leftInitialOldOffset as { codePointStart: number; codePointEnd: number };
-  const followingOldOffset = ev.followingOldOffset as { codePointStart: number; codePointEnd: number };
+  const leftInitialOldOffset = ev.leftInitialOldOffset as {
+    codePointStart: number;
+    codePointEnd: number;
+  };
+  const followingOldOffset = ev.followingOldOffset as {
+    codePointStart: number;
+    codePointEnd: number;
+  };
   const leftInitialCodePoint = ev.leftInitialCodePoint as string;
   const followingCodePoint = ev.followingCodePoint as string;
   const noPrecedingChainConfirmed = ev.noPrecedingChainConfirmed as boolean;
@@ -507,10 +680,18 @@ function checkSingleInitialBindingEvidence(t: RiskTag, rc: ReviewChange, path: s
     ["leftInitialOldOffset", leftInitialOldOffset],
     ["followingOldOffset", followingOldOffset],
   ] as const) {
-    if (range.codePointStart < 0 || range.codePointEnd > originalCps.length || range.codePointStart > range.codePointEnd) {
-      issues.push(`${label}: ${name} [${range.codePointStart}, ${range.codePointEnd}) is out of bounds for "${path}"`);
+    if (
+      range.codePointStart < 0 ||
+      range.codePointEnd > originalCps.length ||
+      range.codePointStart > range.codePointEnd
+    ) {
+      issues.push(
+        `${label}: ${name} [${range.codePointStart}, ${range.codePointEnd}) is out of bounds for "${path}"`,
+      );
     } else if (range.codePointEnd - range.codePointStart !== 1) {
-      issues.push(`${label}: ${name} must span exactly one code point, spans ${range.codePointEnd - range.codePointStart}`);
+      issues.push(
+        `${label}: ${name} must span exactly one code point, spans ${range.codePointEnd - range.codePointStart}`,
+      );
     }
   }
   if (issues.length > 0) return issues;
@@ -518,11 +699,18 @@ function checkSingleInitialBindingEvidence(t: RiskTag, rc: ReviewChange, path: s
   // Anchoring (item 4): every range must sit exactly where the converted space says it must,
   // not merely somewhere plausible.
   const q = spaceOldOffset.codePointStart;
-  if (leftInitialOldOffset.codePointStart !== q - 2 || leftInitialOldOffset.codePointEnd !== q - 1) {
-    issues.push(`${label}: leftInitialOldOffset [${leftInitialOldOffset.codePointStart}, ${leftInitialOldOffset.codePointEnd}) is not anchored to the converted space at q=${q} (expected [${q - 2}, ${q - 1}))`);
+  if (
+    leftInitialOldOffset.codePointStart !== q - 2 ||
+    leftInitialOldOffset.codePointEnd !== q - 1
+  ) {
+    issues.push(
+      `${label}: leftInitialOldOffset [${leftInitialOldOffset.codePointStart}, ${leftInitialOldOffset.codePointEnd}) is not anchored to the converted space at q=${q} (expected [${q - 2}, ${q - 1}))`,
+    );
   }
   if (followingOldOffset.codePointStart !== q + 1 || followingOldOffset.codePointEnd !== q + 2) {
-    issues.push(`${label}: followingOldOffset [${followingOldOffset.codePointStart}, ${followingOldOffset.codePointEnd}) is not anchored to the converted space at q=${q} (expected [${q + 1}, ${q + 2}))`);
+    issues.push(
+      `${label}: followingOldOffset [${followingOldOffset.codePointStart}, ${followingOldOffset.codePointEnd}) is not anchored to the converted space at q=${q} (expected [${q + 1}, ${q + 2}))`,
+    );
   }
   if (issues.length > 0) return issues;
 
@@ -530,18 +718,23 @@ function checkSingleInitialBindingEvidence(t: RiskTag, rc: ReviewChange, path: s
     issues.push(`${label}: q=${q} leaves no room for the anchored ranges in "${path}"`);
     return issues;
   }
-  const sliceAt = (range: { codePointStart: number; codePointEnd: number }) => originalCps.slice(range.codePointStart, range.codePointEnd).join("");
+  const sliceAt = (range: { codePointStart: number; codePointEnd: number }) =>
+    originalCps.slice(range.codePointStart, range.codePointEnd).join("");
   const dotSlice = originalCps[q - 1];
   if (dotSlice !== ".") {
     issues.push(`${label}: original[q-1] is "${dotSlice}", not "." -- left side is not an initial`);
   }
   const leftSlice = sliceAt(leftInitialOldOffset);
   if (leftSlice !== leftInitialCodePoint) {
-    issues.push(`${label}: leftInitialOldOffset does not slice to the recorded leftInitialCodePoint ("${leftSlice}" vs "${leftInitialCodePoint}")`);
+    issues.push(
+      `${label}: leftInitialOldOffset does not slice to the recorded leftInitialCodePoint ("${leftSlice}" vs "${leftInitialCodePoint}")`,
+    );
   }
   const followingSlice = sliceAt(followingOldOffset);
   if (followingSlice !== followingCodePoint) {
-    issues.push(`${label}: followingOldOffset does not slice to the recorded followingCodePoint ("${followingSlice}" vs "${followingCodePoint}")`);
+    issues.push(
+      `${label}: followingOldOffset does not slice to the recorded followingCodePoint ("${followingSlice}" vs "${followingCodePoint}")`,
+    );
   }
   if (issues.length > 0) return issues;
 
@@ -550,24 +743,36 @@ function checkSingleInitialBindingEvidence(t: RiskTag, rc: ReviewChange, path: s
   const originalCodePoints = originalCps.map((c) => c.codePointAt(0) as number);
   const leftP = q - 2;
   if (!isUpper(originalCodePoints[leftP] ?? -1)) {
-    issues.push(`${label}: left code point at ${leftP} is not UPPER per the engine's own pinned predicate`);
+    issues.push(
+      `${label}: left code point at ${leftP} is not UPPER per the engine's own pinned predicate`,
+    );
   }
   if (!isInitialAt(originalCodePoints, prep, leftP)) {
-    issues.push(`${label}: left letter + dot is not a valid initial at this locale's own token-start condition (isInitialAt) -- e.g. embedded inside a longer token such as "xA."`);
+    issues.push(
+      `${label}: left letter + dot is not a valid initial at this locale's own token-start condition (isInitialAt) -- e.g. embedded inside a longer token such as "xA."`,
+    );
   }
   if (isAbbreviationTail(originalCodePoints, leftP)) {
-    issues.push(`${label}: the abbreviation-tail veto (C1-a) applies at this position -- this is the second token of an abbreviation, not an initial`);
+    issues.push(
+      `${label}: the abbreviation-tail veto (C1-a) applies at this position -- this is the second token of an abbreviation, not an initial`,
+    );
   }
   if (!isUpper(originalCodePoints[q + 1] ?? -1)) {
-    issues.push(`${label}: following code point at ${q + 1} is not UPPER per the engine's own pinned predicate`);
+    issues.push(
+      `${label}: following code point at ${q + 1} is not UPPER per the engine's own pinned predicate`,
+    );
   }
   if (originalCps[q + 2] === ".") {
-    issues.push(`${label}: the following code point is itself an initial (between-initials shape) -- this tag must not fire here`);
+    issues.push(
+      `${label}: the following code point is itself an initial (between-initials shape) -- this tag must not fire here`,
+    );
   }
   if (noPrecedingChainConfirmed !== true) {
     issues.push(`${label}: noPrecedingChainConfirmed must be literally true when this tag fires`);
   } else if (hasPrecedingInitial(originalCodePoints, prep, leftP)) {
-    issues.push(`${label}: a preceding initial chain is independently confirmed at the claimed position (via the real hasPrecedingInitial), contradicting noPrecedingChainConfirmed`);
+    issues.push(
+      `${label}: a preceding initial chain is independently confirmed at the claimed position (via the real hasPrecedingInitial), contradicting noPrecedingChainConfirmed`,
+    );
   }
 
   const edit = editsById.get(atomicEditId);
@@ -579,9 +784,13 @@ function checkSingleInitialBindingEvidence(t: RiskTag, rc: ReviewChange, path: s
     issues.push(`${label}: atomicEditId "${edit.id}" does not belong to this review change`);
   }
   if (edit.oldOffset.codePointStart !== q || edit.oldOffset.codePointEnd !== q + 1) {
-    issues.push(`${label}: atomic edit "${edit.id}"'s own old range does not equal the claimed spaceOldOffset`);
+    issues.push(
+      `${label}: atomic edit "${edit.id}"'s own old range does not equal the claimed spaceOldOffset`,
+    );
   } else if (edit.before !== SPACE_CHAR || edit.after !== NBSP_CHAR) {
-    issues.push(`${label}: atomic edit "${edit.id}" does not actually substitute U+0020 with U+00A0 (before="${edit.before}", after="${edit.after}")`);
+    issues.push(
+      `${label}: atomic edit "${edit.id}" does not actually substitute U+0020 with U+00A0 (before="${edit.before}", after="${edit.after}")`,
+    );
   }
   return issues;
 }
@@ -604,16 +813,30 @@ export function checkRiskTagEvidence(results: readonly FileResult[], locale: Loc
         // missing, or malformed) evidence object for either of them is a consistency failure, not
         // a silent pass. Only tags on `LEGACY_NULL_EVIDENCE_TAGS` may skip via `evidence === null`.
         if (t.tag === "authored-en-dash-restyled") {
-          issues.push(...checkAuthoredEnDashEvidence(t, rc, r.path, originalCps, editsById, ownEditIds));
+          issues.push(
+            ...checkAuthoredEnDashEvidence(t, rc, r.path, originalCps, editsById, ownEditIds),
+          );
           continue;
         }
         if (t.tag === "single-initial-binding-candidate") {
-          issues.push(...checkSingleInitialBindingEvidence(t, rc, r.path, originalCps, editsById, ownEditIds, prep));
+          issues.push(
+            ...checkSingleInitialBindingEvidence(
+              t,
+              rc,
+              r.path,
+              originalCps,
+              editsById,
+              ownEditIds,
+              prep,
+            ),
+          );
           continue;
         }
         if (t.evidence === null) {
           if (!LEGACY_NULL_EVIDENCE_TAGS.has(t.tag)) {
-            issues.push(`risk tag "${t.tag}" on "${rc.id}": evidence is null, and "${t.tag}" is not on the legacy null-evidence allowlist`);
+            issues.push(
+              `risk tag "${t.tag}" on "${rc.id}": evidence is null, and "${t.tag}" is not on the legacy null-evidence allowlist`,
+            );
           }
           continue;
         }
@@ -623,23 +846,37 @@ export function checkRiskTagEvidence(results: readonly FileResult[], locale: Loc
           // `DashProximityEvidence`'s doc comment in tagging.ts.
           const ev = t.evidence as DashProximityEvidence;
           const { codePointStart, codePointEnd } = ev.tokenOldOffset;
-          if (codePointStart < 0 || codePointEnd > originalCps.length || codePointStart > codePointEnd) {
-            issues.push(`risk tag "${t.tag}" on "${rc.id}": token range [${codePointStart}, ${codePointEnd}) is out of bounds for "${r.path}"`);
+          if (
+            codePointStart < 0 ||
+            codePointEnd > originalCps.length ||
+            codePointStart > codePointEnd
+          ) {
+            issues.push(
+              `risk tag "${t.tag}" on "${rc.id}": token range [${codePointStart}, ${codePointEnd}) is out of bounds for "${r.path}"`,
+            );
             continue;
           }
           const slice = originalCps.slice(codePointStart, codePointEnd).join("");
           if (slice !== ev.tokenText) {
-            issues.push(`risk tag "${t.tag}" on "${rc.id}": token range does not slice to the recorded tokenText ("${slice}" vs "${ev.tokenText}")`);
+            issues.push(
+              `risk tag "${t.tag}" on "${rc.id}": token range does not slice to the recorded tokenText ("${slice}" vs "${ev.tokenText}")`,
+            );
           }
           if (!isDashTokenShape(ev.tokenText)) {
-            issues.push(`risk tag "${t.tag}" on "${rc.id}": tokenText "${ev.tokenText}" is not a single dash-class code point`);
+            issues.push(
+              `risk tag "${t.tag}" on "${rc.id}": tokenText "${ev.tokenText}" is not a single dash-class code point`,
+            );
           }
           const edit = editsById.get(ev.nearestAtomicEditId);
           if (!edit) {
-            issues.push(`risk tag "${t.tag}" on "${rc.id}": nearestAtomicEditId "${ev.nearestAtomicEditId}" does not exist in "${r.path}"`);
+            issues.push(
+              `risk tag "${t.tag}" on "${rc.id}": nearestAtomicEditId "${ev.nearestAtomicEditId}" does not exist in "${r.path}"`,
+            );
           } else {
             if (!ownEditIds.has(edit.id)) {
-              issues.push(`risk tag "${t.tag}" on "${rc.id}": nearestAtomicEditId "${edit.id}" does not belong to this review change`);
+              issues.push(
+                `risk tag "${t.tag}" on "${rc.id}": nearestAtomicEditId "${edit.id}" does not belong to this review change`,
+              );
             }
             const expectedDistance =
               codePointEnd <= edit.oldOffset.codePointStart
@@ -648,32 +885,57 @@ export function checkRiskTagEvidence(results: readonly FileResult[], locale: Loc
                   ? codePointStart - edit.oldOffset.codePointEnd
                   : 0;
             if (expectedDistance !== ev.distance) {
-              issues.push(`risk tag "${t.tag}" on "${rc.id}": recorded distance (${ev.distance}) does not match an independent recomputation (${expectedDistance})`);
+              issues.push(
+                `risk tag "${t.tag}" on "${rc.id}": recorded distance (${ev.distance}) does not match an independent recomputation (${expectedDistance})`,
+              );
             }
           }
           if (ev.distance > DASH_PROXIMITY_CODEPOINTS) {
-            issues.push(`risk tag "${t.tag}" on "${rc.id}": recorded distance (${ev.distance}) exceeds the documented threshold (${DASH_PROXIMITY_CODEPOINTS})`);
+            issues.push(
+              `risk tag "${t.tag}" on "${rc.id}": recorded distance (${ev.distance}) exceeds the documented threshold (${DASH_PROXIMITY_CODEPOINTS})`,
+            );
           }
         } else if ("tokenText" in t.evidence) {
           const ev = t.evidence as TokenEvidence;
           const { codePointStart, codePointEnd } = ev.tokenOldOffset;
-          if (codePointStart < 0 || codePointEnd > originalCps.length || codePointStart > codePointEnd) {
-            issues.push(`risk tag "${t.tag}" on "${rc.id}": token range [${codePointStart}, ${codePointEnd}) is out of bounds for "${r.path}"`);
+          if (
+            codePointStart < 0 ||
+            codePointEnd > originalCps.length ||
+            codePointStart > codePointEnd
+          ) {
+            issues.push(
+              `risk tag "${t.tag}" on "${rc.id}": token range [${codePointStart}, ${codePointEnd}) is out of bounds for "${r.path}"`,
+            );
             continue;
           }
           const slice = originalCps.slice(codePointStart, codePointEnd).join("");
           if (slice !== ev.tokenText) {
-            issues.push(`risk tag "${t.tag}" on "${rc.id}": token range does not slice to the recorded tokenText ("${slice}" vs "${ev.tokenText}")`);
+            issues.push(
+              `risk tag "${t.tag}" on "${rc.id}": token range does not slice to the recorded tokenText ("${slice}" vs "${ev.tokenText}")`,
+            );
           }
           const edit = editsById.get(ev.intersectingAtomicEditId);
           if (!edit) {
-            issues.push(`risk tag "${t.tag}" on "${rc.id}": intersectingAtomicEditId "${ev.intersectingAtomicEditId}" does not exist in "${r.path}"`);
+            issues.push(
+              `risk tag "${t.tag}" on "${rc.id}": intersectingAtomicEditId "${ev.intersectingAtomicEditId}" does not exist in "${r.path}"`,
+            );
           } else {
             if (!ownEditIds.has(edit.id)) {
-              issues.push(`risk tag "${t.tag}" on "${rc.id}": intersectingAtomicEditId "${edit.id}" does not belong to this review change`);
+              issues.push(
+                `risk tag "${t.tag}" on "${rc.id}": intersectingAtomicEditId "${edit.id}" does not belong to this review change`,
+              );
             }
-            if (!rangesIntersectConsistency(codePointStart, codePointEnd, edit.oldOffset.codePointStart, edit.oldOffset.codePointEnd)) {
-              issues.push(`risk tag "${t.tag}" on "${rc.id}": token range does not actually intersect atomic edit "${edit.id}"`);
+            if (
+              !rangesIntersectConsistency(
+                codePointStart,
+                codePointEnd,
+                edit.oldOffset.codePointStart,
+                edit.oldOffset.codePointEnd,
+              )
+            ) {
+              issues.push(
+                `risk tag "${t.tag}" on "${rc.id}": token range does not actually intersect atomic edit "${edit.id}"`,
+              );
             }
           }
           const shapeOk =
@@ -685,21 +947,37 @@ export function checkRiskTagEvidence(results: readonly FileResult[], locale: Loc
                   ? isElisionQuoteTokenShape(ev.tokenText)
                   : true; // tags without a defined shape validator are not checked here
           if (!shapeOk) {
-            issues.push(`risk tag "${t.tag}" on "${rc.id}": tokenText "${ev.tokenText}" does not have the shape this tag claims`);
+            issues.push(
+              `risk tag "${t.tag}" on "${rc.id}": tokenText "${ev.tokenText}" does not have the shape this tag claims`,
+            );
           }
-        } else if (t.evidence && typeof t.evidence === "object" && "boundaryOldOffset" in t.evidence) {
+        } else if (
+          t.evidence &&
+          typeof t.evidence === "object" &&
+          "boundaryOldOffset" in t.evidence
+        ) {
           const ev = t.evidence as BoundaryEvidence;
           const { codePointStart, codePointEnd } = ev.boundaryOldOffset;
-          if (codePointStart < 0 || codePointEnd > originalCps.length || codePointStart > codePointEnd) {
-            issues.push(`risk tag "${t.tag}" on "${rc.id}": boundary range [${codePointStart}, ${codePointEnd}) is out of bounds for "${r.path}"`);
+          if (
+            codePointStart < 0 ||
+            codePointEnd > originalCps.length ||
+            codePointStart > codePointEnd
+          ) {
+            issues.push(
+              `risk tag "${t.tag}" on "${rc.id}": boundary range [${codePointStart}, ${codePointEnd}) is out of bounds for "${r.path}"`,
+            );
             continue;
           }
           const slice = originalCps.slice(codePointStart, codePointEnd).join("");
           if (slice !== ev.boundaryText) {
-            issues.push(`risk tag "${t.tag}" on "${rc.id}": boundary range does not slice to the recorded boundaryText ("${slice}" vs "${ev.boundaryText}")`);
+            issues.push(
+              `risk tag "${t.tag}" on "${rc.id}": boundary range does not slice to the recorded boundaryText ("${slice}" vs "${ev.boundaryText}")`,
+            );
           }
           if (!isMdxBoundaryTokenShape(ev.boundaryText)) {
-            issues.push(`risk tag "${t.tag}" on "${rc.id}": boundaryText "${ev.boundaryText}" does not have the shape of an MDX/JSX/code boundary token`);
+            issues.push(
+              `risk tag "${t.tag}" on "${rc.id}": boundaryText "${ev.boundaryText}" does not have the shape of an MDX/JSX/code boundary token`,
+            );
           }
           const edits = r.diff.atomicEdits.filter((e) => ownEditIds.has(e.id));
           const distances = edits.map((e) =>
@@ -711,17 +989,23 @@ export function checkRiskTagEvidence(results: readonly FileResult[], locale: Loc
           );
           const expectedDistance = distances.length > 0 ? Math.min(...distances) : null;
           if (expectedDistance === null || expectedDistance !== ev.distance) {
-            issues.push(`risk tag "${t.tag}" on "${rc.id}": recorded distance (${ev.distance}) does not match an independent recomputation (${expectedDistance ?? "n/a"})`);
+            issues.push(
+              `risk tag "${t.tag}" on "${rc.id}": recorded distance (${ev.distance}) does not match an independent recomputation (${expectedDistance ?? "n/a"})`,
+            );
           }
           if (ev.distance > MDX_BOUNDARY_MAX_DISTANCE_CODEPOINTS) {
-            issues.push(`risk tag "${t.tag}" on "${rc.id}": recorded distance (${ev.distance}) exceeds the documented threshold (${MDX_BOUNDARY_MAX_DISTANCE_CODEPOINTS})`);
+            issues.push(
+              `risk tag "${t.tag}" on "${rc.id}": recorded distance (${ev.distance}) exceeds the documented threshold (${MDX_BOUNDARY_MAX_DISTANCE_CODEPOINTS})`,
+            );
           }
         } else {
           // Final Correction pass, item 3: an evidence object that matches none of the known
           // shapes (`tokenText`, `nearestAtomicEditId` under `dash-restyling`, or
           // `boundaryOldOffset`) must fail closed rather than being silently cast to
           // `BoundaryEvidence` and read as `undefined` fields that then pass every check.
-          issues.push(`risk tag "${t.tag}" on "${rc.id}": evidence does not match any known shape (TokenEvidence, DashProximityEvidence, or BoundaryEvidence)`);
+          issues.push(
+            `risk tag "${t.tag}" on "${rc.id}": evidence does not match any known shape (TokenEvidence, DashProximityEvidence, or BoundaryEvidence)`,
+          );
         }
       }
     }
@@ -732,14 +1016,19 @@ export function checkRiskTagEvidence(results: readonly FileResult[], locale: Loc
 /** No `ReviewChange`'s old span may exceed the documented size cap
  * (`REVIEW_CHANGE_MAX_OLD_SPAN_CODEPOINTS` in diff.ts) -- the grouping rule promises a
  * deterministic split at that boundary, not an unbounded merge. */
-export function checkReviewChangeSizeCap(results: readonly FileResult[], maxOldSpanCodePoints: number): string[] {
+export function checkReviewChangeSizeCap(
+  results: readonly FileResult[],
+  maxOldSpanCodePoints: number,
+): string[] {
   const issues: string[] = [];
   for (const r of results) {
     if (r.status !== "changed" || !r.diff) continue;
     for (const rc of r.diff.reviewChanges) {
       const span = rc.oldOffset.codePointEnd - rc.oldOffset.codePointStart;
       if (span > maxOldSpanCodePoints) {
-        issues.push(`review change "${rc.id}": old span (${span} code points) exceeds the documented maximum (${maxOldSpanCodePoints})`);
+        issues.push(
+          `review change "${rc.id}": old span (${span} code points) exceeds the documented maximum (${maxOldSpanCodePoints})`,
+        );
       }
     }
   }
@@ -751,7 +1040,10 @@ export function checkReviewChangeSizeCap(results: readonly FileResult[], maxOldS
  * legitimately equal `counts.oldLines` (one past the last real line index in a 1-indexed sense --
  * `oldLines` itself already counts the trailing empty "line" `split("\n")` produces for a
  * newline-terminated file) but never exceed it. */
-export function checkRegionsInBounds(entries: readonly ReviewChangeEntry[], fileLineCounts: ReadonlyMap<string, { oldLines: number; newLines: number }>): string[] {
+export function checkRegionsInBounds(
+  entries: readonly ReviewChangeEntry[],
+  fileLineCounts: ReadonlyMap<string, { oldLines: number; newLines: number }>,
+): string[] {
   const issues: string[] = [];
   for (const e of entries) {
     const counts = fileLineCounts.get(e.path);
@@ -760,10 +1052,14 @@ export function checkRegionsInBounds(entries: readonly ReviewChangeEntry[], file
       continue;
     }
     if (e.oldLineCol.start.line < 1 || e.oldLineCol.end.line > counts.oldLines) {
-      issues.push(`review change "${e.id}": old line range [${e.oldLineCol.start.line}, ${e.oldLineCol.end.line}) is out of bounds for "${e.path}" (${counts.oldLines} line(s))`);
+      issues.push(
+        `review change "${e.id}": old line range [${e.oldLineCol.start.line}, ${e.oldLineCol.end.line}) is out of bounds for "${e.path}" (${counts.oldLines} line(s))`,
+      );
     }
     if (e.newLineCol.start.line < 1 || e.newLineCol.end.line > counts.newLines) {
-      issues.push(`review change "${e.id}": new line range [${e.newLineCol.start.line}, ${e.newLineCol.end.line}) is out of bounds for "${e.path}" (${counts.newLines} line(s))`);
+      issues.push(
+        `review change "${e.id}": new line range [${e.newLineCol.start.line}, ${e.newLineCol.end.line}) is out of bounds for "${e.path}" (${counts.newLines} line(s))`,
+      );
     }
   }
   return issues;
@@ -781,20 +1077,40 @@ export function checkHunkContainment(results: readonly FileResult[]): string[] {
     const hunksById = new Map(r.diff.diffHunks.map((h) => [h.id, h] as const));
     for (const rc of r.diff.reviewChanges) {
       if (rc.diffHunkId === "unknown") {
-        issues.push(`review change "${rc.id}": diffHunkId is "unknown" -- no enclosing unified hunk was found`);
+        issues.push(
+          `review change "${rc.id}": diffHunkId is "unknown" -- no enclosing unified hunk was found`,
+        );
         continue;
       }
       const hunk = hunksById.get(rc.diffHunkId);
       if (!hunk) {
-        issues.push(`review change "${rc.id}": diffHunkId "${rc.diffHunkId}" does not exist in "${r.path}"`);
+        issues.push(
+          `review change "${rc.id}": diffHunkId "${rc.diffHunkId}" does not exist in "${r.path}"`,
+        );
         continue;
       }
-      const oldLastIncluded = Math.max(rc.oldLineCol.start.line, rc.oldLineCol.end.line - (rc.oldLineCol.end.column === 0 ? 1 : 0));
-      const newLastIncluded = Math.max(rc.newLineCol.start.line, rc.newLineCol.end.line - (rc.newLineCol.end.column === 0 ? 1 : 0));
-      const oldOk = rc.oldLineCol.start.line >= hunk.oldStart && oldLastIncluded <= hunk.oldStart + hunk.oldLines - 1;
-      const newOk = rc.newLineCol.start.line >= hunk.newStart && newLastIncluded <= hunk.newStart + hunk.newLines - 1;
-      if (!oldOk) issues.push(`review change "${rc.id}": its own old line range is not actually contained by hunk "${hunk.id}"`);
-      if (!newOk) issues.push(`review change "${rc.id}": its own new line range is not actually contained by hunk "${hunk.id}"`);
+      const oldLastIncluded = Math.max(
+        rc.oldLineCol.start.line,
+        rc.oldLineCol.end.line - (rc.oldLineCol.end.column === 0 ? 1 : 0),
+      );
+      const newLastIncluded = Math.max(
+        rc.newLineCol.start.line,
+        rc.newLineCol.end.line - (rc.newLineCol.end.column === 0 ? 1 : 0),
+      );
+      const oldOk =
+        rc.oldLineCol.start.line >= hunk.oldStart &&
+        oldLastIncluded <= hunk.oldStart + hunk.oldLines - 1;
+      const newOk =
+        rc.newLineCol.start.line >= hunk.newStart &&
+        newLastIncluded <= hunk.newStart + hunk.newLines - 1;
+      if (!oldOk)
+        issues.push(
+          `review change "${rc.id}": its own old line range is not actually contained by hunk "${hunk.id}"`,
+        );
+      if (!newOk)
+        issues.push(
+          `review change "${rc.id}": its own new line range is not actually contained by hunk "${hunk.id}"`,
+        );
     }
   }
   return issues;
@@ -810,7 +1126,8 @@ export function checkGlobalIdNamespaceUnique(results: readonly FileResult[]): st
     if (r.status !== "changed" || !r.diff) continue;
     const atomicIds = new Set(r.diff.atomicEdits.map((e) => e.id));
     for (const rc of r.diff.reviewChanges) {
-      if (atomicIds.has(rc.id)) issues.push(`"${r.path}": review change id "${rc.id}" collides with an atomic edit id`);
+      if (atomicIds.has(rc.id))
+        issues.push(`"${r.path}": review change id "${rc.id}" collides with an atomic edit id`);
     }
   }
   return issues;
@@ -836,18 +1153,38 @@ export function checkPreviewMatchesSource(results: readonly FileResult[]): strin
     const oldCps = [...r.originalText];
     for (const rc of r.diff.reviewChanges) {
       const leadingLen = [...rc.previewOldLeading.text].length;
-      const actualOldLeading = oldCps.slice(rc.oldOffset.codePointStart - leadingLen, rc.oldOffset.codePointStart).join("");
-      if (actualOldLeading !== rc.previewOldLeading.text) issues.push(`review change "${rc.id}": previewOldLeading does not match the real source text immediately before its offset`);
+      const actualOldLeading = oldCps
+        .slice(rc.oldOffset.codePointStart - leadingLen, rc.oldOffset.codePointStart)
+        .join("");
+      if (actualOldLeading !== rc.previewOldLeading.text)
+        issues.push(
+          `review change "${rc.id}": previewOldLeading does not match the real source text immediately before its offset`,
+        );
 
       const oldTrailingLen = [...rc.previewOldTrailing.text].length;
-      const actualOldTrailing = oldCps.slice(rc.oldOffset.codePointEnd, rc.oldOffset.codePointEnd + oldTrailingLen).join("");
-      if (actualOldTrailing !== rc.previewOldTrailing.text) issues.push(`review change "${rc.id}": previewOldTrailing does not match the real source text immediately after its offset`);
+      const actualOldTrailing = oldCps
+        .slice(rc.oldOffset.codePointEnd, rc.oldOffset.codePointEnd + oldTrailingLen)
+        .join("");
+      if (actualOldTrailing !== rc.previewOldTrailing.text)
+        issues.push(
+          `review change "${rc.id}": previewOldTrailing does not match the real source text immediately after its offset`,
+        );
 
-      if (rc.previewIsolatedLeading.text !== rc.previewOldLeading.text || rc.previewIsolatedLeading.truncated !== rc.previewOldLeading.truncated) {
-        issues.push(`review change "${rc.id}": previewIsolatedLeading is not identical to previewOldLeading -- isolated-apply must leave untouched leading context unchanged`);
+      if (
+        rc.previewIsolatedLeading.text !== rc.previewOldLeading.text ||
+        rc.previewIsolatedLeading.truncated !== rc.previewOldLeading.truncated
+      ) {
+        issues.push(
+          `review change "${rc.id}": previewIsolatedLeading is not identical to previewOldLeading -- isolated-apply must leave untouched leading context unchanged`,
+        );
       }
-      if (rc.previewIsolatedTrailing.text !== rc.previewOldTrailing.text || rc.previewIsolatedTrailing.truncated !== rc.previewOldTrailing.truncated) {
-        issues.push(`review change "${rc.id}": previewIsolatedTrailing is not identical to previewOldTrailing -- isolated-apply must leave untouched trailing context unchanged`);
+      if (
+        rc.previewIsolatedTrailing.text !== rc.previewOldTrailing.text ||
+        rc.previewIsolatedTrailing.truncated !== rc.previewOldTrailing.truncated
+      ) {
+        issues.push(
+          `review change "${rc.id}": previewIsolatedTrailing is not identical to previewOldTrailing -- isolated-apply must leave untouched trailing context unchanged`,
+        );
       }
     }
   }
@@ -869,13 +1206,19 @@ export function checkIsolatedPreviewMarks(results: readonly FileResult[]): strin
     if (r.status !== "changed" || !r.diff) continue;
     const editsById = new Map(r.diff.atomicEdits.map((e) => [e.id, e] as const));
     for (const rc of r.diff.reviewChanges) {
-      const edits = rc.atomicEditIds.map((id) => editsById.get(id)).filter((e): e is AtomicEdit => e !== undefined);
+      const edits = rc.atomicEditIds
+        .map((id) => editsById.get(id))
+        .filter((e): e is AtomicEdit => e !== undefined);
       if (edits.length !== rc.atomicEditIds.length) {
-        issues.push(`review change "${rc.id}": one or more atomicEditIds do not resolve to a real AtomicEdit`);
+        issues.push(
+          `review change "${rc.id}": one or more atomicEditIds do not resolve to a real AtomicEdit`,
+        );
         continue;
       }
       if (rc.oldMarks.length !== edits.length || rc.newMarks.length !== edits.length) {
-        issues.push(`review change "${rc.id}": oldMarks/newMarks count (${rc.oldMarks.length}/${rc.newMarks.length}) does not match its own atomic edit count (${edits.length})`);
+        issues.push(
+          `review change "${rc.id}": oldMarks/newMarks count (${rc.oldMarks.length}/${rc.newMarks.length}) does not match its own atomic edit count (${edits.length})`,
+        );
         continue;
       }
       const beforeCps = [...rc.before];
@@ -888,30 +1231,50 @@ export function checkIsolatedPreviewMarks(results: readonly FileResult[]): strin
         const nm = rc.newMarks[i] as { start: number; end: number };
 
         if (om.start < 0 || om.end > beforeCps.length || om.start > om.end) {
-          issues.push(`review change "${rc.id}": oldMarks[${i}] [${om.start}, ${om.end}) is out of bounds for its own "before" text`);
+          issues.push(
+            `review change "${rc.id}": oldMarks[${i}] [${om.start}, ${om.end}) is out of bounds for its own "before" text`,
+          );
         } else {
-          if (om.start < prevOldEnd) issues.push(`review change "${rc.id}": oldMarks are not in ascending non-overlapping order at index ${i}`);
+          if (om.start < prevOldEnd)
+            issues.push(
+              `review change "${rc.id}": oldMarks are not in ascending non-overlapping order at index ${i}`,
+            );
           prevOldEnd = om.end;
           const slice = beforeCps.slice(om.start, om.end).join("");
-          if (slice !== edit.before) issues.push(`review change "${rc.id}": oldMarks[${i}] slice ("${slice}") does not equal atomic edit "${edit.id}"'s own before-text ("${edit.before}")`);
+          if (slice !== edit.before)
+            issues.push(
+              `review change "${rc.id}": oldMarks[${i}] slice ("${slice}") does not equal atomic edit "${edit.id}"'s own before-text ("${edit.before}")`,
+            );
           const expectedStart = edit.oldOffset.codePointStart - rc.oldOffset.codePointStart;
           const expectedEnd = edit.oldOffset.codePointEnd - rc.oldOffset.codePointStart;
           if (om.start !== expectedStart || om.end !== expectedEnd) {
-            issues.push(`review change "${rc.id}": oldMarks[${i}] does not match an independent recomputation from atomic edit "${edit.id}"'s own offset`);
+            issues.push(
+              `review change "${rc.id}": oldMarks[${i}] does not match an independent recomputation from atomic edit "${edit.id}"'s own offset`,
+            );
           }
         }
 
         if (nm.start < 0 || nm.end > afterCps.length || nm.start > nm.end) {
-          issues.push(`review change "${rc.id}": newMarks[${i}] [${nm.start}, ${nm.end}) is out of bounds for its own "after" text`);
+          issues.push(
+            `review change "${rc.id}": newMarks[${i}] [${nm.start}, ${nm.end}) is out of bounds for its own "after" text`,
+          );
         } else {
-          if (nm.start < prevNewEnd) issues.push(`review change "${rc.id}": newMarks are not in ascending non-overlapping order at index ${i}`);
+          if (nm.start < prevNewEnd)
+            issues.push(
+              `review change "${rc.id}": newMarks are not in ascending non-overlapping order at index ${i}`,
+            );
           prevNewEnd = nm.end;
           const slice = afterCps.slice(nm.start, nm.end).join("");
-          if (slice !== edit.after) issues.push(`review change "${rc.id}": newMarks[${i}] slice ("${slice}") does not equal atomic edit "${edit.id}"'s own after-text ("${edit.after}")`);
+          if (slice !== edit.after)
+            issues.push(
+              `review change "${rc.id}": newMarks[${i}] slice ("${slice}") does not equal atomic edit "${edit.id}"'s own after-text ("${edit.after}")`,
+            );
           const expectedStart = edit.newOffset.codePointStart - rc.newOffset.codePointStart;
           const expectedEnd = edit.newOffset.codePointEnd - rc.newOffset.codePointStart;
           if (nm.start !== expectedStart || nm.end !== expectedEnd) {
-            issues.push(`review change "${rc.id}": newMarks[${i}] does not match an independent recomputation from atomic edit "${edit.id}"'s own offset`);
+            issues.push(
+              `review change "${rc.id}": newMarks[${i}] does not match an independent recomputation from atomic edit "${edit.id}"'s own offset`,
+            );
           }
         }
       }
@@ -930,11 +1293,15 @@ export function checkAnchorsUnique(entries: readonly ReviewChangeEntry[]): strin
   for (const e of entries) {
     const expected = reviewChangeAnchor(e.id);
     if (e.anchor !== expected) {
-      issues.push(`review change "${e.id}": stored anchor "${e.anchor}" does not match an independent recomputation ("${expected}")`);
+      issues.push(
+        `review change "${e.id}": stored anchor "${e.anchor}" does not match an independent recomputation ("${expected}")`,
+      );
     }
     const owner = seen.get(e.anchor);
     if (owner && owner !== e.id) {
-      issues.push(`anchor "${e.anchor}" is shared by review change "${owner}" and "${e.id}" -- must be unique`);
+      issues.push(
+        `anchor "${e.anchor}" is shared by review change "${owner}" and "${e.id}" -- must be unique`,
+      );
     } else {
       seen.set(e.anchor, e.id);
     }
@@ -953,15 +1320,21 @@ export function checkQuotePairLinksSymmetric(entries: readonly ReviewChangeEntry
     if (!p || p.status !== "paired") continue;
     const target = byId.get(p.pairedReviewChangeId);
     if (!target) {
-      issues.push(`review change "${e.id}": quotePairing points to "${p.pairedReviewChangeId}" which does not exist`);
+      issues.push(
+        `review change "${e.id}": quotePairing points to "${p.pairedReviewChangeId}" which does not exist`,
+      );
       continue;
     }
     const back = target.quotePairing;
     if (!back || back.status !== "paired" || back.pairedReviewChangeId !== e.id) {
-      issues.push(`review change "${e.id}": quotePairing to "${target.id}" is not symmetric (the target does not link back)`);
+      issues.push(
+        `review change "${e.id}": quotePairing to "${target.id}" is not symmetric (the target does not link back)`,
+      );
     }
     if (back && back.status === "paired" && back.role === p.role) {
-      issues.push(`review change "${e.id}" and "${target.id}": paired quote marks have the same role ("${p.role}"), expected one opening and one closing`);
+      issues.push(
+        `review change "${e.id}" and "${target.id}": paired quote marks have the same role ("${p.role}"), expected one opening and one closing`,
+      );
     }
   }
   return issues;
@@ -970,7 +1343,10 @@ export function checkQuotePairLinksSymmetric(entries: readonly ReviewChangeEntry
 /** REVIEW.md's "Counts by risk tag" and "Counts by attribution" bullet lists must independently
  * recompute to the same numbers as `changes.json`'s own entries -- a printed summary must never
  * be able to drift from the data it claims to summarize. */
-export function checkReviewMarkdownCountsMatchEntries(entries: readonly ReviewChangeEntry[], reviewMarkdown: string): string[] {
+export function checkReviewMarkdownCountsMatchEntries(
+  entries: readonly ReviewChangeEntry[],
+  reviewMarkdown: string,
+): string[] {
   const issues: string[] = [];
 
   const expectedByTag = new Map<string, number>();
@@ -978,16 +1354,21 @@ export function checkReviewMarkdownCountsMatchEntries(entries: readonly ReviewCh
     const tags = e.riskTags.length > 0 ? e.riskTags.map((t) => t.tag) : ["no-high-risk-tag"];
     for (const tag of tags) expectedByTag.set(tag, (expectedByTag.get(tag) ?? 0) + 1);
   }
-  const tagSection = reviewMarkdown.split("## Counts by risk tag")[1]?.split("## Counts by file")[0] ?? "";
+  const tagSection =
+    reviewMarkdown.split("## Counts by risk tag")[1]?.split("## Counts by file")[0] ?? "";
   const foundByTag = new Map<string, number>();
   for (const m of tagSection.matchAll(/^- `([^`]+)`: (\d+) changes?$/gm)) {
     foundByTag.set(m[1] as string, Number(m[2]));
   }
   for (const [tag, count] of expectedByTag) {
-    if (foundByTag.get(tag) !== count) issues.push(`REVIEW.md risk-tag count for "${tag}" (${foundByTag.get(tag) ?? "missing"}) does not match changes.json (${count})`);
+    if (foundByTag.get(tag) !== count)
+      issues.push(
+        `REVIEW.md risk-tag count for "${tag}" (${foundByTag.get(tag) ?? "missing"}) does not match changes.json (${count})`,
+      );
   }
   for (const tag of foundByTag.keys()) {
-    if (!expectedByTag.has(tag)) issues.push(`REVIEW.md lists risk-tag "${tag}" which changes.json's entries do not produce`);
+    if (!expectedByTag.has(tag))
+      issues.push(`REVIEW.md lists risk-tag "${tag}" which changes.json's entries do not produce`);
   }
 
   return issues;
@@ -1008,10 +1389,17 @@ export function checkFileCoverage(results: readonly FileResult[]): string[] {
 }
 
 /** Two independent serializations of the same generated data must be byte-identical. */
-export function checkSerializationDeterministic(label: string, serializeOnce: () => string): string[] {
+export function checkSerializationDeterministic(
+  label: string,
+  serializeOnce: () => string,
+): string[] {
   const first = serializeOnce();
   const second = serializeOnce();
-  return first === second ? [] : [`${label}: two serializations of the same in-memory data produced different output (non-deterministic)`];
+  return first === second
+    ? []
+    : [
+        `${label}: two serializations of the same in-memory data produced different output (non-deterministic)`,
+      ];
 }
 
 /** Runs every check above and returns the combined issue list, prefixed for readability. */
@@ -1033,7 +1421,12 @@ export function checkAllConsistency(input: {
     ...checkIdsUnique(input.entries),
     ...checkReviewMarkdownIds(input.entries, input.reviewMarkdown),
     ...checkReviewMarkdownAllUnreviewed(input.entries, input.reviewMarkdown),
-    ...checkManifestCounts(input.manifestCounts, input.entries, input.actualUnifiedDiffHunkCount, input.actualAtomicEditCount),
+    ...checkManifestCounts(
+      input.manifestCounts,
+      input.entries,
+      input.actualUnifiedDiffHunkCount,
+      input.actualAtomicEditCount,
+    ),
     ...checkReviewChangeSlicesMatchSource(input.results),
     ...checkLineColMatchesOffsets(input.results),
     ...checkUtf8ByteBoundaries(input.results),

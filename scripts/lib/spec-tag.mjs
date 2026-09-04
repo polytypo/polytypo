@@ -101,7 +101,12 @@ function resolveCommitish(commitish, cwd, run) {
  *   invocation seam, for tests only; defaults to a real `execFileSync("git", args, {cwd})` call.
  * @returns {{ok: true, tagName: string, commit: string} | {ok: false, reason: string}}
  */
-export function verifySpecTag({ specVersionRaw, expectedCommitSha, cwd = process.cwd(), run = defaultRun }) {
+export function verifySpecTag({
+  specVersionRaw,
+  expectedCommitSha,
+  cwd = process.cwd(),
+  run = defaultRun,
+}) {
   const parsed = parseStrictSpecVersion(specVersionRaw);
   if (!parsed.ok) return { ok: false, reason: parsed.reason };
 

@@ -27,4 +27,6 @@ if (!result.ok) {
   process.exit(1);
 }
 
-console.log(`ok: tag "${tag}" matches package.json version "${pkg.version}", and it is not the placeholder.`);
+console.log(
+  `ok: tag "${tag}" matches package.json version "${pkg.version}", and it is not the placeholder.`,
+);

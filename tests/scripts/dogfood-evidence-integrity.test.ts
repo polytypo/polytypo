@@ -3,7 +3,11 @@
 // verification, and the UTF-8 byte-boundary check's zero-length-range blind spot.
 import { describe, expect, it } from "vitest";
 import { computeFileDiff } from "../../scripts/dogfood/diff.js";
-import { computeRiskTags, type BoundaryEvidence, type TokenEvidence } from "../../scripts/dogfood/tagging.js";
+import {
+  computeRiskTags,
+  type BoundaryEvidence,
+  type TokenEvidence,
+} from "../../scripts/dogfood/tagging.js";
 import { attributeReviewChanges } from "../../scripts/dogfood/attribution.js";
 import { transform } from "../../src/index.js";
 import { getLocaleData } from "../../src/engine/locale.js";
@@ -17,17 +21,48 @@ import type { FileResult } from "../../scripts/dogfood/transform-corpus.js";
 const RANGES_OPTS = { locale: "en-US", mode: "text" as const, rules: { ranges: true } };
 const enUSLocale = getLocaleData("en-US");
 
-function fakeResult(path: string, original: string, full: string, opts: { locale: string; mode: "text" | "markdown"; dialect?: "mdx"; rules?: { ranges?: boolean } } = { locale: "en-US", mode: "text" }): FileResult {
+function fakeResult(
+  path: string,
+  original: string,
+  full: string,
+  opts: {
+    locale: string;
+    mode: "text" | "markdown";
+    dialect?: "mdx";
+    rules?: { ranges?: boolean };
+  } = { locale: "en-US", mode: "text" },
+): FileResult {
   const diff = computeFileDiff(path, original, full);
   const attr = attributeReviewChanges(original, opts, diff.reviewChanges);
   const localeData = getLocaleData(opts.locale);
   const riskTags = new Map(
     diff.reviewChanges.map((rc) => {
       const edits = diff.atomicEdits.filter((e) => rc.atomicEditIds.includes(e.id));
-      return [rc.id, computeRiskTags({ oldText: original, newText: full, reviewChange: rc, atomicEdits: edits, attribution: attr.get(rc.id), locale: localeData })] as const;
+      return [
+        rc.id,
+        computeRiskTags({
+          oldText: original,
+          newText: full,
+          reviewChange: rc,
+          atomicEdits: edits,
+          attribution: attr.get(rc.id),
+          locale: localeData,
+        }),
+      ] as const;
     }),
   );
-  return { path, bytes: 0, sha256: "x", status: "changed", idempotencyOk: true, diff, originalText: original, transformedText: full, attribution: attr, riskTags };
+  return {
+    path,
+    bytes: 0,
+    sha256: "x",
+    status: "changed",
+    idempotencyOk: true,
+    diff,
+    originalText: original,
+    transformedText: full,
+    attribution: attr,
+    riskTags,
+  };
 }
 
 describe("checkRiskTagEvidence: healthy real-engine evidence passes", () => {
@@ -47,7 +82,13 @@ describe("checkRiskTagEvidence: corrupted evidence fails closed", () => {
     const [rc] = result.diff!.reviewChanges;
     const tags = result.riskTags!.get(rc!.id)!;
     const numeric = tags.find((t) => t.tag === "numeric-range-or-compound-label-candidate")!;
-    const corrupted = { ...numeric, evidence: { ...(numeric.evidence as TokenEvidence), tokenOldOffset: { codePointStart: 999, codePointEnd: 1005 } } };
+    const corrupted = {
+      ...numeric,
+      evidence: {
+        ...(numeric.evidence as TokenEvidence),
+        tokenOldOffset: { codePointStart: 999, codePointEnd: 1005 },
+      },
+    };
     const corruptedTags = new Map(result.riskTags);
     corruptedTags.set(rc!.id, [corrupted, ...tags.filter((t) => t !== numeric)]);
     const issues = checkRiskTagEvidence([{ ...result, riskTags: corruptedTags }], enUSLocale);
@@ -61,7 +102,13 @@ describe("checkRiskTagEvidence: corrupted evidence fails closed", () => {
     const [rc] = result.diff!.reviewChanges;
     const tags = result.riskTags!.get(rc!.id)!;
     const numeric = tags.find((t) => t.tag === "numeric-range-or-compound-label-candidate")!;
-    const corrupted = { ...numeric, evidence: { ...(numeric.evidence as TokenEvidence), intersectingAtomicEditId: "f.md#a999-nonexistent" } };
+    const corrupted = {
+      ...numeric,
+      evidence: {
+        ...(numeric.evidence as TokenEvidence),
+        intersectingAtomicEditId: "f.md#a999-nonexistent",
+      },
+    };
     const corruptedTags = new Map(result.riskTags);
     corruptedTags.set(rc!.id, [corrupted, ...tags.filter((t) => t !== numeric)]);
     const issues = checkRiskTagEvidence([{ ...result, riskTags: corruptedTags }], enUSLocale);
@@ -77,13 +124,22 @@ describe("checkRiskTagEvidence: corrupted evidence fails closed", () => {
     const quoteEdit = result.diff!.atomicEdits.find((e) => e.before === '"')!;
     const tags = result.riskTags!.get(dashRc.id)!;
     const numeric = tags.find((t) => t.tag === "numeric-range-or-compound-label-candidate")!;
-    const corrupted = { ...numeric, evidence: { ...(numeric.evidence as TokenEvidence), intersectingAtomicEditId: quoteEdit.id } };
+    const corrupted = {
+      ...numeric,
+      evidence: { ...(numeric.evidence as TokenEvidence), intersectingAtomicEditId: quoteEdit.id },
+    };
     // Include the quote edit's owning review change's atomicEditIds is irrelevant here; the point
     // is the token range (near the dash) never intersects the quote edit's range.
     const corruptedTags = new Map(result.riskTags);
     corruptedTags.set(dashRc.id, [corrupted, ...tags.filter((t) => t !== numeric)]);
     const issues = checkRiskTagEvidence([{ ...result, riskTags: corruptedTags }], enUSLocale);
-    expect(issues.some((i) => i.includes("does not actually intersect") || i.includes("does not belong to this review change"))).toBe(true);
+    expect(
+      issues.some(
+        (i) =>
+          i.includes("does not actually intersect") ||
+          i.includes("does not belong to this review change"),
+      ),
+    ).toBe(true);
   });
 
   it("5. corrupted boundary distance is caught", () => {
@@ -95,7 +151,13 @@ describe("checkRiskTagEvidence: corrupted evidence fails closed", () => {
       const boundary = tags.find((t) => t.tag === "mdx-jsx-code-boundary-adjacent");
       if (!boundary) continue;
       found = true;
-      const corrupted = { ...boundary, evidence: { ...(boundary.evidence as BoundaryEvidence), distance: (boundary.evidence as BoundaryEvidence).distance + 50 } };
+      const corrupted = {
+        ...boundary,
+        evidence: {
+          ...(boundary.evidence as BoundaryEvidence),
+          distance: (boundary.evidence as BoundaryEvidence).distance + 50,
+        },
+      };
       const corruptedTags = new Map(result.riskTags);
       corruptedTags.set(id, [corrupted, ...tags.filter((t) => t !== boundary)]);
       const issues = checkRiskTagEvidence([{ ...result, riskTags: corruptedTags }], enUSLocale);
@@ -112,7 +174,10 @@ describe("checkLineColMatchesOffsets: negative controls for old/new end and colu
     const result = fakeResult("f.md", original, full);
     const [rc, ...rest] = result.diff!.reviewChanges;
     const corruptedRc = { ...rc!, oldLineCol: { ...rc!.oldLineCol, end: { line: 99, column: 0 } } };
-    const corrupted: FileResult = { ...result, diff: { ...result.diff!, reviewChanges: [corruptedRc, ...rest] } };
+    const corrupted: FileResult = {
+      ...result,
+      diff: { ...result.diff!, reviewChanges: [corruptedRc, ...rest] },
+    };
     const issues = checkLineColMatchesOffsets([corrupted]);
     expect(issues.some((i) => i.includes("old end"))).toBe(true);
   });
@@ -122,8 +187,14 @@ describe("checkLineColMatchesOffsets: negative controls for old/new end and colu
     const full = "line one “a”.\nline two “b”.\n";
     const result = fakeResult("f.md", original, full);
     const [rc, ...rest] = result.diff!.reviewChanges;
-    const corruptedRc = { ...rc!, newLineCol: { ...rc!.newLineCol, end: { line: 1, column: 999 } } };
-    const corrupted: FileResult = { ...result, diff: { ...result.diff!, reviewChanges: [corruptedRc, ...rest] } };
+    const corruptedRc = {
+      ...rc!,
+      newLineCol: { ...rc!.newLineCol, end: { line: 1, column: 999 } },
+    };
+    const corrupted: FileResult = {
+      ...result,
+      diff: { ...result.diff!, reviewChanges: [corruptedRc, ...rest] },
+    };
     const issues = checkLineColMatchesOffsets([corrupted]);
     expect(issues.some((i) => i.includes("new end"))).toBe(true);
   });
@@ -133,8 +204,14 @@ describe("checkLineColMatchesOffsets: negative controls for old/new end and colu
     const full = "line one “a”.\nline two “b”.\n";
     const result = fakeResult("f.md", original, full);
     const [rc, ...rest] = result.diff!.reviewChanges;
-    const corruptedRc = { ...rc!, oldLineCol: { ...rc!.oldLineCol, start: { line: rc!.oldLineCol.start.line, column: 9999 } } };
-    const corrupted: FileResult = { ...result, diff: { ...result.diff!, reviewChanges: [corruptedRc, ...rest] } };
+    const corruptedRc = {
+      ...rc!,
+      oldLineCol: { ...rc!.oldLineCol, start: { line: rc!.oldLineCol.start.line, column: 9999 } },
+    };
+    const corrupted: FileResult = {
+      ...result,
+      diff: { ...result.diff!, reviewChanges: [corruptedRc, ...rest] },
+    };
     const issues = checkLineColMatchesOffsets([corrupted]);
     expect(issues.length).toBeGreaterThan(0);
   });
@@ -174,7 +251,16 @@ describe("checkUtf8ByteBoundaries: zero-length range inside a multibyte code poi
     const original = "prefix😀suffix\n";
     const full = "prefix😀Xsuffix\n";
     const diff = computeFileDiff("f.md", original, full);
-    const result: FileResult = { path: "f.md", bytes: 0, sha256: "x", status: "changed", idempotencyOk: true, originalText: original, transformedText: full, diff };
+    const result: FileResult = {
+      path: "f.md",
+      bytes: 0,
+      sha256: "x",
+      status: "changed",
+      idempotencyOk: true,
+      originalText: original,
+      transformedText: full,
+      diff,
+    };
     expect(checkUtf8ByteBoundaries([result])).toEqual([]);
   });
 });

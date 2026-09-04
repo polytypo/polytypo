@@ -253,7 +253,8 @@ function tokenEvidenceText(evidence: unknown): string {
   if (!evidence || typeof evidence !== "object") return "";
   const e = evidence as { tokenText?: string; distance?: number; boundaryType?: string };
   if (typeof e.tokenText === "string") return ` (token: ${mdCodeSpan(e.tokenText)})`;
-  if (typeof e.distance === "number") return ` (${e.distance} code point(s) from ${mdCodeSpan(e.boundaryType ?? "?")})`;
+  if (typeof e.distance === "number")
+    return ` (${e.distance} code point(s) from ${mdCodeSpan(e.boundaryType ?? "?")})`;
   return "";
 }
 
@@ -294,12 +295,16 @@ function mdPlainCell(text: string): string {
  * multi-edit item yields one marked segment per edit, with any unmarked (unchanged) text between
  * them as separate `marked: false` segments -- so each edit is individually highlighted rather
  * than one envelope over the whole group (task item 1's multi-atomic requirement). */
-function segmentsFromMarks(text: string, marks: readonly EditMark[]): { text: string; marked: boolean }[] {
+function segmentsFromMarks(
+  text: string,
+  marks: readonly EditMark[],
+): { text: string; marked: boolean }[] {
   const cps = [...text];
   const segments: { text: string; marked: boolean }[] = [];
   let cursor = 0;
   for (const m of marks) {
-    if (m.start > cursor) segments.push({ text: cps.slice(cursor, m.start).join(""), marked: false });
+    if (m.start > cursor)
+      segments.push({ text: cps.slice(cursor, m.start).join(""), marked: false });
     segments.push({ text: cps.slice(m.start, m.end).join(""), marked: true });
     cursor = m.end;
   }
@@ -345,9 +350,19 @@ function renderPreviewSide(
  * anchor per file so a 10,000-row ledger stays navigable; full per-change detail (exact
  * before/after, escaped view, code-point delta, risk-tag evidence) is inline in the table itself,
  * not deferred to changes.json only — a reviewer must be able to work from this file alone. */
-export function buildReviewMarkdown(manifestData: object, entries: readonly ReviewChangeEntry[], results: readonly FileResult[]): string {
+export function buildReviewMarkdown(
+  manifestData: object,
+  entries: readonly ReviewChangeEntry[],
+  results: readonly FileResult[],
+): string {
   const manifest = manifestData as {
-    command: { locale: string; localeRationale: string; mode: string; dialect: string; corpus: string };
+    command: {
+      locale: string;
+      localeRationale: string;
+      mode: string;
+      dialect: string;
+      corpus: string;
+    };
     results: {
       changedFileCount: number;
       unchangedFileCount: number;
@@ -366,13 +381,19 @@ export function buildReviewMarkdown(manifestData: object, entries: readonly Revi
   const byFile = new Map<string, number>();
   for (const entry of entries) {
     byFile.set(entry.path, (byFile.get(entry.path) ?? 0) + 1);
-    byAttribution.set(attributionLabel(entry), (byAttribution.get(attributionLabel(entry)) ?? 0) + 1);
-    const tags = entry.riskTags.length > 0 ? entry.riskTags.map((t) => t.tag) : ["no-high-risk-tag"];
+    byAttribution.set(
+      attributionLabel(entry),
+      (byAttribution.get(attributionLabel(entry)) ?? 0) + 1,
+    );
+    const tags =
+      entry.riskTags.length > 0 ? entry.riskTags.map((t) => t.tag) : ["no-high-risk-tag"];
     for (const tag of tags) byTag.set(tag, (byTag.get(tag) ?? 0) + 1);
   }
 
   const errors = results.filter((r) => r.status === "error");
-  const idempotencyFailed = results.filter((r) => r.status !== "error" && r.idempotencyOk === false);
+  const idempotencyFailed = results.filter(
+    (r) => r.status !== "error" && r.idempotencyOk === false,
+  );
 
   const lines: string[] = [];
   lines.push("# M4 Dogfooding Review Checklist");
@@ -425,11 +446,15 @@ export function buildReviewMarkdown(manifestData: object, entries: readonly Revi
   lines.push("## Run summary");
   lines.push("");
   lines.push(`- Corpus: \`${manifest.command.corpus}\``);
-  lines.push(`- Locale / mode / dialect: \`${manifest.command.locale}\` / \`${manifest.command.mode}\` / \`${manifest.command.dialect}\``);
+  lines.push(
+    `- Locale / mode / dialect: \`${manifest.command.locale}\` / \`${manifest.command.mode}\` / \`${manifest.command.dialect}\``,
+  );
   if (manifest.command.localeRationale) {
     lines.push(`- Locale rationale: ${manifest.command.localeRationale}`);
   }
-  lines.push(`- Git HEAD: \`${manifest.git.head}\`${manifest.git.dirty ? " (dirty worktree — see manifest.json implementationInputs for the actual bytes used)" : ""}`);
+  lines.push(
+    `- Git HEAD: \`${manifest.git.head}\`${manifest.git.dirty ? " (dirty worktree — see manifest.json implementationInputs for the actual bytes used)" : ""}`,
+  );
   lines.push(
     `- Files: ${pluralCount(manifest.results.changedFileCount + manifest.results.unchangedFileCount + manifest.results.errorCount, "file")} — ` +
       `${manifest.results.changedFileCount} changed, ${manifest.results.unchangedFileCount} unchanged, ${pluralCount(manifest.results.errorCount, "error")}`,
@@ -447,7 +472,9 @@ export function buildReviewMarkdown(manifestData: object, entries: readonly Revi
   // into manifest.json's `evidence.evidenceReviewHash` (computed after this file's final content
   // is known) and into REVIEW.html (generated after that, from the same value) -- see either for
   // the actual hash of this bundle.
-  lines.push("- Evidence review hash (`evidenceReviewHash`): see `manifest.json`'s `evidence.evidenceReviewHash` (and REVIEW.html's header) -- omitted from this file to avoid a hash depending on this file's own content.");
+  lines.push(
+    "- Evidence review hash (`evidenceReviewHash`): see `manifest.json`'s `evidence.evidenceReviewHash` (and REVIEW.html's header) -- omitted from this file to avoid a hash depending on this file's own content.",
+  );
   lines.push("");
 
   if (errors.length > 0) {
@@ -513,7 +540,7 @@ export function buildReviewMarkdown(manifestData: object, entries: readonly Revi
   lines.push(
     "Decision legend: `ACCEPT` / `REJECT` / `NEEDS-DISCUSSION`. Every row starts `UNREVIEWED`. " +
       "Every `ReviewChange` id below appears exactly once, each carrying a stable HTML anchor " +
-      "(`<a id=\"rc-…\">`) so it can be linked to directly. **Preview** is `sourcePreview → " +
+      '(`<a id="rc-…">`) so it can be linked to directly. **Preview** is `sourcePreview → ' +
       "isolatedAfterPreview` -- see the note above the run summary. **Pair** is a real relative " +
       "link (`[closing ↔ `id`](#rc-…)`) to a quote mark's opening/closing counterpart, present " +
       "only when that link is proven from a simple, unambiguous same-line count (never a guess); " +
@@ -529,15 +556,29 @@ export function buildReviewMarkdown(manifestData: object, entries: readonly Revi
       const fileAnchor = currentFile.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase();
       lines.push(`### File: \`${currentFile}\` {#file-${fileAnchor}}`);
       lines.push("");
-      lines.push("| ID | Line (old→new) | Preview (sourcePreview → isolatedAfterPreview) | Pair | Tags | Attribution | Decision | Note |");
+      lines.push(
+        "| ID | Line (old→new) | Preview (sourcePreview → isolatedAfterPreview) | Pair | Tags | Attribution | Decision | Note |",
+      );
       lines.push("|---|---|---|---|---|---|---|---|");
     }
-    const oldSide = renderPreviewSide(entry.previewOldLeading, entry.before, entry.oldMarks, entry.previewOldTrailing);
-    const newSide = renderPreviewSide(entry.previewIsolatedLeading, entry.after, entry.newMarks, entry.previewIsolatedTrailing);
+    const oldSide = renderPreviewSide(
+      entry.previewOldLeading,
+      entry.before,
+      entry.oldMarks,
+      entry.previewOldTrailing,
+    );
+    const newSide = renderPreviewSide(
+      entry.previewIsolatedLeading,
+      entry.after,
+      entry.newMarks,
+      entry.previewIsolatedTrailing,
+    );
     const previewCell = `${oldSide} → ${newSide}`;
     const tagsCell =
       entry.riskTags.length > 0
-        ? entry.riskTags.map((t) => `${mdCodeSpan(t.tag)}${tokenEvidenceText(t.evidence)}`).join(", ")
+        ? entry.riskTags
+            .map((t) => `${mdCodeSpan(t.tag)}${tokenEvidenceText(t.evidence)}`)
+            .join(", ")
         : "—";
     const oldLoc = `${entry.oldLineCol.start.line}:${entry.oldLineCol.start.column}`;
     const newLoc = `${entry.newLineCol.start.line}:${entry.newLineCol.start.column}`;
@@ -550,7 +591,9 @@ export function buildReviewMarkdown(manifestData: object, entries: readonly Revi
           : pairing.status;
     // The ID cell must keep the exact `` <a id="..."></a>`id` `` shape -- checkReviewMarkdownIds's
     // parser in consistency.ts expects the code span (and only the code span) to hold the raw id.
-    lines.push(`| <a id="${entry.anchor}"></a>\`${entry.id}\` | ${oldLoc}→${newLoc} | ${previewCell} | ${pairCell} | ${tagsCell} | ${attributionLabel(entry)} | UNREVIEWED | |`);
+    lines.push(
+      `| <a id="${entry.anchor}"></a>\`${entry.id}\` | ${oldLoc}→${newLoc} | ${previewCell} | ${pairCell} | ${tagsCell} | ${attributionLabel(entry)} | UNREVIEWED | |`,
+    );
   }
   lines.push("");
 

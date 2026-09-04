@@ -34,10 +34,16 @@ const CLOSING_MARKS: ReadonlyMap<string, string> = new Map([
 
 function markRole(text: string): { role: "opening" | "closing"; family: string } | null {
   const chars = [...text];
-  const openingFamilies = new Set(chars.filter((c) => OPENING_MARKS.has(c)).map((c) => OPENING_MARKS.get(c) as string));
-  const closingFamilies = new Set(chars.filter((c) => CLOSING_MARKS.has(c)).map((c) => CLOSING_MARKS.get(c) as string));
-  if (openingFamilies.size === 1 && closingFamilies.size === 0) return { role: "opening", family: [...openingFamilies][0] as string };
-  if (closingFamilies.size === 1 && openingFamilies.size === 0) return { role: "closing", family: [...closingFamilies][0] as string };
+  const openingFamilies = new Set(
+    chars.filter((c) => OPENING_MARKS.has(c)).map((c) => OPENING_MARKS.get(c) as string),
+  );
+  const closingFamilies = new Set(
+    chars.filter((c) => CLOSING_MARKS.has(c)).map((c) => CLOSING_MARKS.get(c) as string),
+  );
+  if (openingFamilies.size === 1 && closingFamilies.size === 0)
+    return { role: "opening", family: [...openingFamilies][0] as string };
+  if (closingFamilies.size === 1 && openingFamilies.size === 0)
+    return { role: "closing", family: [...closingFamilies][0] as string };
   return null; // both, neither, or more than one family in the same change -- not safely classifiable
 }
 
@@ -64,7 +70,10 @@ export function computeQuotePairing(
   const candidates = reviewChanges
     .filter((rc) => isQuoteAttributed(rc.id))
     .map((rc) => ({ rc, mark: markRole(rc.after) || markRole(rc.before) }))
-    .filter((c): c is { rc: ReviewChange; mark: { role: "opening" | "closing"; family: string } } => c.mark !== null);
+    .filter(
+      (c): c is { rc: ReviewChange; mark: { role: "opening" | "closing"; family: string } } =>
+        c.mark !== null,
+    );
 
   if (candidates.length === 0) return result;
 

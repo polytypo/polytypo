@@ -6,7 +6,12 @@
 // src/generated/locales.ts) is captured exactly as it will be imported.
 import { existsSync, lstatSync } from "node:fs";
 import path from "node:path";
-import { aggregateHash, buildCorpusManifest, listRegularFilesRecursive, type CorpusManifest } from "./corpus.js";
+import {
+  aggregateHash,
+  buildCorpusManifest,
+  listRegularFilesRecursive,
+  type CorpusManifest,
+} from "./corpus.js";
 
 export interface ImplementationInputRoot {
   /** Repo-root-relative path, POSIX form. */
@@ -30,9 +35,16 @@ export const IMPLEMENTATION_INPUT_ROOTS: readonly ImplementationInputRoot[] = [
       "canonical spec: rules, locale data, fixtures, schema, VERSION (excludes the CI-generated spec/fixtures/.escaped mirror)",
     filter: (rel) => !rel.startsWith("fixtures/.escaped/"),
   },
-  { root: "scripts/gen-locales.mjs", description: "canonical generator for src/generated/locales.ts from spec/locales/*.json" },
+  {
+    root: "scripts/gen-locales.mjs",
+    description: "canonical generator for src/generated/locales.ts from spec/locales/*.json",
+  },
   { root: "scripts/dogfood-m4.ts", description: "this dry-run tool's own CLI entry point" },
-  { root: "scripts/dogfood", description: "this dry-run tool's own library modules", filter: (rel) => rel.endsWith(".ts") },
+  {
+    root: "scripts/dogfood",
+    description: "this dry-run tool's own library modules",
+    filter: (rel) => rel.endsWith(".ts"),
+  },
   { root: "package.json", description: "package metadata (name, version, dependencies)" },
   { root: "package-lock.json", description: "exact resolved dependency graph" },
 ];
@@ -71,7 +83,9 @@ export interface ImplementationInputsManifest extends CorpusManifest {
 /** Builds the same shape of manifest as the corpus one (buildCorpusManifest), over the
  * implementation-input file list, using the identical aggregate-hash scheme (corpus.ts's
  * aggregateHash) — one hashing algorithm, two domains. */
-export function buildImplementationInputsManifest(repoRootAbs: string): ImplementationInputsManifest {
+export function buildImplementationInputsManifest(
+  repoRootAbs: string,
+): ImplementationInputsManifest {
   const relPaths = listImplementationInputFiles(repoRootAbs);
   const base = buildCorpusManifest(repoRootAbs, relPaths);
   return { ...base, roots: IMPLEMENTATION_INPUT_ROOTS };

@@ -12,7 +12,9 @@ import { findContextExpressionsInRunBlocks } from "./lib/workflow-shell-safety.m
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const WORKFLOWS_DIR = path.join(ROOT, ".github", "workflows");
 
-const files = (await readdir(WORKFLOWS_DIR)).filter((f) => f.endsWith(".yml") || f.endsWith(".yaml"));
+const files = (await readdir(WORKFLOWS_DIR)).filter(
+  (f) => f.endsWith(".yml") || f.endsWith(".yaml"),
+);
 
 let anyViolations = false;
 for (const file of files) {
@@ -26,7 +28,9 @@ for (const file of files) {
   anyViolations = true;
   console.error(`fail  .github/workflows/${file}:`);
   for (const violation of violations) {
-    console.error(`  line ${violation.lineNumber}: ${violation.context} — pass through env: instead`);
+    console.error(
+      `  line ${violation.lineNumber}: ${violation.context} — pass through env: instead`,
+    );
   }
 }
 

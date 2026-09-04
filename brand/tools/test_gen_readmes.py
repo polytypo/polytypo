@@ -151,31 +151,31 @@ class JsMetadataLineTest(unittest.TestCase):
 
 
 class JsAndPromoRegistryClaimsTest(unittest.TestCase):
-    """The corrected relationship is not "README and promo say the same thing" — it is "README
-    makes no registry-state claim at all, and promo's own independent claim, whatever it currently
-    is, is never contradicted by README's silence." Checked against the real, current
-    PACKAGE_VERSION (non-placeholder), so this proves the actual generated README, not just a
-    literal function call."""
+    """Both surfaces make no registry-state claim at all: README's metadata line is neutral (see
+    below), and promo's code panel (build_promo.CODE) carries only the call itself — no install
+    command, no "planned"/"coming soon" status — so there is nothing on either side for the other
+    to contradict, before or after a real npm publish. Checked against the real, current
+    PACKAGE_VERSION (non-placeholder) and the real CODE tuples, so this proves the actual generated
+    README and promo panel, not just a literal function call."""
 
     def test_real_generated_readme_metadata_line_is_registry_state_neutral(self):
         self.assertNotEqual(gen_readmes.PACKAGE_VERSION, gen_readmes.PLACEHOLDER_VERSION)
         _assert_registry_state_neutral(self, gen_readmes.LANGS["js"]["metadata_line"])
         _assert_registry_state_neutral(self, gen_readmes.LANGS["js"]["status"])
 
-    def test_promo_may_independently_keep_its_current_truthful_unpublished_claim(self):
-        js_row = next(row for row in build_promo.CODE if row[0] == "JavaScript / TypeScript")
-        promo_status = js_row[1]
-        self.assertIn("not yet published", promo_status)
+    def test_promo_code_panel_makes_no_install_or_registry_claim_for_any_language(self):
+        for label, _comment_token, code in build_promo.CODE:
+            for term in ("install", "coming soon", "planned", "pypi", "packagist", "rubygems"):
+                self.assertNotIn(
+                    term, code.lower(), f"{label}'s code panel should not mention {term!r}: {code!r}"
+                )
 
-    def test_readmes_silence_never_contradicts_whatever_promo_currently_claims(self):
-        # README's metadata line makes no registry-state claim, so there is nothing in it that
-        # could contradict promo's own claim, whatever that claim is at any given moment (promo is
-        # free to change after a real publish; README's packed copy is not).
+    def test_readmes_silence_never_contradicts_promos_silence(self):
+        # Neither surface asserts a registry state, so neither can contradict the other.
         metadata_line = gen_readmes.LANGS["js"]["metadata_line"]
         js_row = next(row for row in build_promo.CODE if row[0] == "JavaScript / TypeScript")
-        promo_status = js_row[1]
-        self.assertIn("not yet published", promo_status)  # promo's current claim, for context
-        _assert_registry_state_neutral(self, metadata_line)  # README asserts nothing to conflict
+        _assert_registry_state_neutral(self, metadata_line)
+        _assert_registry_state_neutral(self, js_row[2])  # the code itself
 
 
 class JsSubpathEntryPointsTest(unittest.TestCase):

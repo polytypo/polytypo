@@ -8,7 +8,9 @@ import path from "node:path";
 export class SymlinkEncounteredError extends Error {
   readonly offendingPath: string;
   constructor(offendingPath: string) {
-    super(`symlink encountered at "${offendingPath}" — fail-closed policy: no symlink is ever followed or silently skipped`);
+    super(
+      `symlink encountered at "${offendingPath}" — fail-closed policy: no symlink is ever followed or silently skipped`,
+    );
     this.offendingPath = offendingPath;
   }
 }
@@ -144,5 +146,9 @@ export function buildCorpusManifest(rootAbs: string, relPaths: readonly string[]
 /** True iff two corpus manifests describe byte-identical content (same files, same lengths, same
  * hashes) — used to compare the pre-run and post-run snapshots. */
 export function manifestsEqual(a: CorpusManifest, b: CorpusManifest): boolean {
-  return a.aggregateHash === b.aggregateHash && a.fileCount === b.fileCount && a.totalBytes === b.totalBytes;
+  return (
+    a.aggregateHash === b.aggregateHash &&
+    a.fileCount === b.fileCount &&
+    a.totalBytes === b.totalBytes
+  );
 }

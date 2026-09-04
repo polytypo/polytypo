@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/polytypo-lockup-stacked.svg" alt="polytypo" width="260">
+  <img src="../../brand/logo/polytypo-lockup-stacked.svg" alt="polytypo" width="260">
 </p>
 
 <h1 align="center">polytypo — Go</h1>
@@ -18,22 +18,22 @@ Spec version: **1.0.0** · locales: **10** · rules: **9** · not yet on Go modu
 ## What it does
 
 ```text
-in   Is this "polytypo"? - No, it's "polytypo"! She said, "He replied 'never' twice"... The release - all 5 km of it - covers 1914-1918. Copyright (c) 2026, at 1920x1080.
+in   She asked, "Isn't this the shop they call 'round the corner'?" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.
 
-en-US → Is this “polytypo”?—No, it’s “polytypo”! She said, “He replied ‘never’ twice”… The release—all 5 km of it—covers 1914-1918. Copyright © 2026, at 1920×1080.
-en-GB → Is this ‘polytypo’? – No, it’s ‘polytypo’! She said, ‘He replied “never” twice’… The release – all 5 km of it – covers 1914-1918. Copyright © 2026, at 1920×1080.
+en-US → She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm.
+en-GB → She asked, ‘Isn’t this the shop they call “round the corner”?’ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm.
 ```
 
 The same construction, in the languages that disagree with English about it:
 
 ```text
-de-DE → Ist das „polytypo“? – Nein, das ist „polytypo“! Sie sagte: „Er hat 'nie' geantwortet“… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026.
-de-CH → Ist das «polytypo»? – Nein, das ist «polytypo»! Sie sagte: «Er hat 'nie' geantwortet»… Die Ausgabe – z. B. die Jahre 1939-1945 – erscheint in 1920×1080. Copyright © 2026.
-fr    → C’est « polytypo » ? — Non, c’est « polytypo » ! Elle a dit : « Il a répondu “jamais” »… L’édition — celle de l’été — fait 3×5 cm ; c’est tout. Copyright © 2026.
-ru    → Это «полиштамп»? — Нет, это «полиштамп»! Она сказала: «он ответил „никогда“»… Достал из‑под стола — в 1941-1945 годах — размер 10 × 20 см. Все права защищены © 2026.
-fi    → Onko tämä ”polytypo”? – Ei, tämä on ”polytypo”! Hän sanoi: ”hän vastasi ’ei koskaan’”… Matkaa on 20 km – vuosina 1914-1918 – ja hinta nousi 10,5 %. Copyright © 2026.
-sv    → Är det här ”polytypo”? – Nej, det är ”polytypo”! Hon sa: ”han svarade ’aldrig’”… Vi gick 5 km – åren 1914-1918 – och det kostar 100 kr. Copyright © 2026.
-el    → Είναι αυτό «polytypo»; - Όχι, αυτό είναι «polytypo»! Είπε: «απάντησε “ποτέ”»… Η έκδοση - όλα τα 25-45 άτομα - καλύπτει 1989-1991. Copyright © 2026, σε 1920×1080.
+de-DE → Sie fragte: „Ist das nicht der Laden namens ‚an der Ecke‘?“ … Wir liefen – fast 3 km – und fanden ihn leider geschlossen. Copyright © 2026, Format 40×60 cm, z. B. für Poster.
+de-CH → Sie fragte: «Ist das nicht der Laden namens ‹an der Ecke›?» … Wir liefen – fast 3 km – und fanden ihn leider geschlossen. Copyright © 2026, Format 40×60 cm, z. B. für Poster.
+fr    → Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm.
+ru    → Она спросила: «Это не тот магазинчик, который называют „за углом“?» … Мы прошли — почти 3 км — и нашли его закрытым, а что‑то достали из‑под прилавка. Copyright © 2026, формат 40×60 см.
+fi    → Hän kysyi: ”Eikö tämä ole se ’nurkan’ kirjakauppa?” … Kävelimme – lähes 3 km – ja löysimme sen kiinni. Copyright © 2026; tulosteen koko on 40×60 cm, hinta nousi 10,5 %.
+sv    → Hon frågade: ”Är det inte affären i ’hörnet’?” … Vi gick – nästan 3 km – och hittade den stängd. Copyright © 2026; trycket mäter 40×60 cm och kostar 10,5 % mer.
+el    → Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm.
 ```
 
 
@@ -60,14 +60,14 @@ import (
 
 func main() {
     out, err := polytypo.Transform(
-        `Is this "polytypo"? - No, it's "polytypo"!`,
+        `They said "don't" - not "won't".`,
         polytypo.Options{Locale: "en-US"},
     )
     if err != nil {
         panic(err)
     }
     fmt.Println(out)
-    // Is this “polytypo”?—No, it’s “polytypo”!
+    // They said “don’t”—not “won’t”.
 }
 ```
 
@@ -99,12 +99,12 @@ about ordinary documents, so the caller states which one it has, matching the Ja
 implementation's contract exactly.
 
 ```go
-out, err := polytypo.Transform(`Is this "polytypo"? - No`, polytypo.Options{
+out, err := polytypo.Transform(`Wait - really`, polytypo.Options{
     Locale:  "en-US",
     Mode:    polytypo.ModeMarkdown,
     Dialect: polytypo.DialectCommonMark,
 })
-// out == `Is this “polytypo”?—No`
+// out == `Wait—really`
 
 _, err = polytypo.Transform("a", polytypo.Options{Locale: "en-US", Mode: polytypo.ModeMarkdown})
 // err wraps *polytypo.Error with Code == "POLYTYPO_INVALID_DIALECT"
@@ -124,11 +124,11 @@ is a release blocker.
 ### Turning a rule off
 
 ```go
-out, err := polytypo.Transform("1914-1918", polytypo.Options{
+out, err := polytypo.Transform("pp. 34-36", polytypo.Options{
     Locale: "en-US",
     Rules:  map[polytypo.RuleID]bool{polytypo.RuleDashes: false},
 })
-// → 1914-1918   — every other rule still runs, in the same order
+// → pp. 34-36   — every other rule still runs, in the same order
 ```
 
 ### Errors
@@ -196,7 +196,7 @@ order and never from map iteration order.
 | --- | --- | --- |
 | `quotes` | `"He said 'no' to me," she noted.` | “He said 'no' to me,” she noted. |
 | `dashes` | `The plan - if there is one - fails.` | The plan—if there is one—fails. |
-| `dashes` | `1914-1918 and pp. 34-36` | 1914-1918 and pp. 34-36 |
+| `dashes` | `chapters 3-5 and pp. 34-36` | chapters 3-5 and pp. 34-36 |
 | `ellipsis` | `Wait... what?` | Wait… what? |
 | `apostrophe` | `don't` | don’t |
 | `nbsp` | `It is 20 km to the coast` | It is 20 km to the coast |

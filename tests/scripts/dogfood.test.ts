@@ -7,9 +7,18 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSyn
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { aggregateHash, buildCorpusManifest, discoverMdxFiles, SymlinkEncounteredError } from "../../scripts/dogfood/corpus.js";
+import {
+  aggregateHash,
+  buildCorpusManifest,
+  discoverMdxFiles,
+  SymlinkEncounteredError,
+} from "../../scripts/dogfood/corpus.js";
 import { escapeNotable } from "../../scripts/dogfood/diff.js";
-import { DogfoodSafetyError, assertSafeOutputDir, findGitRoot } from "../../scripts/dogfood/paths.js";
+import {
+  DogfoodSafetyError,
+  assertSafeOutputDir,
+  findGitRoot,
+} from "../../scripts/dogfood/paths.js";
 import { runDogfood } from "../../scripts/dogfood/run.js";
 
 const disposableDirs: string[] = [];
@@ -43,7 +52,16 @@ function proseThatChanges(): string {
 }
 
 function proseThatDoesNotChange(): string {
-  return ["---", 'title: "No-op"', "---", "", "# Heading", "", "Plain text with no typography to fix.", ""].join("\n");
+  return [
+    "---",
+    'title: "No-op"',
+    "---",
+    "",
+    "# Heading",
+    "",
+    "Plain text with no typography to fix.",
+    "",
+  ].join("\n");
 }
 
 describe("scripts/dogfood/corpus.ts — discoverMdxFiles()", () => {
@@ -108,7 +126,9 @@ describe("scripts/dogfood/corpus.ts — aggregate hashing", () => {
     // Recomputing by hand from the same entries must reproduce the same hash — proves the
     // algorithm is a pure function of (sorted path, sha256) pairs, not of read order or anything
     // else incidental.
-    const recomputed = aggregateHash(manifest.files.map((f) => ({ path: f.path, sha256: f.sha256 })));
+    const recomputed = aggregateHash(
+      manifest.files.map((f) => ({ path: f.path, sha256: f.sha256 })),
+    );
     expect(recomputed).toBe(manifest.aggregateHash);
   });
 
@@ -133,42 +153,52 @@ describe("scripts/dogfood/paths.ts — output-directory safety", () => {
   it("refuses an output directory inside the corpus", () => {
     const corpus = freshDir("dogfood-path-corpus-");
     const out = path.join(corpus, "evidence");
-    expect(() => assertSafeOutputDir({ outDir: out, corpusRoot: corpus, forbiddenRoots: [] })).toThrow(DogfoodSafetyError);
+    expect(() =>
+      assertSafeOutputDir({ outDir: out, corpusRoot: corpus, forbiddenRoots: [] }),
+    ).toThrow(DogfoodSafetyError);
   });
 
   it("refuses a corpus placed inside the output directory (the reverse containment)", () => {
     const out = freshDir("dogfood-path-out-");
     const corpus = path.join(out, "corpus");
-    expect(() => assertSafeOutputDir({ outDir: out, corpusRoot: corpus, forbiddenRoots: [] })).toThrow(DogfoodSafetyError);
+    expect(() =>
+      assertSafeOutputDir({ outDir: out, corpusRoot: corpus, forbiddenRoots: [] }),
+    ).toThrow(DogfoodSafetyError);
   });
 
   it("refuses an output directory inside a forbidden repository root", () => {
     const repoRoot = freshDir("dogfood-path-repo-");
     const corpus = freshDir("dogfood-path-corpus2-");
     const out = path.join(repoRoot, "evidence");
-    expect(() => assertSafeOutputDir({ outDir: out, corpusRoot: corpus, forbiddenRoots: [repoRoot] })).toThrow(
-      DogfoodSafetyError,
-    );
+    expect(() =>
+      assertSafeOutputDir({ outDir: out, corpusRoot: corpus, forbiddenRoots: [repoRoot] }),
+    ).toThrow(DogfoodSafetyError);
   });
 
   it("refuses to overwrite an existing nonempty evidence directory", () => {
     const corpus = freshDir("dogfood-path-corpus3-");
     const out = freshDir("dogfood-path-out2-");
     writeFileSync(path.join(out, "manifest.json"), "{}", "utf8");
-    expect(() => assertSafeOutputDir({ outDir: out, corpusRoot: corpus, forbiddenRoots: [] })).toThrow(DogfoodSafetyError);
+    expect(() =>
+      assertSafeOutputDir({ outDir: out, corpusRoot: corpus, forbiddenRoots: [] }),
+    ).toThrow(DogfoodSafetyError);
   });
 
   it("accepts and creates a fresh (nonexistent) output directory", () => {
     const corpus = freshDir("dogfood-path-corpus4-");
     const parent = freshDir("dogfood-path-parent-");
     const out = path.join(parent, "brand-new-evidence-dir");
-    expect(() => assertSafeOutputDir({ outDir: out, corpusRoot: corpus, forbiddenRoots: [] })).not.toThrow();
+    expect(() =>
+      assertSafeOutputDir({ outDir: out, corpusRoot: corpus, forbiddenRoots: [] }),
+    ).not.toThrow();
   });
 
   it("accepts an existing but empty output directory", () => {
     const corpus = freshDir("dogfood-path-corpus5-");
     const out = freshDir("dogfood-path-out3-");
-    expect(() => assertSafeOutputDir({ outDir: out, corpusRoot: corpus, forbiddenRoots: [] })).not.toThrow();
+    expect(() =>
+      assertSafeOutputDir({ outDir: out, corpusRoot: corpus, forbiddenRoots: [] }),
+    ).not.toThrow();
   });
 
   it("findGitRoot locates the nearest ancestor containing .git", () => {
@@ -190,7 +220,9 @@ describe("scripts/dogfood/diff.ts — escapeNotable()", () => {
   it("makes NBSP, NNBSP, WORD JOINER, and non-breaking hyphen visible", () => {
     const text = `a${String.fromCodePoint(0x00a0)}b${String.fromCodePoint(0x202f)}c${String.fromCodePoint(0x2060)}d${String.fromCodePoint(0x2011)}e`;
     const { escaped, notable } = escapeNotable(text);
-    expect(escaped).toBe("a<U+00A0 NO-BREAK SPACE>b<U+202F NARROW NO-BREAK SPACE>c<U+2060 WORD JOINER>d<U+2011 NON-BREAKING HYPHEN>e");
+    expect(escaped).toBe(
+      "a<U+00A0 NO-BREAK SPACE>b<U+202F NARROW NO-BREAK SPACE>c<U+2060 WORD JOINER>d<U+2011 NON-BREAKING HYPHEN>e",
+    );
     expect(notable.map((n) => n.codePoint)).toEqual(["U+00A0", "U+2011", "U+202F", "U+2060"]);
   });
 
@@ -221,7 +253,13 @@ describe("scripts/dogfood/run.ts — runDogfood() end-to-end on disposable corpo
     writePost(corpus, "post-one", proseThatChanges());
     const out = path.join(freshDir("dogfood-run-changed-out-"), "evidence");
 
-    const summary = runDogfood({ corpusRoot: corpus, outDir: out, locale: "en-US", dialect: "mdx", argv: [] });
+    const summary = runDogfood({
+      corpusRoot: corpus,
+      outDir: out,
+      locale: "en-US",
+      dialect: "mdx",
+      argv: [],
+    });
 
     expect(summary.status).toBe("success");
     expect(summary.counts.changedFileCount).toBe(1);
@@ -243,7 +281,13 @@ describe("scripts/dogfood/run.ts — runDogfood() end-to-end on disposable corpo
     writePost(corpus, "post-one", proseThatDoesNotChange());
     const out = path.join(freshDir("dogfood-run-noop-out-"), "evidence");
 
-    const summary = runDogfood({ corpusRoot: corpus, outDir: out, locale: "en-US", dialect: "mdx", argv: [] });
+    const summary = runDogfood({
+      corpusRoot: corpus,
+      outDir: out,
+      locale: "en-US",
+      dialect: "mdx",
+      argv: [],
+    });
 
     expect(summary.status).toBe("success");
     expect(summary.counts.changedFileCount).toBe(0);
@@ -259,12 +303,22 @@ describe("scripts/dogfood/run.ts — runDogfood() end-to-end on disposable corpo
     writePost(corpus, "bad-post", "---\ntitle: bad\n---\n\n{1 +}\n");
     const out = path.join(freshDir("dogfood-run-malformed-out-"), "evidence");
 
-    const summary = runDogfood({ corpusRoot: corpus, outDir: out, locale: "en-US", dialect: "mdx", argv: [] });
+    const summary = runDogfood({
+      corpusRoot: corpus,
+      outDir: out,
+      locale: "en-US",
+      dialect: "mdx",
+      argv: [],
+    });
 
     expect(summary.status).toBe("failed");
     expect(summary.counts.errorCount).toBe(1);
     // The rest of the corpus was still inventoried, not aborted:
-    expect(summary.counts.changedFileCount + summary.counts.unchangedFileCount + summary.counts.errorCount).toBe(2);
+    expect(
+      summary.counts.changedFileCount +
+        summary.counts.unchangedFileCount +
+        summary.counts.errorCount,
+    ).toBe(2);
     const manifest = JSON.parse(readFileSync(path.join(out, "manifest.json"), "utf8"));
     expect(manifest.results.errorCount).toBe(1);
     expect(manifest.reviewState).toBe("pending-human-review");
@@ -323,16 +377,24 @@ describe("scripts/dogfood/run.ts — runDogfood() end-to-end on disposable corpo
     runDogfood({ corpusRoot: corpus, outDir: outA, locale: "en-US", dialect: "mdx", argv });
     runDogfood({ corpusRoot: corpus, outDir: outB, locale: "en-US", dialect: "mdx", argv });
 
-    expect(readFileSync(path.join(outA, "full.diff"), "utf8")).toBe(readFileSync(path.join(outB, "full.diff"), "utf8"));
-    expect(readFileSync(path.join(outA, "changes.json"), "utf8")).toBe(readFileSync(path.join(outB, "changes.json"), "utf8"));
-    expect(readFileSync(path.join(outA, "REVIEW.md"), "utf8")).toBe(readFileSync(path.join(outB, "REVIEW.md"), "utf8"));
+    expect(readFileSync(path.join(outA, "full.diff"), "utf8")).toBe(
+      readFileSync(path.join(outB, "full.diff"), "utf8"),
+    );
+    expect(readFileSync(path.join(outA, "changes.json"), "utf8")).toBe(
+      readFileSync(path.join(outB, "changes.json"), "utf8"),
+    );
+    expect(readFileSync(path.join(outA, "REVIEW.md"), "utf8")).toBe(
+      readFileSync(path.join(outB, "REVIEW.md"), "utf8"),
+    );
 
     // manifest.json differs only in the command.out field (the two disposable output dirs have
     // different paths by construction) — everything else, including both hashes, must match.
     const manifestA = JSON.parse(readFileSync(path.join(outA, "manifest.json"), "utf8"));
     const manifestB = JSON.parse(readFileSync(path.join(outB, "manifest.json"), "utf8"));
     expect(manifestA.corpus.aggregateHash).toBe(manifestB.corpus.aggregateHash);
-    expect(manifestA.implementationInputs.aggregateHash).toBe(manifestB.implementationInputs.aggregateHash);
+    expect(manifestA.implementationInputs.aggregateHash).toBe(
+      manifestB.implementationInputs.aggregateHash,
+    );
     expect(manifestA.results).toEqual(manifestB.results);
     expect(manifestA.reviewState).toBe("pending-human-review");
     expect(manifestB.reviewState).toBe("pending-human-review");

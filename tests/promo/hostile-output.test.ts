@@ -78,7 +78,7 @@ const HOSTILE_INPUTS = [
   '"><img src=x onerror=alert(1)>',
   "javascript:alert(1)",
   "&lt;script&gt;alert(1)&lt;/script&gt;", // already-entity-encoded input must not double-decode
-  "<a href=\"javascript:alert(1)\">click</a>",
+  '<a href="javascript:alert(1)">click</a>',
 ];
 
 /** True only if `html` contains a literal, unescaped opening angle bracket that could be parsed

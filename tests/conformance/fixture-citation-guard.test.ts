@@ -74,7 +74,7 @@ describe("fixture-citation-guard: canonical fixtures never assert a known-incorr
   }
 });
 
-describe("fixture-citation-guard: every rule:\"ranges\" fixture cites the current ranges.md owner", () => {
+describe('fixture-citation-guard: every rule:"ranges" fixture cites the current ranges.md owner', () => {
   const RETIRED_DASHES_RANGE_SECTIONS = [
     /dashes\.md §3\.3(?!\.\d)(?!'s split)/, // §3.3 itself (not §3.3x subsections named elsewhere)
     /dashes\.md §3\.3\.1/,
@@ -86,7 +86,9 @@ describe("fixture-citation-guard: every rule:\"ranges\" fixture cites the curren
     if (rangesCases.length === 0) continue;
 
     it(`${name}: every rule:"ranges" case note cites ranges.md`, () => {
-      const missing = rangesCases.filter((c) => !(c.note ?? "").includes("ranges.md")).map((c) => c.id);
+      const missing = rangesCases
+        .filter((c) => !(c.note ?? "").includes("ranges.md"))
+        .map((c) => c.id);
       expect(missing).toEqual([]);
     });
 
@@ -103,7 +105,7 @@ describe("fixture-citation-guard: every rule:\"ranges\" fixture cites the curren
   }
 });
 
-describe("fixture-citation-guard: rule:\"ranges\" ownership is real, not a stale tag", () => {
+describe('fixture-citation-guard: rule:"ranges" ownership is real, not a stale tag', () => {
   for (const { name, cases } of loadFixtureFiles()) {
     const rangesCases = cases.filter((c) => c.rule === "ranges");
     if (rangesCases.length === 0) continue;

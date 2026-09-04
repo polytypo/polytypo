@@ -125,7 +125,7 @@ describe("scripts/validate-spec.mjs — global spec-version drift, fixture roots
     expect(result.stderr).toContain('"spec" is "0.9.0" but spec/VERSION is "1.0.0"');
   });
 
-  it("a missing \"spec\" field on a fixture root fails explicitly, not silently", () => {
+  it('a missing "spec" field on a fixture root fails explicitly, not silently', () => {
     tmpDir = buildDisposableSpec({
       version: "1.0.0",
       fixtures: { "en-US.json": { locale: "en-US", cases: [] } },
@@ -136,7 +136,7 @@ describe("scripts/validate-spec.mjs — global spec-version drift, fixture roots
     expect(result.stderr).toContain('missing required "spec" field');
   });
 
-  it("a non-string \"spec\" field on a fixture root fails explicitly", () => {
+  it('a non-string "spec" field on a fixture root fails explicitly', () => {
     tmpDir = buildDisposableSpec({
       version: "1.0.0",
       fixtures: { "en-US.json": { spec: 1, locale: "en-US", cases: [] } },

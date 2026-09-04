@@ -46,7 +46,9 @@ console.log(`of which entry point — "polytypo", "./text", "./html", or "./mark
 console.log(`import from; npm install resolves the whole package, not a subpath):\n`);
 for (const name of directDependencyNames) console.log(`  ${name}`);
 
-console.log(`\n${directDependencyNames.length} direct production dependencies (package.json "dependencies").`);
+console.log(
+  `\n${directDependencyNames.length} direct production dependencies (package.json "dependencies").`,
+);
 console.log(
   `${installedDirectories} installed production package directories on disk, excluding the ` +
     `project root (npm ls --all --omit=dev --parseable: ${installedDirectories + 1} non-empty ` +

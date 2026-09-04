@@ -316,7 +316,19 @@ export function findDashTokens(cp: readonly number[]): DashToken[] {
     const spanStart = Math.min(s - lsp, joinStart);
     const spanEnd = Math.max(e + rsp, joinEnd);
 
-    tokens.push({ s, e, lsp: lsp as 0 | 1, rsp: rsp as 0 | 1, left, right, leftCp, rightCp, spanStart, spanEnd, crossedJoiner });
+    tokens.push({
+      s,
+      e,
+      lsp: lsp as 0 | 1,
+      rsp: rsp as 0 | 1,
+      left,
+      right,
+      leftCp,
+      rightCp,
+      spanStart,
+      spanEnd,
+      crossedJoiner,
+    });
   }
 
   return tokens;

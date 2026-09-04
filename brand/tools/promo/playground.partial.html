@@ -42,24 +42,20 @@
     </div>
     <div class="pane-r">
       <div class="who pg-out-head">
-        <span id="pg-output-label">Output</span>
+        <span>
+          <span id="pg-output-label">Output</span>
+          <span id="pg-output-summary" role="status" aria-atomic="true"></span>
+        </span>
         <button type="button" class="pg-copy" id="pg-copy-output">Copy Output</button>
       </div>
-      <div
-        class="pg-output"
-        id="pg-output"
-        role="region"
-        aria-labelledby="pg-output-label"
-      ></div>
+      <div class="pg-output" id="pg-output" role="region" aria-labelledby="pg-output-label"></div>
       <p class="pg-action-status" id="pg-action-status" role="status" aria-atomic="true"></p>
     </div>
   </div>
   <div class="foot" id="pg-foot" role="status" aria-atomic="true"></div>
 </div>
 
-<p class="eyebrow" style="margin-top: var(--space-7)">
-  The call the form above is making, right now
-</p>
+<p class="eyebrow sr-only">The call the form above is making, right now</p>
 <div class="tabs" id="call-tabs"></div>
 <div id="call-panes">
   <div class="pane" data-label="JavaScript / TypeScript">

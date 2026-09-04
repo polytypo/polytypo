@@ -36,7 +36,13 @@ import { isUpper } from "../../src/engine/unicode.js";
 // same functions `nbsp.ts`'s own C1 calls. None of these are part of the package's public API
 // (`src/index.ts` never re-exports `src/rules/nbsp.ts`); this is an internal reuse within the
 // dogfooding tool, not a new public surface.
-import { prepare, isInitialAt, isAbbreviationTail, hasPrecedingInitial, type Prepared } from "../../src/rules/nbsp.js";
+import {
+  prepare,
+  isInitialAt,
+  isAbbreviationTail,
+  hasPrecedingInitial,
+  type Prepared,
+} from "../../src/rules/nbsp.js";
 import type { LocaleData } from "../../src/types.js";
 
 /** Used by `numeric-range-or-compound-label-candidate`, `figure-label-shaped`, and
@@ -128,11 +134,21 @@ const CP_EM_DASH = 0x2014;
 const CP_NBSP = 0x00a0;
 const CP_NNBSP = 0x202f;
 
-const DASH_CODEPOINTS = [CP_HYPHEN_MINUS, CP_HYPHEN, CP_NON_BREAKING_HYPHEN, CP_FIGURE_DASH, CP_EN_DASH, CP_EM_DASH];
+const DASH_CODEPOINTS = [
+  CP_HYPHEN_MINUS,
+  CP_HYPHEN,
+  CP_NON_BREAKING_HYPHEN,
+  CP_FIGURE_DASH,
+  CP_EN_DASH,
+  CP_EM_DASH,
+];
 const dashCharClass = DASH_CODEPOINTS.map((cp) => String.fromCodePoint(cp)).join("");
 const DASH_CHAR = new RegExp(`[${dashCharClass}]`, "g");
 const NUMERIC_RANGE = new RegExp(`\\d[\\d.]*\\s*[${dashCharClass}]\\s*\\d[\\d.]*`, "g");
-const FIGURE_LABEL_NUMERIC_RANGE = new RegExp(`\\b(?:figure|fig\\.|table|chapter|section|appendix)\\s+\\d[\\d.]*(?:\\s*[${dashCharClass}]\\s*\\d[\\d.]*)?`, "gi");
+const FIGURE_LABEL_NUMERIC_RANGE = new RegExp(
+  `\\b(?:figure|fig\\.|table|chapter|section|appendix)\\s+\\d[\\d.]*(?:\\s*[${dashCharClass}]\\s*\\d[\\d.]*)?`,
+  "gi",
+);
 const NBSP_LIKE = new RegExp(`[${String.fromCodePoint(CP_NBSP)}${String.fromCodePoint(CP_NNBSP)}]`);
 const NON_BREAKING_HYPHEN_CHAR = new RegExp(String.fromCodePoint(CP_NON_BREAKING_HYPHEN));
 const QUOTE_CHARS = /['"‘’“”«»‹›]/;
@@ -193,7 +209,11 @@ function utf16LengthToCodePointLength(text: string): number {
  * match length are re-measured in code points (never trusting `m.index`/`m[0].length` directly --
  * see `utf16LengthToCodePointLength`), so an astral code point anywhere earlier in the window
  * cannot desynchronize a later match's reported range. */
-function findTokenRanges(windowText: string, windowStartCodePoint: number, pattern: RegExp): { text: string; start: number; end: number }[] {
+function findTokenRanges(
+  windowText: string,
+  windowStartCodePoint: number,
+  pattern: RegExp,
+): { text: string; start: number; end: number }[] {
   const results: { text: string; start: number; end: number }[] = [];
   pattern.lastIndex = 0;
   let m: RegExpExecArray | null;
@@ -217,7 +237,12 @@ function rangesIntersect(aStart: number, aEnd: number, bStart: number, bEnd: num
 /** A bounded window of `fullText` (never the whole file) centered on `[start, end)`, plus the
  * code-point offset the window itself starts at -- so any match found inside it can be converted
  * back to an absolute offset. */
-function lexicalWindow(fullText: string, start: number, end: number, radius: number): { text: string; startCodePoint: number } {
+function lexicalWindow(
+  fullText: string,
+  start: number,
+  end: number,
+  radius: number,
+): { text: string; startCodePoint: number } {
   const cps = codePointArray(fullText);
   const windowStart = Math.max(0, start - radius);
   const windowEnd = Math.min(cps.length, end + radius);
@@ -278,7 +303,10 @@ export function computeRiskTags(input: {
 
   const intersectingEdit = (tokenStart: number, tokenEnd: number): AtomicEdit | null => {
     for (const e of atomicEdits) {
-      if (rangesIntersect(tokenStart, tokenEnd, e.oldOffset.codePointStart, e.oldOffset.codePointEnd)) return e;
+      if (
+        rangesIntersect(tokenStart, tokenEnd, e.oldOffset.codePointStart, e.oldOffset.codePointEnd)
+      )
+        return e;
     }
     return null;
   };
@@ -289,17 +317,29 @@ export function computeRiskTags(input: {
     if (edit) {
       tags.push({
         tag: "numeric-range-or-compound-label-candidate",
-        evidence: { tokenText: token.text, tokenOldOffset: { codePointStart: token.start, codePointEnd: token.end }, intersectingAtomicEditId: edit.id },
+        evidence: {
+          tokenText: token.text,
+          tokenOldOffset: { codePointStart: token.start, codePointEnd: token.end },
+          intersectingAtomicEditId: edit.id,
+        },
       });
       break;
     }
   }
-  for (const token of findTokenRanges(window.text, window.startCodePoint, FIGURE_LABEL_NUMERIC_RANGE)) {
+  for (const token of findTokenRanges(
+    window.text,
+    window.startCodePoint,
+    FIGURE_LABEL_NUMERIC_RANGE,
+  )) {
     const edit = intersectingEdit(token.start, token.end);
     if (edit) {
       tags.push({
         tag: "figure-label-shaped",
-        evidence: { tokenText: token.text, tokenOldOffset: { codePointStart: token.start, codePointEnd: token.end }, intersectingAtomicEditId: edit.id },
+        evidence: {
+          tokenText: token.text,
+          tokenOldOffset: { codePointStart: token.start, codePointEnd: token.end },
+          intersectingAtomicEditId: edit.id,
+        },
       });
       break;
     }
@@ -309,7 +349,11 @@ export function computeRiskTags(input: {
   // loop) so the dash's reported position is already code-point-correct even when an astral code
   // point precedes it in the window.
   {
-    let best: { token: { text: string; start: number; end: number }; edit: AtomicEdit; distance: number } | null = null;
+    let best: {
+      token: { text: string; start: number; end: number };
+      edit: AtomicEdit;
+      distance: number;
+    } | null = null;
     for (const token of findTokenRanges(window.text, window.startCodePoint, DASH_CHAR)) {
       for (const e of atomicEdits) {
         const distance =
@@ -344,14 +388,21 @@ export function computeRiskTags(input: {
     if (edit) {
       tags.push({
         tag: "quote-elision-ambiguity-candidate",
-        evidence: { tokenText: token.text, tokenOldOffset: { codePointStart: token.start, codePointEnd: token.end }, intersectingAtomicEditId: edit.id },
+        evidence: {
+          tokenText: token.text,
+          tokenOldOffset: { codePointStart: token.start, codePointEnd: token.end },
+          intersectingAtomicEditId: edit.id,
+        },
       });
       break;
     }
   }
 
   // quote-pairing-candidate: tied to attribution, not bare character class.
-  if (attribution?.overlappingIsolatedRules.includes("quotes") && QUOTE_CHARS.test(`${reviewChange.before}\n${reviewChange.after}`)) {
+  if (
+    attribution?.overlappingIsolatedRules.includes("quotes") &&
+    QUOTE_CHARS.test(`${reviewChange.before}\n${reviewChange.after}`)
+  ) {
     tags.push({ tag: "quote-pairing-candidate", evidence: null });
   }
 
@@ -377,7 +428,11 @@ export function computeRiskTags(input: {
           const start = edit.oldOffset.codePointStart + aligned.prefix + offsetWithinMid;
           tags.push({
             tag: "authored-en-dash-restyled",
-            evidence: { sourceOldOffset: { codePointStart: start, codePointEnd: start + 1 }, sourceText: EN_DASH_CHAR, atomicEditId: edit.id },
+            evidence: {
+              sourceOldOffset: { codePointStart: start, codePointEnd: start + 1 },
+              sourceText: EN_DASH_CHAR,
+              atomicEditId: edit.id,
+            },
           });
           break editLoop;
         }
@@ -409,7 +464,8 @@ export function computeRiskTags(input: {
     // encodes the token-start condition (NONE/SPACELIKE/OPENISH) exactly as N7 reads it; no
     // separate reimplementation here can drift from it because there is no separate
     // reimplementation.
-    const isInitial = (p: number): boolean => isInitialAt(oldCodePoints, prep, p) && !isAbbreviationTail(oldCodePoints, p);
+    const isInitial = (p: number): boolean =>
+      isInitialAt(oldCodePoints, prep, p) && !isAbbreviationTail(oldCodePoints, p);
 
     for (const edit of atomicEdits) {
       if (edit.before !== SPACE_CHAR || edit.after !== NBSP_CHAR) continue;
@@ -443,7 +499,10 @@ export function computeRiskTags(input: {
   if (NBSP_LIKE.test(reviewChange.after) && !NBSP_LIKE.test(reviewChange.before)) {
     tags.push({ tag: "nbsp-insertion", evidence: null });
   }
-  if (NON_BREAKING_HYPHEN_CHAR.test(reviewChange.after) && !NON_BREAKING_HYPHEN_CHAR.test(reviewChange.before)) {
+  if (
+    NON_BREAKING_HYPHEN_CHAR.test(reviewChange.after) &&
+    !NON_BREAKING_HYPHEN_CHAR.test(reviewChange.before)
+  ) {
     tags.push({ tag: "non-breaking-hyphen-insertion", evidence: null });
   }
 
@@ -459,7 +518,11 @@ export function computeRiskTags(input: {
         bestToken = token;
       }
     }
-    if (bestDistance !== null && bestToken !== null && bestDistance <= MDX_BOUNDARY_MAX_DISTANCE_CODEPOINTS) {
+    if (
+      bestDistance !== null &&
+      bestToken !== null &&
+      bestDistance <= MDX_BOUNDARY_MAX_DISTANCE_CODEPOINTS
+    ) {
       tags.push({
         tag: "mdx-jsx-code-boundary-adjacent",
         evidence: {
@@ -476,7 +539,10 @@ export function computeRiskTags(input: {
   if (reviewChange.crossLineEdit) tags.push({ tag: "cross-line-edit", evidence: null });
 
   // large-edit: affected volume, not |Δlength|.
-  const volume = Math.max(codePointArray(reviewChange.before).length, codePointArray(reviewChange.after).length);
+  const volume = Math.max(
+    codePointArray(reviewChange.before).length,
+    codePointArray(reviewChange.after).length,
+  );
   if (volume > 80) tags.push({ tag: "large-edit", evidence: null });
 
   void newText; // reserved for a future new-side lexical window; not needed by any rule above yet
@@ -493,7 +559,10 @@ export function computeRiskTags(input: {
 // ---------------------------------------------------------------------------------------------
 
 const NUMERIC_RANGE_WHOLE = new RegExp(`^\\d[\\d.]*\\s*[${dashCharClass}]\\s*\\d[\\d.]*$`);
-const FIGURE_LABEL_WHOLE = new RegExp(`^(?:figure|fig\\.|table|chapter|section|appendix)\\s+\\d[\\d.]*(?:\\s*[${dashCharClass}]\\s*\\d[\\d.]*)?$`, "i");
+const FIGURE_LABEL_WHOLE = new RegExp(
+  `^(?:figure|fig\\.|table|chapter|section|appendix)\\s+\\d[\\d.]*(?:\\s*[${dashCharClass}]\\s*\\d[\\d.]*)?$`,
+  "i",
+);
 const DASH_CHAR_WHOLE = new RegExp(`^[${dashCharClass}]$`);
 const ELISION_QUOTE_WHOLE = /^['‘’][a-z]{1,3}['‘’]$/i;
 const MDX_BOUNDARY_TOKEN_WHOLE = new RegExp(`^(?:${MDX_BOUNDARY_TOKEN.source})$`);

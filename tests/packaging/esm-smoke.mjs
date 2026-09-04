@@ -15,7 +15,10 @@ const locale = "en-US";
 
 // One real transformation through each entry point, each checked against the aggregate entry.
 assert.equal(transformText("x...y", { locale }), "x…y");
-assert.equal(transformText("x...y", { locale }), transformAggregate("x...y", { locale, mode: "text" }));
+assert.equal(
+  transformText("x...y", { locale }),
+  transformAggregate("x...y", { locale, mode: "text" }),
+);
 
 assert.equal(transformHtml("<p>x...y</p>", { locale }), "<p>x…y</p>");
 assert.equal(

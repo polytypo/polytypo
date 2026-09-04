@@ -470,7 +470,9 @@ function initialsSubRule(cp: readonly number[], prep: Prepared, claims: Claims):
     // Jacques André) and cannot structurally distinguish from a sentence-boundary collision.
     const c1 =
       c1Shape &&
-      (mode === "single" || isInitialAt(cp, prep, q + 1) || hasPrecedingInitial(cp, prep, leftInitialP));
+      (mode === "single" ||
+        isInitialAt(cp, prep, q + 1) ||
+        hasPrecedingInitial(cp, prep, leftInitialP));
     // C2 — a word on the left and two consecutive initials on the right (`Пушкин А. С.`). Already
     // requires two initials by construction, so it is unaffected by `"chain"` vs `"single"`.
     const rightSpace = at(cp, q + 3);

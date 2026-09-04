@@ -13,7 +13,10 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
-import { checkWorkflowsDirectory, findUnpinnedActionUses } from "../../scripts/lib/actions-pinned.mjs";
+import {
+  checkWorkflowsDirectory,
+  findUnpinnedActionUses,
+} from "../../scripts/lib/actions-pinned.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const REAL_SHA = "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09"; // actions/checkout@v5.1.0, real pin
@@ -48,7 +51,9 @@ describe("scripts/lib/actions-pinned.mjs — findUnpinnedActionUses()", () => {
     });
 
     it("rejects an abbreviated SHA", () => {
-      const violations = findUnpinnedActionUses(yamlStep(`uses: actions/checkout@${REAL_SHA.slice(0, 7)}`));
+      const violations = findUnpinnedActionUses(
+        yamlStep(`uses: actions/checkout@${REAL_SHA.slice(0, 7)}`),
+      );
       expect(violations).toHaveLength(1);
       expect(violations[0]?.reason).toContain("abbreviated commit SHA");
     });
@@ -60,14 +65,18 @@ describe("scripts/lib/actions-pinned.mjs — findUnpinnedActionUses()", () => {
     });
 
     it("rejects a dynamic expression used as the revision", () => {
-      const violations = findUnpinnedActionUses(yamlStep("uses: actions/checkout@${{ inputs.checkout-ref }}"));
+      const violations = findUnpinnedActionUses(
+        yamlStep("uses: actions/checkout@${{ inputs.checkout-ref }}"),
+      );
       expect(violations).toHaveLength(1);
       expect(violations[0]?.reason).toContain("dynamic expression");
     });
 
     it("requires an immutable sha256 digest for a docker:// action, not a bare tag", () => {
       expect(findUnpinnedActionUses(yamlStep("uses: docker://alpine:3.18"))).toHaveLength(1);
-      expect(findUnpinnedActionUses(yamlStep(`uses: docker://alpine@sha256:${"a".repeat(64)}`))).toEqual([]);
+      expect(
+        findUnpinnedActionUses(yamlStep(`uses: docker://alpine@sha256:${"a".repeat(64)}`)),
+      ).toEqual([]);
     });
   });
 
@@ -115,7 +124,7 @@ describe("scripts/lib/actions-pinned.mjs — findUnpinnedActionUses()", () => {
       expect(violations[0]?.reference).toBe("actions/checkout@v5");
     });
 
-    it("catches a mutable tag under a quoted \"uses\" key", () => {
+    it('catches a mutable tag under a quoted "uses" key', () => {
       const yaml = yamlStep('"uses": actions/checkout@v5');
       const violations = findUnpinnedActionUses(yaml);
       expect(violations).toHaveLength(1);
@@ -150,9 +159,13 @@ describe("scripts/lib/actions-pinned.mjs — findUnpinnedActionUses()", () => {
     });
 
     it("fails closed on malformed YAML, with a diagnostic instead of throwing", () => {
-      const malformed = ["jobs:", "  verify:", "    steps:", "      - name: broken", "        run: [unterminated"].join(
-        "\n",
-      );
+      const malformed = [
+        "jobs:",
+        "  verify:",
+        "    steps:",
+        "      - name: broken",
+        "        run: [unterminated",
+      ].join("\n");
       let violations: ReturnType<typeof findUnpinnedActionUses> = [];
       expect(() => {
         violations = findUnpinnedActionUses(malformed);
@@ -169,23 +182,41 @@ describe("scripts/lib/actions-pinned.mjs — findUnpinnedActionUses()", () => {
     });
 
     it("fails closed on a uses: value that is a YAML alias, not a literal string", () => {
-      const yaml = ["defs:", "  - &pinned actions/checkout@v5", "jobs:", "  verify:", "    steps:", "      - uses: *pinned"].join(
-        "\n",
-      );
+      const yaml = [
+        "defs:",
+        "  - &pinned actions/checkout@v5",
+        "jobs:",
+        "  verify:",
+        "    steps:",
+        "      - uses: *pinned",
+      ].join("\n");
       const violations = findUnpinnedActionUses(yaml);
       expect(violations).toHaveLength(1);
       expect(violations[0]?.reason).toContain("alias");
     });
 
     it("fails closed on a uses: value that is itself a mapping", () => {
-      const yaml = ["jobs:", "  verify:", "    steps:", "      - uses:", "          nested: mapping"].join("\n");
+      const yaml = [
+        "jobs:",
+        "  verify:",
+        "    steps:",
+        "      - uses:",
+        "          nested: mapping",
+      ].join("\n");
       const violations = findUnpinnedActionUses(yaml);
       expect(violations).toHaveLength(1);
       expect(violations[0]?.reason).toContain("mapping");
     });
 
     it("fails closed on a uses: value that is itself a sequence", () => {
-      const yaml = ["jobs:", "  verify:", "    steps:", "      - uses:", "          - a", "          - b"].join("\n");
+      const yaml = [
+        "jobs:",
+        "  verify:",
+        "    steps:",
+        "      - uses:",
+        "          - a",
+        "          - b",
+      ].join("\n");
       const violations = findUnpinnedActionUses(yaml);
       expect(violations).toHaveLength(1);
       expect(violations[0]?.reason).toContain("sequence");
@@ -225,8 +256,16 @@ describe("scripts/lib/actions-pinned.mjs — checkWorkflowsDirectory()", () => {
 
   it("discovers both .yml and .yaml files", async () => {
     tmpDir = mkdtempSync(path.join(tmpdir(), "polytypo-actions-pinned-"));
-    writeFileSync(path.join(tmpDir, "a.yml"), yamlStep(`uses: actions/checkout@${REAL_SHA}`), "utf8");
-    writeFileSync(path.join(tmpDir, "b.yaml"), yamlStep(`uses: actions/checkout@${REAL_SHA}`), "utf8");
+    writeFileSync(
+      path.join(tmpDir, "a.yml"),
+      yamlStep(`uses: actions/checkout@${REAL_SHA}`),
+      "utf8",
+    );
+    writeFileSync(
+      path.join(tmpDir, "b.yaml"),
+      yamlStep(`uses: actions/checkout@${REAL_SHA}`),
+      "utf8",
+    );
     writeFileSync(path.join(tmpDir, "c.txt"), "not a workflow", "utf8");
     const results = await checkWorkflowsDirectory(tmpDir);
     expect(results.map((r) => r.file).sort()).toEqual(["a.yml", "b.yaml"]);
@@ -270,15 +309,23 @@ describe("scripts/check-actions-pinned.mjs — CLI negative control (real produc
 
   it("exits zero once the same fixture is pinned to a full SHA", () => {
     tmpDir = mkdtempSync(path.join(tmpdir(), "polytypo-actions-pinned-cli-"));
-    writeFileSync(path.join(tmpDir, "good.yml"), yamlStep(`{ uses: actions/checkout@${REAL_SHA} }`), "utf8");
+    writeFileSync(
+      path.join(tmpDir, "good.yml"),
+      yamlStep(`{ uses: actions/checkout@${REAL_SHA} }`),
+      "utf8",
+    );
     expect(() => runRealCli(tmpDir as string)).not.toThrow();
   });
 
   it("exits 0 against this repository's real workflows with no directory override", () => {
-    const output = execFileSync(process.execPath, [path.join(ROOT, "scripts/check-actions-pinned.mjs")], {
-      encoding: "utf8",
-      cwd: ROOT,
-    });
+    const output = execFileSync(
+      process.execPath,
+      [path.join(ROOT, "scripts/check-actions-pinned.mjs")],
+      {
+        encoding: "utf8",
+        cwd: ROOT,
+      },
+    );
     expect(output).toContain("actions-pinned check passed");
   });
 });

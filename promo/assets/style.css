@@ -374,11 +374,16 @@ section {
 }
 
 /* ---------- interactive demo / playground ---------- */
+/* Square, borderless bottom edge on purpose: the "call" card (.call-eyebrow, #call-tabs,
+   #call-panes below) picks up immediately where this leaves off, with no border and no vertical
+   gap between them, so the two read as one module — try it, then see the call it just made —
+   instead of two unrelated blocks separated by whitespace. */
 .demo {
   margin-top: 44px;
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
+  border-bottom: none;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   background: var(--surface);
 }
 
@@ -498,6 +503,12 @@ section {
   grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
 }
 
+/* A fixed six-card grid (Docs "Why this and not a regex"): 3+3, not auto-fit's width-driven 4+2 —
+   see the two @media overrides below for the 2+2+2 and 1×6 steps. */
+.card-grid--six {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .card {
   padding: var(--space-7) var(--space-8);
   border: 1px solid var(--line);
@@ -519,6 +530,13 @@ section {
   gap: var(--space-6);
   align-items: start;
   margin-top: var(--space-3);
+}
+
+/* The proof grid's cards carry only the output (the shared input is proof_input(), rendered once
+   above the grid) — one child, not two, so the 2-column grid above would otherwise leave it
+   sitting in the first column at half width. */
+.card .pair--solo {
+  grid-template-columns: 1fr;
 }
 
 /* The two halves of a card's before/after pair differ in typeface and scale, and that is the whole
@@ -652,6 +670,77 @@ pre {
   line-height: 1.7;
 }
 
+/* Present for assistive tech only — the label that used to sit visibly above the call card named
+   the relationship in words; the merged card below (.demo flowing straight into #call-tabs, zero
+   gap, one dark ground) now shows that relationship instead of stating it. A sighted visitor reads
+   "the same thing, as code" from the layout; a screen-reader user still gets the sentence. */
+.sr-only {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  white-space: nowrap;
+  clip-path: inset(50%);
+  border: 0;
+}
+
+/* The "call" card: #call-tabs and #call-panes stacked with zero gap, sharing one dark ground and
+   one pair of side borders, so they read as a single card continuing .demo above (which loses its
+   own bottom border/radius for exactly this join) rather than two separate blocks. Language tabs
+   live inside the card's own header row instead of floating above it. #call-tabs carries the
+   card's top border and radius, since the sr-only label before it no longer occupies any space.
+   Placed after the generic `pre` rule on purpose — tests/promo/style.test.ts's findRule("pre")
+   does a plain substring search for "pre {" with no selector-boundary anchoring, so a compound
+   selector ending in " pre {" that sorts earlier in the file would be picked up instead of the
+   bare one it means to test. */
+/* Square, not rounded: this is the continuation of .demo above (itself square at the bottom for
+   the same reason), not a new card of its own — rounding this corner would put a visible notch
+   where the two meet instead of one unbroken edge. */
+#call-tabs {
+  gap: var(--space-6);
+  margin: 0;
+  padding: var(--space-4) var(--space-8) 0;
+  border-right: 1px solid var(--code-line);
+  border-left: 1px solid var(--code-line);
+  background: var(--code-bg);
+}
+
+#call-tabs button {
+  padding: 0 0 var(--space-3);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: var(--code-gutter);
+  background: none;
+}
+
+#call-tabs button:hover {
+  color: var(--code-fg);
+}
+
+#call-tabs button[aria-pressed="true"] {
+  border-bottom-color: var(--color-accent);
+  color: var(--code-fg);
+  background: none;
+}
+
+#call-panes {
+  border-right: 1px solid var(--code-line);
+  border-bottom: 1px solid var(--code-line);
+  border-left: 1px solid var(--code-line);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  background: var(--code-bg);
+  overflow: hidden;
+}
+
+#call-panes pre {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
 pre > code {
   display: block;
   padding-left: var(--ln-total);
@@ -711,24 +800,6 @@ pre > code {
   display: none;
 }
 
-.status {
-  display: inline-block;
-  margin-left: var(--space-3);
-  padding: 3px 9px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  vertical-align: 2px;
-}
-
-.status.live {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
 .note {
   max-width: 66ch;
   margin: var(--space-10) 0;
@@ -772,26 +843,32 @@ pre > code {
    the two read as one unit — but deliberately without a line-number gutter. A gutter cannot stay
    aligned with a soft-wrapping textarea without reimplementing text editing, and a gutter that
    drifts out of step with its own text is worse than none. */
+/* A plain form control, not a code editor: light ground, ordinary border, the same surface every
+   other input on the page sits on — so it reads as "type here" on sight, the way a native
+   <textarea> does. Only the output pane earns the dark/code treatment, and only because it shows
+   what the engine actually emits, in a code panel elsewhere on the site. */
 textarea.pg-textarea {
   display: block;
   width: 100%;
-  height: 320px;
+  height: 120px;
+  min-height: 120px;
+  max-height: 320px;
   margin-top: var(--space-4);
   resize: vertical;
-  border: 1px solid var(--code-line);
+  border: 1px solid var(--line);
   outline: 0;
   border-radius: 8px;
   padding: var(--space-4);
-  background: var(--code-bg);
-  color: var(--code-fg);
+  background: var(--bg);
+  color: var(--fg);
   font-family: var(--font-mono);
   font-size: 14px;
   line-height: 1.7;
-  box-shadow: inset 0 1px 2px rgb(0 0 0 / 30%);
+  box-shadow: inset 0 1px 2px rgb(20 22 26 / 6%);
 }
 
 textarea.pg-textarea::placeholder {
-  color: var(--code-gutter);
+  color: var(--muted);
 }
 
 textarea.pg-textarea:focus-visible {
@@ -813,8 +890,14 @@ textarea.pg-textarea:focus-visible {
    margin-top matches textarea.pg-textarea's, so the two panes of the split start on the same line.
    pre-wrap keeps the input's own line breaks and repeated spaces; overflow-wrap keeps a long
    unbroken run from widening the pane. */
+/* Capped at the textarea's own height (see textarea.pg-textarea above) and independently
+   scrollable, rather than growing to fit a long output and stretching the whole page — the two
+   panes are kept comparable at any input length, and their scroll positions are kept in step by
+   the syncScroll() wiring in build_playground_script(). */
 .pg-output {
+  height: 120px;
   margin-top: var(--space-4);
+  overflow-y: auto;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
   font-size: 22px;
@@ -937,11 +1020,41 @@ footer a:hover {
   color: var(--fg);
 }
 
+/* ---------- home page ----------
+   Scoped to .page-home (set on <body> only for promo/index.html) so the home page can carry a
+   different rhythm — bigger hero, panel-style "Ship it", a two-column reasons list — without
+   touching the shared .hero/.card/.steps rules the other four pages still use as declared above. */
+.page-home h1 {
+  max-width: 15ch;
+  font-size: clamp(34px, 6vw, 58px);
+}
+
+.page-home .hero {
+  padding-bottom: 8px;
+}
+
+.page-home .hero .tagline:last-of-type {
+  color: var(--fg);
+  font-size: 21px;
+}
+
+.page-home .demo {
+  margin-top: 32px;
+}
+
+.page-home #proof {
+  padding-top: 64px;
+}
+
 /* ---------- responsive ---------- */
 @media (max-width: 720px) {
   .card-grid--two,
   .split {
     grid-template-columns: 1fr;
+  }
+
+  .card-grid--six {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .split .pane-l {
@@ -959,6 +1072,10 @@ footer a:hover {
   .wrap {
     width: min(100% - 36px, var(--content-width));
     padding-bottom: 88px;
+  }
+
+  .card-grid--six {
+    grid-template-columns: 1fr;
   }
 
   /* Below 640px, four nav links plus the logo no longer fit on one row. Rather than let them

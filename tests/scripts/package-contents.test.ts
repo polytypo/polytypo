@@ -104,7 +104,11 @@ describe("scripts/lib/package-contents.mjs — assertPackageContents()", () => {
       it(`fails when dist/${name}.${suffix} is missing`, async () => {
         const { files, readFileContent } = cleanTarball();
         files.delete(`dist/${name}.${suffix}`);
-        const failures = await assertPackageContents(files, pkgWithVersion("0.0.0"), readFileContent);
+        const failures = await assertPackageContents(
+          files,
+          pkgWithVersion("0.0.0"),
+          readFileContent,
+        );
         expect(failures.some((f) => f.includes(`dist/${name}.${suffix}`))).toBe(true);
       });
     }
@@ -141,9 +145,9 @@ describe("scripts/lib/package-contents.mjs — assertPackageContents()", () => {
     const { files, content, readFileContent } = cleanTarball();
     content["dist/text.js"] = "this is not { valid javascript at all !!!";
     const failures = await assertPackageContents(files, pkgWithVersion("0.0.0"), readFileContent);
-    expect(failures.some((f) => f.includes("dist/text.js") && f.includes("could not be parsed"))).toBe(
-      true,
-    );
+    expect(
+      failures.some((f) => f.includes("dist/text.js") && f.includes("could not be parsed")),
+    ).toBe(true);
   });
 
   it("fails when a forbidden workspace path leaks into the tarball", async () => {
@@ -203,9 +207,9 @@ describe("scripts/lib/package-contents.mjs — assertPackageContents()", () => {
       const { files, content, readFileContent } = cleanTarball();
       content["dist/markdown.cjs.map"] = "{ not valid json";
       const failures = await assertPackageContents(files, pkgWithVersion("0.0.0"), readFileContent);
-      expect(failures.some((f) => f.includes("dist/markdown.cjs.map") && f.includes("valid JSON"))).toBe(
-        true,
-      );
+      expect(
+        failures.some((f) => f.includes("dist/markdown.cjs.map") && f.includes("valid JSON")),
+      ).toBe(true);
     });
 
     it("checks chunk files, not just the four named entries", async () => {
@@ -236,9 +240,9 @@ describe("scripts/lib/package-contents.mjs — assertPackageContents()", () => {
       const flaky = async (relativePath: string) =>
         relativePath === "dist/text.js" ? null : readFileContent(relativePath);
       const failures = await assertPackageContents(files, pkgWithVersion("0.0.0"), flaky);
-      expect(failures.some((f) => f.includes("dist/text.js") && f.includes("could not be read"))).toBe(
-        true,
-      );
+      expect(
+        failures.some((f) => f.includes("dist/text.js") && f.includes("could not be read")),
+      ).toBe(true);
     });
   });
 });
@@ -248,7 +252,7 @@ describe("scripts/lib/package-contents.mjs — extractChunkReferences() (esbuild
   // esbuild's own parser reports these as import records via metafile.inputs, so comments and
   // string/template contents are excluded structurally — they were never part of the AST these
   // records come from, not filtered out by pattern-matching around them.
-  it("matches a named import: import { x } from \"./chunk-A.js\"", async () => {
+  it('matches a named import: import { x } from "./chunk-A.js"', async () => {
     expect(await extractChunkReferences('import { x } from "./chunk-A.js";')).toEqual([
       "dist/chunk-A.js",
     ]);
@@ -260,14 +264,16 @@ describe("scripts/lib/package-contents.mjs — extractChunkReferences() (esbuild
     ]);
   });
 
-  it("matches a re-export: export { x } from \"./chunk-B.js\"", async () => {
+  it('matches a re-export: export { x } from "./chunk-B.js"', async () => {
     expect(await extractChunkReferences('export { x } from "./chunk-B.js";')).toEqual([
       "dist/chunk-B.js",
     ]);
   });
 
-  it("matches a re-export-all: export * from \"./chunk-B.js\"", async () => {
-    expect(await extractChunkReferences('export * from "./chunk-B.js";')).toEqual(["dist/chunk-B.js"]);
+  it('matches a re-export-all: export * from "./chunk-B.js"', async () => {
+    expect(await extractChunkReferences('export * from "./chunk-B.js";')).toEqual([
+      "dist/chunk-B.js",
+    ]);
   });
 
   it("matches a CommonJS require, bound to a variable, double-quoted", async () => {
@@ -294,7 +300,7 @@ describe("scripts/lib/package-contents.mjs — extractChunkReferences() (esbuild
     expect(await extractChunkReferences("import './chunk-D.js';")).toEqual(["dist/chunk-D.js"]);
   });
 
-  it("matches this build's real wrapped ESM shape: import {\\n  x\\n} from \"./chunk-*\";", async () => {
+  it('matches this build\'s real wrapped ESM shape: import {\\n  x\\n} from "./chunk-*";', async () => {
     const content = ["import {", "  runHtmlPipeline", '} from "./chunk-A.js";'].join("\n");
     expect(await extractChunkReferences(content)).toEqual(["dist/chunk-A.js"]);
   });
@@ -345,22 +351,12 @@ describe("scripts/lib/package-contents.mjs — extractChunkReferences() (esbuild
     });
 
     it("ignores a multiline block comment whose inner line begins with 'import'", async () => {
-      const content = [
-        "/*",
-        'import "./chunk-NOTREAL.js";',
-        "*/",
-      ].join("\n");
+      const content = ["/*", 'import "./chunk-NOTREAL.js";', "*/"].join("\n");
       expect(await extractChunkReferences(content)).toEqual([]);
     });
 
     it("ignores a multiline block comment whose inner line begins with '} from'", async () => {
-      const content = [
-        "/*",
-        "import {",
-        "  x",
-        '} from "./chunk-NOTREAL.js";',
-        "*/",
-      ].join("\n");
+      const content = ["/*", "import {", "  x", '} from "./chunk-NOTREAL.js";', "*/"].join("\n");
       expect(await extractChunkReferences(content)).toEqual([]);
     });
 
@@ -381,7 +377,9 @@ describe("scripts/lib/package-contents.mjs — extractChunkReferences() (esbuild
 
     it("ignores prose containing a convincing 'from \"./chunk-*\"' clause inside a line comment", async () => {
       expect(
-        await extractChunkReferences('// this behavior comes from "./chunk-NOTREAL.js" historically'),
+        await extractChunkReferences(
+          '// this behavior comes from "./chunk-NOTREAL.js" historically',
+        ),
       ).toEqual([]);
     });
 
@@ -393,7 +391,7 @@ describe("scripts/lib/package-contents.mjs — extractChunkReferences() (esbuild
         'import "./chunk-TEMPLATE-NOTREAL.js";',
         "`;",
         "/*",
-        "} from \"./chunk-COMMENT-NOTREAL.js\";",
+        '} from "./chunk-COMMENT-NOTREAL.js";',
         "*/",
         "import {",
         "  realBinding",
@@ -411,7 +409,8 @@ describe("scripts/lib/package-contents.mjs — extractSourceMappingRefs() (trail
   });
 
   it("finds two trailing references — the original duplicate-emission bug", () => {
-    const content = "export {};\n//# sourceMappingURL=index.js.map\n//# sourceMappingURL=index.js.map";
+    const content =
+      "export {};\n//# sourceMappingURL=index.js.map\n//# sourceMappingURL=index.js.map";
     expect(extractSourceMappingRefs(content)).toEqual(["index.js.map", "index.js.map"]);
   });
 
@@ -434,7 +433,9 @@ describe("scripts/lib/package-contents.mjs — extractSourceMappingRefs() (trail
   });
 
   it("does not count a sourceMappingURL-shaped line inside a template literal, even as the file's last content line", () => {
-    const content = ["export {};", "const s = `", "//# sourceMappingURL=fake.js.map", "`;"].join("\n");
+    const content = ["export {};", "const s = `", "//# sourceMappingURL=fake.js.map", "`;"].join(
+      "\n",
+    );
     // The template literal's inner line IS the last *line* of the file, but it is not a real
     // trailing comment — this scan does not understand string/template nesting (only
     // extractChunkReferences, which is esbuild-parser-backed, does); documented as a known scope

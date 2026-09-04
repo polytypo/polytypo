@@ -54,9 +54,12 @@ const PAGES = [
 
 /** Pages that carry at least one `<pre>` code panel with content baked in at build time. Named
  * rather than discovered, so a page silently losing its panels fails instead of passing vacuously.
- * /playground's five call-code panes are `<pre>` elements the client fills, empty in the generated
- * HTML; /locales and /manifesto carry specimens only. */
-const PAGES_WITH_FILLED_CODE_PANELS = ["index.html", "docs/index.html"];
+ * Home's own call-code panes and /playground's are `<pre>` elements the client fills, empty in the
+ * generated HTML — Home dropped its baked five-language install snippet (previously duplicating
+ * the live call directly above it; see brand/tools/promo/home.body.html's #embed section) in favor
+ * of one line linking to Docs, which is now the only page with that content baked in at build time.
+ * /locales and /manifesto carry specimens only. */
+const PAGES_WITH_FILLED_CODE_PANELS = ["docs/index.html"];
 
 /** Pages that carry at least one prose specimen — the proof grid, the per-locale cards, or the
  * rules table's In/Out cells. /playground has none: its output pane is filled by the client. */
@@ -232,7 +235,8 @@ describe.each(PAGES)("promo/%s — no line number is baked into the text", (page
       expect(panels.length).toBeGreaterThan(0);
       expect(lines.length).toBeGreaterThan(0);
     } else {
-      // /playground's panels are all filled by the client; /locales and /manifesto have none.
+      // Home's and /playground's panels are all filled by the client; /locales and /manifesto
+      // have none.
       expect(lines.length).toBe(0);
     }
   });
@@ -359,8 +363,9 @@ describe("promo — a code panel contains code, and nothing else", () => {
   });
 
   it("finds the panes it is about to check (guards every assertion below from vacuity)", () => {
-    // 5 language panes on Home, 5 + 3 build panes on Docs.
-    expect(panes.length).toBe(13);
+    // 5 language panes + 3 build panes, all on Docs — the only page with baked-in panes now that
+    // Home's own copy of the five language panes is gone (see PAGES_WITH_FILLED_CODE_PANELS).
+    expect(panes.length).toBe(8);
   });
 
   it("states no output in a comment — the `// →` / `# =>` form is gone", () => {

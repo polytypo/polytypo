@@ -3,122 +3,39 @@
     {{svg:logo/polytypo-lockup-current.svg}}
   </div>
   <h1>The em dash was mine before AI.</h1>
-  <p class="tagline" style="margin-top: var(--space-3); font-size: 20px">
-    <code>—</code> is typography, not a watermark.
+  <p class="tagline" style="margin-top: var(--space-3)">
+    <code>«—»</code> is typography, not an AI watermark.
   </p>
-  <p class="tagline" style="margin-top: var(--space-7)">
-    Polytypo automates typographic craft correctly: {{locale_count}} locales, one portable spec,
-    {{rules_count}} rules — quotes, dashes, ellipses, apostrophes, symbols, and the no-break spaces
-    nobody sees until they're missing. JavaScript is the implemented runtime today; four more ports
-    are planned from the same spec.
+  <p class="tagline" style="margin-top: var(--space-6)">
+    Paste your own text below and pick a locale — this is the real engine, running in your browser.
   </p>
 </header>
 
+<p class="eyebrow" style="margin-top: var(--space-9)">Try it</p>
 {{playground}}
-
 <p class="small muted" style="margin-top: var(--space-4)">
-  Every field's own comment carries its type, default and allowed values.
-  <strong>None of them fall back to a default when the value is wrong or missing</strong> — each
-  throws its own error, with a machine-readable <code>code</code>, rather than guessing what you
-  meant. Full option and error-code reference — <a href="{{prefix}}docs/#use">Docs</a>.
+  Full call reference — <a href="{{prefix}}docs/">Docs</a>.
 </p>
 
-<section id="why-it-exists">
-  <p>
-    A dash, a curly quote, or a non-breaking space in your text isn't proof a model wrote it —
-    publishers, typesetters, and copyeditors have set them this way, deliberately and by
-    locale-specific convention, since long before any language model existed. When correct
-    punctuation gets read as an AI signal, writers get pushed toward flatter, safer punctuation —
-    the wrong incentive.
-  </p>
-
-  <div class="cta-row">
-    <a class="btn" href="{{prefix}}playground/">Open the Full Playground →</a>
-    <a class="btn secondary" href="{{prefix}}docs/">Read the Docs</a>
-    <a class="btn secondary" href="{{prefix}}manifesto/">Read the Manifesto</a>
-  </div>
-</section>
-
 <section id="proof">
+  <p class="eyebrow" style="margin-top: 0">Proof</p>
   <h2>The same sentence. {{Proof_count}} different, correct answers.</h2>
   <p class="small muted" style="max-width: 60ch">
-    Every card below runs the exact same input string — straight quotes, a straight hyphen — through
-    <code>transform()</code>. Nothing is typed by hand. Only the locale changes; quote style, dash
-    style, and spacing all follow.
+    Every card below runs the exact same input string through <code>transform()</code>. Only the
+    locale changes; quote style, dash style, and spacing all follow.
   </p>
-  <div class="card-grid card-grid--responsive">{{proof_grid}}</div>
-  {{proof_legend}}
-  <p>
-    German lowers the opening quote. Swiss German turns it into guillemets pointing outward. French
-    puts a no-break space <em>inside</em> them (U+00A0) and a narrow one before
-    <code>! ? ;</code> (U+202F). Finnish and Swedish close with the same glyph they open with.
-    British English swaps the primary and secondary levels round. Every one of these is correct — in
-    exactly one place.
+  {{proof_input}}
+  <div class="card-grid card-grid--six">{{proof_grid}}</div>
+  <p class="small muted" style="max-width: 60ch">
+    English (US) opens with a curly double quote and a tight em dash. British English swaps the
+    primary and secondary levels round, with a spaced en dash instead. German lowers the opening
+    quote. Swiss German turns it into guillemets pointing outward. French puts a no-break space
+    inside its guillemets (U+00A0) and a narrow one before <code>! ? ;</code> (U+202F). Russian
+    pairs French-style guillemets with German's low-high secondary marks. Every one of these is
+    correct — in exactly one place.
   </p>
   <p class="small muted">
     Full coverage table, citations and how a locale gets added —
     <a href="{{prefix}}locales/">Locales</a>.
   </p>
-</section>
-
-<section id="languages">
-  <p class="eyebrow" style="margin-top: 0">JavaScript today. Four planned ports — pick a preview</p>
-  <div class="tabs" id="lang-tabs"></div>
-  <div id="lang-panes">{{code_panes}}</div>
-</section>
-
-<section id="why">
-  <p class="eyebrow">Why this and not a regex</p>
-  <h2>Because the fifth port is where regex-based typography dies.</h2>
-  <div class="card-grid card-grid--responsive">
-    <div class="card">
-      <h3 style="margin: 0 0 6px">The spec is the product</h3>
-      <p class="small muted" style="margin: 0">
-        Locale data, rule semantics and conformance fixtures live in one repository. An
-        implementation is polytypo <em>iff</em> it passes the suite for the spec version it claims.
-        Runtimes are replaceable; the spec is not.
-      </p>
-    </div>
-    <div class="card">
-      <h3 style="margin: 0 0 6px">No regex in the core</h3>
-      <p class="small muted" style="margin: 0">
-        Go's RE2 has no lookbehind. A rule written as a clever regex in one language is a rule
-        rewritten from scratch in the next. Rules are a single left-to-right scan over code points
-        with explicit lookaround.
-      </p>
-    </div>
-    <div class="card">
-      <h3 style="margin: 0 0 6px">Idempotent by contract</h3>
-      <p class="small muted" style="margin: 0">
-        <code>transform(transform(x)) === transform(x)</code>, proven by property-based tests, not
-        hoped for. Running it twice — in a CMS, in CI, in a build step — cannot corrupt text.
-      </p>
-    </div>
-    <div class="card">
-      <h3 style="margin: 0 0 6px">Every locale is cited</h3>
-      <p class="small muted" style="margin: 0">
-        Duden, Imprimerie nationale, Kotus, Språkrådet, Chicago, Мильчин. A locale ships only as a
-        triple: data, fixtures, citation. Disagreements are settled by source, not by preference.
-      </p>
-    </div>
-  </div>
-  <p class="small muted">
-    Full list of reasons, including how coverage grows —
-    <a href="{{prefix}}docs/#why">Docs → Why this and not a regex</a>.
-  </p>
-</section>
-
-<section id="status">
-  <h2>Spec {{spec_version}}. One runtime, today.</h2>
-  <p>
-    This project publishes what exists and says plainly what does not. Nothing below is a roadmap
-    promise with a date attached.
-  </p>
-  {{status_table}}
-  <div class="note">
-    <p>
-      A behaviour change is a spec change first and code second. If you find a bug, the fix begins
-      with a fixture — that is how five implementations stay the same implementation.
-    </p>
-  </div>
 </section>

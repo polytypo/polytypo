@@ -124,7 +124,12 @@ footer.static-note { font-size: 0.7rem; color: var(--muted); padding: 1rem; }
 /** Builds REVIEW.html's complete content. `entries` must be in the same canonical order
  * `changes.json` lists them in (files in discovery order, review changes ascending old-offset
  * within a file) -- the embedded `ids` array preserves that order for deterministic export. */
-export function buildReviewHtml(entries: readonly ReviewChangeEntry[], evidenceReviewHash: string, meta: ReviewHtmlMeta, reviewRuntimeSource: string): string {
+export function buildReviewHtml(
+  entries: readonly ReviewChangeEntry[],
+  evidenceReviewHash: string,
+  meta: ReviewHtmlMeta,
+  reviewRuntimeSource: string,
+): string {
   const entriesById: Record<string, unknown> = {};
   const ids: string[] = [];
   for (const e of entries) {
@@ -573,5 +578,9 @@ export function buildReviewHtml(entries: readonly ReviewChangeEntry[], evidenceR
 }
 
 function escapeHtml(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }

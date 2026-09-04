@@ -28,4 +28,6 @@ if (!result.ok) {
   process.exit(1);
 }
 
-console.log(`ok: canonical spec tag "${result.tagName}" resolves to commit ${result.commit}, matching the release commit.`);
+console.log(
+  `ok: canonical spec tag "${result.tagName}" resolves to commit ${result.commit}, matching the release commit.`,
+);

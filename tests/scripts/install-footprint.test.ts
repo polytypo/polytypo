@@ -6,7 +6,10 @@
 // occurrence it meets — and never revisits the identity again once the key is marked seen, even
 // when a fuller occurrence of the identical identity shows up later in the same tree.
 import { describe, expect, it } from "vitest";
-import { collectDependencyGraph, countInstalledDirectories } from "../../scripts/lib/install-footprint.mjs";
+import {
+  collectDependencyGraph,
+  countInstalledDirectories,
+} from "../../scripts/lib/install-footprint.mjs";
 
 describe("scripts/lib/install-footprint.mjs — collectDependencyGraph()", () => {
   it("discovers descendants reachable only through a later, fuller occurrence of an already-seen identity", () => {

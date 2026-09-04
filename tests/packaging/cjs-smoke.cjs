@@ -14,7 +14,10 @@ const { PolytypoError: PolytypoErrorFromText, transform: transformText } = requi
 const locale = "en-US";
 
 assert.equal(transformText("x...y", { locale }), "x…y");
-assert.equal(transformText("x...y", { locale }), transformAggregate("x...y", { locale, mode: "text" }));
+assert.equal(
+  transformText("x...y", { locale }),
+  transformAggregate("x...y", { locale, mode: "text" }),
+);
 
 assert.equal(transformHtml("<p>x...y</p>", { locale }), "<p>x…y</p>");
 assert.equal(

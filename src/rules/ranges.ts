@@ -107,8 +107,7 @@ function scan(ctx: RuleContext): Edit[] {
     // ranges.md 3.3.1: never make an edit whose entire content is invisible. Try the unbound
     // replacement first; only add the joiner pair if the dash itself is genuinely changing.
     const unbound = buildReplacement(style, false);
-    const onlyBindingWouldChange =
-      !isSpaced(style) && sameContent(cp, spanStart, spanEnd, unbound);
+    const onlyBindingWouldChange = !isSpaced(style) && sameContent(cp, spanStart, spanEnd, unbound);
     const bind = !isSpaced(style) && !onlyBindingWouldChange;
     const replacement = bind ? buildReplacement(style, true) : unbound;
     if (sameContent(cp, spanStart, spanEnd, replacement)) continue;

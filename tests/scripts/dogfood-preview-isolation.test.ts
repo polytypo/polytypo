@@ -15,20 +15,45 @@ import {
   checkQuotePairLinksSymmetric,
 } from "../../scripts/dogfood/consistency.js";
 import { attributeReviewChanges } from "../../scripts/dogfood/attribution.js";
-import { buildReviewChangeEntries, buildReviewMarkdown, reviewChangeAnchor } from "../../scripts/dogfood/evidence.js";
+import {
+  buildReviewChangeEntries,
+  buildReviewMarkdown,
+  reviewChangeAnchor,
+} from "../../scripts/dogfood/evidence.js";
 import { computeQuotePairing } from "../../scripts/dogfood/quote-pairing.js";
 import type { FileResult } from "../../scripts/dogfood/transform-corpus.js";
 
 function fakeResult(path: string, original: string, full: string): FileResult {
   const diff = computeFileDiff(path, original, full);
-  const attr = attributeReviewChanges(original, { locale: "en-US", mode: "text" }, diff.reviewChanges);
+  const attr = attributeReviewChanges(
+    original,
+    { locale: "en-US", mode: "text" },
+    diff.reviewChanges,
+  );
   const quotePairing = computeQuotePairing(original, diff.reviewChanges, attr);
-  return { path, bytes: 0, sha256: "x", status: "changed", idempotencyOk: true, diff, originalText: original, transformedText: full, attribution: attr, quotePairing };
+  return {
+    path,
+    bytes: 0,
+    sha256: "x",
+    status: "changed",
+    idempotencyOk: true,
+    diff,
+    originalText: original,
+    transformedText: full,
+    attribution: attr,
+    quotePairing,
+  };
 }
 
 function fakeManifest(entries: ReturnType<typeof buildReviewChangeEntries>) {
   return {
-    command: { locale: "en-US", localeRationale: "", mode: "text", dialect: "commonmark", corpus: "/x" },
+    command: {
+      locale: "en-US",
+      localeRationale: "",
+      mode: "text",
+      dialect: "commonmark",
+      corpus: "/x",
+    },
     results: {
       changedFileCount: 1,
       unchangedFileCount: 0,
@@ -58,7 +83,9 @@ describe("acceptance item 1: apostrophe + nearby dash in the same preview window
     expect(apostropheRc).toBeDefined();
     // Close enough (well within the 40-code-point preview radius) that the old full-transformed-
     // file preview would have pulled one into the other's window.
-    expect(Math.abs(apostropheRc!.oldOffset.codePointStart - dashRc!.oldOffset.codePointStart)).toBeLessThan(40);
+    expect(
+      Math.abs(apostropheRc!.oldOffset.codePointStart - dashRc!.oldOffset.codePointStart),
+    ).toBeLessThan(40);
   });
 
   it("1/2. the apostrophe row's isolated preview does not show the dash's own edit, and vice versa", () => {
@@ -67,14 +94,18 @@ describe("acceptance item 1: apostrophe + nearby dash in the same preview window
 
     // The apostrophe row's isolated "after" picture must show the dash exactly as it was in the
     // SOURCE (a literal ASCII "-", never the em dash the dash row's own edit produced).
-    const apostropheIsolatedFull = apostropheRc.previewIsolatedLeading.text + apostropheRc.after + apostropheRc.previewIsolatedTrailing.text;
+    const apostropheIsolatedFull =
+      apostropheRc.previewIsolatedLeading.text +
+      apostropheRc.after +
+      apostropheRc.previewIsolatedTrailing.text;
     expect(apostropheIsolatedFull).toContain("year - nearly");
     expect(apostropheIsolatedFull).not.toContain("year—nearly");
 
     // Symmetrically, the dash row's isolated "after" picture must show the apostrophe exactly as
     // it was in the source (a literal ASCII "'"), never the curly apostrophe the apostrophe row's
     // own edit produced.
-    const dashIsolatedFull = dashRc.previewIsolatedLeading.text + dashRc.after + dashRc.previewIsolatedTrailing.text;
+    const dashIsolatedFull =
+      dashRc.previewIsolatedLeading.text + dashRc.after + dashRc.previewIsolatedTrailing.text;
     expect(dashIsolatedFull).toContain("everyone's");
     expect(dashIsolatedFull).not.toContain("everyone’s");
   });
@@ -84,9 +115,12 @@ describe("acceptance item 1: apostrophe + nearby dash in the same preview window
       expect(rc.previewIsolatedLeading.text).toBe(rc.previewOldLeading.text);
       expect(rc.previewIsolatedTrailing.text).toBe(rc.previewOldTrailing.text);
       const sourceFull = rc.previewOldLeading.text + rc.before + rc.previewOldTrailing.text;
-      const isolatedFull = rc.previewIsolatedLeading.text + rc.after + rc.previewIsolatedTrailing.text;
+      const isolatedFull =
+        rc.previewIsolatedLeading.text + rc.after + rc.previewIsolatedTrailing.text;
       // The only thing that ever changes between the two full windows is the marked span itself.
-      expect(sourceFull.slice(0, rc.previewOldLeading.text.length)).toBe(isolatedFull.slice(0, rc.previewIsolatedLeading.text.length));
+      expect(sourceFull.slice(0, rc.previewOldLeading.text.length)).toBe(
+        isolatedFull.slice(0, rc.previewIsolatedLeading.text.length),
+      );
     }
   });
 
@@ -97,8 +131,14 @@ describe("acceptance item 1: apostrophe + nearby dash in the same preview window
 
   it("a corrupted previewIsolatedLeading (diverging from previewOldLeading) is caught", () => {
     const [rc, ...rest] = diff.reviewChanges;
-    const corrupted = { ...rc!, previewIsolatedLeading: { text: "totally different text", truncated: false } };
-    const badResult: FileResult = { ...result, diff: { ...diff, reviewChanges: [corrupted, ...rest] } };
+    const corrupted = {
+      ...rc!,
+      previewIsolatedLeading: { text: "totally different text", truncated: false },
+    };
+    const badResult: FileResult = {
+      ...result,
+      diff: { ...diff, reviewChanges: [corrupted, ...rest] },
+    };
     const issues = checkPreviewMatchesSource([badResult]);
     expect(issues.some((i) => i.includes("previewIsolatedLeading"))).toBe(true);
   });
@@ -150,8 +190,12 @@ describe("acceptance item 2: stable anchors and real symmetric quote-pair links"
   it("6/7. REVIEW.md renders a real relative pair link resolving to an anchor that exists exactly once, symmetric both ways", () => {
     const entries = buildReviewChangeEntries([result]);
     const md = buildReviewMarkdown(fakeManifest(entries), entries, [result]);
-    const opening = entries.find((e) => e.quotePairing?.status === "paired" && e.quotePairing.role === "opening")!;
-    const closing = entries.find((e) => e.quotePairing?.status === "paired" && e.quotePairing.role === "closing")!;
+    const opening = entries.find(
+      (e) => e.quotePairing?.status === "paired" && e.quotePairing.role === "opening",
+    )!;
+    const closing = entries.find(
+      (e) => e.quotePairing?.status === "paired" && e.quotePairing.role === "closing",
+    )!;
     expect(opening).toBeDefined();
     expect(closing).toBeDefined();
 
@@ -181,9 +225,15 @@ describe("acceptance item 2: stable anchors and real symmetric quote-pair links"
 
   it("an asymmetric quotePairing (one side does not link back) is caught", () => {
     const entries = buildReviewChangeEntries([result]);
-    const opening = entries.find((e) => e.quotePairing?.status === "paired" && e.quotePairing.role === "opening")!;
-    const closing = entries.find((e) => e.quotePairing?.status === "paired" && e.quotePairing.role === "closing")!;
-    const corrupted = entries.map((e) => (e.id === closing.id ? { ...e, quotePairing: { status: "unknown" as const } } : e));
+    const opening = entries.find(
+      (e) => e.quotePairing?.status === "paired" && e.quotePairing.role === "opening",
+    )!;
+    const closing = entries.find(
+      (e) => e.quotePairing?.status === "paired" && e.quotePairing.role === "closing",
+    )!;
+    const corrupted = entries.map((e) =>
+      e.id === closing.id ? { ...e, quotePairing: { status: "unknown" as const } } : e,
+    );
     const issues = checkQuotePairLinksSymmetric(corrupted);
     expect(issues.some((i) => i.includes(opening.id) || i.includes("not symmetric"))).toBe(true);
   });

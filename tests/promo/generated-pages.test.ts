@@ -40,13 +40,13 @@ describe("promo pages — the em-dash thesis is present where required", () => {
   it("the home page leads with the thesis", () => {
     const html = readPromoPage("index.html");
     expect(html).toContain("The em dash was mine before AI.");
-    expect(html).toContain("is typography, not a watermark.");
+    expect(html).toContain("is typography, not an AI watermark.");
   });
 
   it("the manifesto states the thesis independently of the home page", () => {
     const html = readPromoPage("manifesto/index.html");
     expect(html).toContain("The em dash was mine before AI.");
-    expect(html).toContain("is typography, not a watermark.");
+    expect(html).toContain("is typography, not an AI watermark.");
   });
 
   it("the manifesto has its own stable URL (/manifesto) and is reachable from the home page", () => {
@@ -64,23 +64,34 @@ describe("promo pages — the em-dash thesis is present where required", () => {
 });
 
 describe("promo pages — honest runtime and claim wording", () => {
-  it("states JavaScript is the implemented runtime today, not a broader claim", () => {
-    const html = readPromoPage("index.html");
-    expect(html).toMatch(/JavaScript is the implemented runtime today/);
-  });
-
-  it("does not claim the npm package is published", () => {
+  // The site describes what the script does and lets you try it — it does not report on itself:
+  // no install command, no publish/registry status, no "planned" language for the four ports that
+  // don't exist yet. Nothing here to overclaim, because publish state is never mentioned at all —
+  // this project ships what exists and announces a package once it's real, not before.
+  it("no page mentions install commands, registries, or publish/planned status", () => {
     for (const page of PAGES) {
       const html = readPromoPage(page).toLowerCase();
-      for (const claim of ["available on npm", "published to npm", "now on npm", "npm i polytypo"]) {
-        expect(html).not.toContain(claim);
+      for (const term of [
+        "npm install",
+        "pip install",
+        "go get ",
+        "gem install",
+        "composer require",
+        "npm i polytypo",
+        "coming soon",
+        "— planned",
+        "not yet published",
+        "available on npm",
+        "published to npm",
+        "now on npm",
+        "pypi",
+        "packagist",
+        "rubygems",
+        "go modules",
+      ]) {
+        expect(html).not.toContain(term);
       }
     }
-    // "npm install polytypo" legitimately appears in the code sample, always paired with its
-    // own "not yet published" status badge — assert that honest pairing is still there.
-    const home = readPromoPage("index.html");
-    expect(home).toContain("npm install polytypo");
-    expect(home).toContain("npm — not yet published");
   });
 
   it("does not claim virality, adoption, or measured accuracy anywhere in generated copy", () => {
@@ -154,5 +165,53 @@ describe("promo pages — no analytics, trackers, cookies, or remote sharing SDK
     const html = readPromoPage("index.html");
     expect(html).toContain("script.src = ENGINE_SRC");
     expect(html).toContain('document.createElement("script")');
+  });
+});
+
+describe("promo site — favicon, robots.txt, sitemap.xml", () => {
+  it.each([
+    ["index.html", ""],
+    ["docs/index.html", "../"],
+    ["playground/index.html", "../"],
+    ["locales/index.html", "../"],
+    ["manifesto/index.html", "../"],
+  ])("%s links its favicon at the correct depth, and every linked file exists", (page, prefix) => {
+    const html = readPromoPage(page);
+    expect(html).toContain(`<link rel="icon" href="${prefix}assets/favicon/favicon.svg"`);
+    expect(html).toContain(`<link rel="icon" href="${prefix}assets/favicon/favicon.ico"`);
+    expect(html).toContain(
+      `<link rel="apple-touch-icon" href="${prefix}assets/favicon/apple-touch-icon-180.png">`,
+    );
+    for (const name of [
+      "favicon.svg",
+      "favicon.ico",
+      "favicon-16.png",
+      "favicon-32.png",
+      "favicon-48.png",
+      "apple-touch-icon-180.png",
+    ]) {
+      expect(existsSync(path.join(PROMO_DIR, "assets", "favicon", name))).toBe(true);
+    }
+  });
+
+  it("robots.txt allows everything and points at the sitemap", () => {
+    const robots = readFileSync(path.join(PROMO_DIR, "robots.txt"), "utf8");
+    expect(robots).toContain("User-agent: *");
+    expect(robots).toContain("Allow: /");
+    expect(robots).toContain("Sitemap: https://polytypo.js.org/sitemap.xml");
+  });
+
+  it("sitemap.xml lists exactly the five generated pages, as absolute directory URLs", () => {
+    const sitemap = readFileSync(path.join(PROMO_DIR, "sitemap.xml"), "utf8");
+    for (const loc of [
+      "https://polytypo.js.org/",
+      "https://polytypo.js.org/docs/",
+      "https://polytypo.js.org/playground/",
+      "https://polytypo.js.org/locales/",
+      "https://polytypo.js.org/manifesto/",
+    ]) {
+      expect(sitemap).toContain(`<loc>${loc}</loc>`);
+    }
+    expect(sitemap.match(/<url>/g)).toHaveLength(5);
   });
 });

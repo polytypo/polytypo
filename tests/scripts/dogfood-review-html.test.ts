@@ -11,18 +11,44 @@ import { buildReviewHtml, inlineReviewRuntime } from "../../scripts/dogfood/revi
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-const REVIEW_RUNTIME_SOURCE = readFileSync(path.join(__dirname, "..", "..", "scripts", "dogfood", "review-runtime.js"), "utf8");
+const REVIEW_RUNTIME_SOURCE = readFileSync(
+  path.join(__dirname, "..", "..", "scripts", "dogfood", "review-runtime.js"),
+  "utf8",
+);
 
 function buildFixtureHtml(original: string, evidenceReviewHash = "a".repeat(64)) {
   const full = transform(original, { locale: "en-US", mode: "text" });
   const diff = computeFileDiff("f.md", original, full);
-  const attr = attributeReviewChanges(original, { locale: "en-US", mode: "text" }, diff.reviewChanges);
-  const result = { path: "f.md", bytes: 0, sha256: "x", status: "changed" as const, idempotencyOk: true, diff, originalText: original, transformedText: full, attribution: attr };
+  const attr = attributeReviewChanges(
+    original,
+    { locale: "en-US", mode: "text" },
+    diff.reviewChanges,
+  );
+  const result = {
+    path: "f.md",
+    bytes: 0,
+    sha256: "x",
+    status: "changed" as const,
+    idempotencyOk: true,
+    diff,
+    originalText: original,
+    transformedText: full,
+    attribution: attr,
+  };
   const entries = buildReviewChangeEntries([result]);
   const html = buildReviewHtml(
     entries,
     evidenceReviewHash,
-    { corpus: "/x", locale: "en-US", mode: "text", dialect: "commonmark", specVersion: "0.0.0", implementationAggregateHash: "b".repeat(64), corpusAggregateHash: "c".repeat(64), gitHead: "deadbeef" },
+    {
+      corpus: "/x",
+      locale: "en-US",
+      mode: "text",
+      dialect: "commonmark",
+      specVersion: "0.0.0",
+      implementationAggregateHash: "b".repeat(64),
+      corpusAggregateHash: "c".repeat(64),
+      gitHead: "deadbeef",
+    },
     REVIEW_RUNTIME_SOURCE,
   );
   return { html, entries };
@@ -75,7 +101,9 @@ describe("REVIEW.html: no external requests, no CDN, no unsafe sinks", () => {
 
 describe("REVIEW.html: user-controlled / corpus-derived content is never live markup", () => {
   it("14. a review row's before/after text containing HTML/script-like content is embedded only as JSON data inside a <script> block, and the page's own runtime never inserts it via innerHTML -- so an HTML parser never treats it as markup, even though the literal characters appear in the JSON blob (that is normal, safe: content inside a <script> element's text is never tag-parsed by the HTML tokenizer, only JS-parsed)", () => {
-    const { html } = buildFixtureHtml('Text with "<img src=x onerror=alert(1)>" and \'quotes\' here.\n');
+    const { html } = buildFixtureHtml(
+      "Text with \"<img src=x onerror=alert(1)>\" and 'quotes' here.\n",
+    );
     // Never assigned to innerHTML/outerHTML anywhere in the page's script logic (already covered
     // by a dedicated test above) -- that is what actually determines whether this text can ever
     // become live markup, not whether the substring appears in the JSON data blob.
@@ -88,7 +116,9 @@ describe("REVIEW.html: user-controlled / corpus-derived content is never live ma
   });
 
   it("a literal </script> inside corpus text cannot prematurely close the embedded data <script> block", () => {
-    const { html } = buildFixtureHtml('See the "</script><script>alert(1)</script>" example here.\n');
+    const { html } = buildFixtureHtml(
+      'See the "</script><script>alert(1)</script>" example here.\n',
+    );
     // The specific danger is the HTML tokenizer seeing a real "</script>" close sequence while
     // still inside the data <script> element's text, which would truncate that element early and
     // let everything after it (including "<script>alert(1)</script>") be parsed as new markup /a
@@ -111,7 +141,16 @@ describe("REVIEW.html: user-controlled / corpus-derived content is never live ma
     const withHostileMeta = buildReviewHtml(
       buildFixtureHtml("It's fine.\n").entries,
       "a".repeat(64),
-      { corpus: '<script>alert(1)</script>', locale: "en-US", mode: "text", dialect: "commonmark", specVersion: "0", implementationAggregateHash: "b".repeat(64), corpusAggregateHash: "c".repeat(64), gitHead: "x" },
+      {
+        corpus: "<script>alert(1)</script>",
+        locale: "en-US",
+        mode: "text",
+        dialect: "commonmark",
+        specVersion: "0",
+        implementationAggregateHash: "b".repeat(64),
+        corpusAggregateHash: "c".repeat(64),
+        gitHead: "x",
+      },
       REVIEW_RUNTIME_SOURCE,
     );
     expect(withHostileMeta).not.toContain("<script>alert(1)</script>");

@@ -37,9 +37,7 @@ function run(command, args, opts = {}) {
   const result = spawnSync(command, args, { encoding: "utf8", ...opts });
   if (result.status !== 0) {
     const label = [command, ...args].join(" ");
-    throw new Error(
-      `command failed (${label}):\n${result.stdout ?? ""}\n${result.stderr ?? ""}`,
-    );
+    throw new Error(`command failed (${label}):\n${result.stdout ?? ""}\n${result.stderr ?? ""}`);
   }
   return result;
 }
@@ -79,11 +77,7 @@ try {
     const tarballDir = path.join(tmpRoot, "tarball");
     await mkdir(tarballDir);
     console.log(`\npacking (real npm pack, not --dry-run) into ${tarballDir}...`);
-    const packOut = run(
-      "npm",
-      ["pack", "--pack-destination", tarballDir, "--json"],
-      { cwd: ROOT },
-    );
+    const packOut = run("npm", ["pack", "--pack-destination", tarballDir, "--json"], { cwd: ROOT });
     const [packResult] = JSON.parse(packOut.stdout);
     tarballPath = path.join(tarballDir, packResult.filename);
     console.log(`tarball: ${tarballPath} (${packResult.size} bytes packed)`);
@@ -265,8 +259,18 @@ transformMarkdown("x", markdownOptions);
     { specifier: "polytypo/markdown", name: "markdown" },
   ];
   const CASES = [
-    { label: "import (.mts)", containingFile: mtsPath, resolutionMode: ts.ModuleKind.ESNext, expectedExt: ".d.ts" },
-    { label: "require (.cts)", containingFile: ctsPath, resolutionMode: ts.ModuleKind.CommonJS, expectedExt: ".d.cts" },
+    {
+      label: "import (.mts)",
+      containingFile: mtsPath,
+      resolutionMode: ts.ModuleKind.ESNext,
+      expectedExt: ".d.ts",
+    },
+    {
+      label: "require (.cts)",
+      containingFile: ctsPath,
+      resolutionMode: ts.ModuleKind.CommonJS,
+      expectedExt: ".d.cts",
+    },
   ];
   const compilerOptions = {
     module: ts.ModuleKind.NodeNext,
@@ -292,13 +296,18 @@ transformMarkdown("x", markdownOptions);
       }
       const resolvedPath = resolved.resolvedFileName;
       const expectedFile = `node_modules/polytypo/dist/${entry.name}${testCase.expectedExt}`;
-      if (!resolvedPath.endsWith(testCase.expectedExt) || !resolvedPath.includes(`polytypo/dist/${entry.name}`)) {
+      if (
+        !resolvedPath.endsWith(testCase.expectedExt) ||
+        !resolvedPath.includes(`polytypo/dist/${entry.name}`)
+      ) {
         resolutionFailures.push(
           `${entry.specifier} under ${testCase.label}: expected .../${expectedFile}, got ${resolvedPath}`,
         );
         continue;
       }
-      console.log(`ok    ${entry.specifier.padEnd(20)} ${testCase.label.padEnd(16)} -> ${path.relative(consumerDir, resolvedPath)}`);
+      console.log(
+        `ok    ${entry.specifier.padEnd(20)} ${testCase.label.padEnd(16)} -> ${path.relative(consumerDir, resolvedPath)}`,
+      );
     }
   }
   if (resolutionFailures.length > 0) {

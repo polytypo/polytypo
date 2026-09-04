@@ -79,8 +79,10 @@ function hasClass(el: Element, cls: string): boolean {
 }
 
 /** Parses the rendered proof cards (`<div class="card" data-locale="…">`) out of one generated
- * promo page, in document order, as { locale, in, out }. */
-function parseProofCards(html: string): Array<{ locale: string; in: string; out: string }> {
+ * promo page, in document order, as { locale, out }. The shared input (identical across every
+ * card by construction) is rendered once, above the grid, not repeated per card — see
+ * parseProofInput() for that. */
+function parseProofCards(html: string): Array<{ locale: string; out: string }> {
   const document = parse(html);
   const cardEls = findAll(
     document,
@@ -88,13 +90,24 @@ function parseProofCards(html: string): Array<{ locale: string; in: string; out:
   );
   return cardEls.map((card) => {
     const locale = attr(card, "data-locale")!;
-    const inEl = findAll(card, (el) => el.tagName === "div" && hasClass(el, "in"))[0];
     const outEl = findAll(card, (el) => el.tagName === "div" && hasClass(el, "out"))[0];
-    if (!inEl || !outEl) {
-      throw new Error(`proof card for ${locale} is missing its .in or .out element`);
+    if (!outEl) {
+      throw new Error(`proof card for ${locale} is missing its .out element`);
     }
-    return { locale, in: extractText(inEl), out: extractText(outEl) };
+    return { locale, out: extractText(outEl) };
   });
+}
+
+/** Parses the one shared input specimen rendered once above the proof grid
+ * (`<div class="specimen proof-shared-input">`), not repeated inside each card. */
+function parseProofInput(html: string): string {
+  const document = parse(html);
+  const el = findAll(
+    document,
+    (node) => node.tagName === "div" && hasClass(node, "proof-shared-input"),
+  )[0];
+  if (!el) throw new Error("shared proof input specimen (.proof-shared-input) not found");
+  return extractText(el);
 }
 
 describe("promo/examples.json — proofLocales is the single source of truth", () => {
@@ -119,6 +132,12 @@ describe.each(["index.html", "manifesto/index.html"])("promo/%s — rendered pro
   const byLocale = new Map(data.locales.map((l) => [l.locale, l]));
   const html = readPromoPage(page);
   const cards = parseProofCards(html);
+  const sharedInput = parseProofInput(html);
+
+  it("renders the shared input exactly once, matching examples.json's recorded `proof.in`", () => {
+    const first = data.proofLocales[0]!;
+    expect(sharedInput).toBe(byLocale.get(first)?.proof?.in);
+  });
 
   it("renders exactly the locales declared in examples.json's proofLocales, in order", () => {
     expect(cards.map((c) => c.locale)).toEqual(data.proofLocales);
@@ -132,15 +151,9 @@ describe.each(["index.html", "manifesto/index.html"])("promo/%s — rendered pro
     }
   });
 
-  it("all rendered cards share byte-identical input text", () => {
-    expect(cards.length).toBeGreaterThan(0);
-    const first = cards[0]!.in;
-    for (const card of cards) expect(card.in).toBe(first);
-  });
-
   it("every rendered card's output equals a fresh transform() call for its locale (not stale/hand-authored)", () => {
     for (const card of cards) {
-      const fresh = transform(card.in, { locale: card.locale });
+      const fresh = transform(sharedInput, { locale: card.locale });
       expect(card.out).toBe(fresh);
     }
   });
@@ -149,7 +162,7 @@ describe.each(["index.html", "manifesto/index.html"])("promo/%s — rendered pro
     for (const card of cards) {
       const proof = byLocale.get(card.locale)?.proof;
       expect(proof).toBeDefined();
-      expect(card.in).toBe(proof!.in);
+      expect(proof!.in).toBe(sharedInput);
       expect(card.out).toBe(proof!.out);
     }
   });
@@ -167,16 +180,21 @@ describe.each(["index.html", "manifesto/index.html"])("promo/%s — rendered pro
 });
 
 describe("promo/index.html vs promo/manifesto/index.html — same proof set on both pages", () => {
-  const indexCards = parseProofCards(readPromoPage("index.html"));
-  const manifestoCards = parseProofCards(readPromoPage("manifesto/index.html"));
+  const indexHtml = readPromoPage("index.html");
+  const manifestoHtml = readPromoPage("manifesto/index.html");
+  const indexCards = parseProofCards(indexHtml);
+  const manifestoCards = parseProofCards(manifestoHtml);
 
   it("both pages render the same locales in the same order", () => {
     expect(manifestoCards.map((c) => c.locale)).toEqual(indexCards.map((c) => c.locale));
   });
 
-  it("both pages render byte-identical input and output per locale", () => {
+  it("both pages render byte-identical shared input", () => {
+    expect(parseProofInput(manifestoHtml)).toBe(parseProofInput(indexHtml));
+  });
+
+  it("both pages render byte-identical output per locale", () => {
     for (let i = 0; i < indexCards.length; i++) {
-      expect(manifestoCards[i]!.in).toBe(indexCards[i]!.in);
       expect(manifestoCards[i]!.out).toBe(indexCards[i]!.out);
     }
   });

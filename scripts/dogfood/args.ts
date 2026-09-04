@@ -14,7 +14,8 @@ export interface DogfoodArgs {
   localeRationale: string;
 }
 
-export type ParsedDogfoodArgs = { args: DogfoodArgs; error?: undefined } | { args?: undefined; error: string };
+export type ParsedDogfoodArgs =
+  { args: DogfoodArgs; error?: undefined } | { args?: undefined; error: string };
 
 const REQUIRED_FLAGS = ["--corpus", "--out", "--locale", "--dialect"] as const;
 const OPTIONAL_FLAGS = ["--locale-rationale"] as const;

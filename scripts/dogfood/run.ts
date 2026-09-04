@@ -11,7 +11,12 @@ import path from "node:path";
 import type { Options } from "../../src/types.js";
 import { getLocaleData } from "../../src/engine/locale.js";
 import { checkAllConsistency } from "./consistency.js";
-import { buildCorpusManifest, discoverMdxFiles, manifestsEqual, type CorpusManifest } from "./corpus.js";
+import {
+  buildCorpusManifest,
+  discoverMdxFiles,
+  manifestsEqual,
+  type CorpusManifest,
+} from "./corpus.js";
 import { REVIEW_CHANGE_MAX_OLD_SPAN_CODEPOINTS } from "./diff.js";
 import { computeEvidenceReviewHash, digestArtifact, type EvidenceBlock } from "./evidence-hash.js";
 import {
@@ -25,7 +30,11 @@ import {
 import { buildImplementationInputsManifest } from "./implementation-inputs.js";
 import { assertSafeCorpusRoot, assertSafeOutputDir, findGitRoot } from "./paths.js";
 import { buildReviewHtml } from "./review-html.js";
-import { transformCorpus, type TransformCorpusResult, type TransformFn } from "./transform-corpus.js";
+import {
+  transformCorpus,
+  type TransformCorpusResult,
+  type TransformFn,
+} from "./transform-corpus.js";
 
 export const POLYTYPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -142,8 +151,14 @@ indicator, not a pass/fail verdict on the tool run. Even a fully-ACCEPTed bundle
 
 function readGitState(repoRoot: string): { head: string; dirty: boolean } {
   try {
-    const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: repoRoot, encoding: "utf8" }).trim();
-    const status = execFileSync("git", ["status", "--porcelain"], { cwd: repoRoot, encoding: "utf8" });
+    const head = execFileSync("git", ["rev-parse", "HEAD"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+    }).trim();
+    const status = execFileSync("git", ["status", "--porcelain"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+    });
     return { head, dirty: status.trim().length > 0 };
   } catch {
     return { head: "unknown", dirty: true };
@@ -152,7 +167,9 @@ function readGitState(repoRoot: string): { head: string; dirty: boolean } {
 
 function readPackageVersion(repoRoot: string): string {
   try {
-    const pkg = JSON.parse(readFileSync(path.join(repoRoot, "package.json"), "utf8")) as { version?: string };
+    const pkg = JSON.parse(readFileSync(path.join(repoRoot, "package.json"), "utf8")) as {
+      version?: string;
+    };
     return pkg.version ?? "unknown";
   } catch {
     return "unknown";
@@ -189,7 +206,11 @@ export function runDogfood(options: DogfoodOptions): DogfoodRunSummary {
   const relPaths = discoverMdxFiles(options.corpusRoot);
   const corpusPreRun: CorpusManifest = buildCorpusManifest(options.corpusRoot, relPaths);
 
-  const transformOptions: Options = { locale: options.locale, mode: "markdown", dialect: options.dialect };
+  const transformOptions: Options = {
+    locale: options.locale,
+    mode: "markdown",
+    dialect: options.dialect,
+  };
   const transformResult: TransformCorpusResult = transformCorpus(
     options.corpusRoot,
     relPaths,
@@ -201,17 +222,26 @@ export function runDogfood(options: DogfoodOptions): DogfoodRunSummary {
   // run must be caught even if some existing file's bytes never changed.
   const relPathsAfter = discoverMdxFiles(options.corpusRoot);
   const corpusPostRun: CorpusManifest = buildCorpusManifest(options.corpusRoot, relPathsAfter);
-  const corpusUnchanged = manifestsEqual(corpusPreRun, corpusPostRun) && corpusPreRun.files.length === corpusPostRun.files.length &&
-    corpusPreRun.files.every((f, i) => f.path === corpusPostRun.files[i]?.path && f.sha256 === corpusPostRun.files[i]?.sha256);
+  const corpusUnchanged =
+    manifestsEqual(corpusPreRun, corpusPostRun) &&
+    corpusPreRun.files.length === corpusPostRun.files.length &&
+    corpusPreRun.files.every(
+      (f, i) =>
+        f.path === corpusPostRun.files[i]?.path && f.sha256 === corpusPostRun.files[i]?.sha256,
+    );
 
   if (!corpusUnchanged) {
     failureReasons.push("corpus mutated during the run — pre-run and post-run manifests differ");
   }
   if (transformResult.counts.errored > 0) {
-    failureReasons.push(`${transformResult.counts.errored} file(s) failed to transform (malformed input)`);
+    failureReasons.push(
+      `${transformResult.counts.errored} file(s) failed to transform (malformed input)`,
+    );
   }
   if (transformResult.idempotencyFailures.length > 0) {
-    failureReasons.push(`${transformResult.idempotencyFailures.length} file(s) failed the idempotency check`);
+    failureReasons.push(
+      `${transformResult.idempotencyFailures.length} file(s) failed the idempotency check`,
+    );
   }
   if (transformResult.results.length !== relPaths.length) {
     failureReasons.push(
@@ -227,7 +257,9 @@ export function runDogfood(options: DogfoodOptions): DogfoodRunSummary {
     (sum, r) => sum + (r.status === "changed" && r.diff ? r.diff.atomicEdits.length : 0),
     0,
   );
-  const reviewChangeEntries: ReviewChangeEntry[] = buildReviewChangeEntries(transformResult.results);
+  const reviewChangeEntries: ReviewChangeEntry[] = buildReviewChangeEntries(
+    transformResult.results,
+  );
 
   const implementationInputs = buildImplementationInputsManifest(polytypoRoot);
   const gitState = readGitState(polytypoRoot);
@@ -271,7 +303,11 @@ export function runDogfood(options: DogfoodOptions): DogfoodRunSummary {
   // never written to disk.
   const manifestForMarkdown = buildManifestObject(null);
   const fullDiffText = buildFullDiff(transformResult.results);
-  const reviewMarkdown = buildReviewMarkdown(manifestForMarkdown, reviewChangeEntries, transformResult.results);
+  const reviewMarkdown = buildReviewMarkdown(
+    manifestForMarkdown,
+    reviewChangeEntries,
+    transformResult.results,
+  );
 
   // Evidence identity (Stage 10 Pass A second correction, item 5): computed from changes.json's
   // and REVIEW.md's own content -- both already fully determined above -- never from manifest.json
@@ -293,9 +329,14 @@ export function runDogfood(options: DogfoodOptions): DogfoodRunSummary {
 
   let reviewRuntimeSource = "";
   try {
-    reviewRuntimeSource = readFileSync(path.join(polytypoRoot, "scripts", "dogfood", "review-runtime.js"), "utf8");
+    reviewRuntimeSource = readFileSync(
+      path.join(polytypoRoot, "scripts", "dogfood", "review-runtime.js"),
+      "utf8",
+    );
   } catch (error) {
-    failureReasons.push(`evidence-generation failure: could not read review-runtime.js: ${error instanceof Error ? error.message : String(error)}`);
+    failureReasons.push(
+      `evidence-generation failure: could not read review-runtime.js: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
   const reviewHtml = buildReviewHtml(
     reviewChangeEntries,
@@ -343,7 +384,9 @@ export function runDogfood(options: DogfoodOptions): DogfoodRunSummary {
     }
   }
   const manifestResults = (
-    manifestObject as { results: { reviewChangeCount: number; unifiedDiffHunkCount: number; atomicEditCount: number } }
+    manifestObject as {
+      results: { reviewChangeCount: number; unifiedDiffHunkCount: number; atomicEditCount: number };
+    }
   ).results;
   failureReasons.push(
     ...checkAllConsistency({
@@ -367,11 +410,21 @@ export function runDogfood(options: DogfoodOptions): DogfoodRunSummary {
   // produce byte-identical JSON/Markdown. Catches non-determinism (unstable object-key order,
   // an uncontrolled timestamp) before it ever reaches disk, independent of the "run the whole
   // CLI twice" check the task's own verification step performs externally.
-  if (JSON.stringify(manifestObject, null, 2) !== JSON.stringify(buildManifestObject(evidenceBlock), null, 2)) {
-    failureReasons.push("consistency: manifest.json serialization is non-deterministic across two in-memory builds");
+  if (
+    JSON.stringify(manifestObject, null, 2) !==
+    JSON.stringify(buildManifestObject(evidenceBlock), null, 2)
+  ) {
+    failureReasons.push(
+      "consistency: manifest.json serialization is non-deterministic across two in-memory builds",
+    );
   }
-  if (changesJsonText !== JSON.stringify(buildReviewChangeEntries(transformResult.results), null, 2) + "\n") {
-    failureReasons.push("consistency: changes.json serialization is non-deterministic across two in-memory builds");
+  if (
+    changesJsonText !==
+    JSON.stringify(buildReviewChangeEntries(transformResult.results), null, 2) + "\n"
+  ) {
+    failureReasons.push(
+      "consistency: changes.json serialization is non-deterministic across two in-memory builds",
+    );
   }
   if (
     reviewHtml !==
@@ -391,19 +444,27 @@ export function runDogfood(options: DogfoodOptions): DogfoodRunSummary {
       reviewRuntimeSource,
     )
   ) {
-    failureReasons.push("consistency: REVIEW.html serialization is non-deterministic across two in-memory builds");
+    failureReasons.push(
+      "consistency: REVIEW.html serialization is non-deterministic across two in-memory builds",
+    );
   }
 
   try {
     mkdirSync(options.outDir, { recursive: true });
-    writeFileSync(path.join(options.outDir, "manifest.json"), JSON.stringify(manifestObject, null, 2) + "\n", "utf8");
+    writeFileSync(
+      path.join(options.outDir, "manifest.json"),
+      JSON.stringify(manifestObject, null, 2) + "\n",
+      "utf8",
+    );
     writeFileSync(path.join(options.outDir, "full.diff"), fullDiffText, "utf8");
     writeFileSync(path.join(options.outDir, "changes.json"), changesJsonText, "utf8");
     writeFileSync(path.join(options.outDir, "REVIEW.md"), reviewMarkdown, "utf8");
     writeFileSync(path.join(options.outDir, "REVIEW.html"), reviewHtml, "utf8");
     writeFileSync(path.join(options.outDir, "HOW_TO_REVIEW.md"), HOW_TO_REVIEW_MD, "utf8");
   } catch (error) {
-    failureReasons.push(`evidence-generation failure: ${error instanceof Error ? error.message : String(error)}`);
+    failureReasons.push(
+      `evidence-generation failure: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 
   return {

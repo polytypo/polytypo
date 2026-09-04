@@ -105,32 +105,37 @@ describe.skipIf(!hasLocale)("aggregate entry — validation order", () => {
 
 describe.skipIf(!hasLocale)("polytypo/text — validation order", () => {
   it("an unknown rule wins over an unknown locale", () => {
-    const options = { locale: UNKNOWN_LOCALE, rules: UNKNOWN_RULE_OPTIONS } as unknown as Parameters<
-      typeof transformText
-    >[1];
+    const options = {
+      locale: UNKNOWN_LOCALE,
+      rules: UNKNOWN_RULE_OPTIONS,
+    } as unknown as Parameters<typeof transformText>[1];
     expect(codeOf(() => transformText("x", options))).toBe("POLYTYPO_UNKNOWN_RULE");
   });
 });
 
 describe.skipIf(!hasLocale)("polytypo/html — validation order", () => {
   it("an unknown rule wins over an unknown locale", () => {
-    const options = { locale: UNKNOWN_LOCALE, rules: UNKNOWN_RULE_OPTIONS } as unknown as Parameters<
-      typeof transformHtml
-    >[1];
+    const options = {
+      locale: UNKNOWN_LOCALE,
+      rules: UNKNOWN_RULE_OPTIONS,
+    } as unknown as Parameters<typeof transformHtml>[1];
     expect(codeOf(() => transformHtml("<p>x</p>", options))).toBe("POLYTYPO_UNKNOWN_RULE");
   });
 });
 
 describe.skipIf(!hasLocale)("polytypo/markdown — validation order", () => {
   it("an unknown rule wins over an unknown locale and a missing dialect", () => {
-    const options = { locale: UNKNOWN_LOCALE, rules: UNKNOWN_RULE_OPTIONS } as unknown as Parameters<
-      typeof transformMarkdown
-    >[1];
+    const options = {
+      locale: UNKNOWN_LOCALE,
+      rules: UNKNOWN_RULE_OPTIONS,
+    } as unknown as Parameters<typeof transformMarkdown>[1];
     expect(codeOf(() => transformMarkdown("x", options))).toBe("POLYTYPO_UNKNOWN_RULE");
   });
 
   it("an unknown locale wins over a missing dialect", () => {
-    const options = { locale: UNKNOWN_LOCALE } as unknown as Parameters<typeof transformMarkdown>[1];
+    const options = { locale: UNKNOWN_LOCALE } as unknown as Parameters<
+      typeof transformMarkdown
+    >[1];
     expect(codeOf(() => transformMarkdown("x", options))).toBe("POLYTYPO_UNKNOWN_LOCALE");
   });
 

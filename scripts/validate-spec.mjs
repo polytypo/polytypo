@@ -380,7 +380,12 @@ async function readExpectedLocalesFromRegistry() {
     // readJson() already recorded the specific cause (unreadable or invalid JSON).
     return { locales: null, registryRead };
   }
-  if (data === null || typeof data !== "object" || Array.isArray(data) || !Array.isArray(data.locales)) {
+  if (
+    data === null ||
+    typeof data !== "object" ||
+    Array.isArray(data) ||
+    !Array.isArray(data.locales)
+  ) {
     fail(
       REGISTRY_FILE,
       `"locales" must be an array — cannot determine the expected canonical fixture set without it, got ${JSON.stringify(data?.locales)}`,
@@ -517,15 +522,21 @@ async function checkGlobalVersionDrift() {
     allPassed = false;
   }
 
-  const { claimantPaths: fixtureClaimants, missingExpected, directoryMissing } =
-    await buildFixtureClaimantSet(expectedLocales);
+  const {
+    claimantPaths: fixtureClaimants,
+    missingExpected,
+    directoryMissing,
+  } = await buildFixtureClaimantSet(expectedLocales);
 
   if (directoryMissing) {
     fail(FIXTURES_DIR, "missing — cannot verify any canonical fixture's global spec version claim");
     allPassed = false;
   } else {
     for (const file of missingExpected) {
-      fail(file, `missing — expected canonical fixture, must claim the global spec version via a top-level "spec" field`);
+      fail(
+        file,
+        `missing — expected canonical fixture, must claim the global spec version via a top-level "spec" field`,
+      );
       allPassed = false;
     }
   }
