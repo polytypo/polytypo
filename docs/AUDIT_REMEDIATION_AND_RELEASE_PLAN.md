@@ -218,11 +218,8 @@ Success should be measured separately:
 
 ## 7. Hosting on polytypo.is-a.dev
 
-`polytypo.js.org` was the original candidate; superseded by operator decision (2026-09-05) in favour
-of `polytypo.is-a.dev` — the project spans five planned runtimes, not only JavaScript, and js.org's
-own eligibility requires the site be "directly related to the JavaScript ecosystem," a narrower fit
-than a runtime-neutral domain. `docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md` §7 is the detailed,
-maintained version of this section; this one is kept in sync with it, not the other way around.
+`docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md` §7 is the detailed, maintained version of this section;
+this one is kept in sync with it, not the other way around.
 
 Process:
 

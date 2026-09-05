@@ -1498,10 +1498,6 @@ document either: no `domains/polytypo.json` commit, no fork, no PR.
 
 ### 7.1 Verified requirements and current state (primary sources, checked 2026-09-05)
 
-- **Domain choice: `polytypo.is-a.dev`, not `polytypo.js.org`.** Superseded by operator decision —
-  the project spans five planned runtimes, not only JavaScript, and js.org's own eligibility test
-  ("directly related to the JavaScript ecosystem/community") is a narrower fit than a
-  runtime-neutral domain.
 - **is-a.dev submission process:** a PR against `is-a-dev/register` adding `domains/polytypo.json`;
   approval and exact-name availability are decisions of the is-a.dev maintainers, not guaranteed.
   Their own eligibility bar (Terms of Service §3–4): software-development-related, non-commercial —
@@ -1827,7 +1823,7 @@ Nothing below was performed. Each requires an explicit operator decision before 
 5. **First port** (Python vs. Go) — unaffected by this document, still deferred to Phase B.
 6. **GitHub App vs. PAT for cross-repo dispatch/ingestion (§4.3, §5.1)** — the operator must actually
    register the chosen credential; this document only specifies its required scope.
-7. **js.org PR and GitHub Pages custom-domain configuration (§7)** — both real, external,
+7. **is-a.dev PR and GitHub Pages custom-domain configuration (§7)** — both real, external,
    irreversible-in-practice actions requiring explicit operator initiation.
 8. **GitHub Releases migration** (§2.8) — manual, non-automatable work once releases exist by the
    time the split executes.
@@ -1884,7 +1880,7 @@ reason not to proceed:
       one deliberately-invalid input (an unknown SHA, a SHA with no passing required CI).
 - [ ] All external credentials and settings (the dispatch/ingestion GitHub App or PAT, "Allow GitHub
       Actions to create and approve pull requests," the `github-pages` environment's required
-      reviewers, the js.org PR, GitHub Pages custom-domain settings) have named owners and
+      reviewers, the is-a.dev PR, GitHub Pages custom-domain settings) have named owners and
       documented least-privilege scopes.
 - [ ] A rollback rehearsal — restoring from the `pre-split-freeze` bundle (§2.5) into a disposable
       clone and confirming it matches the pre-filter state — has actually been run once, not only
