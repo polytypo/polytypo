@@ -11,7 +11,7 @@ name: Deploy to GitHub Pages
 # branch); a required-reviewer rule is a separate, manual step in Settings → Environments this
 # workflow file cannot configure for you.
 #
-# Before this is used for a real, public, "tell js.org / announce the domain" launch: §7.3 flags
+# Before this is used for a real, public, "announce the domain" launch: §7.3 flags
 # cache-safe (content-hashed) asset naming as a required pre-launch gate that is NOT implemented
 # yet — promo/vendor/polytypo.browser.js, promo/assets/site.js and promo/assets/style.css all
 # still have fixed filenames, so a redeploy is not guaranteed to invalidate a visitor's cached

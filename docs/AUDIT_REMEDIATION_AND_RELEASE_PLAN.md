@@ -216,19 +216,26 @@ Success should be measured separately:
 - library adoption: registry downloads, dependants, integrations, retained usage;
 - spec credibility: citations, contributed fixtures, and conforming runtimes.
 
-## 7. Hosting on polytypo.js.org
+## 7. Hosting on polytypo.is-a.dev
 
-The project is directly related to the JavaScript ecosystem and should be a plausible candidate for
-`polytypo.js.org`, even if it documents future non-JS ports. The site must remain substantive,
-focused on the project, and must not automatically redirect away from the js.org domain.
+`polytypo.js.org` was the original candidate; superseded by operator decision (2026-09-05) in favour
+of `polytypo.is-a.dev` — the project spans five planned runtimes, not only JavaScript, and js.org's
+own eligibility requires the site be "directly related to the JavaScript ecosystem," a narrower fit
+than a runtime-neutral domain. `docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md` §7 is the detailed,
+maintained version of this section; this one is kept in sync with it, not the other way around.
 
 Process:
 
-1. publish the canonical site through GitHub Pages or another CNAME-capable host;
-2. configure `polytypo.js.org` as the custom domain;
-3. add the required CNAME configuration through the Pages settings/workflow as appropriate;
-4. submit a PR to `js-org/js.org`;
-5. treat approval and exact-name availability as decisions of the js.org maintainers.
+1. publish the canonical site through GitHub Pages (done — `polytypo.github.io/polytypo/`);
+2. is-a.dev registers a subdomain to an individual GitHub account, never an organisation (their
+   Terms of Service §2) — `owner.username` in the registration file must be the personal account
+   opening the PR, not the `polytypo` organisation;
+3. add `domains/polytypo.json` (CNAME record: `polytypo.github.io`) to a fork of
+   `is-a-dev/register` and open a PR against it, filling in their required PR template;
+4. is-a.dev's own Terms of Service explicitly prohibit using an AI tool to create that PR (naming
+   Claude Code specifically) — step 3 must be done by a human, not automated here;
+5. once merged, configure `polytypo.is-a.dev` as the custom domain in Settings → Pages;
+6. treat approval and exact-name availability as decisions of the is-a.dev maintainers.
 
 The domain hosts documentation/demo; runtime packages are still published through their ecosystem
 registries.

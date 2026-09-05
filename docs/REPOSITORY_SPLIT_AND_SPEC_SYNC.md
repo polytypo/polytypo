@@ -1488,24 +1488,50 @@ publishes.
 
 ---
 
-## 7. Canonical site and `polytypo.js.org`
+## 7. Canonical site and `polytypo.is-a.dev`
 
-**Nothing in this section is deployed by this document.** No CNAME file, no GitHub Pages setting
-change, no DNS record, no js.org PR.
+**GitHub Pages is live** (`https://polytypo.github.io/polytypo/`, deployed and verified end-to-end
+via `pages-deploy.yml` on 2026-09-05 — every generated page, `robots.txt`, `sitemap.xml`, and asset
+returns 200, and document-relative links resolve correctly at this project-page depth). The custom
+domain is not yet attached — that is gated on the is-a.dev PR below, which is not filed by this
+document either: no `domains/polytypo.json` commit, no fork, no PR.
 
-### 7.1 Verified requirements and current state (primary sources, checked 2026-08-27)
+### 7.1 Verified requirements and current state (primary sources, checked 2026-09-05)
 
-- **js.org submission process:** a PR against `js-org/js.org` adding the chosen subdomain to
-  `cnames_active.js`; approval and exact-name availability are decisions of the js.org maintainers,
-  not guaranteed. The target site must be "directly related to the JavaScript ecosystem/community…
-  not personal pages/portfolios," must have substantive content (no placeholder pages), and must not
-  auto-redirect away from the js.org domain.
-- **No active `polytypo` entry was found in `js-org/js.org`'s `cnames_active.js` on 2026-08-27.**
-  This is a narrow, point-in-time observation — it is neither a reservation nor proof that no
-  concurrent or already-open request for the same or a conflicting name exists elsewhere (an open,
-  unmerged PR against `js-org/js.org` would not show up in the merged `cnames_active.js` list at
-  all). Recheck at the time a PR is actually prepared, and expect to discover any such conflict only
-  during that PR's own review, not before.
+- **Domain choice: `polytypo.is-a.dev`, not `polytypo.js.org`.** Superseded by operator decision —
+  the project spans five planned runtimes, not only JavaScript, and js.org's own eligibility test
+  ("directly related to the JavaScript ecosystem/community") is a narrower fit than a
+  runtime-neutral domain.
+- **is-a.dev submission process:** a PR against `is-a-dev/register` adding `domains/polytypo.json`;
+  approval and exact-name availability are decisions of the is-a.dev maintainers, not guaranteed.
+  Their own eligibility bar (Terms of Service §3–4): software-development-related, non-commercial —
+  a typography library's documentation/demo site clears both.
+- **Domains register to an individual GitHub account, never an organisation** (is-a.dev Terms of
+  Service §2, verbatim: "Subdomains must be registered to an individual GitHub account, and cannot
+  be registered to a GitHub organisation account."). `owner.username` in the registration file must
+  be the personal account opening the PR, not the `polytypo` GitHub organisation that owns this
+  repository — their CI checks the field against the PR author's own login and rejects a mismatch.
+  The same ToS (§2.2, §3) explicitly permits an individual to register a domain "as a representative
+  of ... a non-commercial project," so an open-source project registering this way is exercising
+  their stated policy, not working around it.
+- **Registration file schema**, path `domains/polytypo.json`:
+  ```json
+  {
+    "owner": { "username": "<the personal GitHub login opening the PR>", "email": "<contact email>" },
+    "records": { "CNAME": "polytypo.github.io" }
+  }
+  ```
+  `records.CNAME` is a single string, not a list, and must be this site's real GitHub Pages
+  hostname — `polytypo.github.io`, the org that owns the Pages-serving repository, regardless of
+  which personal account registers the domain. If `records.CNAME` is present, no sibling key may
+  appear alongside it in `records` (their own test suite enforces this). `owner.email` must be a
+  real, reachable address — a `@users.noreply.github.com` address is rejected.
+- **is-a.dev's Terms of Service explicitly prohibit using an AI tool to create the pull request,
+  naming Claude Code specifically** (§6: "We are strongly against the usage of AI (such as Claude
+  Code, Codex...) for creating pull requests, and may close the pull request ... if used"). The
+  registration file's content can be prepared in advance (above); the fork, commit, and PR
+  itself — including their required PR template's checkboxes and a working-site description — must
+  be done by a human, not automated by this project's tooling or by an agent acting on its behalf.
 - **GitHub Pages custom domain, workflow-based publishing.** GitHub's own documentation states
   plainly: "If you are publishing from a custom GitHub Actions workflow, no `CNAME` file is created,
   and any existing `CNAME` file is ignored and is not required." Branch-based Pages publishing is the
@@ -1534,7 +1560,7 @@ package — it does not, because no version of `polytypo` has been published yet
 published package is the target post-split state, made a hard precondition of the split itself in
 §2.1, not a description of today.
 
-### 7.3 Hosting design (prepared, not deployed)
+### 7.3 Hosting design (deployed and verified 2026-09-05)
 
 - **Host:** GitHub Pages, deployed from `polytypo` (canonical) via `actions/deploy-pages`, publishing
   the `promo/` directory as the site root — chosen over branch-based Pages publishing since branch
@@ -1570,7 +1596,7 @@ published package is the target post-split state, made a hard precondition of th
   approval, with no path in this design where either check alone is sufficient, and no path where a
   push to trunk alone causes a live-site change.
 - **Custom domain / CNAME ownership:** configured via repository Settings → Pages on `polytypo` by a
-  repository admin, once js.org approves the PR (§7.1). No `CNAME` file is created or required for
+  repository admin, once is-a.dev approves the PR (§7.1). No `CNAME` file is created or required for
   this workflow-based deploy — see §7.1's corrected citation of GitHub's own documentation on this
   point; this document does not claim the Settings UI action creates one.
 - **HTTPS:** "Enforce HTTPS" enabled in the same panel once available; not settable from this
@@ -1579,9 +1605,9 @@ published package is the target post-split state, made a hard precondition of th
   at directory URLs (`/docs`, `/playground`, `/locales`, `/manifesto`; home at `/`), and link to
   each other with document-relative, trailing-slash hrefs (`docs/` from the root page,
   `../docs/` from a nested one). Being document-relative rather than root-relative, they need no
-  rewriting either for a root-path custom-domain deploy (`polytypo.js.org/`) or for the
-  project-page path the site would be served from before js.org approves
-  (`polytypo.github.io/polytypo/`).
+  rewriting either for a root-path custom-domain deploy (`polytypo.is-a.dev/`) or for the
+  project-page path the site is served from before is-a.dev approves the custom domain
+  (`polytypo.github.io/polytypo/` — verified live at this exact path, §7).
 - **Cache-safe asset naming — a required pre-launch gate, not one of two equally acceptable
   options.** Today's generated filenames (`promo/vendor/polytypo.browser.js`, `promo/assets/site.js`,
   `promo/assets/style.css`) are fixed, not content-addressed — a changed bundle keeps the same
@@ -1600,7 +1626,7 @@ published package is the target post-split state, made a hard precondition of th
   newly deployed HTML could still be pointing at it. **This is a concrete, scoped generator change
   flagged as a pre-launch implementation gate (§12) — not implemented in this documentation-only
   pass**, and no Pages deploy should be treated as launch-ready before it lands.
-- **No redirect away from `polytypo.js.org`:** satisfied by construction — nothing in the generated
+- **No redirect away from `polytypo.is-a.dev`:** satisfied by construction — nothing in the generated
   site's templates emits a redirect, and this design adds none.
 - **No analytics/external services:** satisfied by construction, continuing the existing privacy
   posture — `tests/promo/` already asserts no tracker/analytics call exists in the generated output.
@@ -1610,30 +1636,15 @@ published package is the target post-split state, made a hard precondition of th
   is reviewed via its regenerated-artifact diff in ordinary CI, which never touches the live Pages
   deployment.
 
-### 7.4 Honest multi-runtime documentation on a JS-branded domain
-
-`polytypo.js.org` stays substantively relevant to JavaScript specifically (satisfying js.org's own
-relevance requirement) while still documenting the whole project honestly, because:
-
-- The playground — the site's actual interactive centerpiece — will run the real JavaScript engine
-  in-browser, built from the published `polytypo` npm package (§1.3b, once the precondition in §2.1
-  is met). That is JS-ecosystem content in the most literal, functional sense.
-- `docs/ports/README.*.md` already labels Python/Go/Ruby/PHP as **planned, not installable** — see
-  each file's own "Status: planned, not yet started" line — so documenting them on this domain is
-  accurate positioning ("the spec is designed for five runtimes"), not a claim that the domain hosts
-  five installable packages.
-- A non-JS runtime that later wants its own ecosystem-appropriate domain is a future, separate
-  decision for that runtime's own repository and maintainers, out of this document's scope, and not
-  precluded by anything here.
-
-### 7.5 Sources for this section
+### 7.4 Sources for this section
 
 - [GitHub — `POST /repos/{owner}/{repo}/dispatches`, fine-grained PAT permissions table](https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens)
 - [GitHub — `GITHUB_TOKEN`](https://docs.github.com/en/actions/concepts/security/github_token)
 - [GitHub — Managing GitHub Actions settings for a repository](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository)
 - [GitHub — Transferring an issue to another repository](https://docs.github.com/en/issues/tracking-your-work-with-issues/administering-issues/transferring-an-issue-to-another-repository)
 - [GitHub — Managing a custom domain for your GitHub Pages site](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)
-- [js-org/js.org](https://github.com/js-org/js.org) and its `cnames_active.js`
+- [is-a-dev/register](https://github.com/is-a-dev/register), its `README.md`, `TERMS_OF_SERVICE.md`,
+  `.github/PULL_REQUEST_TEMPLATE.md`, and `tests/{json,records,domains,pr}.test.js`
 
 ---
 

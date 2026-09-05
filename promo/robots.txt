@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://polytypo.js.org/sitemap.xml
+Sitemap: https://polytypo.is-a.dev/sitemap.xml
