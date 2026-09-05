@@ -112,9 +112,15 @@ jobs:
           PINNED_SHA: ${{ steps.pin.outputs.sha }}
         run: |
           set -euo pipefail
+          # `gh api --jq` takes exactly one filter-string argument — it does not expose jq's own
+          # `--arg` flag for passing variables in separately (that combination silently becomes
+          # multiple positional args to `gh api` itself, not to jq, and `gh` rejects it: "accepts
+          # 1 arg(s), received 4"). PINNED_SHA is safe to interpolate directly into the filter
+          # string: it is always exactly the 40 hex characters `git rev-parse ...^{commit}`
+          # resolved above, never the raw workflow_dispatch input, so it cannot smuggle a `"` or
+          # any other jq/shell metacharacter.
           conclusion=$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/ci.yml/runs?per_page=100" \
-            --jq --arg sha "${PINNED_SHA}" \
-            '[.workflow_runs[] | select(.head_sha == $sha)] | sort_by(.run_started_at) | last | .conclusion // "missing"')
+            --jq "[.workflow_runs[] | select(.head_sha == \"${PINNED_SHA}\")] | sort_by(.run_started_at) | last | .conclusion // \"missing\"")
           if [ "${conclusion}" != "success" ]; then
             echo "::error::canonical CI has not passed for ${PINNED_SHA} (found: ${conclusion})"
             exit 1
