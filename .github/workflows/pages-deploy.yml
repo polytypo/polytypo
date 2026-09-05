@@ -1,0 +1,201 @@
+name: Deploy to GitHub Pages
+
+# Prepared per docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md §7.3. Nothing about this workflow's trigger
+# is automatic: a push to main, a tag push, or a PR merge never runs it and never deploys
+# anything. The only way this runs is a human choosing "Run workflow" on this exact file and
+# typing the commit SHA to publish — and even then, the `verify` job below must independently
+# prove that commit's provenance before `deploy` builds or uploads a single byte. Environment
+# approval (§7.1's protected `github-pages` environment) is an ADDITIONAL gate on top of that
+# provenance check, never a substitute for it — see `deploy`'s own `environment:` key. GitHub
+# protects a Pages-sourced `github-pages` environment by default (restricted to the default
+# branch); a required-reviewer rule is a separate, manual step in Settings → Environments this
+# workflow file cannot configure for you.
+#
+# Before this is used for a real, public, "tell js.org / announce the domain" launch: §7.3 flags
+# cache-safe (content-hashed) asset naming as a required pre-launch gate that is NOT implemented
+# yet — promo/vendor/polytypo.browser.js, promo/assets/site.js and promo/assets/style.css all
+# still have fixed filenames, so a redeploy is not guaranteed to invalidate a visitor's cached
+# copy. A successful run of this workflow proves the deploy mechanism works; it does not by
+# itself mean the site is ready to announce.
+
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: "Exact commit SHA to deploy (must be on main, or tagged site-vX.Y.Z)"
+        required: true
+        type: string
+
+# Read-only at the workflow level; the two jobs below grant themselves exactly what they each
+# need, narrowly, and nothing more.
+permissions:
+  contents: read
+
+# One deploy at a time, and never cancel one that's already running mid-way through a Pages
+# publish — a cancelled `deploy-pages` step can leave the environment in an inconsistent state.
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify commit provenance
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      sha: ${{ steps.pin.outputs.sha }}
+    steps:
+      # fetch-depth: 0 (full history) — the ancestry check below needs it, and a shallow clone
+      # would make every commit look like a root with no ancestors.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      # `inputs.sha` is a workflow_dispatch text input — attacker-influenced in the same way a
+      # git tag name is (docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md §4.4's precedent), so it goes
+      # through a step-level `env` var and is referenced as a quoted shell variable, never
+      # interpolated with `${{ }}` directly into `run:` text. See
+      # scripts/lib/workflow-shell-safety.mjs.
+      #
+      # `git rev-parse "<sha>^{commit}"` both proves the object exists AND that it is a commit
+      # (not a blob/tree/tag), and expands any abbreviated-but-unambiguous prefix the input might
+      # have used to the real full SHA — everything downstream (including the deploy job's own
+      # checkout) then pins to that resolved value, never the raw, unverified input string again.
+      - name: Resolve and pin the requested SHA
+        id: pin
+        env:
+          REQUESTED_SHA: ${{ inputs.sha }}
+        run: |
+          set -euo pipefail
+          if ! git cat-file -e "${REQUESTED_SHA}^{commit}" 2>/dev/null; then
+            echo "::error::${REQUESTED_SHA} does not exist in this repository, or is not a commit"
+            exit 1
+          fi
+          full_sha=$(git rev-parse "${REQUESTED_SHA}^{commit}")
+          echo "resolved to ${full_sha}"
+          echo "sha=${full_sha}" >> "$GITHUB_OUTPUT"
+
+      # Two acceptable proofs of reachability, either one sufficient: an ancestor of the current
+      # tip of main (the ordinary case — deploying what's already landed), or an exact match for
+      # one of this project's own site-vX.Y.Z tags (so a specific past release can be redeployed
+      # later even after main has moved past it, without that tag needing to still be reachable
+      # from main's then-current tip). No other tag pattern and no branch other than main counts.
+      - name: Verify the commit is reachable from main, or matches an allowed site-vX.Y.Z tag
+        env:
+          PINNED_SHA: ${{ steps.pin.outputs.sha }}
+        run: |
+          set -euo pipefail
+          if git merge-base --is-ancestor "${PINNED_SHA}" origin/main; then
+            echo "ok — ${PINNED_SHA} is an ancestor of main"
+            exit 0
+          fi
+          for tag in $(git tag -l 'site-v*'); do
+            if [ "$(git rev-list -n 1 "$tag")" = "${PINNED_SHA}" ]; then
+              echo "ok — ${PINNED_SHA} matches allowed tag ${tag}"
+              exit 0
+            fi
+          done
+          echo "::error::${PINNED_SHA} is neither an ancestor of main nor tagged site-vX.Y.Z — refusing to deploy an unreviewed object"
+          exit 1
+
+      # Not "some CI run exists somewhere for this repository," and not a result for a different
+      # commit on the same branch — the exact head_sha the workflow_dispatch input resolved to,
+      # for the exact canonical CI workflow file, and its most recent run if the same commit was
+      # ever re-run. A workflow run's own `conclusion` is already "success" only if every job in
+      # it (both Node 20 and Node 22 in ci.yml's matrix) succeeded — GitHub does not report a
+      # run-level success when any matrix leg failed, fail-fast or not.
+      - name: Verify canonical CI passed for this exact commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PINNED_SHA: ${{ steps.pin.outputs.sha }}
+        run: |
+          set -euo pipefail
+          conclusion=$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/ci.yml/runs?per_page=100" \
+            --jq --arg sha "${PINNED_SHA}" \
+            '[.workflow_runs[] | select(.head_sha == $sha)] | sort_by(.run_started_at) | last | .conclusion // "missing"')
+          if [ "${conclusion}" != "success" ]; then
+            echo "::error::canonical CI has not passed for ${PINNED_SHA} (found: ${conclusion})"
+            exit 1
+          fi
+          echo "ok — canonical CI conclusion for ${PINNED_SHA} is success"
+
+  deploy:
+    name: Build and deploy
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    # The protected environment (§7.1): GitHub restricts a Pages-sourced `github-pages`
+    # environment to the default branch by default; a required-reviewer rule on top of that is
+    # configured once, by a repository admin, in Settings → Environments — not by this file. That
+    # approval sits ON TOP of `verify`'s provenance checks above, never in place of them: this job
+    # is only reachable at all if `verify` already proved the commit's ancestry/tag and CI status.
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # No fetch-depth: 0 here — unlike verify, this job does no ancestry walk, only builds the
+      # one commit verify already resolved and vouched for.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.verify.outputs.sha }}
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Same isolated brand/promo toolchain ci.yml's own "Check generated artifacts are up to
+      # date" step uses (fonttools/brotli for gen:brandbook) — an isolated venv with only the
+      # pinned versions from brand/tools/requirements.txt, not the runner's preinstalled global
+      # site-packages, so this build is exactly as reproducible as CI already proved it to be.
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Set up isolated Python virtual environment for brand/promo generation
+        run: |
+          python3 -m venv .venv-brand
+          echo "$PWD/.venv-brand/bin" >> "$GITHUB_PATH"
+          .venv-brand/bin/pip install -r brand/tools/requirements.txt
+
+      # Belt-and-suspenders, not a substitute for CI's own drift check: ci.yml already proved
+      # zero drift at this exact commit (that's part of why `verify` above requires CI to have
+      # passed for it) — regenerating here and re-diffing proves it again, against this runner's
+      # own toolchain, immediately before the bytes it produces are what actually gets published.
+      - name: Regenerate the site and require zero generated-artifact drift
+        run: |
+          npm run generate:all
+          git diff --exit-code -- \
+            README.md \
+            promo/examples.json \
+            promo/index.html \
+            promo/docs/index.html \
+            promo/locales/index.html \
+            promo/playground/index.html \
+            promo/manifesto/index.html \
+            promo/robots.txt \
+            promo/sitemap.xml \
+            promo/assets \
+            promo/vendor/polytypo.browser.js \
+            brand/BRANDBOOK.html
+
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      # promo/ is the deterministic generated output already verified driftless above — the
+      # entire Pages artifact, uploaded as-is. No custom domain / CNAME file is created here; see
+      # §7.1's citation of GitHub's own documentation that workflow-based Pages publishing creates
+      # or requires none — the custom domain is configured once, separately, in Settings → Pages.
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: promo/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
