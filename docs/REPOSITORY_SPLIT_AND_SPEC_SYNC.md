@@ -1488,7 +1488,7 @@ publishes.
 
 ---
 
-## 7. Canonical site and `polytypo.is-a.dev`
+## 7. Canonical site and `polytypo.dev`
 
 **GitHub Pages is live** (`https://polytypo.github.io/polytypo/`, deployed and verified end-to-end
 via `pages-deploy.yml` on 2026-09-05 — every generated page, `robots.txt`, `sitemap.xml`, and asset
@@ -1601,7 +1601,7 @@ published package is the target post-split state, made a hard precondition of th
   at directory URLs (`/docs`, `/playground`, `/locales`, `/manifesto`; home at `/`), and link to
   each other with document-relative, trailing-slash hrefs (`docs/` from the root page,
   `../docs/` from a nested one). Being document-relative rather than root-relative, they need no
-  rewriting either for a root-path custom-domain deploy (`polytypo.is-a.dev/`) or for the
+  rewriting either for a root-path custom-domain deploy (`polytypo.dev/`) or for the
   project-page path the site is served from before is-a.dev approves the custom domain
   (`polytypo.github.io/polytypo/` — verified live at this exact path, §7).
 - **Cache-safe asset naming — a required pre-launch gate, not one of two equally acceptable
@@ -1622,7 +1622,7 @@ published package is the target post-split state, made a hard precondition of th
   newly deployed HTML could still be pointing at it. **This is a concrete, scoped generator change
   flagged as a pre-launch implementation gate (§12) — not implemented in this documentation-only
   pass**, and no Pages deploy should be treated as launch-ready before it lands.
-- **No redirect away from `polytypo.is-a.dev`:** satisfied by construction — nothing in the generated
+- **No redirect away from `polytypo.dev`:** satisfied by construction — nothing in the generated
   site's templates emits a redirect, and this design adds none.
 - **No analytics/external services:** satisfied by construction, continuing the existing privacy
   posture — `tests/promo/` already asserts no tracker/analytics call exists in the generated output.

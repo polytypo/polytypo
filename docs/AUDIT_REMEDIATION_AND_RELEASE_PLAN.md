@@ -216,7 +216,7 @@ Success should be measured separately:
 - library adoption: registry downloads, dependants, integrations, retained usage;
 - spec credibility: citations, contributed fixtures, and conforming runtimes.
 
-## 7. Hosting on polytypo.is-a.dev
+## 7. Hosting on polytypo.dev
 
 `docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md` §7 is the detailed, maintained version of this section;
 this one is kept in sync with it, not the other way around.
@@ -231,7 +231,7 @@ Process:
    `is-a-dev/register` and open a PR against it, filling in their required PR template;
 4. is-a.dev's own Terms of Service explicitly prohibit using an AI tool to create that PR (naming
    Claude Code specifically) — step 3 must be done by a human, not automated here;
-5. once merged, configure `polytypo.is-a.dev` as the custom domain in Settings → Pages;
+5. once merged, configure `polytypo.dev` as the custom domain in Settings → Pages;
 6. treat approval and exact-name availability as decisions of the is-a.dev maintainers.
 
 The domain hosts documentation/demo; runtime packages are still published through their ecosystem

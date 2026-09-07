@@ -597,6 +597,8 @@ def build():
             f'<link rel="stylesheet" href="{prefix}assets/fonts.css">\n'
             f'<link rel="stylesheet" href="{prefix}assets/style.css">\n'
             f"<title>{H.escape(page_title)}</title>\n"
+            '<script defer src="https://u.rogulia.fi/script.js" '
+            'data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>\n'
             f'</head>\n<body class="page-{slug or "home"}">\n'
             f"{nav_html(slug, prefix)}\n"
             f'<div class="wrap">\n{body}\n{footer_html(data, prefix)}\n</div>\n'

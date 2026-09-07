@@ -198,17 +198,17 @@ describe("promo site — favicon, robots.txt, sitemap.xml", () => {
     const robots = readFileSync(path.join(PROMO_DIR, "robots.txt"), "utf8");
     expect(robots).toContain("User-agent: *");
     expect(robots).toContain("Allow: /");
-    expect(robots).toContain("Sitemap: https://polytypo.is-a.dev/sitemap.xml");
+    expect(robots).toContain("Sitemap: https://polytypo.dev/sitemap.xml");
   });
 
   it("sitemap.xml lists exactly the five generated pages, as absolute directory URLs", () => {
     const sitemap = readFileSync(path.join(PROMO_DIR, "sitemap.xml"), "utf8");
     for (const loc of [
-      "https://polytypo.is-a.dev/",
-      "https://polytypo.is-a.dev/docs/",
-      "https://polytypo.is-a.dev/playground/",
-      "https://polytypo.is-a.dev/locales/",
-      "https://polytypo.is-a.dev/manifesto/",
+      "https://polytypo.dev/",
+      "https://polytypo.dev/docs/",
+      "https://polytypo.dev/playground/",
+      "https://polytypo.dev/locales/",
+      "https://polytypo.dev/manifesto/",
     ]) {
       expect(sitemap).toContain(`<loc>${loc}</loc>`);
     }
