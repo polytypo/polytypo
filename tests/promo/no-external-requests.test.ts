@@ -31,6 +31,11 @@
 // metadata URLs (`<meta property="og:...">`, `<link rel="canonical">`) are not page-load
 // dependencies and are deliberately not checked — only elements/URLs the browser actually fetches
 // as part of rendering the page are.
+//
+// One explicit exception: `https://u.rogulia.fi/script.js`, the operator's own self-hosted Umami
+// analytics instance (added to every promo page 2026-09-07). It is operator-controlled
+// infrastructure, not a third-party dependency in the sense this test guards against — see
+// ALLOWED_EXTERNAL_URLS.
 import {
   existsSync,
   mkdirSync,
@@ -101,6 +106,17 @@ function isExternalResourceUrl(url: string | undefined): boolean {
   if (!url) return false;
   const trimmed = url.trim();
   return /^https?:\/\//i.test(trimmed) || trimmed.startsWith("//");
+}
+
+// u.rogulia.fi is the operator's own self-hosted Umami analytics instance, not a third-party
+// dependency in the sense this test guards against (no CDN, no font host, no tracker operated by
+// someone else) — explicitly allowed by operator decision (2026-09-07). Everything else external
+// is still rejected.
+const ALLOWED_EXTERNAL_URLS = new Set(["https://u.rogulia.fi/script.js"]);
+
+function isDisallowedExternalUrl(url: string | undefined): boolean {
+  if (!isExternalResourceUrl(url)) return false;
+  return !ALLOWED_EXTERNAL_URLS.has((url ?? "").trim());
 }
 
 /** `srcset` is a comma-separated list of "<url> <descriptor>?" candidates — every one of them is
@@ -334,7 +350,7 @@ function checkNode(node: Node, page: string, violations: Violation[]): void {
       for (const [t, attrName] of SINGLE_URL_ATTRS) {
         if (tag !== t) continue;
         const value = attr(node, attrName);
-        if (isExternalResourceUrl(value)) {
+        if (isDisallowedExternalUrl(value)) {
           violations.push({
             page,
             description: `<${tag} ${attrName}="${value}"> loads a third-party resource`,
