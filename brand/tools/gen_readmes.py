@@ -117,6 +117,11 @@ TEMPLATE = """<p align="center">
 <h1 align="center">polytypo</h1>
 
 <p align="center">
+  <a href="https://github.com/polytypo/polytypo/actions/workflows/ci.yml"><img src="https://github.com/polytypo/polytypo/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+</p>
+
+<p align="center">
   Locale-correct quotes, dashes, ellipses, apostrophes, symbols and no-break spaces —<br>
   one portable spec, designed for byte-identical output across runtimes.
 </p>
