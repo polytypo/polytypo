@@ -106,4 +106,5 @@ jobs:
             promo/sitemap.xml \
             promo/assets \
             promo/vendor/polytypo.browser.js \
-            brand/BRANDBOOK.html
+            brand/BRANDBOOK.html \
+            spec/CONFORMANCE.md

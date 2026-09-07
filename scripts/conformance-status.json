@@ -1,0 +1,13 @@
+{
+  "$comment": "Hand-maintained, minimal conformance status per runtime — not the full machine-readable report/matrix design in docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md §5 (cross-repo dispatch, sigstore transparency log), which remains deferred. Updated by an operator when a runtime's own CI is observed green against the pinned spec version below. specVersion here is what each runtime currently claims conformance for — it can lag spec/VERSION between a spec bump and that runtime's own update.",
+  "runtimes": [
+    {
+      "name": "JavaScript/TypeScript",
+      "repo": "https://github.com/polytypo/polytypo-js",
+      "package": "https://www.npmjs.com/package/polytypo",
+      "specVersion": "1.0.0",
+      "conformant": true,
+      "lastVerified": "2026-09-07"
+    }
+  ]
+}

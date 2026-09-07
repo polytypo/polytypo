@@ -339,11 +339,14 @@ Rules for fixtures:
 hand-written. A runtime may ship with gaps; it may not misreport them. This is the honest
 substitute for pretending five ports stay in lockstep.
 
-> **Status, 2026-08-15: not yet generated.** `spec/CONFORMANCE.md` does not exist. This is correct
-> for now and stops being correct the moment a second runtime exists — with one implementation there
-> is nothing to be dishonest about, because "conformance" and "the JS test suite" are the same run.
-> Recorded explicitly because the file was previously referenced as though it were present, both
-> here and in ROADMAP.md's Phase B checklist.
+> **Status, 2026-09-07: generated, but coarse.** `spec/CONFORMANCE.md` exists now
+> (`scripts/gen-conformance.mjs`, run via `npm run gen:conformance`), reading spec-derived case
+> counts from `spec/fixtures/*.json` and per-runtime status from the hand-maintained
+> `scripts/conformance-status.json`. It is a runtime-level table (conformant or not, for the spec
+> version each runtime claims) — not yet the runtime × locale × rule granularity this section
+> describes, and "last verified" is an operator's manual observation of that runtime's own CI, not
+> an automated or independently-attested signal. Both gaps are section 5's deferred design
+> (machine-readable per-runtime reports, cross-repo dispatch, sigstore transparency log).
 >
 > **What generates it and when:** a script in the spec repo consumes each runtime's machine-readable
 > conformance report (the per-case pass/fail the fixture runner already produces, keyed by locale and

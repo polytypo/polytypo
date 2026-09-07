@@ -115,11 +115,12 @@ interesting first choice: JoliTypo already serves that ecosystem well (PLAN.md �
 
 Per-port checklist — this is the whole job, and it is deliberately mechanical:
 
-- [ ] **Generate `spec/CONFORMANCE.md` first.** It does not exist yet, and correctly so: with one
-      implementation, "conformance" and "the JS test suite" are the same run. It is written by a
-      script over each runtime's machine-readable conformance report, never by hand
-      (ARCHITECTURE.md §6.2). Building it *before* the port means the port's gaps are visible from
-      its first red run instead of reconstructed afterwards
+- [x] **Generate `spec/CONFORMANCE.md` first.** Done 2026-09-07, but minimally: written by
+      `scripts/gen-conformance.mjs` over `scripts/conformance-status.json` (hand-maintained
+      per-runtime status), not the full machine-readable-report/cross-repo-dispatch design
+      ARCHITECTURE.md §6.2 and REPOSITORY_SPLIT_AND_SPEC_SYNC.md §5 describe — that automation
+      remains deferred. Building it *before* the port means the port's gaps are visible from its
+      first red run instead of reconstructed afterwards
 - [ ] Vendor `spec` per the chosen automated snapshot model (`docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md`
       §3–§4: content-hash-verified `vendor/polytypo-spec/`, dispatched on `spec-vX.Y.Z` tags — not a
       submodule, not a per-ecosystem spec package); embed locale data in the package
