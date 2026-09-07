@@ -1490,44 +1490,14 @@ publishes.
 
 ## 7. Canonical site and `polytypo.dev`
 
-**GitHub Pages is live** (`https://polytypo.github.io/polytypo/`, deployed and verified end-to-end
-via `pages-deploy.yml` on 2026-09-05 — every generated page, `robots.txt`, `sitemap.xml`, and asset
-returns 200, and document-relative links resolve correctly at this project-page depth). The custom
-domain is not yet attached — that is gated on the is-a.dev PR below, which is not filed by this
-document either: no `domains/polytypo.json` commit, no fork, no PR.
+**GitHub Pages is live and serving the custom domain**, verified directly against the GitHub Pages
+API for this repository (`GET /repos/polytypo/polytypo/pages`, checked 2026-09-07): `cname:
+"polytypo.dev"`, `build_type: "workflow"`, `https_enforced: true`, and `https_certificate.state:
+"approved"` covering both `polytypo.dev` and `www.polytypo.dev`. The custom domain is attached and
+serving over HTTPS today — this is observed API state, not a pending or planned step.
 
-### 7.1 Verified requirements and current state (primary sources, checked 2026-09-05)
+### 7.1 Verified requirements and current state (primary sources, checked 2026-09-07)
 
-- **is-a.dev submission process:** a PR against `is-a-dev/register` adding `domains/polytypo.json`;
-  approval and exact-name availability are decisions of the is-a.dev maintainers, not guaranteed.
-  Their own eligibility bar (Terms of Service §3–4): software-development-related, non-commercial —
-  a typography library's documentation/demo site clears both.
-- **Domains register to an individual GitHub account, never an organisation** (is-a.dev Terms of
-  Service §2, verbatim: "Subdomains must be registered to an individual GitHub account, and cannot
-  be registered to a GitHub organisation account."). `owner.username` in the registration file must
-  be the personal account opening the PR, not the `polytypo` GitHub organisation that owns this
-  repository — their CI checks the field against the PR author's own login and rejects a mismatch.
-  The same ToS (§2.2, §3) explicitly permits an individual to register a domain "as a representative
-  of ... a non-commercial project," so an open-source project registering this way is exercising
-  their stated policy, not working around it.
-- **Registration file schema**, path `domains/polytypo.json`:
-  ```json
-  {
-    "owner": { "username": "<the personal GitHub login opening the PR>", "email": "<contact email>" },
-    "records": { "CNAME": "polytypo.github.io" }
-  }
-  ```
-  `records.CNAME` is a single string, not a list, and must be this site's real GitHub Pages
-  hostname — `polytypo.github.io`, the org that owns the Pages-serving repository, regardless of
-  which personal account registers the domain. If `records.CNAME` is present, no sibling key may
-  appear alongside it in `records` (their own test suite enforces this). `owner.email` must be a
-  real, reachable address — a `@users.noreply.github.com` address is rejected.
-- **is-a.dev's Terms of Service explicitly prohibit using an AI tool to create the pull request,
-  naming Claude Code specifically** (§6: "We are strongly against the usage of AI (such as Claude
-  Code, Codex...) for creating pull requests, and may close the pull request ... if used"). The
-  registration file's content can be prepared in advance (above); the fork, commit, and PR
-  itself — including their required PR template's checkboxes and a working-site description — must
-  be done by a human, not automated by this project's tooling or by an agent acting on its behalf.
 - **GitHub Pages custom domain, workflow-based publishing.** GitHub's own documentation states
   plainly: "If you are publishing from a custom GitHub Actions workflow, no `CNAME` file is created,
   and any existing `CNAME` file is ignored and is not required." Branch-based Pages publishing is the
@@ -1591,19 +1561,17 @@ published package is the target post-split state, made a hard precondition of th
   production deploy requires an explicitly named, provenance-verified commit *and* a separate human
   approval, with no path in this design where either check alone is sufficient, and no path where a
   push to trunk alone causes a live-site change.
-- **Custom domain / CNAME ownership:** configured via repository Settings → Pages on `polytypo` by a
-  repository admin, once is-a.dev approves the PR (§7.1). No `CNAME` file is created or required for
-  this workflow-based deploy — see §7.1's corrected citation of GitHub's own documentation on this
-  point; this document does not claim the Settings UI action creates one.
-- **HTTPS:** "Enforce HTTPS" enabled in the same panel once available; not settable from this
-  document.
+- **Custom domain / CNAME ownership:** configured via repository Settings → Pages on `polytypo`,
+  verified attached (§7). No `CNAME` file is created or required for this workflow-based deploy —
+  see §7.1's citation of GitHub's own documentation on this point; this document does not claim the
+  Settings UI action creates one.
+- **HTTPS:** "Enforce HTTPS" is enabled — confirmed via the API check in §7 (`https_enforced: true`,
+  certificate `approved`).
 - **Relative links and direct-page URLs:** `promo/`'s generated pages are directory indexes served
   at directory URLs (`/docs`, `/playground`, `/locales`, `/manifesto`; home at `/`), and link to
   each other with document-relative, trailing-slash hrefs (`docs/` from the root page,
   `../docs/` from a nested one). Being document-relative rather than root-relative, they need no
-  rewriting either for a root-path custom-domain deploy (`polytypo.dev/`) or for the
-  project-page path the site is served from before is-a.dev approves the custom domain
-  (`polytypo.github.io/polytypo/` — verified live at this exact path, §7).
+  rewriting for the root-path custom-domain deploy now live at `polytypo.dev/` (§7).
 - **Cache-safe asset naming — a required pre-launch gate, not one of two equally acceptable
   options.** Today's generated filenames (`promo/vendor/polytypo.browser.js`, `promo/assets/site.js`,
   `promo/assets/style.css`) are fixed, not content-addressed — a changed bundle keeps the same
@@ -1639,8 +1607,8 @@ published package is the target post-split state, made a hard precondition of th
 - [GitHub — Managing GitHub Actions settings for a repository](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository)
 - [GitHub — Transferring an issue to another repository](https://docs.github.com/en/issues/tracking-your-work-with-issues/administering-issues/transferring-an-issue-to-another-repository)
 - [GitHub — Managing a custom domain for your GitHub Pages site](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)
-- [is-a-dev/register](https://github.com/is-a-dev/register), its `README.md`, `TERMS_OF_SERVICE.md`,
-  `.github/PULL_REQUEST_TEMPLATE.md`, and `tests/{json,records,domains,pr}.test.js`
+- `GET /repos/polytypo/polytypo/pages` (GitHub Pages API), queried 2026-09-07 — source of the
+  `cname`, `https_certificate`, `https_enforced`, and `build_type` values cited in §7.
 
 ---
 
@@ -1823,18 +1791,16 @@ Nothing below was performed. Each requires an explicit operator decision before 
 5. **First port** (Python vs. Go) — unaffected by this document, still deferred to Phase B.
 6. **GitHub App vs. PAT for cross-repo dispatch/ingestion (§4.3, §5.1)** — the operator must actually
    register the chosen credential; this document only specifies its required scope.
-7. **is-a.dev PR and GitHub Pages custom-domain configuration (§7)** — both real, external,
-   irreversible-in-practice actions requiring explicit operator initiation.
-8. **GitHub Releases migration** (§2.8) — manual, non-automatable work once releases exist by the
+7. **GitHub Releases migration** (§2.8) — manual, non-automatable work once releases exist by the
    time the split executes.
-9. **`AGENTS.md` split** (§1.6) — copy-then-narrow approach proposed, not executed.
-10. **`SPEC_VERSION` public export** (§5.5) — a small, concrete, low-risk implementation task for the
-    JS repository, explicitly not implemented in this document.
-11. **The tooling-internal ref found at freeze-inventory time** (§2.6,
+8. **`AGENTS.md` split** (§1.6) — copy-then-narrow approach proposed, not executed.
+9. **`SPEC_VERSION` public export** (§5.5) — a small, concrete, low-risk implementation task for the
+   JS repository, explicitly not implemented in this document.
+10. **The tooling-internal ref found at freeze-inventory time** (§2.6,
     `refs/codex/turn-diffs/checkpoints/...`) — needs investigation (what created it, whether anything
     still depends on it) before a freeze-time decision about whether it needs to survive any filter
     step, which this document does not make.
-12. **Release-evidence provenance mechanism for each future runtime** (§5.4) — npm's is defined here
+11. **Release-evidence provenance mechanism for each future runtime** (§5.4) — npm's is defined here
     because `--provenance` is already required by the existing JS release workflow; each future
     runtime repository must define its own equivalent using whatever mechanism that ecosystem's
     registry actually offers, before that runtime's release row can ever show `pass` in the public
@@ -1880,8 +1846,8 @@ reason not to proceed:
       one deliberately-invalid input (an unknown SHA, a SHA with no passing required CI).
 - [ ] All external credentials and settings (the dispatch/ingestion GitHub App or PAT, "Allow GitHub
       Actions to create and approve pull requests," the `github-pages` environment's required
-      reviewers, the is-a.dev PR, GitHub Pages custom-domain settings) have named owners and
-      documented least-privilege scopes.
+      reviewers, GitHub Pages custom-domain settings) have named owners and documented
+      least-privilege scopes.
 - [ ] A rollback rehearsal — restoring from the `pre-split-freeze` bundle (§2.5) into a disposable
       clone and confirming it matches the pre-filter state — has actually been run once, not only
       described.

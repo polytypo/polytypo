@@ -221,18 +221,11 @@ Success should be measured separately:
 `docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md` §7 is the detailed, maintained version of this section;
 this one is kept in sync with it, not the other way around.
 
-Process:
-
-1. publish the canonical site through GitHub Pages (done — `polytypo.github.io/polytypo/`);
-2. is-a.dev registers a subdomain to an individual GitHub account, never an organisation (their
-   Terms of Service §2) — `owner.username` in the registration file must be the personal account
-   opening the PR, not the `polytypo` organisation;
-3. add `domains/polytypo.json` (CNAME record: `polytypo.github.io`) to a fork of
-   `is-a-dev/register` and open a PR against it, filling in their required PR template;
-4. is-a.dev's own Terms of Service explicitly prohibit using an AI tool to create that PR (naming
-   Claude Code specifically) — step 3 must be done by a human, not automated here;
-5. once merged, configure `polytypo.dev` as the custom domain in Settings → Pages;
-6. treat approval and exact-name availability as decisions of the is-a.dev maintainers.
+State, verified against the GitHub Pages API (`GET /repos/polytypo/polytypo/pages`, checked
+2026-09-07): the canonical site is published through GitHub Pages with `polytypo.dev` already
+configured and verified as the custom domain, `https_enforced: true`, and an approved HTTPS
+certificate covering `polytypo.dev` and `www.polytypo.dev`. See
+`docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md` §7 for the full detail and citations.
 
 The domain hosts documentation/demo; runtime packages are still published through their ecosystem
 registries.
