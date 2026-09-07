@@ -130,6 +130,10 @@ TEMPLATE = """<p align="center">
 
 Spec version: **{spec_version}** · locales: **{n_locales}** · rules: **{n_rules}**.
 
+Implementations: [JavaScript/TypeScript](https://github.com/polytypo/polytypo-js)
+(npm: [`polytypo`](https://www.npmjs.com/package/polytypo)). Go, Python, PHP and Ruby each get
+their own repository as they land.
+
 ## What it does
 
 {hero}

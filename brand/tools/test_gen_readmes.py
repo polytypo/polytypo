@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Tests for gen_readmes.py — the repository's own README.md, generated from spec/ and
-promo/examples.json. This generator names no runtime, no registry, and no install command: each
-runtime gets its own repository, added one at a time as it actually exists (see the module
-docstring in gen_readmes.py). These tests exist mainly to lock that property in, plus basic
+promo/examples.json. This generator carries no install/API docs for any runtime (see the module
+docstring in gen_readmes.py) and names a runtime's registry only once that runtime actually has a
+real, published release — npm as of 2026-09-07 (polytypo@1.0.0), no other registry yet. These
+tests exist mainly to lock the "no premature announcement" half of that property in, plus basic
 correctness for the shared table-building helpers.
 
 Run:
@@ -17,10 +18,12 @@ sys.path.insert(0, HERE)
 import gen_readmes  # noqa: E402
 
 # Case-insensitive substrings that would assert something about a package/registry/install state
-# this repository does not control and today has none of. If any of these ever appear in the
-# generated README again, that is a regression back to writing about what doesn't exist.
+# for a runtime this repository does not control and today has no real release for. "npm" is
+# deliberately absent here — polytypo@1.0.0 is real (see CLAUDE.md) — but every other ecosystem's
+# registry/install-command stays forbidden until that runtime has its own equally real release. If
+# any of these ever appear in the generated README again, that is a regression back to writing
+# about what doesn't exist.
 _FORBIDDEN_MENTIONS = [
-    "npm",
     "pypi",
     "packagist",
     "rubygems",

@@ -18,6 +18,10 @@
 
 Spec version: **1.0.0** · locales: **10** · rules: **9**.
 
+Implementations: [JavaScript/TypeScript](https://github.com/polytypo/polytypo-js)
+(npm: [`polytypo`](https://www.npmjs.com/package/polytypo)). Go, Python, PHP and Ruby each get
+their own repository as they land.
+
 ## What it does
 
 **Input**
