@@ -6,6 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/polytypo/polytypo/actions/workflows/ci.yml"><img src="https://github.com/polytypo/polytypo/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://www.npmjs.com/package/polytypo"><img src="https://img.shields.io/npm/v/polytypo.svg" alt="npm version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
 </p>
 
