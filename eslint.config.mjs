@@ -5,10 +5,8 @@ import tseslint from "typescript-eslint";
 export default tseslint.config(
   {
     ignores: [
-      "dist/**",
       "coverage/**",
       "node_modules/**",
-      "src/locales/**",
       "spec/fixtures/.escaped/**",
       "promo/vendor/**",
       "promo/assets/**",
@@ -30,7 +28,6 @@ export default tseslint.config(
       "scripts/**/*.mjs",
       "scripts/**/*.ts",
       "brand/tools/**/*.{ts,mjs}",
-      "tests/packaging/**/*.{mjs,cjs}",
       "*.config.ts",
       "*.config.mjs",
     ],
@@ -47,19 +44,6 @@ export default tseslint.config(
     files: ["brand/tools/promo/*.js"],
     languageOptions: {
       globals: globals.browser,
-    },
-  },
-  {
-    // CommonJS require() smoke test (tests/packaging/cjs-smoke.cjs): proves the "require"
-    // condition of every exports subpath resolves, so require() itself is the point of the file.
-    files: ["**/*.cjs"],
-    languageOptions: {
-      globals: globals.node,
-      sourceType: "commonjs",
-    },
-    rules: {
-      "@typescript-eslint/no-require-imports": "off",
-      "no-console": "off",
     },
   },
 );

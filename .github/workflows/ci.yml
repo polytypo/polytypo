@@ -24,6 +24,9 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
 
+      # Pulls the "polytypo" devDependency from polytypo/polytypo-js#main (a git dependency, not
+      # the npm registry — see docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md). That repo's own "prepare"
+      # script builds it during this step, so its dist/ is ready for gen:promo-bundle below.
       - run: npm ci
 
       # gen:brandbook (part of `npm run generate:all`, invoked below) shells out to
@@ -65,84 +68,29 @@ jobs:
         run: npm run check:workflow-shell-safety
 
       # Static check: every external `uses:` reference in .github/workflows/ is pinned to an
-      # immutable full 40-character commit SHA, never a mutable tag/branch or an abbreviated SHA
-      # (this stage's security-hardening task). See scripts/check-actions-pinned.mjs.
+      # immutable full 40-character commit SHA, never a mutable tag/branch or an abbreviated SHA.
+      # See scripts/check-actions-pinned.mjs.
       - name: Actions-pinned check
         run: npm run check:actions-pinned
 
       - name: Test
         run: npm test
 
-      - name: Build
-        run: npm run build
-
-      # Imports every public entry point ("polytypo", "polytypo/text", "polytypo/html",
-      # "polytypo/markdown") through its published package path — via Node's package
-      # self-reference, resolved through package.json "exports" — in ESM, CommonJS, and as a
-      # TypeScript declaration consumer. npm run build already ran above, so this only re-runs it
-      # (npm run test:packaging's own dependency) plus the three smoke tests.
-      - name: Packaging smoke tests (ESM, CommonJS, TypeScript declarations)
-        run: npm run test:packaging
-
-      # Builds and packs the real package, then asserts on the tarball manifest directly (Stage
-      # 6): package.json/README.md/LICENSE present, every entry has its ESM/CJS/declaration
-      # files, every referenced chunk is present, every published JS/CJS file has exactly one
-      # valid, resolvable source map (see tsup.config.ts's ship-maps policy), no unrelated
-      # repository content leaked in, every "exports" target resolves. Release-version agnostic
-      # by design — it does not check package.json's version at all; that policy belongs solely
-      # to the release workflow's tag-vs-version gate (.github/workflows/release.yml,
-      # scripts/lib/release-tag.mjs). See scripts/check-package-contents.mjs.
-      - name: Package-content assertions
-        run: npm run check:package-contents
-
-      # Installs the actual `npm pack` tarball into a temporary consumer project outside this
-      # checkout and exercises every entry point from there — ESM, CommonJS, `.mts`/`.cts`
-      # declaration resolution — never Node package self-reference. See
-      # tests/packaging/packed-tarball.mjs.
-      - name: Packed-tarball ESM/CJS/TypeScript smoke tests
-        run: npm run test:packed-tarball
-
-      # Proves the actual module graph, not just size (AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 5.1):
-      # polytypo/text excludes parse5 and the Micromark/MDX stack, polytypo/html excludes the
-      # Micromark/MDX stack, and polytypo/markdown + the aggregate entry still genuinely reach
-      # both — a required-reach check, so a parser silently dropping out fails too.
-      - name: Check entry-point dependency reach
-        run: npm run check:entry-reach
-
-      # Compares every entry's raw/gzip size against the committed baseline
-      # (scripts/bundle-size-baseline.json) with a tolerance for ordinary toolchain variance; a
-      # regression past that budget fails the build. Secondary signal to the reach check above,
-      # not a replacement for it — see scripts/check-bundle-size.mjs.
-      - name: Report bundle sizes
-        run: npm run check:bundle-size
-
-      # Reports the package-wide npm install dependency count — identical for every entry point,
-      # since npm resolves package.json "dependencies" as a whole, not per subpath. Informational
-      # only (does not fail the build): subpath exports change what a bundler can reach and
-      # tree-shake per entry, not what `npm install polytypo` puts on disk. See
-      # scripts/check-install-footprint.mjs and AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 5.1.
-      - name: Report npm install footprint
-        run: npm run check:install-footprint
-
-      # One deterministic entry point (npm run generate:all: locale codegen, READMEs, promo
-      # pages/assets, browser bundle, brandbook — gen:docs + gen:promo-bundle + gen:brandbook, in
-      # that order), then a hard, scoped git diff — no continue-on-error, and no second,
-      # competing generation path. spec/VERSION is the single global spec-version source
-      # (docs/ARCHITECTURE.md section 2, "L0 — spec"; docs/AUDIT_REMEDIATION_AND_RELEASE_PLAN.md
-      # section 4.1). scripts/validate-spec.mjs separately asserts order.json/registry.json never
+      # One deterministic entry point (npm run generate:all: READMEs, promo pages/assets, browser
+      # bundle, brandbook — gen:docs + gen:promo-bundle + gen:brandbook, in that order), then a
+      # hard, scoped git diff — no continue-on-error, and no second, competing generation path.
+      # spec/VERSION is the single global spec-version source (docs/ARCHITECTURE.md section 2,
+      # "L0 — spec"); scripts/validate-spec.mjs separately asserts order.json/registry.json never
       # drift from it.
       #
       # Every promo page (all five — index plus the docs/playground/locales/manifesto directory
       # indexes, served at the directory URLs /, /docs, /playground, /locales, /manifesto),
       # promo/robots.txt, promo/sitemap.xml and brand/BRANDBOOK.html are tracked, generated files
-      # and belong in this list; manifesto was previously missing here despite being generated the
-      # same way as the other four pages, and BRANDBOOK.html was previously generated by no
-      # automated step at all (Stage 10 correction pass 1) — both gaps meant a drift in either file
-      # would never be caught here.
+      # and belong in this list.
       #
-      # src/generated/locales.ts and spec/fixtures/.escaped/ are gitignored by design (never
-      # committed), so they cannot be drift-checked via git diff here; their generation is
-      # exercised deterministically by the Test/Build/Validate-spec steps above instead.
+      # spec/fixtures/.escaped/ is gitignored by design (never committed), so it cannot be
+      # drift-checked via git diff here; its generation is exercised deterministically by the
+      # Validate-spec step above instead.
       - name: Check generated artifacts are up to date
         run: |
           npm run generate:all

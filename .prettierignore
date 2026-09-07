@@ -1,8 +1,6 @@
-dist/
 docs/
 coverage/
 node_modules/
-src/generated/
 spec/fixtures/.escaped/
 
 # normative prose: reflowing changes how numbered sub-steps and wide tables render

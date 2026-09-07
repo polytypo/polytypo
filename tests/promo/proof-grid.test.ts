@@ -20,7 +20,7 @@ import { fileURLToPath } from "node:url";
 import { parse } from "parse5";
 import type { DefaultTreeAdapterMap } from "parse5";
 import { describe, expect, it } from "vitest";
-import { transform } from "../../src/index.js";
+import { transform } from "polytypo";
 
 type Node = DefaultTreeAdapterMap["node"];
 type Element = DefaultTreeAdapterMap["element"];

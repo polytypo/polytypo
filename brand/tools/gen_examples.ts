@@ -6,7 +6,7 @@
  *   npx tsx brand/tools/gen_examples.ts
  */
 import { readFileSync, writeFileSync } from "node:fs";
-import { transform } from "../../src/index.js";
+import { transform } from "polytypo";
 
 const LOCALES = [
   "en-US",
@@ -28,7 +28,7 @@ const LOCALES = [
 // reads as a war reference — 1914-1918 and 1939/1941-1945 both did, across three different
 // locales' hero lines, and a distance/print-size pair shows the same rules without either
 // reading. Translations beyond en/de/fr are a good-faith draft, not a native-speaker-reviewed one.
-const HERO: Record<string, string> = {
+const HERO: Record<(typeof LOCALES)[number], string> = {
   "en-US":
     `She asked, "Isn't this the shop they call 'round the corner'?" ... We'd walked - nearly 3 ` +
     `km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.`,
@@ -65,7 +65,7 @@ const HERO: Record<string, string> = {
     `βρήκαμε κλειστό. Copyright (c) 2026, μέγεθος 40x60 cm.`,
 };
 
-const SHOWCASE: Record<string, Array<{ rule: string; in: string }>> = {
+const SHOWCASE: Record<(typeof LOCALES)[number], Array<{ rule: string; in: string }>> = {
   "en-US": [
     { rule: "quotes", in: `"He said 'no' to me," she noted.` },
     { rule: "dashes", in: `The plan - if there is one - fails.` },
@@ -147,7 +147,7 @@ const PROOF_INPUT =
   `She asked, "Isn't this the shop they call 'round the corner'?" ... We'd walked - nearly 3 ` +
   `km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.`;
 
-const NAMES: Record<string, string> = {
+const NAMES: Record<(typeof LOCALES)[number], string> = {
   "en-US": "English (US)",
   "en-GB": "English (UK)",
   "de-DE": "German",
