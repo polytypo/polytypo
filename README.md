@@ -15,6 +15,10 @@
   one portable spec, designed for byte-identical output across runtimes.
 </p>
 
+<p align="center">
+  <strong>Try it live, no install: <a href="https://polytypo.dev/">polytypo.dev</a></strong>
+</p>
+
 ---
 
 Spec version: **1.0.0** · locales: **10** · rules: **9**.

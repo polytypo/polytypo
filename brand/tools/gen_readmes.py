@@ -127,6 +127,10 @@ TEMPLATE = """<p align="center">
   one portable spec, designed for byte-identical output across runtimes.
 </p>
 
+<p align="center">
+  <strong>Try it live, no install: <a href="https://polytypo.dev/">polytypo.dev</a></strong>
+</p>
+
 ---
 
 Spec version: **{spec_version}** · locales: **{n_locales}** · rules: **{n_rules}**.
