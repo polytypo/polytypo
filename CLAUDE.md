@@ -3,10 +3,10 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 **This repository is canonical spec + promo site only.** The JavaScript/TypeScript implementation
-was split out to [polytypo/polytypo-js](https://github.com/polytypo/polytypo-js) (2026-09-07);
-other runtimes get their own repos as they land. There is no `src/`, no build, and nothing
-published from this repository — its own `package.json` is `"private": true`, and the `polytypo`
-devDependency here is polytypo-js pulled as a git dependency (`github:polytypo/polytypo-js#main`),
+was split out to [polytypo/polytypo-js](https://github.com/polytypo/polytypo-js) (2026-09-07) and
+published to npm as `polytypo@1.0.0` (2026-09-07); other runtimes get their own repos as they land.
+There is no `src/`, no build, and nothing published from this repository — its own `package.json`
+is `"private": true`, and the `polytypo` devDependency here is the registry package (`^1.0.0`),
 used only by the promo-site generator (`brand/tools/gen_examples.ts`) and its tests.
 
 ## Commands
@@ -22,7 +22,7 @@ npx tsc --noEmit      # type-check the remaining .ts tooling and tests
 
 Run `npm run generate:all` after any edit to `spec/locales/` or `spec/fixtures/` — it regenerates
 the worked examples shown in `README.md` and the promo site from the real engine (via the
-`polytypo` git dependency), so those pages cannot drift from what the spec actually says.
+`polytypo` npm package), so those pages cannot drift from what the spec actually says.
 CI (`.github/workflows/ci.yml`) runs validate:spec → lint → test → generate:all (drift check) on
 Node 20 and 22. `.github/workflows/pages-deploy.yml` is the separate, manually-dispatched Pages
 publish workflow.
@@ -76,8 +76,8 @@ at build time — never loaded from this repository at runtime by any published 
   `check-actions-pinned.mjs` / `check-workflow-shell-safety.mjs` (workflow hygiene, apply to this
   repo's own `.github/workflows/`).
 - `brand/tools/` — generates the promo site (`promo/`) and brandbook (`brand/BRANDBOOK.html`) from
-  spec data, calling `transform()` from the `polytypo` package (git dependency) to produce the
-  worked examples shown in `README.md` and on the site.
+  spec data, calling `transform()` from the `polytypo` npm package to produce the worked examples
+  shown in `README.md` and on the site.
 - `tests/conformance/` — `fixture-citation-guard.test.ts` and `mode-fixture-strategy.test.ts` check
   `spec/fixtures/*.json` structure and citation quality directly; there is no engine here to run
   them through, so this is _not_ the conformance suite itself — see the relevant runtime repo for

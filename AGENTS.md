@@ -8,8 +8,7 @@ cases in `spec/fixtures/`, and JSON Schemas in `spec/schema/`. The JavaScript/Ty
 implementation lives in [polytypo/polytypo-js](https://github.com/polytypo/polytypo-js); other
 runtimes get their own repos as they land. `scripts/` holds spec-validation and workflow-hygiene
 tooling; `brand/tools/` generates the promo site (`promo/`) and brandbook (`brand/BRANDBOOK.html`)
-from spec data via the `polytypo` npm package (a git dependency on polytypo-js, since nothing has
-been published to the npm registry yet). Documentation is in `docs/`; read
+from spec data via the published `polytypo` npm package. Documentation is in `docs/`; read
 `docs/MULTILINGUAL_ARCHITECTURE.md` before planning language or script expansion.
 
 ## Build, Test, and Development Commands
