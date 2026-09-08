@@ -17,6 +17,15 @@
       "conformant": true,
       "lastVerified": "2026-09-07",
       "notes": "text and html modes fully conformant; markdown mode conformant for dialect=\"commonmark\" only — dialect=\"mdx\" raises POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), a narrower but honest claim rather than a silent mishandling of a dialect it does not support."
+    },
+    {
+      "name": "Go",
+      "repo": "https://github.com/polytypo/polytypo-go",
+      "package": "https://pkg.go.dev/github.com/polytypo/polytypo-go",
+      "specVersion": "1.0.0",
+      "conformant": true,
+      "lastVerified": "2026-09-08",
+      "notes": "text and html modes fully conformant; markdown mode conformant for dialect=\"commonmark\" only (CommonMark plus GFM: tables, strikethrough, task lists, autolink literals) — dialect=\"mdx\" returns POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), the same narrower but honest claim as the Python runtime."
     }
   ]
 }
