@@ -258,3 +258,23 @@
     >.
   </p>
 </section>
+
+<section id="badge">
+  <h2>Link back from your own site</h2>
+  <p class="small muted" style="max-width: 60ch">
+    Plain HTML and inline styles, no script and no external image request — pick a language and a
+    theme, then copy the code into your footer, About page, or credits section.
+  </p>
+  <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 14px 0">
+    <select id="badge-locale" aria-label="Badge language"></select>
+    <div class="tabs" id="badge-theme-tabs">
+      <button type="button" data-theme="light" aria-pressed="true">Light</button>
+      <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+  <div id="badge-preview" style="margin: 0 0 14px"></div>
+  <div class="scroll">
+    <pre><code id="badge-code"></code></pre>
+  </div>
+  <button type="button" id="badge-copy" class="btn" style="margin-top: 10px">Copy</button>
+</section>

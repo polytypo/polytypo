@@ -926,6 +926,9 @@ def build():
         if slug in PLAYGROUND_SLUGS:
             doc += build_playground_script(data, prefix, lazy=slug != "playground")
 
+        if slug == "docs":
+            doc += build_badge_script(data)
+
         doc += "</body>\n</html>\n"
 
         rel_path = os.path.join(slug, "index.html") if slug else "index.html"
@@ -959,6 +962,118 @@ def write_robots_and_sitemap(out_dir):
         f.write(sitemap)
     print("  promo/robots.txt")
     print("  promo/sitemap.xml")
+
+
+# Attribution caption per language, "polytypo" marked with <b> at its actual position in each
+# (never derived by string-replacing "polytypo": Finnish inflects the brand name itself --
+# "polytypon", the genitive form -- so a substring replace would bold only part of the word).
+# Operator-reviewed 2026-09-08, not machine-translated: German prefers "durch" (performed-by) over
+# "von", Finnish "polytypon avulla" ("with the help of polytypo") over the ambiguous adessive
+# alone, and Russian deliberately breaks from the other six languages' "cleanup by X" structure --
+# "<b>polytypo</b> — текст оттипографен" reads as a natural short UI credit line in Russian, not a
+# literal translation of the English noun phrase.
+BADGE_TEXT = {
+    "en": "Typographic cleanup by <b>polytypo</b>",
+    "de": "Typografische Bereinigung durch <b>polytypo</b>",
+    "fr": "Nettoyage typographique par <b>polytypo</b>",
+    "ru": "<b>polytypo</b> — текст оттипографен",
+    "fi": "Typografinen siistiminen <b>polytypon</b> avulla",
+    "sv": "Typografisk uppstädning av <b>polytypo</b>",
+    "el": "Τυπογραφικός καθαρισμός από το <b>polytypo</b>",
+}
+
+# Every locale spec/rules/locale-resolution.md accepts, mapped to which BADGE_TEXT entry it uses --
+# not every locale needs its own translation (en-US/en-GB share English copy, de-DE/de-CH share
+# German, fr/fr-CA share French).
+BADGE_LOCALE_TEXT_KEY = {
+    "en-US": "en", "en-GB": "en",
+    "de-DE": "de", "de-CH": "de",
+    "fr": "fr", "fr-CA": "fr",
+    "ru": "ru", "fi": "fi", "sv": "sv", "el": "el",
+}
+
+_BADGE_THEME_COLORS = {
+    "light": {"bg": "#FBFAF7", "fg": "#14161A", "border": "rgba(20,22,26,0.14)"},
+    "dark": {"bg": "#14161A", "fg": "#FBFAF7", "border": "rgba(251,250,247,0.18)"},
+}
+
+
+def badge_html(locale, theme):
+    """One self-contained, copy-pasteable attribution badge: plain HTML and inline styles only --
+    no <script>, no external image request, nothing to break if the embedding site's own CSS or
+    CSP changes. The mark is the same guillemets-around-an-em-dash brand mark used everywhere else
+    on this site (brand/logo/polytypo-mark.svg), inlined and recolored per theme rather than
+    linked, for the same zero-dependency reason.
+    """
+    caption = BADGE_TEXT[BADGE_LOCALE_TEXT_KEY[locale]]
+    c = _BADGE_THEME_COLORS[theme]
+    mark_svg = (
+        '<svg width="20" height="12" viewBox="9.5 37.5 181.0 45.0" aria-hidden="true">'
+        f'<g fill="none" stroke="{c["fg"]}" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round">'
+        '<path d="M28 42 L14 60 L28 78"/><path d="M44 42 L30 60 L44 78"/>'
+        '<path d="M172 42 L186 60 L172 78"/><path d="M156 42 L170 60 L156 78"/></g>'
+        f'<rect x="58.0" y="55.5" width="84.0" height="9.0" fill="{c["fg"]}"/></svg>'
+    )
+    return (
+        '<a href="https://polytypo.dev/" style="display:inline-flex;align-items:center;gap:8px;'
+        f'padding:6px 12px;background:{c["bg"]};border:1px solid {c["border"]};border-radius:6px;'
+        "text-decoration:none;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;"
+        f'font-size:13px;color:{c["fg"]};line-height:1">{mark_svg}<span>{caption}</span></a>'
+    )
+
+
+def badge_matrix(data):
+    """{locale: {"light": html, "dark": html}} for every locale the spec accepts -- the exact set
+    embedded as JSON into the Docs page for its badge picker; see build_badge_script().
+    """
+    return {
+        loc["locale"]: {theme: badge_html(loc["locale"], theme) for theme in ("light", "dark")}
+        for loc in data["locales"]
+    }
+
+
+def build_badge_script(data):
+    matrix_json = json.dumps(badge_matrix(data), ensure_ascii=False).replace("</", "<\\/")
+    options = "".join(
+        f'<option value="{H.escape(loc["locale"])}">{H.escape(loc["name"])} ({H.escape(loc["locale"])})</option>'
+        for loc in data["locales"]
+    )
+    return f"""<script type="application/json" id="badge-data">{matrix_json}</script>
+<script>
+(function () {{
+  var data = JSON.parse(document.getElementById("badge-data").textContent);
+  var localeSel = document.getElementById("badge-locale");
+  localeSel.innerHTML = {json.dumps(options)};
+  var themeButtons = [].slice.call(document.querySelectorAll("#badge-theme-tabs button"));
+  var preview = document.getElementById("badge-preview");
+  var codeEl = document.getElementById("badge-code");
+  var copyBtn = document.getElementById("badge-copy");
+  var theme = "light";
+
+  function render() {{
+    var html = data[localeSel.value][theme];
+    preview.innerHTML = html;
+    codeEl.textContent = html;
+  }}
+  localeSel.addEventListener("change", render);
+  themeButtons.forEach(function (b) {{
+    b.addEventListener("click", function () {{
+      theme = b.dataset.theme;
+      themeButtons.forEach(function (o) {{ o.setAttribute("aria-pressed", String(o === b)); }});
+      render();
+    }});
+  }});
+  copyBtn.addEventListener("click", function () {{
+    navigator.clipboard.writeText(codeEl.textContent).then(function () {{
+      var was = copyBtn.textContent;
+      copyBtn.textContent = "Copied";
+      setTimeout(function () {{ copyBtn.textContent = was; }}, 1500);
+    }});
+  }});
+  render();
+}})();
+</script>"""
+
 
 
 def build_playground_script(data, prefix, lazy):
