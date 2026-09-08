@@ -26,12 +26,16 @@
 
 Spec version: **1.0.0** · locales: **10** · rules: **9**.
 
-Implementations: [JavaScript/TypeScript](https://github.com/polytypo/polytypo-js)
-(npm: [`polytypo`](https://www.npmjs.com/package/polytypo)), [Python](https://github.com/polytypo/polytypo-python)
-(PyPI: [`polytypo`](https://pypi.org/project/polytypo/)), [Go](https://github.com/polytypo/polytypo-go)
-(pkg.go.dev: [`polytypo-go`](https://pkg.go.dev/github.com/polytypo/polytypo-go)), [Ruby](https://github.com/polytypo/polytypo-ruby)
-(RubyGems: [`polytypo`](https://rubygems.org/gems/polytypo)). PHP gets its own repository as it
-lands.
+## Implementations
+
+| Runtime | Repository | Package |
+| --- | --- | --- |
+| JavaScript/TypeScript | [`polytypo-js`](https://github.com/polytypo/polytypo-js) | [`polytypo`](https://www.npmjs.com/package/polytypo) (npm) |
+| Python | [`polytypo-python`](https://github.com/polytypo/polytypo-python) | [`polytypo`](https://pypi.org/project/polytypo/) (PyPI) |
+| Go | [`polytypo-go`](https://github.com/polytypo/polytypo-go) | [`polytypo-go`](https://pkg.go.dev/github.com/polytypo/polytypo-go) (pkg.go.dev) |
+| Ruby | [`polytypo-ruby`](https://github.com/polytypo/polytypo-ruby) | [`polytypo`](https://rubygems.org/gems/polytypo) (RubyGems) |
+
+PHP gets its own repository as it lands.
 
 ## What it does
 

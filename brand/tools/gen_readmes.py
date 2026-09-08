@@ -44,6 +44,38 @@ DASH_WORDS = {
 
 
 # --------------------------------------------------------------- shared blocks
+PACKAGE_HOST_LABELS = [
+    ("npmjs.com", "npm"),
+    ("pypi.org", "PyPI"),
+    ("pkg.go.dev", "pkg.go.dev"),
+    ("rubygems.org", "RubyGems"),
+]
+
+
+def package_host_label(url):
+    for host, label in PACKAGE_HOST_LABELS:
+        if host in url:
+            return label
+    return "package"
+
+
+def implementations_table():
+    # Driven by scripts/conformance-status.json — the same file that gates a runtime's
+    # spec/CONFORMANCE.md row — so a shipped runtime can't go missing from this table, and an
+    # unshipped one can't appear in it, by construction rather than by remembering to update prose.
+    with open(os.path.join(REPO, "scripts", "conformance-status.json"), encoding="utf-8") as f:
+        status = json.load(f)
+    rows = ["| Runtime | Repository | Package |", "| --- | --- | --- |"]
+    for rt in status["runtimes"]:
+        repo_name = rt["repo"].rstrip("/").rsplit("/", 1)[-1]
+        package_name = rt["package"].rstrip("/").rsplit("/", 1)[-1]
+        rows.append(
+            f"| {rt['name']} | [`{repo_name}`]({rt['repo']}) | "
+            f"[`{package_name}`]({rt['package']}) ({package_host_label(rt['package'])}) |"
+        )
+    return "\n".join(rows)
+
+
 def hero_block():
     # A table, not a fenced code block: GitHub's Markdown renderer wraps table cells but never
     # wraps a code block's long lines, so a plain-text rendering forces a horizontal scrollbar on
@@ -138,12 +170,11 @@ TEMPLATE = """<p align="center">
 
 Spec version: **{spec_version}** · locales: **{n_locales}** · rules: **{n_rules}**.
 
-Implementations: [JavaScript/TypeScript](https://github.com/polytypo/polytypo-js)
-(npm: [`polytypo`](https://www.npmjs.com/package/polytypo)), [Python](https://github.com/polytypo/polytypo-python)
-(PyPI: [`polytypo`](https://pypi.org/project/polytypo/)), [Go](https://github.com/polytypo/polytypo-go)
-(pkg.go.dev: [`polytypo-go`](https://pkg.go.dev/github.com/polytypo/polytypo-go)), [Ruby](https://github.com/polytypo/polytypo-ruby)
-(RubyGems: [`polytypo`](https://rubygems.org/gems/polytypo)). PHP gets its own repository as it
-lands.
+## Implementations
+
+{implementations}
+
+PHP gets its own repository as it lands.
 
 ## What it does
 
@@ -212,6 +243,7 @@ def build():
         spec_version=SPEC_VERSION,
         n_locales=len(REGISTRY["locales"]),
         n_rules=len(ORDER["rules"]),
+        implementations=implementations_table(),
         hero=hero_block(),
         locales=locale_table(),
         rules=rules_table(),
