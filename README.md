@@ -10,6 +10,7 @@
   <a href="https://pypi.org/project/polytypo/"><img src="https://img.shields.io/pypi/v/polytypo.svg" alt="PyPI version"></a>
   <a href="https://pkg.go.dev/github.com/polytypo/polytypo-go"><img src="https://pkg.go.dev/badge/github.com/polytypo/polytypo-go.svg" alt="Go Reference"></a>
   <a href="https://rubygems.org/gems/polytypo"><img src="https://img.shields.io/gem/v/polytypo.svg" alt="Gem version"></a>
+  <a href="https://packagist.org/packages/polytypo/polytypo"><img src="https://img.shields.io/packagist/v/polytypo/polytypo.svg" alt="Packagist version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
 </p>
 

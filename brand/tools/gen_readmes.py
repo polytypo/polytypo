@@ -60,6 +60,39 @@ def package_host_label(url):
     return "package"
 
 
+# One version-badge shield per registry, keyed by the same host label package_host_label()
+# returns — each registry's badge URL shape is genuinely different (Go's is hosted by pkg.go.dev
+# itself, not shields.io; RubyGems/npm/PyPI/Packagist each use a different img.shields.io path
+# segment), so this is the one place that stays hand-written; which *runtimes* get a badge is
+# still driven by conformance-status.json, not by this dict.
+PACKAGE_BADGES = {
+    "npm": lambda url, name: f'<img src="https://img.shields.io/npm/v/{name}.svg" alt="npm version">',
+    "PyPI": lambda url, name: f'<img src="https://img.shields.io/pypi/v/{name}.svg" alt="PyPI version">',
+    "pkg.go.dev": lambda url, name: f'<img src="https://pkg.go.dev/badge/{name}.svg" alt="Go Reference">',
+    "RubyGems": lambda url, name: f'<img src="https://img.shields.io/gem/v/{name}.svg" alt="Gem version">',
+    "Packagist": lambda url, name: f'<img src="https://img.shields.io/packagist/v/{name}.svg" alt="Packagist version">',
+}
+
+
+def package_badges_row():
+    with open(os.path.join(REPO, "scripts", "conformance-status.json"), encoding="utf-8") as f:
+        status = json.load(f)
+    lines = []
+    for rt in status["runtimes"]:
+        label = package_host_label(rt["package"])
+        badge_fn = PACKAGE_BADGES.get(label)
+        if badge_fn is None:
+            continue
+        if label == "pkg.go.dev":
+            name = rt["package"].split("pkg.go.dev/", 1)[-1].rstrip("/")
+        elif label == "Packagist":
+            name = rt["package"].split("packagist.org/packages/", 1)[-1].rstrip("/")
+        else:
+            name = rt["package"].rstrip("/").rsplit("/", 1)[-1]
+        lines.append(f'  <a href="{rt["package"]}">{badge_fn(rt["package"], name)}</a>')
+    return "\n".join(lines)
+
+
 def implementations_table():
     # Driven by scripts/conformance-status.json — the same file that gates a runtime's
     # spec/CONFORMANCE.md row — so a shipped runtime can't go missing from this table, and an
@@ -151,10 +184,7 @@ TEMPLATE = """<p align="center">
 
 <p align="center">
   <a href="https://github.com/polytypo/polytypo/actions/workflows/ci.yml"><img src="https://github.com/polytypo/polytypo/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://www.npmjs.com/package/polytypo"><img src="https://img.shields.io/npm/v/polytypo.svg" alt="npm version"></a>
-  <a href="https://pypi.org/project/polytypo/"><img src="https://img.shields.io/pypi/v/polytypo.svg" alt="PyPI version"></a>
-  <a href="https://pkg.go.dev/github.com/polytypo/polytypo-go"><img src="https://pkg.go.dev/badge/github.com/polytypo/polytypo-go.svg" alt="Go Reference"></a>
-  <a href="https://rubygems.org/gems/polytypo"><img src="https://img.shields.io/gem/v/polytypo.svg" alt="Gem version"></a>
+{badges}
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
 </p>
 
@@ -242,6 +272,7 @@ def build():
         spec_version=SPEC_VERSION,
         n_locales=len(REGISTRY["locales"]),
         n_rules=len(ORDER["rules"]),
+        badges=package_badges_row(),
         implementations=implementations_table(),
         hero=hero_block(),
         locales=locale_table(),

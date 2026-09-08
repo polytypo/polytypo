@@ -354,6 +354,10 @@ section {
   flex-wrap: wrap;
   gap: var(--space-5);
   margin-top: var(--space-9);
+  /* A paragraph's own line-height leaves slack below it before a section's 10px bottom padding
+     kicks in; a flex row of buttons has none, so the following border (section-to-section, or
+     section-to-footer) sits visibly pressed against it without this. */
+  margin-bottom: var(--space-6);
 }
 
 .btn {

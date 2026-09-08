@@ -57,6 +57,33 @@ PAGES = [
     ("manifesto", "Manifesto", "manifesto.body.html"),
 ]
 
+# Per-page meta/OG description — every page previously shared the Home page's own description
+# verbatim, which is a duplicate-content SEO defect. Each entry describes what that specific page
+# actually shows, never a promise about work not yet done. "{n}" is the live locale count,
+# substituted where used (see PAGE_DESCRIPTIONS below). Keep each under ~160 characters.
+PAGE_DESCRIPTIONS = {
+    "": (
+        "polytypo — locale-correct quotes, dashes, ellipses and no-break spaces for {n} locales. "
+        "Five runtimes, one portable spec, byte-identical output."
+    ),
+    "docs": (
+        "polytypo reference: transform(input, options) is pure and locale-required. Code examples "
+        "in five languages, plus the full error code contract."
+    ),
+    "playground": (
+        "Run polytypo's real engine in your browser. Paste text, pick a locale, and see "
+        "locale-correct quotes, dashes, ellipses and no-break spaces applied live."
+    ),
+    "locales": (
+        "polytypo locale coverage: {n} locales, each backed by a normative typographic source and "
+        "a conformance fixture set. See what is covered, and how a locale is added."
+    ),
+    "manifesto": (
+        "The em dash was mine before AI. Why locale-correct typography is craft, set by locale "
+        "convention long before language models existed — not an AI watermark."
+    ),
+}
+
 # Depth prefix every link and asset reference on a page is written relative to. Document-relative,
 # never root-relative: before a custom domain exists the site is served from
 # polytypo.github.io/polytypo/, where an absolute "/docs/" would point outside the site. A page at
@@ -75,10 +102,20 @@ FAVICON_FILES = [
 ]
 
 # Single source of truth for the canonical site origin — package.json's "homepage", not a second
-# hardcoded copy. Used only by sitemap.xml/robots.txt, which need an absolute URL; every in-page
-# link stays document-relative (see PAGE_PREFIXES's own comment on why).
+# hardcoded copy. Used for sitemap.xml/robots.txt and for the absolute URLs that og:url,
+# <link rel="canonical"> and JSON-LD require; every in-page link stays document-relative (see
+# PAGE_PREFIXES's own comment on why).
 with open(os.path.join(REPO, "package.json"), encoding="utf-8") as f:
-    SITE_ORIGIN = json.load(f)["homepage"].rstrip("/")
+    _PKG = json.load(f)
+    SITE_ORIGIN = _PKG["homepage"].rstrip("/")
+    REPO_URL = _PKG["repository"]["url"].removeprefix("git+").removesuffix(".git")
+    LICENSE = _PKG["license"]
+
+# Served at promo/assets/og-image.png — see OG_IMAGE_FILE below. 1200x630 is the OG/Twitter
+# large-card convention; the file is hand-produced (brand/README.md) and committed, not generated.
+OG_IMAGE_FILE = "polytypo-og-1200x630.png"
+OG_IMAGE_WIDTH = 1200
+OG_IMAGE_HEIGHT = 630
 
 # Pages that embed the playground (brand/tools/promo/playground.partial.html, substituted into both
 # bodies via {{playground}}) and therefore need its script. The home page carries it so a first-time
@@ -217,15 +254,19 @@ end""",
 use Polytypo\\Polytypo;
 use Polytypo\\PolytypoException;
 
-$output = Polytypo::transform($input, ['locale' => 'de']);
+$output = Polytypo::transform($input, 'de');
 
 // mode 'markdown' requires an explicit dialect; 'text' and 'html' ignore it
-Polytypo::transform($input, ['locale' => 'fr', 'mode' => 'markdown', 'dialect' => 'commonmark']);
+// (markdown mode is not implemented by this runtime -- see spec/CONFORMANCE.md)
+Polytypo::transform($input, 'fr', mode: 'markdown', dialect: 'commonmark');
+
+// opt out of a single rule; the order of the rest never changes
+Polytypo::transform($input, 'en-US', rules: ['dashes' => false]);
 
 try {
-    Polytypo::transform($input, ['locale' => 'xx']);
+    Polytypo::transform($input, 'xx');
 } catch (PolytypoException $error) {
-    $error->errorCode; // 'POLYTYPO_UNKNOWN_LOCALE'
+    $error->getErrorCode(); // 'POLYTYPO_UNKNOWN_LOCALE'
 }""",
     ),
 ]
@@ -362,16 +403,74 @@ def rules_table(data):
     )
 
 
+# CODE's own tab label -> the matching runtime "name" in scripts/conformance-status.json, so the
+# repo/package link and version badge under each code pane are read from the same one file the
+# canonical README's own Implementations table and badge row are generated from, never
+# hand-duplicated here.
+_CODE_LABEL_TO_STATUS_NAME = {
+    "JavaScript / TypeScript": "JavaScript/TypeScript",
+    "Python": "Python",
+    "Go": "Go",
+    "Ruby": "Ruby",
+    "PHP": "PHP",
+}
+
+# Registry-specific version-badge shield, keyed the same way brand/tools/gen_readmes.py's own
+# PACKAGE_BADGES is (that module isn't imported here to keep these two generators independent, per
+# this file's own module docstring on build isolation). Operator decision 2026-09-08: these five
+# exact URLs are the one deliberate exception to this site's zero-external-request policy — see
+# tests/promo/no-external-requests.test.ts's ALLOWED_EXTERNAL_URLS, which must be updated in
+# lockstep with any change here.
+_BADGE_SHIELD = {
+    "npmjs.com": lambda pkg: f"https://img.shields.io/npm/v/{pkg.rstrip('/').rsplit('/', 1)[-1]}.svg",
+    "pypi.org": lambda pkg: f"https://img.shields.io/pypi/v/{pkg.rstrip('/').rsplit('/', 1)[-1]}.svg",
+    "pkg.go.dev": lambda pkg: f"https://pkg.go.dev/badge/{pkg.split('pkg.go.dev/', 1)[-1].rstrip('/')}.svg",
+    "rubygems.org": lambda pkg: f"https://img.shields.io/gem/v/{pkg.rstrip('/').rsplit('/', 1)[-1]}.svg",
+    "packagist.org": lambda pkg: f"https://img.shields.io/packagist/v/{pkg.split('packagist.org/packages/', 1)[-1].rstrip('/')}.svg",
+}
+
+
+def _runtime_status():
+    with open(os.path.join(REPO, "scripts", "conformance-status.json"), encoding="utf-8") as f:
+        status = json.load(f)
+    return {rt["name"]: rt for rt in status["runtimes"]}
+
+
+def _badge_shield_url(package_url):
+    for host, shield in _BADGE_SHIELD.items():
+        if host in package_url:
+            return shield(package_url)
+    return None
+
+
 def code_panes():
     # No repeated label heading here — the tab button above the pane already shows and highlights
     # it (bootTabs sets the active tab's own text from data-label); build_panes() below never
     # repeated it either. Only this one drifted, since Home used to also render this label
     # standalone as its own quickstart heading — the drift point is gone along with that section.
+    by_name = _runtime_status()
     panes = []
     for label, comment_token, code in CODE:
+        rt = by_name.get(_CODE_LABEL_TO_STATUS_NAME.get(label))
+        links_html = ""
+        if rt is not None:
+            shield_url = _badge_shield_url(rt["package"])
+            badge_img = (
+                f'<img src="{H.escape(shield_url)}" alt="{H.escape(rt["name"])} package version" '
+                f'style="vertical-align: middle; height: 20px">'
+                if shield_url
+                else ""
+            )
+            links_html = (
+                '<p class="small muted" style="margin-top: 10px">'
+                f'<a href="{H.escape(rt["repo"])}">Repo</a> · '
+                f'<a href="{H.escape(rt["package"])}">Package</a>'
+                f'{" " + badge_img if badge_img else ""}'
+                "</p>"
+            )
         panes.append(
             f'<div class="pane" data-label="{H.escape(label)}">'
-            f"<pre><code>{highlight_lines(code, comment_token)}</code></pre></div>"
+            f"<pre><code>{highlight_lines(code, comment_token)}</code></pre>{links_html}</div>"
         )
     return "".join(panes)
 
@@ -531,6 +630,42 @@ def footer_html(data, prefix):
     )
 
 
+_WEBSITE_NODE = {"@type": "WebSite", "name": "polytypo", "url": f"{SITE_ORIGIN}/"}
+
+
+def jsonld(slug, page_title, description, canonical_url):
+    """Structured data for one page: a WebPage node everywhere, plus — Home only — a
+    SoftwareSourceCode node describing what actually ships (MIT, the canonical spec repo, and
+    every runtime currently published — read from scripts/conformance-status.json, never
+    hand-listed, so a newly-shipped runtime can't go stale here). Not SoftwareApplication: that
+    type implies an installable app with an `offers` price point, which overclaims what a
+    library is.
+    """
+    webpage_node = {
+        "@type": "WebPage",
+        "name": page_title,
+        "description": description,
+        "url": canonical_url,
+        "isPartOf": _WEBSITE_NODE,
+    }
+    if slug != "":
+        doc = {"@context": "https://schema.org", **webpage_node}
+    else:
+        software_node = {
+            "@type": "SoftwareSourceCode",
+            "name": "polytypo",
+            "description": description,
+            "url": canonical_url,
+            "codeRepository": REPO_URL,
+            "license": "https://spdx.org/licenses/MIT.html",
+            "programmingLanguage": [rt["name"] for rt in _runtime_status().values()],
+        }
+        doc = {"@context": "https://schema.org", "@graph": [webpage_node, software_node]}
+    # </script> inside a JSON string would otherwise close the element early — escape the slash,
+    # which JSON permits (\/ is a valid escape) and HTML parsers do not treat as a delimiter.
+    return json.dumps(doc, ensure_ascii=False).replace("</", "<\\/")
+
+
 def build():
     data = load_examples()
     n = len(data["locales"])
@@ -553,6 +688,12 @@ def build():
     os.makedirs(favicon_dir, exist_ok=True)
     for name in FAVICON_FILES:
         shutil.copyfile(os.path.join(favicon_src, name), os.path.join(favicon_dir, name))
+    # og:image / twitter:image target — same committed brand/png/ asset every page's <head> points
+    # at, copied verbatim rather than re-derived so it cannot drift from what brand/BRANDBOOK.html
+    # documents as the canonical share image.
+    shutil.copyfile(
+        os.path.join(BRAND, "png", OG_IMAGE_FILE), os.path.join(assets_dir, "og-image.png")
+    )
     # Shared, cacheable, linked (not inlined) — so nav between the five pages doesn't re-download
     # ~170 KB of embedded woff2 on every click.
     with open(os.path.join(assets_dir, "fonts.css"), "w", encoding="utf-8") as f:
@@ -606,18 +747,37 @@ def build():
         body = re.sub(r"\{\{svg:([^}]+)\}\}", lambda m: inline(m.group(1)), body)
 
         page_title = "polytypo" if title == "Home" else f"polytypo — {title}"
+        description = PAGE_DESCRIPTIONS[slug].format(n=n)
+        canonical_url = f"{SITE_ORIGIN}/{slug + '/' if slug else ''}"
+        image_url = f"{SITE_ORIGIN}/assets/og-image.png"
         doc = (
             "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
             '<meta name="viewport" content="width=device-width,initial-scale=1">\n'
-            f'<meta name="description" content="polytypo — locale-correct quotes, dashes, '
-            f'ellipses and no-break spaces for {n} locales. One runtime today. One portable '
-            f'spec designed for five.">\n'
+            f'<meta name="description" content="{H.escape(description)}">\n'
+            f'<link rel="canonical" href="{canonical_url}">\n'
             f'<link rel="icon" href="{prefix}assets/favicon/favicon.svg" type="image/svg+xml">\n'
             f'<link rel="icon" href="{prefix}assets/favicon/favicon.ico" sizes="16x16 32x32 48x48">\n'
             f'<link rel="apple-touch-icon" href="{prefix}assets/favicon/apple-touch-icon-180.png">\n'
             f'<link rel="stylesheet" href="{prefix}assets/fonts.css">\n'
             f'<link rel="stylesheet" href="{prefix}assets/style.css">\n'
             f"<title>{H.escape(page_title)}</title>\n"
+            # Open Graph — every page, so a link shared from any of the five (not just Home)
+            # carries its own title/description/image instead of Facebook/Slack/etc. guessing
+            # from the raw markup.
+            '<meta property="og:site_name" content="polytypo">\n'
+            '<meta property="og:type" content="website">\n'
+            f'<meta property="og:url" content="{canonical_url}">\n'
+            f'<meta property="og:title" content="{H.escape(page_title)}">\n'
+            f'<meta property="og:description" content="{H.escape(description)}">\n'
+            f'<meta property="og:image" content="{image_url}">\n'
+            f'<meta property="og:image:width" content="{OG_IMAGE_WIDTH}">\n'
+            f'<meta property="og:image:height" content="{OG_IMAGE_HEIGHT}">\n'
+            '<meta property="og:locale" content="en_US">\n'
+            '<meta name="twitter:card" content="summary_large_image">\n'
+            f'<meta name="twitter:title" content="{H.escape(page_title)}">\n'
+            f'<meta name="twitter:description" content="{H.escape(description)}">\n'
+            f'<meta name="twitter:image" content="{image_url}">\n'
+            f"<script type=\"application/ld+json\">{jsonld(slug, page_title, description, canonical_url)}</script>\n"
             '<script defer src="https://u.rogulia.fi/script.js" '
             'data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>\n'
             f'</head>\n<body class="page-{slug or "home"}">\n'

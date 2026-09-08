@@ -112,7 +112,19 @@ function isExternalResourceUrl(url: string | undefined): boolean {
 // dependency in the sense this test guards against (no CDN, no font host, no tracker operated by
 // someone else) — explicitly allowed by operator decision (2026-09-07). Everything else external
 // is still rejected.
-const ALLOWED_EXTERNAL_URLS = new Set(["https://u.rogulia.fi/script.js"]);
+// The operator's own self-hosted Umami instance, plus one version-badge image per published
+// runtime package (operator decision 2026-09-08, once all five target runtimes shipped: these
+// are real, live registry badges — not the single-runtime-era third-party dependency this test
+// otherwise guards against). Exact URLs, not a hostname allowlist, so a new accidental
+// shields.io/pkg.go.dev reference elsewhere on the site still fails closed.
+const ALLOWED_EXTERNAL_URLS = new Set([
+  "https://u.rogulia.fi/script.js",
+  "https://img.shields.io/npm/v/polytypo.svg",
+  "https://img.shields.io/pypi/v/polytypo.svg",
+  "https://pkg.go.dev/badge/github.com/polytypo/polytypo-go.svg",
+  "https://img.shields.io/gem/v/polytypo.svg",
+  "https://img.shields.io/packagist/v/polytypo/polytypo.svg",
+]);
 
 function isDisallowedExternalUrl(url: string | undefined): boolean {
   if (!isExternalResourceUrl(url)) return false;
