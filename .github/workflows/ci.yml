@@ -85,8 +85,8 @@ jobs:
       #
       # Every promo page (all five — index plus the docs/playground/locales/manifesto directory
       # indexes, served at the directory URLs /, /docs, /playground, /locales, /manifesto),
-      # promo/robots.txt, promo/sitemap.xml, promo/llms.txt and brand/BRANDBOOK.html are tracked,
-      # generated files and belong in this list.
+      # promo/robots.txt, promo/sitemap.xml, promo/llms.txt, promo/badge.js and
+      # brand/BRANDBOOK.html are tracked, generated files and belong in this list.
       #
       # spec/fixtures/.escaped/ is gitignored by design (never committed), so it cannot be
       # drift-checked via git diff here; its generation is exercised deterministically by the
@@ -105,6 +105,7 @@ jobs:
             promo/robots.txt \
             promo/sitemap.xml \
             promo/llms.txt \
+            promo/badge.js \
             promo/assets \
             promo/vendor/polytypo.browser.js \
             brand/BRANDBOOK.html \

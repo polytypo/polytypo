@@ -10,6 +10,7 @@ export default tseslint.config(
       "spec/fixtures/.escaped/**",
       "promo/vendor/**",
       "promo/assets/**",
+      "promo/badge.js",
     ],
   },
   eslint.configs.recommended,
