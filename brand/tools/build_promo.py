@@ -748,8 +748,41 @@ def footer_html(data, prefix):
         "every before/after typography example on this site is generated with the engine.</p>"
         f'<p><a href="{page_href(prefix, "manifesto")}">Manifesto</a></p>'
         f"<p>Packages: {package_links}</p>"
+        f"{badge_section_html()}"
         '<p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p>'
         "</footer>"
+    )
+
+
+def badge_section_html():
+    """The embeddable-badge picker, in the shared footer so it reaches every page rather than
+    only whichever one page happens to carry a "Docs" section -- a visitor deciding to link back
+    is as likely to be on Home or Locales as on Docs. `.footer-badge` (style.css) demotes the
+    heading from the page-section h2 (30px) this used to be under, since inside a muted, 13px
+    footer that size would visually outweigh the plain-text lines around it.
+    """
+    return (
+        '<div class="footer-badge">'
+        "<p><strong>Link back from your own site</strong></p>"
+        '<p style="max-width: 60ch">'
+        "Two lines, same shape as any other embeddable badge — a script tag and a span. No "
+        "per-embed network call: the whole render table ships in that one script. Pick a "
+        "language and a theme, then copy the code into your footer, About page, or credits "
+        "section."
+        "</p>"
+        '<div class="badge-controls" '
+        'style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 14px 0">'
+        '<select id="badge-lang" aria-label="Badge language"></select>'
+        '<div class="tabs" id="badge-theme-tabs">'
+        '<button type="button" data-theme="light" aria-pressed="true">Light</button>'
+        '<button type="button" data-theme="dark" aria-pressed="false">Dark</button>'
+        "</div>"
+        "</div>"
+        '<span id="badge-preview" data-polytypo-lang="en" data-polytypo-theme="light" '
+        'style="display: inline-block; margin: 0 0 14px"></span>'
+        '<div class="scroll"><pre><code id="badge-code"></code></pre></div>'
+        '<button type="button" id="badge-copy" class="btn" style="margin-top: 10px">Copy</button>'
+        "</div>"
     )
 
 
@@ -926,8 +959,9 @@ def build():
         if slug in PLAYGROUND_SLUGS:
             doc += build_playground_script(data, prefix, lazy=slug != "playground")
 
-        if slug == "docs":
-            doc += build_badge_script(prefix)
+        # The footer carries the badge picker on every page (footer_html() / badge_section_html()),
+        # so its wiring script loads unconditionally here too, not just for "docs".
+        doc += build_badge_script(prefix)
 
         doc += "</body>\n</html>\n"
 
@@ -1108,8 +1142,9 @@ def write_badge_js(out_dir):
     that most polytypo copy otherwise correctly emphasizes. No network call, no per-embed fetch --
     the whole render table (badge_matrix()) ships inside this one file, so rendering is
     synchronous and works offline once loaded. `window.PolytypoBadge.render()` is also what this
-    site's own Docs-page picker calls after changing the preview span's attributes, so the live
-    preview and every real embed run through the exact same code path.
+    site's own footer picker (badge_section_html(), every page) calls after changing the preview
+    span's attributes, so the live preview and every real embed run through the exact same code
+    path.
     """
     matrix_json = json.dumps(badge_matrix(), ensure_ascii=False).replace("</", "<\\/")
     content = f"""(function () {{
@@ -1143,14 +1178,15 @@ def write_badge_js(out_dir):
 
 
 def build_badge_script(prefix):
-    """The Docs page's own badge-picker wiring: a language <select> (the seven BADGE_TEXT keys,
-    not the ten locales -- see badge_matrix()) and a light/dark toggle drive a live `<span
-    data-polytypo-lang data-polytypo-theme>` preview via `window.PolytypoBadge` (loaded
-    synchronously here, not `async`, so it is guaranteed ready before this script runs -- an
-    external embedder is told to use `async` for their own page's load performance, but this page
-    controls its own script order already). The copy-code box always shows the real two-line
-    embed -- `<script async src=".../badge.js">` is built via string concatenation, never a
-    literal "</script>" substring, so it cannot prematurely close this containing <script> tag.
+    """The footer's own badge-picker wiring, emitted on every page (badge_section_html() lives in
+    footer_html()): a language <select> (the seven BADGE_TEXT keys, not the ten locales -- see
+    badge_matrix()) and a light/dark toggle drive a live `<span data-polytypo-lang
+    data-polytypo-theme>` preview via `window.PolytypoBadge` (loaded synchronously here, not
+    `async`, so it is guaranteed ready before this script runs -- an external embedder is told to
+    use `async` for their own page's load performance, but this page controls its own script order
+    already). The copy-code box always shows the real two-line embed -- `<script async
+    src=".../badge.js">` is built via string concatenation, never a literal "</script>" substring,
+    so it cannot prematurely close this containing <script> tag.
     """
     options = "".join(
         f'<option value="{H.escape(lang)}">{H.escape(name)}</option>'

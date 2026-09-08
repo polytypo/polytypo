@@ -1051,6 +1051,18 @@ footer a:hover {
   color: var(--fg);
 }
 
+/* The embeddable-badge picker (badge_section_html()), on every page's footer. Its own heading is
+   a bold 13px line, not an h2 -- at the page-section size (30px, see h2 above) it would visually
+   outweigh the plain-text lines around it here. */
+.footer-badge {
+  margin-top: var(--space-7);
+}
+
+.footer-badge p strong {
+  color: var(--fg);
+  font-size: 14px;
+}
+
 /* ---------- home page ----------
    Scoped to .page-home (set on <body> only for promo/index.html) so the home page can carry a
    different rhythm — bigger hero, panel-style "Ship it", a two-column reasons list — without
