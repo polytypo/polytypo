@@ -635,11 +635,27 @@ def footer_html(data, prefix):
     # around this content would apply that class's width-inset and bottom-padding rules twice —
     # once from the page's wrap, once from this one — narrowing and right-shifting the footer
     # relative to the content above it, and doubling the page's bottom whitespace.
+    # Package links, one per published runtime, short language labels (not the full
+    # conformance-status.json "name" — "JavaScript/TypeScript" reads better shortened here) — read
+    # from the same one file the Home badges and README Implementations table already use, so a
+    # runtime can't go missing from the footer either.
+    _footer_labels = {
+        "JavaScript/TypeScript": "JS/TS",
+        "Python": "Python",
+        "Go": "Go",
+        "Ruby": "Ruby",
+        "PHP": "PHP",
+    }
+    package_links = " · ".join(
+        f'<a href="{H.escape(rt["package"])}">{H.escape(_footer_labels.get(rt["name"], rt["name"]))}</a>'
+        for rt in _runtime_status().values()
+    )
     return (
         "<footer><p>"
         f'polytypo · spec {data["spec"]} · MIT for the code, separate terms for the brand assets · '
         "every before/after typography example on this site is generated with the engine.</p>"
         f'<p><a href="{page_href(prefix, "manifesto")}">Manifesto</a></p>'
+        f"<p>Packages: {package_links}</p>"
         '<p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p>'
         "</footer>"
     )
