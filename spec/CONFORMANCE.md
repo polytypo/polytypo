@@ -8,10 +8,10 @@ spec version it claims (docs/ARCHITECTURE.md section 6.2). The suite currently p
 version **1.0.0**: **1015** fixture cases across 10 locale
 files, plus **36** locale-resolution cases.
 
-| Runtime | Package | Spec version claimed | Status | Last verified |
-| --- | --- | --- | --- | --- |
-| [JavaScript/TypeScript](https://github.com/polytypo/polytypo-js) | [package](https://www.npmjs.com/package/polytypo) | 1.0.0 | ✅ conformant | 2026-09-07 |
-| [Python](https://github.com/polytypo/polytypo-python) | [package](https://pypi.org/project/polytypo/) | 1.0.0 | ✅ conformant | 2026-09-07 |
+| Runtime                                                          | Package                                           | Spec version claimed | Status        | Last verified |
+| ---------------------------------------------------------------- | ------------------------------------------------- | -------------------- | ------------- | ------------- |
+| [JavaScript/TypeScript](https://github.com/polytypo/polytypo-js) | [package](https://www.npmjs.com/package/polytypo) | 1.0.0                | ✅ conformant | 2026-09-07    |
+| [Python](https://github.com/polytypo/polytypo-python)            | [package](https://pypi.org/project/polytypo/)     | 1.0.0                | ✅ conformant | 2026-09-07    |
 
 "Last verified" is the date an operator last observed that runtime's own CI green against the
 spec version it claims — not a live, automated signal. See
