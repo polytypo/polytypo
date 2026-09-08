@@ -263,17 +263,25 @@
   <h2>Link back from your own site</h2>
   <p class="small muted" style="max-width: 60ch">
     Two lines, same shape as any other embeddable badge — a script tag and a span. No per-embed
-    network call: the whole render table ships in that one script. Pick a language and a theme,
-    then copy the code into your footer, About page, or credits section.
+    network call: the whole render table ships in that one script. Pick a language and a theme, then
+    copy the code into your footer, About page, or credits section.
   </p>
-  <div class="badge-controls" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 14px 0">
-    <select id="badge-locale" aria-label="Badge language"></select>
+  <div
+    class="badge-controls"
+    style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 14px 0"
+  >
+    <select id="badge-lang" aria-label="Badge language"></select>
     <div class="tabs" id="badge-theme-tabs">
       <button type="button" data-theme="light" aria-pressed="true">Light</button>
       <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
     </div>
   </div>
-  <span id="badge-preview" data-polytypo-locale="en-US" data-polytypo-theme="light" style="display: inline-block; margin: 0 0 14px"></span>
+  <span
+    id="badge-preview"
+    data-polytypo-lang="en"
+    data-polytypo-theme="light"
+    style="display: inline-block; margin: 0 0 14px"
+  ></span>
   <div class="scroll">
     <pre><code id="badge-code"></code></pre>
   </div>

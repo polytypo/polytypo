@@ -927,7 +927,7 @@ def build():
             doc += build_playground_script(data, prefix, lazy=slug != "playground")
 
         if slug == "docs":
-            doc += build_badge_script(data, prefix)
+            doc += build_badge_script(prefix)
 
         doc += "</body>\n</html>\n"
 
@@ -939,7 +939,7 @@ def build():
         print(f"  promo/{rel_path.replace(os.sep, '/')}  {os.path.getsize(out_path) / 1024:.0f} KB")
 
     write_robots_and_sitemap(out_dir)
-    write_badge_js(out_dir, data)
+    write_badge_js(out_dir)
     write_llms_txt(out_dir, data)
 
 
@@ -1032,6 +1032,10 @@ def write_llms_txt(out_dir, data):
 # alone, and Russian deliberately breaks from the other six languages' "cleanup by X" structure --
 # "текст оттипографен <b>polytypo</b>" reads as a natural short UI credit line in Russian, not a
 # literal translation of the English noun phrase.
+# Keyed by language, not locale: the badge's caption text is the same for every locale that
+# shares a language (en-US/en-GB, de-DE/de-CH, fr/fr-CA), so the picker offers exactly these seven
+# languages -- not ten locales where three pairs would produce byte-identical text under different
+# labels. See BADGE_LANG_NAMES for the picker's own display names, in this same order.
 BADGE_TEXT = {
     "en": "Typographic cleanup by <b>polytypo</b>",
     "de": "Typografische Bereinigung durch <b>polytypo</b>",
@@ -1042,14 +1046,14 @@ BADGE_TEXT = {
     "el": "Τυπογραφικός καθαρισμός από το <b>polytypo</b>",
 }
 
-# Every locale spec/rules/locale-resolution.md accepts, mapped to which BADGE_TEXT entry it uses --
-# not every locale needs its own translation (en-US/en-GB share English copy, de-DE/de-CH share
-# German, fr/fr-CA share French).
-BADGE_LOCALE_TEXT_KEY = {
-    "en-US": "en", "en-GB": "en",
-    "de-DE": "de", "de-CH": "de",
-    "fr": "fr", "fr-CA": "fr",
-    "ru": "ru", "fi": "fi", "sv": "sv", "el": "el",
+BADGE_LANG_NAMES = {
+    "en": "English",
+    "de": "German",
+    "fr": "French",
+    "ru": "Russian",
+    "fi": "Finnish",
+    "sv": "Swedish",
+    "el": "Greek",
 }
 
 _BADGE_THEME_COLORS = {
@@ -1058,14 +1062,14 @@ _BADGE_THEME_COLORS = {
 }
 
 
-def badge_html(locale, theme):
+def badge_html(lang, theme):
     """One self-contained, copy-pasteable attribution badge: plain HTML and inline styles only --
     no <script>, no external image request, nothing to break if the embedding site's own CSS or
     CSP changes. The mark is the same guillemets-around-an-em-dash brand mark used everywhere else
     on this site (brand/logo/polytypo-mark.svg), inlined and recolored per theme rather than
     linked, for the same zero-dependency reason.
     """
-    caption = BADGE_TEXT[BADGE_LOCALE_TEXT_KEY[locale]]
+    caption = BADGE_TEXT[lang]
     c = _BADGE_THEME_COLORS[theme]
     mark_svg = (
         '<svg width="20" height="12" viewBox="9.5 37.5 181.0 45.0" aria-hidden="true">'
@@ -1082,41 +1086,45 @@ def badge_html(locale, theme):
     )
 
 
-def badge_matrix(data):
-    """{locale: {"light": html, "dark": html}} for every locale the spec accepts -- embedded
-    directly into promo/badge.js (write_badge_js()), the single source of truth both this site's
-    own live preview and every external embed render from.
+def badge_matrix():
+    """{lang: {"light": html, "dark": html}} for exactly the seven languages BADGE_TEXT covers --
+    embedded directly into promo/badge.js (write_badge_js()), the single source of truth both this
+    site's own live preview and every external embed render from. Deliberately not keyed by the
+    ten locales spec/rules/locale-resolution.md accepts: three language pairs (en-US/en-GB,
+    de-DE/de-CH, fr/fr-CA) would otherwise ship two byte-identical entries each, for no benefit.
     """
     return {
-        loc["locale"]: {theme: badge_html(loc["locale"], theme) for theme in ("light", "dark")}
-        for loc in data["locales"]
+        lang: {theme: badge_html(lang, theme) for theme in ("light", "dark")} for lang in BADGE_TEXT
     }
 
 
-def write_badge_js(out_dir, data):
+def write_badge_js(out_dir):
     """promo/badge.js -- served at SITE_ORIGIN/badge.js, the same two-line embed shape as
     vatnode.dev's own badge (`<script async src=".../badge.js"></script>` plus a `<span
-    data-...>`): an external site sets `data-polytypo-locale`/`data-polytypo-theme` on a `<span>`,
-    this script finds every such span on the page and fills it in. No network call, no per-embed
-    fetch -- the whole render table (badge_matrix()) ships inside this one file, so rendering is
+    data-...>`): an external site sets `data-polytypo-lang`/`data-polytypo-theme` on a `<span>`,
+    this script finds every such span on the page and fills it in. `lang`, not `locale`: the
+    caption text is keyed by language (see BADGE_TEXT), so a `de-DE` vs `de-CH` distinction would
+    be a parameter that never changes anything -- honest naming over the ten-locale-count vanity
+    that most polytypo copy otherwise correctly emphasizes. No network call, no per-embed fetch --
+    the whole render table (badge_matrix()) ships inside this one file, so rendering is
     synchronous and works offline once loaded. `window.PolytypoBadge.render()` is also what this
     site's own Docs-page picker calls after changing the preview span's attributes, so the live
     preview and every real embed run through the exact same code path.
     """
-    matrix_json = json.dumps(badge_matrix(data), ensure_ascii=False).replace("</", "<\\/")
+    matrix_json = json.dumps(badge_matrix(), ensure_ascii=False).replace("</", "<\\/")
     content = f"""(function () {{
   var MATRIX = {matrix_json};
-  var DEFAULT_LOCALE = "en-US";
+  var DEFAULT_LANG = "en";
   var DEFAULT_THEME = "light";
 
   function render(el) {{
-    var byLocale = MATRIX[el.getAttribute("data-polytypo-locale")] || MATRIX[DEFAULT_LOCALE];
+    var byLang = MATRIX[el.getAttribute("data-polytypo-lang")] || MATRIX[DEFAULT_LANG];
     var theme = el.getAttribute("data-polytypo-theme") || DEFAULT_THEME;
-    el.innerHTML = byLocale[theme] || byLocale[DEFAULT_THEME];
+    el.innerHTML = byLang[theme] || byLang[DEFAULT_THEME];
   }}
 
   function init() {{
-    var els = document.querySelectorAll("[data-polytypo-locale]");
+    var els = document.querySelectorAll("[data-polytypo-lang]");
     for (var i = 0; i < els.length; i++) render(els[i]);
   }}
 
@@ -1134,24 +1142,25 @@ def write_badge_js(out_dir, data):
     print("  promo/badge.js")
 
 
-def build_badge_script(data, prefix):
-    """The Docs page's own badge-picker wiring: a locale <select> and a light/dark toggle drive a
-    live `<span data-polytypo-locale data-polytypo-theme>` preview via `window.PolytypoBadge`
-    (loaded synchronously here, not `async`, so it is guaranteed ready before this script runs --
-    an external embedder is told to use `async` for their own page's load performance, but this
-    page controls its own script order already). The copy-code box always shows the real two-line
+def build_badge_script(prefix):
+    """The Docs page's own badge-picker wiring: a language <select> (the seven BADGE_TEXT keys,
+    not the ten locales -- see badge_matrix()) and a light/dark toggle drive a live `<span
+    data-polytypo-lang data-polytypo-theme>` preview via `window.PolytypoBadge` (loaded
+    synchronously here, not `async`, so it is guaranteed ready before this script runs -- an
+    external embedder is told to use `async` for their own page's load performance, but this page
+    controls its own script order already). The copy-code box always shows the real two-line
     embed -- `<script async src=".../badge.js">` is built via string concatenation, never a
     literal "</script>" substring, so it cannot prematurely close this containing <script> tag.
     """
     options = "".join(
-        f'<option value="{H.escape(loc["locale"])}">{H.escape(loc["name"])}</option>'
-        for loc in data["locales"]
+        f'<option value="{H.escape(lang)}">{H.escape(name)}</option>'
+        for lang, name in BADGE_LANG_NAMES.items()
     )
     return f"""<script src="{prefix}badge.js"></script>
 <script>
 (function () {{
-  var localeSel = document.getElementById("badge-locale");
-  localeSel.innerHTML = {json.dumps(options)};
+  var langSel = document.getElementById("badge-lang");
+  langSel.innerHTML = {json.dumps(options)};
   var themeButtons = [].slice.call(document.querySelectorAll("#badge-theme-tabs button"));
   var preview = document.getElementById("badge-preview");
   var codeEl = document.getElementById("badge-code");
@@ -1160,15 +1169,15 @@ def build_badge_script(data, prefix):
 
   function snippet() {{
     return '<script async src="{SITE_ORIGIN}/badge.js"><' + '/script>\\n' +
-      '<span data-polytypo-locale="' + localeSel.value + '" data-polytypo-theme="' + theme + '"></span>';
+      '<span data-polytypo-lang="' + langSel.value + '" data-polytypo-theme="' + theme + '"></span>';
   }}
   function render() {{
-    preview.setAttribute("data-polytypo-locale", localeSel.value);
+    preview.setAttribute("data-polytypo-lang", langSel.value);
     preview.setAttribute("data-polytypo-theme", theme);
     window.PolytypoBadge.render(preview);
     codeEl.textContent = snippet();
   }}
-  localeSel.addEventListener("change", render);
+  langSel.addEventListener("change", render);
   themeButtons.forEach(function (b) {{
     b.addEventListener("click", function () {{
       theme = b.dataset.theme;
