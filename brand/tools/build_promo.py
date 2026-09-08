@@ -448,24 +448,21 @@ def code_panes():
     # it (bootTabs sets the active tab's own text from data-label); build_panes() below never
     # repeated it either. Only this one drifted, since Home used to also render this label
     # standalone as its own quickstart heading — the drift point is gone along with that section.
+    #
+    # Text links only (Repo/Package) — no version badge here. The badge itself is social proof and
+    # belongs where a first-time visitor actually looks for it (the Home hero, see
+    # package_badges_row()), not repeated a second time next to a link that already points at the
+    # same package.
     by_name = _runtime_status()
     panes = []
     for label, comment_token, code in CODE:
         rt = by_name.get(_CODE_LABEL_TO_STATUS_NAME.get(label))
         links_html = ""
         if rt is not None:
-            shield_url = _badge_shield_url(rt["package"])
-            badge_img = (
-                f'<img src="{H.escape(shield_url)}" alt="{H.escape(rt["name"])} package version" '
-                f'style="vertical-align: middle; height: 20px">'
-                if shield_url
-                else ""
-            )
             links_html = (
                 '<p class="small muted" style="margin-top: 10px">'
                 f'<a href="{H.escape(rt["repo"])}">Repo</a> · '
                 f'<a href="{H.escape(rt["package"])}">Package</a>'
-                f'{" " + badge_img if badge_img else ""}'
                 "</p>"
             )
         panes.append(
@@ -473,6 +470,24 @@ def code_panes():
             f"<pre><code>{highlight_lines(code, comment_token)}</code></pre>{links_html}</div>"
         )
     return "".join(panes)
+
+
+def package_badges_row():
+    # One live version badge per published runtime, linked to its package page — the Home hero's
+    # social-proof row, the same role a badge row plays in the canonical README (see
+    # brand/tools/gen_readmes.py's own package_badges_row(); not imported here, per this file's
+    # own module docstring on build isolation between the two generators).
+    parts = []
+    for rt in _runtime_status().values():
+        shield_url = _badge_shield_url(rt["package"])
+        if shield_url is None:
+            continue
+        parts.append(
+            f'<a href="{H.escape(rt["package"])}">'
+            f'<img src="{H.escape(shield_url)}" alt="{H.escape(rt["name"])} package version" '
+            f'style="vertical-align: middle; height: 20px"></a>'
+        )
+    return " ".join(parts)
 
 
 # label, code — all three are JS, shown in "Wiring it into a build step" on Docs.
@@ -718,6 +733,7 @@ def build():
         "{{rules_table}}": rules_table(data),
         "{{code_panes}}": code_panes(),
         "{{build_panes}}": build_panes(),
+        "{{package_badges}}": package_badges_row(),
         "{{playground}}": playground_markup,
         "{{locale_count}}": locale_count_word,
         "{{Locale_count}}": locale_count_word.capitalize(),

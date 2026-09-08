@@ -66,7 +66,7 @@
 <span class="ln">  transform(input, { locale: <span class="tok-str">&quot;xx&quot;</span> });</span>
 <span class="ln">} catch (error) {</span>
 <span class="ln">  error.code; <span class="tok-com">// &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span>
-<span class="ln">}</span></code></pre><p class="small muted" style="margin-top: 10px"><a href="https://github.com/polytypo/polytypo-js">Repo</a> · <a href="https://www.npmjs.com/package/polytypo">Package</a> <img src="https://img.shields.io/npm/v/polytypo.svg" alt="JavaScript/TypeScript package version" style="vertical-align: middle; height: 20px"></p></div><div class="pane" data-label="Python"><pre><code><span class="ln">from polytypo import transform, PolytypoError</span>
+<span class="ln">}</span></code></pre><p class="small muted" style="margin-top: 10px"><a href="https://github.com/polytypo/polytypo-js">Repo</a> · <a href="https://www.npmjs.com/package/polytypo">Package</a></p></div><div class="pane" data-label="Python"><pre><code><span class="ln">from polytypo import transform, PolytypoError</span>
 <span class="ln"></span>
 <span class="ln">output = transform(input, locale=<span class="tok-str">&quot;de&quot;</span>)</span>
 <span class="ln"></span>
@@ -78,7 +78,7 @@
 <span class="ln">try:</span>
 <span class="ln">    transform(input, locale=<span class="tok-str">&quot;xx&quot;</span>)</span>
 <span class="ln">except PolytypoError as error:</span>
-<span class="ln">    error.code  <span class="tok-com"># &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span></code></pre><p class="small muted" style="margin-top: 10px"><a href="https://github.com/polytypo/polytypo-python">Repo</a> · <a href="https://pypi.org/project/polytypo/">Package</a> <img src="https://img.shields.io/pypi/v/polytypo.svg" alt="Python package version" style="vertical-align: middle; height: 20px"></p></div><div class="pane" data-label="Go"><pre><code><span class="ln">package main</span>
+<span class="ln">    error.code  <span class="tok-com"># &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span></code></pre><p class="small muted" style="margin-top: 10px"><a href="https://github.com/polytypo/polytypo-python">Repo</a> · <a href="https://pypi.org/project/polytypo/">Package</a></p></div><div class="pane" data-label="Go"><pre><code><span class="ln">package main</span>
 <span class="ln"></span>
 <span class="ln">import (</span>
 <span class="ln">    <span class="tok-str">&quot;errors&quot;</span></span>
@@ -103,7 +103,7 @@
 <span class="ln">        Mode:    <span class="tok-str">&quot;markdown&quot;</span>,</span>
 <span class="ln">        Dialect: <span class="tok-str">&quot;commonmark&quot;</span>,</span>
 <span class="ln">    })</span>
-<span class="ln">}</span></code></pre><p class="small muted" style="margin-top: 10px"><a href="https://github.com/polytypo/polytypo-go">Repo</a> · <a href="https://pkg.go.dev/github.com/polytypo/polytypo-go">Package</a> <img src="https://pkg.go.dev/badge/github.com/polytypo/polytypo-go.svg" alt="Go package version" style="vertical-align: middle; height: 20px"></p></div><div class="pane" data-label="Ruby"><pre><code><span class="ln">require <span class="tok-str">&quot;polytypo&quot;</span></span>
+<span class="ln">}</span></code></pre><p class="small muted" style="margin-top: 10px"><a href="https://github.com/polytypo/polytypo-go">Repo</a> · <a href="https://pkg.go.dev/github.com/polytypo/polytypo-go">Package</a></p></div><div class="pane" data-label="Ruby"><pre><code><span class="ln">require <span class="tok-str">&quot;polytypo&quot;</span></span>
 <span class="ln"></span>
 <span class="ln">output = Polytypo.transform(input, locale: <span class="tok-str">&quot;de&quot;</span>)</span>
 <span class="ln"></span>
@@ -116,7 +116,7 @@
 <span class="ln">  Polytypo.transform(input, locale: <span class="tok-str">&quot;xx&quot;</span>)</span>
 <span class="ln">rescue Polytypo::Error =&gt; error</span>
 <span class="ln">  error.code <span class="tok-com"># =&gt; &quot;POLYTYPO_UNKNOWN_LOCALE&quot;</span></span>
-<span class="ln">end</span></code></pre><p class="small muted" style="margin-top: 10px"><a href="https://github.com/polytypo/polytypo-ruby">Repo</a> · <a href="https://rubygems.org/gems/polytypo">Package</a> <img src="https://img.shields.io/gem/v/polytypo.svg" alt="Ruby package version" style="vertical-align: middle; height: 20px"></p></div><div class="pane" data-label="PHP"><pre><code><span class="ln">&lt;?php</span>
+<span class="ln">end</span></code></pre><p class="small muted" style="margin-top: 10px"><a href="https://github.com/polytypo/polytypo-ruby">Repo</a> · <a href="https://rubygems.org/gems/polytypo">Package</a></p></div><div class="pane" data-label="PHP"><pre><code><span class="ln">&lt;?php</span>
 <span class="ln">use Polytypo\Polytypo;</span>
 <span class="ln">use Polytypo\PolytypoException;</span>
 <span class="ln"></span>
@@ -133,7 +133,7 @@
 <span class="ln">    Polytypo::transform($input, <span class="tok-str">&#x27;xx&#x27;</span>);</span>
 <span class="ln">} catch (PolytypoException $error) {</span>
 <span class="ln">    $error-&gt;getErrorCode(); <span class="tok-com">// &#x27;POLYTYPO_UNKNOWN_LOCALE&#x27;</span></span>
-<span class="ln">}</span></code></pre><p class="small muted" style="margin-top: 10px"><a href="https://github.com/polytypo/polytypo-php">Repo</a> · <a href="https://packagist.org/packages/polytypo/polytypo">Package</a> <img src="https://img.shields.io/packagist/v/polytypo/polytypo.svg" alt="PHP package version" style="vertical-align: middle; height: 20px"></p></div></div>
+<span class="ln">}</span></code></pre><p class="small muted" style="margin-top: 10px"><a href="https://github.com/polytypo/polytypo-php">Repo</a> · <a href="https://packagist.org/packages/polytypo/polytypo">Package</a></p></div></div>
   <p class="small muted" style="margin-top: 14px">
     Error codes are part of the contract in every runtime — full list below. Messages are English
     and are not part of the contract.
