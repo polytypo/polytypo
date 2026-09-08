@@ -207,3 +207,70 @@ describe("promo site — favicon, robots.txt, sitemap.xml", () => {
     expect(sitemap.match(/<url>/g)).toHaveLength(5);
   });
 });
+
+describe("promo site — llms.txt (llmstxt.org convention)", () => {
+  function readLlmsTxt(): string {
+    const p = path.join(PROMO_DIR, "llms.txt");
+    if (!existsSync(p)) {
+      throw new Error(
+        `${p} does not exist — run "npm run gen:docs" (or "npm run generate:all") before ` +
+          "running this test file, which checks the generated output, not just its source.",
+      );
+    }
+    return readFileSync(p, "utf8");
+  }
+
+  it("starts with an H1 project name and a blockquote summary, per the llms.txt spec", () => {
+    const lines = readLlmsTxt().split("\n");
+    expect(lines[0]).toBe("# polytypo");
+    expect(lines[1]).toBe("");
+    expect(lines[2].startsWith("> ")).toBe(true);
+  });
+
+  it("links every promo page it references as an absolute https://polytypo.dev URL", () => {
+    const llms = readLlmsTxt();
+    for (const url of [
+      "https://polytypo.dev/docs/",
+      "https://polytypo.dev/locales/",
+      "https://polytypo.dev/playground/",
+      "https://polytypo.dev/manifesto/",
+    ]) {
+      expect(llms).toContain(`(${url})`);
+    }
+  });
+
+  it("lists all five published runtime packages with a working source link each", () => {
+    const llms = readLlmsTxt();
+    for (const url of [
+      "https://www.npmjs.com/package/polytypo",
+      "https://pypi.org/project/polytypo/",
+      "https://pkg.go.dev/github.com/polytypo/polytypo-go",
+      "https://rubygems.org/gems/polytypo",
+      "https://packagist.org/packages/polytypo/polytypo",
+    ]) {
+      expect(llms).toContain(`(${url})`);
+    }
+    expect(llms.match(/^- \[/gm)).toHaveLength(
+      3 /* docs */ + 5 /* packages */ + 1 /* spec */ + 1 /* optional */,
+    );
+  });
+
+  it("links the canonical spec repo, not a page that doesn't exist yet", () => {
+    expect(readLlmsTxt()).toContain("(https://github.com/polytypo/polytypo)");
+  });
+
+  it("contains no unresolved template tokens or promises about unshipped work", () => {
+    const llms = readLlmsTxt();
+    expect(llms).not.toMatch(/\{\{.*?\}\}/);
+    expect(llms.toLowerCase()).not.toMatch(/coming soon|planned|roadmap|work in progress/);
+  });
+
+  it("is reachable at the site root, and robots.txt does not block it from any crawler", () => {
+    // llms.txt has no special robots directive of its own (llmstxt.org) — it just needs to sit
+    // at the site root and not be excluded by the sitewide rule this file already asserts on.
+    expect(existsSync(path.join(PROMO_DIR, "llms.txt"))).toBe(true);
+    const robots = readFileSync(path.join(PROMO_DIR, "robots.txt"), "utf8");
+    expect(robots).toContain("User-agent: *");
+    expect(robots).toContain("Allow: /");
+  });
+});

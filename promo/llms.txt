@@ -1,0 +1,27 @@
+# polytypo
+
+> Locale-correct quotes, dashes, ellipses, hyphens and no-break spaces. One portable spec, five runtime implementations, byte-identical output — transform(input, { locale }) is pure, with no I/O, network access or global state.
+
+polytypo is a typography rules engine, not a grammar or spell checker: it normalizes punctuation and spacing to the convention of a specific locale, and every rule cites its normative source (Chicago/Oxford, Duden, Imprimerie nationale, Kotus, Språkrådet, Мильчин). Spec 1.0.0, 10 locales (en-US, en-GB, de-DE, de-CH, fr, fr-CA, ru, fi, sv, el), rules run in this fixed order: spaces, ellipsis, ranges, dashes, hyphen, quotes, apostrophe, symbols, nbsp.
+
+## Docs
+
+- [Reference](https://polytypo.dev/docs/): API shape, options, the full error code contract, code examples for all five runtimes.
+- [Locales](https://polytypo.dev/locales/): per-locale coverage, each backed by a citation and a conformance fixture set.
+- [Playground](https://polytypo.dev/playground/): run the real engine on your own text in the browser.
+
+## Packages
+
+- [JavaScript/TypeScript](https://www.npmjs.com/package/polytypo) — source: https://github.com/polytypo/polytypo-js
+- [Python](https://pypi.org/project/polytypo/) — source: https://github.com/polytypo/polytypo-python
+- [Go](https://pkg.go.dev/github.com/polytypo/polytypo-go) — source: https://github.com/polytypo/polytypo-go
+- [Ruby](https://rubygems.org/gems/polytypo) — source: https://github.com/polytypo/polytypo-ruby
+- [PHP](https://packagist.org/packages/polytypo/polytypo) — source: https://github.com/polytypo/polytypo-php
+
+## Spec
+
+- [Canonical spec repo](https://github.com/polytypo/polytypo): normative rules, locale data and conformance fixtures — runtime-agnostic, MIT licensed. An implementation is "polytypo" iff it passes this suite for the spec version it claims.
+
+## Optional
+
+- [Manifesto](https://polytypo.dev/manifesto/): why this is typography, set by locale convention long before language models existed, not an AI watermark.

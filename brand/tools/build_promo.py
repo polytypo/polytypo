@@ -940,10 +940,11 @@ def build():
 
     write_robots_and_sitemap(out_dir)
     write_badge_js(out_dir, data)
+    write_llms_txt(out_dir, data)
 
 
 def write_robots_and_sitemap(out_dir):
-    """robots.txt and sitemap.xml — the only two files on the site that need an absolute URL
+    """robots.txt and sitemap.xml — two of the three files on the site that need an absolute URL
     (SITE_ORIGIN, from package.json's "homepage"); every page URL below is one of PAGES' own
     slugs, so this cannot list a page the build didn't actually generate."""
     with open(os.path.join(out_dir, "robots.txt"), "w", encoding="utf-8") as f:
@@ -965,19 +966,77 @@ def write_robots_and_sitemap(out_dir):
     print("  promo/sitemap.xml")
 
 
+def write_llms_txt(out_dir, data):
+    """llms.txt (the llmstxt.org convention) — a curated Markdown entry point for AI agents/LLMs,
+    served at the site root (SITE_ORIGIN/llms.txt, the third of the three files here that needs an
+    absolute URL). Every fact below is read live from the same data the rest of this build already
+    loads (`data`, `_runtime_status()`, the module-level `_ORDER`), never hand-duplicated, so this
+    file cannot drift from what the site itself claims. robots.txt's blanket `Allow: /` already
+    covers AI crawlers (no per-agent rule is needed); this file is what gives one a structured
+    summary instead of making it parse five HTML pages to find the same links."""
+    n = len(data["locales"])
+    locale_list = ", ".join(loc["locale"] for loc in data["locales"])
+    rule_ids = ", ".join(r["id"] for r in _ORDER["rules"])
+
+    lines = [
+        "# polytypo",
+        "",
+        "> Locale-correct quotes, dashes, ellipses, hyphens and no-break spaces. One portable "
+        "spec, five runtime implementations, byte-identical output — transform(input, { locale }) "
+        "is pure, with no I/O, network access or global state.",
+        "",
+        "polytypo is a typography rules engine, not a grammar or spell checker: it normalizes "
+        "punctuation and spacing to the convention of a specific locale, and every rule cites its "
+        "normative source (Chicago/Oxford, Duden, Imprimerie nationale, Kotus, Språkrådet, "
+        f"Мильчин). Spec {data['spec']}, {n} locales ({locale_list}), rules run in this fixed "
+        f"order: {rule_ids}.",
+        "",
+        "## Docs",
+        "",
+        f"- [Reference]({SITE_ORIGIN}/docs/): API shape, options, the full error code contract, "
+        "code examples for all five runtimes.",
+        f"- [Locales]({SITE_ORIGIN}/locales/): per-locale coverage, each backed by a citation and "
+        "a conformance fixture set.",
+        f"- [Playground]({SITE_ORIGIN}/playground/): run the real engine on your own text in the "
+        "browser.",
+        "",
+        "## Packages",
+        "",
+    ]
+    for rt in _runtime_status().values():
+        lines.append(f"- [{rt['name']}]({rt['package']}) — source: {rt['repo']}")
+    lines += [
+        "",
+        "## Spec",
+        "",
+        f"- [Canonical spec repo]({REPO_URL}): normative rules, locale data and conformance "
+        'fixtures — runtime-agnostic, MIT licensed. An implementation is "polytypo" iff it passes '
+        "this suite for the spec version it claims.",
+        "",
+        "## Optional",
+        "",
+        f"- [Manifesto]({SITE_ORIGIN}/manifesto/): why this is typography, set by locale "
+        "convention long before language models existed, not an AI watermark.",
+        "",
+    ]
+    with open(os.path.join(out_dir, "llms.txt"), "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+    print("  promo/llms.txt")
+
+
 # Attribution caption per language, "polytypo" marked with <b> at its actual position in each
 # (never derived by string-replacing "polytypo": Finnish inflects the brand name itself --
 # "polytypon", the genitive form -- so a substring replace would bold only part of the word).
 # Operator-reviewed 2026-09-08, not machine-translated: German prefers "durch" (performed-by) over
 # "von", Finnish "polytypon avulla" ("with the help of polytypo") over the ambiguous adessive
 # alone, and Russian deliberately breaks from the other six languages' "cleanup by X" structure --
-# "<b>polytypo</b> — текст оттипографен" reads as a natural short UI credit line in Russian, not a
+# "текст оттипографен <b>polytypo</b>" reads as a natural short UI credit line in Russian, not a
 # literal translation of the English noun phrase.
 BADGE_TEXT = {
     "en": "Typographic cleanup by <b>polytypo</b>",
     "de": "Typografische Bereinigung durch <b>polytypo</b>",
     "fr": "Nettoyage typographique par <b>polytypo</b>",
-    "ru": "<b>polytypo</b> — текст оттипографен",
+    "ru": "текст оттипографен <b>polytypo</b>",
     "fi": "Typografinen siistiminen <b>polytypon</b> avulla",
     "sv": "Typografisk uppstädning av <b>polytypo</b>",
     "el": "Τυπογραφικός καθαρισμός από το <b>polytypo</b>",

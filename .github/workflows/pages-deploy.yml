@@ -188,6 +188,7 @@ jobs:
             promo/manifesto/index.html \
             promo/robots.txt \
             promo/sitemap.xml \
+            promo/llms.txt \
             promo/assets \
             promo/vendor/polytypo.browser.js \
             brand/BRANDBOOK.html
