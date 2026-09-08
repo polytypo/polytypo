@@ -13,3 +13,11 @@ spec/fixtures/.escaped/
 
 # Claude Code local/agent configuration -- not part of the published project, never public.
 .claude/
+
+# Internal planning/process documents, not contributor-facing engineering documentation.
+# Contributor-facing architecture docs (ARCHITECTURE.md, MULTILINGUAL_ARCHITECTURE.md) stay
+# public; open contributor tasks are tracked as GitHub issues instead.
+docs/PLAN.md
+docs/ROADMAP.md
+docs/AUDIT_REMEDIATION_AND_RELEASE_PLAN.md
+docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md
