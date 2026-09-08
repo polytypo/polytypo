@@ -247,6 +247,14 @@ section {
   border-top: 1px solid var(--line);
 }
 
+/* Every other section's 10px bottom padding relies on the next section's own 70px top padding
+   for real whitespace -- but #badge is now the last section before <footer> on every page
+   (badge_section_html(), build_promo.py), and footer isn't a section, so without this override
+   its divider line sits only 10px below the Copy button. */
+#badge {
+  padding-bottom: 70px;
+}
+
 .eyebrow {
   margin: 0 0 var(--space-4);
   color: var(--muted);
@@ -1049,18 +1057,6 @@ footer a {
 
 footer a:hover {
   color: var(--fg);
-}
-
-/* The embeddable-badge picker (badge_section_html()), on every page's footer. Its own heading is
-   a bold 13px line, not an h2 -- at the page-section size (30px, see h2 above) it would visually
-   outweigh the plain-text lines around it here. */
-.footer-badge {
-  margin-top: var(--space-7);
-}
-
-.footer-badge p strong {
-  color: var(--fg);
-  font-size: 14px;
 }
 
 /* ---------- home page ----------
