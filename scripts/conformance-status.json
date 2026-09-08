@@ -8,6 +8,15 @@
       "specVersion": "1.0.0",
       "conformant": true,
       "lastVerified": "2026-09-07"
+    },
+    {
+      "name": "Python",
+      "repo": "https://github.com/polytypo/polytypo-python",
+      "package": "https://pypi.org/project/polytypo/",
+      "specVersion": "1.0.0",
+      "conformant": true,
+      "lastVerified": "2026-09-07",
+      "notes": "text and html modes fully conformant; markdown mode conformant for dialect=\"commonmark\" only — dialect=\"mdx\" raises POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), a narrower but honest claim rather than a silent mishandling of a dialect it does not support."
     }
   ]
 }

@@ -11,8 +11,16 @@ files, plus **36** locale-resolution cases.
 | Runtime | Package | Spec version claimed | Status | Last verified |
 | --- | --- | --- | --- | --- |
 | [JavaScript/TypeScript](https://github.com/polytypo/polytypo-js) | [package](https://www.npmjs.com/package/polytypo) | 1.0.0 | ✅ conformant | 2026-09-07 |
+| [Python](https://github.com/polytypo/polytypo-python) | [package](https://pypi.org/project/polytypo/) | 1.0.0 | ✅ conformant | 2026-09-07 |
 
 "Last verified" is the date an operator last observed that runtime's own CI green against the
 spec version it claims — not a live, automated signal. See
 docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md section 5 for the deferred design that would make this
 automated and independently attested.
+
+"Conformant" is scoped to what a runtime actually claims to support (modes, dialects) — a runtime
+that honestly declines an unsupported dialect with a stable error code is conformant for what it
+claims, not partially broken. See the notes below for any runtime whose claimed scope is narrower
+than the full spec.
+
+- **Python**: text and html modes fully conformant; markdown mode conformant for dialect="commonmark" only — dialect="mdx" raises POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), a narrower but honest claim rather than a silent mishandling of a dialect it does not support.

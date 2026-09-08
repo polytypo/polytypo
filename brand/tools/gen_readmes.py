@@ -106,8 +106,8 @@ U+00A0 and U+202F cannot be reviewed by a human."""
 MODES = """| Mode | What it processes | Status |
 | --- | --- | --- |
 | `text` | The whole string | Implemented |
-| `html` | Text nodes only; skips `code`, `pre`, `kbd`, `samp`, `var`, `script`, `style`, `textarea`, all attributes and existing entities | Specified in `spec/rules/modes.md`, not implemented |
-| `markdown` | Prose only; skips code spans, fenced blocks, link destinations, autolinks | Specified in `spec/rules/modes.md`, not implemented |"""
+| `html` | Text nodes only; skips `code`, `pre`, `kbd`, `samp`, `var`, `script`, `style`, `textarea`, all attributes and existing entities | Implemented |
+| `markdown` | Prose only; skips code spans, fenced blocks, link destinations, autolinks | Implemented (CommonMark; MDX is JS-only) |"""
 
 
 TEMPLATE = """<p align="center">
@@ -119,6 +119,7 @@ TEMPLATE = """<p align="center">
 <p align="center">
   <a href="https://github.com/polytypo/polytypo/actions/workflows/ci.yml"><img src="https://github.com/polytypo/polytypo/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://www.npmjs.com/package/polytypo"><img src="https://img.shields.io/npm/v/polytypo.svg" alt="npm version"></a>
+  <a href="https://pypi.org/project/polytypo/"><img src="https://img.shields.io/pypi/v/polytypo.svg" alt="PyPI version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
 </p>
 
@@ -136,8 +137,9 @@ TEMPLATE = """<p align="center">
 Spec version: **{spec_version}** · locales: **{n_locales}** · rules: **{n_rules}**.
 
 Implementations: [JavaScript/TypeScript](https://github.com/polytypo/polytypo-js)
-(npm: [`polytypo`](https://www.npmjs.com/package/polytypo)). Go, Python, PHP and Ruby each get
-their own repository as they land.
+(npm: [`polytypo`](https://www.npmjs.com/package/polytypo)), [Python](https://github.com/polytypo/polytypo-python)
+(PyPI: [`polytypo`](https://pypi.org/project/polytypo/)). Go, PHP and Ruby each get their own
+repository as they land.
 
 ## What it does
 

@@ -102,16 +102,18 @@ the no-regex scanner, both bought deliberately to make Phase B cheap.
 
 ---
 
-## Phase B — first port (not authorized yet)
+## Phase B — first port (underway)
 
-Starts only after M4 is clean and the JS package has been used on real content for a while.
-**Exactly one port first**, to discover what the spec failed to specify — porting to four
-runtimes in parallel just multiplies the same gaps.
+Originally gated on "M4 is clean and the JS package has been used on real content for a while."
+**Operator decision, 2026-09-07: started immediately after `polytypo@1.0.0`/`1.0.1` shipped on
+npm**, overriding that precondition — the JS package had not yet been used on real content for a
+"while" when Python work began the same day. M4 itself had already passed.
 
 Recommended first port: **Python** or **Go**. Python for the shortest path (spec-clarity test
 with the least ceremony); Go for the harshest portability test (RE2, byte strings, random map
 iteration — it will find every place ARCHITECTURE.md §4 was violated). PHP is the least
 interesting first choice: JoliTypo already serves that ecosystem well (PLAN.md §2).
+**Operator decision, 2026-09-07: Python chosen** as the first port.
 
 Per-port checklist — this is the whole job, and it is deliberately mechanical:
 
@@ -121,19 +123,53 @@ Per-port checklist — this is the whole job, and it is deliberately mechanical:
       ARCHITECTURE.md §6.2 and REPOSITORY_SPLIT_AND_SPEC_SYNC.md §5 describe — that automation
       remains deferred. Building it *before* the port means the port's gaps are visible from its
       first red run instead of reconstructed afterwards
-- [ ] Vendor `spec` per the chosen automated snapshot model (`docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md`
-      §3–§4: content-hash-verified `vendor/polytypo-spec/`, dispatched on `spec-vX.Y.Z` tags — not a
-      submodule, not a per-ecosystem spec package); embed locale data in the package
-- [ ] Port the engine: code-point array, no regex, fixed rule order, all nine rules (including `ranges`, off by default)
-- [ ] Port the three modes with the runtime's own HTML/Markdown parser; same required `dialect`
-- [ ] Same public shape, idiomatic naming; the same seven error codes
-- [ ] Conformance suite green; idempotency property test green
-- [ ] Update `spec/CONFORMANCE.md` with the new runtime's column
-- [ ] Publish to the ecosystem's registry
+- [x] Vendor `spec`. Done 2026-09-07, but via a **manual interim copy** — the same status as
+      polytypo-js's own vendoring, not the automated content-hash-verified snapshot model
+      `docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md` §3–§4 describes. That model remains an open
+      decision (see "Open decisions" #2 below), not resolved by either port choosing the interim
+      answer independently. Locale data is embedded into the built package at build time, never
+      read from `vendor/` at runtime.
+- [x] Port the engine. Done 2026-09-07: code-point array throughout (`str` is already
+      code-point-indexed in Python, unlike JS's UTF-16), no regex, rule order and defaults derived
+      from `order.json` at import time, all nine rules including `ranges` (default off).
+- [x] Port the three modes, with a caveat. Done 2026-09-07 for `text` and `html`
+      (stdlib `html.parser`) and for `markdown`'s `dialect="commonmark"` (tree-sitter-markdown —
+      chosen over `markdown-it-py` after that library turned out not to report absolute source
+      offsets for inline tokens and to decode escapes/entities in its `text` token content, both
+      of which break the mode contract's round-trip guarantee outright). **`dialect="mdx"` is
+      not implemented** — Python has no MDX/JSX parser candidate evaluated yet — and raises
+      `POLYTYPO_INVALID_DIALECT` immediately rather than silently mishandling a dialect it does
+      not support. This is a narrower, honestly-declared conformance claim, not a defect; see
+      `spec/CONFORMANCE.md`.
+- [x] Same public shape. Done 2026-09-07: `transform(input, *, locale, mode="text", dialect=None,
+      rules=None)`, the same seven error codes on one `PolytypoError` class, and
+      `polytypo.text`/`polytypo.html`/`polytypo.markdown` as the idiomatic-Python equivalent of
+      the JS subpath exports (each excludes the parser dependency the other modes don't need).
+- [x] Conformance suite green; idempotency property test green. Done 2026-09-07: all 1015
+      fixture cases minus the 5 `dialect="mdx"` cases (correctly declined, not silently wrong) —
+      1010/1010 — plus all 36 locale-resolution cases, plus hypothesis-based and bounded
+      -exhaustive idempotency sweeps (including around the html/markdown line-boundary marker).
+- [x] Update `spec/CONFORMANCE.md` with the new runtime's column. Done 2026-09-07.
+- [ ] Publish to the ecosystem's registry. **Not done.** `polytypo/polytypo-python` has not been
+      created on GitHub yet; nothing has been pushed; PyPI Trusted Publishing has not been
+      configured. CI (`.github/workflows/ci.yml`) and a release workflow using PyPI Trusted
+      Publishing (`.github/workflows/release.yml`) are written and passing locally, but neither
+      has run in GitHub Actions yet.
 
 **Success criterion for Phase B:** the port required **zero changes to the spec's
 semantics** — only clarifications. Every semantic change needed is a defect in Phase A's
 spec work, and must be fixed in the spec and back-propagated to JS.
+
+**One discrepancy surfaced, not resolved, during the Python port (2026-09-07):** `modes.md` §3.3's
+table states that `nbsp`'s `OPENISH`/`CLOSEISH` classes include the span-boundary `MARKER`
+(alongside `quotes` and `apostrophe`, which do). The JS reference implementation's `nbsp.ts` does
+not add `MARKER` to its own `isOpenish`/`isCloseish` (only `LINE_MARKER` is honored, via
+`isBreak`). Python's port matches JS's actual behaviour (cross-runtime consistency with the
+existing published implementation), not the literal table — meaning N3/N7/N9/N10's left-context
+guard currently declines a match that starts exactly at an html/markdown span boundary, in both
+runtimes. No fixture in either runtime currently exercises this exact shape. This needs a
+spec-guardian call on which side is correct — the table or the reference implementation — before
+it is resolved in either runtime.
 
 ## Phase C — remaining ports
 
@@ -161,5 +197,4 @@ Carried from PLAN.md §10, plus what multi-runtime adds:
    §3.1 reflects this decision. Nothing in the current single-repo state depends on it yet —
    `scripts/gen-locales.mjs` reads `spec/locales/*.json` from the working tree, unchanged until the
    multi-repo split executes.
-3. **First port** — Python (fast feedback) or Go (harshest portability test). Not needed
-   until Phase B.
+3. **First port** — ~~open~~ **resolved (2026-09-07):** Python. See Phase B above.
