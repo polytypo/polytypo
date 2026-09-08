@@ -5,9 +5,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **This repository is canonical spec + promo site only.** The JavaScript/TypeScript implementation
 was split out to [polytypo/polytypo-js](https://github.com/polytypo/polytypo-js) (2026-09-07) and
 published to npm as `polytypo@1.0.0` (2026-09-07); other runtimes get their own repos as they land.
-There is no `src/`, no build, and nothing published from this repository — its own `package.json`
-is `"private": true`, and the `polytypo` devDependency here is the registry package (`^1.0.0`),
-used only by the promo-site generator (`brand/tools/gen_examples.ts`) and its tests.
+There is no build and nothing published from this repository — its own `package.json` is
+`"private": true`, and the `polytypo` devDependency here is the registry package (`^1.0.0`), used
+only by the promo-site generator (`brand/tools/gen_examples.ts`) and its tests. `src/engine/` holds
+one static data file (`letter-ranges.json`) consumed by `scripts/validate-spec.mjs` via
+`scripts/lib/is-letter.mjs` — not an engine implementation.
 
 ## Commands
 
