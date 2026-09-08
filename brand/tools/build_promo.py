@@ -927,7 +927,7 @@ def build():
             doc += build_playground_script(data, prefix, lazy=slug != "playground")
 
         if slug == "docs":
-            doc += build_badge_script(data)
+            doc += build_badge_script(data, prefix)
 
         doc += "</body>\n</html>\n"
 
@@ -939,6 +939,7 @@ def build():
         print(f"  promo/{rel_path.replace(os.sep, '/')}  {os.path.getsize(out_path) / 1024:.0f} KB")
 
     write_robots_and_sitemap(out_dir)
+    write_badge_js(out_dir, data)
 
 
 def write_robots_and_sitemap(out_dir):
@@ -1023,8 +1024,9 @@ def badge_html(locale, theme):
 
 
 def badge_matrix(data):
-    """{locale: {"light": html, "dark": html}} for every locale the spec accepts -- the exact set
-    embedded as JSON into the Docs page for its badge picker; see build_badge_script().
+    """{locale: {"light": html, "dark": html}} for every locale the spec accepts -- embedded
+    directly into promo/badge.js (write_badge_js()), the single source of truth both this site's
+    own live preview and every external embed render from.
     """
     return {
         loc["locale"]: {theme: badge_html(loc["locale"], theme) for theme in ("light", "dark")}
@@ -1032,16 +1034,63 @@ def badge_matrix(data):
     }
 
 
-def build_badge_script(data):
+def write_badge_js(out_dir, data):
+    """promo/badge.js -- served at SITE_ORIGIN/badge.js, the same two-line embed shape as
+    vatnode.dev's own badge (`<script async src=".../badge.js"></script>` plus a `<span
+    data-...>`): an external site sets `data-polytypo-locale`/`data-polytypo-theme` on a `<span>`,
+    this script finds every such span on the page and fills it in. No network call, no per-embed
+    fetch -- the whole render table (badge_matrix()) ships inside this one file, so rendering is
+    synchronous and works offline once loaded. `window.PolytypoBadge.render()` is also what this
+    site's own Docs-page picker calls after changing the preview span's attributes, so the live
+    preview and every real embed run through the exact same code path.
+    """
     matrix_json = json.dumps(badge_matrix(data), ensure_ascii=False).replace("</", "<\\/")
+    content = f"""(function () {{
+  var MATRIX = {matrix_json};
+  var DEFAULT_LOCALE = "en-US";
+  var DEFAULT_THEME = "light";
+
+  function render(el) {{
+    var byLocale = MATRIX[el.getAttribute("data-polytypo-locale")] || MATRIX[DEFAULT_LOCALE];
+    var theme = el.getAttribute("data-polytypo-theme") || DEFAULT_THEME;
+    el.innerHTML = byLocale[theme] || byLocale[DEFAULT_THEME];
+  }}
+
+  function init() {{
+    var els = document.querySelectorAll("[data-polytypo-locale]");
+    for (var i = 0; i < els.length; i++) render(els[i]);
+  }}
+
+  if (document.readyState === "loading") {{
+    document.addEventListener("DOMContentLoaded", init);
+  }} else {{
+    init();
+  }}
+
+  window.PolytypoBadge = {{init: init, render: render}};
+}})();
+"""
+    with open(os.path.join(out_dir, "badge.js"), "w", encoding="utf-8") as f:
+        f.write(content)
+    print("  promo/badge.js")
+
+
+def build_badge_script(data, prefix):
+    """The Docs page's own badge-picker wiring: a locale <select> and a light/dark toggle drive a
+    live `<span data-polytypo-locale data-polytypo-theme>` preview via `window.PolytypoBadge`
+    (loaded synchronously here, not `async`, so it is guaranteed ready before this script runs --
+    an external embedder is told to use `async` for their own page's load performance, but this
+    page controls its own script order already). The copy-code box always shows the real two-line
+    embed -- `<script async src=".../badge.js">` is built via string concatenation, never a
+    literal "</script>" substring, so it cannot prematurely close this containing <script> tag.
+    """
     options = "".join(
-        f'<option value="{H.escape(loc["locale"])}">{H.escape(loc["name"])} ({H.escape(loc["locale"])})</option>'
+        f'<option value="{H.escape(loc["locale"])}">{H.escape(loc["name"])}</option>'
         for loc in data["locales"]
     )
-    return f"""<script type="application/json" id="badge-data">{matrix_json}</script>
+    return f"""<script src="{prefix}badge.js"></script>
 <script>
 (function () {{
-  var data = JSON.parse(document.getElementById("badge-data").textContent);
   var localeSel = document.getElementById("badge-locale");
   localeSel.innerHTML = {json.dumps(options)};
   var themeButtons = [].slice.call(document.querySelectorAll("#badge-theme-tabs button"));
@@ -1050,10 +1099,15 @@ def build_badge_script(data):
   var copyBtn = document.getElementById("badge-copy");
   var theme = "light";
 
+  function snippet() {{
+    return '<script async src="{SITE_ORIGIN}/badge.js"><' + '/script>\\n' +
+      '<span data-polytypo-locale="' + localeSel.value + '" data-polytypo-theme="' + theme + '"></span>';
+  }}
   function render() {{
-    var html = data[localeSel.value][theme];
-    preview.innerHTML = html;
-    codeEl.textContent = html;
+    preview.setAttribute("data-polytypo-locale", localeSel.value);
+    preview.setAttribute("data-polytypo-theme", theme);
+    window.PolytypoBadge.render(preview);
+    codeEl.textContent = snippet();
   }}
   localeSel.addEventListener("change", render);
   themeButtons.forEach(function (b) {{
@@ -1073,7 +1127,6 @@ def build_badge_script(data):
   render();
 }})();
 </script>"""
-
 
 
 def build_playground_script(data, prefix, lazy):
