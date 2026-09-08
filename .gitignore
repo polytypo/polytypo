@@ -10,3 +10,6 @@ spec/fixtures/.escaped/
 .env
 .env.*
 .DS_Store
+
+# Claude Code local/agent configuration -- not part of the published project, never public.
+.claude/
