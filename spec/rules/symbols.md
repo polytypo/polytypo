@@ -488,7 +488,7 @@ Cases 3, 4, 5c, 5i, 5n, 5o, 5p, 6, 8, 9, 10, 11, 12, 13 and 14 are "no change" c
    - **Degree insertion** (`5 C` → `5 °C`), **digit-group binding** (`100 000`), **`m2` → `м²`**,
      **currency substitution** (`1 руб.` → `1 ₽`), **ordinal repair** (`10-ый` → `10-й`).
      Refused: each inserts or rewrites _content_ rather than normalising typography, and several
-     are locale-specific editorial conventions rather than microtypography. Digit-group binding
+     are locale-specific editorial conventions rather than typographic cleanup. Digit-group binding
      would belong to `nbsp` if it were ever wanted, not here.
    - **ISO date reformatting.** Refused outright. `dashes` goes to considerable trouble to leave
      `2026-08-15` byte-identical (§3.2 step 7 there); rewriting it elsewhere would be incoherent.

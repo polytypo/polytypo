@@ -239,7 +239,7 @@ def app_browser():
         f'<div style="background:#E6E3DC;padding:10px 10px 0;color:{INK}">'
         f'<div style="display:flex;align-items:center;gap:7px;background:{PAPER};border-radius:8px 8px 0 0;'
         f'padding:8px 12px;width:190px;font-family:var(--sans);font-size:11px">{fav}'
-        f'<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">polytypo — microtypography</span></div>'
+        f'<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">polytypo — normalize typography</span></div>'
         f'<div style="background:{PAPER};padding:9px 12px;font-family:var(--mono);font-size:10px;color:#5A6068">'
         f"polytypo.dev</div></div>"
     )
