@@ -49,6 +49,7 @@ PACKAGE_HOST_LABELS = [
     ("pypi.org", "PyPI"),
     ("pkg.go.dev", "pkg.go.dev"),
     ("rubygems.org", "RubyGems"),
+    ("packagist.org", "Packagist"),
 ]
 
 
@@ -173,8 +174,6 @@ Spec version: **{spec_version}** · locales: **{n_locales}** · rules: **{n_rule
 ## Implementations
 
 {implementations}
-
-PHP gets its own repository as it lands.
 
 ## What it does
 

@@ -34,8 +34,7 @@ Spec version: **1.0.0** · locales: **10** · rules: **9**.
 | Python | [`polytypo-python`](https://github.com/polytypo/polytypo-python) | [`polytypo`](https://pypi.org/project/polytypo/) (PyPI) |
 | Go | [`polytypo-go`](https://github.com/polytypo/polytypo-go) | [`polytypo-go`](https://pkg.go.dev/github.com/polytypo/polytypo-go) (pkg.go.dev) |
 | Ruby | [`polytypo-ruby`](https://github.com/polytypo/polytypo-ruby) | [`polytypo`](https://rubygems.org/gems/polytypo) (RubyGems) |
-
-PHP gets its own repository as it lands.
+| PHP | [`polytypo-php`](https://github.com/polytypo/polytypo-php) | [`polytypo`](https://packagist.org/packages/polytypo/polytypo) (Packagist) |
 
 ## What it does
 
