@@ -121,6 +121,7 @@ TEMPLATE = """<p align="center">
   <a href="https://www.npmjs.com/package/polytypo"><img src="https://img.shields.io/npm/v/polytypo.svg" alt="npm version"></a>
   <a href="https://pypi.org/project/polytypo/"><img src="https://img.shields.io/pypi/v/polytypo.svg" alt="PyPI version"></a>
   <a href="https://pkg.go.dev/github.com/polytypo/polytypo-go"><img src="https://pkg.go.dev/badge/github.com/polytypo/polytypo-go.svg" alt="Go Reference"></a>
+  <a href="https://rubygems.org/gems/polytypo"><img src="https://img.shields.io/gem/v/polytypo.svg" alt="Gem version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
 </p>
 
@@ -140,8 +141,9 @@ Spec version: **{spec_version}** · locales: **{n_locales}** · rules: **{n_rule
 Implementations: [JavaScript/TypeScript](https://github.com/polytypo/polytypo-js)
 (npm: [`polytypo`](https://www.npmjs.com/package/polytypo)), [Python](https://github.com/polytypo/polytypo-python)
 (PyPI: [`polytypo`](https://pypi.org/project/polytypo/)), [Go](https://github.com/polytypo/polytypo-go)
-(pkg.go.dev: [`polytypo-go`](https://pkg.go.dev/github.com/polytypo/polytypo-go)). PHP and Ruby
-each get their own repository as they land.
+(pkg.go.dev: [`polytypo-go`](https://pkg.go.dev/github.com/polytypo/polytypo-go)), [Ruby](https://github.com/polytypo/polytypo-ruby)
+(RubyGems: [`polytypo`](https://rubygems.org/gems/polytypo)). PHP gets its own repository as it
+lands.
 
 ## What it does
 

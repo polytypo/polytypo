@@ -13,6 +13,7 @@ files, plus **36** locale-resolution cases.
 | [JavaScript/TypeScript](https://github.com/polytypo/polytypo-js) | [package](https://www.npmjs.com/package/polytypo) | 1.0.0 | ✅ conformant | 2026-09-07 |
 | [Python](https://github.com/polytypo/polytypo-python) | [package](https://pypi.org/project/polytypo/) | 1.0.0 | ✅ conformant | 2026-09-07 |
 | [Go](https://github.com/polytypo/polytypo-go) | [package](https://pkg.go.dev/github.com/polytypo/polytypo-go) | 1.0.0 | ✅ conformant | 2026-09-08 |
+| [Ruby](https://github.com/polytypo/polytypo-ruby) | [package](https://rubygems.org/gems/polytypo) | 1.0.0 | ✅ conformant | 2026-09-08 |
 
 "Last verified" is the date an operator last observed that runtime's own CI green against the
 spec version it claims — not a live, automated signal. See
@@ -26,3 +27,4 @@ than the full spec.
 
 - **Python**: text and html modes fully conformant; markdown mode conformant for dialect="commonmark" only — dialect="mdx" raises POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), a narrower but honest claim rather than a silent mishandling of a dialect it does not support.
 - **Go**: text and html modes fully conformant; markdown mode conformant for dialect="commonmark" only (CommonMark plus GFM: tables, strikethrough, task lists, autolink literals) — dialect="mdx" returns POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), the same narrower but honest claim as the Python runtime.
+- **Ruby**: text and html modes fully conformant; markdown mode conformant for dialect="commonmark" only (CommonMark plus GFM: tables, strikethrough, task lists, autolink literals, via the commonmarker gem) — dialect="mdx" raises POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), the same narrower but honest claim as the Python and Go runtimes.

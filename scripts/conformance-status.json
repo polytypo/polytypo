@@ -26,6 +26,15 @@
       "conformant": true,
       "lastVerified": "2026-09-08",
       "notes": "text and html modes fully conformant; markdown mode conformant for dialect=\"commonmark\" only (CommonMark plus GFM: tables, strikethrough, task lists, autolink literals) — dialect=\"mdx\" returns POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), the same narrower but honest claim as the Python runtime."
+    },
+    {
+      "name": "Ruby",
+      "repo": "https://github.com/polytypo/polytypo-ruby",
+      "package": "https://rubygems.org/gems/polytypo",
+      "specVersion": "1.0.0",
+      "conformant": true,
+      "lastVerified": "2026-09-08",
+      "notes": "text and html modes fully conformant; markdown mode conformant for dialect=\"commonmark\" only (CommonMark plus GFM: tables, strikethrough, task lists, autolink literals, via the commonmarker gem) — dialect=\"mdx\" raises POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), the same narrower but honest claim as the Python and Go runtimes."
     }
   ]
 }
