@@ -62,16 +62,18 @@ per runtime) → `L3 integrations` (out of repo, out of v1).
 **Multi-repo under GitHub org `polytypo`**, one repo per runtime plus this one. All five runtime
 repos now exist (`polytypo-js`, `polytypo-python`, `polytypo-go`, `polytypo-ruby`, `polytypo-php` —
 verified via `gh repo list polytypo`, 2026-09-09), each with real engine/mode code, not
-placeholders; see ROADMAP.md Phase B/C for per-port status (PHP is the one exception still short of
-a tagged release — code-complete and CI-green, but no `v1.0.0` tag pushed yet). **Spec vendoring's
+placeholders; see ROADMAP.md Phase B/C for per-port status. All five carry release tags (verified
+via `gh api repos/polytypo/<repo>/tags`, 2026-09-09): `polytypo-js` through v1.0.2,
+`polytypo-python`/`polytypo-go`/`polytypo-ruby` through v1.0.1, `polytypo-php` at v1.0.0. **Spec vendoring's
 target mechanism is resolved** (ROADMAP.md "Open decisions" #2, 2026-08-27): an automated,
 content-hash-verified vendored snapshot, full design in `docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md`
 §3–§4. That automation itself is **not implemented** — every runtime instead vendors via a manual
 interim **committed copy** of the subset it needs (`locales/`, `fixtures/`, `rules/order.json`,
 `rules/dashes.md`, `VERSION`, `UNICODE`), each under a runtime-specific path chosen to avoid that
-ecosystem's own reserved directory name (JS/Python: `vendor/`; Go: `internal/spec/`, forced by
-`//go:embed`'s no-parent-directory rule; Ruby: `lib/polytypo/data/`, avoiding RSpec's own `spec/`;
-PHP: `resources/spec/`, avoiding Composer's own `vendor/`). What is decided regardless: the spec is
+ecosystem's own reserved directory name (JS: `spec/`, since npm reserves nothing there; Python:
+`vendor/polytypo-spec/`; Go: `internal/spec/`, forced by `//go:embed`'s no-parent-directory rule;
+Ruby: `lib/polytypo/data/`, avoiding RSpec's own `spec/`; PHP: `resources/spec/`, avoiding
+Composer's own `vendor/`). What is decided regardless: the spec is
 vendored and pinned, never fetched at runtime, and locale data is embedded into each runtime's
 published artifact at build time — never loaded from this repository at runtime by any published
 package.
