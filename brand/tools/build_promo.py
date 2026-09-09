@@ -763,7 +763,7 @@ def badge_section_html():
     """
     return (
         '<section id="badge">'
-        "<h2>Link back from your own site</h2>"
+        "<h2>Already using polytypo? Add our badge</h2>"
         '<p class="small muted" style="max-width: 60ch">'
         "Two lines, same shape as any other embeddable badge — a script tag and a span. No "
         "per-embed network call: the whole render table ships in that one script. Pick a "

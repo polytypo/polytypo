@@ -1,13 +1,18 @@
 name: Deploy to GitHub Pages
 
-# Prepared per docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md §7.3. Nothing about this workflow's trigger
-# is automatic: a push to main, a tag push, or a PR merge never runs it and never deploys
-# anything. The only way this runs is a human choosing "Run workflow" on this exact file and
-# typing the commit SHA to publish — and even then, the `verify` job below must independently
-# prove that commit's provenance before `deploy` builds or uploads a single byte. Environment
-# approval (§7.1's protected `github-pages` environment) is an ADDITIONAL gate on top of that
-# provenance check, never a substitute for it — see `deploy`'s own `environment:` key. GitHub
-# protects a Pages-sourced `github-pages` environment by default (restricted to the default
+# Prepared per docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md §7.3. Two ways this runs, both gated the
+# same way: (1) automatically, once the canonical CI workflow finishes on a push to main —
+# `on.workflow_run` below, filtered to `event == 'push'` and `conclusion == 'success'` so a failed
+# run or a pull_request's own CI run can never trigger a deploy; or (2) a human choosing "Run
+# workflow" on this exact file and typing a commit SHA (redeploying an older commit, or a tagged
+# site-vX.Y.Z release, without main needing to be at that point anymore). A tag push or a PR merge
+# by itself never runs this — only CI succeeding on main, or an explicit manual dispatch, do.
+# Either way, the `verify` job below independently re-proves that commit's provenance and CI
+# status before `deploy` builds or uploads a single byte — the workflow_run trigger's own
+# conclusion is a necessary condition to even reach `verify`, never treated as sufficient on its
+# own. Environment approval (§7.1's protected `github-pages` environment) is an ADDITIONAL gate on
+# top of that provenance check, never a substitute for it — see `deploy`'s own `environment:` key.
+# GitHub protects a Pages-sourced `github-pages` environment by default (restricted to the default
 # branch); a required-reviewer rule is a separate, manual step in Settings → Environments this
 # workflow file cannot configure for you.
 #
@@ -22,9 +27,19 @@ on:
   workflow_dispatch:
     inputs:
       sha:
-        description: "Exact commit SHA to deploy (must be on main, or tagged site-vX.Y.Z)"
-        required: true
+        description: "Exact commit SHA to deploy (must be on main, or tagged site-vX.Y.Z). Leave empty to deploy the current tip of main."
+        required: false
         type: string
+  # Fires once ci.yml finishes running, for any of its own triggers (push to main/master, or a
+  # pull_request) — narrowed to "the push-to-main case, and only if it passed" by the `verify` job
+  # condition below, not by this trigger's own `branches:` filter alone (that filter matches the
+  # upstream run's head branch, which is the PR's source branch for a pull_request run, not
+  # necessarily unrelated to "main" in an unusual naming case — the job-level `event == 'push'`
+  # check is the real, unambiguous guard).
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
 
 # Read-only at the workflow level; the two jobs below grant themselves exactly what they each
 # need, narrowly, and nothing more.
@@ -41,6 +56,15 @@ jobs:
   verify:
     name: Verify commit provenance
     runs-on: ubuntu-latest
+    # A manual dispatch always reaches this job (its own required-ness of `inputs.sha` isn't
+    # gated here). A workflow_run event only reaches it for the exact case documented above: CI's
+    # own trigger was a push (never a pull_request run), and CI concluded successfully — anything
+    # else (a failed run, a PR run against main) stops here and `deploy` below never even starts.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.conclusion == 'success')
     permissions:
       contents: read
       actions: read
@@ -53,11 +77,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      # `inputs.sha` is a workflow_dispatch text input — attacker-influenced in the same way a
-      # git tag name is (docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md §4.4's precedent), so it goes
-      # through a step-level `env` var and is referenced as a quoted shell variable, never
-      # interpolated with `${{ }}` directly into `run:` text. See
-      # scripts/lib/workflow-shell-safety.mjs.
+      # Three ways to land here, in priority order: an explicit `inputs.sha` (manual redeploy of a
+      # specific commit or site-vX.Y.Z tag); `workflow_run`'s own `head_sha` (the automatic path —
+      # the exact commit CI just finished checking, never this workflow's own implicit
+      # `github.sha`, which for a workflow_run event is the branch tip *at event time* and could in
+      # principle race ahead of it); or, a manual dispatch with the SHA field left empty,
+      # `github.sha` (the tip of main the dispatch itself resolved against) as the final fallback.
+      # Every one of these is attacker-influenced the same way a git tag name is
+      # (docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md §4.4's precedent), so it goes through a step-level
+      # `env` var and is referenced as a quoted shell variable, never interpolated with `${{ }}`
+      # directly into `run:` text. See scripts/lib/workflow-shell-safety.mjs.
       #
       # `git rev-parse "<sha>^{commit}"` both proves the object exists AND that it is a commit
       # (not a blob/tree/tag), and expands any abbreviated-but-unambiguous prefix the input might
@@ -66,7 +95,7 @@ jobs:
       - name: Resolve and pin the requested SHA
         id: pin
         env:
-          REQUESTED_SHA: ${{ inputs.sha }}
+          REQUESTED_SHA: ${{ inputs.sha || github.event.workflow_run.head_sha || github.sha }}
         run: |
           set -euo pipefail
           if ! git cat-file -e "${REQUESTED_SHA}^{commit}" 2>/dev/null; then
