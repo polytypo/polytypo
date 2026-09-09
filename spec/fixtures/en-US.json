@@ -1,5 +1,5 @@
 {
-  "spec": "1.0.0",
+  "spec": "1.1.0",
   "locale": "en-US",
   "cases": [
     {
@@ -755,8 +755,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "\"He said 'no' to me,\" she noted.",
-      "out": "“He said 'no' to me,” she noted.",
-      "note": "quotes.md §6 case 2: one stack, inner pair at depth 2 → secondary. spec 0.5.0: the inner 'no' is now an ambiguous medial span (2 letters, space-flanked, no matching en-US elisionIdioms entry — the idiom list holds only rock/n/roll) and is preserved as literal U+0027 rather than paired as a nested quotation (quotes.md 3.2, general ambiguous-medial-span veto). A documented false negative, not a regression: quotes.md 3.2 explains why a structural, portable predicate cannot distinguish this from rock 'n' roll's shape."
+      "out": "“He said ‘no’ to me,” she noted.",
+      "note": "quotes.md §6 case 2: one stack, inner pair at depth 2 → secondary. spec 1.1.0 restores the nesting this case was written for: 0.5.0's general ambiguous-medial-span veto had preserved the inner 'no' as literal U+0027 because it was 2 letters and space-flanked, and the veto that replaced it matches only a medial n (quotes.md §3.2), so an ordinary short quotation pairs again. Compare en-gb-quotes-nested, same input, inverted glyphs."
     },
     {
       "id": "en-us-quotes-nested-inverted-input",
@@ -836,7 +836,7 @@
       "mode": "text",
       "in": "rock 'n' roll",
       "out": "rock ’n’ roll",
-      "note": "quotes.md §3.2's listed elision veto (spec 0.4.0): quotes.elisionIdioms = [{ left: \"rock\", elided: \"n\", right: \"roll\" }] (en-US.json sources: Chicago Manual of Style Online on the mark's function, American Heritage Dictionary on the spaced variant) makes both marks decline pairing when the full left/elided/right context matches, so they survive to apostrophe (order 50), which independently renders each as U+2019 — leading elision (case 4) then trailing elision (case 3). apostrophe.md §6 row 11a. Contrast en-GB/fi/sv, which have no citable elisionIdioms entry: the general ambiguous-medial-span veto (quotes.md §3.2) preserves the same bytes unconverted there instead — see en-gb-quotes-rock-n-roll. Matching elided content alone (a bare word list) was tried first and withdrawn: it falsely elided ordinary quotations of the letter n — see en-us-quotes-letter-n-not-elided and en-us-quotes-nested-quote-n-not-elided."
+      "note": "quotes.md §3.2's listed elision veto (spec 0.4.0): quotes.elisionIdioms = [{ left: \"rock\", elided: \"n\", right: \"roll\" }] (en-US.json sources: Chicago Manual of Style Online on the mark's function, American Heritage Dictionary on the spaced variant) makes both marks decline pairing when the full left/elided/right context matches, so they survive to apostrophe (order 50), which independently renders each as U+2019 — leading elision (case 4) then trailing elision (case 3). apostrophe.md §6 row 11a. This output has been constant since 0.4.0 and is the model every other locale was brought into line with in spec 1.1.0, whose universal medial-n veto (quotes.md §3.2) now vetoes a superset of these positions — see ru-quotes-rock-n-roll for the same output reached without a citation. Matching elided content alone (a bare word list) was tried and withdrawn in 0.4.0; 1.1.0 readmits that cost knowingly and only for a single code point — see en-us-quotes-letter-n-elided."
     },
     {
       "id": "en-us-quotes-elision-inside-quotation",
@@ -844,7 +844,7 @@
       "mode": "text",
       "in": "She said \"it's the '90s\" and left.",
       "out": "She said “it’s the ’90s” and left.",
-      "note": "quotes.md §3.3 and §5.5: pass 2 keeps TWO STACKS, one per kind, and a candidate only ever touches the stack for its own kind — no reader opens with `\"` and closes with `'`, in any language. So the two DQ marks pair with each other, and the SQ elision marks find no SQ partner, survive unmatched, and `apostrophe` renders them U+2019. A PORT WITH ONE SHARED STACK PRODUCES `She said \"it’s the “90s” and left.` — the `'` of `'90s` is canClose, it pops the opening `\"`, and the real closing `\"` is stranded. That is damage rather than a miss (§5.5 calls it a release blocker). Contrast the `rock 'n' roll` case, which is a MEDIAL elision between two SQ marks, not this rule's leading/trailing single-mark elision shape — see en-us-quotes-rock-n-roll for how spec 0.5.0's general ambiguous-medial-span veto handles that different shape. History: before the per-kind stack split landed (pre-0.3.0), this exact case's canonical fixture asserted the single-shared-stack damage shown above (the stranded-quote output) as its expected `out` — a previous implementation defect, not a documented limitation; the two-stack design fixed it, and the `out` actually asserted above (the correct, two-stack form) has been correct ever since."
+      "note": "quotes.md §3.3 and §5.5: pass 2 keeps TWO STACKS, one per kind, and a candidate only ever touches the stack for its own kind — no reader opens with `\"` and closes with `'`, in any language. So the two DQ marks pair with each other, and the SQ elision marks find no SQ partner, survive unmatched, and `apostrophe` renders them U+2019. A PORT WITH ONE SHARED STACK PRODUCES `She said \"it’s the “90s” and left.` — the `'` of `'90s` is canClose, it pops the opening `\"`, and the real closing `\"` is stranded. That is damage rather than a miss (§5.5 calls it a release blocker). Contrast the `rock 'n' roll` case, which is a MEDIAL elision between two SQ marks, not this rule's leading/trailing single-mark elision shape — see en-us-quotes-rock-n-roll for how spec 1.1.0's universal medial-n veto handles that different shape. History: before the per-kind stack split landed (pre-0.3.0), this exact case's canonical fixture asserted the single-shared-stack damage shown above (the stranded-quote output) as its expected `out` — a previous implementation defect, not a documented limitation; the two-stack design fixed it, and the `out` actually asserted above (the correct, two-stack form) has been correct ever since."
     },
     {
       "id": "en-us-quotes-adjacent-to-punctuation",
@@ -1653,47 +1653,47 @@
       "mode": "text",
       "in": "rock ’n’ roll",
       "out": "rock ’n’ roll",
-      "note": "quotes.md §3.2/§5, §6 row P4: U+2019 is NARROW, so the veto fires identically on already-correct input — a fixed point. Discharges the idempotency argument's second-pipeline-pass case for this construction."
+      "note": "quotes.md §3.2/§5: U+2019 is NARROW, so the veto fires identically on already-correct input — a fixed point. This is the witness for spec 1.1.0's widening of the predicate from straight ASCII to the whole NARROW class, which is an idempotency obligation rather than a preference: the veto now lets apostrophe CONVERT both marks, so a straight-ASCII-only predicate would not recognise its own output and pass 2 would pair rock ’n’ roll as an ordinary NARROW quotation on the next pipeline run. See ru-quotes-rock-n-roll-already-curly and fi-quotes-rock-n-roll-already-curly, which fail loudly under a straight-only predicate where this en-US case would not."
     },
     {
-      "id": "en-us-quotes-letter-n-not-elided",
+      "id": "en-us-quotes-letter-n-elided",
       "rule": "quotes",
       "mode": "text",
       "in": "The letter 'n' is common.",
-      "out": "The letter 'n' is common.",
-      "note": "quotes.md §3.2: no `left`/`right` context matches (\"letter\" is not \"rock\"), so the listed-idiom veto does not fire — but 'n' (1 letter, space-flanked) is preserved by the general ambiguous-medial-span veto regardless (quotes.md §3.2), which does not require a citable idiom, only the structural shape. Pinned because this exact input was falsely elided by the first, context-free `elisionForms` design (spec 0.4.0, withdrawn before release) — see quotes.md §7 item 8. Contrast en-us-quotes-rock-n-roll, where the full left/elided/right context does match a cited idiom and apostrophe independently converts both marks."
+      "out": "The letter ’n’ is common.",
+      "note": "quotes.md §3.2, §6 row N1: no left/right context matches (\"letter\" is not \"rock\"), so the listed-idiom veto does not fire — but the universal medial-n veto does, and apostrophe converts both marks. **This is spec 1.1.0's accepted false positive**: a genuine quotation of the letter n comes out as an elision. It is pinned precisely because it is the input that sank the context-free `elisionForms` design in 0.4.0; 1.1.0 accepts it deliberately, against the measured alternative recorded in quotes.md §7 item 8 — spec 0.5.0 avoided this one case by declining every short quotation in every locale, a far larger error class. Through spec 0.5.0 this case asserted the unconverted input and was named en-us-quotes-letter-n-not-elided."
     },
     {
-      "id": "en-us-quotes-nested-quote-n-not-elided",
+      "id": "en-us-quotes-nested-quote-n-elided",
       "rule": "quotes",
       "mode": "text",
       "in": "He said \"press 'n' now\".",
-      "out": "He said “press 'n' now”.",
-      "note": "quotes.md §3.2: same reason as en-us-quotes-letter-n-not-elided (\"press\" is not \"rock\"), nested one level deeper inside a resolved outer quotation. The inner 'n' (1 letter, space-flanked) is preserved by the general ambiguous-medial-span veto — quotes.md §3.2's predicate is local to the mark's own immediate neighbours, not aware of enclosing pairs, so nesting depth is irrelevant to it. Also pinned as a regression witness for the withdrawn context-free `elisionForms` design (quotes.md §7 item 8)."
+      "out": "He said “press ’n’ now”.",
+      "note": "quotes.md §3.2, §6 row N2: the same shape as en-us-quotes-letter-n-elided, one level deeper inside a resolved outer quotation. §3.2's predicate reads a mark's immediate neighbours and knows nothing of enclosing pairs, so nesting depth never reaches it and the inner marks are converted while the outer pair resolves normally. The second half of spec 1.1.0's accepted false positive, pinned for the same reason. Through spec 0.5.0 this case asserted the unconverted inner marks and was named en-us-quotes-nested-quote-n-not-elided."
     },
     {
-      "id": "en-us-quotes-rock-n-pop-not-elided",
+      "id": "en-us-quotes-rock-n-pop-elided",
       "rule": "quotes",
       "mode": "text",
       "in": "rock 'n' pop",
-      "out": "rock 'n' pop",
-      "note": "quotes.md §3.2, §6 row N3: `right` is \"pop\", not \"roll\" — no configured idiom matches. 'n' (1 letter, space-flanked) is preserved by the general ambiguous-medial-span veto instead (quotes.md §3.2), which does not require a citable idiom to fire, only the structural shape — a documented false negative rather than a pairing."
+      "out": "rock ’n’ pop",
+      "note": "quotes.md §3.2, §6 row N3: `right` is \"pop\", not \"roll\", so no configured idiom matches — and since spec 1.1.0 none is needed. The universal medial-n veto fires on the bare medial n and apostrophe converts both marks. Named en-us-quotes-rock-n-pop-not-elided through spec 0.5.0, when the same input was preserved unconverted."
     },
     {
-      "id": "en-us-quotes-fish-n-chips-not-elided",
+      "id": "en-us-quotes-fish-n-chips-elided",
       "rule": "quotes",
       "mode": "text",
       "in": "fish 'n' chips",
-      "out": "fish 'n' chips",
-      "note": "quotes.md §3.2, §6 row N4: not sourced or listed. en-US.json's AHD citation attests only rock/n/roll; no { left: \"fish\", elided: \"n\", right: \"chips\" } entry exists. 'n' is preserved by the general ambiguous-medial-span veto instead (quotes.md §3.2), the same mechanism as en-us-quotes-rock-n-pop-not-elided — no idiom is required for it to fire."
+      "out": "fish ’n’ chips",
+      "note": "quotes.md §3.2, §6 row N4: en-US.json's AHD citation attests only rock/n/roll, and no { left: \"fish\", elided: \"n\", right: \"chips\" } entry exists — the universal medial-n veto covers it anyway, which is the practical reason spec 1.1.0 stopped requiring a citation per phrase: the long tail of X 'n' Y borrowings cannot be enumerated one citation at a time. Named en-us-quotes-fish-n-chips-not-elided through spec 0.5.0."
     },
     {
-      "id": "en-us-quotes-rock-cap-n-roll-not-elided",
+      "id": "en-us-quotes-rock-cap-n-roll-elided",
       "rule": "quotes",
       "mode": "text",
       "in": "rock 'N' roll",
-      "out": "rock 'N' roll",
-      "note": "quotes.md §3.2, §6 row N5: `elided` is matched exactly, with no case leniency at all — the first-code-point leniency applies only to `left`/`right`. `N` ≠ `n`, so no idiom matches (the en-US elisionIdioms entry requires exactly lower-case \"n\"). 'N' is preserved by the general ambiguous-medial-span veto instead (quotes.md §3.2), which is case-insensitive to the enclosed letter — this fixture is the witness that idiom-matching stays case-sensitive even though the general veto covering the same bytes is not."
+      "out": "rock ’N’ roll",
+      "note": "quotes.md §3.2, §6 row N5: `elided` is matched exactly by the LISTED mechanism, with no case leniency at all — the first-code-point leniency applies only to left/right — so `N` ≠ `n` still fails the cited en-US idiom. The universal medial-n veto matches U+004E as well as U+006E and converts both marks. This fixture is the witness that idiom-matching stays case-sensitive even though the veto covering the same bytes is not. Named en-us-quotes-rock-cap-n-roll-not-elided through spec 0.5.0."
     },
     {
       "id": "en-us-quotes-rock-n-roll-html",
@@ -1708,16 +1708,16 @@
       "rule": "quotes",
       "mode": "html",
       "in": "<p><em>rock</em> 'n' roll</p>",
-      "out": "<p><em>rock</em> 'n' roll</p>",
-      "note": "quotes.md §3.2, §6 row H1: modes.md §3.2's boundary marker is not INLINE-SPACE, so `left`'s word is unreachable across the <em> span boundary and the veto does not fire — matches text mode's own boundary behaviour on split input. spec 0.5.0: the general ambiguous-medial-span veto's left-context test only reads the single INLINE-SPACE code point immediately before the mark (quotes.md 3.2), which sits inside the same prose span as the mark itself — unlike idiom word-matching (wordEndsAt), it does not need to see past the span-boundary marker to \"rock\" in the preceding <em> span, so it fires here even though the idiom match (pre-0.5.0 behaviour, still correctly not firing) does not."
+      "out": "<p><em>rock</em> ’n’ roll</p>",
+      "note": "quotes.md §3.2, §6 row H1: modes.md §3.2's boundary marker is not INLINE-SPACE, so `left`'s word is unreachable across the <em> span boundary and the LISTED idiom does not match. The universal medial-n veto (spec 1.1.0) reads no context word at all — only the enclosed code point and the single space immediately outside each mark, both of which sit in the same prose span as the marks — so it fires here and apostrophe converts both marks, converging with the unsplit en-us-quotes-rock-n-roll-html. Through spec 0.5.0 this case asserted the unconverted input."
     },
     {
       "id": "en-us-quotes-rock-n-roll-html-right-split",
       "rule": "quotes",
       "mode": "html",
       "in": "<p>rock 'n' <em>roll</em></p>",
-      "out": "<p>rock 'n' <em>roll</em></p>",
-      "note": "quotes.md §3.2, §6 row H2: mirror case on `right`. spec 0.5.0: symmetric case to the left-split row above — the general veto's right-context test reads the INLINE-SPACE immediately after the mark, inside the same span, and fires regardless of \"roll\" sitting in a following <em> span."
+      "out": "<p>rock ’n’ <em>roll</em></p>",
+      "note": "quotes.md §3.2, §6 row H2: the mirror of en-us-quotes-rock-n-roll-html-left-split, with `right`'s word inside the following <em> span. modes.md §3.2's boundary marker is not INLINE-SPACE, so `right` is unreachable and the LISTED idiom does not match. The universal medial-n veto (spec 1.1.0) reads no context word at all — only the enclosed code point and the single space immediately outside each mark, both in the same prose span as the marks — so it fires and apostrophe converts both, converging with the unsplit en-us-quotes-rock-n-roll-html. Through spec 0.5.0 this case asserted the unconverted input."
     },
     {
       "id": "en-us-quotes-rock-n-roll-markdown-left-split",
@@ -1725,32 +1725,32 @@
       "mode": "markdown",
       "dialect": "commonmark",
       "in": "*rock* 'n' roll\n",
-      "out": "*rock* 'n' roll\n",
-      "note": "quotes.md §3.2, §6 row H3: `left`'s word sits inside an emphasis span; the boundary marker between spans is not INLINE-SPACE, so the veto does not cross it. spec 0.5.0: same mechanism as the HTML left-split row — Markdown emphasis creates a span boundary before \"rock\", but the general veto's left-context test only needs the immediately-preceding INLINE-SPACE, which is in the same span as the mark."
+      "out": "*rock* ’n’ roll\n",
+      "note": "quotes.md §3.2, §6 row H3: `left`'s word sits inside an emphasis span, so the LISTED idiom's word-boundary test cannot reach it across the span marker (modes.md §3.2) and no idiom matches. The universal medial-n veto (spec 1.1.0) needs no context word — the mark's own immediately-preceding INLINE-SPACE is in the same span as the mark — so it fires and apostrophe converts both marks, matching text mode on the same characters split the same way. Through spec 0.5.0 this case asserted the unconverted input."
     },
     {
       "id": "en-us-quotes-ambiguous-single-letter",
       "rule": "quotes",
       "mode": "text",
       "in": "She chose 'A' today",
-      "out": "She chose 'A' today",
-      "note": "spec 0.5.0, general ambiguous-medial-span veto (quotes.md 3.2): 1 LETTER enclosed, space-flanked on both sides, no matching elisionIdioms entry — preserved as literal U+0027 on both marks. A documented false negative: this reads as a plausible genuine quotation of the letter A, but the structural predicate cannot distinguish it from rock 'n' roll's shape without reasoning about meaning, which is out of scope (AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 3.1: false negatives are preferable to text damage)."
+      "out": "She chose “A” today",
+      "note": "spec 1.1.0, quotes.md §3.2: 'A' is a single quoted letter and pairs as an ordinary quotation. Under spec 0.5.0 the general ambiguous-medial-span veto preserved it as literal U+0027, because its shape test admitted any 1 to 3 LETTER code points and could not tell this from rock 'n' roll. This fixture flipped role in 1.1.0: it pinned that veto's reach, and now pins that the replacement veto does NOT reach a span whose enclosed code point is not n or N."
     },
     {
       "id": "en-us-quotes-ambiguous-two-letter",
       "rule": "quotes",
       "mode": "text",
       "in": "They said 'no' yesterday",
-      "out": "They said 'no' yesterday",
-      "note": "spec 0.5.0, general ambiguous-medial-span veto: 2 LETTERs enclosed, same reasoning as en-us-quotes-ambiguous-single-letter."
+      "out": "They said “no” yesterday",
+      "note": "spec 1.1.0, quotes.md §3.2: 2 letters enclosed — not a medial n, so the universal veto does not fire and the span pairs as an ordinary quotation. Same reasoning and same role reversal as en-us-quotes-ambiguous-single-letter."
     },
     {
       "id": "en-us-quotes-ambiguous-three-letter",
       "rule": "quotes",
       "mode": "text",
       "in": "say 'yes' now",
-      "out": "say 'yes' now",
-      "note": "spec 0.5.0, general ambiguous-medial-span veto: 3 LETTERs enclosed — the upper bound of the shape (quotes.md 3.2, MAX_ENCLOSED). Preserved."
+      "out": "say “yes” now",
+      "note": "spec 1.1.0, quotes.md §3.2: 3 letters enclosed — the upper bound of spec 0.5.0's withdrawn shape test, kept as a fixture precisely because it was that test's boundary case. The universal medial-n veto does not fire, and the span pairs as an ordinary quotation."
     },
     {
       "id": "en-us-quotes-ambiguous-four-letter-not-caught",
@@ -1765,8 +1765,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "say '𐐀' now",
-      "out": "say '𐐀' now",
-      "note": "spec 0.5.0: the enclosed code point is U+10400 (DESERET CAPITAL LETTER LONG A, astral plane) — general category Lu, a member of LETTER. The veto's LETTER test (engine/unicode.js isLetter) operates on full code points, not UTF-16 units, so this is treated identically to an ASCII letter and preserved."
+      "out": "say “𐐀” now",
+      "note": "spec 1.1.0, quotes.md §3.2: a single astral-plane LETTER (U+10400, two UTF-16 units, one code point). It pairs as an ordinary quotation because it is not n or N — the veto compares code points, so an astral letter is neither specially admitted nor specially excluded. Retained from spec 0.5.0, where it pinned that the withdrawn shape test counted code points rather than UTF-16 units; the code-point discipline it tests (ARCHITECTURE.md §4.2) is unchanged."
     },
     {
       "id": "en-us-quotes-ambiguous-digit-not-letter",
@@ -1774,7 +1774,7 @@
       "mode": "text",
       "in": "say '12' now",
       "out": "say “12” now",
-      "note": "spec 0.5.0: the enclosed code points are DIGIT, not LETTER, so the general ambiguous-medial-span veto does not fire — digits must not accidentally qualify as a LETTER sequence (quotes.md 3.2). Pairs as an ordinary quotation exactly as before 0.5.0."
+      "note": "spec 1.1.0, quotes.md §3.2: the enclosed code points are digits, not n or N, so the veto does not fire and the span pairs as an ordinary quotation. This output has been constant across 0.5.0 and 1.1.0 — under 0.5.0 because digits were not LETTER, now because they are not the one code point the veto matches."
     },
     {
       "id": "en-us-quotes-ambiguous-punctuation-not-letter",
@@ -1790,7 +1790,7 @@
       "mode": "text",
       "in": "She chose ’A’ today",
       "out": "She chose “A” today",
-      "note": "spec 0.5.0: the general ambiguous-medial-span veto matches straight ASCII U+0027 pairs only (quotes.md 3.2) — an already-curly U+2019 pair is out of its scope by construction, so this falls through to ordinary NARROW-pair quotation exactly as it did before 0.5.0. Documents the chosen contract deliberately, so the ASCII-only scope is not silently broadened later."
+      "note": "spec 1.1.0, quotes.md §3.2: 'A' is not n or N, so the veto does not fire and the already-curly pair is re-typeset as an ordinary quotation. **The reason this output is unchanged is not the reason it was unchanged in 0.5.0.** 0.5.0's veto matched straight ASCII U+0027 only, so a curly pair was out of scope by construction; 1.1.0's matches the whole NARROW class — an idempotency obligation, since the veto now produces U+2019 — and declines this span on its enclosed code point instead. See en-us-quotes-rock-n-roll-already-curly for a curly pair the veto does match."
     },
     {
       "id": "en-us-ranges-decimal-and-path-rejected",

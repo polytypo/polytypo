@@ -1,5 +1,5 @@
 {
-  "spec": "1.0.0",
+  "spec": "1.1.0",
   "locale": "sv",
   "cases": [
     {
@@ -752,8 +752,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "rock 'n' roll",
-      "out": "rock 'n' roll",
-      "note": "quotes.md §7.1, a known defect: the elision marks pair at depth 1 and take the Swedish primary glyphs. spec 0.5.0: same reasoning as fi-quotes-rock-n-roll — sv also writes the loanword closed up, no citation exists for the spaced form, and the general ambiguous-medial-span veto now preserves the ASCII input."
+      "out": "rock ’n’ roll",
+      "note": "spec 1.1.0, quotes.md §3.2's universal medial-n elision veto: by operator decision the idiom is international, so `quotes` declines the pairing in every locale rather than only where a cited quotes.elisionIdioms entry exists, and `apostrophe` (order 50) converts each mark by its own case ladder — leading elision (apostrophe.md §3.3 case 4), then trailing elision (case 3). Same output and same two case decisions as en-us-quotes-rock-n-roll, which reaches them through the cited idiom instead. History: spec 0.5.0's general ambiguous-medial-span veto preserved both marks here as literal U+0027; before 0.5.0 `quotes` paired them as an ordinary depth-1 quotation in this locale's primary glyphs. sv writes the loanword closed up in its own dictionaries, exactly as fi does, so no spaced-form citation exists here either — see fi-quotes-rock-n-roll."
     },
     {
       "id": "sv-quotes-already-correct",

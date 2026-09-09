@@ -2,7 +2,7 @@
 
 > Locale-correct quotes, dashes, ellipses, hyphens and no-break spaces. One portable spec, five runtime implementations, byte-identical output — transform(input, { locale }) is pure, with no I/O, network access or global state.
 
-polytypo is a typography rules engine, not a grammar or spell checker: it normalizes punctuation and spacing to the convention of a specific locale, and every rule cites its normative source (Chicago/Oxford, Duden, Imprimerie nationale, Kotus, Språkrådet, Мильчин). Spec 1.0.0, 10 locales (en-US, en-GB, de-DE, de-CH, fr, fr-CA, ru, fi, sv, el), rules run in this fixed order: spaces, ellipsis, ranges, dashes, hyphen, quotes, apostrophe, symbols, nbsp.
+polytypo is a typography rules engine, not a grammar or spell checker: it normalizes punctuation and spacing to the convention of a specific locale, and every rule cites its normative source (Chicago/Oxford, Duden, Imprimerie nationale, Kotus, Språkrådet, Мильчин). Spec 1.1.0, 10 locales (en-US, en-GB, de-DE, de-CH, fr, fr-CA, ru, fi, sv, el), rules run in this fixed order: spaces, ellipsis, ranges, dashes, hyphen, quotes, apostrophe, symbols, nbsp.
 
 ## Docs
 

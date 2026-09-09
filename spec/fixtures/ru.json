@@ -1,5 +1,5 @@
 {
-  "spec": "1.0.0",
+  "spec": "1.1.0",
   "locale": "ru",
   "cases": [
     {
@@ -323,8 +323,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "Он сказал: \"это 'моё' дело\".",
-      "out": "Он сказал: «это 'моё' дело».",
-      "note": "quotes.md §6 case 14: depth 1 takes the ёлочки « », depth 2 the лапки „ “ — Лопатин 2006. Note the secondary pair's closing glyph is U+201C, which is in OPENISH; the class says nothing about the role. spec 0.5.0: the inner 'моё' (3 Cyrillic letters, space-flanked) is preserved by the general ambiguous-medial-span veto, which reads Unicode LETTER generally, not only ASCII — ru has no elisionIdioms entry for this shape."
+      "out": "Он сказал: «это „моё“ дело».",
+      "note": "quotes.md §6 case 14: depth 1 takes the ёлочки « », depth 2 the лапки „ “ — Лопатин 2006. Note the secondary pair's closing glyph is U+201C, which is in OPENISH; the class says nothing about the role. spec 1.1.0: the inner 'моё' pairs as a nested quotation again. Under 0.5.0 the general ambiguous-medial-span veto preserved it as literal U+0027 for being 3 LETTER code points and space-flanked — a count that also depended on the input's normalization form, since LETTER includes Mn and the decomposed ё is two code points. The universal medial-n veto that replaced it compares one code point against a fixed pair (quotes.md §3.2) and has neither problem."
     },
     {
       "id": "ru-quotes-roundtrip",
@@ -681,8 +681,16 @@
       "rule": "quotes",
       "mode": "text",
       "in": "rock 'n' roll",
-      "out": "rock 'n' roll",
-      "note": "spec 0.5.0: ru has no cited quotes.elisionIdioms entry for this idiom (quotes.md §7 item 8 — only en-US does, via Chicago Manual of Style Online and the American Heritage Dictionary). The general ambiguous-medial-span veto (quotes.md 3.2) preserves both marks as literal U+0027 rather than pairing them as an ordinary quotation, closing the false positive AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 3.1 named for \"equivalent cases in several locales.\""
+      "out": "rock ’n’ roll",
+      "note": "spec 1.1.0, quotes.md §3.2's universal medial-n elision veto: by operator decision the idiom is international, so `quotes` declines the pairing in every locale rather than only where a cited quotes.elisionIdioms entry exists, and `apostrophe` (order 50) converts each mark by its own case ladder — leading elision (apostrophe.md §3.3 case 4), then trailing elision (case 3). Same output and same two case decisions as en-us-quotes-rock-n-roll, which reaches them through the cited idiom instead. History: spec 0.5.0's general ambiguous-medial-span veto preserved both marks here as literal U+0027; before 0.5.0 `quotes` paired them as an ordinary depth-1 quotation in this locale's primary glyphs. See ru-quotes-rock-n-roll-already-curly for the second-pass fixed point this output depends on."
+    },
+    {
+      "id": "ru-quotes-rock-n-roll-already-curly",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "rock ’n’ roll",
+      "out": "rock ’n’ roll",
+      "note": "quotes.md §3.2, the regression witness for spec 1.1.0's widening of the veto from straight ASCII to the whole NARROW class. This is the output of ru-quotes-rock-n-roll fed back in, so it is that case's idempotency obligation made explicit — and it is the case a naive implementation gets wrong. A port that matches U+0027 only (as spec 0.5.0's withdrawn predicate did, correctly for its own preserve-then-stop outcome) does not recognise the U+2019 marks it just produced: the pair falls through to ordinary NARROW quotation and this input becomes `rock «n» roll`, ru's primary pair at depth 1. Measured, not hypothesised. `apostrophe` emits U+2019 only in place of U+0027 (apostrophe.md §1), so once the veto matches, nothing edits these marks and the form is stable."
     }
   ]
 }

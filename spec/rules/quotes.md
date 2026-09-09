@@ -1,7 +1,7 @@
 # Rule: `quotes`
 
 **Order:** 40. **Default:** on. **Modes:** text, html, markdown.
-**Spec version:** 0.5.0 (0.4.1 for everything except the general ambiguous-medial-span veto
+**Spec version:** 1.1.0 (0.4.1 for everything except the universal medial-`n` elision veto
 described in §3.2 and the History section below).
 
 ---
@@ -359,25 +359,52 @@ here in the same spirit as `dashes.md` §7.9, and §6 row N6 pins it as a fixtur
 is visible in the conformance suite rather
 than discovered in someone's content.
 
-**General ambiguous-medial-span veto (spec 0.5.0).** The listed elision veto above closes
+**Universal medial-`n` elision veto (spec 1.1.0).** The listed elision veto above closes
 `rock 'n' roll` for `en-US`, where a citation exists. It closes nothing for `en-GB`, `de-DE`,
-`de-CH`, `fr`, `fr-CA`, `ru`, `fi`, `sv` or `el`, whose `elisionIdioms` lists are empty (§7 item
-8: `en-GB` carries an elevated ambiguity risk since its primary pair is itself the single quote;
-`fi`/`sv` write the idiom closed up, so a citation for the spaced form would be evidenced-inert;
-the rest have simply never been researched for it). Without a further mechanism, the marks in
-`rock 'n' roll` would fall through to ordinary pairing in all nine and be typeset as a
-quotation — a different, undocumented instance of the same class of false positive
-`docs/AUDIT_REMEDIATION_AND_RELEASE_PLAN.md` §3.1 names, just missing a fixture that happens to
-say so.
+`de-CH`, `fr`, `fr-CA`, `ru`, `fi`, `sv` or `el`, whose `elisionIdioms` lists are empty. Without a
+further mechanism the marks in `rock 'n' roll` fall through to ordinary pairing in all nine and
+are typeset as a quotation.
 
-`quotes.ts`/`apostrophe.ts` share one predicate for this (`src/rules/quote-ambiguity.ts`,
-`computeAmbiguousShapeIndices`) — not a second, independent approximation of the listed-idiom
-shape, so the two rules cannot drift apart on what counts as ambiguous. The shape: a pair of
-**straight ASCII single quotes** (U+0027 — an already-curly U+2018/U+2019 pair is out of scope by
-construction) enclosing **1 to 3 `LETTER` code points**, with **at least one** `INLINE-SPACE` code
-point immediately outside each mark. `rock 'n' roll`, `She chose 'A' today`, `They said 'no'
-yesterday` all match; `say 'like' now` (4 letters enclosed) and `say '12' now` (digits, not
-`LETTER`) do not, and fall through to ordinary quote-pairing exactly as before 0.5.0.
+**Operator decision, 2026-09-09: `rock 'n' roll` and `rock'n'roll` are international, and both
+take U+2019 in every locale.** The idiom is not a locale fact — it is a fixed borrowed string that
+appears untranslated in prose in all ten — so the mechanism is locale-blind and lives in this rule
+rather than in locale data. Locale data could not carry it in any case: the `sources` discipline
+(§2) would block an entry in a locale whose own orthography writes the borrowing out instead
+(Russian writes рок-н-ролл), and an entry withheld for that reason would leave uncovered exactly
+the locales this decision is about.
+
+The predicate (`src/rules/quote-ambiguity.ts`, `computeAmbiguousShapeIndices`) is **this rule's
+alone** as of spec 1.1.0. Under 0.5.0 `apostrophe` consulted the same module to decide what to skip;
+it no longer skips anything, so the module has one caller and there is nothing left for the two
+rules to drift apart on. The shape: a pair of `NARROW` marks enclosing **exactly one code point**,
+either U+006E `n` or U+004E `N`, with **at least one** `INLINE-SPACE` code point immediately
+outside each mark. `rock 'n' roll`, `fish 'n' chips` and `rock 'N' roll` all match;
+`She chose 'A' today`, `They said 'no' yesterday` and `say 'yes' now` do not, and pair as ordinary
+quotations.
+
+The closed-up form `rock'n'roll` is not this veto's business at all — the medial-elision veto
+above already declines both marks on `ALNUM` neighbours, and `apostrophe` converts them. It needs
+no special case and gets none.
+
+**Why `NARROW` and not straight ASCII only — an idempotency obligation, not a preference.** Spec
+0.5.0's predicate matched U+0027 alone. That was sound *there*, because its outcome was to
+preserve the author's straight marks byte-identically, so a second pipeline pass saw the same
+bytes and re-vetoed. This veto instead lets `apostrophe` **convert** both marks to U+2019, and a
+straight-only predicate therefore would not recognise its own output: pass 2 would pair
+`rock ’n’ roll` as an ordinary `NARROW` quotation on the next run. Measured, not argued — with a
+straight-only predicate, `rock ’n’ roll` becomes `rock «n» roll` in `ru` and `rock ”n” roll` in
+`fi`, an idempotency violation and so a release blocker (`pipeline-idempotency.md` §1). Matching
+the whole `NARROW` class makes the converted form a fixed point in all ten locales.
+
+**Why exactly one code point `n`, and not a letter-count shape.** 0.5.0's predicate matched 1 to 3
+`LETTER` code points, which cannot tell the idiom from an ordinary short nested quotation and
+declined both — `«это 'моё' дело»` in `ru`, `“He said 'no' to me,”` in `en-US`. Counting letters
+is wrong here twice over. It is too broad: a genuine short quotation is far commoner in prose than
+the idiom, so declining it is the larger error. And it is not normalization-stable — `LETTER`
+includes `Mn` (§3.1) and this rule never normalizes its input (`ARCHITECTURE.md` §4.3), so `'моё'`
+is three `LETTER` code points composed and four decomposed, and the same visible word took two
+different branches depending on which form the author's editor happened to save. A comparison
+against a fixed pair of code points has no such dependency.
 
 **"At least one", deliberately, not "exactly one".** Only the single code point immediately
 adjacent to each mark is tested; a longer run of inline spaces further out — `rock  'n'  roll`,
@@ -387,33 +414,37 @@ quote-pairing, reintroducing a false-positive quotation conversion the veto exis
 exchange for no compensating benefit. The existing listed-idiom matcher (above) may remain
 stricter on this point without contradiction — with extra spaces its own literal `left`/`right`
 word-boundary test can fail to match the cited en-US `rock`/`n`/`roll` tuple, and when it does,
-this general veto still wins and the input is preserved unchanged, exactly as an uncited locale's
-input already is.
+this veto still wins and the marks are still converted.
 
 **Every position this shape matches is added to the same veto set the listed-idiom check
-populates** — `quotes` must decline to pair these marks as a quotation regardless of which of
-the two mechanisms is the reason. A position covered by an exact `elisionIdioms` match keeps its
-existing treatment unchanged (the veto lets the marks survive to `apostrophe`, whose own
-structural case ladder independently curls each — apostrophe.md §3.3 cases 3/4 — reproducing
-`rock ’n’ roll` for `en-US` exactly as spec 0.4.0 shipped it). A position that matches the general
-shape but **no** idiom is additionally placed in a **preserve set**
-(`computePreserveIndices` — ambiguous-shape positions minus idiom-matched positions) that
-`apostrophe` consults independently (apostrophe.md §3.4): `apostrophe` skips those exact index
-positions entirely, rather than letting its own case-ladder curl them the way it would curl any
-other surviving `NARROW` mark. Without that second check, `apostrophe`'s cases 3/4 would
-independently re-derive U+2019 for both marks anyway — reproducing, through a second code path,
-precisely the false-positive shape the withdrawn context-free `elisionForms` design (§7 item 8,
-History) was rejected for. Both marks are therefore left as literal U+0027, byte-identical,
-through the entire pipeline: a deliberate, bounded false negative
-(`docs/AUDIT_REMEDIATION_AND_RELEASE_PLAN.md` §3.1: "False negatives are preferable to text
-damage"), not an attempt to guess which locale's idiom list should have had an entry.
+populates**, and both mechanisms have the identical outcome: `quotes` declines the pairing, both
+marks survive pass 2 unmatched, and `apostrophe` (order 50) renders each independently by its own
+structural case ladder — leading elision (`apostrophe.md` §3.3 case 4) on the first, trailing
+elision (case 3) on the second, giving `rock ’n’ roll`. `en-US`'s cited `elisionIdioms` entry now
+vetoes a strict subset of what this veto vetoes; it is retained because the listed mechanism
+matches multi-code-point `elided` content this one does not, and because the two can never
+disagree about a position both cover. **Spec 0.5.0's preserve set is withdrawn**
+(`computePreserveIndices`, `apostrophe.md` §3.4): it existed to stop `apostrophe`'s case ladder
+from converting marks 0.5.0 wanted preserved, and conversion is now the specified outcome for
+every position this veto matches, so `apostrophe` needs no knowledge of the veto at all and its
+ordinary ladder does the right thing unaided.
 
-**This does not broaden the veto to already-curly input.** `rock ’n’ roll` typed directly with
-U+2019 (no cited idiom for the locale) is unaffected by this predicate — it is not a pair of
-*straight ASCII* marks — and falls through to ordinary NARROW-pair quotation exactly as it did
-before spec 0.5.0 (§6 row, "already-curly, no idiom"). Broadening the shape to curly input was
-considered and rejected: this veto exists to preserve what an author *typed*, not to retroactively
-undo an author's own deliberate use of real typographic marks.
+**Already-curly input is matched, and preserved as typed.** A pair typed directly with U+2019 is
+in `NARROW`, so it is vetoed like any other — and since `apostrophe` emits U+2019 only in place of
+U+0027 (`apostrophe.md` §1), it edits nothing there: `rock ’n’ roll` is a fixed point, and
+`rock ‘n’ roll` keeps the author's own U+2018 rather than being re-typeset as that locale's
+quotation. This is the direct opposite of 0.5.0's rule for curly input, and the reason is the
+idempotency obligation two paragraphs above, not a change of view about authorial intent.
+
+**Accepted false positive, recorded rather than tolerated.** `The letter 'n' is common.` becomes
+`The letter ’n’ is common.` — a genuine quotation of the letter *n*, rendered as an elision. So
+does the same shape one level deeper, `He said "press 'n' now".` Both are pinned as fixtures
+(`spec/fixtures/en-US.json`) so the exposure sits in the conformance suite rather than in
+someone's content. The veto's alphabet is one code point and the spaces around it; nothing in that
+alphabet can encode "this is a quoted letter, not an elided one", and no bounded literal contract
+over these bytes could. The trade is deliberate and was made with the numbers in view: 0.5.0 paid
+for this same shape by declining **every** short quotation in **every** locale, a far larger and
+far commoner class of error than quoting the single letter *n*.
 
 **V1 — same-V1-identity adjacency veto** (both widths):
 
@@ -1054,19 +1085,26 @@ each independently:
 | P3 | `I love rock 'n' roll.` | `I love rock ’n’ roll.` | trailing period after `right` does not block the word-boundary test |
 | P4 | `rock ’n’ roll` | ⟶ | already-curly: U+2019 is `NARROW`, the veto fires identically on the already-correct form, `apostrophe` does not act on U+2019 at all — a fixed point (§5) |
 
-Negative — the elided content alone would match, but the full context does not, so these fall
-through to ordinary pass 1/2 pairing exactly as before spec 0.4.0. **This is the table that
-proves the false positive found in a stage-3 review is closed**: N1 and N2 were reported as
-falsely elided by the earlier, context-free `elisionForms` design and are the reason it was
-replaced by `elisionIdioms`.
+Negative **for the listed mechanism only** — the elided content matches but the full
+`left`/`elided`/`right` context does not, so no configured idiom fires. Since spec 1.1.0 every row
+below is nevertheless matched by the universal medial-`n` veto (§3.2), so every one converts, and
+this table's job is to show where the two mechanisms differ rather than where the marks fall
+through. N1 and N2 remain the rows that matter most: they were reported as falsely elided by the
+earlier, context-free `elisionForms` design, and 1.1.0 accepts that specific cost knowingly and
+narrowly (§3.2, "Accepted false positive") — which is not the same as readmitting the unbounded
+word list that was rejected.
+
+**These five outputs were last accurate before spec 0.5.0.** The table was not updated when 0.5.0's
+veto landed, so as written it described neither 0.5.0's behaviour nor the fixtures'; the outputs
+below are 1.1.0's, verified against `spec/fixtures/en-US.json`.
 
 | # | Input | Output | Why |
 | --- | --- | --- | --- |
-| N1 | `The letter 'n' is common.` | `The letter “n” is common.` | no `left`/`right` context at all — an ordinary depth-1 pair, primary glyphs |
-| N2 | `He said "press 'n' now".` | `He said “press ‘n’ now”.` | nested quotation; the inner pair is an ordinary depth-2 pair, secondary glyphs — not an idiom |
-| N3 | `rock 'n' pop` | `rock “n” pop` | `right` is `pop`, not `roll` — no configured idiom matches |
-| N4 | `fish 'n' chips` | `fish “n” chips` | not sourced or listed: no `{ left: "fish", … }` entry exists in `en-US.json` |
-| N5 | `rock 'N' roll` | `rock “N” roll` | `elided` is matched **exactly**, no leniency; `N ≠ n` — the first-code-point leniency applies only to `left`/`right`, never to `elided` |
+| N1 | `The letter 'n' is common.` | `The letter ’n’ is common.` | no `left`/`right` context at all, so no idiom fires — but the universal veto matches the bare `'n'` and `apostrophe` converts both marks. The accepted false positive of §3.2, stated there in full |
+| N2 | `He said "press 'n' now".` | `He said “press ’n’ now”.` | the same shape one level deeper; §3.2's predicate reads a mark's immediate neighbours and knows nothing of enclosing pairs, so nesting depth never reaches it |
+| N3 | `rock 'n' pop` | `rock ’n’ pop` | `right` is `pop`, not `roll` — no configured idiom matches, and since 1.1.0 none is needed |
+| N4 | `fish 'n' chips` | `fish ’n’ chips` | not sourced or listed: no `{ left: "fish", … }` entry exists in `en-US.json`, and none is required for the marks to convert |
+| N5 | `rock 'N' roll` | `rock ’N’ roll` | `elided` is matched **exactly** by the listed mechanism, so `N ≠ n` still fails *it*; the universal veto matches U+004E as well as U+006E, and converts both marks |
 
 **Known, accepted residual ambiguity (not a negative-fixture guarantee).** The full-context
 requirement narrows the false-positive surface to genuine surface-form coincidence; it cannot
@@ -1076,21 +1114,26 @@ the identical surface sequence for illustration still gets that final occurrence
 
 | # | Input | Output | Why |
 | --- | --- | --- | --- |
-| N6 | `The sequence is the word rock, the quoted letter 'n', and the word roll: rock 'n' roll.` | `The sequence is the word rock, the quoted letter “n”, and the word roll: rock ’n’ roll.` | **the first `'n'` is correctly NOT vetoed** (`left` is `letter`, not `rock`; it is followed by a comma, not a space — neither test reaches a match), proving the matcher works exactly as N1/N2 already show. **The second `rock 'n' roll` IS vetoed and pinned as known, accepted risk, not fixed.** Under the intent the sentence itself states, this is a genuine semantic false positive — accepted as an unavoidable one for this bounded, surface-form contract, since `left`/`elided`/`right` and the single permitted `INLINE-SPACE` are all it is defined over, and none of them can encode "this is a demonstration, not an utterance of the idiom." The implementation still conforms exactly to its own matcher here: the bytes are the idiom's bytes, byte for byte, and the matcher cannot see past that. Recorded so the exposure is visible in the conformance suite rather than discovered in someone's content (§3.2's residual-ambiguity note) |
+| N6 | `The sequence is the word rock, the quoted letter 'n', and the word roll: rock 'n' roll.` | `The sequence is the word rock, the quoted letter “n”, and the word roll: rock ’n’ roll.` | **the first `'n'` is correctly NOT vetoed**, and by both mechanisms independently: the mark closing it is followed by a comma rather than an `INLINE-SPACE`, which fails the universal veto's outer test (§3.2), and `left` is `letter` rather than `rock`, which fails the listed idiom's. It pairs as an ordinary quotation. **The second `rock 'n' roll` IS vetoed and pinned as known, accepted risk, not fixed.** Under the intent the sentence itself states, this is a genuine semantic false positive — accepted as an unavoidable one for this bounded, surface-form contract, since `left`/`elided`/`right` and the single permitted `INLINE-SPACE` are all it is defined over, and none of them can encode "this is a demonstration, not an utterance of the idiom." The implementation still conforms exactly to its own matcher here: the bytes are the idiom's bytes, byte for byte, and the matcher cannot see past that. Recorded so the exposure is visible in the conformance suite rather than discovered in someone's content (§3.2's residual-ambiguity note) |
 
-#### Listed elision veto across span boundaries — `html`, `markdown`
+#### Elision vetoes across span boundaries — `html`, `markdown`
 
-`modes.md` §3.2's boundary marker is not `INLINE-SPACE`, so a context word separated from its
-mark by an element or span boundary does not satisfy the veto's outer test and the idiom does
-not fire — the marks fall through to ordinary pairing, identically to `text` mode on the same
-characters split the same way.
+`modes.md` §3.2's boundary marker is not `INLINE-SPACE`, so a **context word** separated from its
+mark by an element or span boundary does not satisfy the listed idiom's outer test, and that idiom
+does not fire. The universal medial-`n` veto (§3.2) reads no context word at all — only the single
+enclosed code point and the space immediately outside each mark — so a boundary further out is
+invisible to it and it fires on all four rows. Since spec 1.1.0 the split cases therefore converge
+with the unsplit one instead of diverging from it.
+
+**H1–H3's outputs were last accurate before spec 0.5.0** and are corrected here for the same
+reason as N1–N5 above; they are verified against `spec/fixtures/en-US.json`.
 
 | # | Mode | Input | Output | Why |
 | --- | --- | --- | --- | --- |
-| H0 | `html` | `<p>rock 'n' roll</p>` | `<p>rock ’n’ roll</p>` | idiom whole within one text node — positive control |
-| H1 | `html` | `<p><em>rock</em> 'n' roll</p>` | `<p><em>rock</em> “n” roll</p>` | `left` word is inside a different span; `Llit` at the opening mark is the boundary marker, not `INLINE-SPACE` |
-| H2 | `html` | `<p>rock 'n' <em>roll</em></p>` | `<p>rock “n” <em>roll</em></p>` | mirror case on `right` |
-| H3 | `markdown` (`commonmark`) | `*rock* 'n' roll\n` | `*rock* “n” roll\n` | `left` word is inside an emphasis span; the veto does not cross it, matching `text` mode's own boundary behaviour on split input |
+| H0 | `html` | `<p>rock 'n' roll</p>` | `<p>rock ’n’ roll</p>` | idiom whole within one text node — positive control, both mechanisms match |
+| H1 | `html` | `<p><em>rock</em> 'n' roll</p>` | `<p><em>rock</em> ’n’ roll</p>` | `left` word is inside a different span, so the *listed* idiom does not match; the universal veto never looks for a `left` word, and the opening mark's own left neighbour is still a real `INLINE-SPACE` |
+| H2 | `html` | `<p>rock 'n' <em>roll</em></p>` | `<p>rock ’n’ <em>roll</em></p>` | mirror case on `right` |
+| H3 | `markdown` (`commonmark`) | `*rock* 'n' roll\n` | `*rock* ’n’ roll\n` | `left` word is inside an emphasis span; same reasoning as H1, and the result matches `text` mode on the same characters split the same way |
 
 ### `en-GB` — primary `‘ ’`, secondary `“ ”`
 
@@ -1195,27 +1238,34 @@ Ordered by how much this matters.
    the gate catches any resulting instability.
 7. **Worst case is `O(n²)`** (gate rounds × pass cost). A pathological span of alternating quote
    marks is quadratic; cap rounds if this matters in practice.
-8. **`rock 'n' roll` — closed for `en-US` in spec 0.4.0 via `quotes.elisionIdioms =
+8. **`rock 'n' roll` — closed for every locale in spec 1.1.0 by the universal medial-`n` veto
+   (§3.2), by operator decision that the idiom is international rather than a locale fact.** It
+   was closed for `en-US` alone in spec 0.4.0 via `quotes.elisionIdioms =
    [{ left: "rock", elided: "n", right: "roll" }]` (Chicago Manual of Style Online on the
    mark's function, American Heritage Dictionary on the spaced variant's existence — see
-   `en-US.json` `sources`), still open everywhere else.** A first design (a bare
-   `elisionForms = ["n"]` word list, matching only the elided content) was prototyped and
-   reviewed within the same development of spec 0.4.0, and rejected before any release or
-   commit — it never shipped, was never published, and no user ever ran it: review found that
-   it falsely elided ordinary quotations of the letter *n* — `The letter 'n' is common.`,
-   `He said "press 'n' now".` — because it had no way to see the surrounding context.
-   `elisionIdioms`' three-part contract (§2, §3.2) is what actually lands in spec 0.4.0, and
-   §6's `N1`/`N2` rows exist specifically to keep that reviewed-and-rejected design from being
-   reintroduced.
-   `en-GB` has no independent citation and carries an extra risk the other locales do not: its
-   primary pair *is* the single quote, so `'n'` is far more plausible as genuine quoted dialogue
-   there than in a locale whose primary pair is double — populating it would need to clear a
-   higher bar than en-US's, not merely find any citation. `fi` and `sv` write the idiom **closed
-   up** (`rock'n'roll`, no surrounding spaces) in their own dictionaries, so the veto's
-   spaced-form trigger would never fire on correctly-written text in either — an entry there
-   would be evidenced-inert, not evidenced-useful, and none was added. **Still open, all
-   locales:** `en-GB` single-first (now more consequential under mandate 1); quotation across a
-   paragraph boundary; nesting deeper than 2; primes; surviving-mark invisibility to the
+   `en-US.json` `sources`), and that entry is retained and still cited; it now vetoes a strict
+   subset of what the universal veto vetoes.
+   **What 1.1.0 knowingly accepts in exchange** is the cost that sank a first design during the
+   development of 0.4.0 (a bare `elisionForms = ["n"]` word list, matching only the elided
+   content, prototyped and rejected before any release or commit — it never shipped and no user
+   ever ran it): ordinary quotations of the letter *n* are elided — `The letter 'n' is common.`,
+   `He said "press 'n' now".`, §6 rows N1/N2. The reasoning that rejected it in 0.4.0 was not
+   wrong; what changed is the alternative it was measured against. In 0.4.0 the alternative was
+   `elisionIdioms`' three-part contract, which is strictly better for `en-US`. From 0.5.0 the
+   de-facto alternative for the other nine locales was the general 1–3-`LETTER` shape veto, which
+   bought the same protection by declining **every** short quotation in **every** locale —
+   a much larger and commoner error class than quoting a single letter, and one this repository's
+   own promo examples tripped over in `ru`, `fr`, `fr-CA`, `fi` and `sv`. 1.1.0 takes the smaller
+   error knowingly, and N1/N2 stay pinned so it is visible rather than forgotten.
+   The evidentiary notes that governed per-locale entries are retained because they still govern
+   `elisionIdioms` itself, which is unchanged: `en-GB` has no independent citation and carries an
+   extra risk the other locales do not, since its primary pair *is* the single quote, so `'n'` is
+   more plausible as genuine quoted dialogue there than in a locale whose primary pair is double;
+   and `fi`/`sv` write the idiom **closed up** (`rock'n'roll`) in their own dictionaries, so a
+   spaced-form entry there would be evidenced-inert. Neither observation blocks the universal
+   veto, which rests on the operator decision rather than on per-locale citation. **Still open,
+   all locales:** `en-GB` single-first (now more consequential under mandate 1); quotation across
+   a paragraph boundary; nesting deeper than 2; primes; surviving-mark invisibility to the
    conformance matrix.
 9. **`ru`/`el`/`fr`/`fr-CA` already-curly protection is narrower than 0.1.0's** for these
    same-width-primary/secondary locales specifically — the two-stack split no longer
@@ -1241,10 +1291,31 @@ any commit or release once it was found to falsely elide ordinary quotations of 
 (`The letter 'n' is common.`); it never shipped. §6's `N1`/`N2` rows and this history entry
 exist so that design is not silently reintroduced.
 
-0.5.0 adds the **general ambiguous-medial-span veto** (§3.2, "General ambiguous-medial-span
-veto"), closing the same class of defect for every locale without a cited `elisionIdioms` entry
-— not by inferring an idiom, but by preserving the author's straight ASCII marks unconverted. The
-shared predicate this and `apostrophe` (order 50) both consult lives in one module,
-`src/rules/quote-ambiguity.ts` (JS reference implementation), specifically so `apostrophe`'s own
-structural case ladder cannot independently curl a mark this rule has deliberately left alone —
-see `apostrophe.md` §3.4 for why that composition risk is real, not hypothetical.
+0.5.0 adds the **general ambiguous-medial-span veto** (§3.2), closing the same class of defect for
+every locale without a cited `elisionIdioms` entry — not by inferring an idiom, but by preserving
+the author's straight ASCII marks unconverted. The shared predicate this and `apostrophe`
+(order 50) both consult lives in one module, `src/rules/quote-ambiguity.ts` (JS reference
+implementation), specifically so `apostrophe`'s own structural case ladder cannot independently
+curl a mark this rule has deliberately left alone — see `apostrophe.md` §3.4 for why that
+composition risk was real, not hypothetical.
+
+1.1.0 **replaces 0.5.0's veto with the universal medial-`n` elision veto** (§3.2), on the operator
+decision of 2026-09-09 that `rock 'n' roll` and `rock'n'roll` are international and take U+2019 in
+every locale. Three things change together, and none of them works without the other two:
+
+- **The shape narrows** from 1–3 `LETTER` code points to exactly one code point, U+006E or U+004E.
+  0.5.0's shape could not distinguish the idiom from an ordinary short nested quotation and
+  declined both, which is what made `«это 'моё' дело»` and `“He said 'no' to me,”` come out with
+  the inner marks unconverted. It was also normalization-dependent, since `LETTER` includes `Mn`.
+- **The outcome inverts** from preserve to convert: matched marks are no longer held back from
+  `apostrophe`, which renders each by its ordinary case ladder. 0.5.0's preserve set
+  (`computePreserveIndices`, `apostrophe.md` §3.4) is withdrawn along with the reason it existed.
+- **The predicate widens** from straight ASCII to the whole `NARROW` class. This is forced by the
+  second change, not chosen: a veto that produces U+2019 must recognise U+2019, or its own output
+  pairs as a quotation on the next pipeline pass. A straight-only predicate was implemented first
+  and measured to do exactly that — `rock ’n’ roll` → `rock «n» roll` in `ru`, `rock ”n” roll` in
+  `fi` — an idempotency violation and so a release blocker.
+
+The cost accepted, knowingly and with §6's N1/N2 rows kept as its permanent witnesses, is that a
+genuine quotation of the letter *n* is elided. §7 item 8 records why that is the smaller error
+than the class 0.5.0 traded it for.

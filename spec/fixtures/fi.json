@@ -1,5 +1,5 @@
 {
-  "spec": "1.0.0",
+  "spec": "1.1.0",
   "locale": "fi",
   "cases": [
     {
@@ -752,8 +752,16 @@
       "rule": "quotes",
       "mode": "text",
       "in": "rock 'n' roll",
-      "out": "rock 'n' roll",
-      "note": "quotes.md §7.1, recorded as a known defect: the two elision marks pair at depth 1 and take the Finnish primary glyphs. spec 0.5.0: fi's own dictionary writes this loanword closed up (rock'n'roll, no spaces) — quotes.md §7 item 8 — so a citation for the spaced form would be evidenced-inert and none was added. The general ambiguous-medial-span veto now preserves the spaced ASCII input as-is rather than pairing it as an ordinary quotation, which is the pre-0.5.0 behaviour this fixture used to assert."
+      "out": "rock ’n’ roll",
+      "note": "spec 1.1.0, quotes.md §3.2's universal medial-n elision veto: by operator decision the idiom is international, so `quotes` declines the pairing in every locale rather than only where a cited quotes.elisionIdioms entry exists, and `apostrophe` (order 50) converts each mark by its own case ladder — leading elision (apostrophe.md §3.3 case 4), then trailing elision (case 3). Same output and same two case decisions as en-us-quotes-rock-n-roll, which reaches them through the cited idiom instead. History: spec 0.5.0's general ambiguous-medial-span veto preserved both marks here as literal U+0027; before 0.5.0 `quotes` paired them as an ordinary depth-1 quotation in this locale's primary glyphs. fi's own dictionary writes this loanword closed up (rock'n'roll), so a citation for the spaced form would have been evidenced-inert and none was ever added — quotes.md §7 item 8. The universal veto covers the spaced form regardless, which is the point of moving the mechanism out of locale data. See fi-quotes-rock-n-roll-already-curly for the second-pass fixed point this output depends on."
+    },
+    {
+      "id": "fi-quotes-rock-n-roll-already-curly",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "rock ’n’ roll",
+      "out": "rock ’n’ roll",
+      "note": "quotes.md §3.2, the sharpest regression witness for spec 1.1.0's widening of the veto to the whole NARROW class: fi's SECONDARY pair is U+2019 on both sides, so the marks this rule's own output leaves behind are indistinguishable from fi's own prescribed nested-quotation glyphs. A port that matches U+0027 only does not recognise them, pairs them, and turns the output of fi-quotes-rock-n-roll into `rock ”n” roll` — fi's primary pair at depth 1. Companion to ru-quotes-rock-n-roll-already-curly, which fails the same way in a locale whose primary is WIDE; both are measured, not hypothesised."
     },
     {
       "id": "fi-quotes-already-correct",

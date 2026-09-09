@@ -1,8 +1,8 @@
 # Rule: `apostrophe`
 
 **Order:** 50. **Default:** on. **Modes:** text, html, markdown.
-**Spec version:** 0.5.0 (0.4.1 for everything except §2, §3.4 and the §6/§7 updates for the
-shared ambiguity predicate).
+**Spec version:** 1.1.0 (0.4.1 for everything except §2, §3.4 and the §6/§7 updates for the
+withdrawal of the shared ambiguity preserve set).
 
 ---
 
@@ -18,24 +18,26 @@ neighbours), and mixing them produces a rule that is neither provable nor portab
 edit is one code point replacing one code point. The rule never inserts, never deletes, and
 never touches U+2019 itself.
 
-**As of spec 0.5.0, this rule additionally skips a small, precisely-defined set of positions
-entirely** — see §3.4 — rather than applying its case ladder to them. This is the one exception
-to "every candidate is decided from exactly two neighbouring code points" (§3.3): whether a
-position is in that skip set is decided once, before the scan, from a wider (but still
-structural, still bounded) context.
+**Spec 1.1.0 restores this rule to a pure two-neighbour decision.** Spec 0.5.0 had it skip a small
+set of positions entirely, before reading their neighbours; that set is withdrawn — see §3.4 —
+and every candidate is again decided from exactly two neighbouring code points (§3.3), with no
+exception.
 
 ---
 
 ## 2. Locale data consumed
 
-**`quotes.elisionIdioms`, indirectly — added spec 0.5.0.** `order.json` now declares
-`"localeData": ["quotes"]`. This rule's own case ladder (§3.3) remains structural, not lexical,
-and still consumes no locale data directly; the one exception is §3.4's shared predicate, which
-reads `quotes.elisionIdioms` to tell an idiom-authorized position (left alone by `quotes`, but
-meant to be curled by this rule's ordinary case ladder — unchanged since spec 0.4.0) apart from
-an ambiguous-but-uncited position (left alone by `quotes`, and meant to be left alone by this
-rule too). Before spec 0.5.0 this rule read no locale data at all; nothing else in §3.3's case
-ladder reads any now either.
+**None, as of spec 1.1.0.** `order.json` declares `"localeData": []` for this rule, as it did
+before 0.5.0. §3.3's case ladder is structural, not lexical, and reads no locale data; §3.4's
+preserve set — the only thing that ever did, reaching `quotes.elisionIdioms` indirectly through
+the shared predicate — is withdrawn.
+
+Spec 0.5.0 declared `"localeData": ["quotes"]` here because its preserve set had to tell an
+idiom-authorized position (left alone by `quotes`, but meant to be curled by this rule) apart from
+an ambiguous-but-uncited one (left alone by `quotes`, and meant to be left alone here too).
+Spec 1.1.0 removes that distinction at the source: `quotes` now vetoes both kinds of position for
+the same reason and with the same intent — that this rule convert them — so there is nothing left
+for this rule to look up.
 
 ---
 
@@ -112,42 +114,34 @@ The cases are mutually exclusive after the first-match rule and every one of the
 from exactly two neighbouring code points. There is no lookahead beyond one position and no
 state carried between candidates.
 
-### 3.4 The shared ambiguity preserve-set (spec 0.5.0)
+### 3.4 The shared ambiguity preserve-set — withdrawn (spec 1.1.0)
 
-`quotes` (order 40) now declines to pair two straight ASCII marks in an ambiguous medial shape —
+**This rule computes no preserve set and skips no position.** `computePreserveIndices` is
+withdrawn along with the veto shape that motivated it. Every U+0027 that `quotes` (order 40)
+declines to claim reaches §3.3's case ladder and is decided there, from its two neighbours, with
+no prior filtering — the state of affairs before spec 0.5.0, restored.
+
+Spec 0.5.0 had `quotes` decline to pair two straight ASCII marks in an ambiguous medial shape —
 `rock 'n' roll`, `She chose 'A' today` — for every locale without a cited `quotes.elisionIdioms`
-match (`quotes.md` §3.2, "General ambiguous-medial-span veto"). Both marks of such a pair reach
-this rule exactly like any other surviving U+0027 (§3.2 above): they are not part of a resolved
-quotation, so they are this rule's input.
-
-**Without a further check, this rule's own case ladder would curl them anyway** — and get it
-wrong for the same reason the withdrawn context-free `elisionForms` design was rejected
-(`quotes.md` §7 item 8, History): the leading mark of `rock 'n' roll` has `SPACELIKE` on its left
-and `LETTER` on its right, matching case 4 (leading elision); the trailing mark has `LETTER` on
-its left and `SPACELIKE` on its right, matching case 3 (trailing elision/possessive). Applied
+match, *and* preserve them from this rule. The second half was necessary because this rule's
+ladder would otherwise convert them: the leading mark of `rock 'n' roll` has `SPACELIKE` on its
+left and `LETTER` on its right, matching case 4 (leading elision); the trailing mark has `LETTER`
+on its left and `SPACELIKE` on its right, matching case 3 (trailing elision/possessive). Applied
 independently — this rule has no notion that the two marks are a pair, by design (§1) — both
-would convert to U+2019, reproducing `rock ’n’ roll` **without any cited evidence that this is
-the correct treatment for this locale**. That would silently defeat the whole point of `quotes`'
-veto: a decision `quotes` made not to guess would be undone one rule later by this rule guessing
-for it, through a different code path.
+convert to U+2019, giving `rock ’n’ roll`. Under 0.5.0 that was a defect to be prevented: it
+undid, one rule later and through a different code path, a decision `quotes` had deliberately
+made not to guess.
 
-**The fix: before scanning, compute the preserve set** —
-`computePreserveIndices(cp, locale.quotes.elisionIdioms)` (`src/rules/quote-ambiguity.ts`, shared
-with `quotes`) — and skip any index in it entirely, before `left`/`right` are even read. The
-preserve set is exactly the ambiguous-shaped positions (`quotes.md` §3.2's structural
-definition: a pair of straight ASCII single quotes enclosing 1-3 `LETTER` code points, one
-`INLINE-SPACE` immediately outside each mark) with no matching `elisionIdioms` entry. A position
-**with** a matching idiom is **not** in the preserve set — this rule sees it and applies its
-ordinary case ladder to it, exactly as spec 0.4.0-0.4.1 did (case 4 then case 3, for
-`en-US`'s `rock 'n' roll`). Only the uncited, ambiguous positions are skipped, and skipping means
-literally nothing is emitted for them: the mark stays U+0027, byte-identical, forever (idempotent
-by construction — the same shape is found and the same skip decision made on every subsequent
-pipeline pass, since nothing ever changes at that position).
+**Spec 1.1.0 makes that same conversion the specified outcome**, so the mechanism that prevented
+it has nothing left to prevent. `quotes`' universal medial-`n` veto (`quotes.md` §3.2) declines
+the pairing precisely so that this rule's cases 4 and 3 will convert both marks, in every locale —
+exactly what the cited `en-US` idiom already did in spec 0.4.0, now generalised. The shape
+predicate (`src/rules/quote-ambiguity.ts`) is now `quotes`' alone; this rule needs no knowledge of
+the veto whatsoever, which is why §2 is back to reading no locale data.
 
-This is the one piece of this rule's behaviour that is not a pure two-neighbour decision (§1). It
-does not weaken the two-neighbour argument for the positions that do reach the case ladder — the
-preserve set only ever **removes** candidates from consideration, never changes how a candidate
-that does reach case 1-5 is decided.
+**A port must not reintroduce a skip here.** A position `quotes` vetoed is not a position this
+rule may leave alone: leaving it alone is what produces an unconverted `rock 'n' roll`, and the
+conformance fixtures for all ten locales assert the converted form.
 
 ### 3.4a Why the prime guard precedes the medial case
 
@@ -186,11 +180,16 @@ Converting U+0060 or U+00B4 is a separate normalisation concern that `order.json
   Removed by the mode adapter (L2). This rule has no code-awareness and must not acquire any:
   `it's` in prose and `'string'` in a Python snippet are indistinguishable to it.
 - **[R] Spacing.** The rule inserts and deletes nothing. _`nbsp` (R₈) changes spacing._
-- **[P] An ambiguous medial span with no cited idiom** (spec 0.5.0): `rock 'n' roll` in any
-  locale without a matching `quotes.elisionIdioms` entry, `She chose 'A' today`, `They said 'no'
-  yesterday`. §3.4's preserve set. Both marks stay literal U+0027 forever — not [R], because no
-  other rule can perturb this: `quotes` (R₅) is the only earlier rule that touches quote-shaped
-  code points, and its own veto is what put these marks here in the first place.
+- **[R] A mark already curled by someone else.** This rule emits U+2019 only in place of U+0027
+  (§1), so a medial span typed with real single quotation marks — `rock ’n’ roll`, `rock ‘n’
+  roll` — passes through untouched even though `quotes` (R₅) vetoed its pairing (`quotes.md`
+  §3.2). That is what makes the converted form a fixed point on the second pipeline pass.
+
+  Spec 0.5.0 listed an additional **[P]** guarantee here — an ambiguous medial span with no cited
+  idiom (`rock 'n' roll` outside `en-US`, `She chose 'A' today`, `They said 'no' yesterday`) stayed
+  literal U+0027 forever via §3.4's preserve set. **Withdrawn in 1.1.0**: `She chose 'A' today` is
+  now an ordinary quotation resolved by `quotes`, and `rock 'n' roll` is converted here, in every
+  locale.
 
 ---
 
@@ -323,9 +322,9 @@ are shown as they arrive at this rule, i.e. after `quotes` has run.
 | 8   | `The 1990's were loud`          | `The 1990’s were loud`  | 2    | digit left but letter right, so case 1 does not fire                                                                                                                |
 | 9   | `a ' b`                         | ⟶                       | 5    | nothing inferable                                                                                                                                                   |
 | 10  | `“He said ’tis so,” she noted.` | ⟶                       | —    | the quotation was already resolved by `quotes` and this apostrophe was already U+2019 on a previous run; no U+0027 remains                                          |
-| 11  | `rock 'n' roll` (any locale with an empty `quotes.elisionIdioms`, e.g. `en-GB`, `de-DE`, `fi`, `sv`) | ⟶ (unchanged, spec 0.5.0) | — | **as of spec 0.5.0, this rule does see both marks, and skips them.** `quotes`' general ambiguous-medial-span veto (`quotes.md` §3.2) now declines to pair them too (not only the cited-idiom shape), so both marks survive to this rule unedited — but they are in the §3.4 preserve set (no matching `elisionIdioms` entry), so this rule's scan skips both index positions entirely rather than applying cases 3/4 to them. **Before spec 0.5.0** this row instead asserted "this rule never sees these marks" and the output was `rock ”n” roll` in `fi`, `rock ‘n’ roll` in `en-GB` — `quotes` paired them as an ordinary quotation, which `quotes.md` §7 item 8 and `apostrophe.md` §7 item 1 (both closed 0.5.0) named as the open gap this row now documents as resolved |
-| 11a | `rock 'n' roll` (`en-US`, `quotes.elisionIdioms = [{ left: "rock", elided: "n", right: "roll" }]`, spec 0.4.0) | `rock ’n’ roll` | 4, 3 | **unchanged by spec 0.5.0.** This position has a matching idiom, so it is *not* in the §3.4 preserve set: `quotes`' listed elision veto declines to pair the marks (unchanged since 0.4.0), and this rule's ordinary case ladder sees both — leading mark takes case 4 (space left, letter right), trailing mark takes case 3 (letter left, space right), independently. Two edits, no coordination between them: this rule still has no notion of "the two marks are a pair" |
-| 11b | `The letter 'n' is common.` (`en-US`) | ⟶ | — | **`quotes`' idiom match does not fire here** (no `left`/`right` context matches "rock"/"roll"), but the general ambiguous-shape veto still does (`'n'` is 1 letter, space-flanked) — so, as of spec 0.5.0, this rule again skips the mark via the §3.4 preserve set, same as row 11. Before 0.5.0 the marks paired as an ordinary depth-1 quotation and never reached this rule at all; the observable output (no change) is identical either way, reached by a different mechanism. Recorded because this exact input was the false positive that made a first, context-free design (a bare `elisionForms` word list) unsafe — see `quotes.md` §6 row N1, §7 item 8 |
+| 11  | `rock 'n' roll` (any locale with an empty `quotes.elisionIdioms`, e.g. `en-GB`, `de-DE`, `fi`, `sv`) | `rock ’n’ roll` | 4, 3 | **as of spec 1.1.0 this rule sees both marks and converts them, in every locale.** `quotes`' universal medial-`n` veto (`quotes.md` §3.2) declines the pairing for exactly that purpose, and this rule's ordinary ladder does the rest — identical to row 11a, which is the point: the cited-idiom path and the universal path now reach the same output by the same two case decisions. **In spec 0.5.0** this row asserted no change at all, because the marks were in §3.4's preserve set; that set is withdrawn. **Before 0.5.0** the marks never reached this rule — `quotes` paired them as an ordinary quotation, giving `rock ”n” roll` in `fi` and `rock ‘n’ roll` in `en-GB`, the gap `quotes.md` §7 item 8 named |
+| 11a | `rock 'n' roll` (`en-US`, `quotes.elisionIdioms = [{ left: "rock", elided: "n", right: "roll" }]`, spec 0.4.0) | `rock ’n’ roll` | 4, 3 | **unchanged by either 0.5.0 or 1.1.0** — the one row whose behaviour has been constant since 0.4.0, and the model the other nine locales were brought into line with. `quotes`' listed elision veto declines to pair the marks, and this rule's ordinary case ladder sees both — leading mark takes case 4 (space left, letter right), trailing mark takes case 3 (letter left, space right), independently. Two edits, no coordination between them: this rule still has no notion of "the two marks are a pair" |
+| 11b | `The letter 'n' is common.` (`en-US`) | `The letter ’n’ is common.` | 4, 3 | **`quotes`' idiom match does not fire here** (no `left`/`right` context matches "rock"/"roll"), but the universal medial-`n` veto does, so both marks reach this rule and both convert. **This is spec 1.1.0's accepted false positive**, stated in full at `quotes.md` §3.2 and pinned at `quotes.md` §6 row N1: a genuine quotation of the letter *n* comes out as an elision. It is the exact input that made a first, context-free design (a bare `elisionForms` word list) unsafe in 0.4.0; 1.1.0 accepts the cost deliberately, against a measured alternative, rather than by overlooking it — `quotes.md` §7 item 8 records the comparison |
 | 12  | `dogs''`                        | ⟶                       | 5, 5 | neither mark has the neighbour class any converting case requires                                                                                                   |
 | 13  | `O'Brien's`                     | `O’Brien’s`             | 2, 2 | two independent medial marks                                                                                                                                        |
 | 14  | `Ma'am, it's 5 o'clock`         | `Ma’am, it’s 5 o’clock` | 2 ×3 |                                                                                                                                                                     |
@@ -336,8 +335,9 @@ Cases 6, 7, 9, 10 and 12 are "no change" cases.
 
 ## 7. Open questions
 
-1. **(Closed, spec 0.5.0.) `rock 'n' roll` outside `en-US` no longer silently becomes a
-   quotation.** Through spec 0.4.1, `quotes` (order 40) classified the two marks as `canOpen`
+1. **(Closed twice — spec 0.5.0, then differently in spec 1.1.0.) `rock 'n' roll` outside `en-US`
+   no longer silently becomes a quotation.** Through spec 0.4.1, `quotes` (order 40) classified the
+   two marks as `canOpen`
    and `canClose` for any locale without a cited idiom and paired them at **depth 1**, taking the
    locale's primary glyphs: `rock ”n” roll` in `fi`, `rock ‘n’ roll` in `en-GB`. This rule could
    not fix it — by the time it ran, a mark `quotes` had paired was no longer U+0027 — and the
@@ -348,14 +348,20 @@ Cases 6, 7, 9, 10 and 12 are "no change" cases.
    loanword's dictionary headword closed up, `rock'n'roll`, not spaced, so a citation for the
    spaced form would be evidenced-inert; the rest were never researched for it).
 
-   **Spec 0.5.0 closes the gap a different way: not by inventing a citation, but by no longer
-   guessing at all.** `quotes.md` §3.2's general ambiguous-medial-span veto now declines to pair
-   *any* ambiguous-shaped span, cited idiom or not; this rule's own §3.4 preserve set then keeps
-   the uncited positions as literal U+0027 rather than letting its case ladder curl them
-   independently. The observable result for `en-GB`/`fi`/`sv`/every other uncited locale is no
-   longer a silently-wrong quotation — it is the original ASCII text, unchanged, a documented
-   false negative rather than an undocumented false positive. `en-US`'s cited treatment is
-   unaffected (`rock ’n’ roll`, apostrophe.md §6 row 11a); every other locale is row 11.
+   **Spec 0.5.0 closed the gap by no longer guessing at all**: `quotes.md` §3.2's general
+   ambiguous-medial-span veto declined to pair *any* ambiguous-shaped span, cited or not, and this
+   rule's §3.4 preserve set kept the uncited positions as literal U+0027. The result for
+   `en-GB`/`fi`/`sv` and every other uncited locale was the original ASCII text, unchanged — a
+   documented false negative in place of an undocumented false positive.
+
+   **Spec 1.1.0 closes it a third way, and this one is a decision rather than an abstention.** The
+   operator ruled on 2026-09-09 that `rock 'n' roll` and `rock'n'roll` are international and take
+   U+2019 everywhere, so the veto no longer needs a per-locale citation to justify converting:
+   `quotes.md` §3.2's universal medial-`n` veto declines the pairing in all ten locales precisely
+   so this rule's cases 4 and 3 will convert both marks. Every locale now behaves as `en-US` did
+   from 0.4.0 — row 11 and row 11a have the same output and the same case numbers — and 0.5.0's
+   preserve set is withdrawn (§3.4). The evidentiary notes above still govern `elisionIdioms`,
+   which is unchanged; they no longer govern this shape.
 2. **Primes are left straight, not converted to U+2032 / U+2033.** `6'` stays `6'` rather
    than becoming `6′`. Converting it would be defensible, but prime detection has its own
    false-positive profile (a lone `'` after a digit is often just a typo for an apostrophe)

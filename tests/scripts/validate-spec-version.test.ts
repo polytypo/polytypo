@@ -302,6 +302,6 @@ describe("scripts/validate-spec.mjs — global spec-version drift, fixture roots
     // Sanity check that the disposable-copy tests above never mutated the real repository —
     // negative controls above operate exclusively on mkdtempSync() directories.
     const version = readFileSync(path.join(ROOT, "spec", "VERSION"), "utf8").trim();
-    expect(version).toBe("1.0.0");
+    expect(version).toBe("1.1.0");
   });
 });

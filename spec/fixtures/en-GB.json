@@ -1,5 +1,5 @@
 {
-  "spec": "1.0.0",
+  "spec": "1.1.0",
   "locale": "en-GB",
   "cases": [
     {
@@ -632,8 +632,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "\"He said 'no' to me,\" she noted.",
-      "out": "‘He said 'no' to me,’ she noted.",
-      "note": "quotes.md §6 case 2, inverted: depth 1 → single, depth 2 → double. Compare en-US-quotes-nested, same input. The inner 'no' (2 letters, space-flanked, no matching elisionIdioms entry — en-GB has none) is preserved by the general ambiguous-medial-span veto (quotes.md §3.2) rather than paired as a nested quotation: a documented false negative, not an unresolved gap (History: this was open per quotes.md §7 item 8 through spec 0.4.1, closed by the general veto in spec 0.5.0)."
+      "out": "‘He said “no” to me,’ she noted.",
+      "note": "quotes.md §6 case 2, inverted: depth 1 → single, depth 2 → double. Compare en-us-quotes-nested, same input. spec 1.1.0: the inner 'no' pairs as a nested quotation again — 0.5.0's general ambiguous-medial-span veto had preserved it as literal U+0027, and the universal medial-n veto that replaced it does not match a two-letter span (quotes.md §3.2)."
     },
     {
       "id": "en-gb-quotes-nested-inverted-input",
@@ -712,8 +712,8 @@
       "rule": "quotes",
       "mode": "text",
       "in": "rock 'n' roll",
-      "out": "rock 'n' roll",
-      "note": "quotes.md §7.1. The output is accidentally right here — not because a secondary level was selected, but because en-GB declares the single pair as PRIMARY and the pair is at depth 1. spec 0.5.0: en-GB has no cited elisionIdioms entry for this idiom (quotes.md §7 item 8 — elevated ambiguity risk, since en-GB's primary pair is itself the single quote). The general ambiguous-medial-span veto now preserves the marks as literal U+0027 instead of pairing them as an ordinary quotation, which is the pre-0.5.0 behaviour this fixture used to assert. AUDIT_REMEDIATION_AND_RELEASE_PLAN.md §3.1 named exactly this locale as an affected case."
+      "out": "rock ’n’ roll",
+      "note": "spec 1.1.0, quotes.md §3.2's universal medial-n elision veto: by operator decision the idiom is international, so `quotes` declines the pairing in every locale rather than only where a cited quotes.elisionIdioms entry exists, and `apostrophe` (order 50) converts each mark by its own case ladder — leading elision (apostrophe.md §3.3 case 4), then trailing elision (case 3). Same output and same two case decisions as en-us-quotes-rock-n-roll, which reaches them through the cited idiom instead. History: spec 0.5.0's general ambiguous-medial-span veto preserved both marks here as literal U+0027; before 0.5.0 `quotes` paired them as an ordinary depth-1 quotation in this locale's primary glyphs. en-GB is the locale quotes.md §7 item 8 flags as carrying the highest genuine-dialogue collision risk, because its primary pair is itself the single quote — that risk is why no elisionIdioms entry was ever cited here, and 1.1.0's veto deliberately does not depend on one."
     },
     {
       "id": "en-gb-quotes-elision-inside-quotation",

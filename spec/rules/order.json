@@ -1,5 +1,5 @@
 {
-  "spec": "1.0.0",
+  "spec": "1.1.0",
   "$comment": "Single source of truth for pipeline order. Rules run in ascending `order`. Disabling a rule removes it from the sequence and never reorders the rest. Rule ids are public API (see docs/ARCHITECTURE.md section 5). \"spec\" here must track spec/VERSION exactly — it is not itself the global version source; scripts/validate-spec.mjs enforces the match.",
   "rules": [
     {
@@ -48,15 +48,15 @@
       "default": "on",
       "modes": ["text", "html", "markdown"],
       "localeData": ["quotes"],
-      "summary": "Straight quotes to locale primary/secondary pairs with nesting resolution. Runs before `apostrophe` so that a straight apostrophe is still available as quote evidence. Declines to pair an ambiguous medial short single-quoted span (spec 0.5.0) unless a cited `quotes.elisionIdioms` entry matches."
+      "summary": "Straight quotes to locale primary/secondary pairs with nesting resolution. Runs before `apostrophe` so that a straight apostrophe is still available as quote evidence. Declines to pair a medial single-quoted `n` (spec 1.1.0, every locale) or a span matching a cited `quotes.elisionIdioms` entry, so that `apostrophe` converts both marks instead."
     },
     {
       "id": "apostrophe",
       "order": 50,
       "default": "on",
       "modes": ["text", "html", "markdown"],
-      "localeData": ["quotes"],
-      "summary": "Remaining straight apostrophes to U+2019 without corrupting contractions. As of spec 0.5.0, also reads `quotes.elisionIdioms` (indirectly, via the shared ambiguity predicate) to keep a straight-ASCII mark `quotes` deliberately preserved from being independently curled by this rule's own structural case ladder."
+      "localeData": [],
+      "summary": "Remaining straight apostrophes to U+2019 without corrupting contractions. Reads no locale data: spec 0.5.0's `quotes.elisionIdioms` lookup existed only for the preserve set withdrawn in spec 1.1.0, so every mark `quotes` declined to claim now reaches this rule's ordinary structural case ladder."
     },
     {
       "id": "symbols",
