@@ -17,7 +17,7 @@
         {
           "rule": "quotes",
           "in": "\"He said 'no' to me,\" she noted.",
-          "out": "“He said 'no' to me,” she noted."
+          "out": "“He said ‘no’ to me,” she noted."
         },
         {
           "rule": "dashes",
@@ -66,7 +66,7 @@
         {
           "rule": "quotes",
           "in": "\"He said 'no' to me,\" she noted.",
-          "out": "‘He said 'no' to me,’ she noted."
+          "out": "‘He said “no” to me,’ she noted."
         },
         {
           "rule": "dashes",
@@ -173,7 +173,7 @@
         {
           "rule": "quotes",
           "in": "\"Il a dit 'oui' hier.\"",
-          "out": "« Il a dit 'oui' hier. »"
+          "out": "« Il a dit “oui” hier. »"
         },
         {
           "rule": "nbsp",
@@ -241,7 +241,7 @@
         {
           "rule": "quotes",
           "in": "Он сказал: \"это 'моё' дело\".",
-          "out": "Он сказал: «это 'моё' дело»."
+          "out": "Он сказал: «это „моё“ дело»."
         },
         {
           "rule": "dashes",

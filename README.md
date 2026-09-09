@@ -96,7 +96,7 @@ Rule ids are **public API**. Renaming one is a breaking change. Order comes from
 
 | Rule | In | Out |
 | --- | --- | --- |
-| `quotes` | `"He said 'no' to me," she noted.` | “He⍽said⍽'no'⍽to⍽me,”⍽she⍽noted. |
+| `quotes` | `"He said 'no' to me," she noted.` | “He⍽said⍽‘no’⍽to⍽me,”⍽she⍽noted. |
 | `dashes` | `The plan - if there is one - fails.` | The⍽plan—if⍽there⍽is⍽one—fails. |
 | `dashes` | `chapters 3-5 and pp. 34-36` | chapters⍽3-5⍽and⍽pp.⍽34-36 |
 | `ellipsis` | `Wait... what?` | Wait…⍽what? |
