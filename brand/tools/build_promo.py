@@ -1114,7 +1114,8 @@ def badge_html(lang, theme):
         f'<rect x="58.0" y="55.5" width="84.0" height="9.0" fill="{c["fg"]}"/></svg>'
     )
     return (
-        '<a href="https://polytypo.dev/?utm_source=badge" style="display:inline-flex;align-items:center;gap:8px;'
+        '<a href="https://polytypo.dev/?utm_source=badge" target="_blank" rel="noopener" '
+        'style="display:inline-flex;align-items:center;gap:8px;'
         f'padding:6px 12px;background:{c["bg"]};border:1px solid {c["border"]};border-radius:6px;'
         "text-decoration:none;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;"
         f'font-size:13px;color:{c["fg"]};line-height:1">{mark_svg}<span>{caption}</span></a>'
