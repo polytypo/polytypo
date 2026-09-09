@@ -4,7 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **This repository is canonical spec + promo site only.** The JavaScript/TypeScript implementation
 was split out to [polytypo/polytypo-js](https://github.com/polytypo/polytypo-js) (2026-09-07) and
-published to npm as `polytypo@1.0.0` (2026-09-07); other runtimes get their own repos as they land.
+published to npm as `polytypo@1.0.0` (2026-09-07); the other runtimes have since split into their
+own repos too — see "Multi-repo under GitHub org `polytypo`" below for current per-runtime status.
 There is no build and nothing published from this repository — its own `package.json` is
 `"private": true`, and the `polytypo` devDependency here is the registry package (`^1.0.0`), used
 only by the promo-site generator (`brand/tools/gen_examples.ts`) and its tests. `src/engine/` holds
@@ -58,15 +59,22 @@ Layers, dependencies pointing strictly downward: `L0 spec` (this repository, run
 `L1 engine` (rule pipeline over plain text, per runtime) → `L2 modes` (text/html/markdown adapters,
 per runtime) → `L3 integrations` (out of repo, out of v1).
 
-**Multi-repo under GitHub org `polytypo`**, one repo per runtime plus this one. JS is split out
-(polytypo-js); no other runtime exists yet. **How each runtime vendors the spec is still an open
-operator decision** long-term (git submodule vs per-ecosystem spec packages; ROADMAP.md "Open
-decisions" #2) — polytypo-js currently carries a manually-synced **committed copy** of the subset it
-needs (`locales/`, `fixtures/`, `rules/order.json`, `rules/dashes.md`, `VERSION`, `UNICODE`; see its
-own `spec/README.md`), chosen 2026-09-07 as an interim answer that defers, rather than resolves,
-the long-term mechanism. What is decided regardless of that outcome: the spec is vendored and
-pinned, never fetched at runtime, and locale data is embedded into each runtime's published artifact
-at build time — never loaded from this repository at runtime by any published package.
+**Multi-repo under GitHub org `polytypo`**, one repo per runtime plus this one. All five runtime
+repos now exist (`polytypo-js`, `polytypo-python`, `polytypo-go`, `polytypo-ruby`, `polytypo-php` —
+verified via `gh repo list polytypo`, 2026-09-09), each with real engine/mode code, not
+placeholders; see ROADMAP.md Phase B/C for per-port status (PHP is the one exception still short of
+a tagged release — code-complete and CI-green, but no `v1.0.0` tag pushed yet). **Spec vendoring's
+target mechanism is resolved** (ROADMAP.md "Open decisions" #2, 2026-08-27): an automated,
+content-hash-verified vendored snapshot, full design in `docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md`
+§3–§4. That automation itself is **not implemented** — every runtime instead vendors via a manual
+interim **committed copy** of the subset it needs (`locales/`, `fixtures/`, `rules/order.json`,
+`rules/dashes.md`, `VERSION`, `UNICODE`), each under a runtime-specific path chosen to avoid that
+ecosystem's own reserved directory name (JS/Python: `vendor/`; Go: `internal/spec/`, forced by
+`//go:embed`'s no-parent-directory rule; Ruby: `lib/polytypo/data/`, avoiding RSpec's own `spec/`;
+PHP: `resources/spec/`, avoiding Composer's own `vendor/`). What is decided regardless: the spec is
+vendored and pinned, never fetched at runtime, and locale data is embedded into each runtime's
+published artifact at build time — never loaded from this repository at runtime by any published
+package.
 
 ## How this repository is laid out
 
@@ -97,7 +105,8 @@ Current error codes (see the relevant runtime repo's `errors.ts`), all seven:
 `POLYTYPO_MALFORMED_INPUT`. These are spec-level contract, not implementation detail — every
 runtime must expose the same seven codes.
 
-Eight rules in spec order: `spaces` `ellipsis` `dashes` `hyphen` `quotes` `apostrophe` `symbols` `nbsp`.
+Nine rules in spec order: `spaces` `ellipsis` `ranges` `dashes` `hyphen` `quotes` `apostrophe`
+`symbols` `nbsp`. `ranges` is the one rule that defaults to off (spec 0.5.0) — see `order.json`.
 All three modes — `text`, `html`, `markdown` — are specified (M2 is done for JS).
 
 ## Portability constraints every runtime's implementation must satisfy (ARCHITECTURE.md §4, §7)
@@ -173,15 +182,24 @@ choose correctness.
 
 The acceptance test that actually mattered for JS was **M4**: dry-run over the author's own MDX
 blog content, full diff reviewed by hand, ship criterion **zero false positives** — already passed
-(see polytypo-js's own history); each new runtime gets its own M4-equivalent gate before its first
-port work starts.
+(see polytypo-js's own history). The original plan was for each new runtime to clear its own
+M4-equivalent gate before its first port work starts; **operator decision, 2026-09-07 (ROADMAP.md
+Phase B) explicitly overrode that precondition** for Python and every port after it, starting port
+work as soon as `polytypo@1.0.0`/`1.0.1` shipped on npm rather than waiting for real-content
+dogfooding on the JS package itself. Do not assume a runtime has cleared its own dogfooding gate
+just because its repo exists — check ROADMAP.md's per-port checklist.
 
 ## Open decisions (do not resolve unilaterally)
 
-Per ROADMAP.md: repo visibility for future runtime repos (public from commit one vs private until
-their own M4); **spec vendoring mechanism** (git submodule vs per-ecosystem spec packages —
-polytypo-js's committed-copy vendoring is an interim answer, not a resolution of this); first port
-(Python vs Go) — not needed until Phase B.
+Per ROADMAP.md: **first port** — resolved, in order: Python (2026-09-07), then Go, Ruby, PHP (all
+2026-09-08; PHP still needs its `v1.0.0` tag pushed and a one-time manual Packagist bootstrap before
+it's actually published). **Spec vendoring mechanism** — the target model is resolved (2026-08-27,
+see "Multi-repo" above), but the manifest/dispatch **automation** in
+`REPOSITORY_SPLIT_AND_SPEC_SYNC.md` §3–§4 is not implemented; each port's manual interim copy does
+not itself resolve that remaining gap. **Repo visibility** — all five repos were created public
+(verified via `gh repo list polytypo`, 2026-09-09); ROADMAP.md's own "Open decisions" list does not
+mark this ~~resolved~~ explicitly, so treat it as an observed fact, not confirmed settled policy,
+until the operator says otherwise.
 
 ## Agent infrastructure
 
