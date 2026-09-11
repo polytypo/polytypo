@@ -141,7 +141,13 @@ RULE_ROWS = [
     ("ellipsis", "en-US", 0, "Three dots become U+2026."),
     ("ellipsis", "ru", 0, "Russian keeps the abbreviated form after terminal punctuation."),
     ("dashes", "en-US", 0, "Parenthetical dash, per locale: em tight, en spaced, em spaced."),
-    ("dashes", "en-US", 1, "Numeric and date ranges take an en dash, unspaced."),
+    (
+        "dashes",
+        "en-US",
+        1,
+        "Numeric and date ranges are left alone — converting them is the separate "
+        "ranges rule, off by default.",
+    ),
     ("hyphen", "ru", 0, "Morphological hyphens bound with U+2011 so they cannot break."),
     ("quotes", "de-DE", 0, "Primary and secondary quotes, with nesting resolved."),
     ("apostrophe", "en-US", 0, "Straight apostrophe to U+2019, contractions intact."),
