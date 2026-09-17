@@ -226,6 +226,14 @@ Every string above is real engine output, generated from `promo/examples.json` â
 Rule ids are **public API**. Renaming one is a breaking change. Order comes from
 `spec/rules/order.json`, never registration order and never map iteration order.
 
+Four of the characters these rules insert are invisible or rare: U+00A0 no-break space (most
+locales), U+202F narrow no-break space (`fr` only, before `;` `!` `?`), U+2011 non-breaking hyphen
+(`ru` only, from `hyphen`) and U+2060 word joiner (around the dash of a bound range, and only with
+`ranges` on). Fonts do not all carry the last three â€” a browser falls back to another face, while a
+PDF renderer with a single embedded font can drop the glyph. `rules: {{ hyphen: false }}` turns off
+the only rule that emits U+2011, and `ranges` is off by default, so U+2060 appears only where it
+was asked for.
+
 ## Examples, by rule
 
 {examples}

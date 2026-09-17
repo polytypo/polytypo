@@ -280,6 +280,32 @@
     <code>&amp;#160;</code> is HTML, fragment or not.
   </p>
 
+  <h3>What it inserts</h3>
+  <p>
+    Most of what <code>transform()</code> changes is visible: three dots become one ellipsis, a
+    hyphen becomes a dash, straight quotes become the locale's own. Four insertions are not, and
+    they are the ones to know about before the text reaches a renderer you don't control.
+  </p>
+  <p>
+    <code>U+00A0</code>, the no-break space, is the common one — French keeps it inside guillemets
+    and before <code>%</code>, Russian binds it after <code>№</code> and inside
+    <code>и&nbsp;т.&nbsp;д.</code>, German holds <code>S.&nbsp;5</code> together.
+    <code>U+202F</code>, the narrow no-break space, is emitted by <code>fr</code> alone, before
+    <code>;</code> <code>!</code> and <code>?</code>; <code>fr-CA</code> removes that space instead
+    of narrowing it. <code>U+2011</code>, the non-breaking hyphen, comes from <code>hyphen</code>,
+    whose lists are non-empty in <code>ru</code> alone. <code>U+2060</code>, the word joiner, wraps
+    the dash of a bound range and appears only if you turn <code>ranges</code> on.
+  </p>
+  <p>
+    The last three are where font coverage stops being universal. A browser substitutes another face
+    for a glyph its font lacks, at a slightly different width; a PDF renderer with one embedded font
+    can drop the character instead. Check the font on that path before you ship.
+    <code>rules: { hyphen: false }</code> turns off the only rule that emits <code>U+2011</code>,
+    and <code>ranges</code> is off by default, so <code>U+2060</code> appears only where you asked
+    for it. The joiner is what keeps a range from breaking across lines, which both Мильчин and
+    Chicago require, so stripping it afterwards costs exactly that.
+  </p>
+
   <h3>Wiring it into a build step</h3>
   <p>
     <code>transform()</code> is a plain pure function, so it drops into whatever already touches
