@@ -1,5 +1,5 @@
 {
-  "spec": "1.1.0",
+  "spec": "1.2.0",
   "locale": "fr-CA",
   "cases": [
     {
@@ -263,6 +263,31 @@
         "ranges": true
       },
       "note": "spec 0.5.0: fr-CA's dash.range is \"none\" (no verified convention), so `ranges` substitutes nothing even when explicitly enabled (ranges.md §2, §3.3) — the same invariant the pre-0.5.0 `dashes`-tagged no-op fixtures for this locale already proved for the combined rule."
+    },
+    {
+      "id": "fr-ca-nbsp-span-boundary-strong-colon",
+      "rule": "nbsp",
+      "mode": "html",
+      "in": "<strong>Résistant au gel :</strong> il reste souple",
+      "out": "<strong>Résistant au gel :</strong> il reste souple",
+      "note": "nbsp.md §3.3 step 2 (spec 1.2.0): same as the `fr` case; `fr-CA` lists `:` in its own punctuation data."
+    },
+    {
+      "id": "fr-ca-nbsp-span-boundary-markdown-strong-colon",
+      "rule": "nbsp",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "**Note :** voir plus bas\n",
+      "out": "**Note :** voir plus bas\n",
+      "note": "nbsp.md §3.3 step 2 (spec 1.2.0): the colon ends the strong span; the −1 marker after it is in CLOSEISH, so N1 restores the U+00A0 that `spaces` deleted. (fr-CA lists no punctuation for N2, so `?` would take nothing back in any mode.)"
+    },
+    {
+      "id": "fr-ca-apostrophe-elision-before-straight-quote",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "l'\"idée\" est simple",
+      "out": "l’« idée » est simple",
+      "note": "apostrophe.md §3.3 case 3a (spec 1.2.0): same as `fr`."
     }
   ]
 }

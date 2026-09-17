@@ -1,5 +1,5 @@
 {
-  "spec": "1.1.0",
+  "spec": "1.2.0",
   "locale": "de-DE",
   "cases": [
     {
@@ -542,6 +542,38 @@
       "in": "rock 'n' roll",
       "out": "rock ’n’ roll",
       "note": "spec 1.1.0, quotes.md §3.2's universal medial-n elision veto: by operator decision the idiom is international, so `quotes` declines the pairing in every locale rather than only where a cited quotes.elisionIdioms entry exists, and `apostrophe` (order 50) converts each mark by its own case ladder — leading elision (apostrophe.md §3.3 case 4), then trailing elision (case 3). Same output and same two case decisions as en-us-quotes-rock-n-roll, which reaches them through the cited idiom instead. History: spec 0.5.0's general ambiguous-medial-span veto preserved both marks here as literal U+0027; before 0.5.0 `quotes` paired them as an ordinary depth-1 quotation in this locale's primary glyphs."
+    },
+    {
+      "id": "de-de-spaces-dot-word-start-dotfile",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Die Datei .gitignore ist leer .",
+      "out": "Die Datei .gitignore ist leer.",
+      "note": "spaces.md §3.4 word-start clause (spec 1.2.0): the space before `.gitignore` survives because a letter follows the dot; the space before the final dot is deleted because nothing follows it."
+    },
+    {
+      "id": "de-de-apostrophe-possessive-before-closing-quote",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Er sagte „Hans'“ und ging.",
+      "out": "Er sagte „Hans’“ und ging.",
+      "note": "apostrophe.md §3.3 case 3a (spec 1.2.0), §6 row 17: U+201C closes a de-DE quotation but is not in CLOSEISH, so case 3 missed the possessive; case 3a reaches the same U+2019 without reading locale data."
+    },
+    {
+      "id": "de-de-apostrophe-closing-single-before-closing-double-not-elision",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "\"Er sagte 'Hans'\" und ging.",
+      "out": "„Er sagte ‚Hans‘“ und ging.",
+      "note": "apostrophe.md §3.3 case 3a (spec 1.2.0), §7 item 7: in de-DE the closing double quote U+201C is in OPENQUOTE, so a closing single quote directly before it has exactly case 3a's shape. `quotes` (order 40) pairs both levels first, so no U+0027 reaches this rule and the nested quotation keeps its de-DE glyphs."
+    },
+    {
+      "id": "de-de-apostrophe-mixed-curly-and-straight-closing-single",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "„Er sagte ‚Hans'“ und ging.",
+      "out": "„Er sagte ‚Hans‘“ und ging.",
+      "note": "apostrophe.md §3.3 case 3a (spec 1.2.0): the same shape with the outer pair and the opening single quote already curly. `quotes` still pairs the straight closing single quote with ‚, so case 3a never sees it."
     }
   ]
 }

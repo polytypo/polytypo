@@ -4,7 +4,7 @@
 states the invariant that `transform` as a whole must satisfy, proves that per-rule
 idempotency does not imply it, and defines the obligation each rule must discharge so that it
 does.
-**Spec version:** 0.1.0.
+**Spec version:** 1.2.0 (0.1.0 for everything except S-b's word-start clause, added in 1.2.0).
 
 ---
 
@@ -94,7 +94,8 @@ that `y` contains **no U+0020 in any of these positions**:
 - **S-b** a U+0020 whose right neighbour is in `STRIP-BEFORE` = { U+002C, U+002E, U+003B,
   U+003A, U+0021, U+003F } and whose left neighbour is `CONTENT` — **and**, when that right
   neighbour is U+002E, the maximal run of { U+002E, U+2026 } beginning there has length exactly
-  1 (`spaces.md` §3.4) — **and** unless the emoticon guard's eye side fires, i.e. that right
+  1 and the code point after that dot is neither a `LETTER` nor an ASCII digit (`spaces.md` §3.4;
+  the second clause since spec 1.2.0) — **and** unless the emoticon guard's eye side fires, i.e. that right
   neighbour is the eye of a recognised emoticon (`spaces.md` §3.6);
   U+2026 is not a member of `STRIP-BEFORE`;
 - **S-c** a U+0020 whose left neighbour is in { U+0028, U+005B, U+007B } — unless the
@@ -105,7 +106,8 @@ that `y` contains **no U+0020 in any of these positions**:
   `STRIP-BEFORE` and `OPEN-BRACKET` clauses only, never this one.
 
 See `spaces.md` §3.1–§3.3 for the exact definitions of `CONTENT` and the guard, and §3.6 for the
-emoticon guard's two sides. Both emoticon provisos narrow the forbidden set, so every discharge
+emoticon guard's two sides. Both emoticon provisos, and the lone-dot condition's word-start clause
+added in spec 1.2.0, narrow the forbidden set, so every discharge
 already written against S-b, S-c or S-d stays valid without re-derivation — a rule that emits no
 U+0020 in the wider set emits none in the narrower one.
 

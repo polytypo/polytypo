@@ -1,8 +1,9 @@
 # Rule: `apostrophe`
 
 **Order:** 50. **Default:** on. **Modes:** text, html, markdown.
-**Spec version:** 1.1.0 (0.4.1 for everything except §2, §3.4 and the §6/§7 updates for the
-withdrawal of the shared ambiguity preserve set).
+**Spec version:** 1.2.0 (0.4.1 for everything except §2, §3.4 and the §6/§7 updates for the
+withdrawal of the shared ambiguity preserve set (1.1.0), and §3.1's `OPENQUOTE` with §3.3's case 3a
+(1.2.0)).
 
 ---
 
@@ -57,6 +58,7 @@ Input is a code-point array `cp[0 … n-1]`.
 | `BREAK`     | U+000A, U+000D, U+000B, U+000C, U+0085, U+2028, U+2029                                                                                                |
 | `OPENISH`   | U+0028 `(` U+005B `[` U+007B `{` U+00AB `«` U+2018 U+201A U+201B U+201C U+201E U+201F U+2039 `‹`, U+002D, U+2011, U+2013, U+2014                      |
 | `CLOSEISH`  | U+0029 `)` U+005D `]` U+007D `}` U+00BB `»` U+2019 U+201D U+203A `›` U+002C U+002E U+003B U+003A U+0021 U+003F U+2026, U+002D, U+2011, U+2013, U+2014 |
+| `OPENQUOTE` | U+00AB `«` U+2018 U+201A U+201B U+201C U+201E U+201F U+2039 `‹` — the quotation glyphs of `OPENISH`, without its brackets and dashes (spec 1.2.0, case 3a) |
 | `NONE`      | index out of range                                                                                                                                    |
 
 **Unicode version.** The general categories this rule reads are those of the UCD version pinned in `spec/UNICODE` (`17.0`). The pin is normative for the **derived tables**, not for the host runtime — see [pipeline-idempotency.md](pipeline-idempotency.md) §6a, which also specifies the canary fixtures that make it detectable.
@@ -101,6 +103,24 @@ and take the **first** matching case:
    (`right` is `NONE`, or `right` is in `SPACELIKE`, or `right` is in `CLOSEISH`) → emit an
    edit replacing `cp[i]` with U+2019. Covers `the dogs' bowls`, `les élèves' cahiers`,
    `Jesus'`, `rock 'n'` (the trailing mark).
+3a. **Elision before a quotation (spec 1.2.0).** If `left` is in `LETTER` **and** `right` is in
+   `OPENQUOTE` → emit an edit replacing `cp[i]` with U+2019. Covers `d'« urine »`, `l'“idea”`,
+   `dell'‘arte’`, `qu'« il »`. French and Italian put an elided article or conjunction directly
+   against a quotation all the time, and until 1.2.0 no case matched it: case 2 needs `ALNUM` on
+   the right, case 3 needs `CLOSEISH`, and an opening quotation glyph is `OPENISH` only. A
+   straight `"` is in none of this rule's classes, so no case matched it either. By the time the
+   mark reaches this rule, `quotes` (order 40) has usually turned `l'"idée"` into `l'«idée»`, so
+   the mark arrives beside `«`. This case does not add U+0022 to any class.
+
+   **This case reads no locale data.** `OPENQUOTE` is a fixed set, like `OPENISH`, and §2 still
+   holds. The same set covers the locales in which one of these glyphs closes a quotation.
+   `de-DE` closes `„…“` with U+201C, so `„Hans'“` is a trailing possessive before a closing
+   quote. Case 3 misses it because U+201C is not in `CLOSEISH`, and case 3a gives the U+2019 that
+   case 3 would have given. `fi` and `sv` close with U+201D, which is in `CLOSEISH`, so case 3
+   already covered them.
+
+   **Brackets and dashes are excluded on purpose.** `f'(x)` is a prime on a function name and
+   must stay as typed, and a letter followed by U+0027 and a dash is already case 3.
 4. **Leading elision.** If (`left` is `NONE`, or `left` is in `SPACELIKE`, or `left` is in
    `OPENISH`) **and** (`right` is in `ALNUM`) → emit an edit replacing `cp[i]` with U+2019.
    Covers `’90s`, `’tis`, `’em`, `’cause`, `’n'` (the leading mark), `(’tis)`.
@@ -205,8 +225,12 @@ points this rule changed are former U+0027 marks that became U+2019. So the ques
 a surviving candidate's `left` or `right` have changed class in a way that flips its
 outcome?
 
-- U+0027 is in **none** of `ALNUM`, `SPACELIKE`, `OPENISH`, `CLOSEISH`, `DIGIT`, `LETTER`.
+- U+0027 is in **none** of `ALNUM`, `SPACELIKE`, `OPENISH`, `CLOSEISH`, `OPENQUOTE`, `DIGIT`,
+  `LETTER`.
 - U+2019 is in `CLOSEISH` and in none of the others.
+
+Neither code point is in `OPENQUOTE`, so a neighbour's edit cannot change case 3a's right-test.
+The argument below needs no new branch for it.
 
 So a neighbour changing from U+0027 to U+2019 can only _add_ `CLOSEISH` membership. Where
 does `CLOSEISH` appear in the decision? Only in case 3's right-test. So the only possible
@@ -215,14 +239,14 @@ now U+2019 (giving a case-3 match), where additionally `u`'s left neighbour is a
 
 Concretely that shape is `LETTER` U+0027 U+0027 — for example `dogs''`. On run 1: the first
 mark has `left` = `s` (letter), `right` = U+0027, which is in none of `NONE`/`SPACELIKE`/
-`CLOSEISH`, so case 3 does not fire, cases 1, 2 and 4 do not fire, and it falls to case 5.
+`CLOSEISH`, so case 3 does not fire, cases 1, 2, 3a and 4 do not fire, and it falls to case 5.
 The second mark has `left` = U+0027 (not `ALNUM`, not `LETTER`, not `SPACELIKE`, not
 `OPENISH`) so no case fires; case 5. **Neither is edited on run 1**, so no U+2019 appears and
 the flip cannot occur. The premise is vacuous.
 
 More generally: the flip requires the _right_ neighbour to have been edited, i.e. the right
-neighbour was a U+0027 that matched one of cases 2, 3, 4. Cases 2 and 4 require `ALNUM` on
-that mark's **left** — but its left is `u`, which is U+0027, not `ALNUM`. Case 3 requires
+neighbour was a U+0027 that matched one of cases 2, 3, 3a, 4. Cases 2 and 4 require `ALNUM` on
+that mark's **left** — but its left is `u`, which is U+0027, not `ALNUM`. Cases 3 and 3a require
 `LETTER` on its left — same contradiction. So the right neighbour of a surviving U+0027 is
 never edited, and no surviving candidate's classification changes.
 
@@ -249,7 +273,10 @@ Per [pipeline-idempotency.md](pipeline-idempotency.md) §5. This rule is **R₆*
 runs against `spaces`, `ellipsis`, `dashes`, `hyphen` and `quotes`.
 
 **What this rule emits.** One U+2019 replacing one U+0027 at the same index. Nothing else, ever
-— no insertion, no deletion, no length change.
+— no insertion, no deletion, no length change. Case 3a (spec 1.2.0) changes *which* U+0027 marks
+are replaced, and does not change what is emitted. Every discharge below is written against the
+emission, and `quotes`' V1 already treats every U+0027 as a possible U+2019 (`V1ID`, below), so
+none of them needs re-deriving.
 
 **Against `I₁` (`spaces`) and `I₂` (`ellipsis`).** Discharged: no U+0020 and no `DOTLIKE` code
 point is emitted, and every edit is 1:1, so nothing is brought into contact with anything.
@@ -328,8 +355,12 @@ are shown as they arrive at this rule, i.e. after `quotes` has run.
 | 12  | `dogs''`                        | ⟶                       | 5, 5 | neither mark has the neighbour class any converting case requires                                                                                                   |
 | 13  | `O'Brien's`                     | `O’Brien’s`             | 2, 2 | two independent medial marks                                                                                                                                        |
 | 14  | `Ma'am, it's 5 o'clock`         | `Ma’am, it’s 5 o’clock` | 2 ×3 |                                                                                                                                                                     |
+| 15  | `d'«urine»`                     | `d’«urine»`             | 3a   | letter left, opening quotation glyph right. **Spec 1.2.0**; previously case 5 left it straight                                                                    |
+| 16  | `l'“idea”`                      | `l’“idea”`              | 3a   | same, with U+201C                                                                                                                                                 |
+| 17  | `„Hans'“`                       | `„Hans’“`               | 3a   | U+201C closes in `de-DE`, and 3a does not need to know that: a letter followed by U+0027 and a quotation glyph is an elision or a possessive either way                |
+| 18  | `f'(x) = 2`                     | ⟶                       | 5    | `(` is not in `OPENQUOTE`. A prime on a function name is not an apostrophe                                                                                        |
 
-Cases 6, 7, 9, 10 and 12 are "no change" cases.
+Cases 6, 7, 9, 10, 12 and 18 are "no change" cases.
 
 ---
 
@@ -385,10 +416,17 @@ layouts and in text pasted from older systems. Converting them is not authorised
    earlier revision of this item said no pin existed; it did not when the item was written, and
    the item was not revisited when the file appeared.
 
-*(Closed.)* The pin now binds, and it binds to the right thing: `spec/UNICODE` is normative for
+   *(Closed.)* The pin now binds, and it binds to the right thing: `spec/UNICODE` is normative for
    the **derived tables**, not for the host runtime — a host-UCD requirement is unimplementable in
    PHP without `intl` and in Ruby at all, so it is not required. §3.1 of this document and the
    class tables of `dashes`, `hyphen`, `nbsp`, `quotes` and `symbols` all cite it now, which is
    what the file lacked. Detection is by canary fixture, specified in
    [pipeline-idempotency.md](pipeline-idempotency.md) §6a.2 — including the honest note that the
    version-drift canary must be **generated** from a UCD diff rather than hand-picked.
+7. **(Spec 1.2.0.) Case 3a can curl an unpaired closing single quote.** When a U+0027 with a
+   letter on its left and a quotation glyph on its right reaches this rule, `quotes` has already
+   declined to pair it. `quotes` pairs every mark it can. So a mark in that position is either an
+   elision or an unmatched quotation mark, and this rule cannot tell which. Case 3 has always
+   accepted the same trade: it curls an unmatched closing quote before a space. Case 3a extends it
+   to a quotation glyph. The issue that motivated it (French and Italian elision before `«` and
+   `“`) is common, and the counter-case is a malformed quotation.

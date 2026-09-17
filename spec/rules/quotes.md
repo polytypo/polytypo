@@ -463,7 +463,7 @@ reproduces both witnesses, and a width-based test would veto the ordinary mixed 
 rule ordered after `quotes` that can change a candidate's own code point, and every edit it makes
 replaces a U+0027 with U+2019 — the only code point it ever emits for that position
 (`apostrophe.md` §1). **This is not an unconditional mapping.** `apostrophe`'s own case ladder
-(`apostrophe.md` §3.3) leaves a U+0027 unedited under two of its five cases — the **prime guard**
+(`apostrophe.md` §3.3) leaves a U+0027 unedited under two of its six cases — the **prime guard**
 (case 1: `6' 2"`, a foot/inch mark) and **case 5** (`a ' b`, `''`: nothing inferable) — and
 `apostrophe.md` §5 names both explicitly as surviving, unedited, to the rule's own second-run
 argument. So only a *subset* of the U+0027s `quotes` leaves unmatched are ever actually converted.
@@ -484,7 +484,7 @@ first.)
 
 `V1ID` is therefore a **conservative over-approximation**, not an exact rule: it treats *every*
 U+0027 as if it might already be, or might become, U+2019, and every U+2019 as if it might be an
-unconverted U+0027 — regardless of which of `apostrophe`'s five cases will actually apply.
+unconverted U+0027 — regardless of which of `apostrophe`'s six cases (1, 2, 3, 3a, 4, 5) will actually apply.
 
 **What "one-directional" bounds, precisely — a local claim, not a pipeline-level one.** At a
 single V1 comparison, `V1ID` can only ever *add* a veto: it merges two identities that raw

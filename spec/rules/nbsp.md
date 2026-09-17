@@ -1,7 +1,8 @@
 # Rule: `nbsp`
 
 **Order:** 70 (last). **Default:** on. **Modes:** text, html, markdown.
-**Spec version:** 0.6.0 (0.1.0 for everything except §3.9's `initialBinding` change, noted inline).
+**Spec version:** 1.2.0 (0.1.0 for everything except §3.9's `initialBinding` change (0.6.0) and
+§3.3's span-boundary paragraphs (1.2.0), noted inline).
 
 ---
 
@@ -148,6 +149,12 @@ Input is a code-point array `cp[0 … n-1]`.
 
 **Unicode version.** The general categories and case mappings this rule reads are those of the UCD version pinned in `spec/UNICODE` (`17.0`). The pin is normative for the **derived tables**, not for the host runtime — see [pipeline-idempotency.md](pipeline-idempotency.md) §6a, which also specifies the canary fixtures that make the pin detectable.
 
+**The inline span boundary marker is in `CLOSEISH` and not in `OPENISH` (spec 1.2.0).** In `html`
+and `markdown` mode the pipeline runs over spans joined by a −1 marker ([modes.md](modes.md) §3.2).
+For this rule the marker is a member of `CLOSEISH` only; [modes.md](modes.md) §3.3 records the
+split and §3.3 steps 2 and 3 below give the reason for each half. The −2 line marker is a member of
+`BREAK`, as it is for every rule.
+
 **`NOBREAK` is a member of `SPACELIKE`.** Every word/number/token boundary test in this rule
 uses `SPACELIKE`, never `SP`. This single decision is what makes the rule idempotent: after a
 conversion the boundary that justified it still reads as a boundary.
@@ -207,11 +214,38 @@ For each index `i` such that `cp[i]` is a member of `nbsp.beforePunctuation`:
    `http://example.org` and `12:30` in a locale that lists U+003A — after the colon comes
    `/` or a digit, so nothing happens.
 
+   **A span boundary marker after the mark is accepted (spec 1.2.0)**, because the marker is in
+   `CLOSEISH` (§3.1). This is what makes the `spaces` round trip (`spaces.md` §1) work when an
+   inline element closes or a `<br>` follows the mark. `spaces` deletes the U+0020 in
+   `<strong>Résistant au gel :</strong> il` and `Et la réglementation ?<br>Oui`, because in both
+   the run has content on each side and `right` is in `STRIP-BEFORE`. This sub-rule must then put
+   the no-break form back. Before 1.2.0 every runtime left the marker out of `CLOSEISH`, this
+   guard refused, and the author's space was lost for good: `gel:</strong>`, `réglementation?<br>`.
+   The insertion is at the mark's own index, inside the span, so the edge-growth rule
+   ([modes.md](modes.md) §3.4) does not discard it. When the mark is alone in its span
+   (`mot<em>!</em>`) the insertion point is the span edge and is still discarded, as before.
+
+   The cost is stated here so it is not rediscovered as a bug. The guard cannot see past the
+   marker, so a colon that ends one span while a digit or a `/` starts the next is accepted as
+   sentence punctuation: `fr` `12:<b>30</b>` becomes `12⍽:<b>30</b>`. That needs a time, a URL
+   or a ratio split by markup exactly at the colon. The shape this repairs, `**Label :**` and
+   `<strong>Label :</strong>`, is the standard French definition-list and FAQ pattern, and the
+   failure it repairs deletes a character.
+
 3. **Quote-glyph guard.** If `cp[i-1]` is in `SPACELIKE` and `cp[i-2]` is in `OPENISH`, or if
    `cp[i-1]` is in `OPENISH`, **skip**. The space immediately after an opening quotation glyph
    belongs to `quotes.innerSpace` and is owned by N8; two sub-rules must not both have an
    opinion about it. Without this guard N2 and N8 alternate for ever on the French input `«?`
    — see §3.10.1, which is the defect this guard repairs.
+
+   **A span boundary marker never triggers this guard**, because it is not in this rule's
+   `OPENISH` (§3.1). N8 matches the literal `P.open` glyph, so it never owns the space beside a
+   marker, and nothing is left for the guard to protect. Counting the marker as `OPENISH` would
+   make this guard decline ordinary French prose that follows an inline element or a link:
+   `Il dit <em>non</em> ! Oui` would keep a plain U+0020 before `!`, and the Markdown
+   `Voir [ceci](http://x.org) : oui` a plain U+0020 before `:`. The same membership would also
+   widen the left-boundary tests of N3, N7, N9 and N10, and N3's following-token guard, at span
+   edges. Spec 1.2.0 does not make that change (§7 item 12).
 4. Let `left = cp[i-1]` or `NONE`.
    - If `left` is `NBSP` → **already correct**, emit nothing.
    - If `left` is `SP` or `NNBSP` → emit an edit replacing `cp[i-1]` with U+00A0.
@@ -744,7 +778,7 @@ must be re-derived.
 over the neighbour tests; the `quotes` half is the one that matters and is written out in
 `quotes.md` §5.6, which shows that neither insertion site can _add_ a capability to a surviving
 straight mark. `apostrophe`'s case ladder reads `ALNUM`, `LETTER`, `DIGIT`, `SPACELIKE`,
-`OPENISH` and `CLOSEISH`; an inserted no-break space is `SPACELIKE`, and the only cases it
+`OPENISH`, `OPENQUOTE` and `CLOSEISH`; an inserted no-break space is `SPACELIKE`, and the only cases it
 could newly satisfy require a `SPACELIKE` **left** neighbour, which is case 4 (leading elision)
 — and case 4 also requires an `ALNUM` right neighbour, which an insertion cannot create.
 `symbols` reads `ALNUM`, `DIGIT` and symmetric spacing; a no-break space is already accepted as
@@ -775,6 +809,10 @@ about the engine **and** about a file in `spec/locales/`, and both halves have t
 | 6   | `Vraiment?!`                        | `Vraiment⍹?!`                        | N1/N2 guard 1: only the first mark takes a space                                                                                                                |
 | 6a  | `Vraiment?…`                        | `Vraiment⍹?…`                        | U+2026 is accepted right context (§3.3 step 2). Previously the narrow space was omitted here but not in `Vraiment␣?`, purely because `ellipsis` had already run |
 | 6b  | `Voir␣../docs`                      | ⟶                                    | the French instance of the `spaces` lone-dot defect; see `spaces.md` §3.4                                                                                       |
+| 6c  | `<strong>gel␣:</strong>␣il` (`html`) | `<strong>gel⍽:</strong>␣il`         | **spec 1.2.0.** `spaces` deletes the U+0020; the mark's right neighbour is the span boundary marker, which is in `CLOSEISH`, so N1 inserts U+00A0 at the mark's index, inside the span. Previously produced `gel:</strong>` |
+| 6d  | `réglementation␣?<br>Oui` (`html`)  | `réglementation⍹?<br>Oui`            | same, with N2. `<br>` leaves no line terminator in the gap, so the marker is −1, not −2                                                                         |
+| 6e  | `<em>non</em>␣!␣Oui` (`html`)       | `<em>non</em>⍹!␣Oui`                 | `spaces` leaves the run alone (its `left` is a span edge), and N2 converts it. The marker two places left of the mark is not `OPENISH`, so step 3 does not decline |
+| 6f  | `12:<b>30</b>` (`html`)             | `12⍽:<b>30</b>`                      | **the accepted cost of 6c** — step 2 cannot see past the marker                                                                                                 |
 
 ### `ru` — `afterShortWords: ["в","и","на",…]`, `abbreviations: ["т. д.","и т. п."]`, `initialBinding: "chain"`, `afterSymbols: ["№","§"]`
 
@@ -794,6 +832,7 @@ about the engine **and** about a file in `spec/locales/`, and both halves have t
 | 13f | `из-за␣дождя`           | `из‑за␣дождя`           | `hyphen` binds the compound; N3 does **not** then bind `за`, because its left neighbour is U+2011 and a hyphen fails the left boundary (§3.5 step 2). Previously produced `из‑за⍽дождя`, a false positive on ordinary prose |
 | 13g | `из-под␣стола`          | `из‑под␣стола`          | same shape with the other listed compound                                                                                                                                                                                   |
 | 13h | `—␣в␣Москве`            | `—␣в⍽Москве`            | `SENTENCE-DASH` still opens a phrase, so a genuine preposition after an em dash binds normally                                                                                                                              |
+| 13i | `в␣<em>Москве</em>` (`html`) | ⟶                  | **spec 1.2.0.** N3's following-token guard asks for `ALNUM` or `OPENISH`, and for this rule the span boundary marker is in neither (§3.1). The space stays U+0020. Whether it should bind is §7 item 12                   |
 
 ### `de-DE` — `abbreviations: ["z. B.","d. h."]`, `beforeUnits: ["%","km","°C"]`
 
@@ -838,7 +877,7 @@ here puts one back. That is a cited decision, not a default.
 | 27  | `10,5␣%␣φέτος` | ⟶      | `beforeUnits` is empty, so N5 is inert and the ordinary space survives as U+0020                                                                        |
 | 28  | `«καλημέρα»`   | ⟶      | `innerSpace: "none"`, so N8 inserts nothing. This is the half of the no-op claim that lives in the `quotes` object rather than the `nbsp` one           |
 
-Cases 2, 4, 8, 13, 13c, 13d, 13e, 15, 17, 18, 20, 22, 24, 26, 27 and 28 are "no change" cases.
+Cases 2, 4, 6b, 8, 13, 13c, 13d, 13e, 13i, 15, 17, 18, 20, 22, 24, 26, 27 and 28 are "no change" cases.
 
 ---
 
@@ -958,3 +997,15 @@ Cases 2, 4, 8, 13, 13c, 13d, 13e, 15, 17, 18, 20, 22, 24, 26, 27 and 28 are "no 
       space _before_ it, so it would need a new locale field and a citation. Not data we have.
     - **Degree insertion** (`5 C` → `5 °C`) and **currency substitution** (`1 руб.` → `1 ₽`).
       Refused: both rewrite content rather than normalising typography.
+12. **The span boundary marker's class membership was split in spec 1.2.0.** Before 1.2.0,
+    [modes.md](modes.md) §3.3's table put the −1 marker in this rule's `OPENISH` and `CLOSEISH`,
+    while all five runtimes put it in neither. `docs/ROADMAP.md` recorded the discrepancy during the
+    Python port and left it for a `spec-guardian` call. Production French content forced the call
+    (§3.3 step 2, §6 rows 6c–6f): taken literally, the table fixes the lost space but loses the
+    narrow space in `<em>non</em> !` and in `[ceci](url) : oui` through step 3. The runtimes'
+    reading fixes neither. The split, `CLOSEISH` yes and `OPENISH` no, is the one reading that
+    keeps both. Whether `OPENISH` should also include the marker is a separate question. It would
+    widen the left-boundary tests of N3, N7, N9 and N10 and N3's following-token guard, and nobody
+    has measured the false-positive profile of that. The answer in 1.2.0 is no, pinned by the
+    fixture `ru-nbsp-span-boundary-not-openish-short-word` (`в <em>Москве</em>` stays unbound);
+    changing it is a spec change.

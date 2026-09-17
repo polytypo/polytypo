@@ -1,5 +1,5 @@
 {
-  "spec": "1.1.0",
+  "spec": "1.2.0",
   "locale": "fr",
   "cases": [
     {
@@ -598,6 +598,112 @@
         "ranges": true
       },
       "note": "spec 0.5.0: fr's dash.range is \"none\" (no verified convention), so `ranges` substitutes nothing even when explicitly enabled (ranges.md §2, §3.3) — the same invariant the pre-0.5.0 `dashes`-tagged no-op fixtures for this locale already proved for the combined rule."
+    },
+    {
+      "id": "fr-spaces-dot-word-start-dotfile",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Voir le fichier .htaccess .",
+      "out": "Voir le fichier .htaccess.",
+      "note": "spaces.md §3.4 word-start clause (spec 1.2.0): the space before `.htaccess` survives, the space before the terminal dot is deleted. `.` is in no `nbsp` list for `fr`, so nothing is put back."
+    },
+    {
+      "id": "fr-nbsp-span-boundary-strong-colon",
+      "rule": "nbsp",
+      "mode": "html",
+      "in": "<strong>Résistant au gel :</strong> il reste souple",
+      "out": "<strong>Résistant au gel :</strong> il reste souple",
+      "note": "nbsp.md §3.3 step 2 (spec 1.2.0), §6 row 6c; modes.md §3.3: `spaces` deletes the typed space before `:`, and the −1 span boundary marker after the mark is in `nbsp`'s CLOSEISH, so N1 inserts U+00A0 at the mark's index, inside the span. Spec 1.1.0 runtimes produced `gel:</strong>`."
+    },
+    {
+      "id": "fr-nbsp-span-boundary-br-question",
+      "rule": "nbsp",
+      "mode": "html",
+      "in": "Et la réglementation ?<br>Oui",
+      "out": "Et la réglementation ?<br>Oui",
+      "note": "nbsp.md §3.3 step 2 (spec 1.2.0), §6 row 6d: `<br>` leaves no line terminator in the gap, so the marker is −1; it is in CLOSEISH and N2 restores U+202F."
+    },
+    {
+      "id": "fr-nbsp-span-boundary-link-question",
+      "rule": "nbsp",
+      "mode": "html",
+      "in": "<a href=\"/faq\">Comment ?</a> Oui",
+      "out": "<a href=\"/faq\">Comment ?</a> Oui",
+      "note": "nbsp.md §3.3 step 2 (spec 1.2.0): the mark ends the link text, the marker follows it, and N2 restores U+202F instead of leaving `Comment?`."
+    },
+    {
+      "id": "fr-nbsp-span-boundary-markdown-strong-colon",
+      "rule": "nbsp",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "**Résistant au gel :** il reste souple\n",
+      "out": "**Résistant au gel :** il reste souple\n",
+      "note": "nbsp.md §3.3 step 2 (spec 1.2.0): the Markdown form of the French definition pattern; the closing `**` is a skipped region with no line terminator, so the marker is −1 and N1 restores U+00A0."
+    },
+    {
+      "id": "fr-nbsp-span-boundary-not-openish-em",
+      "rule": "nbsp",
+      "mode": "html",
+      "in": "Il dit <em>non</em> ! Oui",
+      "out": "Il dit <em>non</em> ! Oui",
+      "note": "nbsp.md §3.3 step 3 (spec 1.2.0), §6 row 6e; modes.md §3.3: the marker is not in `nbsp`'s OPENISH, so the quote-glyph guard does not decline and N2 converts the space. A port that applied the quote-glyph guard to the marker would leave a plain U+0020 here."
+    },
+    {
+      "id": "fr-nbsp-span-boundary-not-openish-link",
+      "rule": "nbsp",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Voir [ceci](http://example.org) : oui\n",
+      "out": "Voir [ceci](http://example.org) : oui\n",
+      "note": "nbsp.md §3.3 step 3 (spec 1.2.0): the second witness that the quote-glyph guard does not decline at a span boundary. The link text ends two places left of `:`, and N1 still converts the space. The marker's absence from the rest of `nbsp`'s OPENISH is pinned by ru-nbsp-span-boundary-not-openish-short-word."
+    },
+    {
+      "id": "fr-nbsp-span-boundary-mark-alone-in-span",
+      "rule": "nbsp",
+      "mode": "html",
+      "in": "mot<em>!</em>",
+      "out": "mot<em>!</em>",
+      "note": "nbsp.md §3.3 step 2; modes.md §3.4 edge-growth rule: the mark is alone in its span, so the insertion point is the span edge and the insertion is discarded, as it was before spec 1.2.0."
+    },
+    {
+      "id": "fr-nbsp-span-boundary-colon-before-digit-span",
+      "rule": "nbsp",
+      "mode": "html",
+      "in": "Il est 12:<b>30</b>",
+      "out": "Il est 12 :<b>30</b>",
+      "note": "nbsp.md §3.3 step 2 (spec 1.2.0), §6 row 6f: the stated cost of accepting the marker. Step 2 cannot see past the span boundary, so a colon that ends one span while a digit starts the next is treated as sentence punctuation."
+    },
+    {
+      "id": "fr-apostrophe-elision-before-guillemet",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "un mélange d'« urine diluée »",
+      "out": "un mélange d’« urine diluée »",
+      "note": "apostrophe.md §3.3 case 3a (spec 1.2.0), §6 row 15: letter left, opening quotation glyph right. Spec 1.1.0 left the apostrophe straight, because no case matched a letter followed by an OPENISH-only glyph."
+    },
+    {
+      "id": "fr-apostrophe-elision-before-straight-quote",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "l'\"idée\" est simple",
+      "out": "l’« idée » est simple",
+      "note": "apostrophe.md §3.2, §3.3 case 3a (spec 1.2.0): `quotes` (order 40) turns the straight `\"` into `«` first, so the mark reaches this rule next to an opening glyph and case 3a converts it."
+    },
+    {
+      "id": "fr-apostrophe-elision-qu-before-guillemet",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Il faut qu'« il vienne »",
+      "out": "Il faut qu’« il vienne »",
+      "note": "apostrophe.md §3.3 case 3a (spec 1.2.0): `qu'` before a quotation."
+    },
+    {
+      "id": "fr-nbsp-span-boundary-colon-before-url-span",
+      "rule": "nbsp",
+      "mode": "html",
+      "in": "Voir http:<a href=\"//x.org\">//x.org</a>",
+      "out": "Voir http :<a href=\"//x.org\">//x.org</a>",
+      "note": "nbsp.md §3.3 step 2 (spec 1.2.0): the second stated cost of accepting the marker. Step 2 cannot see the `/` in the next span, so the colon is treated as sentence punctuation and N1 inserts U+00A0."
     }
   ]
 }

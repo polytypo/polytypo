@@ -1,8 +1,8 @@
 # Rule: `spaces`
 
 **Order:** 10 (first). **Default:** on. **Modes:** text, html, markdown.
-**Spec version:** 1.0.0 (0.2.0 for everything except §3.6's mouth side and the clause it adds to
-§3.2 step 5, noted inline).
+**Spec version:** 1.2.0 (0.2.0 for everything except §3.6's mouth side and the clause it adds to
+§3.2 step 5, noted inline, and §3.4's word-start clause, added in 1.2.0).
 
 ---
 
@@ -131,8 +131,9 @@ kind of token — a relative path, a truncation, a typed ellipsis — and deleti
 merges it with a preceding abbreviation dot or silently destroys word spacing.
 
 > **Lone-dot condition.** If `right` is U+002E, the replacement length may be 0 **only if** the
-> maximal run of `DOTLIKE` code points beginning at that index has length exactly 1. Otherwise
-> the replacement length is 1.
+> maximal run of `DOTLIKE` code points beginning at that index has length exactly 1 **and** the
+> code point after that dot, `cp[e+1]`, is neither a `LETTER` (ARCHITECTURE.md §4.1's Unicode
+> category test, as in §3.6) nor an ASCII digit. Otherwise the replacement length is 1.
 >
 > **U+2026 is not in `STRIP-BEFORE` at all**, so a space before an existing ellipsis is never
 > deleted.
@@ -144,6 +145,25 @@ which point a _second_ pipeline pass finds a U+0020 before a U+2026, strips it, 
 [pipeline-idempotency.md](pipeline-idempotency.md) exists to prevent, introduced by the fix for
 another one. Removing U+2026 from `STRIP-BEFORE` closes it: the author's spacing around an
 ellipsis, however they wrote it, is preserved and is stable.
+
+**The word-start clause (spec 1.2.0).** A single dot followed directly by a letter or a digit is
+not terminal punctuation either: it starts a token. `.NET`, `.DWG`, `.gitignore`, `.env` and the
+decimal `.5` are words, and before 1.2.0 the space in front of each was deleted —
+`Use .NET, .NET Core` became `Use.NET,.NET Core`, `CAD files (.DWG, .STEP)` became
+`CAD files (.DWG,.STEP)`. The first half of the condition could not see this, because it measures
+only the dot run. The second half reads one code point further, the same distance and the same
+`LETTER`/ASCII-digit test the emoticon guard's eye side already uses (§3.6 step 3).
+
+The cost is stated here so it is not rediscovered as a bug: `end .Next sentence` — a misplaced
+full stop with the following space also missing — keeps its stray space instead of becoming
+`end.Next sentence`. Both readings of that input lose something, and the one given up is the
+destructive one: deleting the space glues two words together, and a later pass cannot tell the
+glued form from a genuine `end.Next`. Keeping it leaves the input as the author typed it. That is
+the same principle as §3.6's trailing check and §7.11 — where deletion and preservation disagree,
+the reading that deletes less wins. A dot followed by anything else — a space, a closing bracket,
+a quotation mark, punctuation, a line terminator, the end of the text, or a span boundary marker
+in `html`/`markdown` mode (which is in neither `LETTER` nor `DIGIT`, [modes.md](modes.md) §3.3) —
+is still a terminal full stop, and the space before it is still deleted.
 
 **What this deliberately does not break.** The runs in step 3 are maximal runs **in the input
 array**, and the condition is evaluated against the input. In the Chicago-style spaced ellipsis
@@ -404,11 +424,22 @@ zero or one U+0020. Consider the output `T(x)` and re-run the scan.
   there is nothing to re-examine at that position.
 - A run replaced by one space is now a run of length `k' = 1` with the same `left` and
   `right`. Re-running step 5 on it yields the same decision — it is a function of `left`, `right`
-  and the bounded lookaround of §3.4 and §3.6, each of which argues its own window's stability —
+  and the bounded lookaround of §3.4 and §3.6, each of which argues its own window's stability
+  (§3.4's word-start clause: see the paragraph after this list) —
   namely replacement length 1, and step 6 then emits nothing because `k' = 1` already equals the
   replacement length.
 - A skipped run is skipped again for the same reason (its guard condition depends only on
   `left`, `right` and bracket matching, all unchanged).
+
+**§3.4's window.** The lone-dot condition reads `cp[e]`, the dot run starting there, and — since
+1.2.0 — `cp[e+1]`. The dot run is made of non-space code points this rule never writes. `cp[e+1]`
+can change between passes only if it was a U+0020 whose run this pass deleted, bringing its right
+neighbour against the dot. A run is deleted only by the `STRIP-BEFORE`, `CLOSE-BRACKET` and
+`OPEN-BRACKET` clauses of step 5; the run after a dot has the dot as its `left`, so the
+`OPEN-BRACKET` clause cannot apply, and the other two leave behind a `STRIP-BEFORE` member or a
+closing bracket — none of which is a `LETTER` or an ASCII digit. So the word-start clause's verdict
+("is `cp[e+1]` a letter or a digit?") is the same on both passes, whatever this pass did after the
+dot.
 
 Therefore `T(T(x)) = T(x)`.
 
@@ -440,6 +471,16 @@ violated S-b, S-c and S-d until guard T2 was added. The exact positions from whi
 deletes a space are therefore load-bearing for the whole pipeline, and §3.2 step 5 should be
 treated as a published interface rather than an implementation detail.
 
+**Spec 1.2.0's word-start clause adds one thing a later rule must not do.** S-b now permits a
+U+0020 before a lone dot whose next code point is a `LETTER` or an ASCII digit. A later rule that
+replaced that letter or digit with something else would turn a permitted space into a forbidden one,
+without emitting any U+0020. None does: `ellipsis` writes only `DOTLIKE` code points; `ranges`,
+`dashes` and `hyphen` replace dashes, hyphens and spaces; `quotes` and `apostrophe` replace
+quotation marks; `symbols` replaces a trademark literal, which starts with `(`, and a `MUL-LETTER`,
+which is always preceded by a digit or a space and so never follows a dot directly; `nbsp` replaces
+or inserts spaces, and inserts only beside a listed punctuation mark or a quote glyph, never between
+a dot and a letter. A new rule that rewrites letters or digits must re-check this.
+
 ---
 
 ## 6. Worked examples
@@ -468,6 +509,11 @@ verdict here, so naming the locale is what makes the claim checkable.
 | 10c | `Wait␣...`             | ⟶                  | the space survives (run length 3). `ellipsis` then yields `Wait␣…`, and because U+2026 is not in `STRIP-BEFORE` that is a fixed point                                 |
 | 10d | `Hello␣.␣.␣.`          | `Hello...`         | every dot is a **lone** dot in the input, so all three spaces strip and the Chicago-style spaced ellipsis still merges — `ellipsis` converts it to `Hello…`           |
 | 10e | `Wait␣…`               | ⟶                  | U+2026 is not in `STRIP-BEFORE`                                                                                                                                       |
+| 10f | `Use␣.NET,␣.NET␣Core`  | ⟶                  | **word-start clause (§3.4, spec 1.2.0).** Each dot is followed by a letter, so it starts a word and neither space is deleted. Previously produced `Use.NET,.NET␣Core` |
+| 10g | `(.DWG,␣.STEP)`        | ⟶                  | same: the space after the comma survives because `.STEP` is a token, not a full stop. The comma run is untouched regardless — its `right` is the dot, not the comma |
+| 10h | `from␣.5␣to␣.9`        | ⟶                  | same, for an ASCII digit after the dot                                                                                                                              |
+| 10i | `end␣.Next`            | ⟶                  | **the accepted cost.** A misplaced full stop followed by a letter keeps its stray space; the alternative glues two words — §3.4                                     |
+| 10j | `See␣p.␣12␣.␣Next`     | `See␣p.␣12.␣Next`  | a dot followed by a space is still terminal punctuation, so row 10 is unchanged by the word-start clause                                                             |
 | 11  | `foo␣␣␣␣↵␣␣␣␣bar`      | ⟶                  | first run touches a `BREAK` on the right, second on the left                                                                                                          |
 | 12  | `Q:␣␣why␣?␣␣Because␣.` | `Q:␣why?␣Because.` | mixed                                                                                                                                                                 |
 | 13  | `Привет␣:-)`           | ⟶                  | **emoticon guard (§3.6).** `:` is `EMOTICON-EYE`, `-` is `EMOTICON-NOSE`, `)` is `EMOTICON-MOUTH`, and there is nothing after it — the guard fires and the space survives |
@@ -482,7 +528,7 @@ verdict here, so naming the locale is what makes the claim checkable.
 | 13i | `word␣(␣note␣)`        | `word␣(note)`      | the ordinary bracket-inner case, unchanged by the mouth side: `(` here is preceded by a space, not by an eye                                                                                                                          |
 | 13j | `Note:(␣x␣)`           | `Note:(␣x)`        | the mouth side puts **no** condition on what precedes the eye, so it fires on a word-attached eye too: the space after the mouth survives while the one before the closer still goes — §7 item 11                                    |
 
-Cases 4, 5, 6, 8, 10a, 10b, 10c, 10e, 11, 13, 13a, 13e, 13f and 13g are "no change" cases.
+Cases 4, 5, 6, 8, 10a, 10b, 10c, 10e, 10f, 10g, 10h, 10i, 11, 13, 13a, 13e, 13f and 13g are "no change" cases.
 
 ---
 

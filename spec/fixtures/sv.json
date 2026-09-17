@@ -1,5 +1,5 @@
 {
-  "spec": "1.1.0",
+  "spec": "1.2.0",
   "locale": "sv",
   "cases": [
     {
@@ -1285,6 +1285,14 @@
       "in": "'90s were fun,' he said",
       "out": "”90s were fun,” he said",
       "note": "quotes.md §6 row E4s: the straight-input control for E4."
+    },
+    {
+      "id": "sv-apostrophe-elision-before-shared-quote-glyph",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "tidningen l'\"Humanité\"",
+      "out": "tidningen l’”Humanité”",
+      "note": "apostrophe.md §3.3 cases 3 and 3a (spec 1.2.0): same as fi; U+201D is in CLOSEISH and the output is unchanged from spec 1.1.0."
     }
   ]
 }

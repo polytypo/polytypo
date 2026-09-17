@@ -1,5 +1,5 @@
 {
-  "spec": "1.1.0",
+  "spec": "1.2.0",
   "locale": "en-GB",
   "cases": [
     {
@@ -1269,6 +1269,22 @@
       "in": "'90s were fun,' he said",
       "out": "‘90s were fun,’ he said",
       "note": "quotes.md §6 row E2s: the straight-input control, confirming the corruption in E2 predates mandate 1."
+    },
+    {
+      "id": "en-gb-spaces-dot-word-start-file-extensions",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "CAD files (.DWG, .STEP) on request",
+      "out": "CAD files (.DWG, .STEP) on request",
+      "note": "spaces.md §3.4 word-start clause (spec 1.2.0), §6 row 10g: `.STEP` starts a token, so the space after the comma survives. Spec 1.1.0 produced `(.DWG,.STEP)`."
+    },
+    {
+      "id": "en-gb-apostrophe-elision-before-curly-quote",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "dell'“arte” moderna",
+      "out": "dell’‘arte’ moderna",
+      "note": "apostrophe.md §3.3 case 3a (spec 1.2.0), §6 row 16: `quotes` re-typesets the curly pair as en-GB's primary single quotes, and the elision before the opening glyph converts to U+2019."
     }
   ]
 }

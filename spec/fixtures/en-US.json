@@ -1,5 +1,5 @@
 {
-  "spec": "1.1.0",
+  "spec": "1.2.0",
   "locale": "en-US",
   "cases": [
     {
@@ -1802,6 +1802,70 @@
         "ranges": true
       },
       "note": "ranges.md §3.2, G3 — not part of a decimal or a path. `before` is U+002E (.) for the first candidate and U+002F (/) for the second; `after` is U+002F (/) for the second. This is currently the only canonical fixture exercising G3 — previously untested by any canonical case even before the spec 0.5.0 ownership correction (dashes.test.ts's engine-level 'must not touch' list covered it, but no fixture did)."
+    },
+    {
+      "id": "en-us-spaces-dot-word-start-dotnet",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Use .NET, .NET Core or .NET Framework",
+      "out": "Use .NET, .NET Core or .NET Framework",
+      "note": "spaces.md §3.4 word-start clause (spec 1.2.0), §6 row 10f: each dot is followed by a letter, so it starts a token and the space before it is not deleted. Spec 1.1.0 produced `Use.NET,.NET Core or.NET Framework`."
+    },
+    {
+      "id": "en-us-spaces-dot-word-start-decimal",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "the values .5 and .9 apply",
+      "out": "the values .5 and .9 apply",
+      "note": "spaces.md §3.4 word-start clause (spec 1.2.0), §6 row 10h: an ASCII digit after the dot counts the same as a letter."
+    },
+    {
+      "id": "en-us-spaces-dot-word-start-misplaced-full-stop",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "the end .Next sentence",
+      "out": "the end .Next sentence",
+      "note": "spaces.md §3.4, §6 row 10i: the accepted cost of the word-start clause. A misplaced full stop followed directly by a letter keeps its stray space, because deleting it would glue two words that a later pass cannot separate again."
+    },
+    {
+      "id": "en-us-spaces-dot-terminal-still-strips",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "See p. 12 . Next",
+      "out": "See p. 12. Next",
+      "note": "spaces.md §3.4, §6 row 10j: a dot followed by a space is terminal punctuation, so the space before it is still deleted under spec 1.2.0."
+    },
+    {
+      "id": "en-us-nbsp-span-boundary-no-punctuation-data",
+      "rule": "nbsp",
+      "mode": "html",
+      "in": "<strong>Note :</strong> read this",
+      "out": "<strong>Note:</strong> read this",
+      "note": "nbsp.md §3.3 step 2 (spec 1.2.0): accepting the marker changes nothing in a locale whose punctuation lists are empty. `spaces` deletes the space and nothing is put back, the same result as in text mode."
+    },
+    {
+      "id": "en-us-apostrophe-elision-before-quote",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "the magazine l'\"Uomo\" today",
+      "out": "the magazine l’“Uomo” today",
+      "note": "apostrophe.md §3.3 case 3a (spec 1.2.0): `quotes` converts the straight double quotes to U+201C/U+201D, and the elision before U+201C converts to U+2019."
+    },
+    {
+      "id": "en-us-apostrophe-prime-before-bracket-untouched",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "f'(x) = 2x",
+      "out": "f'(x) = 2x",
+      "note": "apostrophe.md §3.3 case 3a (spec 1.2.0), §6 row 18: `(` is in OPENISH but not in OPENQUOTE, so a prime on a function name is left alone."
+    },
+    {
+      "id": "en-us-spaces-dot-before-span-boundary-is-terminal",
+      "rule": "spaces",
+      "mode": "html",
+      "in": "Use .<b>NET</b> today",
+      "out": "Use.<b>NET</b> today",
+      "note": "spaces.md §3.4 word-start clause (spec 1.2.0): the code point after the dot is the −1 span boundary marker, which is neither a LETTER nor an ASCII digit (modes.md §3.3), so the dot counts as terminal and the space before it is deleted."
     }
   ]
 }

@@ -6,7 +6,8 @@ how the rule pipeline is applied to it, and how the result is reassembled. It is
 all five runtimes and is parser-agnostic by construction: `parse5`, `nokogiri`, `lxml`,
 `golang.org/x/net/html` and PHP's DOM disagree about almost everything this document does not
 forbid them from doing.
-**Spec version:** 0.1.0.
+**Spec version:** 1.2.0 (0.1.0 for everything except §3.3's class-membership table rows for
+`nbsp` and `apostrophe`, split in 1.2.0).
 
 ---
 
@@ -145,7 +146,9 @@ simply a member of `BREAK` and of nothing else, so it needs no table: every rule
 | `STRAIGHT`, `SQ`, `DQ`                                                                      | **no**                                      |
 | `OPEN-BRACKET`, `CLOSE-BRACKET`                                                             | **no**                                      |
 | any literal matching list (`abbreviations`, `beforeUnits`, `hyphen.*`, the trademark table) | **no** — the marker never matches a literal |
-| `OPENISH` **and** `CLOSEISH` (`quotes`, `apostrophe`, `nbsp`)                               | **yes, both**                               |
+| `OPENISH` **and** `CLOSEISH` (`quotes`, `apostrophe`)                                       | **yes, both**                               |
+| `CLOSEISH` (`nbsp`)                                                                         | **yes**                                     |
+| `OPENISH` (`nbsp`), `OPENQUOTE` (`apostrophe`)                                              | **no**                                      |
 
 and one exemption:
 
@@ -192,6 +195,18 @@ Both cannot be true. The contradiction is resolved in favour of `spaces.md` for 
 of the text. A rule that replaces or inserts must not — §3.4 governs it instead. If a rule is
 ever added that deletes, it inherits this clause and must say so here.
 
+**Why `nbsp` differs (spec 1.2.0).** `nbsp` reads `CLOSEISH` in one place only, the right-context
+guard of N1/N2 (`nbsp.md` §3.3 step 2). Membership there is what lets the no-break space come back
+after `spaces` deleted the typed one before a mark that ends an inline element:
+`<strong>Label :</strong>` in French. It reads `OPENISH` at the quote-glyph guard (`nbsp.md` §3.3
+step 3), in the left-boundary tests of N3, N7, N9 and N10, and in N3's following-token guard. At
+the quote-glyph guard, membership would lose the narrow space in `<em>non</em> !`. At the other
+tests nobody has measured its effect.
+Up to spec 1.1.0 this row read "yes, both" for `nbsp` too, while every runtime implemented
+"neither". `nbsp.md` §7 item 12 records how the split was decided. `apostrophe`'s `OPENQUOTE`
+(`apostrophe.md` §3.1, spec 1.2.0) excludes the marker for a simpler reason: case 3 already
+accepts it through `CLOSEISH`, so membership would change nothing.
+
 **Why dual `OPENISH`/`CLOSEISH` membership plus the exemption.** These three settings are what
 make quotation marks pair correctly across an inline element, and they were derived by working
 the cases, not by analogy:
@@ -210,8 +225,9 @@ all three.
 
 ### 3.4 Every other rule gets the right behaviour for free
 
-Because the marker is opaque content and is in none of their classes, the remaining rules
-decline to work across a boundary **without any special-casing**:
+Because the marker is opaque content and is in none of their classes (apart from the memberships
+in the table of §3.3), the remaining rules decline to work across a boundary **without any
+special-casing**:
 
 | Situation                     | Concatenation    | Outcome                                                                                                                                            |
 | ----------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |

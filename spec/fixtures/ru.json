@@ -1,5 +1,5 @@
 {
-  "spec": "1.1.0",
+  "spec": "1.2.0",
   "locale": "ru",
   "cases": [
     {
@@ -691,6 +691,30 @@
       "in": "rock ’n’ roll",
       "out": "rock ’n’ roll",
       "note": "quotes.md §3.2, the regression witness for spec 1.1.0's widening of the veto from straight ASCII to the whole NARROW class. This is the output of ru-quotes-rock-n-roll fed back in, so it is that case's idempotency obligation made explicit — and it is the case a naive implementation gets wrong. A port that matches U+0027 only (as spec 0.5.0's withdrawn predicate did, correctly for its own preserve-then-stop outcome) does not recognise the U+2019 marks it just produced: the pair falls through to ordinary NARROW quotation and this input becomes `rock «n» roll`, ru's primary pair at depth 1. Measured, not hypothesised. `apostrophe` emits U+2019 only in place of U+0027 (apostrophe.md §1), so once the veto matches, nothing edits these marks and the form is stable."
+    },
+    {
+      "id": "ru-spaces-dot-word-start-dotfile",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Проверьте файл .env сейчас",
+      "out": "Проверьте файл .env сейчас",
+      "note": "spaces.md §3.4 word-start clause (spec 1.2.0): a dot followed by a letter starts a token in every locale; `spaces` reads no locale data (§2)."
+    },
+    {
+      "id": "ru-apostrophe-elision-before-guillemet",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "газета l'\"Humanité\"",
+      "out": "газета l’«Humanité»",
+      "note": "apostrophe.md §3.3 case 3a (spec 1.2.0): a French title in Russian text; `quotes` gives « », and the elision before « converts."
+    },
+    {
+      "id": "ru-nbsp-span-boundary-not-openish-short-word",
+      "rule": "nbsp",
+      "mode": "html",
+      "in": "Он живёт в <em>Москве</em>",
+      "out": "Он живёт в <em>Москве</em>",
+      "note": "nbsp.md §3.1, §7 item 12 (spec 1.2.0); modes.md §3.3: the −1 span boundary marker is not in `nbsp`'s OPENISH, so N3's following-token guard does not accept it and the space after `в` stays U+0020. This pins the membership split itself: a port that also put the marker in OPENISH would bind here."
     }
   ]
 }

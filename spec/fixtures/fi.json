@@ -1,5 +1,5 @@
 {
-  "spec": "1.1.0",
+  "spec": "1.2.0",
   "locale": "fi",
   "cases": [
     {
@@ -1309,6 +1309,14 @@
       "in": "'90s were fun,' he said",
       "out": "”90s were fun,” he said",
       "note": "quotes.md §6 row E3s: the straight-input control for E3."
+    },
+    {
+      "id": "fi-apostrophe-elision-before-shared-quote-glyph",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "lehti l'\"Humanité\"",
+      "out": "lehti l’”Humanité”",
+      "note": "apostrophe.md §3.3 cases 3 and 3a (spec 1.2.0): fi opens and closes with U+201D, which is in CLOSEISH, so case 3 already converted this before 1.2.0. Pinned so that case 3a is not read as changing a shared-glyph locale."
     }
   ]
 }

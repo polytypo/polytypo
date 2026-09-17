@@ -1,5 +1,5 @@
 {
-  "spec": "1.1.0",
+  "spec": "1.2.0",
   "locale": "el",
   "cases": [
     {
@@ -234,6 +234,14 @@
         "ranges": true
       },
       "note": "spec 0.5.0: el's dash.range is \"none\" (no verified convention), so `ranges` substitutes nothing even when explicitly enabled (ranges.md §2, §3.3) — the same invariant the pre-0.5.0 `dashes`-tagged no-op fixtures for this locale already proved for the combined rule."
+    },
+    {
+      "id": "el-apostrophe-elision-before-guillemet",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "η εφημερίδα l'\"Humanité\"",
+      "out": "η εφημερίδα l’«Humanité»",
+      "note": "apostrophe.md §3.3 case 3a (spec 1.2.0): `quotes` gives el's « », and the elision before « converts."
     }
   ]
 }
