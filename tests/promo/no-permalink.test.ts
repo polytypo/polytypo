@@ -167,6 +167,7 @@ describe("brand/tools/promo/site.js — the permalink helpers are gone from the 
         "paint",
         "summarizeChange",
         "summarizeError",
+        "track",
       ].sort(),
     );
   });

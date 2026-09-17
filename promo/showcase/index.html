@@ -63,7 +63,11 @@
     </li>
   </ol>
   <p>Every submission is checked by hand, and a site stays listed while the badge stays on it.</p>
-  <p><a class="btn" href="mailto:iurii@rogulia.fi?subject=Add%20my%20site%20to%20Sites%20using%20polytypo">Share your website using polytypo</a></p>
+  <p>
+    <a class="btn" href="mailto:iurii@rogulia.fi?subject=Add%20my%20site%20to%20Sites%20using%20polytypo" data-track-event="showcase-share"
+      >Share your website using polytypo</a
+    >
+  </p>
 </section>
 
 <section id="badge"><h2>Already using polytypo? Add our badge</h2><p class="small muted" style="max-width: 60ch">Two lines, same shape as any other embeddable badge — a script tag and a span. No per-embed network call: the whole render table ships in that one script. Pick a language and a theme, then copy the code into your footer, About page, or credits section. Sites with the badge are listed on <a href="../showcase/">Sites using polytypo</a>.</p><div class="badge-controls" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 14px 0"><select id="badge-lang" aria-label="Badge language"></select><div class="tabs" id="badge-theme-tabs"><button type="button" data-theme="light" aria-pressed="true">Light</button><button type="button" data-theme="dark" aria-pressed="false">Dark</button></div></div><span id="badge-preview" data-polytypo-lang="en" data-polytypo-theme="light" style="display: inline-block; margin: 0 0 14px"></span><div class="scroll"><pre><code id="badge-code"></code></pre></div><button type="button" id="badge-copy" class="btn" style="margin-top: 10px">Copy</button></section>
@@ -95,6 +99,11 @@ Polytypo.bootTabs("build-tabs", "build-panes");
     window.PolytypoBadge.render(preview);
     codeEl.textContent = snippet();
   }
+  // site.js is a local file loaded above this script, but the badge section is the one part of
+  // the page that has no other reason to need it — so missing it must stay harmless.
+  function track(name, props) {
+    if (window.Polytypo) window.Polytypo.track(name, props);
+  }
   langSel.addEventListener("change", render);
   themeButtons.forEach(function (b) {
     b.addEventListener("click", function () {
@@ -108,6 +117,8 @@ Polytypo.bootTabs("build-tabs", "build-panes");
       var was = copyBtn.textContent;
       copyBtn.textContent = "Copied";
       setTimeout(function () { copyBtn.textContent = was; }, 1500);
+      // Inside the success branch on purpose: a copy the clipboard refused is not a copy.
+      track("badge-copy", { lang: langSel.value, theme: theme });
     });
   });
   render();

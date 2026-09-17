@@ -1272,6 +1272,11 @@ def build_badge_script(prefix):
     window.PolytypoBadge.render(preview);
     codeEl.textContent = snippet();
   }}
+  // site.js is a local file loaded above this script, but the badge section is the one part of
+  // the page that has no other reason to need it — so missing it must stay harmless.
+  function track(name, props) {{
+    if (window.Polytypo) window.Polytypo.track(name, props);
+  }}
   langSel.addEventListener("change", render);
   themeButtons.forEach(function (b) {{
     b.addEventListener("click", function () {{
@@ -1285,6 +1290,8 @@ def build_badge_script(prefix):
       var was = copyBtn.textContent;
       copyBtn.textContent = "Copied";
       setTimeout(function () {{ copyBtn.textContent = was; }}, 1500);
+      // Inside the success branch on purpose: a copy the clipboard refused is not a copy.
+      track("badge-copy", {{ lang: langSel.value, theme: theme }});
     }});
   }});
   render();
@@ -1318,6 +1325,7 @@ const DATA = {payload};
 (function playground() {{
   const {{
     mark, diff, paint, highlightLines, bootTabs, summarizeChange, summarizeError, copyStatusText,
+    track,
   }} = window.Polytypo;
   const LAZY = {lazy_literal};
   const ENGINE_SRC = "{engine_src}";
@@ -1604,6 +1612,24 @@ const DATA = {payload};
     }}
   }}
 
+  // What the form is set to — enum values only. The text in the panes is the visitor's own and
+  // never leaves the page, not even as a length.
+  function config() {{
+    const props = {{ locale: $locale.value, mode: $mode.value }};
+    if ($mode.value === "markdown") props.dialect = $dialect.value;
+    return props;
+  }}
+
+  // Fired once per page load, from the first character actually typed or pasted — not from
+  // startEngineLoad(), which an IntersectionObserver also triggers 400px before the section is
+  // even on screen, and which therefore measures scrolling rather than use.
+  let used = false;
+  function trackFirstUse() {{
+    if (used) return;
+    used = true;
+    track("playground-use", config());
+  }}
+
   async function copyText(text) {{
     try {{
       await navigator.clipboard.writeText(text);
@@ -1621,6 +1647,7 @@ const DATA = {payload};
     }}
     const ok = await copyText(text);
     $actionStatus.textContent = copyStatusText("Output", ok);
+    if (ok) track("playground-copy", config());
   }});
 
   // startEngineLoad() returns immediately unless the engine is still unrequested, so wiring it to
@@ -1645,6 +1672,7 @@ const DATA = {payload};
     // Requested from the raw event, not from run()'s 120ms-debounced render(), so the bundle is
     // already in flight during the debounce window rather than 120ms behind it.
     startEngineLoad();
+    trackFirstUse();
     run();
   }});
 

@@ -462,6 +462,11 @@ Polytypo.bootTabs("build-tabs", "build-panes");
     window.PolytypoBadge.render(preview);
     codeEl.textContent = snippet();
   }
+  // site.js is a local file loaded above this script, but the badge section is the one part of
+  // the page that has no other reason to need it — so missing it must stay harmless.
+  function track(name, props) {
+    if (window.Polytypo) window.Polytypo.track(name, props);
+  }
   langSel.addEventListener("change", render);
   themeButtons.forEach(function (b) {
     b.addEventListener("click", function () {
@@ -475,6 +480,8 @@ Polytypo.bootTabs("build-tabs", "build-panes");
       var was = copyBtn.textContent;
       copyBtn.textContent = "Copied";
       setTimeout(function () { copyBtn.textContent = was; }, 1500);
+      // Inside the success branch on purpose: a copy the clipboard refused is not a copy.
+      track("badge-copy", { lang: langSel.value, theme: theme });
     });
   });
   render();

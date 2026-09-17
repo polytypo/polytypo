@@ -27,6 +27,7 @@ export interface PolytypoSiteJs {
   summarizeChange: (text: string, out: string, segments: Array<[boolean, string]>) => string;
   summarizeError: (code: string) => string;
   copyStatusText: (what: string, ok: boolean) => string;
+  track: (name: string, props?: Record<string, string>) => void;
 }
 
 /** The exported object exactly as site.js assigns it, untyped — for the guard test that checks

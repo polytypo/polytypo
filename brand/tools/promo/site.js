@@ -3,6 +3,37 @@
 window.Polytypo = (function () {
   const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
+  /**
+   * One custom analytics event. The tracker (Umami, loaded with `defer` in every page's head) is
+   * optional in every sense — blocked, still loading, or absent entirely in a test sandbox — so
+   * this is a silent no-op whenever it is not there, and nothing on the page may depend on it.
+   *
+   * `props` carries enum-valued facts only (a locale code, a mode, a theme). Text a visitor typed
+   * or pasted into the playground never goes through here, in any form.
+   */
+  function track(name, props) {
+    try {
+      if (window.umami && typeof window.umami.track === "function") window.umami.track(name, props);
+    } catch {
+      // Analytics must never break the page it measures.
+    }
+  }
+
+  /**
+   * Click tracking for plain links, declared in the markup as `data-track-event="<name>"` rather
+   * than wired one id at a time. The attribute is the site's own, not the tracker's: no page may
+   * carry a vendor-named attribute, because tests/promo/generated-pages.test.ts holds the
+   * generated HTML free of third-party tracker markers and that guard stays fail-closed.
+   */
+  // Guarded because this file is also loaded into a bare sandbox by tests/promo/load-site-js.ts,
+  // where there is no document at all.
+  if (typeof document !== "undefined") {
+    document.addEventListener("click", (event) => {
+      const el = event.target && event.target.closest && event.target.closest("[data-track-event]");
+      if (el) track(el.dataset.trackEvent);
+    });
+  }
+
   const INVISIBLES = [
     [/\u00a0/g, '<span class="nb" title="U+00A0 no-break space">\u00a0</span>'],
     [/\u202f/g, '<span class="nb" title="U+202F narrow no-break space">\u202f</span>'],
@@ -177,6 +208,9 @@ window.Polytypo = (function () {
           q.hidden = j !== i;
           tabs.children[j].setAttribute("aria-pressed", String(j === i));
         });
+        // One event for every tab set on the site (install snippets, build steps, the playground's
+        // call block), so `set` is what tells them apart.
+        track("code-tab", { set: tabsId, tab: p.dataset.label });
       });
       tabs.appendChild(b);
       p.hidden = i !== 0;
@@ -195,5 +229,6 @@ window.Polytypo = (function () {
     summarizeChange,
     summarizeError,
     copyStatusText,
+    track,
   };
 })();
