@@ -156,6 +156,13 @@ RULE_ROWS = [
         "Numeric and date ranges are left alone — converting them is the separate "
         "ranges rule, off by default.",
     ),
+    (
+        "ranges",
+        "en-US",
+        0,
+        "Off by default; with rules: { ranges: true }, numeric ranges take an en dash held by "
+        "word joiners.",
+    ),
     ("hyphen", "ru", 0, "Morphological hyphens bound with U+2011 so they cannot break."),
     ("quotes", "de-DE", 0, "Primary and secondary quotes, with nesting resolved."),
     ("apostrophe", "en-US", 0, "Straight apostrophe to U+2019, contractions intact."),

@@ -155,8 +155,12 @@ def examples_table(locale, mark_invisible=False):
     e = HERO[locale]
     rows = ["| Rule | In | Out |", "| --- | --- | --- |"]
     for c in e["cases"]:
-        out = c["out"].replace(" ", "⍽") if mark_invisible else c["out"]
-        rows.append(f"| `{c['rule']}` | `{c['in']}` | {out} |")
+        out = c["out"].replace("\u00a0", "⍽") if mark_invisible else c["out"]
+        rule = f"`{c['rule']}`"
+        if c.get("rules"):
+            enabled = ", ".join(f"{k}: {str(v).lower()}" for k, v in c["rules"].items())
+            rule += f" (`rules: {{ {enabled} }}`)"
+        rows.append(f"| {rule} | `{c['in']}` | {out} |")
     table = "\n".join(rows)
     if not mark_invisible:
         return table
@@ -232,6 +236,17 @@ Rule ids are **public API**. Renaming one is a breaking change. Order comes from
 
 In every mode the output is **the input with a set of disjoint substring replacements applied, and
 nothing else**. The parser locates text; it never produces output.
+
+`text` mode has no parser and no skip list, so everything in the string is prose to it: code gets
+typeset, and in French a character reference such as `&amp;` is broken by a no-break space before
+its `;`. A string that can contain markup or character references belongs in `html` mode, which
+takes a fragment as readily as a whole document.
+
+Each call sees only the string it is given, and rules stop reading context at its ends. A caller
+that transforms a component tree one text node at a time loses that context at every node, so a
+dash next to `</strong>` is left alone. Pass the whole fragment to `html` mode in one call instead.
+One call also means one locale: language is never detected, so a document that mixes languages is
+split by the caller.
 
 ## Conformance
 

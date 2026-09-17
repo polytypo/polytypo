@@ -2,7 +2,7 @@
 """Tests for gen_readmes.py — the repository's own README.md, generated from spec/ and
 promo/examples.json. This generator carries no install/API docs for any runtime (see the module
 docstring in gen_readmes.py) and names a runtime's registry only once that runtime actually has a
-real, published release — npm as of 2026-09-07 (polytypo@1.0.0), no other registry yet. These
+real, published release — all five registries (npm, PyPI, pkg.go.dev, RubyGems, Packagist). These
 tests exist mainly to lock the "no premature announcement" half of that property in, plus basic
 correctness for the shared table-building helpers.
 
@@ -17,16 +17,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import gen_readmes  # noqa: E402
 
-# Case-insensitive substrings that would assert something about a package/registry/install state
-# for a runtime this repository does not control and today has no real release for. "npm" is
-# deliberately absent here — polytypo@1.0.0 is real (see CLAUDE.md) — but every other ecosystem's
-# registry/install-command stays forbidden until that runtime has its own equally real release. If
-# any of these ever appear in the generated README again, that is a regression back to writing
-# about what doesn't exist.
+# Case-insensitive substrings that would assert something about a package/install state or runtime
+# status. Registry names (npm, PyPI, pkg.go.dev, RubyGems, Packagist) are deliberately absent here —
+# all five packages are published and the README links to them — but install commands and
+# unreleased-status wording stay forbidden. If any of these ever appear in the generated README
+# again, that is a regression back to writing about what doesn't exist.
 _FORBIDDEN_MENTIONS = [
-    "pypi",
-    "packagist",
-    "rubygems",
     "go modules",
     "go get",
     "pip install",
@@ -101,6 +97,8 @@ class RootReadmeContentTest(unittest.TestCase):
             spec_version=gen_readmes.SPEC_VERSION,
             n_locales=len(gen_readmes.REGISTRY["locales"]),
             n_rules=len(gen_readmes.ORDER["rules"]),
+            badges=gen_readmes.package_badges_row(),
+            implementations=gen_readmes.implementations_table(),
             hero=gen_readmes.hero_block(),
             locales=gen_readmes.locale_table(),
             rules=gen_readmes.rules_table(),

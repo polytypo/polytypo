@@ -65,11 +65,17 @@ const HERO: Record<(typeof LOCALES)[number], string> = {
     `βρήκαμε κλειστό. Copyright (c) 2026, μέγεθος 40x60 cm.`,
 };
 
-const SHOWCASE: Record<(typeof LOCALES)[number], Array<{ rule: string; in: string }>> = {
+// `rules` is passed to transform() as given, and recorded next to the case, so a case for a rule
+// that is off by default (`ranges`) shows the option it was generated with.
+const SHOWCASE: Record<
+  (typeof LOCALES)[number],
+  Array<{ rule: string; in: string; rules?: Record<string, boolean> }>
+> = {
   "en-US": [
     { rule: "quotes", in: `"He said 'no' to me," she noted.` },
     { rule: "dashes", in: `The plan - if there is one - fails.` },
     { rule: "dashes", in: `chapters 3-5 and pp. 34-36` },
+    { rule: "ranges", in: `chapters 3-5 and pp. 34-36`, rules: { ranges: true } },
     { rule: "ellipsis", in: `Wait... what?` },
     { rule: "apostrophe", in: `don't` },
     { rule: "nbsp", in: `It is 20 km to the coast` },
@@ -186,8 +192,9 @@ const data = {
     proof: { in: PROOF_INPUT, out: transform(PROOF_INPUT, { locale }) },
     cases: SHOWCASE[locale].map((c) => ({
       rule: c.rule,
+      ...(c.rules ? { rules: c.rules } : {}),
       in: c.in,
-      out: transform(c.in, { locale }),
+      out: transform(c.in, { locale, ...(c.rules ? { rules: c.rules } : {}) }),
     })),
   })),
 };

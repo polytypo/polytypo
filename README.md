@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.1.0** · locales: **10** · rules: **9**.
+Spec version: **1.2.0** · locales: **10** · rules: **9**.
 
 ## Implementations
 
@@ -96,13 +96,14 @@ Rule ids are **public API**. Renaming one is a breaking change. Order comes from
 
 | Rule | In | Out |
 | --- | --- | --- |
-| `quotes` | `"He said 'no' to me," she noted.` | “He⍽said⍽‘no’⍽to⍽me,”⍽she⍽noted. |
-| `dashes` | `The plan - if there is one - fails.` | The⍽plan—if⍽there⍽is⍽one—fails. |
-| `dashes` | `chapters 3-5 and pp. 34-36` | chapters⍽3-5⍽and⍽pp.⍽34-36 |
-| `ellipsis` | `Wait... what?` | Wait…⍽what? |
+| `quotes` | `"He said 'no' to me," she noted.` | “He said ‘no’ to me,” she noted. |
+| `dashes` | `The plan - if there is one - fails.` | The plan—if there is one—fails. |
+| `dashes` | `chapters 3-5 and pp. 34-36` | chapters 3-5 and pp. 34-36 |
+| `ranges` (`rules: { ranges: true }`) | `chapters 3-5 and pp. 34-36` | chapters 3⁠–⁠5 and pp. 34⁠–⁠36 |
+| `ellipsis` | `Wait... what?` | Wait… what? |
 | `apostrophe` | `don't` | don’t |
-| `nbsp` | `It is 20 km to the coast` | It⍽is⍽20 km⍽to⍽the⍽coast |
-| `symbols` | `Copyright (c) 2026, 1920x1080` | Copyright⍽©⍽2026,⍽1920×1080 |
+| `nbsp` | `It is 20 km to the coast` | It is 20⍽km to the coast |
+| `symbols` | `Copyright (c) 2026, 1920x1080` | Copyright © 2026, 1920×1080 |
 
 **⍽ is not in the output — it marks U+00A0 NO-BREAK SPACE**, which is otherwise indistinguishable
 from an ordinary space on this page. The `nbsp` rule's entire job is invisible, which is exactly why
@@ -119,6 +120,17 @@ U+00A0 and U+202F cannot be reviewed by a human.
 
 In every mode the output is **the input with a set of disjoint substring replacements applied, and
 nothing else**. The parser locates text; it never produces output.
+
+`text` mode has no parser and no skip list, so everything in the string is prose to it: code gets
+typeset, and in French a character reference such as `&amp;` is broken by a no-break space before
+its `;`. A string that can contain markup or character references belongs in `html` mode, which
+takes a fragment as readily as a whole document.
+
+Each call sees only the string it is given, and rules stop reading context at its ends. A caller
+that transforms a component tree one text node at a time loses that context at every node, so a
+dash next to `</strong>` is left alone. Pass the whole fragment to `html` mode in one call instead.
+One call also means one locale: language is never detected, so a document that mixes languages is
+split by the caller.
 
 ## Conformance
 
