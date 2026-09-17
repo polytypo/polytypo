@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Build the promo site — promo/index.html plus promo/{docs,playground,locales,manifesto}/index.html,
-served at the directory URLs /, /docs, /playground, /locales, /manifesto — in the brand book's
+"""Build the promo site — promo/index.html plus
+promo/{docs,playground,locales,manifesto,showcase}/index.html, served at the directory URLs /, /docs,
+/playground, /locales, /manifesto, /showcase — in the brand book's
 visual system.
 
 Before/after pairs come from promo/examples.json, produced by running the real engine
@@ -19,6 +20,7 @@ import os
 import re
 import shutil
 import sys
+import urllib.parse
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BRAND = os.path.dirname(HERE)
@@ -55,6 +57,8 @@ PAGES = [
     # 4 links + the logo on one row. Reachable instead from the home hero's CTA row and the
     # sitewide footer (footer_html).
     ("manifesto", "Manifesto", "manifesto.body.html"),
+    # Same placement as the manifesto: footer and the sitewide badge section, not the primary nav.
+    ("showcase", "Sites using polytypo", "showcase.body.html"),
 ]
 
 # Per-page meta/OG description — every page previously shared the Home page's own description
@@ -81,6 +85,10 @@ PAGE_DESCRIPTIONS = {
     "manifesto": (
         "The em dash was mine before AI. Why locale-correct typography is craft, set by locale "
         "convention long before language models existed — not an AI watermark."
+    ),
+    "showcase": (
+        "Sites that run their text through polytypo and show the polytypo badge. Add yours by "
+        "email once the badge is on your site."
     ),
 }
 
@@ -726,6 +734,37 @@ def _language_icon_svg(name):
     )
 
 
+# (hostname, title) of sites listed on /showcase, maintained by hand after a manual check that the
+# badge is on the site. Hostnames only, never full URLs: the scheme is fixed to https:// by
+# showcase_list(), so a pasted entry cannot smuggle in a javascript: or http: link. Rendered sorted
+# by title, so file order gives no site a better position.
+SHOWCASE_SITES = [
+    ("htpbe.tech", "PDF Tamper Detection Tool"),
+    ("iurii.rogulia.fi", "Software Engineer Iurii Rogulia"),
+    ("pi-pi.ee", "Plastic Sanitary Ware Manufacturer"),
+    ("vatnode.dev", "VIES API for EU VAT Validation"),
+]
+
+SHOWCASE_EMAIL = "iurii@rogulia.fi"
+SHOWCASE_SUBJECT = "Add my site to Sites using polytypo"
+
+
+def showcase_list():
+    # nofollow on every entry alike: a listing is granted in return for the badge's link back,
+    # which makes these reciprocal links.
+    items = "".join(
+        f'<li>{H.escape(title)} <a href="https://{H.escape(host)}/" rel="nofollow noopener">'
+        f"{H.escape(host)}</a></li>"
+        for host, title in sorted(SHOWCASE_SITES, key=lambda site: site[1])
+    )
+    return f'<ul class="showcase-list">{items}</ul>'
+
+
+def showcase_mailto():
+    subject = urllib.parse.quote(SHOWCASE_SUBJECT)
+    return H.escape(f"mailto:{SHOWCASE_EMAIL}?subject={subject}")
+
+
 def footer_html(data, prefix):
     # No nested .wrap here: footer_html()'s output is placed inside build()'s own outer .wrap
     # (see the f'<div class="wrap">...{footer_html(...)}...</div>' below), so a second .wrap
@@ -752,14 +791,15 @@ def footer_html(data, prefix):
         "<footer><p>"
         f'polytypo · spec {data["spec"]} · MIT for the code, separate terms for the brand assets · '
         "every before/after typography example on this site is generated with the engine.</p>"
-        f'<p><a href="{page_href(prefix, "manifesto")}">Manifesto</a></p>'
+        f'<p><a href="{page_href(prefix, "manifesto")}">Manifesto</a> · '
+        f'<a href="{page_href(prefix, "showcase")}">Sites using polytypo</a></p>'
         f"<p>Packages: {package_links}</p>"
         '<p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p>'
         "</footer>"
     )
 
 
-def badge_section_html():
+def badge_section_html(prefix):
     """The embeddable-badge picker: the exact section that used to live only at the bottom of the
     Docs page's own content, now emitted on every page (build()) right before footer_html() --
     same markup, same page-section styling (h2, .small.muted) it always had, just no longer
@@ -774,7 +814,9 @@ def badge_section_html():
         "Two lines, same shape as any other embeddable badge — a script tag and a span. No "
         "per-embed network call: the whole render table ships in that one script. Pick a "
         "language and a theme, then copy the code into your footer, About page, or credits "
-        "section."
+        "section. "
+        f'Sites with the badge are listed on <a href="{page_href(prefix, "showcase")}">Sites using '
+        "polytypo</a>."
         "</p>"
         '<div class="badge-controls" '
         'style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 14px 0">'
@@ -891,6 +933,8 @@ def build():
         "{{locale_cards}}": locale_cards(data),
         "{{proof_input}}": proof_input(data),
         "{{proof_grid}}": proof_grid(data),
+        "{{showcase_list}}": showcase_list(),
+        "{{showcase_mailto}}": showcase_mailto(),
     }
     # Per-locale fixture totals — read live from spec/fixtures/, never hand-maintained, so the
     # coverage table on the Locales page cannot drift from the conformance suite it describes.
@@ -945,7 +989,7 @@ def build():
             'data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>\n'
             f'</head>\n<body class="page-{slug or "home"}">\n'
             f"{nav_html(slug, prefix)}\n"
-            f'<div class="wrap">\n{body}\n{badge_section_html()}\n{footer_html(data, prefix)}\n</div>\n'
+            f'<div class="wrap">\n{body}\n{badge_section_html(prefix)}\n{footer_html(data, prefix)}\n</div>\n'
             f'<script src="{prefix}assets/site.js"></script>\n'
         )
 
@@ -1057,6 +1101,7 @@ def write_llms_txt(out_dir, data):
         "",
         f"- [Manifesto]({SITE_ORIGIN}/manifesto/): why this is typography, set by locale "
         "convention long before language models existed, not an AI watermark.",
+        f"- [Sites using polytypo]({SITE_ORIGIN}/showcase/): sites that show the polytypo badge.",
         "",
     ]
     with open(os.path.join(out_dir, "llms.txt"), "w", encoding="utf-8") as f:

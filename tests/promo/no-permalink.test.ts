@@ -32,6 +32,7 @@ const PAGES = [
   "docs/index.html",
   "playground/index.html",
   "locales/index.html",
+  "showcase/index.html",
 ];
 
 /** Pages that embed the playground — the only ones that could plausibly regrow a share control. */

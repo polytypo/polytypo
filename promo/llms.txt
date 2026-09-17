@@ -25,3 +25,4 @@ polytypo is a typography rules engine, not a grammar or spell checker: it normal
 ## Optional
 
 - [Manifesto](https://polytypo.dev/manifesto/): why this is typography, set by locale convention long before language models existed, not an AI watermark.
+- [Sites using polytypo](https://polytypo.dev/showcase/): sites that show the polytypo badge.

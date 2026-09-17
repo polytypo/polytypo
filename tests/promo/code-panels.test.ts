@@ -50,6 +50,7 @@ const PAGES = [
   "docs/index.html",
   "playground/index.html",
   "locales/index.html",
+  "showcase/index.html",
 ];
 
 /** Pages that carry at least one `<pre>` code panel with content baked in at build time. Named

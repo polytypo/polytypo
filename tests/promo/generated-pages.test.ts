@@ -23,6 +23,7 @@ const PAGES = [
   "docs/index.html",
   "playground/index.html",
   "locales/index.html",
+  "showcase/index.html",
 ];
 
 function readPromoPage(name: string): string {
@@ -60,6 +61,30 @@ describe("promo pages — the em-dash thesis is present where required", () => {
     const html = readPromoPage("manifesto/index.html");
     // The manifesto is one directory down, so its link to /playground is "../playground/".
     expect(html).toMatch(/href="\.\.\/playground\/"/);
+  });
+});
+
+describe("promo pages — Sites using polytypo", () => {
+  it("every listed site links out over https with the same rel, sorted by title", () => {
+    const html = readPromoPage("showcase/index.html");
+    const hosts = [
+      ...html.matchAll(/<li>[^<]+ <a href="https:\/\/([^/"]+)\/" rel="nofollow noopener">\1<\/a>/g),
+    ].map((m) => m[1]);
+    expect(hosts).toEqual(["htpbe.tech", "pi-pi.ee", "iurii.rogulia.fi", "vatnode.dev"]);
+  });
+
+  it("offers a mailto submission link with a pre-filled subject and a free-form body", () => {
+    const html = readPromoPage("showcase/index.html");
+    expect(html).toContain(
+      'href="mailto:iurii@rogulia.fi?subject=Add%20my%20site%20to%20Sites%20using%20polytypo"',
+    );
+    expect(html).toContain(">Share your website using polytypo</a>");
+  });
+
+  it.each(PAGES)("%s links to the showcase from the footer and the badge section", (page) => {
+    const html = readPromoPage(page);
+    const href = page.includes("/") ? "../showcase/" : "showcase/";
+    expect(html.split(`href="${href}"`).length - 1).toBe(2);
   });
 });
 
@@ -167,6 +192,7 @@ describe("promo site — favicon, robots.txt, sitemap.xml", () => {
     ["playground/index.html", "../"],
     ["locales/index.html", "../"],
     ["manifesto/index.html", "../"],
+    ["showcase/index.html", "../"],
   ])("%s links its favicon at the correct depth, and every linked file exists", (page, prefix) => {
     const html = readPromoPage(page);
     expect(html).toContain(`<link rel="icon" href="${prefix}assets/favicon/favicon.svg"`);
@@ -193,7 +219,7 @@ describe("promo site — favicon, robots.txt, sitemap.xml", () => {
     expect(robots).toContain("Sitemap: https://polytypo.dev/sitemap.xml");
   });
 
-  it("sitemap.xml lists exactly the five generated pages, as absolute directory URLs", () => {
+  it("sitemap.xml lists exactly the six generated pages, as absolute directory URLs", () => {
     const sitemap = readFileSync(path.join(PROMO_DIR, "sitemap.xml"), "utf8");
     for (const loc of [
       "https://polytypo.dev/",
@@ -201,10 +227,11 @@ describe("promo site — favicon, robots.txt, sitemap.xml", () => {
       "https://polytypo.dev/playground/",
       "https://polytypo.dev/locales/",
       "https://polytypo.dev/manifesto/",
+      "https://polytypo.dev/showcase/",
     ]) {
       expect(sitemap).toContain(`<loc>${loc}</loc>`);
     }
-    expect(sitemap.match(/<url>/g)).toHaveLength(5);
+    expect(sitemap.match(/<url>/g)).toHaveLength(6);
   });
 });
 
@@ -234,6 +261,7 @@ describe("promo site — llms.txt (llmstxt.org convention)", () => {
       "https://polytypo.dev/locales/",
       "https://polytypo.dev/playground/",
       "https://polytypo.dev/manifesto/",
+      "https://polytypo.dev/showcase/",
     ]) {
       expect(llms).toContain(`(${url})`);
     }
@@ -251,7 +279,7 @@ describe("promo site — llms.txt (llmstxt.org convention)", () => {
       expect(llms).toContain(`(${url})`);
     }
     expect(llms.match(/^- \[/gm)).toHaveLength(
-      3 /* docs */ + 5 /* packages */ + 1 /* spec */ + 1 /* optional */,
+      3 /* docs */ + 5 /* packages */ + 1 /* spec */ + 2 /* optional */,
     );
   });
 

@@ -34,6 +34,7 @@ const PAGES = [
   "docs/index.html",
   "playground/index.html",
   "locales/index.html",
+  "showcase/index.html",
 ];
 
 /** The two pages that embed the playground, and the depth each must reference the engine bundle
