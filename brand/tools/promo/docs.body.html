@@ -288,3 +288,49 @@
     >.
   </p>
 </section>
+
+<section id="badge-notes">
+  <p class="eyebrow">Embedding the badge</p>
+  <h2>What the badge needs, and what it does when it doesn't get it.</h2>
+  <p>
+    The span you paste is empty; the script fills it in. So if the script never runs — a Content
+    Security Policy, a blocker, a loading strategy that doesn't fire — the span stays empty and
+    nothing appears. The script cannot report that itself, since it never ran: what you have is the
+    browser's own evidence, a CSP violation or a failed request, so check that <code>badge.js</code>
+    was requested and executed before you look anywhere else. Every failure the script
+    <em>can</em> see it writes to the console, prefixed <code>polytypo badge:</code>.
+  </p>
+  <p>
+    <code>badge.js</code> does no I/O at all. Every language and both themes are inlined in the
+    file, so rendering is synchronous and works offline once the file is loaded. Serving it needs
+    <code>script-src https://polytypo.dev</code> and nothing else: no <code>connect-src</code>,
+    because nothing is fetched, and no <code>img-src</code>, because the mark is inline SVG. The
+    badge styles itself with inline <code>style</code> attributes, so a policy that blocks inline
+    styles leaves it unstyled.
+  </p>
+  <p>
+    <code>async</code> in the snippet is about your own page's load order and nothing else: once the
+    file is evaluated, rendering is a synchronous read from that table. An unknown
+    <code>data-polytypo-lang</code> or <code>data-polytypo-theme</code> renders English and the
+    light theme rather than throwing, so a locale code where a language code belongs (<code
+      >de-CH</code
+    >
+    instead of <code>de</code>) shows up as an English badge — with a console warning naming the
+    attribute, the value, and the seven languages it accepts.
+  </p>
+  <p>
+    <code>data-polytypo-lang</code> and <code>data-polytypo-theme</code> are read once, when the
+    script runs — on <code>DOMContentLoaded</code>, or immediately if the document is already
+    parsed. Changing an attribute afterwards does nothing by itself: there is no
+    <code>MutationObserver</code> and no <code>matchMedia</code> listener in the file. The script
+    exports the hook for that: set the attribute, then call <code>PolytypoBadge.render(el)</code> to
+    re-render that one badge, or <code>PolytypoBadge.init()</code> to re-render every badge on the
+    page.
+  </p>
+  <p>
+    The same applies to a span that appears after the script has run — a client-side route change, a
+    component mounted later. It is not picked up on its own; render it, or call
+    <code>init()</code> again once it is in the document. A run of <code>init()</code> that finds no
+    badge at all says so in the console rather than doing nothing quietly.
+  </p>
+</section>

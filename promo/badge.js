@@ -3,14 +3,36 @@
   var DEFAULT_LANG = "en";
   var DEFAULT_THEME = "light";
 
+  function warn(message) {
+    if (window.console && window.console.warn) window.console.warn("polytypo badge: " + message);
+  }
+
   function render(el) {
-    var byLang = MATRIX[el.getAttribute("data-polytypo-lang")] || MATRIX[DEFAULT_LANG];
+    var lang = el.getAttribute("data-polytypo-lang");
+    var byLang = MATRIX[lang];
+    if (!byLang) {
+      warn("unknown data-polytypo-lang " + JSON.stringify(lang) + ", rendering " + DEFAULT_LANG +
+        ". This attribute takes a language, not a locale: " + Object.keys(MATRIX).join(", ") + ".");
+      byLang = MATRIX[DEFAULT_LANG];
+    }
     var theme = el.getAttribute("data-polytypo-theme") || DEFAULT_THEME;
-    el.innerHTML = byLang[theme] || byLang[DEFAULT_THEME];
+    var html = byLang[theme];
+    if (!html) {
+      warn("unknown data-polytypo-theme " + JSON.stringify(theme) + ", rendering " +
+        DEFAULT_THEME + ". Themes: light, dark.");
+      html = byLang[DEFAULT_THEME];
+    }
+    el.innerHTML = html;
   }
 
   function init() {
     var els = document.querySelectorAll("[data-polytypo-lang]");
+    if (!els.length) {
+      warn("no [data-polytypo-lang] element on this page, nothing rendered. A span added after " +
+        "this script ran is not picked up on its own: call PolytypoBadge.render(el) for it, or " +
+        "PolytypoBadge.init() again, once it is in the document.");
+      return;
+    }
     for (var i = 0; i < els.length; i++) render(els[i]);
   }
 

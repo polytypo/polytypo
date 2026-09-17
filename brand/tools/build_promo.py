@@ -822,6 +822,8 @@ def badge_section_html(prefix):
         "per-embed network call: the whole render table ships in that one script. Pick a "
         "language and a theme, then copy the code into your footer, About page, or credits "
         "section. "
+        f'<a href="{page_href(prefix, "docs")}#badge-notes">Embedding notes</a> cover what a '
+        "Content Security Policy has to allow and how to re-render on a theme switch. "
         f'Sites with the badge are listed on <a href="{page_href(prefix, "showcase")}">Sites using '
         "polytypo</a>."
         "</p>"
@@ -1201,7 +1203,11 @@ def write_badge_js(out_dir):
     be a parameter that never changes anything -- honest naming over the ten-locale-count vanity
     that most polytypo copy otherwise correctly emphasizes. No network call, no per-embed fetch --
     the whole render table (badge_matrix()) ships inside this one file, so rendering is
-    synchronous and works offline once loaded. `window.PolytypoBadge.render()` is also what this
+    synchronous and works offline once loaded. The three console warnings cover exactly the
+    failures this script can still observe from inside -- an unknown language or theme (both fall
+    back rather than throw, which is otherwise silent) and an init() that found nothing to render.
+    A script that never executes at all cannot report anything, by construction: that case is the
+    browser's own CSP/network error, and promo/docs (#badge-notes) says so. `window.PolytypoBadge.render()` is also what this
     site's own picker (badge_section_html(), every page) calls after changing the preview span's
     attributes, so the live preview and every real embed run through the exact same code path.
     """
@@ -1211,14 +1217,36 @@ def write_badge_js(out_dir):
   var DEFAULT_LANG = "en";
   var DEFAULT_THEME = "light";
 
+  function warn(message) {{
+    if (window.console && window.console.warn) window.console.warn("polytypo badge: " + message);
+  }}
+
   function render(el) {{
-    var byLang = MATRIX[el.getAttribute("data-polytypo-lang")] || MATRIX[DEFAULT_LANG];
+    var lang = el.getAttribute("data-polytypo-lang");
+    var byLang = MATRIX[lang];
+    if (!byLang) {{
+      warn("unknown data-polytypo-lang " + JSON.stringify(lang) + ", rendering " + DEFAULT_LANG +
+        ". This attribute takes a language, not a locale: " + Object.keys(MATRIX).join(", ") + ".");
+      byLang = MATRIX[DEFAULT_LANG];
+    }}
     var theme = el.getAttribute("data-polytypo-theme") || DEFAULT_THEME;
-    el.innerHTML = byLang[theme] || byLang[DEFAULT_THEME];
+    var html = byLang[theme];
+    if (!html) {{
+      warn("unknown data-polytypo-theme " + JSON.stringify(theme) + ", rendering " +
+        DEFAULT_THEME + ". Themes: light, dark.");
+      html = byLang[DEFAULT_THEME];
+    }}
+    el.innerHTML = html;
   }}
 
   function init() {{
     var els = document.querySelectorAll("[data-polytypo-lang]");
+    if (!els.length) {{
+      warn("no [data-polytypo-lang] element on this page, nothing rendered. A span added after " +
+        "this script ran is not picked up on its own: call PolytypoBadge.render(el) for it, or " +
+        "PolytypoBadge.init() again, once it is in the document.");
+      return;
+    }}
     for (var i = 0; i < els.length; i++) render(els[i]);
   }}
 
