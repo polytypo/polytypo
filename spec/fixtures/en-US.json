@@ -1866,6 +1866,42 @@
       "in": "Use .<b>NET</b> today",
       "out": "Use.<b>NET</b> today",
       "note": "spaces.md §3.4 word-start clause (spec 1.2.0): the code point after the dot is the −1 span boundary marker, which is neither a LETTER nor an ASCII digit (modes.md §3.3), so the dot counts as terminal and the space before it is deleted."
+    },
+    {
+      "id": "en-us-markdown-mdx-frontmatter",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "---\ntitle: \"Une note\"\n---\n\n<Callout>Body \"quotes\" here</Callout>\n",
+      "out": "---\ntitle: \"Une note\"\n---\n\n<Callout>Body “quotes” here</Callout>\n",
+      "note": "modes.md §3.7.3: frontmatter is skipped whole under \"mdx\" too, not only under \"commonmark\" (compare en-us-markdown-commonmark-frontmatter, the same block in the other dialect). Frontmatter followed by JSX is the realistic MDX document shape, and the JSX element's children are processable prose per the same section."
+    },
+    {
+      "id": "en-us-markdown-mdx-frontmatter-abuts-content",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "---\ntitle: \"Une note\"\n---\n<Callout>Body \"quotes\" here</Callout>\n",
+      "out": "---\ntitle: \"Une note\"\n---\n<Callout>Body “quotes” here</Callout>\n",
+      "note": "modes.md §3.7.3: the skipped block ends at its closing delimiter, so content on the very next line with no blank line between is ordinary MDX and converts. Pins that the skip is delimited by the block itself and not by a following blank line."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-toml",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "+++\ntitle = \"Une note\"\n+++\n\nBody \"quotes\" here.\n",
+      "out": "+++\ntitle = \"Une note\"\n+++\n\nBody “quotes” here.\n",
+      "note": "modes.md §3.7.3 names both delimiters: a frontmatter block is delimited by --- (YAML) or +++ (TOML) and is skipped whole either way. The machine-read TOML field keeps its straight quotes while body prose converts."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-unterminated",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "---\ntitle: \"Unclosed\"\n\nBody \"quotes\" here.\n",
+      "out": "---\ntitle: “Unclosed”\n\nBody “quotes” here.\n",
+      "note": "modes.md §3.7.3 skips a frontmatter block; an opening delimiter with no closing one is not a block. The leading --- is then an ordinary thematic break and everything after it is prose, so the metadata-looking line converts like any other paragraph. Pinned so the skip cannot be widened into \"anything after a leading ---\"."
     }
   ]
 }

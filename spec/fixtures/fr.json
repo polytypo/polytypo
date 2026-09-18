@@ -728,6 +728,24 @@
       "in": "le n° cinq",
       "out": "le n° cinq",
       "note": "nbsp.md §3.11 N9 étape 4 : il faut un DIGIT après le séparateur. Un nombre écrit en toutes lettres n'en est pas un, l'espace reste sécable."
+    },
+    {
+      "id": "fr-markdown-commonmark-frontmatter-nbsp",
+      "rule": "nbsp",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "---\ntitle: Une note ; suite\n---\n\nEst-ce vrai ?\n",
+      "out": "---\ntitle: Une note ; suite\n---\n\nEst-ce vrai ?\n",
+      "note": "modes.md §3.7.3 gives this exact reason for skipping frontmatter: without it `fr` would put U+00A0 before the colon of a machine-read field and U+202F before its semicolon. The body sentence shows the rule is otherwise active in the same document, so the untouched field proves the skip rather than an inactive rule."
+    },
+    {
+      "id": "fr-markdown-mdx-frontmatter-nbsp",
+      "rule": "nbsp",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "---\ntitle: Une note ; suite\n---\n\n<Callout>Est-ce vrai ?</Callout>\n",
+      "out": "---\ntitle: Une note ; suite\n---\n\n<Callout>Est-ce vrai ?</Callout>\n",
+      "note": "modes.md §3.7.3: the same guarantee under \"mdx\", where frontmatter plus JSX is the ordinary document shape. This is the case the polytypo-js source comment above its frontmatter skip entry described as a spec gap."
     }
   ]
 }
