@@ -1,0 +1,90 @@
+{
+  "locale": "cs",
+  "name": "Czech",
+  "quotes": {
+    "primary": {
+      "open": "„",
+      "close": "“",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "‚",
+      "close": "‘",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": []
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": ["a", "i", "k", "o", "s", "u", "v", "z"],
+    "abbreviations": ["a. s.", "s. r. o."],
+    "beforeUnits": ["%", "°C", "ha", "kg", "km", "cm", "mm", "m²", "kWh", "km/h", "str.", "hod."],
+    "beforeNumber": [],
+    "beforeWord": ["tj.", "tzv.", "tzn."],
+    "afterSymbols": ["§"],
+    "initialBinding": "single"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Ústav pro jazyk český AV ČR, Internetová jazyková příručka, «Uvozovky»: «V češtině užíváme různé varianty uvozovek: dvojité „ “, jednoduché ‚ ‘ a boční » «»; «Jako základní se doporučují uvozovky typu 99 66, tj. dvojité „ “»; «Ostatní typy uvozovek (v první řadě jednoduché, až v druhé řadě boční) se užívají především tehdy, pokud potřebujeme do uvozeného textu vložit ještě další uvozovky»; «Uvozovky přiléhají vždy těsně k výrazům, které ohraničují (tedy „takto“)»",
+      "url": "https://prirucka.ujc.cas.cz/?id=162",
+      "note": "První stupeň: U+201E otevírací, U+201C zavírací — NIKOLI U+201D jako v polštině, a právě to je rozdíl, který se v sazbě přehlédne. Kódy nebyly odečteny z markdownové konverze stránky, která se u uvozovek ukázala jako nespolehlivá; rozhodující je vlastní označení zdroje «uvozovky typu 99 66»: první znaménko má tvar devítky u paty řádku (U+201E), druhé tvar šestky vyzdvižený nahoru (U+201C). Polský pár PWN naproti tomu označuje jako 99 99. Druhý stupeň: jednoduché uvozovky, protože zdroj je výslovně řadí «v první řadě» pro uvozovky v uvozovkách. OMEZENÁ JISTOTA, řečená naplno: označení «99 66» je ve zdroji uvedeno pouze pro dvojité uvozovky, takže kódy jednoduchých (U+201A … U+2018) vycházejí ze stejného vzorce a z vysázených glyfů, ne z doslovného tvrzení. Rozhodla by tabulka H.1 normy ČSN 01 6910:2014, která je však placená (ČSN online od 1 000 Kč/rok). ROZHODNUTÍ OPERÁTORA, 18. 9. 2026: leží-li pravidlo za placenou normou, projekt je formuluje podle převládajícího úzu a označí to jako rozhodnutí, nikoli jako citaci — stejně jako u německého «Nr.». Padne-li placená stěna, nahradí znění normy tento řádek. Q-W platí v obou případech: U+201A, U+2018 i U+2019 patří do NARROW. Ověřeno 18. 9. 2026."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Ústav pro jazyk český AV ČR, Internetová jazyková příručka, «Pomlčka»: «Pomlčku oddělujeme z obou stran mezerami, komplikovanější situace je pouze tehdy, pokud toto znaménko vystupuje ve funkci výrazů a, až, od … do … nebo proti (versus)»; «pomlčka místo čárky: Tato kniha – vydaná ještě před válkou – je opravdu úžasná»; «Pomlčka (–) je dlouhá vodorovná čárka»; «Vedle krátké pomlčky (–) se v textu někdy používá také pomlčka dlouhá (—)»",
+      "url": "https://prirucka.ujc.cas.cz/?id=165",
+      "note": "Odůvodňuje dash.parenthetical = «en-spaced». Vsuvka není žádná ze čtyř vyjmenovaných výjimek, takže platí obecné pravidlo o mezerách z obou stran. DÉLKA je na rozdíl od polštiny rozhodnuta samotným zdrojem: definiční glyf stránky je krátká pomlčka U+2013 a dlouhá U+2014 je popsána jako to, co se používá «někdy» navíc. U polštiny musel o délce rozhodnout operátor, protože PWN si v korpusu protiřečil; tady stačí číst. PŘÍPUSTNÁ VARIANTA, zaznamenána: U+2014. Ověřeno 18. 9. 2026."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Ústav pro jazyk český AV ČR, Internetová jazyková příručka, «Pomlčka», vyjádření rozsahu (s významem ‚až‘ či ‚od … do‘): «strana 23–26, v letech 1945–1948, 9–16 h»; ÚJČ (P. Lozan, M. Pravdová), «Otázky a odpovědi k ČSN 01 6910 (2014)», otázka 2: «norma umožňuje i psaní mezery kolem pomlčky v rozsazích a ve významu „a“ a „versus“, jestliže je alespoň jeden z výrazů kolem pomlčky víceslovný»",
+      "url": "https://prirucka.ujc.cas.cz/?id=165",
+      "note": "Odůvodňuje dash.range = «en-tight»: krátká pomlčka U+2013 bez mezer. Potvrzeno ze dvou stran: příručka sází rozsahy těsně, a dokument ÚJČ k normě popisuje mezery v rozsahu jako povolenou VÝJIMKU pro víceslovné výrazy, což těsnou sazbu předpokládá jako pravidlo. Text samotné ČSN 01 6910 čten nebyl (je placený); citován je výklad jejích vlastních zpracovatelů, což je nejsilnější veřejně dostupná náhrada. Stránka rovněž uvádí, že pomlčka vyjadřující rozsah nemá stát na konci ani na začátku řádku — požadavek, pro který locale.schema.json nemá pole. Pravidlo ranges je ve výchozím stavu vypnuté (spec 0.5.0). Ověřeno 18. 9. 2026."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Ústav pro jazyk český AV ČR, Internetová jazyková příručka, «Tři tečky»: «jedná se totiž o jeden znak, nikoli tři samostatné tečky»; «Za třemi tečkami často následují další interpunkční znaménka, která se za tři tečky připojují bez mezery, ale nikdy se však nepřipojuje další tečka (nikoli tedy čtyři tečky vedle sebe)»",
+      "url": "https://prirucka.ujc.cas.cz/?id=166",
+      "note": "Odůvodňuje abbreviatedAfterTerminal = false. Výpustka je jeden znak U+2026 a otazník či vykřičník stojí ZA ní — ruská dvoutečková forma «?..» není v žádném konzultovaném českém zdroji předvídána. Bylo to ověřeno záměrně: ukrajinština, zkoumaná v témže průchodu, tu formu MÁ, takže analogie mezi slovanskými jazyky by tu byla svůdná a mylná. Ověřeno 18. 9. 2026."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Ústav pro jazyk český AV ČR, Internetová jazyková příručka, «Spojovník»: «píše se bez mezer mezi výrazy, které spojuje»; «Spojovník na začátku dalšího řádku neopakujeme, naznačuje-li rozdělení slova (např. žong- | -lér)»; táž příručka, «Zalomení řádků a nevhodné výrazy na jejich konci», jejíž uzavřený výčet míst, kde k zalomení dojít nemá, spojovník neuvádí",
+      "url": "https://prirucka.ujc.cas.cz/?id=164",
+      "note": "Odůvodňuje tři prázdné seznamy. Čeština spojovník na konci řádku ani nezakazuje, ani — na rozdíl od polštiny — dělení v jeho místě nepředepisuje; neexistuje uzavřený normativní seznam tvarů, jejichž spojovník se nesmí lámat. To, že jej třináctibodový výčet stránky o zalomení řádků neobsahuje, je doložená nepřítomnost, ne nenalezená citace — a je to zároveň rozdíl proti ukrajinštině, kde § 64 п. 4 takový seznam má. Ověřeno 18. 9. 2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Ústav pro jazyk český AV ČR, Internetová jazyková příručka, «Zalomení řádků a nevhodné výrazy na jejich konci»: k zalomení nemá dojít «ve spojení neslabičných předložek k, s, v, z s následujícím slovem, např. k mostu, s bratrem, v Plzni, z nádraží»; «ve spojení slabičných předložek o, u a spojek a, i s výrazem, který po nich následuje, např. u babičky, o páté»; «ve složených zkratkách a kódech, např. a. s., s. r. o.»; «mezi zkratkami tj., tzv., tzn. a následujícím výrazem»; «mezi zkratkou jména a příjmením»; «mezi číslem a značkou, např. 50 %, § 23»; «V textovém procesoru vkládáme tam, kde nemá dojít k zalomení řádku, místo běžné mezislovní mezery mezeru pevnou»",
+      "url": "https://prirucka.ujc.cas.cz/?id=880",
+      "note": "Pět polí z jednoho uzavřeného výčtu, který se odvolává na ČSN 01 6910. (1) afterShortWords: osm jednopísmenných výrazů, citovaných doslova. Na rozdíl od polštiny je zákaz v prameni BEZPODMÍNEČNÝ — není vázán na šířku sloupce ani na to, zda jde o titulek — takže zde nebylo co rozhodovat. (2) abbreviations: «a. s.» a «s. r. o.». Interakce s N3 ověřena a je opačná než u polského «i in.»: N3 vyžaduje, aby po jednopísmenném výrazu následovala mezera, a po «a» následuje tečka, takže N3 index nenárokuje a obě mezery dostane N4. «ČSN 01 6910» z výčtu vypuštěno: číslo normy není fakt o jazyce. (3) beforeWord: «tj.», «tzv.», «tzn.». Bod o «zkratce titulu» populován není, protože zdroj u něj žádný seznam neuvádí. (4) afterSymbols = [«§»]. Ze stejného citovaného bodu byly ZÁMĚRNĚ vynechány «*», «†» a «#»: řetězec «* 1921» je bajt po bajtu totožný s odrážkou seznamu následovanou číslicí, takže v režimu markdown by šlo o falešný zásah bez vyvažujícího přínosu. (5) initialBinding = «single»: pramen váže «zkratku jména» k příjmení a jeho vlastní příklady jsou Fr. Daneš a M. Těšitelová, tedy JEDNA zkrácená křestní jméno; «chain» by na ani jednom z nich nezabral a citované pravidlo by zůstalo nenaplněné. Expozici, kterou schéma u «single» samo pojmenovává, přijímáme na základě citace, stejně jako u fr. beforeNumber zůstává prázdné: jediným kandidátem je «strana 2», ale «strana» je víceznačné plnovýznamové slovo, nikoli zkratka — týž argument, jakým ru.json vylučuje «г.». Ověřeno 18. 9. 2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Ústav pro jazyk český AV ČR, Internetová jazyková příručka, «Značky, čísla a číslice»: «Značky se od číselné hodnoty oddělují mezerou, číslo a značka se umísťují na stejný řádek», «např. 10 ha = 10 hektarů, 3 kg = 3 kilogramy, 14 % = 14 procent», «100 kWh», «rychlost 50 km/h», «teplota 12–15 °C»; BIPM, The International System of Units (SI), 9th ed., concise summary: «A single space is always left between the number and the unit»",
+      "url": "https://prirucka.ujc.cas.cz/?id=785",
+      "note": "Rozdělení rolí jako v en-US, fi, sv, es, pt a pl: BIPM říká, které řetězce jsou značkami jednotek SI, ÚJČ říká, jaká je česká konvence. České znění je přitom silnější, než nbsp.md §2.1 od locale vyžaduje: uvádí nejen mezeru, ale i to, že «číslo a značka se umísťují na stejný řádek». PŘÍPUSTNÁ VARIANTA, zaznamenána: «V případě, že pomocí číslice a značky vyjadřujeme přídavné jméno, mezeru nevkládáme: 8km = 8kilometrový, 20% = 20procentní». Rozpor není třeba řešit: N5 existující mezeru pouze nahrazuje a nikdy ji nevkládá (nbsp.md §3.7), takže «14 %» dostane U+00A0 a «20%» zůstane nedotčeno. Jednoznakové značky vypuštěny, a pro češtinu z konkrétního důvodu, ne ze stylové opatrnosti: «s» je zároveň vyjmenovaná jednopísmenná předložka, takže ve větě «Přišel v 5 s bratrem» by se «5» svázala se «s». Ověřeno 18. 9. 2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Ústav pro jazyk český AV ČR, Internetová jazyková příručka, «Otazník»: «Stejně jako naprostá většina interpunkčních znamének se připojuje k předcházejícímu slovu (zkratce, značce) bez mezery, za ním následuje mezera»; táž příručka, «Tři tečky»: «tři tečky následující za slovem se připojují bez mezery»",
+      "url": "https://prirucka.ujc.cas.cz/?id=171",
+      "note": "Odůvodňuje prázdné beforePunctuation i narrowBeforePunctuation. Čeština před «:», «;», «!», «?» nestaví ani U+00A0, ani U+202F, a zdroj jim odstup výslovně upírá — je to zápor, ne mlčení. Q-P je tím splněno triviálně. Ověřeno 18. 9. 2026."
+    }
+  ]
+}

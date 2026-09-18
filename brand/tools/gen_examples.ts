@@ -25,6 +25,8 @@ const LOCALES = [
   "pt-BR",
   "nl",
   "pl",
+  "uk",
+  "cs",
 ] as const;
 
 // Every hero line: nested quotes, an apostrophe or elision (except el — see its own note below),
@@ -72,6 +74,12 @@ const HERO: Record<(typeof LOCALES)[number], string> = {
   es:
     `Preguntó: "¿No es esta la tienda que llaman 'la de la esquina'?" ... Caminamos -- casi 3 ` +
     `km -- y estaba cerrada. Copyright (c) 2026, tamaño 40x60 cm.`,
+  uk:
+    `Він запитав: "Хіба це не та крамниця, яку називають 'тією за рогом'?" ... Ми йшли -- майже ` +
+    `3 км -- а вона була зачинена. Copyright (c) 2026, формат 40x60 см.`,
+  cs:
+    `Zeptal se: "Není to ten obchod, kterému říkají 'ten za rohem'?" ... Šli jsme -- skoro 3 km ` +
+    `-- a byl zavřený. Copyright (c) 2026, formát 40x60 cm.`,
   nl:
     `Hij vroeg: "Is dit niet de winkel die ze 'om de hoek' noemen?" ... We liepen -- bijna 3 km ` +
     `-- en hij was dicht. Copyright (c) 2026, formaat 40x60 cm.`,
@@ -154,6 +162,16 @@ const SHOWCASE: Record<
     { rule: "dashes", in: `Planen - om det finns en - misslyckas.` },
     { rule: "nbsp", in: `Det kostar 100 kr` },
   ],
+  uk: [
+    { rule: "quotes", in: `Він сказав: "Це мій Кобзар".` },
+    { rule: "ellipsis", in: `а щоб селяни?...` },
+    { rule: "hyphen", in: `з-під столу і будь-хто` },
+  ],
+  cs: [
+    { rule: "quotes", in: `Řekl "ahoj".` },
+    { rule: "nbsp", in: `v Plzni a u babičky` },
+    { rule: "dashes", in: `Tato kniha - vydaná před válkou - je úžasná.` },
+  ],
   nl: [
     { rule: "quotes", in: `Hij zei "dag" en vertrok.` },
     { rule: "dashes", in: `Het nieuws - volgens de kranten - is niet bekend.` },
@@ -224,6 +242,8 @@ const NAMES: Record<(typeof LOCALES)[number], string> = {
   it: "Italian",
   nl: "Dutch",
   pl: "Polish",
+  uk: "Ukrainian",
+  cs: "Czech",
   "pt-PT": "Portuguese (Portugal)",
   "pt-BR": "Portuguese (Brazil)",
 };

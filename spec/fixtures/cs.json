@@ -1,0 +1,161 @@
+{
+  "spec": "1.3.0",
+  "locale": "cs",
+  "cases": [
+    {
+      "id": "cs-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Řekl \"ahoj\".",
+      "out": "Řekl „ahoj“.",
+      "note": "quotes.primary = U+201E/U+201C, tedy «uvozovky typu 99 66» podle IJP."
+    },
+    {
+      "id": "cs-quotes-not-polish",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "„ahoj”",
+      "out": "„ahoj“",
+      "note": "ROZLIŠUJÍCÍ PŘÍPAD: zavírací znaménko je U+201C, ne polské U+201D. Vstup je polský pár; výstup ukazuje, že se přesází na českou podobu. V sazbě je ten rozdíl skoro neviditelný, proto má vlastní fixture."
+    },
+    {
+      "id": "cs-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Toto je 'citát' v citátu\"",
+      "out": "„Toto je ‚citát‘ v citátu“",
+      "note": "Druhý stupeň jsou jednoduché uvozovky, protože IJP je řadí «v první řadě» pro uvozovky v uvozovkách. Kódy U+201A/U+2018 jsou rozhodnutí operátora (18. 9. 2026) — označení «99 66» zdroj uvádí jen pro dvojité, a tabulka H.1 normy ČSN je placená. V témže případě je vidět N3: jednopísmenné «v» se váže k následujícímu slovu."
+    },
+    {
+      "id": "cs-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Počkej... co?",
+      "out": "Počkej… co?",
+      "note": "IJP «Tři tečky»: výpustka je jeden znak U+2026, nikoli tři samostatné tečky."
+    },
+    {
+      "id": "cs-ellipsis-not-abbreviated",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Opravdu?.. ano",
+      "out": "Opravdu?… ano",
+      "note": "ZRCADLOVÝ PŘÍPAD k ukrajinskému uk-ellipsis-abbreviated-after-question, zařazený proto, že analogie mezi slovanskými jazyky je tu svůdná a mylná: čeština má abbreviatedAfterTerminal = false, takže dvě tečky po «?» se doplní na plnou výpustku, zatímco ukrajinština je zkracuje."
+    },
+    {
+      "id": "cs-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Tato kniha - vydaná ještě před válkou - je opravdu úžasná.",
+      "out": "Tato kniha – vydaná ještě před válkou – je opravdu úžasná.",
+      "note": "Vlastní příklad IJP. dash.parenthetical = en-spaced: krátká pomlčka U+2013 s mezerami. Délku tu rozhoduje sám zdroj (definiční glyf stránky), na rozdíl od polštiny, kde ji musel rozhodnout operátor."
+    },
+    {
+      "id": "cs-ranges-en-tight",
+      "rule": "ranges",
+      "mode": "text",
+      "rules": {
+        "ranges": true
+      },
+      "in": "strana 23-26",
+      "out": "strana 23⁠–⁠26",
+      "note": "ranges.md §3: dash.range = en-tight, příklad z IJP «strana 23–26». Potvrzeno i dokumentem ÚJČ k ČSN 01 6910, který mezery v rozsahu popisuje jako výjimku pro víceslovné výrazy."
+    },
+    {
+      "id": "cs-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "česko-slovenský",
+      "out": "česko-slovenský",
+      "note": "hyphen.md §2: tři prázdné seznamy, tedy dokazatelný no-op. Uzavřený výčet IJP o zalomení řádků spojovník neuvádí — doložená nepřítomnost, ne nenalezená citace. Rozdíl proti ukrajinštině, kde § 64 п. 4 takový seznam má."
+    },
+    {
+      "id": "cs-nbsp-short-words",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "v Plzni a u babičky",
+      "out": "v Plzni a u babičky",
+      "note": "N3 afterShortWords: neslabičné předložky k, s, v, z a slabičné o, u se spojkami a, i. Příklady jsou z IJP. Na rozdíl od polštiny je zákaz v prameni bezpodmínečný."
+    },
+    {
+      "id": "cs-nbsp-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "10 ha, 14 % a 19 °C",
+      "out": "10 ha, 14 % a 19 °C",
+      "note": "N5 na třech značkách z vlastních příkladů IJP. Zároveň je vidět N3 na spojce «a»."
+    },
+    {
+      "id": "cs-nbsp-percent-adjective-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "20% roztok",
+      "out": "20% roztok",
+      "note": "Povolená varianta IJP: «20% = 20procentní» se píše bez mezery. N5 existující mezeru pouze nahrazuje a nikdy ji nevkládá, takže jeden seznam obslouží obě doložené podoby."
+    },
+    {
+      "id": "cs-nbsp-paragraph-sign",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "§ 23",
+      "out": "§ 23",
+      "note": "N6 afterSymbols. Ze stejného citovaného bodu byly vynechány «*», «†» a «#»: «* 1921» je bajt po bajtu odrážka seznamu následovaná číslicí, což by v režimu markdown byl falešný zásah."
+    },
+    {
+      "id": "cs-nbsp-abbreviations",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "a. s. a s. r. o.",
+      "out": "a. s. a s. r. o.",
+      "note": "N4 na obou zkratkách. Zároveň fixuje interakci s N3, která je opačná než u polského «i in.»: po jednopísmenném «a» následuje tečka, ne mezera, takže N3 index nenárokuje a obě mezery dostane N4 — kdežto samostatné «a» uprostřed věty N3 váže."
+    },
+    {
+      "id": "cs-nbsp-before-word",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "tzv. odborník",
+      "out": "tzv. odborník",
+      "note": "N10 beforeWord: tj., tzv., tzn. jsou uzavřený a doslovně citovaný seznam."
+    },
+    {
+      "id": "cs-nbsp-initial-single",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "M. Těšitelová",
+      "out": "M. Těšitelová",
+      "note": "initialBinding = single. Vlastní příklady zdroje (Fr. Daneš, M. Těšitelová) mají JEDNO zkrácené křestní jméno, takže «chain» by citované pravidlo nechal nenaplněné."
+    },
+    {
+      "id": "cs-nbsp-no-space-before-question",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Opravdu?",
+      "out": "Opravdu?",
+      "note": "Čeština není francouzština: beforePunctuation i narrowBeforePunctuation jsou prázdné a zdroj odstup před «?» výslovně upírá."
+    },
+    {
+      "id": "cs-spaces-brackets-and-final-stop",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Text ( běžný ) se nemění  .",
+      "out": "Text (běžný) se nemění.",
+      "note": "spaces.md §3: pravidlo nezávislé na locale, případ je tu proto, aby cs mělo po jednom pro každé kanonické pravidlo."
+    },
+    {
+      "id": "cs-symbols-copyright-and-dimensions",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026, formát 40x60 cm",
+      "out": "Copyright © 2026, formát 40×60 cm",
+      "note": "symbols.md: «(c)» se stane U+00A9 a «x» mezi číslicemi U+00D7. U+00A0 před «cm» vkládá nbsp N5."
+    },
+    {
+      "id": "cs-apostrophe-elision",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Šel do McDonald's a zpět",
+      "out": "Šel do McDonald’s a zpět",
+      "note": "Pravidlo apostrophe nečte data locale: U+0027 mezi písmeny se stane U+2019. V téže větě je vidět N3, které váže spojku «a» k následujícímu slovu — dvě nezávislá pravidla na jednom řádku."
+    }
+  ]
+}
