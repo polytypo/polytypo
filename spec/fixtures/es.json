@@ -1,0 +1,193 @@
+{
+  "spec": "1.3.0",
+  "locale": "es",
+  "cases": [
+    {
+      "id": "es-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ha dicho \"buenos días\" y salió.",
+      "out": "Ha dicho «buenos días» y salió.",
+      "note": "quotes.primary = U+00AB/U+00BB con innerSpace \"none\" (DPD «comillas» 1: «se recomienda utilizar en primera instancia las comillas angulares»; «pegadas a la primera y la última palabra»)."
+    },
+    {
+      "id": "es-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Escribió: \"Me dijo 'llego enseguida' y desapareció.\"",
+      "out": "Escribió: «Me dijo “llego enseguida” y desapareció.»",
+      "note": "Nivel 1 angulares, nivel 2 inglesas, según el orden que fija el DPD. El tercer nivel del DPD (simples) no es expresable en el esquema."
+    },
+    {
+      "id": "es-quotes-inner-space-deleted",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ha dicho « buenos días » y salió.",
+      "out": "Ha dicho «buenos días» y salió.",
+      "note": "innerSpace \"none\": N8 elimina el espacio interior que un texto copiado de una fuente francesa trae consigo."
+    },
+    {
+      "id": "es-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Espera... ¿qué?",
+      "out": "Espera… ¿qué?",
+      "note": "Tres U+002E pasan a U+2026 (DPD «puntos suspensivos» 1: «tres puntos consecutivos ―y solo tres―»)."
+    },
+    {
+      "id": "es-ellipsis-not-abbreviated-after-terminal",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "¿De verdad?..",
+      "out": "¿De verdad?…",
+      "note": "abbreviatedAfterTerminal = false: la forma de dos puntos tras «?» que usa el ruso no existe en español, así que los dos puntos se completan a U+2026 en vez de conservarse."
+    },
+    {
+      "id": "es-dashes-parenthetical-none",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "El plan - si existe - fracasa.",
+      "out": "El plan - si existe - fracasa.",
+      "note": "dash.parenthetical = \"none\": el DPD prescribe raya con espacios FUERA del par y ninguno dentro, asimetría que el enum no expresa; mientras tanto la regla no toca nada. Véase la voz dashes de es.json."
+    },
+    {
+      "id": "es-ranges-guion-none",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "las páginas 23-45",
+      "out": "las páginas 23-45",
+      "note": "ranges.md §3: el token no se convierte porque dash.range es \"none\" — el signo español del intervalo es el guion U+002D, que ya está escrito (DPD «guion» 3 b), y el enum no tiene un valor para él. El caso se genera con ranges activado explícitamente, ya que la regla está desactivada por defecto.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "es-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "un estudio teórico-práctico",
+      "out": "un estudio teórico-práctico",
+      "note": "Las tres listas de hyphen están vacías, así que la regla es un no-op total demostrable para el español (hyphen.md §2)."
+    },
+    {
+      "id": "es-nbsp-inverted-marks-untouched",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "¿Qué hora es? ¡Vaya!",
+      "out": "¿Qué hora es? ¡Vaya!",
+      "note": "beforePunctuation y narrowBeforePunctuation vacías: el español no pone espacio antes de «?» ni de «!», y U+00BF/U+00A1 no son miembros de CLOSEISH, así que la restricción Q-P impediría expresarlo aunque la fuente lo pidiera."
+    },
+    {
+      "id": "es-nbsp-degree-tight",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Hacía 27° a la sombra",
+      "out": "Hacía 27° a la sombra",
+      "note": "El DPD «símbolo» 5.4 pega «°» a la cifra cuando no se especifica la escala, por eso «°» a secas NO está en beforeUnits y aquí no se inserta nada."
+    },
+    {
+      "id": "es-nbsp-percent",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Aprobó un 8 % de los alumnos",
+      "out": "Aprobó un 8 % de los alumnos",
+      "note": "N5 beforeUnits: el espacio pasa a U+00A0. RAE, Duda lingüística: «El símbolo del porcentaje se separa con espacio de la cifra que lo precede: 50 %»; la indivisibilidad la impone el DPD «símbolo» 5.6."
+    },
+    {
+      "id": "es-nbsp-celsius",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "La temperatura es de 27 °C",
+      "out": "La temperatura es de 27 °C",
+      "note": "«°C» sí está en beforeUnits, citado literalmente por el DPD «símbolo» 5.4 («27° […] pero 27 °C»). Contrasta con es-nbsp-degree-tight."
+    },
+    {
+      "id": "es-nbsp-abbreviation-internal-space",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Viajó a los EE. UU. el lunes",
+      "out": "Viajó a los EE. UU. el lunes",
+      "note": "N4 abbreviations: el espacio interior de una abreviatura de varios elementos pasa a U+00A0 (DPD «abreviatura»: «Cuando la abreviatura se compone de varios elementos, estos no deben separarse en líneas diferentes»)."
+    },
+    {
+      "id": "es-nbsp-abbreviation-p-ej",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "algunos casos, p. ej. este",
+      "out": "algunos casos, p. ej. este",
+      "note": "La misma subrregla sobre «p. ej.», forma atestiguada en la Lista de abreviaturas de El buen uso del español."
+    },
+    {
+      "id": "es-nbsp-before-number",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "véase la pág. 23",
+      "out": "véase la pág. 23",
+      "note": "N9 beforeNumber: «⊗15 / págs.» es el ejemplo del propio DPD «abreviatura» para este caso."
+    },
+    {
+      "id": "es-nbsp-before-word",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "El Sr. Pérez llegó tarde",
+      "out": "El Sr. Pérez llegó tarde",
+      "note": "N10 beforeWord: «⊗Sr. / Pérez» es el segundo ejemplo de la misma entrada. La lista se limita a los tratamientos de cortesía, por el riesgo de falsos positivos de esta subrregla."
+    },
+    {
+      "id": "es-nbsp-initials-chain",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Lo escribió J. A. Pérez ayer",
+      "out": "Lo escribió J. A. Pérez ayer",
+      "note": "initialBinding = \"chain\": la cadena completa se liga, incluido el espacio que precede a la primera inicial, igual que en en-US y ru. Decisión del operador (18.09.2026) ante una fuente que no distingue entre una inicial y dos; véase la voz nbsp correspondiente."
+    },
+    {
+      "id": "es-nbsp-lone-initial-not-bound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "La ley N. Roma decidió",
+      "out": "La ley N. Roma decidió",
+      "note": "El reverso del caso anterior y la razón de elegir \"chain\": una sola mayúscula con punto seguida de un nombre propio NO se liga, de modo que un final de frase no se confunde con una inicial."
+    },
+    {
+      "id": "es-nbsp-ac-guard",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "en el año 33 a. C. Roma era una república",
+      "out": "en el año 33 a. C. Roma era una república",
+      "note": "N4 liga el espacio interior de «a. C.» y la guarda C1-a (nbsp.md §3.9) impide que C1 lea «C.» como inicial y «Roma» como apellido. Equivalente español del alemán «z. B. Berlin»."
+    },
+    {
+      "id": "es-apostrophe-foreign-name",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "L'Hospitalet de Llobregat",
+      "out": "L’Hospitalet de Llobregat",
+      "note": "U+0027 pasa a U+2019. El DPD «apóstrofo» limita el signo en español a textos antiguos, habla reproducida y nombres de otras lenguas: este es el tercer caso, y es el que un texto español encuentra de verdad."
+    },
+    {
+      "id": "es-roundtrip-noop",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ha dicho «buenos días» y salió…",
+      "out": "Ha dicho «buenos días» y salió…",
+      "note": "modes.md §4: un texto ya compuesto vuelve byte a byte."
+    },
+    {
+      "id": "es-spaces-brackets-and-final-stop",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Dijo ( sin dudar ) que sí  .",
+      "out": "Dijo (sin dudar) que sí.",
+      "note": "spaces.md §3: los espacios interiores de los paréntesis se eliminan y la serie anterior al punto final se colapsa. Regla independiente de la locale, presente aquí para que es tenga un caso por cada regla canónica."
+    },
+    {
+      "id": "es-symbols-copyright-and-dimensions",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026, tamaño 40x60 cm",
+      "out": "Copyright © 2026, tamaño 40×60 cm",
+      "note": "symbols.md: «(c)» pasa a U+00A9 y la «x» entre cifras a U+00D7. El U+00A0 ante «cm» lo pone nbsp N5, no symbols; se deja en el mismo caso porque así se ve que las dos reglas componen."
+    }
+  ]
+}

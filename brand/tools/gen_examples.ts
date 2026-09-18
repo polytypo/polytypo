@@ -19,6 +19,8 @@ const LOCALES = [
   "fi",
   "sv",
   "el",
+  "es",
+  "it",
 ] as const;
 
 // Every hero line: nested quotes, an apostrophe or elision (except el — see its own note below),
@@ -63,6 +65,12 @@ const HERO: Record<(typeof LOCALES)[number], string> = {
   el:
     `Ρώτησε: "Δεν είναι αυτό το μαγαζί 'στη γωνία';" ... Περπατήσαμε -- σχεδόν 3 χλμ -- και το ` +
     `βρήκαμε κλειστό. Copyright (c) 2026, μέγεθος 40x60 cm.`,
+  es:
+    `Preguntó: "¿No es esta la tienda que llaman 'la de la esquina'?" ... Caminamos -- casi 3 ` +
+    `km -- y estaba cerrada. Copyright (c) 2026, tamaño 40x60 cm.`,
+  it:
+    `Ha chiesto: "Non è questo il negozio che chiamano 'quello all'angolo'?" ... Abbiamo camminato ` +
+    `-- quasi 3 km -- ed era chiuso. Copyright (c) 2026, formato 40x60 cm.`,
 };
 
 // `rules` is passed to transform() as given, and recorded next to the case, so a case for a rule
@@ -130,6 +138,18 @@ const SHOWCASE: Record<
     { rule: "dashes", in: `Planen - om det finns en - misslyckas.` },
     { rule: "nbsp", in: `Det kostar 100 kr` },
   ],
+  es: [
+    { rule: "quotes", in: `Ha dicho "buenos días" y salió.` },
+    { rule: "nbsp", in: `El Sr. Pérez aprobó un 8 % de los alumnos` },
+    { rule: "ellipsis", in: `Espera... ¿qué?` },
+    { rule: "symbols", in: `Resolución 1920x1080` },
+  ],
+  it: [
+    { rule: "quotes", in: `Ha detto "buongiorno" ed è uscito.` },
+    { rule: "dashes", in: `La casa - se casa era - sorgeva ai piedi del colle.` },
+    { rule: "apostrophe", in: `un'utopia e dell'Unione` },
+    { rule: "nbsp", in: `il regolamento n. 3600 e un aumento del 45 %` },
+  ],
   el: [
     { rule: "quotes", in: `Είπε "καλημέρα" και έφυγε.` },
     { rule: "quotes", in: `"Είπε “όχι” σε μένα", σημείωσε.` },
@@ -164,6 +184,8 @@ const NAMES: Record<(typeof LOCALES)[number], string> = {
   fi: "Finnish",
   sv: "Swedish",
   el: "Greek",
+  es: "Spanish",
+  it: "Italian",
 };
 
 // Single source of truth for which locales the home/manifesto "proof grid" renders — read by
@@ -182,10 +204,26 @@ const PROOF_LOCALES = ["en-US", "en-GB", "de-DE", "de-CH", "fr", "ru"] as const;
 
 const specVersion = readFileSync(new URL("../../spec/VERSION", import.meta.url), "utf8").trim();
 
+// A locale the spec has added but no published runtime implements yet is skipped here rather than
+// crashing the build: the promo site and README describe what ships, never what sits unreleased on
+// main, and every worked example on them is real output from the INSTALLED `polytypo` package. The
+// locale reappears on its own, with no edit to this file, once the bumped devDependency knows it.
+const supported = LOCALES.filter((locale) => {
+  try {
+    transform("", { locale });
+    return true;
+  } catch (error) {
+    const code = (error as { code?: string }).code;
+    if (code !== "POLYTYPO_UNKNOWN_LOCALE") throw error;
+    console.log(`  skipping ${locale}: not in the installed engine yet (unreleased spec locale)`);
+    return false;
+  }
+});
+
 const data = {
   spec: specVersion,
   proofLocales: PROOF_LOCALES as unknown as string[],
-  locales: LOCALES.map((locale) => ({
+  locales: supported.map((locale) => ({
     locale,
     name: NAMES[locale],
     hero: { in: HERO[locale], out: transform(HERO[locale], { locale }) },

@@ -119,7 +119,10 @@ def hero_block():
     # subset, so a locale can't silently go missing from this table as more are added.
     en = HERO["en-US"]
     rows = ["| Locale | Output |", "| --- | --- |"]
-    for code in REGISTRY["locales"]:
+    # A locale the spec has added but no published runtime implements yet has no entry in
+    # promo/examples.json (see brand/tools/gen_examples.ts), and is skipped rather than invented:
+    # this table is real engine output, and the README describes what ships.
+    for code in [c for c in REGISTRY["locales"] if c in HERO]:
         rows.append(f"| `{code}` | {HERO[code]['hero']['out']} |")
     table = "\n".join(rows)
     return f"**Input**\n\n> {en['hero']['in']}\n\n{table}"
@@ -128,7 +131,10 @@ def hero_block():
 def locale_table():
     rows = ["| Locale | Language | Primary quotes | Secondary | Parenthetical dash | Range |",
             "| --- | --- | --- | --- | --- | --- |"]
-    for code in REGISTRY["locales"]:
+    # Same rule as the hero table above: a locale that exists in the spec but not yet in any
+    # published runtime is not listed as available. It appears here the moment the bumped
+    # devDependency can run it, with no edit to this file.
+    for code in [c for c in REGISTRY["locales"] if c in HERO]:
         d = LOCALE_DATA[code]
         q, s = d["quotes"]["primary"], d["quotes"]["secondary"]
         inner = {"none": "", "nbsp": " + U+00A0", "narrow-nbsp": " + U+202F"}[q["innerSpace"]]

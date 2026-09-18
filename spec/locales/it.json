@@ -1,0 +1,95 @@
+{
+  "locale": "it",
+  "name": "Italian",
+  "quotes": {
+    "primary": {
+      "open": "«",
+      "close": "»",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "“",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": []
+  },
+  "dash": {
+    "parenthetical": "em-spaced",
+    "range": "none"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": [],
+    "beforeUnits": ["%", "‰", "€", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
+    "beforeNumber": ["n.", "pag."],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Ufficio delle pubblicazioni dell'Unione europea, Manuale interistituzionale di convenzioni redazionali, ed. 2011 (IT), punto 4.2.3, riquadro «Virgolette»: «Nella lingua italiana esistono tre livelli di virgolette […]: livello 1 (citazione principale) «…» (Alt 0171/Alt 0187); livello 2 (citazione nella citazione) “…” (Alt 0147/Alt 0148); livello 3 (citazione nella citazione nella citazione) ‘…’ (Alt 0145/Alt 0146)»",
+      "url": "https://op.europa.eu/it/publication-detail/-/publication/e774ea2a-ef84-4bf6-be92-c9ebebf91c1b",
+      "note": "L'attribuzione è per LIVELLO DI ANNIDAMENTO, cioè esattamente la forma che lo schema sa esprimere. Il terzo livello non è rappresentabile: lo schema prevede primary e secondary, non tre — limite dello schema, non lacuna della fonte, come già in el. INFERENZA DICHIARATA sull'identità dei code point: la guida fornisce un «codice alfanumerico» per Windows, non un code point Unicode; Alt 0171/0187/0147/0148 sono CP1252 0xAB/0xBB/0x93/0x94, da cui U+00AB/U+00BB/U+201C/U+201D. Riscontro indipendente: Treccani, Enciclopedia dell'Italiano (2011), voce «Virgolette» (Luca Cignetti): «è consuetudine fare ricorso a tipi diversi di virgoletta, solitamente bassa per la prima citazione e alta per gli altri usi». POSIZIONE CONTRARIA, registrata: l'Accademia della Crusca («La punteggiatura», 16 luglio 2004) rifiuta di ordinare i due segni al primo livello — «Alte e basse si usano indifferentemente» — ma non tratta l'annidamento, quindi non c'è conflitto: la scelta del segno di primo livello è una variante permessa che questo file compie, l'ordine dei livelli è ciò che le altre due fonti stabiliscono. Consultati il 18.09.2026."
+    },
+    {
+      "rule": "quotes",
+      "cite": "Manuale interistituzionale di convenzioni redazionali, ed. 2011 (IT), Parte quarta, punto 10.1.7 «Virgolette»: «Le virgolette non richiedono spazio né in apertura né in chiusura»",
+      "url": "https://op.europa.eu/it/publication-detail/-/publication/e774ea2a-ef84-4bf6-be92-c9ebebf91c1b",
+      "note": "Giustifica innerSpace = \"none\" su entrambe le coppie, ed è il punto che separa l'italiano dal francese. LETTURA DICHIARATA COME TALE: «né in apertura né in chiusura» va inteso come «né dal lato di apertura né dal lato di chiusura del testo racchiuso», cioè nessuno spazio interno; la lettura alternativa è impossibile, perché lo spazio fra la parola precedente e il segno di apertura non è facoltativo. La tabella del punto 6.4 disambiguerebbe la frase ma NON è invocata: il suo preambolo la qualifica come accordo interistituzionale adottato «a vantaggio di una convenzione comune» al posto dei codici tipografici nazionali divergenti, cioè prassi editoriale e non norma italiana — la stessa lettura già applicata in el.json. Conseguenza pratica: l'elisione italiana è al sicuro, perché dell'«amico» non richiede spazio interno. elisionIdioms resta vuoto: l'elisione italiana è un fenomeno clitico, non un idioma della forma {left, elided, right}. Consultati il 18.09.2026."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Manuale interistituzionale di convenzioni redazionali, ed. 2011 (IT), punto 4.2.3, riquadro «Trattini»: «In italiano utilizzare il trattino lungo come eventuale alternativa alle parentesi»; Parte quarta, punto 10.1.10 «Lineetta», con l'esempio stampato «La casa — se casa si poteva definire quel rudere — sorgeva ai piedi del colle»",
+      "url": "https://op.europa.eu/it/publication-detail/-/publication/e774ea2a-ef84-4bf6-be92-c9ebebf91c1b",
+      "note": "Giustifica dash.parenthetical = \"em-spaced\": U+2014 con uno spazio ordinario su CIASCUN lato di CIASCUNA lineetta. La spaziatura è simmetrica, quindi — a differenza dello spagnolo e del greco — l'enum la esprime senza forzature. INFERENZA DICHIARATA sul code point: Alt 0151 è CP1252 0x97, da cui U+2014. Riscontro sulla SPAZIATURA, non sul code point: Treccani, «Trattino [prontuario]» (Stefano Telve, 2011), che del trattino breve scrive «A differenza della lineetta, non è preceduto né seguito da spazi». COSTO ACCETTATO, verificato sul motore e registrato qui perché non venga riscoperto come bug: il punto 10.1.11 prescrive il trattino spaziato per collegare due date di mesi diversi («25 maggio - 10 giugno 1985»), e la guardia P1 di dashes.md §3.2 converte qualunque trattino isolato e spaziato fra parole, quindi il motore produce una lineetta lì. Non è una particolarità italiana: fr, ru, de-DE e en-GB, già pubblicate, si comportano allo stesso modo sulla stessa stringa. Consultati il 18.09.2026."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Manuale interistituzionale di convenzioni redazionali, ed. 2011 (IT), Parte quarta, punto 10.3.1 «Numeri arabi»: «I numeri arabi non richiedono la lineetta (lineato) bensì il trattino (divisione)», con l'esempio stampato «la sessione del 15-19 giugno 1985»; punto 10.1.11: «Il trattino è anche impiegato, senza alcuno spazio, per collegare due anni civili o due date di uno stesso mese: 1971-1972, 10-15 settembre 1985»",
+      "url": "https://op.europa.eu/it/publication-detail/-/publication/e774ea2a-ef84-4bf6-be92-c9ebebf91c1b",
+      "note": "Giustifica dash.range = \"none\", e lo fa in POSITIVO, non per assenza di citazione: la fonte prescrive il trattino U+002D — il carattere che l'autore ha già digitato — ed esclude la lineetta per nome. L'enum non ha un valore «trattino»: \"none\" è la codifica esatta di ciò che la fonte richiede. Riscontro: Treccani, «Trattino [prontuario]» (Telve 2011), esempi «il fascicolo del 2-3 luglio», «anno accademico 2010-2011». Voce separata da quella di dashes benché entrambe le regole leggano il campo dash: la citazione è distinta e più forte. Consultati il 18.09.2026."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Manuale interistituzionale di convenzioni redazionali, ed. 2011 (IT), Parte quarta, punto 10.1.8 «Punti di sospensione»: «Segno d'interpunzione costituito da tre punti»; Accademia della Crusca, Consulenza linguistica, «La punteggiatura» (Mara Marzullo, 16 luglio 2004): «I puntini di sospensione si usano sempre nel numero di tre»",
+      "url": "https://accademiadellacrusca.it/it/consulenza/la-punteggiatura/143",
+      "note": "Giustifica abbreviatedAfterTerminal = false. Due fonti indipendenti affermano che i puntini sono sempre tre, e nessuna prevede la forma a due punti dopo U+003F o U+0021 che usa il russo: il ramo russo di ellipsis.md resta spento per l'italiano. Nessuna delle due si pronuncia su U+2026 contro tre U+002E; quella scelta è del motore ed è identica in ogni locale. DIVERGENZA NOTA, registrata: gli esempi stampati del Manuale non lasciano spazio prima dei puntini, mentre spaces.md §3.4 conserva in ogni locale lo spazio che precede una sequenza di punti; è deliberata e argomentata in spaces.md §7.9, identica a quella già registrata per el. Il Manuale è consultabile all'indirizzo op.europa.eu (cfr. le altre voci di questo file); l'url di questa voce punta alla fonte Crusca, poiché lo schema ne ammette uno solo. Consultati il 18.09.2026."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Manuale interistituzionale di convenzioni redazionali, ed. 2011 (IT), Parte quarta, punto 10.1.11 «Trattino»: «Il trattino («divisione» in linguaggio tipografico) […] si impiega principalmente per dividere la parola in fin di riga»; «Si può anche usare per unire due parole contraendo la prima: trattato italo-francese»",
+      "url": "https://op.europa.eu/it/publication-detail/-/publication/e774ea2a-ef84-4bf6-be92-c9ebebf91c1b",
+      "note": "Giustifica le tre liste vuote. La fonte enumera gli impieghi del trattino — e il primo che nomina è l'OPPOSTO dell'insecabilità — senza definire alcuna classe chiusa di forme morfologiche il cui trattino debba resistere all'andata a capo, che è l'unica cosa che questa regola consuma. Riscontro: Treccani, «Trattino [prontuario]» (Telve 2011), che elenca le funzioni di unione (afro-cubano, porta-finestra, maxi-schermo) senza definire neppure essa un elenco chiuso. La famiglia di prefissi (ex-, anti-, maxi-) è stata verificata espressamente perché è l'unica che lo schema saprebbe contenere: le fonti la trattano come schema produttivo e aperto, e un insieme aperto non è esprimibile in wordList. Consultati il 18.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "BIPM, The International System of Units (SI), 9th ed. (2019), concise summary: «A single space is always left between the number and the unit»",
+      "url": "https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-concise-EN.pdf",
+      "note": "Autorità per l'ELENCO delle unità, non per il legame: che lo spazio sia insecabile e che sia U+00A0 è deciso da nbsp.md §2.1, che una locale non può variare. Stessa impostazione di en-US, en-GB, fi e sv. L'elenco segue la forma prudente di fr e de-DE ed esclude deliberatamente i simboli di una sola lettera (m, g, l, s, A), che non si possono disambiguare senza contesto. La tabella del punto 6.4 del Manuale darebbe lo stesso risultato per «%» e «°C» ma non è invocata, per la ragione detta nella voce quotes. Consultati il 18.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Manuale interistituzionale di convenzioni redazionali, ed. 2011 (IT), punto 4.2.3, riquadro «Spazi vuoti protetti»: «Consentono di evitare la troncatura a fine riga di elementi che devono rimanere uniti»; «Da usare solo nei casi seguenti […]: n.• JO L• 10•000 / pag.• JO C• C.•M. Dupont», dove «•» indica lo spazio fisso",
+      "url": "https://op.europa.eu/it/publication-detail/-/publication/e774ea2a-ef84-4bf6-be92-c9ebebf91c1b",
+      "note": "INFERENZA DICHIARATA, accettata per decisione dell'operatore il 18.09.2026, non citazione piena — ed è esattamente la distinzione che questo campo esiste per non far sparire. I riquadri «Virgolette» e «Trattini» dello stesso punto 4.2.3 dicono «Nella lingua italiana» e «In italiano»: questo riquadro NON lo dice, ed è in parte non adattato, poiché «JO L» e «JO C» sono il Journal officiel francese e «Dupont» è un cognome francese, in un'edizione italiana il cui testo originale era in francese. Ciò che l'italiano c'è davvero: «pag.» è italiano (il francese scrive «p.») e «n.» è uso italiano corrente, quindi il riquadro è stato localizzato almeno in parte — su questo poggia beforeNumber. La sequenza «C.•M. Dupont» non contiene invece alcun materiale italiano, e initialBinding resta perciò \"none\", il valore pulito da citazione. Nessuna tolleranza di caso: N9 non ne ha, e sono stampate solo le forme minuscole «n.» e «pag.». «10•000» è raggruppamento delle migliaia e «JO L•» una serie della Gazzetta ufficiale: nessuno dei due è esprimibile in questo schema. Consultati il 18.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Nessuna fonte normativa italiana esaminata prescrive uno spazio prima di un segno d'interpunzione, né un legame per abbreviazioni con spazio interno, simboli o parole seguenti; liste deliberatamente vuote",
+      "note": "beforePunctuation e narrowBeforePunctuation sono vuote, e va detto con esattezza su che cosa poggiano: sull'ASSENZA di una fonte italiana che richieda quello spazio, NON su una fonte che lo neghi. A differenza del capitolo greco, che respinge la prassi francese nominandola, la Parte quarta italiana non la nomina mai: i punti 10.1.3 e 10.1.4 descrivono la funzione dei segni e tacciono sulla spaziatura. Il vincolo Q-P rende comunque la lista vuota la scelta strutturalmente sicura. afterShortWords, abbreviations, beforeWord e afterSymbols sono vuote per la stessa ragione: nessuna fonte esaminata le attesta per l'italiano. SEGNALAZIONE ALL'OPERATORE, non risolta qui: la Parte quarta si apre, al punto 10.1, con «Per la spaziatura dei segni d'interpunzione, cfr. punto 6.4», cioè il capitolo squalificato come prassi editoriale in el.json; se quel rinvio si leggesse come un'adozione, la tabella diventerebbe evidenza italiana e rafforzerebbe queste liste vuote. Consultati il 18.09.2026."
+    }
+  ]
+}

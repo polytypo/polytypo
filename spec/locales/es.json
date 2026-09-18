@@ -1,0 +1,111 @@
+{
+  "locale": "es",
+  "name": "Spanish",
+  "quotes": {
+    "primary": {
+      "open": "«",
+      "close": "»",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "“",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": []
+  },
+  "dash": {
+    "parenthetical": "none",
+    "range": "none"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": [
+      "p. ej.",
+      "a. C.",
+      "d. C.",
+      "EE. UU.",
+      "FF. AA.",
+      "N. del T.",
+      "q. e. p. d.",
+      "et al."
+    ],
+    "beforeUnits": ["%", "‰", "°C", "km", "cm", "mm", "kg", "mg", "mL", "min", "dB", "kW", "kWh"],
+    "beforeNumber": ["art.", "cap.", "núm.", "nro.", "pág.", "págs."],
+    "beforeWord": ["Sr.", "Sra.", "Srta."],
+    "afterSymbols": [],
+    "initialBinding": "chain"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "RAE y ASALE, Diccionario panhispánico de dudas, entrada «comillas», apartado 1: «En los textos impresos, se recomienda utilizar en primera instancia las comillas angulares, reservando los otros tipos para cuando deban entrecomillarse partes de un texto ya entrecomillado. En este caso, las comillas simples se emplearán en último lugar»; «Las comillas inglesas y las simples se escriben en la parte alta del renglón, mientras que las angulares se escriben centradas»",
+      "url": "https://www.rae.es/dpd/comillas",
+      "note": "El DPD establece QUÉ CLASE de signo corresponde a cada nivel y el orden de anidamiento; no nombra ningún punto de código. La identidad U+201C/U+201D procede de Unicode, autoridad para eso y para nada más. Contra las comillas rectas de máquina de escribir el DPD aporta una descripción de trazado — «en la parte alta del renglón» — y locale.schema.json las prohíbe además por su cuenta. El tercer nivel que el DPD describe (‘ ’) no es expresable: el esquema tiene primary y secondary, no tres; límite del esquema, no laguna de la fuente, igual que en el. ADVERTENCIA DE OBTENCIÓN: rae.es devuelve HTTP 403 a un cliente automático — obstáculo técnico, no obra de pago — y el texto se leyó por un proxy de extracción sobre esta URL canónica; el mismo proxy devolvió la abreviatura de «número» de dos formas distintas en dos pasadas, por lo que ningún campo de este archivo afirma un punto de código no ASCII que no se haya podido fijar por otra vía. Consultado el 18.09.2026."
+    },
+    {
+      "rule": "quotes",
+      "cite": "RAE y ASALE, Diccionario panhispánico de dudas, entrada «comillas», apartado 1: «Las comillas se escriben pegadas a la primera y la última palabra del periodo que enmarcan, y separadas por un espacio de las palabras o signos que las preceden o las siguen»",
+      "url": "https://www.rae.es/dpd/comillas",
+      "note": "Justifica innerSpace = \"none\" en los dos pares: «pegadas» excluye todo espacio interior, ni U+00A0 ni U+202F. El español no sigue aquí el uso francés. elisionIdioms queda vacío porque el español no tiene ningún modismo de la forma {left, elided, right}: la entrada «apóstrofo» del mismo DPD afirma que el signo «apenas se usa en el español actual» y lo limita a textos antiguos, al habla reproducida y a nombres de otras lenguas. Consultado el 18.09.2026."
+    },
+    {
+      "rule": "dashes",
+      "cite": "RAE y ASALE, Diccionario panhispánico de dudas, entrada «raya», apartado 2: «Como el resto de los signos dobles, se escriben pegadas a la primera y a la última palabra del periodo que enmarcan, y separadas por un espacio de la palabra o signo que las precede o las sigue»",
+      "url": "https://www.rae.es/dpd/raya",
+      "note": "parenthetical = \"none\" POR UN LÍMITE DEL ESQUEMA, no por falta de fuente: la fuente es explícita y prescribe espacios ORDINARIOS FUERA del par y ninguno en los bordes interiores («Llegó —por fin— a casa»). El enum no expresa esa asimetría: \"em-spaced\" pone un espacio a cada lado de CADA raya, que es lo que la frase prohíbe, y \"em-tight\" suprime los exteriores que la frase exige. Mismo caso que el griego (dashes.md §6) y que el italiano de este mismo lote; al repetirse en tres idiomas independientes deja de ser una rareza y pasa a ser una carencia del esquema, registrada aparte para resolverse en su propia versión. Mientras tanto \"none\" es lo único que el archivo puede decir con verdad, y no autoriza a aproximar. Consultado el 18.09.2026."
+    },
+    {
+      "rule": "ranges",
+      "cite": "RAE y ASALE, Diccionario panhispánico de dudas, entrada «guion», apartado 3 b): «Indica intervalos expresados tanto en números arábigos como en romanos: las páginas 23-45; durante los siglos x-xii»; apartado 1: «Signo ortográfico en forma de pequeña línea horizontal (-)»",
+      "url": "https://www.rae.es/dpd/guion",
+      "note": "range = \"none\" por una razón DISTINTA de la de parenthetical, y confundirlas tergiversaría las fuentes. El signo español del intervalo es el guion, U+002D — el carácter que el autor ya escribió —, y el enum solo ofrece em, en o none: «no sustituir nada» es aquí a la vez lo honesto y lo correcto, porque «23-45» ya está bien escrito. El enum sí podría expresar un valor equivocado: \"en-tight\" convertiría esa forma en una que el DPD no prescribe. Consultado el 18.09.2026."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "RAE y ASALE, Diccionario panhispánico de dudas, entrada «puntos suspensivos», apartado 1: «Signo de puntuación formado por tres puntos consecutivos (…) ―y solo tres―»",
+      "url": "https://www.rae.es/dpd/puntos%20suspensivos",
+      "note": "Justifica abbreviatedAfterTerminal = false: «y solo tres» es una exigencia expresa de número, y el español no dispone en ningún apartado de la forma de dos puntos tras «?» o «!» que sí usa el ruso. El apartado 3.4 de la misma entrada regula el ORDEN de los signos, no su número. La fuente no se pronuncia sobre U+2026 frente a tres U+002E: esa elección es del motor y es igual en todas las locales. Consultado el 18.09.2026."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "RAE y ASALE, Diccionario panhispánico de dudas, entrada «guion», apartados 1, 2 y 3: el guion une palabras y segmentos, divide la palabra al final de línea, indica intervalos y separa grupos de cifras",
+      "url": "https://www.rae.es/dpd/guion",
+      "note": "Justifica las tres listas vacías. La entrada enumera los usos del guion y en ninguno define una clase cerrada de formas morfológicas cuyo guion no deba partirse al final de línea, que es lo único que consume esta regla; al contrario, en español el guion es el signo del propio corte de línea. Con las listas vacías la regla es un no-op total demostrable (hyphen.md §2), que es el caso normal y no una carencia. Consultado el 18.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "RAE y ASALE, Diccionario panhispánico de dudas, entrada «signos de interrogación y exclamación», apartado 1: «Se escriben pegados a la primera y la última palabra del periodo que enmarcan, y separados por un espacio de las palabras que los preceden o los siguen»",
+      "url": "https://www.rae.es/dpd/signos%20de%20interrogaci%C3%B3n%20y%20exclamaci%C3%B3n",
+      "note": "Justifica beforePunctuation y narrowBeforePunctuation vacíos por dos motivos independientes. PRIMERO, la fuente: no hay espacio antes de «?» ni de «!», ni después de «¿» ni de «¡»; el uso francés queda descartado por la norma, no por silencio. SEGUNDO, y con independencia de lo anterior, el esquema no podría expresar lo contrario: la restricción Q-P exige que todo punto de código de estas listas pertenezca a CLOSEISH, y U+00BF y U+00A1 no lo son — son puntuación de APERTURA, y el único mecanismo de «espacio tras un signo de apertura» del esquema es quotes.innerSpace. NO ES EXPRESABLE, que es distinto de no estar atestiguado. afterShortWords queda vacío por una razón más débil y se dice cuál: ninguna fuente consultada exige que una palabra breve no quede al final de línea; lo resolvería el capítulo «División de palabras al final de línea» de la Ortografía, no consultado. afterSymbols vacío: ninguna fuente española consultada liga «§» a un número. Consultado el 18.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "RAE y ASALE, Diccionario panhispánico de dudas, entrada «símbolo», apartado 5.4: «Los símbolos deben escribirse pospuestos a la cifra a la que acompañan y dejando un blanco de separación: 33 dB, 125 m², 4 H»; «se separa de ella y se pega al símbolo de la escala si esta se especifica: 27° (por veintisiete grados), pero 27 °C»; apartado 5.6: «No deben escribirse en líneas diferentes la cifra y el símbolo que la acompaña: ⊗3 / $, ⊗7 / km»",
+      "url": "https://www.rae.es/dpd/s%C3%ADmbolo",
+      "note": "Justifica beforeUnits, y el apartado 5.6 es además la base normativa de la INDIVISIBILIDAD, dicha por la RAE y en español. El apartado 5.4 impone una exclusión que el archivo respeta: «°» a secas NO figura, porque «27°» va pegado; solo «°C». Dos advertencias de alcance. (1) La lista es MÁS ESTRECHA QUE LA FUENTE: se omiten los símbolos de una sola letra (m, g, s, h, L, A, H), que no se desambiguan sin contexto — criterio de fr —, pese a que el ejemplo del propio apartado es «4 H». (2) No se incluye ningún símbolo monetario, y no por prudencia sino por cita: el apartado 5.5 distingue expresamente el uso de España («3 £», pospuesto y con blanco) del de América («£3», antepuesto y sin blanco), y esta locale no lleva subetiqueta de región. Ese apartado se cita también en POSITIVO: el DPD sabe marcar la divergencia regional donde existe, luego los campos sobre los que no la marca son seguros para un «es» regionalmente neutro. Consultado el 18.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "BIPM, The International System of Units (SI), 9th ed. (2019), concise summary: «A single space is always left between the number and the unit»",
+      "url": "https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-concise-EN.pdf",
+      "note": "Autoridad sobre la COMPOSICIÓN de la lista de unidades, igual que en en-US, en-GB, fi y sv; el DPD «símbolo» 5.4 y 5.6 es la autoridad sobre la convención española y sobre la indivisibilidad. El BIPM no se invoca como autoridad sobre el español — no lo es —, sino sobre qué cadenas son símbolos de unidad del SI. Si ambas fuentes discreparan sobre el español mandaría la RAE; no discrepan. Consultado el 18.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "RAE y ASALE, Diccionario panhispánico de dudas, entrada «abreviatura»: «Tampoco deben aparecer en renglones diferentes la abreviatura y el término del que esta depende: ⊗15 / págs., ⊗Sr. / Pérez»; «Cuando la abreviatura corresponde a una expresión compleja, se separan mediante un espacio las letras que representan cada una de las palabras que la integran»; «Las iniciales de los componentes del nombre propio de una persona son también abreviaturas formadas por truncamiento»",
+      "url": "https://www.rae.es/dpd/abreviatura",
+      "note": "Una sola cita para cuatro campos, porque una sola regla los gobierna. abbreviations: la fuente exige el espacio interior y prohíbe partirlo; las formas listadas están atestiguadas en esta entrada o en la Lista de abreviaturas de El buen uso del español. beforeNumber y beforeWord: «⊗15 / págs.» y «⊗Sr. / Pérez» son los dos ejemplos de la propia fuente, uno en cada orden. beforeWord se limita a la clase cerrada de los tratamientos de cortesía: la regla vale para CUALQUIER abreviatura, pero enumerarlas todas dispararía falsos positivos en la subrregla de mayor riesgo del esquema (nbsp.md §3.12). NO SE INCLUYEN «n.º», «D.ª» ni «Sr.ª»: la RAE prescribe una «o volada», es decir un TRAZADO y no un punto de código, y el texto obtenido devolvió dos formas distintas en dos pasadas; adivinar sería peor que omitir. initialBinding = \"chain\" ES UNA DECISIÓN DEL OPERADOR (18.09.2026), NO UNA CITA: el DPD no contiene ninguna calificación de «dos o más» — enuncia la regla general y establece que las iniciales SON abreviaturas, lo que apunta más bien a \"single\" —, pero su único ejemplo con iniciales es «J. A. Pérez», de dos, y ante una fuente que no decide se eligió el valor mayoritario en este proyecto (en-US, de-DE, de-CH, ru) y el de menor superficie de falsos positivos, porque \"chain\" no liga una mayúscula con punto aislada. En «J. A. Pérez» ambos valores dan el mismo resultado; solo difieren ante un inicial suelto. Consultado el 18.09.2026."
+    }
+  ]
+}

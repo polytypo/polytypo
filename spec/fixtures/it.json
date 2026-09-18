@@ -1,0 +1,161 @@
+{
+  "spec": "1.3.0",
+  "locale": "it",
+  "cases": [
+    {
+      "id": "it-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ha detto \"buongiorno\" ed è uscito.",
+      "out": "Ha detto «buongiorno» ed è uscito.",
+      "note": "quotes.primary = U+00AB/U+00BB, innerSpace \"none\" (Manuale interistituzionale 4.2.3 livello 1; Parte quarta 10.1.7 «Le virgolette non richiedono spazio né in apertura né in chiusura»). Contrasto diretto con fr, che qui inserisce U+00A0 all'interno."
+    },
+    {
+      "id": "it-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Scrisse: \"Mi disse 'arrivo subito' e sparì.\"",
+      "out": "Scrisse: «Mi disse “arrivo subito” e sparì.»",
+      "note": "Livello 1 caporali, livello 2 virgolette alte. Il livello 3 del Manuale non è rappresentabile nello schema."
+    },
+    {
+      "id": "it-quotes-inner-space-deleted",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ha detto « buongiorno » ed è uscito.",
+      "out": "Ha detto «buongiorno» ed è uscito.",
+      "note": "Con innerSpace \"none\" la regola CANCELLA lo spazio interno: un testo italiano copiato da una fonte francese si normalizza."
+    },
+    {
+      "id": "it-quotes-elision-before-quotation",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "il titolo dell'\"amico\" ritrovato",
+      "out": "il titolo dell’«amico» ritrovato",
+      "note": "Il caso di maggiore impatto reale per l'italiano, che elide molto più del francese: l'apostrofo di elisione diventa U+2019 (apostrophe.md caso 3a, spec 1.2.0) e non viene rivendicato come segno di apertura, mentre le virgolette restano prive di spazio interno."
+    },
+    {
+      "id": "it-dashes-parenthetical-em-spaced",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "La casa - se casa si poteva definire quel rudere - sorgeva ai piedi del colle.",
+      "out": "La casa — se casa si poteva definire quel rudere — sorgeva ai piedi del colle.",
+      "note": "dash.parenthetical = \"em-spaced\": U+2014 con U+0020 su ciascun lato. Frase dell'esempio stampato al punto 10.1.10 del Manuale."
+    },
+    {
+      "id": "it-dashes-compound-hyphen",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "un trattato italo-francese",
+      "out": "un trattato italo-francese",
+      "note": "Guardia P1 di dashes.md §3.2: un trattino nudo e non spaziato è una parola composta. Esempio stampato al punto 10.1.11."
+    },
+    {
+      "id": "it-dashes-date-range-accepted-cost",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "25 maggio - 10 giugno 1985",
+      "out": "25 maggio — 10 giugno 1985",
+      "note": "COSTO ACCETTATO, verificato sul motore e fissato qui perché non venga riscoperto come bug. Il punto 10.1.11 del Manuale prescrive il trattino spaziato per collegare due date di mesi diversi, ma la guardia P1 converte qualunque trattino isolato e spaziato fra parole. Non è una particolarità italiana: fr, ru, de-DE e en-GB, già pubblicate, fanno lo stesso su questa identica stringa."
+    },
+    {
+      "id": "it-ranges-none-years",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "anno accademico 2010-2011",
+      "out": "anno accademico 2010-2011",
+      "note": "ranges.md §3: il token non viene convertito perché dash.range è \"none\" — il punto 10.3.1 del Manuale prescrive il trattino U+002D, già presente, e l'enum non ha un valore per esso. Il caso è generato con ranges attivato esplicitamente, dato che la regola è disattivata per impostazione predefinita.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "it-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Ti chiami Leone... ma sei un coniglio.",
+      "out": "Ti chiami Leone… ma sei un coniglio.",
+      "note": "Tre U+002E diventano U+2026. Frase dell'esempio stampato al punto 10.1.8."
+    },
+    {
+      "id": "it-ellipsis-not-abbreviated-after-terminal",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Davvero?..",
+      "out": "Davvero?…",
+      "note": "abbreviatedAfterTerminal = false: la forma a due punti del russo non esiste in italiano (10.1.8 «costituito da tre punti»; Crusca «sempre nel numero di tre»)."
+    },
+    {
+      "id": "it-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "un porta-finestra e un maxi-schermo",
+      "out": "un porta-finestra e un maxi-schermo",
+      "note": "Le tre liste di hyphen sono vuote, quindi la regola è un no-op totale e dimostrabile. Composti tratti da Treccani, «Trattino [prontuario]»."
+    },
+    {
+      "id": "it-nbsp-no-space-before-punctuation",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Che cosa dici ? Nulla ! Davvero ; sì : nulla.",
+      "out": "Che cosa dici? Nulla! Davvero; sì: nulla.",
+      "note": "IL CASO CHE FISSA LA DIFFERENZA CON IL FRANCESE: spaces elimina lo spazio ordinario prima dei segni e nbsp non lo reinserisce, perché entrambe le liste sono vuote. Lo stesso input in fr produce U+202F prima di ? ! ; e U+00A0 prima di :."
+    },
+    {
+      "id": "it-nbsp-percent",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "un aumento del 45 % quest'anno",
+      "out": "un aumento del 45 % quest’anno",
+      "note": "N5 beforeUnits: lo spazio diventa U+00A0 (BIPM). L'apostrofo è opera della regola apostrophe, non di nbsp."
+    },
+    {
+      "id": "it-nbsp-celsius",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "una temperatura di 20 °C",
+      "out": "una temperatura di 20 °C",
+      "note": "Stessa subrregola su «°C», che è U+00B0 seguito da U+0043."
+    },
+    {
+      "id": "it-nbsp-before-number",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "il regolamento n. 3600 e cfr. pag. 2064",
+      "out": "il regolamento n. 3600 e cfr. pag. 2064",
+      "note": "N9 beforeNumber su «n.» e «pag.». Riga accettata come INFERENZA DICHIARATA e non come citazione piena: il riquadro «Spazi vuoti protetti» del punto 4.2.3 non è marcato come italiano, ma «pag.» è forma italiana. Si noti che «cfr.» non è in elenco e il suo spazio resta U+0020."
+    },
+    {
+      "id": "it-apostrophe-elision",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "un'utopia, un'assurda aspirazione dell'Unione",
+      "out": "un’utopia, un’assurda aspirazione dell’Unione",
+      "note": "U+0027 diventa U+2019. Parole tratte dalla prosa del Manuale. La regola non legge dati di locale, ma l'elisione è la forma che il motore incontra più spesso in italiano."
+    },
+    {
+      "id": "it-roundtrip-noop",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ha detto «buongiorno» ed è uscito…",
+      "out": "Ha detto «buongiorno» ed è uscito…",
+      "note": "modes.md §4: un documento già composto torna byte per byte."
+    },
+    {
+      "id": "it-spaces-brackets-and-final-stop",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Disse ( senza dubbio ) di sì  .",
+      "out": "Disse (senza dubbio) di sì.",
+      "note": "spaces.md §3: gli spazi interni alle parentesi spariscono e la serie prima del punto finale si riduce. Regola indipendente dalla locale, presente qui perché it abbia un caso per ogni regola canonica."
+    },
+    {
+      "id": "it-symbols-copyright-and-dimensions",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026, formato 40x60 cm",
+      "out": "Copyright © 2026, formato 40×60 cm",
+      "note": "symbols.md: «(c)» diventa U+00A9 e la «x» fra cifre U+00D7. L'U+00A0 davanti a «cm» è opera di nbsp N5, non di symbols: i due casi stanno insieme per mostrare che le regole si compongono."
+    }
+  ]
+}

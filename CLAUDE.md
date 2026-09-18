@@ -181,8 +181,10 @@ is a breaking change.
 
 ## Scope discipline
 
-v1 locales are `en-US` `en-GB` `de-DE` `de-CH` `fr` `fr-CA` `ru` `fi` `sv` `el` (aliases `en`→`en-US`,
-`de`→`de-DE`). **The six-locale cap was withdrawn 2026-08-15 by operator decision — coverage is a
+Locales are `en-US` `en-GB` `de-DE` `de-CH` `fr` `fr-CA` `ru` `fi` `sv` `el` `es` `it` (aliases
+`en`→`en-US`, `de`→`de-DE`); `es` and `it` are spec 1.3.0 and unreleased, so the generated README
+and site skip them until a published runtime implements them — `brand/tools/gen_examples.ts`
+drops any locale the installed engine rejects, by design, rather than failing the build. **The six-locale cap was withdrawn 2026-08-15 by operator decision — coverage is a
 goal, and the constraint is evidentiary rather than numeric: a locale ships only as the PLAN §6.2
 triple (data + fixtures + citation).** Also three modes. PLAN.md §4 lists non-goals that **must be
 refused without an explicit operator decision**: language auto-detection, hyphenation, optical
