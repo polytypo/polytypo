@@ -1,0 +1,121 @@
+{
+  "spec": "1.3.0",
+  "locale": "nl",
+  "cases": [
+    {
+      "id": "nl-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Hij zei \"dag\" en vertrok.",
+      "out": "Hij zei “dag” en vertrok.",
+      "note": "quotes.primary = U+201C/U+201D. De Taalunie rangschikt de vormen NIET («Er zijn geen vaste regels»); de keuze is een beslissing van de operator, vastgelegd in de sources-ingang, en volgt de variant die de Taalunie «traditioneel» aan het letterlijke citaat verbindt."
+    },
+    {
+      "id": "nl-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "De koning zei: \"Ik hoorde iemand 'hoera' roepen.\"",
+      "out": "De koning zei: “Ik hoorde iemand ‘hoera’ roepen.”",
+      "note": "Voorbeeld (4a) van de Taalunie zelf: dubbele tekens op het eerste niveau, enkele op het tweede."
+    },
+    {
+      "id": "nl-quotes-apostrophe-not-a-quote",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Hij kocht twee auto's.",
+      "out": "Hij kocht twee auto’s.",
+      "note": "Het Nederlands staat vol apostroffen (auto's, 's-Hertogenbosch, A4'tje) en die worden U+2019 — hetzelfde codepunt als het sluitende enkele aanhalingsteken. Gecontroleerd vóór de keuze van de aanhalingstekens: het maakt voor deze zinnen geen verschil welke variant het eerste niveau krijgt."
+    },
+    {
+      "id": "nl-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Het nieuws - volgens de kranten - is niet bekend.",
+      "out": "Het nieuws – volgens de kranten – is niet bekend.",
+      "note": "dash.parenthetical = «en-spaced»: het halve kastlijntje U+2013 met een spatie aan weerszijden, precies het voorbeeld van de Taalunie."
+    },
+    {
+      "id": "nl-dashes-already-correct",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Het nieuws – volgens de kranten – is niet bekend.",
+      "out": "Het nieuws – volgens de kranten – is niet bekend.",
+      "note": "dashes.md §3.4 P5 laat een reeks van precies één U+2013 met rust, dus correct gezet Nederlands blijft ongemoeid."
+    },
+    {
+      "id": "nl-ranges-hyphen-kept",
+      "rule": "ranges",
+      "mode": "text",
+      "rules": {
+        "ranges": true
+      },
+      "in": "de categorie 30-45 jaar",
+      "out": "de categorie 30-45 jaar",
+      "note": "ranges.md §2: met dash.range = «none» emitteert de regel niets — ook niet de U+2060 die een omgezet bereik in andere locales meekrijgt. Het Nederlandse bereikteken is het koppelteken U+002D dat er al staat (Onze Taal: «1940-1945, de categorie 30-45 jaar»). Het geval draait met ranges expliciet aan, want de regel staat standaard uit."
+    },
+    {
+      "id": "nl-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Hou je van jazz, blues, soul ...?",
+      "out": "Hou je van jazz, blues, soul …?",
+      "note": "Het voorbeeld van de Taalunie zelf. Let op de spatie VÓÓR het beletselteken: die hoort in het Nederlands en spaces.md §3.4 laat hem in elk locale staan — hier zijn bron en motor het eens."
+    },
+    {
+      "id": "nl-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "een auto-ongeluk en mee-eten",
+      "out": "een auto-ongeluk en mee-eten",
+      "note": "hyphen.md §2: drie lege lijsten, dus een aantoonbare no-op. Bij afbreking valt het Nederlandse koppelteken juist wég, het omgekeerde van een claim op U+2011."
+    },
+    {
+      "id": "nl-nbsp-currency",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "De vaas kostte € 179.",
+      "out": "De vaas kostte € 179.",
+      "note": "N6 afterSymbols: in het Nederlands gaat het valutateken aan het getal VOORAF, dus het hoort in afterSymbols en niet in beforeUnits zoals in fr, waar «2 €» geschreven wordt."
+    },
+    {
+      "id": "nl-nbsp-unit",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "De afstand was 15 cm.",
+      "out": "De afstand was 15 cm.",
+      "note": "N5 beforeUnits, voorbeeld (28) van de Taalunie."
+    },
+    {
+      "id": "nl-nbsp-compound-untouched",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Ze hanteerde de 15cm-norm.",
+      "out": "Ze hanteerde de 15cm-norm.",
+      "note": "Voorbeeld (29) van dezelfde pagina: in een samenstelling staat geen spatie. N5 zet alleen een bestaande spatie om en voegt er nooit een in, dus de samenstelling is veilig."
+    },
+    {
+      "id": "nl-nbsp-abbreviation",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "prof. dr. Jansen",
+      "out": "prof. dr. Jansen",
+      "note": "N4 abbreviations op «prof. dr.». De spatie vóór de achternaam blijft gewoon: beforeWord is leeg, en initialBinding is «none»."
+    },
+    {
+      "id": "nl-spaces-brackets-and-final-stop",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "De tekst ( gewoon ) verandert niet  .",
+      "out": "De tekst (gewoon) verandert niet.",
+      "note": "spaces.md §3: locale-onafhankelijke regel, hier aanwezig zodat nl voor elke canonieke regel een geval heeft."
+    },
+    {
+      "id": "nl-symbols-copyright-and-dimensions",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026, formaat 40x60 cm",
+      "out": "Copyright © 2026, formaat 40×60 cm",
+      "note": "symbols.md: «(c)» wordt U+00A9 en de «x» tussen cijfers U+00D7. De U+00A0 vóór «cm» is het werk van nbsp N5."
+    }
+  ]
+}

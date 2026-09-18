@@ -23,6 +23,8 @@ const LOCALES = [
   "it",
   "pt-PT",
   "pt-BR",
+  "nl",
+  "pl",
 ] as const;
 
 // Every hero line: nested quotes, an apostrophe or elision (except el — see its own note below),
@@ -70,6 +72,12 @@ const HERO: Record<(typeof LOCALES)[number], string> = {
   es:
     `Preguntó: "¿No es esta la tienda que llaman 'la de la esquina'?" ... Caminamos -- casi 3 ` +
     `km -- y estaba cerrada. Copyright (c) 2026, tamaño 40x60 cm.`,
+  nl:
+    `Hij vroeg: "Is dit niet de winkel die ze 'om de hoek' noemen?" ... We liepen -- bijna 3 km ` +
+    `-- en hij was dicht. Copyright (c) 2026, formaat 40x60 cm.`,
+  pl:
+    `Zapytał: "Czy to nie ten sklep, który nazywają 'tym za rogiem'?" ... Szliśmy -- prawie 3 km ` +
+    `-- a był zamknięty. Copyright (c) 2026, format 40x60 cm.`,
   "pt-PT":
     `Perguntou: "Não é esta a loja a que chamam 'a da esquina'?" ... Caminhámos -- quase 3 km ` +
     `-- e estava fechada. Copyright (c) 2026, formato 40x60 cm.`,
@@ -146,6 +154,16 @@ const SHOWCASE: Record<
     { rule: "dashes", in: `Planen - om det finns en - misslyckas.` },
     { rule: "nbsp", in: `Det kostar 100 kr` },
   ],
+  nl: [
+    { rule: "quotes", in: `Hij zei "dag" en vertrok.` },
+    { rule: "dashes", in: `Het nieuws - volgens de kranten - is niet bekend.` },
+    { rule: "nbsp", in: `De vaas kostte € 179.` },
+  ],
+  pl: [
+    { rule: "quotes", in: `Powiedział "dzień dobry".` },
+    { rule: "nbsp", in: `Mieszkam w Warszawie i pracuję.` },
+    { rule: "ellipsis", in: `Czekaj... co?` },
+  ],
   "pt-PT": [
     { rule: "quotes", in: `Ele disse "bom dia" e saiu.` },
     { rule: "dashes", in: `As condições - ordenado e subvenções - eram boas.` },
@@ -204,6 +222,8 @@ const NAMES: Record<(typeof LOCALES)[number], string> = {
   el: "Greek",
   es: "Spanish",
   it: "Italian",
+  nl: "Dutch",
+  pl: "Polish",
   "pt-PT": "Portuguese (Portugal)",
   "pt-BR": "Portuguese (Brazil)",
 };

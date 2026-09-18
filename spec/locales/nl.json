@@ -1,0 +1,84 @@
+{
+  "locale": "nl",
+  "name": "Dutch",
+  "quotes": {
+    "primary": {
+      "open": "“",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "‘",
+      "close": "’",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": []
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "none"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": ["prof. dr."],
+    "beforeUnits": ["%", "‰", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": ["€", "$"],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Nederlandse Taalunie, Taaladvies.net, «Dubbele of enkele aanhalingstekens bij een citaat»: «Er zijn geen vaste regels voor het gebruik van enkele of dubbele aanhalingstekens. Traditioneel werd aangeraden om bij letterlijk citeren dubbele aanhalingstekens te gebruiken […] We raden aan om consequent voor één systeem te kiezen», met voorbeeld (4a): «De koning zei: [U+201C]Ik herinner me nog dat iemand [U+2018]Vive la république[U+2019] riep[U+201D]»",
+      "url": "https://taaladvies.net/dubbele-of-enkele-aanhalingstekens-bij-een-citaat/",
+      "note": "BESLISSING VAN DE OPERATOR, 18.09.2026, en uitdrukkelijk geen citaat: de Taalunie WEIGERT te rangschikken — «Er zijn geen vaste regels» — en noemt drie mogelijke nestingen zonder er één te verkiezen. Het schema kent maar één paar per niveau, dus er moet gekozen worden. Gekozen is variant (4a) van de Taalunie zelf: U+201C/U+201D als eerste niveau, U+2018/U+2019 als tweede. Twee gronden, allebei genoemd omdat geen van beide een voorschrift is: het is de vorm die de Taalunie «traditioneel» aan het letterlijke citaat verbindt, en het is de vorm die elk ander locale in dit project al heeft. TEGENGESTELDE AANWIJZING, niet verzwegen: «Aanhalingstekens (algemeen)» merkt op dat «Enkele aanhalingstekens […] het meest gebruikt» worden — een waarneming over frequentie, geen voorschrift, maar hij wijst de andere kant op. GECONTROLEERD, want het was het enige technische argument dat de keuze had kunnen beslissen: de vrees dat U+2019 als sluitteken zou botsen met de Nederlandse apostrof (auto's, 's-Hertogenbosch, A4'tje) blijkt ONGEGROND — beide varianten geven op die zinnen hetzelfde, correcte resultaat. De keuze berust dus op de bron en op eenvormigheid, niet op een motoreigenschap. innerSpace = «none»: geen geraadpleegde bron vraagt om een spatie binnen de tekens. Geraadpleegd op 18.09.2026."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Nederlandse Taalunie, Taaladvies.net, «Wel of geen spaties voor en na leestekens en symbolen (algemeen)» (12 mei 2021): «Voor een gedachtestreepje komt altijd een spatie, en ook erna»; en «Gedachtestreepje»: «Als gedachtestreepje wordt doorgaans het zogeheten halve kastlijntje (–) gebruikt. Het halve kastlijntje is wat langer dan het koppelteken of het afbreekteken (-)»",
+      "url": "https://taaladvies.net/wel-of-geen-spaties-voor-en-na-leestekens-en-symbolen-algemeen/",
+      "note": "Onderbouwt dash.parenthetical = «en-spaced»: een spatie aan weerszijden en een streepje ter lengte van een halve kastlijn, dus U+2013 en niet U+2014. AFLEIDING, als zodanig gemarkeerd: de Taalunie noemt de lengte, niet het codepunt. De toewijzing aan U+2013 steunt op Genootschap Onze Taal, Taalloket, «kort streepje (-) of lang streepje (–)», dat de twee tekens expliciet tegenover elkaar zet en het «hele kastlijntje» (—) als vooral Engels en «in Nederland […] minder gebruikelijk» beschrijft. Rangorde, want de bronnen zijn niet gelijkwaardig: de Taalunie is het officiële taalorgaan, Onze Taal een taalvereniging, en Onze Taal wordt hier alleen gebruikt om vast te stellen welk van twee met name genoemde tekens de term van de Taalunie aanduidt. Geraadpleegd op 18.09.2026."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Genootschap Onze Taal, Taalloket, «kort streepje (-) of lang streepje (–)»: het korte streepje geeft tussen getallen «tot en met» aan — «1940-1945, de categorie 30-45 jaar, pagina 10-12»; Nederlandse Taalunie, «20 tot 30-jarigen of 20-30-jarigen?» (12 mei 2021), dat overal U+002D toont zonder over het streepjestype iets voor te schrijven",
+      "url": "https://onzetaal.nl/taalloket/streepje-kort-of-lang",
+      "note": "Onderbouwt dash.range = «none» als een keuze en niet als een leemte: het Nederlandse bereikteken is het koppelteken U+002D, dat de auteur al heeft getypt, en het schema kent daarvoor geen enum-waarde. «none» laat de invoer ongemoeid, wat precies is wat de bron beschrijft; «en-tight» zou er een vorm van maken die geen enkele Nederlandse bron voorschrijft. Aparte ingang van die van dashes, omdat de twee velden op verschillende bronnen rusten. De regel «ranges» staat standaard uit (spec 0.5.0). Geraadpleegd op 18.09.2026."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Nederlandse Taalunie, Taaladvies.net, «Punt na enz. of beletselteken aan het einde van een zin» (12 mei 2021): «na een afkorting met een punt of na een beletselteken aan het eind van een zin, komt geen extra punt», met het voorbeeld «Hou je van jazz, blues, soul …?»",
+      "url": "https://taaladvies.net/punt-na-enz-of-beletselteken-aan-het-einde-van-een-zin/",
+      "note": "Onderbouwt abbreviatedAfterTerminal = false. Het beletselteken is «een vaste eenheid van drie punten» en het vraagteken volgt erop; voor de Russische tweepuntsvorm «?..» geeft geen geraadpleegde Nederlandse bron een grondslag. Anders dan bij het Grieks valt hier niets af te wijken: het Nederlands schrijft juist wél een spatie vóór het beletselteken, en spaces.md §3.4 laat die spatie in elk locale staan — bron en motor zijn het hier eens. Geraadpleegd op 18.09.2026."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Nederlandse Taalunie, Taaladvies.net, «Auto-ongeluk (afbreking)» (12 mei 2021): «Bij woordafbreking valt een koppelteken weg als wordt afgebroken op de plaats waar dat koppelteken in de grondvorm staat»",
+      "url": "https://taaladvies.net/auto-ongeluk-afbreking/",
+      "note": "Onderbouwt drie lege lijsten. Het Nederlands staat afbreking op het koppelteken niet alleen toe, het laat het koppelteken daarbij wégvallen — het omgekeerde van een claim op U+2011. Geen geraadpleegde bron omschrijft een gesloten klasse vormen waarvan het koppelteken een regelovergang moet weerstaan, en dat is het enige wat deze regel leest. Geraadpleegd op 18.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Nederlandse Taalunie, Taaladvies.net, «Wel of geen spaties voor en na leestekens en symbolen (algemeen)» (12 mei 2021): «Vóór een punt, een komma, een dubbele punt, een puntkomma, een uitroepteken en een vraagteken komt geen spatie»; «Bij toevallige, niet-conventionele combinaties van een getal en een afgekorte eenheid […] komt er een spatie tussen het getal en de eenheid»; «Tussen een valutateken en het bijbehorende getal staat een spatie, tenzij het geheel deel uitmaakt van een samenstelling» — «De vaas kostte € 179,–»; BIPM, The International System of Units (SI), 9th ed., concise summary — uitsluitend voor de samenstelling van de symbolenlijst",
+      "url": "https://taaladvies.net/wel-of-geen-spaties-voor-en-na-leestekens-en-symbolen-algemeen/",
+      "note": "Drie velden uit één pagina. beforePunctuation en narrowBeforePunctuation leeg: alle zes leestekens worden bij name genoemd en krijgen geen spatie — een ontkenning, geen stilzwijgen. beforeUnits: BIPM levert welke reeksen SI-symbolen zijn, de Taalunie de Nederlandse conventie; eenletterige symbolen blijven weg zoals in fr.json. afterSymbols = [«€», «$»]: LET OP BIJ HET OVERNEMEN VAN fr.json — in het Nederlands gaat het valutateken aan het getal vooraf («€ 179»), in het Frans volgt het erop («2 €»), dus het hoort hier in afterSymbols en niet in beforeUnits. De twee leden zijn die welke het kopje «Valutatekens (€, $)» zelf noemt: een klasse-afleiding over een MET NAME GENOEMDE tweeledige klasse, gemarkeerd naar het voorbeeld van fr.json bij M., MM., Mmes. TOEGESTANE VARIANTEN, vastgelegd: voor het procentteken laat de Taalunie zowel «25 %» als «25%» toe, en bij °C schrijft zij dat er «meestal geen spatie» staat terwijl ISO er één voorschrijft. Dat hoeft niet beslecht te worden: N5 zet alleen een bestaande spatie om en voegt er nooit een in (nbsp.md §3.7). afterShortWords, beforeNumber en beforeWord zijn leeg: deze pagina loopt de leestekens en symbolen één voor één langs en zegt daarover niets, en het Nederlands kent geen tegenhanger van de Poolse sierotka-regel. Geraadpleegd op 18.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Nederlandse Taalunie, Taaladvies.net, «Prof.( )dr.» (12 mei 2021): «Ja, tussen bijvoorbeeld prof. dr. komt een spatie»; «Alleen als de afgekorte woorden tezamen een afkorting vormen, vervalt de spatie: a.s., a.u.b., m.b.v., n.a.v., z.o.z.»; «In verzorgd zetwerk wordt tussen voorletters en in afkortingen als v.d. bij voorkeur een halve spatie (of dunspatie) geplaatst»",
+      "url": "http://taaladvies.net/legacylink.php?id=vraag/678",
+      "note": "Onderbouwt abbreviations = [«prof. dr.»] — de enige Nederlandse afkorting met een interne U+0020 die letterlijk is aangetroffen. De gesloten vormen (a.s., a.u.b.) hebben geen interne spatie, zodat N4 daar niets te bevorderen heeft; dáárom telt de lijst één ingang en is hij niet leeg. initialBinding = «none»: de enige Nederlandse uitspraak hierover vraagt om een DUNNE spatie, een waarde die het schema niet kent terwijl N7 U+00A0 invoegt — en, belangrijker, geen geraadpleegde bron zegt dat een voorletter niet door een regelovergang van de achternaam gescheiden mag worden, en dát is wat N7 werkelijk doet. Geraadpleegd op 18.09.2026."
+    }
+  ]
+}

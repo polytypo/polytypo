@@ -1,0 +1,96 @@
+{
+  "locale": "pl",
+  "name": "Polish",
+  "quotes": {
+    "primary": {
+      "open": "„",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "»",
+      "close": "«",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": []
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": ["a", "i", "o", "u", "w", "z"],
+    "abbreviations": ["lek. med.", "inż. górn.", "bp sufr."],
+    "beforeUnits": ["%", "‰", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": ["§"],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Słownik języka polskiego PWN, «Zasady pisowni i interpunkcji», §98 «Cudzysłów», wstęp: «W druku i w rękopisach używa się najczęściej cudzysłowu o postaci: [U+201E] [U+201D] (tzw. cudzysłów apostrofowy)»; «W specyficznych zastosowaniach pojawia się też cudzysłów ostrokątny: [U+00BB] [U+00AB] lub [U+00AB] [U+00BB]. Cudzysłów o ostrzach skierowanych do środka jest używany […] w przypadku, gdy występuje cudzysłów w cudzysłowie»",
+      "url": "https://sjp.pwn.pl/zasady/Cudzyslow;629866.html",
+      "note": "Pierwszy stopień: U+201E otwierający, U+201D zamykający — nie U+201C, jak w niemieckim. Drugi stopień: para «o ostrzach skierowanych do środka», czyli U+00BB otwierający i U+00AB zamykający; para U+00AB…U+00BB jest w tym samym paragrafie przypisana do wyodrębniania znaczeń i do dialogów, a nie do cudzysłowu w cudzysłowie — kierunek jest więc odwrotny do tego, czego spodziewa się czytelnik znający francuskie «…». Kody znaków ustalono, pytając o U+XXXX dla każdego glifu z osobna, a nie na oko. innerSpace = «none»: żadne źródło nie żąda odstępu wewnątrz cudzysłowu. WARIANT DOPUSZCZALNY, odnotowany: Wolański, Poradnia Językowa PWN, «Cudzysłowy drugiego stopnia» (26.05.2020) dopuszcza na drugim stopniu zarówno »…«, jak i «…»; Poradnia jest źródłem doradczym niższej rangi niż «Zasady», więc wybrano formę, którą §98 wiąże wprost z cudzysłowem w cudzysłowie. Trzeci stopień zagnieżdżenia nie jest wyrażalny w locale.schema.json. Konsultowano 18.09.2026."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Słownik języka polskiego PWN, «Zasady pisowni i interpunkcji», [403] 93.7: «Wtrącenia ujmujemy w dwa myślniki»; [408] 93.12, UWAGA: «Półpauza używana w funkcji myślnika ma po bokach spacje»; 21.4, z przykładem «Wyrazy: czarny – biały to antonimy»",
+      "url": "https://sjp.pwn.pl/zasady/408-93-12-Myslnik-wyznaczajacy-relacje-miedzy-dwoma-wyrazami-lub-wartosciami;629831.html",
+      "note": "Uzasadnia dash.parenthetical = «en-spaced». Odstępy są w źródłach jednomyślne — myślnik ma spacje po obu stronach — natomiast DŁUGOŚĆ kreski nie jest przez PWN rozstrzygnięta: korpus [408] składa myślnik jako U+2014, przykład w 21.4 jako U+2013, a Bańko («przedziały liczbowe», 28.02.2012) pisze wprost, że myślnik «określany jest przez obecność pauz po bokach, a nie przez długość kreski». DECYZJA OPERATORA, 18.09.2026, a nie cytat: wybrano półpauzę U+2013, bo to ona jest w UWADZE [408] nazwana po imieniu w funkcji myślnika i bo taką samą wartość mają już de-DE, en-GB, fi i sv — przy źródle, które nie rozstrzyga, jednolitość w obrębie projektu jest lepszym kryterium niż preferencja. Skutek uboczny, odnotowany: dashes.md §3.4 P5 odrzuca ciąg dokładnie jednej U+2013 w każdym locale, więc istniejące polskie wtrącenia z półpauzą pozostają nietknięte, a zamieniane są U+002D i U+2014. Konsultowano 18.09.2026."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Słownik języka polskiego PWN, «Zasady pisowni i interpunkcji», [408] 93.12, UWAGA: «W druku liczby arabskie oznaczające przedział od — do rozdziela się półpauzą, czyli kreseczką średniej wielkości, niemającą po bokach odstępów, np. 1914–1918»",
+      "url": "https://sjp.pwn.pl/zasady/408-93-12-Myslnik-wyznaczajacy-relacje-miedzy-dwoma-wyrazami-lub-wartosciami;629831.html",
+      "note": "Uzasadnia dash.range = «en-tight»: półpauza U+2013 bez spacji. Potwierdzone dwukrotnie: Wolański, «Zakres liczbowy» (1.01.2024) — «Spacje wokół znaku przedziału […] to po prostu błąd ortotypograficzny»; oraz Bańko (28.02.2012), który przywołuje «Edycję tekstów» Wolańskiego w tym samym duchu — przywołanie jest cudze, samej książki nie konsultowano i nie jest tu cytowana. Reguła «ranges» jest domyślnie wyłączona (spec 0.5.0). Konsultowano 18.09.2026."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Słownik języka polskiego PWN, «Zasady pisowni i interpunkcji», [396] 92.4: gdy wielokropek zbiega się z pytajnikiem lub wykrzyknikiem, «znaki te w tekście umieszczamy», np. «Czy jest ona tu z wami…?», «Jak strasznie gorąco…!»",
+      "url": "https://sjp.pwn.pl/zasady/Wielokropek-obok-innych-znakow-interpunkcyjnych;629818.html",
+      "note": "Uzasadnia abbreviatedAfterTerminal = false. Wielokropek to zawsze trzy kropki, a pytajnik i wykrzyknik stoją PO nim — rosyjska forma dwukropkowa «?..» nie jest w polszczyźnie przewidziana przez żadne konsultowane źródło. Sprawdzono to celowo: gdyby polski tę formę miał, byłby drugim po rosyjskim locale z wartością true. Konsultowano 18.09.2026."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Słownik języka polskiego PWN, «Zasady pisowni i interpunkcji», [196]: łącznik przenosi się do następnego wiersza, a na końcu poprzedniego stawia się znak podziału, np. «czarno- / -białe fotografie», «województwo warmińsko- / -mazurskie»",
+      "url": "https://sjp.pwn.pl/zasady/Podzial-wyrazu-w-miejscu-lacznika;629553.html",
+      "note": "Uzasadnia trzy puste listy. Polszczyzna nie tylko dopuszcza podział w miejscu łącznika — ona go normuje, co jest przeciwieństwem żądania U+2011. Puste listy czynią regułę dowodliwym no-opem dla polskiego (hyphen.md §2). Konsultowano 18.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Słownik języka polskiego PWN, «Zasady pisowni i interpunkcji», 21.4: «Między literą kończącą wyraz a znakiem interpunkcyjnym […] nie stosujemy spacji»; 21.1.3: «w skrótach od nazw osób […] np. lek. med., inż. górn., bp sufr.»; 21.2: «Spację pomijamy […] między inicjałami, np. J.K. Bielecki»",
+      "url": "https://sjp.pwn.pl/zasady/Stosowanie-spacji-w-skrotach-od-dwoch-i-wiecej-wyrazow;4836486.html",
+      "note": "Trzy rzeczy z trzech sąsiadujących paragrafów. (1) beforePunctuation i narrowBeforePunctuation puste: polszczyzna nie stawia przed «:», «;», «!», «?» ani U+00A0, ani U+202F, a źródło odmawia im odstępu wprost — to zaprzeczenie, nie milczenie. (2) abbreviations: trzy skróty zacytowane dosłownie wraz z wewnętrzną spacją, czyli twierdzenie o PRZYNALEŻNOŚCI w rozumieniu nbsp.md §2.1. Świadomie pominięto «i in.» i «z d.»: N3 zajmuje te spacje pierwszy (nbsp.md §3.2), więc wpisy byłyby martwe, nie błędne. (3) initialBinding = «none»: polskie inicjały pisze się bez odstępu («J.K. Bielecki»), więc N7 nie ma czego zamieniać; to rzadki przypadek, w którym «none» opiera się na twierdzeniu pozytywnym, a nie na niecytowalnym zaprzeczeniu. beforeNumber i beforeWord pozostają puste: 21.1, 21.2 i 21.4 przeczytano w całości i żaden nie wiąże skrótu z następującą liczbą ani z wyrazem. Konsultowano 18.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "dr hab. Adam Wolański, Poradnia Językowa PWN, «Sieroty na końcu wiersza» (8.06.2018): «W wierszach tekstu, które liczą powyżej 40 znaków, nie należy zasadniczo pozostawiać na końcu wiersza jednoliterowych spójników i przyimków (a, i, o, u, w, z, A, I, O, U, W, Z)»",
+      "url": "https://sjp.pwn.pl/poradnia/haslo/Sieroty-na-koncu-wiersza;18684.html",
+      "note": "Uzasadnia afterShortWords. Lista jest zamknięta i zacytowana dosłownie; wersaliki pominięto, bo N3 dopasowuje pierwszą literę bez względu na wielkość (nbsp.md §3.5 krok 1). RANGA ŹRÓDŁA, powiedziana wprost, bo jest tu słabsza niż gdzie indziej w tym pliku: bezwarunkowy zakaz pochodzi z Poradni, która jest źródłem doradczym, natomiast «Zasady» [204] 54.8.1 są ŁAGODNIEJSZE — «W wąskich łamach jednoliterowe spójniki i przyimki mogą pozostawać na końcu wiersza w tekście ciągłym, natomiast w tytułach […] zawsze powinny być przenoszone» — a Bańko («słowa jednoliterowe na końcu wiersza», 16.02.2003) dodaje, że pozostawienie ich «nie stanowi błędu ortograficznego». Obie kwalifikacje — szerokość łamu i to, czy tekst jest tytułem — są dla silnika niewidoczne. DECYZJA OPERATORA, 18.09.2026: reguła jedzie bezwarunkowo, jak rosyjska afterShortWords, ponieważ wiązanie jednoliterowego przyimka jest w polskim składzie praktyką powszechną, a koszt błędnego zadziałania to jeden U+00A0 tam, gdzie i tak nikt nie chce złamania wiersza. Konsultowano 18.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Główny Urząd Miar, «Zasady stosowania oznaczeń i nazw jednostek miar», akapit «Spacja»: «należy zostawiać spację między wartością liczbową a oznaczeniem jednostki» (100 g, 2 L; ale nie: 100g); pkt 12: «pomiędzy [symbolem %] a wartością liczbową wielkości pozostawia się spację»; BIPM, The International System of Units (SI), 9th ed., concise summary — dla składu samej listy symboli",
+      "url": "https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-concise-EN.pdf",
+      "note": "Podział ról taki sam jak w en-US, fi, sv, es i pt: BIPM mówi, które łańcuchy są symbolami jednostek SI, a GUM i rozporządzenie — jaka jest polska konwencja odstępu. ZASTRZEŻENIE CO DO ŹRÓDŁA: dobór reguł w dokumencie GUM jest zawężony do towarów paczkowanych, natomiast akapit «Spacja» i pkt 12 powołują się na § 15 i § 8 ust. 4 rozporządzenia, które są prawem powszechnym. WARIANT DOPUSZCZALNY, odnotowany, bo dotyczy najczęstszego wpisu: polska tradycja ortotypograficzna pisze procent bez spacji, co Wolański («Jeszcze raz o spacji lub jej braku po znaku %», 26.11.2021) uznaje za równie poprawne. Rozbieżność nie wymaga rozstrzygnięcia: N5 wyłącznie ZAMIENIA istniejącą spację i nigdy jej nie wstawia (nbsp.md §3.7), więc «5 %» dostaje U+00A0, a «5%» zostaje nietknięte — jedna lista obsługuje obie poświadczone formy. Symbole jednoliterowe (m, g, l, s, A) pominięto zgodnie z praktyką fr.json. Konsultowano 18.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "dr hab. Adam Wolański, Poradnia Językowa PWN, «Symbol paragrafu i wyróżnienia tytułów aktów prawnych» (20.02.2019): «Symbol §, zastępujący wyraz paragraf, może być użyty tylko przed liczbą zapisaną cyframi. Należy go oddzielać od liczby spacją»",
+      "url": "https://sjp.pwn.pl/poradnia/haslo/Symbol-paragrafu-i-wyroznienia-tytulow-aktow-prawnych;19239.html",
+      "note": "Uzasadnia afterSymbols = [«§»]. Warunek «tylko przed liczbą zapisaną cyframi» pokrywa się co do joty z własnym strażnikiem N6, który wymaga, by cp[a+k+1] należało do klasy DIGIT (nbsp.md §3.8). Poradnia jest źródłem doradczym; «Zasady» kwestii nie poruszają, więc nie ma sprzeczności. Konsultowano 18.09.2026."
+    }
+  ]
+}

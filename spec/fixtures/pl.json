@@ -1,0 +1,137 @@
+{
+  "spec": "1.3.0",
+  "locale": "pl",
+  "cases": [
+    {
+      "id": "pl-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Powiedział \"dzień dobry\".",
+      "out": "Powiedział „dzień dobry”.",
+      "note": "quotes.primary = U+201E otwierający i U+201D zamykający (PWN, Zasady, §98). Uwaga: zamykający to U+201D, nie U+201C jak w niemieckim — różnica w składzie prawie niewidoczna, dlatego fixture."
+    },
+    {
+      "id": "pl-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Powiedział \"cytat 'w cytacie' koniec\".",
+      "out": "Powiedział „cytat »w cytacie« koniec”.",
+      "note": "Drugi stopień to para o ostrzach skierowanych do środka: U+00BB otwierający, U+00AB zamykający — kierunek odwrotny niż francuski. W tym samym przypadku widać N3: jednoliterowe «w» wiąże się z następnym wyrazem przez U+00A0 (afterShortWords)."
+    },
+    {
+      "id": "pl-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Wtrącenie - tak jest - kończy zdanie.",
+      "out": "Wtrącenie – tak jest – kończy zdanie.",
+      "note": "dash.parenthetical = «en-spaced»: półpauza U+2013 ze spacjami po obu stronach. Wybór długości kreski jest decyzją operatora (18.09.2026) — PWN normuje odstępy, nie długość; zob. wpis sources."
+    },
+    {
+      "id": "pl-dashes-already-correct",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Wtrącenie – tak jest – kończy zdanie.",
+      "out": "Wtrącenie – tak jest – kończy zdanie.",
+      "note": "dashes.md §3.4 P5 odrzuca ciąg dokładnie jednej U+2013, więc tekst już złożony półpauzą pozostaje nietknięty. To jest ta połowa decyzji o «en-spaced», która nic nie psuje w istniejących tekstach."
+    },
+    {
+      "id": "pl-ranges-en-tight",
+      "rule": "ranges",
+      "mode": "text",
+      "rules": {
+        "ranges": true
+      },
+      "in": "W latach 1756-1763 toczyła się wojna.",
+      "out": "W latach 1756⁠–⁠1763 toczyła się wojna.",
+      "note": "ranges.md §3: dash.range = «en-tight» daje półpauzę bez spacji, owiniętą w U+2060 (łączniki wyrazów), zgodnie z [408] UWAGA: «1914–1918». Wielka litera «W» wiąże się przez N3, bo dopasowanie pierwszej litery jest niewrażliwe na wielkość."
+    },
+    {
+      "id": "pl-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Czekaj... co?",
+      "out": "Czekaj… co?",
+      "note": "ellipsis.md §6: trzy U+002E stają się U+2026."
+    },
+    {
+      "id": "pl-ellipsis-before-terminal",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Jak strasznie gorąco…!",
+      "out": "Jak strasznie gorąco…!",
+      "note": "[396] 92.4: wykrzyknik stoi PO wielokropku i oba się zachowują. abbreviatedAfterTerminal = false, więc rosyjska forma dwukropkowa nie powstaje."
+    },
+    {
+      "id": "pl-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "biało-czerwona flaga",
+      "out": "biało-czerwona flaga",
+      "note": "hyphen.md §2: trzy puste listy czynią regułę dowodliwym no-opem. [196] każe dzielić wiersz w miejscu łącznika, czyli dokładnie odwrotnie niż U+2011."
+    },
+    {
+      "id": "pl-nbsp-short-words",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Mieszkam w Warszawie i pracuję.",
+      "out": "Mieszkam w Warszawie i pracuję.",
+      "note": "N3 afterShortWords: jednoliterowe przyimki i spójniki (a, i, o, u, w, z) nie zostają na końcu wiersza. Podstawa doradcza (Wolański), przyjęta decyzją operatora 18.09.2026 — «Zasady» [204] są łagodniejsze i uzależniają regułę od szerokości łamu, czego silnik nie widzi."
+    },
+    {
+      "id": "pl-nbsp-paragraph-sign",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Zgodnie z § 5 ustawy.",
+      "out": "Zgodnie z § 5 ustawy.",
+      "note": "Dwie subreguły w jednym zdaniu. N6 wiąże «§» z cyfrą (afterSymbols). N3 NIE wiąże «z», bo po nim stoi «§», które nie należy ani do ALNUM, ani do OPENISH (nbsp.md §3.5 krok 4) — przypadek istnieje właśnie po to, żeby to pokazać."
+    },
+    {
+      "id": "pl-nbsp-unit",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Waży 5 kg.",
+      "out": "Waży 5 kg.",
+      "note": "N5 beforeUnits: istniejąca spacja staje się U+00A0."
+    },
+    {
+      "id": "pl-nbsp-unit-tight-untouched",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Wzrost o 5%.",
+      "out": "Wzrost o 5%.",
+      "note": "N5 nigdy nie WSTAWIA spacji, więc «5%» — forma zgodna z polską tradycją ortotypograficzną — zostaje nietknięta, mimo że «%» jest na liście. Wiąże się natomiast «o» przez N3. Ten przypadek pokazuje, że jedna lista obsługuje obie poświadczone formy («5 %» i «5%»)."
+    },
+    {
+      "id": "pl-nbsp-abbreviation",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "lek. med. Kowalski",
+      "out": "lek. med. Kowalski",
+      "note": "N4 abbreviations: wewnętrzna spacja skrótu wielowyrazowego staje się U+00A0 (21.1.3). Spacja przed nazwiskiem pozostaje zwykła — beforeWord jest puste."
+    },
+    {
+      "id": "pl-spaces-brackets-and-final-stop",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Tekst ( bieżący ) nie zmienia się  .",
+      "out": "Tekst (bieżący) nie zmienia się.",
+      "note": "spaces.md §3: reguła niezależna od locale, obecna po to, by pl miało przypadek dla każdej reguły kanonicznej."
+    },
+    {
+      "id": "pl-symbols-copyright-and-dimensions",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026, format 40x60 cm",
+      "out": "Copyright © 2026, format 40×60 cm",
+      "note": "symbols.md: «(c)» staje się U+00A9, a «x» między cyframi U+00D7. U+00A0 przed «cm» to robota nbsp N5, nie symbols."
+    },
+    {
+      "id": "pl-apostrophe-foreign-name",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "d'Artagnan",
+      "out": "d’Artagnan",
+      "note": "U+0027 staje się U+2019. Reguła nie czyta danych locale; przypadek ją dla polskiego poświadcza."
+    }
+  ]
+}
