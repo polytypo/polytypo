@@ -89,7 +89,18 @@ package.
   repo's own `.github/workflows/`).
 - `brand/tools/` — generates the promo site (`promo/`) and brandbook (`brand/BRANDBOOK.html`) from
   spec data, calling `transform()` from the `polytypo` npm package to produce the worked examples
-  shown in `README.md` and on the site.
+  shown in `README.md` and on the site. `brand/tools/changelog.json` is the single source for both
+  `CHANGELOG.md` (rendered by `gen_readmes.py`) and the `/changelog` page (rendered by
+  `build_promo.py`) — never edit either output by hand.
+
+**A released spec version needs a changelog entry, and the entry comes first.** Add it to
+`brand/tools/changelog.json` before the `spec-v*` tag is pushed, in "what changes in text you
+already run through polytypo" terms, naming the accepted cost as well as the fix. Only released
+versions appear: a version sitting unreleased on `main` has no entry, per the same only-what-ships
+rule the rest of the public copy follows. Before/after example strings are captured by installing
+the published packages of the two versions side by side and running the same input through each —
+they are measured output, never typed by hand, exactly like every other example on the site.
+
 - `tests/conformance/` — `fixture-citation-guard.test.ts` and `mode-fixture-strategy.test.ts` check
   `spec/fixtures/*.json` structure and citation quality directly; there is no engine here to run
   them through, so this is _not_ the conformance suite itself — see the relevant runtime repo for
