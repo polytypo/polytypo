@@ -32,7 +32,7 @@
     "afterShortWords": [],
     "abbreviations": ["z. B.", "d. h.", "u. a.", "u. Ä.", "z. T.", "i. d. R."],
     "beforeUnits": ["%", "‰", "€", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
-    "beforeNumber": ["S."],
+    "beforeNumber": ["Nr.", "S."],
     "beforeWord": ["St."],
     "afterSymbols": ["§", "§§"],
     "initialBinding": "chain"
@@ -64,13 +64,18 @@
       "rule": "nbsp",
       "cite": "Schweizerische Bundeskanzlei, Schreibweisungen, Rz. 251: der Festabstand verhindert, dass Zusammengehöriges beim Zeilensprung auseinandergerissen wird — Beispiele „20 km“, „St. Gallen“, „Artikel 35“, „S. 17 f.“, „20. November“; Rz. 438: Entsprechendes gilt für die eingliedrige Abkürzung „St.“ für „Sankt“ in Ortsnamen („St. Gallen“, „St. Moritz“); Rz. 439: abschliessende Aufzählung der Begriffszeichen (Ziffern, %, ‰, Gedankenstrich, Schrägstrich, §, Währungszeichen, mathematische Zeichen, Einheitenzeichen)",
       "url": "https://www.bk.admin.ch/dam/de/sd-web/YVHazXZRkqKn/schreibweisungen.pdf",
-      "note": "Wortlaut im PDF selbst geprüft. Für Deutschland regelt dieselbe Konstruktion die DIN 5008 (Schreib- und Gestaltungsregeln), die kostenpflichtig ist und deren Wortlaut hier nicht geprüft werden konnte; deshalb steht die schweizerische Weisung als überprüfbarer Beleg — dasselbe Vorgehen wie bei der Quelle zu Rz. 234 in diesem File. Die Übertragung auf de-DE ist insofern eine Ableitung, keine deutschlandspezifische Weisung. „S.“ ist mit „S. 17 f.“ wörtlich belegt und deckt die von docs/PLAN.md §7 geforderte Schreibung „S.“ + Zahl. „Nr.“ ist aus afterSymbols ersatzlos gestrichen und wurde NICHT nach beforeNumber übernommen: die Aufzählung der Begriffszeichen in Rz. 439 ist abschliessend und enthält „Nr.“ nicht (im Sachregister unter N stehen nur „NGO“, „Normen“, „Null“), der Duden führt „Nr.“ als Abkürzung, spricht aber weder im Wörterbucheintrag noch im Sprachratgeber zu Abkürzungen eine Abstandsregel aus. Damit ist afterSymbols nachweislich falsch und beforeNumber unbelegt; nach docs/PLAN.md §6.1 fährt ein Eintrag ohne deckende Quelle nicht mit. Zurückholen lässt sich „Nr.“ durch eine Lesung der DIN 5008 — die Zugehörigkeit zur Klasse allein genügt nicht, das wäre eine als Zitat ausgegebene Ableitung. Die von docs/PLAN.md §7 geforderte Schreibung „Nr.“ + Zahl bleibt damit vorerst offen."
+      "note": "Wortlaut im PDF selbst geprüft. Für Deutschland regelt dieselbe Konstruktion die DIN 5008 (Schreib- und Gestaltungsregeln), die kostenpflichtig ist und deren Wortlaut hier nicht geprüft werden konnte; deshalb steht die schweizerische Weisung als überprüfbarer Beleg — dasselbe Vorgehen wie bei der Quelle zu Rz. 234 in diesem File. Die Übertragung auf de-DE ist insofern eine Ableitung, keine deutschlandspezifische Weisung. „S.“ ist mit „S. 17 f.“ wörtlich belegt und deckt die von docs/PLAN.md §7 geforderte Schreibung „S.“ + Zahl. „Nr.“ gehört nicht hierher, sondern zu den Abkürzungen: die Aufzählung der Begriffszeichen in Rz. 439 ist abschliessend und enthält „Nr.“ nicht (im Sachregister unter N stehen nur „NGO“, „Normen“, „Null“). Aus afterSymbols ist es deshalb ersatzlos gestrichen. In beforeNumber steht es seit Spec 1.3.0 — nicht als Zitat, sondern als vereinheitlichte Schreibung; die Begründung steht im nächsten Eintrag."
     },
     {
       "rule": "hyphen",
       "cite": "Schweizerische Bundeskanzlei, Schreibweisungen, Rz. 223 und 224: der Bindestrich wird als Ergänzungsstrich für einen eingesparten Wortteil verwendet („Papierproduktion und -handel“); mit dem geschützten Ergänzungsstrich wird verhindert, dass der Ergänzungsstrich am Zeilenende auf der oberen Zeile bleibt, während der zugehörige zweite Wortbestandteil auf die nächste Zeile rutscht",
       "url": "https://www.bk.admin.ch/dam/de/sd-web/YVHazXZRkqKn/schreibweisungen.pdf",
       "note": "Beleg dafür, dass die drei Listen leer bleiben. Das Deutsche kennt keine geschlossene Liste von Morphemen mit unteilbarem Bindestrich; die Trennung am Bindestrich ist zulässig. Der einzige belegte Fall eines geschützten Bindestrichs ist der Ergänzungsstrich (Rz. 224), und der ist offen: er betrifft jedes beliebige Zweitglied nach „und -“ und lässt sich als literale Wortliste nicht abbilden."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Keine frei prüfbare Normquelle für „Nr.“ + Zahl: DIN 5008:2020-03 ist kostenpflichtig und wurde nicht gelesen; Duden und das Amtliche Regelwerk 2024 sprechen keine Abstandsregel aus. Vereinheitlicht nach vorherrschendem Gebrauch (Operatorentscheid, 18.09.2026)",
+      "note": "Diese Zeile ist ausdrücklich kein Beleg, sondern eine Festlegung, und wird als solche geführt. Geprüft und ergebnislos: Duden, Rechtschreibregeln „Abkürzungen“ (D 1–D 4, nur der Abkürzungspunkt); Duden, Sprachratgeber „Worttrennung am Zeilenende“; Amtliches Regelwerk 2024, Kapitel F (§§ 84–90, nur Worttrennung) und der Kasten „Sonderzeichen“ auf S. 153, der Typografie ausdrücklich den Konventionen bzw. den DIN-, ÖNORM- und SNV-Normen zuweist, also ausserhalb des Regelwerks. Entscheiden könnte nur DIN 5008:2020-03. Der Projektentscheid dazu: liegt eine Regel hinter einer Bezahlschranke, formuliert polytypo sie nach dem verbreitetsten Gebrauch und hält sie in allen Runtimes gleich — Einheitlichkeit geht hier vor Kanontreue, und die Festlegung wird offen als solche gekennzeichnet statt als Zitat ausgegeben. Der verbreitetste Gebrauch bindet „Nr.“ an die folgende Zahl; die Sekundärquellen, die DIN 5008 referieren, sagen dasselbe. Fällt die Schranke, tritt der Wortlaut der Norm an die Stelle dieser Zeile — auch wenn er ihr widerspricht."
     }
   ]
 }

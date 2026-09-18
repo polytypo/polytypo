@@ -1,5 +1,5 @@
 {
-  "spec": "1.2.0",
+  "spec": "1.3.0",
   "locale": "fr-CA",
   "cases": [
     {
@@ -288,6 +288,30 @@
       "in": "l'\"idée\" est simple",
       "out": "l’« idée » est simple",
       "note": "apostrophe.md §3.3 case 3a (spec 1.2.0): same as `fr`."
+    },
+    {
+      "id": "fr-ca-nbsp-numero-binds-number",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "voir n° 5",
+      "out": "voir n° 5",
+      "note": "nbsp.md §3.11 N9 : « n° » figure dans nbsp.beforeNumber depuis la spec 1.3.0 et se lie au nombre qui suit. La forme retenue est « n » + U+00B0, l'usage le plus répandu ; voir l'entrée sources de la locale, la source (OQLF) prescrivant un tracé et non un code point."
+    },
+    {
+      "id": "fr-ca-nbsp-numero-capital-is-its-own-entry",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "N° 5 de la revue",
+      "out": "N° 5 de la revue",
+      "note": "nbsp.md §3.11 N9 étape 1 : aucune tolérance de casse, « N° » est donc une entrée distincte de « n° » dans nbsp.beforeNumber."
+    },
+    {
+      "id": "fr-ca-nbsp-numero-needs-a-digit",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "le n° cinq",
+      "out": "le n° cinq",
+      "note": "nbsp.md §3.11 N9 étape 4 : il faut un DIGIT après le séparateur. Un nombre écrit en toutes lettres n'en est pas un, l'espace reste sécable."
     }
   ]
 }

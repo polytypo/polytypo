@@ -1,5 +1,5 @@
 {
-  "spec": "1.2.0",
+  "spec": "1.3.0",
   "locale": "de-DE",
   "cases": [
     {
@@ -452,16 +452,32 @@
       "rule": "nbsp",
       "mode": "text",
       "in": "siehe § 12 und Nr. 5",
-      "out": "siehe § 12 und Nr. 5",
-      "note": "Two halves with different evidence. `§` is in afterSymbols and binds through N6. `Nr.` binds through nothing: it was removed from the de-DE locale file entirely, because no consulted source states a spacing rule for it — the Schreibweisungen never mention it (it is absent from Rz. 439's closed list of Begriffszeichen and from the Sachregister), Duden classifies it as an abbreviation, which refutes afterSymbols but prescribes no spacing, and DIN 5008 is paywalled and unread. Under PLAN.md §6.1 an entry whose citation does not cover it does not ship. The gap is evidentiary, not typographic."
+      "out": "siehe § 12 und Nr. 5",
+      "note": "Two halves with different evidence. `§` is in afterSymbols and binds through N6. `Nr.` binds through nothing: it was removed from the de-DE locale file entirely, because no consulted source states a spacing rule for it — the Schreibweisungen never mention it (it is absent from Rz. 439's closed list of Begriffszeichen and from the Sachregister), Duden classifies it as an abbreviation, which refutes afterSymbols but prescribes no spacing, and DIN 5008 is paywalled and unread. Under PLAN.md §6.1 an entry whose citation does not cover it does not ship. The gap is evidentiary, not typographic. Seit Spec 1.3.0 bindet auch `Nr.` (nbsp.md §3.11 N9, nbsp.beforeNumber), sodass beide Bindungen in einem Satz sichtbar sind."
     },
     {
-      "id": "de-de-nbsp-nr-unbound-pending-citation",
+      "id": "de-de-nbsp-nr-binds-number",
       "rule": "nbsp",
       "mode": "text",
       "in": "siehe Nr. 5",
-      "out": "siehe Nr. 5",
-      "note": "Pinned on its own so it is easy to find and easy to flip: if a contributor obtains DIN 5008 and it states the binding, `Nr.` goes into de-DE's nbsp.beforeNumber (NOT afterSymbols — Duden calls it an abbreviation, and Rz. 439's Begriffszeichen list excludes it) and this case's `out` becomes `siehe Nr.` + U+00A0 + `5`. Until then the space stays breakable, because moving it on class membership alone would be inference dressed as citation."
+      "out": "siehe Nr. 5",
+      "note": "nbsp.md §3.11 N9: `Nr.` steht seit Spec 1.3.0 in de-DEs nbsp.beforeNumber und bindet an die folgende Zahl. Die Zeile ist eine vereinheitlichte Schreibung, kein Zitat — DIN 5008 ist kostenpflichtig und ungelesen, Duden und Amtliches Regelwerk sprechen keine Abstandsregel aus; die Begründung steht im sources-Eintrag von spec/locales/de-DE.json."
+    },
+    {
+      "id": "de-de-nbsp-nr-needs-a-digit",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "siehe Nr. fünf",
+      "out": "siehe Nr. fünf",
+      "note": "nbsp.md §3.11 N9 Schritt 4: „eine folgende Zahl“ heißt, dass cp[a+k+1] in DIGIT liegt. Ein ausgeschriebenes Zahlwort ist keine Ziffer, also bleibt der Abstand trennbar."
+    },
+    {
+      "id": "de-de-nbsp-nr-after-hyphen-unbound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Tarif-Nr. 7",
+      "out": "Tarif-Nr. 7",
+      "note": "nbsp.md §3.11 N9 Schritt 2: die linke Grenze muss NONE, SPACELIKE, OPENISH oder SENTENCE-DASH sein; ein Bindestrich fällt durch, eine Abkürzung kann nicht unmittelbar nach einem wortinternen Bindestrich beginnen."
     },
     {
       "id": "de-de-nbsp-before-word-sankt",

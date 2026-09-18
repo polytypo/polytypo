@@ -125,9 +125,9 @@
     },
     {
       "rule": "nbsp",
-      "cite": "The Chicago Manual of Style — CMOS Shop Talk, “Navigating Spaces in Manuscripts and Beyond”, 15 June 2021 (exhaustive list of recommended nonbreaking spaces)",
-      "url": "https://cmosshoptalk.com/2021/06/15/navigating-spaces-in-manuscripts-and-beyond/",
-      "note": "`beforeNumber` and `beforeWord` are empty. Chicago enumerates exactly four places where it recommends a nonbreaking space — the middle dot of a spaced ellipsis, between initials in a name, between adjacent single and double quotation marks, and between a numeral and an abbreviated unit of measure. Reference abbreviations before a numeral (p. 12, fig. 3, chap. 4, vol. 2) are not among them, and no other consulted Chicago material requires the binding, so they are left out rather than inferred. `beforeWord` is empty for the same reason plus PLAN.md §7: the Mr./Dr. + name binding is an optional rule defaulting off, and no normative source requires it — locale data must not turn an opt-in preference into a default."
+      "cite": "The Chicago Manual of Style Online, Q&A, topic “Word Division”: “we don’t include any recommendation that says you must carry an abbreviation that ends in a period over to the next line when the sentence continues beyond the abbreviation. So a line is allowed to end with an ‘a.m.’ or ‘Jr.’ or the like that occurs in the middle of a sentence.”",
+      "url": "https://www.chicagomanualofstyle.org/qanda/data/faq/topics/WordDivision/faq0007.html",
+      "note": "`beforeNumber` and `beforeWord` are empty, and Chicago does not merely omit reference abbreviations from its nonbreaking-space guidance — it states positively that no such rule exists, so `No. 5`, `p. 12` and `pp. 12–14` are refused on the source’s own words rather than on an argument from silence (issue #30). The same answer attributes the practice to typesetters rather than to Chicago: “some typesetters will use a nonbreaking space to prevent a compound like ‘St. Louis’ or ‘Dr. Smith’ from breaking at the end of a line” — which is why `beforeWord` stays empty too; the named exception is initials in a name, carried by `initialBinding`. CMOS Shop Talk, “Navigating Spaces in Manuscripts and Beyond” (15 June 2021), cited above for `initialBinding` and `beforeUnits`, introduces its four contexts with “can be helpful in the following contexts, among others”, so it must not be described as an exhaustive list."
     }
   ]
 }

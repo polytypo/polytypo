@@ -32,7 +32,7 @@
     "afterShortWords": [],
     "abbreviations": ["p. ex."],
     "beforeUnits": ["%", "‰", "€", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
-    "beforeNumber": ["art.", "fig."],
+    "beforeNumber": ["art.", "fig.", "n°", "N°"],
     "beforeWord": ["M.", "MM.", "Mme", "Mmes", "Mlle", "Mlles"],
     "afterSymbols": ["§"],
     "initialBinding": "single"
@@ -73,6 +73,12 @@
       "cite": "Jacques André, Petites leçons de typographie, tableau 1 — voir spec/locales/fr.json pour la citation complète",
       "url": "http://jacques-andre.fr/faqtypo/lessons.pdf",
       "note": "Repris tel quel de fr : aucune source consultée n'impose un trait d'union insécable pour une classe fermée de formes morphologiques françaises, en France comme au Québec."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Office québécois de la langue française, Banque de dépannage linguistique, « Abréviation de numéro » : « L'abréviation courante du nom numéro est no ou No, avec la lettre o minuscule en exposant » ; « On n'abrège le mot numéro que s'il suit immédiatement le nom qu'il détermine » ; exemple : « C'est le billet no 852410 qui a valu le gros lot à sa détentrice »",
+      "url": "https://vitrinelinguistique.oqlf.gouv.qc.ca/25450/les-abreviations-et-les-symboles/les-abreviations/cas-particuliers-dabreviations/abreviation-de-numero",
+      "note": "Deux choses distinctes, et il faut les tenir séparées. Ce que la source établit : « n° » est une abréviation, pas un symbole, d'où beforeNumber et non afterSymbols — l'argument est aussi mécanique, un « ° » seul placé dans afterSymbols serait inerte puisque N6 exige que le code point précédent ne soit pas ALNUM, or c'est la lettre « n » (nbsp.md §3.8). Ce que la source n'établit pas : la séquence exacte de code points. L'OQLF prescrit un o minuscule en exposant, un tracé et non un code point, et ne nomme nulle part le signe de degré ni la ligature « numéro » (U+2116). Pour la France, rien : le § 5.1.3 de Jacques André, relu intégralement, ne mentionne ni « numéro » ni « no », et le Lexique de l'Imprimerie nationale est un ouvrage imprimé qui n'a pas pu être consulté. Décision de l'opérateur (18.09.2026) : quand la règle est derrière une source payante, polytypo retient l'usage le plus répandu et l'applique de la même façon partout, l'uniformité primant la conformité au canon, et la décision est signalée comme telle au lieu d'être présentée comme une citation. L'usage le plus répandu est « n » + U+00B0, c'est ce que l'on tape et ce que l'on trouve dans les textes en ligne ; N9 n'ayant aucune tolérance de casse, « n° » et « N° » sont deux entrées. La phrase « on ne sépare pas les numéros par des espacements » de la même page vise les tranches de chiffres à l'intérieur du nombre (« billet no 852410 »), pas l'espace entre l'abréviation et le nombre."
     }
   ]
 }

@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.2.0** · locales: **10** · rules: **9**.
+Spec version: **1.3.0** · locales: **10** · rules: **9**.
 
 ## Implementations
 
@@ -163,7 +163,9 @@ A behaviour change is a **spec change first, code second**.
 
 Locale claims are settled by citation, not preference. Every locale file carries a mandatory
 `sources` array pointing at the normative reference — Duden, Imprimerie nationale, Kotus,
-Språkrådet, Chicago, Мильчин.
+Språkrådet, Chicago, Мильчин. Where that reference is a paid standard nobody can read, the rule is
+standardised on the prevailing form instead, and the `sources` entry says exactly that: a recorded
+decision, labelled as one, never dressed up as a citation.
 
 ## Licence
 
