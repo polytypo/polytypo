@@ -1,8 +1,9 @@
 # Rule: `nbsp`
 
 **Order:** 70 (last). **Default:** on. **Modes:** text, html, markdown.
-**Spec version:** 1.2.0 (0.1.0 for everything except §3.9's `initialBinding` change (0.6.0) and
-§3.3's span-boundary paragraphs (1.2.0), noted inline).
+**Spec version:** 1.3.0 (0.1.0 for everything except §3.9's `initialBinding` change (0.6.0),
+§3.3's span-boundary paragraphs (1.2.0) and §3.3's character-reference guard (1.3.0), noted
+inline).
 
 ---
 
@@ -246,7 +247,32 @@ For each index `i` such that `cp[i]` is a member of `nbsp.beforePunctuation`:
    `Voir [ceci](http://x.org) : oui` a plain U+0020 before `:`. The same membership would also
    widen the left-boundary tests of N3, N7, N9 and N10, and N3's following-token guard, at span
    edges. Spec 1.2.0 does not make that change (§7 item 12).
-4. Let `left = cp[i-1]` or `NONE`.
+4. **Character-reference guard (spec 1.3.0).** If `cp[i]` is U+003B, and the code points to its
+   left have the shape of a character reference, **skip**. Concretely: let `j = i-1` and walk
+   left while `cp[j]` is an ASCII letter or an ASCII digit, giving a run of `len` code points;
+   if `len` is at least 1 and at most 32, and `cp[j]` is U+0023, decrement `j` once more; then
+   if `cp[j]` is U+0026, this `;` terminates a reference and the sub-rule emits nothing.
+
+   The reason is that in `text` mode there is no markup concept at all (`modes.md` §3.1), so a
+   French locale, whose `narrowBeforePunctuation` contains `;`, inserted U+202F before the `;`
+   that **ends** the reference: `Bonjour&#160;: oui` became `Bonjour&#160·: oui` and
+   `Tom &amp; Jerry` became `Tom &amp· Jerry`. The input stopped being what it was — this is the
+   one case found where a rule corrupts the input's own syntax rather than merely typesetting
+   something it should not have. In `html` mode the same strings were already safe, because
+   §3.6 makes a well-formed reference opaque; the guard makes `text` mode stop destroying them
+   too, which is the mode people reach for when they have "just a string".
+
+   The test is the **shape** of a reference, not membership of the HTML named-reference table.
+   That table is thousands of entries and would have to be identical in five runtimes, for no
+   gain: the guard's job is to decline, and declining on `&notaname;` costs nothing. The bound
+   of 32 code points is the length of the longest named reference (31) plus one, and it keeps
+   the left walk bounded rather than open-ended.
+
+   Accepted cost, pinned: a French semicolon that directly follows a token containing `&` with
+   no space, `R&D;`, keeps a plain U+0020 or no space at all rather than gaining U+202F. Such a
+   token is not French prose, and the alternative is breaking every character reference in the
+   language's own documents.
+5. Let `left = cp[i-1]` or `NONE`.
    - If `left` is `NBSP` → **already correct**, emit nothing.
    - If `left` is `SP` or `NNBSP` → emit an edit replacing `cp[i-1]` with U+00A0.
    - If `left` is in `OTHER-SPACE` → **skip**. A thin or figure space was placed deliberately;
@@ -261,7 +287,9 @@ For each index `i` such that `cp[i]` is a member of `nbsp.beforePunctuation`:
 
 Identical to N1 with `NNBSP` and `NBSP` exchanged: already-correct means `left` is `NNBSP`;
 `SP` or `NBSP` is converted to U+202F; a content character causes an insertion of U+202F. The
-quote-glyph guard and the `OTHER-SPACE` guard apply unchanged.
+quote-glyph guard, the `OTHER-SPACE` guard and the character-reference guard apply unchanged —
+the last one matters most here, since `;` is in `narrowBeforePunctuation` for `fr` and nowhere in
+`beforePunctuation` for any shipped locale, so N2 is the sub-rule that was destroying references.
 
 Because N1 runs first, a character listed in both arrays would be handled by N1 — which is
 why §2 requires the arrays to be disjoint and requires an implementation to fail loudly
@@ -845,6 +873,9 @@ about the engine **and** about a file in `spec/locales/`, and both halves have t
 | 18  | `H2␣O ist kein Wert`    | ⟶                       | N5 step 4: `2` is preceded by the letter `H`                                                                                                                                                                                             |
 | 19  | `siehe Nr.␣5 und S.␣12` | `siehe Nr.⍽5 und S.⍽12` | N9 twice                                                                                                                                                                                                                                 |
 | 20  | `siehe nr.␣5`           | ⟶                       | N9 matches exactly; `nr.` is not `Nr.`                                                                                                                                                                                                   |
+| 21  | `Bonjour&#160;:␣oui` (`fr`) | ⟶ | **spec 1.3.0.** N2's character-reference guard: the `;` closes `&#160;`, so no U+202F is inserted and the reference survives. Before 1.3.0 this produced `Bonjour&#160·:␣oui` |
+| 22  | `Tom␣&amp;␣Jerry` (`fr`) | ⟶ | **spec 1.3.0.** Same guard on a named reference |
+| 23  | `Oui␣;␣non` (`fr`)      | `Oui·;␣non` | The guard is not a blanket refusal of `;` — an ordinary semicolon still takes U+202F |
 
 ### `fr` — `beforeWord: ["M.","Mme","Mlle"]`
 

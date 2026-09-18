@@ -746,6 +746,46 @@
       "in": "---\ntitle: Une note ; suite\n---\n\n<Callout>Est-ce vrai ?</Callout>\n",
       "out": "---\ntitle: Une note ; suite\n---\n\n<Callout>Est-ce vrai ?</Callout>\n",
       "note": "modes.md §3.7.3: the same guarantee under \"mdx\", where frontmatter plus JSX is the ordinary document shape. This is the case the polytypo-js source comment above its frontmatter skip entry described as a spec gap."
+    },
+    {
+      "id": "fr-nbsp-character-reference-numeric",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Bonjour&#160;: oui",
+      "out": "Bonjour&#160;: oui",
+      "note": "nbsp.md §3.3 step 4 (spec 1.3.0): the `;` closes `&#160;`, so N2 emits nothing and the reference survives. The `:` takes nothing either — step 1's run guard sees a mark to its left. Before 1.3.0 this produced `Bonjour&#160` + U+202F + `: oui`, which is no longer a character reference."
+    },
+    {
+      "id": "fr-nbsp-character-reference-named",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Tom &amp; Jerry",
+      "out": "Tom &amp; Jerry",
+      "note": "nbsp.md §3.3 step 4 (spec 1.3.0): the same guard on a named reference. Before 1.3.0 `text` mode destroyed every character reference in French input, and only in locales whose nbsp data puts a space before `;`."
+    },
+    {
+      "id": "fr-nbsp-character-reference-shape-not-table",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "a &notaname; b",
+      "out": "a &notaname; b",
+      "note": "nbsp.md §3.3 step 4 (spec 1.3.0): the guard tests the shape of a reference, not membership of the HTML named-reference table, which five runtimes would otherwise have to carry identically. Declining here costs nothing."
+    },
+    {
+      "id": "fr-nbsp-ordinary-semicolon-still-binds",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Oui ; non",
+      "out": "Oui ; non",
+      "note": "nbsp.md §3.3 step 4 (spec 1.3.0) is not a blanket refusal of `;`: an ordinary semicolon still takes U+202F under N2. Pinned next to the reference cases so the guard cannot be widened into one."
+    },
+    {
+      "id": "fr-nbsp-semicolon-after-digit-binds",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Section 4; suite",
+      "out": "Section 4 ; suite",
+      "note": "nbsp.md §3.3 step 4 (spec 1.3.0): the left walk finds the digit run but no `&` before it, so the guard does not fire."
     }
   ]
 }
