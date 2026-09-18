@@ -1216,7 +1216,7 @@ def write_llms_txt(out_dir, data):
 # Operator-reviewed 2026-09-08, not machine-translated: German prefers "durch" (performed-by) over
 # "von", Finnish "polytypon avulla" ("with the help of polytypo") over the ambiguous adessive
 # alone, and Russian deliberately breaks from the other six languages' "cleanup by X" structure --
-# "текст оттипографен <b>polytypo</b>" reads as a natural short UI credit line in Russian, not a
+# "Текст оттипографен <b>polytypo</b>" reads as a natural short UI credit line in Russian, not a
 # literal translation of the English noun phrase.
 # Keyed by language, not locale: the badge's caption text is the same for every locale that
 # shares a language (en-US/en-GB, de-DE/de-CH, fr/fr-CA), so the picker offers exactly these seven
@@ -1226,7 +1226,7 @@ BADGE_TEXT = {
     "en": "Typographic cleanup by <b>polytypo</b>",
     "de": "Typografische Bereinigung durch <b>polytypo</b>",
     "fr": "Nettoyage typographique par <b>polytypo</b>",
-    "ru": "текст оттипографен <b>polytypo</b>",
+    "ru": "Текст оттипографен <b>polytypo</b>",
     "fi": "Typografinen siistiminen <b>polytypon</b> avulla",
     "sv": "Typografisk uppstädning av <b>polytypo</b>",
     "el": "Τυπογραφικός καθαρισμός από το <b>polytypo</b>",
