@@ -59,6 +59,9 @@ PAGES = [
     ("manifesto", "Manifesto", "manifesto.body.html"),
     # Same placement as the manifesto: footer and the sitewide badge section, not the primary nav.
     ("showcase", "Sites using polytypo", "showcase.body.html"),
+    # Footer only, for the same 4-link mobile-nav reason. Its content is generated from
+    # brand/tools/changelog.json, the same file CHANGELOG.md is rendered from.
+    ("changelog", "Changelog", "changelog.body.html"),
 ]
 
 # Per-page meta/OG description — every page previously shared the Home page's own description
@@ -89,6 +92,10 @@ PAGE_DESCRIPTIONS = {
     "showcase": (
         "Sites that run their text through polytypo and show the polytypo badge. Add yours by "
         "email once the badge is on your site."
+    ),
+    "changelog": (
+        "What changed in each released polytypo spec version, with the before-and-after of every "
+        "behaviour change and the cost each one carries."
     ),
 }
 
@@ -799,6 +806,7 @@ def footer_html(data, prefix):
         f'polytypo · spec {data["spec"]} · MIT for the code, separate terms for the brand assets · '
         "every before/after typography example on this site is generated with the engine.</p>"
         f'<p><a href="{page_href(prefix, "manifesto")}">Manifesto</a> · '
+        f'<a href="{page_href(prefix, "changelog")}">Changelog</a> · '
         f'<a href="{page_href(prefix, "showcase")}">Sites using polytypo</a></p>'
         f"<p>Packages: {package_links}</p>"
         '<p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p>'
@@ -840,6 +848,87 @@ def badge_section_html(prefix):
         '<div class="scroll"><pre><code id="badge-code"></code></pre></div>'
         '<button type="button" id="badge-copy" class="btn" style="margin-top: 10px">Copy</button>'
         "</section>"
+    )
+
+
+def _changelog_data():
+    with open(os.path.join(HERE, "changelog.json"), encoding="utf-8") as f:
+        return json.load(f)
+
+
+_MONTHS = (
+    "January February March April May June July August September October November December"
+).split()
+
+
+def _pretty_date(iso):
+    """A date a reader parses at a glance. ISO stays in logs and machine output, never here."""
+    y, m, d = (int(part) for part in iso.split("-"))
+    return f"{d} {_MONTHS[m - 1]} {y}"
+
+
+def _mark_invisible(text):
+    """⍽ for U+00A0 and · for U+202F. Both are invisible in a rendered page, and a changelog whose
+    whole point is "this is what changed" cannot show a change nobody can see. The legend sits in
+    the page's own intro (changelog.body.html)."""
+    return text.replace("\u00a0", "⍽").replace("\u202f", "·")
+
+
+def changelog_sections():
+    """The /changelog page's body, generated from brand/tools/changelog.json — the same file
+    brand/tools/gen_readmes.py renders CHANGELOG.md from, so the page and the repository file
+    cannot drift. Released versions only: an unreleased spec version on main has no entry here,
+    which is the same rule every other page on this site follows.
+    """
+    data = _changelog_data()
+    out = []
+    for rel in data["releases"]:
+        items = "".join(
+            "<li>"
+            + (f'<code>{H.escape(item["rule"])}</code> — ' if item.get("rule") else "")
+            + _md_code(item["text"])
+            + "</li>"
+            for item in rel["items"]
+        )
+        rows = ""
+        if rel["examples"]:
+            rows = (
+                '<div class="scroll"><table>'
+                "<tr><th>Locale</th><th>Mode</th><th>In</th><th>Before</th><th>After</th></tr>"
+                + "".join(
+                    f'<tr><td class="mono small">{H.escape(ex["locale"])}</td>'
+                    f'<td class="mono small">{H.escape(ex["mode"])}</td>'
+                    f'<td class="mono small">{H.escape(ex["in"])}</td>'
+                    f'<td class="mono small">{H.escape(_mark_invisible(ex["before"]))}</td>'
+                    f'<td class="mono small">{H.escape(_mark_invisible(ex["after"]))}</td></tr>'
+                    for ex in rel["examples"]
+                )
+                + "</table></div>"
+            )
+        out.append(
+            f'<section id="v{H.escape(rel["version"])}">'
+            f'<p class="eyebrow">{H.escape(_pretty_date(rel["date"]))}</p>'
+            f'<h2>{H.escape(rel["version"])}</h2>'
+            f'<p style="max-width: 70ch">{H.escape(rel["headline"])}</p>'
+            f'<ul class="small muted" style="max-width: 70ch">{items}</ul>'
+            f"{rows}"
+            "</section>"
+        )
+    out.append(
+        '<section id="patch-releases"><h2>Patch releases</h2>'
+        f'<p class="small muted" style="max-width: 70ch">{_md_code(data["patchNote"])}</p>'
+        "</section>"
+    )
+    return "".join(out)
+
+
+def _md_code(text):
+    """The one piece of Markdown the changelog entries use: `…` spans, which carry the example
+    strings. Everything else in those strings is prose and is escaped as prose."""
+    parts = text.split("`")
+    return "".join(
+        H.escape(part) if i % 2 == 0 else f"<code>{H.escape(part)}</code>"
+        for i, part in enumerate(parts)
     )
 
 
@@ -944,6 +1033,7 @@ def build():
         "{{proof_grid}}": proof_grid(data),
         "{{showcase_list}}": showcase_list(),
         "{{showcase_mailto}}": showcase_mailto(),
+        "{{changelog}}": changelog_sections(),
     }
     # Per-locale fixture totals — read live from spec/fixtures/, never hand-maintained, so the
     # coverage table on the Locales page cannot drift from the conformance suite it describes.
@@ -1110,6 +1200,8 @@ def write_llms_txt(out_dir, data):
         "",
         f"- [Manifesto]({SITE_ORIGIN}/manifesto/): why this is typography, set by locale "
         "convention long before language models existed, not an AI watermark.",
+        f"- [Changelog]({SITE_ORIGIN}/changelog/): what changed in each released spec version, "
+        "with the before-and-after of every behaviour change.",
         f"- [Sites using polytypo]({SITE_ORIGIN}/showcase/): sites that show the polytypo badge.",
         "",
     ]

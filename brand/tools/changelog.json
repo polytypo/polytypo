@@ -1,0 +1,91 @@
+{
+  "_comment": "Single source for CHANGELOG.md (brand/tools/gen_readmes.py) and the site's /changelog page (brand/tools/build_promo.py). Released versions only, per the project's rule that public copy describes what ships and never what is planned: a spec version appears here after its spec-v* tag exists and every runtime has published it. Example strings are real engine output, captured by running the published package of each version side by side, never typed by hand.",
+  "releases": [
+    {
+      "version": "1.2.0",
+      "date": "2026-09-17",
+      "headline": "Three fixes from production reports: file extensions keep their space, French spacing survives an inline element, and an elision before a quotation mark is set.",
+      "items": [
+        {
+          "rule": "spaces",
+          "text": "A space before a token that begins with a dot is kept. Before 1.2.0 it was deleted, so `Requires .NET 8` came back as `Requires.NET 8` and `a .gitignore file` lost its space too. The rule now looks at the code point after the dot: a letter or a digit means the dot starts a token, not ends a sentence. The accepted cost is that a stray space before a real sentence stop followed by a capitalised word, `end .Next`, is now kept rather than removed."
+        },
+        {
+          "rule": "nbsp",
+          "text": "In `html` and `markdown` modes, French spacing survives an inline element boundary. `<strong>Label :</strong>` kept its space before 1.2.0 only if the colon sat in the middle of a text run; at the end of a span the space was dropped entirely. The accepted cost is that a colon immediately followed by an opening tag, `12:<b>30</b>`, now gains a no-break space before it."
+        },
+        {
+          "rule": "apostrophe",
+          "text": "An elision apostrophe directly before an opening quotation mark becomes U+2019. `d'«idée»` and `l'“idée”` kept a straight mark before 1.2.0, in French and Italian the commonest shape there is. Brackets stay excluded, so a prime in `f'(x)` is still left alone."
+        }
+      ],
+      "examples": [
+        {
+          "locale": "en-US",
+          "mode": "text",
+          "in": "Requires .NET 8 and a .gitignore file.",
+          "before": "Requires.NET 8 and a.gitignore file.",
+          "after": "Requires .NET 8 and a .gitignore file."
+        },
+        {
+          "locale": "fr",
+          "mode": "html",
+          "in": "<strong>Label :</strong> oui",
+          "before": "<strong>Label:</strong> oui",
+          "after": "<strong>Label :</strong> oui"
+        },
+        {
+          "locale": "fr",
+          "mode": "text",
+          "in": "d'«idée»",
+          "before": "d'« idée »",
+          "after": "d’« idée »"
+        }
+      ]
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-09-09",
+      "headline": "Short quotations convert again, and rock 'n' roll is elided in every locale.",
+      "items": [
+        {
+          "rule": "apostrophe",
+          "text": "Up to 1.0.0 the rule refused to convert any one-to-three-letter run between straight single quotes, because it could not tell the `'n'` idiom from an ordinary short quotation. That declined both: `He said 'no' to me.` kept straight marks, and so did `«это 'моё' дело»`. The test is now exactly one code point, `n` or `N`, and the outcome inverts: that one shape becomes U+2019 on both sides in every locale, and every other short quotation converts like any other quotation."
+        },
+        {
+          "rule": "apostrophe",
+          "text": "The accepted cost, pinned by fixtures: a genuine quotation of the letter n, `The letter 'n' is common.`, is elided. The class it replaces — every short quotation in every locale — was larger."
+        }
+      ],
+      "examples": [
+        {
+          "locale": "en-US",
+          "mode": "text",
+          "in": "He said 'no' to me.",
+          "before": "He said 'no' to me.",
+          "after": "He said “no” to me."
+        },
+        {
+          "locale": "fi",
+          "mode": "text",
+          "in": "rock 'n' roll",
+          "before": "rock 'n' roll",
+          "after": "rock ’n’ roll"
+        }
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-09-07",
+      "headline": "The first frozen spec, and the first published runtime.",
+      "items": [
+        {
+          "rule": null,
+          "text": "Nine rules in a fixed order, ten locales, three modes, seven error codes, and idempotency as a contract rather than a hope: running `transform` over its own output returns the same bytes. Everything after this entry is a change against that baseline."
+        }
+      ],
+      "examples": []
+    }
+  ],
+  "patchNote": "Patch releases carry no behaviour change and no spec change. polytypo-js 1.0.1 moved npm publishing to trusted publishing (OIDC) and rewrote its README; 1.0.2, along with polytypo-python 1.0.1, polytypo-go 1.0.1 and polytypo-ruby 1.0.1, dropped the word “microtypography” from the published package description. The spec stayed at 1.0.0 throughout, and output was byte-identical."
+}

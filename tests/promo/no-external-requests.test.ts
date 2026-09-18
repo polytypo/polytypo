@@ -67,6 +67,7 @@ const PAGES = [
   "playground/index.html",
   "locales/index.html",
   "showcase/index.html",
+  "changelog/index.html",
 ];
 
 /** Depth prefix a page's own document-relative asset references carry: "" at the promo root,

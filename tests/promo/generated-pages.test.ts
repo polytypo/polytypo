@@ -24,6 +24,7 @@ const PAGES = [
   "playground/index.html",
   "locales/index.html",
   "showcase/index.html",
+  "changelog/index.html",
 ];
 
 function readPromoPage(name: string): string {
@@ -194,6 +195,7 @@ describe("promo site — favicon, robots.txt, sitemap.xml", () => {
     ["locales/index.html", "../"],
     ["manifesto/index.html", "../"],
     ["showcase/index.html", "../"],
+    ["changelog/index.html", "../"],
   ])("%s links its favicon at the correct depth, and every linked file exists", (page, prefix) => {
     const html = readPromoPage(page);
     expect(html).toContain(`<link rel="icon" href="${prefix}assets/favicon/favicon.svg"`);
@@ -220,7 +222,7 @@ describe("promo site — favicon, robots.txt, sitemap.xml", () => {
     expect(robots).toContain("Sitemap: https://polytypo.dev/sitemap.xml");
   });
 
-  it("sitemap.xml lists exactly the six generated pages, as absolute directory URLs", () => {
+  it("sitemap.xml lists exactly the seven generated pages, as absolute directory URLs", () => {
     const sitemap = readFileSync(path.join(PROMO_DIR, "sitemap.xml"), "utf8");
     for (const loc of [
       "https://polytypo.dev/",
@@ -229,10 +231,11 @@ describe("promo site — favicon, robots.txt, sitemap.xml", () => {
       "https://polytypo.dev/locales/",
       "https://polytypo.dev/manifesto/",
       "https://polytypo.dev/showcase/",
+      "https://polytypo.dev/changelog/",
     ]) {
       expect(sitemap).toContain(`<loc>${loc}</loc>`);
     }
-    expect(sitemap.match(/<url>/g)).toHaveLength(6);
+    expect(sitemap.match(/<url>/g)).toHaveLength(7);
   });
 });
 
@@ -280,7 +283,7 @@ describe("promo site — llms.txt (llmstxt.org convention)", () => {
       expect(llms).toContain(`(${url})`);
     }
     expect(llms.match(/^- \[/gm)).toHaveLength(
-      3 /* docs */ + 5 /* packages */ + 1 /* spec */ + 2 /* optional */,
+      3 /* docs */ + 5 /* packages */ + 1 /* spec */ + 3 /* optional */,
     );
   });
 

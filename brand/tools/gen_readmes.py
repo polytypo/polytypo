@@ -291,6 +291,65 @@ and not as another project's identity, nor on goods for sale, without permission
 """
 
 
+CHANGELOG_INTRO = """Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.2.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.2.0 and produce byte-identical
+output. Only released versions are listed.
+
+Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
+change with a cost, stated: a rule that fires where it did not before also fires somewhere you may
+not want, and the fixtures pin both sides.
+
+**⍽ is not in the output — it marks U+00A0 NO-BREAK SPACE**, which is otherwise indistinguishable
+from an ordinary space here. A changelog whose entries are about invisible characters has to show
+them somehow."""
+
+
+def _pretty_date(iso):
+    """1 January 2026, never the ISO form: these lines are read by people, and the repository's own
+    rule keeps YYYY-MM-DD to logs and machine output."""
+    y, m, d = (int(part) for part in iso.split("-"))
+    months = (
+        "January February March April May June July August September October November December"
+    ).split()
+    return f"{d} {months[m - 1]} {y}"
+
+
+def _mark(text):
+    return text.replace("\u00a0", "⍽").replace("\u202f", "·")
+
+
+def changelog_body():
+    """CHANGELOG.md, rendered from brand/tools/changelog.json — the same file the site's /changelog
+    page is built from, so the two cannot drift. Example strings in that file are real engine
+    output captured from the published package of each version, never typed by hand."""
+    with open(os.path.join(REPO, "brand", "tools", "changelog.json"), encoding="utf-8") as f:
+        data = json.load(f)
+    out = ["# Changelog", "", CHANGELOG_INTRO, ""]
+    for rel in data["releases"]:
+        out += [f"## {rel['version']} — {_pretty_date(rel['date'])}", "", rel["headline"], ""]
+        for item in rel["items"]:
+            prefix = f"**`{item['rule']}`** — " if item.get("rule") else ""
+            out += [f"- {prefix}{item['text']}"]
+        out += [""]
+        if rel["examples"]:
+            out += ["| Locale | Mode | In | Before | After |", "| --- | --- | --- | --- | --- |"]
+            for ex in rel["examples"]:
+                out += [
+                    f"| `{ex['locale']}` | `{ex['mode']}` | `{ex['in']}` | "
+                    f"`{_mark(ex['before'])}` | `{_mark(ex['after'])}` |"
+                ]
+            out += [""]
+    out += ["## Patch releases", "", data["patchNote"], ""]
+    return "\n".join(out)
+
+
+def build_changelog():
+    path = os.path.join(REPO, "CHANGELOG.md")
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(changelog_body())
+    print("  CHANGELOG.md")
+
+
 def build():
     body = TEMPLATE.format(
         logo="brand/logo/polytypo-lockup-stacked.svg",
@@ -309,6 +368,7 @@ def build():
     with open(path, "w", encoding="utf-8") as f:
         f.write(body)
     print("  README.md")
+    build_changelog()
 
 
 if __name__ == "__main__":
