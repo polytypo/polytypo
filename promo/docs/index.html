@@ -279,6 +279,15 @@
     <code>pre</code> and character references. A string that can contain <code>&amp;amp;</code> or
     <code>&amp;#160;</code> is HTML, fragment or not.
   </p>
+  <p>
+    In <code>markdown</code> mode those skipped regions are the dialect's own structural ones, not
+    whatever looks like code to a reader. CommonMark calls an indented block code at four spaces; at
+    two it is an ordinary paragraph, so a JSON sample indented by two spaces comes back with curly
+    quotes — valid JSON in, invalid JSON out, and nothing in the return value says so. MDX has no
+    indented code blocks at all, so there even four spaces is prose, and a brace inside it is a JSX
+    expression: the same sample throws <code>POLYTYPO_MALFORMED_INPUT</code> instead. A fence or a
+    code span is the one marker that means <em>code</em> in both dialects.
+  </p>
 
   <h3>What it inserts</h3>
   <p>
