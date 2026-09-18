@@ -13,10 +13,13 @@
     "sv",
     "el",
     "es",
-    "it"
+    "it",
+    "pt-PT",
+    "pt-BR"
   ],
   "aliases": {
     "en": "en-US",
-    "de": "de-DE"
+    "de": "de-DE",
+    "pt": "pt-PT"
   }
 }

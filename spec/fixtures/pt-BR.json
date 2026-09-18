@@ -1,0 +1,156 @@
+{
+  "spec": "1.3.0",
+  "locale": "pt-BR",
+  "cases": [
+    {
+      "id": "pt-br-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ele disse \"bom dia\" e saiu.",
+      "out": "Ele disse “bom dia” e saiu.",
+      "note": "quotes.primary com innerSpace \"none\". O uso brasileiro atestado pelo Manual de Redação da Presidência da República compõe as citações com aspas curvas duplas e nunca com angulares. É a diferença central em relação a pt-PT."
+    },
+    {
+      "id": "pt-br-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Escreveu: \"Disse-me 'chego já' e desapareceu.\"",
+      "out": "Escreveu: “Disse-me ‘chego já’ e desapareceu.”",
+      "note": "Primeiro e segundo níveis de aspas. O terceiro nível que as fontes descrevem não é exprimível no esquema, que só tem primary e secondary."
+    },
+    {
+      "id": "pt-br-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "As condições - ordenado e subvenções - eram boas.",
+      "out": "As condições – ordenado e subvenções – eram boas.",
+      "note": "dash.parenthetical = \"en-spaced\": o travessão substitui parênteses e leva um espaço ordinário de cada lado. A largura foi verificada extraindo a camada de texto do PDF da fonte, não julgada a olho sobre a página rasterizada."
+    },
+    {
+      "id": "pt-br-ranges-hyphen-kept",
+      "rule": "ranges",
+      "mode": "text",
+      "rules": {
+        "ranges": true
+      },
+      "in": "o programa para 1996-1997",
+      "out": "o programa para 1996-1997",
+      "note": "ranges.md §2: com dash.range = \"none\" a regra não emite nada — nem sequer os U+2060 que um intervalo convertido carrega noutras locales — e o U+002D escrito pelo autor sobrevive byte a byte."
+    },
+    {
+      "id": "pt-br-ranges-slash-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "rules": {
+        "ranges": true
+      },
+      "in": "o ano letivo de 1990/1991",
+      "out": "o ano letivo de 1990/1991",
+      "note": "ranges.md §3: a barra não é um token de intervalo para esta regra. Fica fixado que o outro ramo da convenção portuguesa — período que não abrange os dois anos completos — também não é tocado."
+    },
+    {
+      "id": "pt-br-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Espere... o quê?",
+      "out": "Espere… o quê?",
+      "note": "ellipsis.md §6: três U+002E passam a U+2026. Nada acontece antes de «?», porque beforePunctuation e narrowBeforePunctuation estão vazios — ao contrário de fr."
+    },
+    {
+      "id": "pt-br-ellipsis-not-abbreviated-after-terminal",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "É o dianho!..",
+      "out": "É o dianho!…",
+      "note": "abbreviatedAfterTerminal = false: a forma abreviada de dois pontos que o russo usa não existe em português, pelo que «!..» é um lapso por «!…». A fonte europeia imprime exatamente «É o dianho!…»."
+    },
+    {
+      "id": "pt-br-hyphen-noop-compounds",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Uma reunião na segunda-feira sobre o salmão-do-atlântico.",
+      "out": "Uma reunião na segunda-feira sobre o salmão-do-atlântico.",
+      "note": "hyphen.md §2: as três listas estão vazias porque o Acordo Ortográfico (Base XX) manda QUEBRAR a linha no hífen do composto e repeti-lo na linha seguinte. Um port que ligue compostos portugueses com U+2011 falha este caso."
+    },
+    {
+      "id": "pt-br-hyphen-noop-enclisis",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "far-se-á e exigem-lhe",
+      "out": "far-se-á e exigem-lhe",
+      "note": "Ênclise e mesóclise, exemplos literais do Manual de Redação da Presidência da República, que prescreve a mesma repetição do hífen na translineação."
+    },
+    {
+      "id": "pt-br-nbsp-percent",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "7 % do volume de negócios",
+      "out": "7 % do volume de negócios",
+      "note": "N5 converte um espaço já escrito. O português escreve «7 %» com espaço, ao contrário do grego, que o escreve colado."
+    },
+    {
+      "id": "pt-br-nbsp-celsius",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "a temperatura atingiu hoje os 39 °C",
+      "out": "a temperatura atingiu hoje os 39 °C",
+      "note": "Exemplo literal do ponto 10.9.1 do Código de Redação Interinstitucional."
+    },
+    {
+      "id": "pt-br-nbsp-hour-is-not-a-unit",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "eram as 18h30",
+      "out": "eram as 18h30",
+      "note": "O reparo citado: «h» escreve-se «sempre sem ponto, sem espaços» (ponto 10.9.1), pelo que está deliberadamente ausente de beforeUnits. Este caso fixa essa ausência para que ninguém a preencha por analogia."
+    },
+    {
+      "id": "pt-br-nbsp-abbreviation",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "p. ex. isto",
+      "out": "p. ex. isto",
+      "note": "N4 liga o espaço interno da abreviatura listada «p. ex.», que o anexo A3 manda preferir a «e. g.»."
+    },
+    {
+      "id": "pt-br-nbsp-before-number",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "ver p. 24",
+      "out": "ver p. 24",
+      "note": "N9: «p. 24» é o exemplo impresso. «n.º» NÃO está na lista, e por citação e não por esquecimento — a nota (3) do ponto 6.4 prescreve um «o» sobrescrito e recusa expressamente U+00BA e U+00B0."
+    },
+    {
+      "id": "pt-br-nbsp-no-space-before-colon",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "As principais cidades de Portugal são: Lisboa, Porto e Coimbra.",
+      "out": "As principais cidades de Portugal são: Lisboa, Porto e Coimbra.",
+      "note": "beforePunctuation e narrowBeforePunctuation vazios: nada é inserido antes de «:». Frase literal do ponto 10.4.4. Um port que aplique a prática francesa a todas as locales falha aqui."
+    },
+    {
+      "id": "pt-br-spaces-brackets-and-final-stop",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "O texto ( corrente ) não muda  .",
+      "out": "O texto (corrente) não muda.",
+      "note": "spaces.md §3: os espaços interiores dos parênteses desaparecem e a série anterior ao ponto final reduz-se. Regra independente da locale, presente para que esta tenha um caso por cada regra canónica."
+    },
+    {
+      "id": "pt-br-symbols-copyright-and-dimensions",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026, formato 40x60 cm",
+      "out": "Copyright © 2026, formato 40×60 cm",
+      "note": "symbols.md: «(c)» passa a U+00A9 e o «x» entre algarismos a U+00D7. O U+00A0 antes de «cm» é obra de nbsp N5, não de symbols."
+    },
+    {
+      "id": "pt-br-apostrophe-elision",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "pinga d'água",
+      "out": "pinga d’água",
+      "note": "U+0027 passa a U+2019. A regra não lê dados de locale; o caso certifica-a para esta locale."
+    }
+  ]
+}

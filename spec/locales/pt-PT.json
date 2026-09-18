@@ -1,0 +1,84 @@
+{
+  "locale": "pt-PT",
+  "name": "Portuguese (Portugal)",
+  "quotes": {
+    "primary": {
+      "open": "«",
+      "close": "»",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "“",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": []
+  },
+  "dash": {
+    "parenthetical": "em-spaced",
+    "range": "none"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": ["p. ex."],
+    "beforeUnits": ["%", "‰", "°C", "km", "cm", "mm", "kg", "kW", "kWh", "Hz"],
+    "beforeNumber": ["p."],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Serviço das Publicações da União Europeia, Código de Redação Interinstitucional (edição PT, 2022, ISBN 978-92-78-42820-4), Quarta parte «Convenções próprias da língua portuguesa», ponto 10.4.10 «Aspas», N. B.: «O primeiro nível de aspas a utilizar corresponde às aspas angulares («»). Quando necessário, utilizam-se três níveis de aspas devidamente hierarquizadas: «…» — as aspas angulares, “…” — as aspas curvas duplas ou vírgulas dobradas, ‘…’ — as aspas curvas simples ou vírgulas simples»",
+      "url": "https://op.europa.eu/pt/publication-detail/-/publication/01ed788a-d266-11ec-a95f-01aa75ed71a1",
+      "note": "Primário U+00AB/U+00BB, secundário U+201C/U+201D. O terceiro nível descrito pela fonte não é exprimível em locale.schema.json, que só tem primary e secondary — limite do esquema, não lacuna da fonte, como já consta de el.json. innerSpace = \"none\": todos os exemplos do ponto 10.4.10 escrevem o texto colado às aspas e a secção nunca pede espaço interior. A Quarta parte é o capítulo específico da língua portuguesa; a Terceira parte do mesmo guia é deliberadamente NÃO invocada, porque o seu §6.4 declara que as suas regras «são o resultado de um acordo interinstitucional» e que «certas escolhas foram feitas em prol de uma convenção comum» — estilo de editor, não prova sobre o português, a mesma desqualificação que el.json regista. É POR ISTO que esta locale é pt-PT e não pt: o uso brasileiro diverge e tem ficheiro próprio (pt-BR), em vez de ser apanhado por um fallback que lhe daria aspas que não usa. Consultado em 18.9.2026."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Código de Redação Interinstitucional (PT, 2022), Quarta parte, ponto 10.4.8 «Travessão»: «O travessão (traço horizontal maior que o hífen) emprega-se: […] d) No lugar de parênteses: As condições — ordenado e subvenções — eram boas»",
+      "url": "https://op.europa.eu/pt/publication-detail/-/publication/01ed788a-d266-11ec-a95f-01aa75ed71a1",
+      "note": "Justifica dash.parenthetical = \"em-spaced\". O papel (substitui parênteses) e o espaçamento (um espaço ordinário de cada lado de CADA travessão) estão no exemplo impresso; ao contrário do grego, do espanhol e do italiano, o português não usa o padrão «espaços fora do par, colado por dentro», pelo que o enum exprime a convenção sem forçar nada. A LARGURA foi verificada extraindo a camada de texto do PDF, não julgada a olho sobre a página rasterizada: o carácter é U+2014. Esta é a segunda divergência regional do português — o Manual de Redação da Presidência da República (Brasil) define o travessão como «um hífen prolongado» e o seu texto extraído dá U+2013 —, e é a segunda razão para pt-PT e pt-BR serem ficheiros distintos. Consultado em 18.9.2026."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Código de Redação Interinstitucional (PT, 2022), ponto 10.4.11: «Quando se trata de dois anos completos ou de um período de vários anos usa-se o hífen: o programa para 1996-1997; o período de 1993-1996»; ponto 10.9.1: «Para qualquer período que decorra entre dois anos consecutivos, estes são separados por um hífen, se o período abrange a totalidade dos dois anos (1990-1991), e por uma barra, em caso contrário (ano letivo de 1990/1991)»",
+      "url": "https://op.europa.eu/pt/publication-detail/-/publication/01ed788a-d266-11ec-a95f-01aa75ed71a1",
+      "note": "Justifica dash.range = \"none\" pela positiva. A regra é enunciada duas vezes, em dois capítulos da parte específica da língua, e as duas vezes nomeia o hífen; a barra fica reservada para o período que não abrange os dois anos completos. «none» é o único valor do enum que respeita a fonte, porque `ranges` não emite nada nesse modo (ranges.md §2) e o U+002D escrito pelo autor sobrevive — substituí-lo por U+2013 contrariaria a citação. Consultado em 18.9.2026."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Código de Redação Interinstitucional (PT, 2022), ponto 10.4.7 «Reticências», com o exemplo impresso «É o dianho!… É o dianho!… E, olha lá, porque não vais ter com o padre?…» (Aquilino Ribeiro)",
+      "url": "https://op.europa.eu/pt/publication-detail/-/publication/01ed788a-d266-11ec-a95f-01aa75ed71a1",
+      "note": "Justifica abbreviatedAfterTerminal = false. O passo citado escreve as reticências completas imediatamente a seguir a «!» e a «?» — «!…» e «?…» —, e nenhuma fonte consultada prevê a forma abreviada de dois pontos que o russo usa, pelo que esse ramo de ellipsis.md fica desligado para o português. Nenhuma fonte se pronuncia sobre U+2026 contra três U+002E: essa escolha é do motor e é igual em todas as locales. Consultado em 18.9.2026."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Acordo Ortográfico da Língua Portuguesa (1990), Base XX «Da divisão silábica»: «Na translineação de uma palavra composta ou de uma combinação de palavras em que há um hífen, ou mais, se a partição coincide com o final de um dos elementos ou membros, deve, por clareza gráfica, repetir-se o hífen no início da linha imediata: ex- -alferes»",
+      "url": "http://www.portaldalinguaportuguesa.org/?action=acordo&version=1990",
+      "note": "Justifica as três listas vazias, e justifica-as pela positiva, não por ausência de fonte. O português não só permite como PRESCREVE a quebra de linha sobre o hífen de um composto, repetindo-o na linha seguinte: uma forma que é normativamente quebrada nesse ponto não pode ser uma forma cujo hífen tenha de resistir à quebra, que é a única coisa que esta regra consome. A regra é, portanto, um no-op total demonstrável para o português (hyphen.md §2), e qualquer runtime que ligue compostos portugueses com U+2011 está errado. Corroborado pelo Código de Redação Interinstitucional (PT, 2022), ponto 10.2 e ponto 10.4.12 («segunda-/-feira», «salmão-do-/-atlântico»), e pelo Manual de Redação da Presidência da República (Brasil, 2.ª ed., 2002), §9.1.3.1 («decreto-/-lei», «far-/-se-á»). É o campo em que Portugal, o Brasil e o próprio Acordo dizem explicitamente a mesma coisa. Consultado em 18.9.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Código de Redação Interinstitucional (PT, 2022), anexo A3 «Abreviaturas e símbolos», pontos 2 e 3, com as Observações «Todos os números são acompanhados dos respetivos símbolos: de 4 m em 4 m; de 1 kg, 6 kg a 15 kg», e Quarta parte, ponto 10.9.1: «As percentagens, pesos e medidas escrevem-se numericamente: 7 % do volume de negócios», «a temperatura atingiu hoje os 39 °C»; BIPM, The International System of Units (SI), 9.ª ed., resumo conciso: «A single space is always left between the number and the unit»",
+      "url": "https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-concise-EN.pdf",
+      "note": "Justifica nbsp.beforeUnits. A locale atesta a PERTENÇA — que estes símbolos são unidades e que se escrevem depois do número com um espaço; o mecanismo (converter esse espaço em U+00A0, nunca o inserir) é da regra e está fixado em nbsp.md §2.1. REPARO CITADO, mais importante do que qualquer inclusão: o ponto 10.9.1 exclui «h» por nome — «horas (o símbolo «h» escreve-se sempre sem ponto, sem espaços): eram as 18h30» —, pelo que «h» NÃO entra na lista e há um caso de conformidade a fixá-lo. Os símbolos de uma só letra (m, g, l, t, s, A, W, V, K) ficam igualmente de fora, embora atestados, pela mesma razão que em fr: não são desambiguáveis sem contexto. Note-se que o português escreve «7 %» com espaço, ao contrário do grego. Consultado em 18.9.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Código de Redação Interinstitucional (PT, 2022), anexo A3, ponto 4 «Obras»: «p. ex.  por exemplo»; «e. g.  exempli gratia (por exemplo). Utilizar de preferência p. ex.»; Quarta parte, ponto 10.9.1: «paginação corrente, parágrafos, artigos: artigo 2.º, terceiro parágrafo, alínea b), p. 24»; nota (3) do ponto 6.4: «Para o «º» ordinal (1.º, 2.º…) ou em «n.º», utilizar a terminação «o» após o ponto e em posição superior à linha [não utilizar o sinal «º» do teclado Azerty nem a sequência Alt 0176 (símbolo do grau «°»)]»",
+      "url": "https://op.europa.eu/pt/publication-detail/-/publication/01ed788a-d266-11ec-a95f-01aa75ed71a1",
+      "note": "Justifica as listas vazias e initialBinding = \"none\", e diz com exatidão em que se apoiam: ao contrário do guia grego, a parte portuguesa NÃO contém nenhuma frase que negue pelo nome o uso francês do espaço antes da pontuação dupla. A posição é «nenhuma fonte o exige», e não «uma fonte o proíbe»; o que se observa é que nenhum exemplo do capítulo o escreve, e isso é uma observação, assinalada como tal. beforeNumber contém apenas «p.»: o ponto 10.9.1 atesta a ligação («p. 24», «Lei n.º 123»), mas «n.º» NÃO pode ser listado, porque a nota (3) do ponto 6.4 do mesmo guia prescreve um «o» sobrescrito e RECUSA expressamente tanto U+00BA como U+00B0 — listar «n.º» seria citar uma fonte que proíbe esse mesmo carácter. A decisão do operador de 18.9.2026 sobre o «n°» francês cobre uma fonte SILENCIOSA e não se estende a uma que fala e recusa. beforeWord fica vazio: o anexo A3 enumera «Sr.», «Dr.», «Prof.», mas limita-se a expandi-los e nenhuma fonte os mostra ligados ao nome seguinte. GAP REGISTADO, não resolvido: o ponto 10.9.1 exige espaço protegido DENTRO dos grupos de algarismos («um total de 12 345 euros»; «este espaço é protegido»), e locale.schema.json não tem campo para isso. Consultado em 18.9.2026."
+    }
+  ]
+}

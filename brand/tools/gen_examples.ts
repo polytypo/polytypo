@@ -21,6 +21,8 @@ const LOCALES = [
   "el",
   "es",
   "it",
+  "pt-PT",
+  "pt-BR",
 ] as const;
 
 // Every hero line: nested quotes, an apostrophe or elision (except el — see its own note below),
@@ -68,6 +70,12 @@ const HERO: Record<(typeof LOCALES)[number], string> = {
   es:
     `Preguntó: "¿No es esta la tienda que llaman 'la de la esquina'?" ... Caminamos -- casi 3 ` +
     `km -- y estaba cerrada. Copyright (c) 2026, tamaño 40x60 cm.`,
+  "pt-PT":
+    `Perguntou: "Não é esta a loja a que chamam 'a da esquina'?" ... Caminhámos -- quase 3 km ` +
+    `-- e estava fechada. Copyright (c) 2026, formato 40x60 cm.`,
+  "pt-BR":
+    `Perguntou: "Não é esta a loja que chamam de 'a da esquina'?" ... Caminhamos -- quase 3 km ` +
+    `-- e estava fechada. Copyright (c) 2026, formato 40x60 cm.`,
   it:
     `Ha chiesto: "Non è questo il negozio che chiamano 'quello all'angolo'?" ... Abbiamo camminato ` +
     `-- quasi 3 km -- ed era chiuso. Copyright (c) 2026, formato 40x60 cm.`,
@@ -138,6 +146,16 @@ const SHOWCASE: Record<
     { rule: "dashes", in: `Planen - om det finns en - misslyckas.` },
     { rule: "nbsp", in: `Det kostar 100 kr` },
   ],
+  "pt-PT": [
+    { rule: "quotes", in: `Ele disse "bom dia" e saiu.` },
+    { rule: "dashes", in: `As condições - ordenado e subvenções - eram boas.` },
+    { rule: "nbsp", in: `7 % do volume de negócios` },
+  ],
+  "pt-BR": [
+    { rule: "quotes", in: `Ele disse "bom dia" e saiu.` },
+    { rule: "dashes", in: `O controle - meta prioritária - será rigoroso.` },
+    { rule: "ellipsis", in: `Espere... o quê?` },
+  ],
   es: [
     { rule: "quotes", in: `Ha dicho "buenos días" y salió.` },
     { rule: "nbsp", in: `El Sr. Pérez aprobó un 8 % de los alumnos` },
@@ -186,6 +204,8 @@ const NAMES: Record<(typeof LOCALES)[number], string> = {
   el: "Greek",
   es: "Spanish",
   it: "Italian",
+  "pt-PT": "Portuguese (Portugal)",
+  "pt-BR": "Portuguese (Brazil)",
 };
 
 // Single source of truth for which locales the home/manifesto "proof grid" renders — read by

@@ -1,0 +1,82 @@
+{
+  "locale": "pt-BR",
+  "name": "Portuguese (Brazil)",
+  "quotes": {
+    "primary": {
+      "open": "“",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "‘",
+      "close": "’",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": []
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "none"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": ["p. ex."],
+    "beforeUnits": ["%", "‰", "°C", "km", "cm", "mm", "kg", "kW", "kWh", "Hz"],
+    "beforeNumber": ["p."],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Brasil, Presidência da República, Manual de Redação da Presidência da República, 2.ª ed. rev. e atual., Brasília 2002, §9.1.3.2 «Aspas»: «As aspas têm os seguintes empregos: a) usam-se antes e depois de uma citação textual», com os exemplos impressos «A Constituição […] afirma: “Todo o poder emana do povo, que o exerce por meio de representantes eleitos ou diretamente”», «publicado no “Jornal do Brasil”», «a alínea “a” do artigo 146 da Constituição»",
+      "url": "https://legis.sigepe.gov.br/sigepe-bgp-ws-legis/legis-service/download/?id=0000356386-ALPDF%2F2018",
+      "note": "Primário U+201C/U+201D, secundário U+2018/U+2019, ambos colados ao texto. FONTE DE NÍVEL INFERIOR, dito sem rodeios: é o manual de redação de um editor estatal, não uma academia — a Academia Brasileira de Letras publica um vocabulário ortográfico, que é lexical e não trata de pontuação, e não foi encontrada fonte brasileira de nível académico que enuncie o par primário. O manual nunca usa aspas angulares em nenhuma das páginas lidas e o seu capítulo III declara-se derivado das gramáticas brasileiras (Bechara, Cegalla, Luft, Kury). DECISÃO DO OPERADOR, 18.9.2026: perante um uso regional atestado mas sem fonte de nível académico, ficheiro próprio com a fonte que existe, claramente identificada, em vez de deixar o Brasil cair no fallback de pt-PT e receber aspas angulares que não usa — a mesma decisão registada na issue #29, «corrige-se acrescentando locales». O nível secundário assenta no exemplo de citação dentro de citação, não numa frase de regra, e é por isso a afirmação mais fraca deste ficheiro. Consultado em 18.9.2026."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Manual de Redação da Presidência da República (2.ª ed., 2002), §9.1.3.4 «Travessão»: «O travessão, que é um hífen prolongado (–), é empregado nos seguintes casos: a) substitui parênteses, vírgulas, dois-pontos: O controle inflacionário – meta prioritária do Governo – será ainda mais rigoroso»",
+      "url": "https://legis.sigepe.gov.br/sigepe-bgp-ws-legis/legis-service/download/?id=0000356386-ALPDF%2F2018",
+      "note": "Justifica dash.parenthetical = \"en-spaced\", e é aqui que pt-BR diverge de pt-PT de forma mensurável. A LARGURA não foi julgada a olho: extraiu-se a camada de texto do PDF e o carácter do exemplo é U+2013, ao passo que o mesmo exemplo estrutural no guia europeu dá U+2014. O papel e o espaçamento coincidem nas duas regiões — o travessão substitui parênteses e leva um espaço de cada lado —, diverge a largura. Consultado em 18.9.2026."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Nenhuma fonte brasileira consultada prescreve um sinal de intervalo diferente do hífen já escrito; o Manual de Redação da Presidência da República nada diz sobre intervalos",
+      "note": "dash.range = \"none\" por ausência de prescrição, e não por prescrição positiva como em pt-PT — a diferença de fundamento fica registada em vez de ser dissimulada. «none» preserva o que o autor escreveu, que é o comportamento seguro quando nenhuma fonte fala. Consultado em 18.9.2026."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Acordo Ortográfico da Língua Portuguesa (1990) e Código de Redação Interinstitucional (PT, 2022), ponto 10.4.7 «Reticências»: as reticências completas seguem-se imediatamente a «!» e a «?» («É o dianho!…», «porque não vais ter com o padre?…»); o Manual de Redação da Presidência da República não tem secção sobre reticências — o seu capítulo de pontuação (§9.2.4) trata apenas da vírgula, do ponto-e-vírgula, dos dois-pontos e dos pontos de interrogação e exclamação",
+      "url": "https://op.europa.eu/pt/publication-detail/-/publication/01ed788a-d266-11ec-a95f-01aa75ed71a1",
+      "note": "Justifica abbreviatedAfterTerminal = false. O passo citado escreve as reticências completas imediatamente a seguir a «!» e a «?» — «!…» e «?…» —, e nenhuma fonte consultada prevê a forma abreviada de dois pontos que o russo usa, pelo que esse ramo de ellipsis.md fica desligado para o português. Nenhuma fonte se pronuncia sobre U+2026 contra três U+002E: essa escolha é do motor e é igual em todas as locales. Consultado em 18.9.2026. A fonte brasileira cala-se sobre as reticências, pelo que o valor vem do lado europeu; não há divergência a registar, há silêncio."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Acordo Ortográfico da Língua Portuguesa (1990), Base XX: «deve, por clareza gráfica, repetir-se o hífen no início da linha imediata»; Manual de Redação da Presidência da República (2.ª ed., 2002), §9.1.3.1, Observação: «Hífen de composição vocabular ou de ênclise e mesóclise é repetido quando coincide com translineação: decreto-/-lei, exigem-/-lhe, far-/-se-á»",
+      "url": "http://www.portaldalinguaportuguesa.org/?action=acordo&version=1990",
+      "note": "Justifica as três listas vazias, e justifica-as pela positiva, não por ausência de fonte. O português não só permite como PRESCREVE a quebra de linha sobre o hífen de um composto, repetindo-o na linha seguinte: uma forma que é normativamente quebrada nesse ponto não pode ser uma forma cujo hífen tenha de resistir à quebra, que é a única coisa que esta regra consome. A regra é, portanto, um no-op total demonstrável para o português (hyphen.md §2), e qualquer runtime que ligue compostos portugueses com U+2011 está errado. Corroborado pelo Código de Redação Interinstitucional (PT, 2022), ponto 10.2 e ponto 10.4.12 («segunda-/-feira», «salmão-do-/-atlântico»), e pelo Manual de Redação da Presidência da República (Brasil, 2.ª ed., 2002), §9.1.3.1 («decreto-/-lei», «far-/-se-á»). É o campo em que Portugal, o Brasil e o próprio Acordo dizem explicitamente a mesma coisa. Consultado em 18.9.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "BIPM, The International System of Units (SI), 9.ª ed., resumo conciso: «A single space is always left between the number and the unit»; Código de Redação Interinstitucional (PT, 2022), anexo A3, pontos 2 e 3, para a lista de símbolos",
+      "url": "https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-concise-EN.pdf",
+      "note": "Justifica nbsp.beforeUnits. A locale atesta a PERTENÇA — que estes símbolos são unidades e que se escrevem depois do número com um espaço; o mecanismo (converter esse espaço em U+00A0, nunca o inserir) é da regra e está fixado em nbsp.md §2.1. REPARO CITADO, mais importante do que qualquer inclusão: o ponto 10.9.1 exclui «h» por nome — «horas (o símbolo «h» escreve-se sempre sem ponto, sem espaços): eram as 18h30» —, pelo que «h» NÃO entra na lista e há um caso de conformidade a fixá-lo. Os símbolos de uma só letra (m, g, l, t, s, A, W, V, K) ficam igualmente de fora, embora atestados, pela mesma razão que em fr: não são desambiguáveis sem contexto. Note-se que o português escreve «7 %» com espaço, ao contrário do grego. Consultado em 18.9.2026. Para pt-BR a lista é a mesma: nenhuma fonte brasileira consultada a contradiz, e o BIPM não é uma autoridade sobre o português mas sobre que cadeias são símbolos de unidade do SI."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Nenhuma fonte brasileira consultada exige espaço antes de pontuação dupla, nem ligação de abreviaturas a palavras ou iniciais; listas deliberadamente vazias",
+      "note": "Justifica as listas vazias e initialBinding = \"none\", e diz com exatidão em que se apoiam: ao contrário do guia grego, a parte portuguesa NÃO contém nenhuma frase que negue pelo nome o uso francês do espaço antes da pontuação dupla. A posição é «nenhuma fonte o exige», e não «uma fonte o proíbe»; o que se observa é que nenhum exemplo do capítulo o escreve, e isso é uma observação, assinalada como tal. beforeNumber contém apenas «p.»: o ponto 10.9.1 atesta a ligação («p. 24», «Lei n.º 123»), mas «n.º» NÃO pode ser listado, porque a nota (3) do ponto 6.4 do mesmo guia prescreve um «o» sobrescrito e RECUSA expressamente tanto U+00BA como U+00B0 — listar «n.º» seria citar uma fonte que proíbe esse mesmo carácter. A decisão do operador de 18.9.2026 sobre o «n°» francês cobre uma fonte SILENCIOSA e não se estende a uma que fala e recusa. beforeWord fica vazio: o anexo A3 enumera «Sr.», «Dr.», «Prof.», mas limita-se a expandi-los e nenhuma fonte os mostra ligados ao nome seguinte. GAP REGISTADO, não resolvido: o ponto 10.9.1 exige espaço protegido DENTRO dos grupos de algarismos («um total de 12 345 euros»; «este espaço é protegido»), e locale.schema.json não tem campo para isso. Consultado em 18.9.2026."
+    }
+  ]
+}
