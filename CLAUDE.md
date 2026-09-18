@@ -145,7 +145,9 @@ exists:
   module-level mutable state; no global configuration.
 - **Rules produce edits; the pipeline applies them.** The applying step enforces the rule contract
   (in-bounds, ascending, non-overlapping, valid code points, correct `ruleId` tag) rather than
-  trusting it. Do not implement a reserved `analyze()`-style API before the spec calls for one.
+  trusting it. That separation is what `analyze()` reports without applying — specified in
+  `spec/rules/analyze.md` (spec 1.3.0), so a runtime implementing it follows that document
+  rather than inventing a second entry point of its own.
 
 ## Locale data vs. code
 

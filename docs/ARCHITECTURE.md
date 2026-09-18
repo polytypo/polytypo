@@ -416,10 +416,9 @@ Constraints, binding in every runtime:
 * **No global configuration.** Everything through the call. A CMS processing three languages
   in one request must not be able to poison one field's locale with another's.
 
-### 7.1 Reserved, not implemented in v1
+### 7.1 `analyze` — reserved through v1, specified in spec 1.3.0
 
-Recorded here so the shape is not accidentally foreclosed. **Do not build these now** — they
-are listed to prevent a v1 API that makes them impossible:
+This section reserved the shape of a second entry point so a v1 API could not foreclose it:
 
 * `analyze(input, options) -> Change[]` — same pipeline, reporting `{ruleId, start, end,
   before, after}` instead of applying. Every bulk-rewrite integration (PLAN.md §9) needs a
@@ -427,9 +426,15 @@ are listed to prevent a v1 API that makes them impossible:
   strings is a rewrite. The engine must therefore be written so each rule reports *edits*,
   and the pipeline applies them — even though v1 only ever exposes the applied string.
 
+The reservation paid: `spec/rules/analyze.md` (spec 1.3.0) specifies it, and no engine changed
+to accommodate it — the whole feature is an origin map travelling beside the code-point array.
+That document, not this one, is now normative on what `analyze` guarantees; note in particular
+that the **decomposition** into `Change` records is observation rather than contract, so the
+five runtimes are not required to produce identical lists.
+
 That single design choice — **rules produce edits, the pipeline applies them** — is the one
-piece of v1 internal structure that exists for the future, and it is authorized because
-without it, `analyze` and every CMS integration is a rewrite.
+piece of v1 internal structure that existed for the future, and it is why `analyze` cost one
+module per runtime instead of a rewrite.
 
 ---
 
