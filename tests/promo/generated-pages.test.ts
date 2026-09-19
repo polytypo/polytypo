@@ -255,7 +255,7 @@ describe("promo site — llms.txt (llmstxt.org convention)", () => {
     const lines = readLlmsTxt().split("\n");
     expect(lines[0]).toBe("# polytypo");
     expect(lines[1]).toBe("");
-    expect(lines[2].startsWith("> ")).toBe(true);
+    expect(lines[2]?.startsWith("> ")).toBe(true);
   });
 
   it("links every promo page it references as an absolute https://polytypo.dev URL", () => {
