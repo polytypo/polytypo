@@ -2,7 +2,9 @@
 
 **Order:** 30. **Default:** on. **Modes:** text, html, markdown.
 **Spec version:** 0.6.0 (0.2.0 for everything except the 0.5.0/0.6.0 changes noted inline and in
-§8 History).
+§8 History), amended in **1.3.0**: §1 and §3.4's statement of what belongs to `ranges`, §3.2a's
+re-entry condition, and §3.2 steps 7 and 8, all for [ranges.md](ranges.md) §3.2a's closed-up
+symbols.
 
 ---
 
@@ -25,9 +27,13 @@ a retired one.
 
 `dashes` does not touch the ordinary hyphen inside a compound word — which, in the few
 morphological forms where the hyphen must additionally be protected from a line break, belongs
-to `hyphen` at order 35 — and does not touch a digit-flanked stroke at all: that shape belongs to
+to `hyphen` at order 35 — and does not touch a **range candidate** at all: that shape belongs to
 `ranges` exclusively, and `dashes` declines it **unconditionally**, whether or not `ranges` is
 enabled (operator decision, spec 0.5.0; see §3.2's note after step 7, and ranges.md §3.2's G1-G5).
+"Range candidate" is [ranges.md](ranges.md) §3.2's term, and as of spec 1.3.0 it is wider than
+"digit-flanked": a closed-up symbol on a flank is walked over first (ranges.md §3.2a), so
+`$15-$20` and `35%-50%` are `ranges`' tokens too, and a token `dashes` used to convert by default
+is now one nothing touches unless the caller enables `ranges`.
 `dashes` never reinterprets a digit-flanked hyphen as a parenthetical dash — that was already true
 in every prior spec version, since the two branches were always mutually exclusive per token; the
 0.5.0 split makes that exclusivity a boundary between two rules instead of two branches of one.
@@ -80,6 +86,7 @@ Input is a code-point array `cp[0 … n-1]`.
 | `ROMAN`         | the seven uppercase Roman-numeral letters only: U+0049 `I`, U+0056 `V`, U+0058 `X`, U+004C `L`, U+0043 `C`, U+0044 `D`, U+004D `M`. Lower-case forms are **not** members — see §3.4 P4                               |
 | `INERT-DASH`    | U+00AD (soft hyphen), U+2011 (non-breaking hyphen), U+2012 (figure dash), U+2015 (horizontal bar), U+FE58, U+FE63, U+FF0D                                                                                            |
 | `JOINER`        | U+2060 (word joiner) only. As of spec 0.5.0, produced exclusively by `ranges` (ranges.md §3.3.1) — `dashes` itself never emits one, but still reads through an adjacent run of them (§3.2a, §3.2b), since a `ranges`-produced joiner can sit next to a `dashes` candidate token                                                                                                                    |
+| `CLOSED-SYMBOL` | **Defined normatively in [ranges.md](ranges.md) §3.2a** (spec 1.3.0), not here: the symbols conventionally written closed up to a number. `dashes` never emits one and never reads one as a candidate, but §3.2 steps 7-8 and §3.4 depend on the class, so it is listed here for a reader transcribing this table. There is exactly one enumeration of it, in ranges.md — do not restate it                                                                       |
 
 `INERT-DASH` members are **never** candidates and are **never** produced. Two of the seven are
 protective markers owned by someone else — U+00AD is invisible formatting, and U+2011 is
@@ -183,8 +190,8 @@ U+2011 they meant it.
      something this rule should be rewriting.
 7. **Cluster guard.** Define a **dash cluster** as a maximal span of code points every one of
    which is in `DASH` ∪ `INERT-DASH` ∪ `DIGIT` ∪ `JOINER` (§3.2b — a joiner `ranges` emitted on
-   an earlier pass must not split a cluster it sits inside). (Spaces, letters and punctuation all end a
-   cluster.) Let `C` be the cluster containing this token's run. **If `C` contains two or more
+   an earlier pass must not split a cluster it sits inside). (Spaces, letters and punctuation all
+   end a cluster.) Let `C` be the cluster containing this token's run. **If `C` contains two or more
    maximal runs of `DASH` ∪ `INERT-DASH`, emit nothing for every token in `C`** — the whole
    cluster is inert.
    This covers idempotency defect (a), §8.2: the classification of a range token reads
@@ -193,6 +200,13 @@ U+2011 they meant it.
    verdict on the next run.
    `2026-08-15`, `978-3-16-148410-0`, `212-555-1234`, `a—0–0` and `1914-1918—annexation` are
    all single clusters with more than one dash run, and are all inert in their entirety.
+   **`CLOSED-SYMBOL` is deliberately not in this alphabet (spec 1.3.0).** Widening a range
+   member (ranges.md §3.2a) does reach this guard — `a—$15-$20` is two clusters where `a—15-20`
+   is one — but the resulting defect is closed by step 8 instead, and at a strictly smaller cost:
+   the cluster guard is unconditional, so adding `CLOSED-SYMBOL` here would also make
+   `price--$50--drop` inert in an `em-tight` locale that has no such defect to fix. Step 8 fires
+   only on the tight-to-spaced transition that can actually disturb a neighbour. See §3.2 step 8
+   and [ranges.md](ranges.md) §3.2a.
    **This guard is not sufficient on its own, and it does not subsume G2.** A cluster ends at
    the first space-like code point, so a _spaced_ token's cluster contains only its own run:
    its `cp[L]` is a digit in a neighbouring cluster and its `before` is a dash in a third one,
@@ -206,14 +220,65 @@ U+2011 they meant it.
    - the chosen form is `em-spaced` or `en-spaced` — the replacement will insert a U+0020 on
      each side.
 
-   In that case, for each side independently:
+   In that case, for each side independently — reading `L`/`R` and the outward walk as
+   **`CLOSED-SYMBOL`-transparent**, per the amendment immediately below:
    - **left:** if `cp[L]` is in `DIGIT`, let `D` be the maximal `DIGIT` run ending at `L` and
      starting at index `d`. Reading **effective neighbours** (§3.2b) outward from `d`: if the
      first is in `DASH` ∪ `INERT-DASH`, **or** the first is in `SPACE` ∪ `NOBREAK-SPACE` and the
      second is in `DASH` ∪ `INERT-DASH`, emit nothing for this token.
    - **right:** if `cp[R]` is in `DIGIT`, let `D` be the maximal `DIGIT` run starting at `R`
-     and ending at index `d`. If `cp[d+1]` is in `DASH` ∪ `INERT-DASH`, **or** `cp[d+1]` is in
-     `SPACE` ∪ `NOBREAK-SPACE` and `cp[d+2]` is in `DASH` ∪ `INERT-DASH`, emit nothing.
+     and ending at index `d`. Reading **effective neighbours** (§3.2b) outward from `d` — the
+     same reading the left branch uses, and the one §3.2b already requires of "the two-code-point
+     reach of T1"; through spec 1.2.0 this branch was written with raw `cp[d+1]`/`cp[d+2]`, which
+     disagreed with §3.2b and with every shipped implementation (see below) — if the first is in
+     `DASH` ∪ `INERT-DASH`,
+     **or** the first is in `SPACE` ∪ `NOBREAK-SPACE` and the second is in `DASH` ∪ `INERT-DASH`,
+     emit nothing.
+
+   **`CLOSED-SYMBOL` transparency (spec 1.3.0).** [ranges.md](ranges.md) §3.2a made a symbol
+   written closed up to a digit run part of a **range member**, so the digit run whose verdict
+   this guard protects can now sit one code point further out than it used to — on either end.
+   At **two** positions per side, one `CLOSED-SYMBOL` is therefore stepped over rather than read:
+
+   - **p1, between the token and the run.** If `cp[L]` (resp. `cp[R]`) is in `CLOSED-SYMBOL` and
+     the code point beyond it is in `DIGIT`, the branch proceeds as though `L` (resp. `R`) were
+     that digit. Without p1 the branch is skipped outright, because its gate is `cp[L]`/`cp[R]`
+     ∈ `DIGIT`: `a--$1 - $1` is the witness.
+   - **p2, at the far end of the run.** The outward walk from `d` steps over one `CLOSED-SYMBOL`
+     before reading its first and second neighbours. Witness: `a--15% - 20%`, where the walk
+     from `d` finds `%` and the dash it exists to find is one code point further out.
+
+   The two compose on a single side (`a--$15% - $20%` exercises p1 and p2 at once) and are
+   independent across sides.
+
+   **The right branch's raw reading, and what §3.2a changed about it.** The raw text disagreed
+   with §3.2b from the start, and the disagreement was always live on the **second** sub-branch:
+   a U+0020 ends a cluster, so step 7 never declined `a--15⁠ - 20`, and a port reading raw
+   `cp[d+1]` sees the joiner, does not fire, and drifts. (It was unreachable on the first
+   sub-branch only — with no space, the token, the digit run, the joiner and the far dash all sat
+   inside one cluster, since step 7's alphabet contains `JOINER` and `DIGIT`.) What §3.2a added
+   is a second way in: p1 admits `cp[R]` ∈ `CLOSED-SYMBOL`, which is deliberately **not** in the
+   cluster alphabet, so `a--$15⁠-⁠$20` splits into two clusters and step 8 stands alone there too.
+   Both shapes are now pinned by fixtures, for the same reason §3.2a's re-entry amendment needed
+   one: nothing else in the suite separates the two readings. Every shipped implementation
+   already read effective neighbours — this is the text catching up, not a behaviour change.
+
+   **Why two positions are enough, and there is no third.** §3.2a consumes **at most one**
+   `CLOSED-SYMBOL` per side — a two-code-point prefix such as `US$` defeats candidacy rather
+   than the guard — so each position can hold at most one symbol. A `-spaced` replacement inserts
+   exactly one U+0020, so the "first or second neighbour" reach is unchanged in length; the
+   symbol shifts *where* that reach starts, never how far it goes. p1 and p2 are the only two
+   places a symbol can sit between this token and the far dash, so the amended reach is closed.
+
+   **The cost, and why it is this guard rather than step 7.** In a locale whose
+   `dash.parenthetical` is **spaced**, a tight token next to a closed-up range member no longer
+   converts: `Anstieg--50%--war` is left alone in `de-DE`, where spec 1.2.0 produced
+   `Anstieg – 50% – war`. That is precisely what the all-digit `Anstieg--50--war` has always
+   done, so the two shapes agree, and the cost stops there — a locale with a **tight**
+   parenthetical form never reaches this guard at all, so `price--$50--drop` still becomes
+   `price—$50—drop` in `en-US`. Putting `CLOSED-SYMBOL` in step 7's cluster alphabet would have
+   closed the same defect and taken the `en-US` case with it, because that guard is
+   unconditional; it was tried and rejected for exactly that reason.
 
    Read plainly: **a tight token must not become spaced when doing so would insert a space
    between itself and a digit run that has another dash on its far side.** That inserted space
@@ -279,12 +344,18 @@ A `JOINER` adjacent to the token is examined before the branch is chosen:
   across a maximal run of `JOINER`. If either walk runs off the array, emit nothing.
 - If no joiner was crossed, `L* = L` and `R* = R` and nothing about the rest of the algorithm
   changes.
-- If a joiner **was** crossed and `cp[L*]` and `cp[R*]` are both in `DIGIT`, the token is a
-  bound range `ranges` produced on an earlier pass ([ranges.md](ranges.md) §3.3.1): continue with
-  `L*`/`R*` in place of `L`/`R`, and extend the token's span to cover the crossed joiners. `dashes`
-  itself never reaches this shape as a candidate — extending the span here only ever feeds the
-  digit-flanked check that routes the token to `ranges`' exclusive territory (§1, §3.3), never to
-  this rule's own parenthetical branch.
+- If a joiner **was** crossed and `cp[L*]` and `cp[R*]` are both in `DIGIT` — **or, as of spec
+  1.3.0, are `DIGIT` after `ranges`' closed-up-symbol walk** ([ranges.md](ranges.md) §3.2a), so
+  that `$15⁠–⁠$20` and `35%⁠–⁠50%` reach this clause the same way `1914⁠–⁠1918` does — the token is
+  a bound range `ranges` produced on an earlier pass ([ranges.md](ranges.md) §3.3.1): continue
+  with `L*`/`R*` in place of `L`/`R`, and extend the token's span to cover the crossed joiners.
+  `dashes` itself never reaches this shape as a candidate — extending the span here only ever
+  feeds the flank check that routes the token to `ranges`' exclusive territory (§1, §3.3), never
+  to this rule's own parenthetical branch. **Without the 1.3.0 clause a bound range carrying
+  symbols would fall to the fourth bullet below and be declined by both rules** — stable, but
+  wrong in one observable way: a hyphen an author typed between an existing joiner pair,
+  `$15⁠-⁠$20`, would never convert. The amendment is what makes that input reach `ranges`, and a
+  conformance case pins it, because nothing else in the suite separates the two readings.
 - If a joiner was crossed in any other configuration, **emit nothing**. An author who typed
   U+2060 next to a dash meant it, exactly as with `INERT-DASH` (§3.1).
 
@@ -340,9 +411,10 @@ is [ranges.md](ranges.md) §3.2-§3.3.1 in full** — the admissibility test (`c
 verbatim, still reading the same `dash.range` locale field under the same key.
 
 **What stays true here, restated because it is `dashes`' own contract now rather than a
-consequence of one rule's two branches:** a digit-flanked dash token (`cp[L]` and `cp[R]` both
-`DIGIT`) is never processed by `dashes` — not converted, not declined-and-then-reconsidered,
-simply never reached. This holds **unconditionally**, whether `ranges` is enabled or not (§1).
+consequence of one rule's two branches:** a range candidate (`cp[L']` and `cp[R']` both `DIGIT`,
+after ranges.md §3.2a's closed-up-symbol walk — through spec 1.2.0 this read `cp[L]`/`cp[R]` and
+meant digit-flanked) is never processed by `dashes` — not converted, not
+declined-and-then-reconsidered, simply never reached. This holds **unconditionally**, whether `ranges` is enabled or not (§1).
 `ranges` disabled does not mean the token falls back to parenthetical treatment; it means nothing
 in the pipeline touches it at all, and `5-10`, `Figure 5-10`, `9-11` and `7-11` are all
 byte-identical no-ops with default options.
@@ -356,10 +428,10 @@ still occupies its number costs less than a renumbering would.
 
 ### 3.4 Parenthetical branch
 
-Reached for every token this rule sees — a digit-flanked token (both `cp[L]` and `cp[R]` in
-`DIGIT`) is never handed to `dashes` at all (§3.3, §1), not merely excluded from this branch, so
-"is not a range candidate" (i.e. at least one of `cp[L]`, `cp[R]` is not a `DIGIT`) is true of
-every token that reaches here by construction. Additional guards:
+Reached for every token this rule sees — a range candidate (ranges.md §3.2, §3.2a) is never
+handed to `dashes` at all (§3.3, §1), not merely excluded from this branch, so "is not a range
+candidate" (i.e. at least one flank is not a `DIGIT`, and is not a closed-up symbol matched to
+its opposite member) is true of every token that reaches here by construction. Additional guards:
 
 - **P5 (spec 0.6.0) — authored en-dash mark-identity veto.** If `k = 1` and `cp[s]` is U+2013,
   emit nothing — **unconditionally**: every locale, tight or spaced, regardless of
@@ -525,10 +597,14 @@ of being falsified by another rule, which is then named.
 - **[P] A negative number.** `-5` has no space to the left of the digit and a letter/space to
   the left of the hyphen → asymmetric → rejected. This holds for U+002D, U+2010 and U+2212
   alike — the same asymmetry guard, not a glyph-specific one.
-- **[P] Every digit-flanked stroke, unconditionally** — `5-10`, `Figure 5-10`, `9-11`: never
-  reached by `dashes` at all, let alone reinterpreted as parenthetical (§1, §3.3). This holds
-  regardless of whether `ranges`' own guards would have accepted or declined the token —
-  `dashes` does not evaluate them and does not need to.
+- **[P] Every range candidate, unconditionally** — `5-10`, `Figure 5-10`, `9-11`, and since
+  spec 1.3.0 also `$15-$20`, `$15 - $20` and `35%-50%`, where a matched `CLOSED-SYMBOL` sits
+  between the stroke and a digit run (ranges.md §3.2a): never reached by `dashes` at all, let
+  alone reinterpreted as parenthetical (§1, §3.3). This holds regardless of whether `ranges`'
+  own guards would have accepted or declined the token — `dashes` does not evaluate them and
+  does not need to. **`$15 - $20` is the one shape this cost anything**: through spec 1.2.0 it
+  was `dashes`' token and converted with default options; it is `ranges`' now, and `ranges` is
+  off by default.
 - **[P] URLs, code spans, fenced code, HTML attributes.** Removed by the mode adapter before this
   rule sees them. This rule has no notion of a URL and must not grow one.
 - **[P] Line terminators**, which are never inserted, deleted or crossed.
@@ -537,8 +613,9 @@ of being falsified by another rule, which is then named.
 
 ## 5. Idempotency argument
 
-Write `T` for `dashes`. `T` edits only **parenthetical dash tokens**: at least one of `cp[L]`,
-`cp[R]` is not `DIGIT` (§1, §3.3) — a digit-flanked token is never reached by `T` on any pass, so
+Write `T` for `dashes`. `T` edits only **parenthetical dash tokens**: tokens that are not range
+candidates (§1, §3.3) — at least one flank is neither a `DIGIT` nor a `CLOSED-SYMBOL` matched on
+the opposite member (ranges.md §3.2a). A range candidate is never reached by `T` on any pass, so
 nothing below needs to reason about one. Each edit `T` makes replaces a span consisting of one
 maximal `DASH` run plus at most one space-like code point on each side, with a span of the same
 shape (`space? dash space?`). So every edit is one of:
@@ -566,9 +643,10 @@ U+2013/U+2014 no token-level special case, §3.2 step 2a, so this holds regardle
 glyph the token holds). A spaced form is re-admitted the same way, with `lsp = rsp = 1` read back
 by §3.2 step 3. A token `nbsp` has since promoted (`ru`: U+00A0 before an em dash) is not
 recomputed at all — §3.2 step 3 makes a no-break-space neighbour space-like, so the isolation
-guard (step 6) declines it and nothing is emitted (§3.6). A digit-flanked token stays outside `T`'s
+guard (step 6) declines it and nothing is emitted (§3.6). A range candidate stays outside `T`'s
 domain on every pass, by construction, so it is trivially a fixed point of `T` regardless of what
-`ranges` does to it.
+`ranges` does to it — including after `ranges` has bound it, since the binding leaves the flanks
+(and any `CLOSED-SYMBOL` on them) exactly where they were.
 
 ### 5.2 A declined token stays declined
 
@@ -619,17 +697,25 @@ them, and all three are current:
   Range binding ([ranges.md](ranges.md) §3.3.1) is exclusively `ranges`' emission; an interrupting
   parenthetical dash is exactly where a line *may* break, so there is nothing for `dashes` to bind
   (§3.6).
-- **A digit-flanked token is never reinterpreted as parenthetical, on any pass.** The `isDigit`
-  test that routes a token to `ranges` instead of `dashes` (§1, §3.3) is evaluated after the
-  joiner-crossing walk (§3.2a), so a token `ranges` bound on an earlier pass — where the walk
-  re-enters across the `JOINER` pair and finds `DIGIT` on both effective neighbours — presents to
-  `dashes` with digit-flanked `leftCp`/`rightCp` exactly as an unbound one would, and `dashes`
-  declines it on the same unconditional test. `dashes` cannot strip a binding it never
-  reconsiders, and cannot create one, since it never emits `JOINER`.
+- **A range candidate is never reinterpreted as parenthetical, on any pass.** The candidacy test
+  that routes a token to `ranges` instead of `dashes` (§1, §3.3, [ranges.md](ranges.md) §3.2,
+  §3.2a) is evaluated after the joiner-crossing walk (§3.2a), so a token `ranges` bound on an
+  earlier pass — where the walk re-enters across the `JOINER` pair and finds a candidate on both
+  effective neighbours — presents to `dashes` exactly as an unbound one would, and `dashes`
+  declines it on the same unconditional test. Since spec 1.3.0 that test reads `cp[L']`/`cp[R']`,
+  so a bound range carrying closed-up symbols re-enters on the same footing as an all-digit one.
+  `dashes` cannot strip a binding it never reconsiders, and cannot create one, since it never
+  emits `JOINER`.
 - **`dashes`' own edits cannot flip a *neighbouring* range token's guard verdict on the next
   pass, even though `dashes` itself never reads that token's guards.** The one edit shape that
   could — a tight token becoming spaced, inserting a U+0020 next to a digit run that has another
   dash on its far side — is exactly what the spacing-transition guard (T1, §3.2 step 8) declines.
+  **This clause is true of spec 1.3.0 only because step 8 was amended with it**: ranges.md §3.2a
+  widened "next to a digit run" to "next to a range member", which may carry one `CLOSED-SYMBOL`
+  at either end, and an unamended T1 reads that symbol as the neighbour and stops one code point
+  short of the dash. Four witnesses made the gap concrete — `a—$15-$20`, `35%-50%—b`, `a--15% - 20%` and
+  `$1 - $1--a`, one per position and side — each of which drifted on the second pass before the
+  amendment and each of which now behaves exactly as its all-digit analogue always has.
   This is `dashes`' composition obligation *toward* `ranges`, symmetric to the rule-order argument
   in [ranges.md](ranges.md) §4: `ranges` must not see an adjacency `dashes` disturbed, and T1 is
   how `dashes` upholds that on every subsequent pass. The full historical derivation of why this
@@ -1097,7 +1183,12 @@ form to be `-spaced`. In other words: `A` is tight, `A` is about to become space
 only, the configuration T1 (§3.2 step 8) declares inert. The mirrored argument gives the `after`
 side. T1's two-code-point reach is exactly what the case requires and no more: `T`'s dash sits at
 distance 1 from `Lrun` if `T` is tight and distance 2 if `T` is spaced, and a `-spaced` replacement
-inserts exactly one U+0020, so no other distance is reachable. The reverse flip — `before` going
+inserts exactly one U+0020, so no other distance is reachable. **Spec 1.3.0 leaves that reach at
+two code points and makes it transparent to one `CLOSED-SYMBOL` at each of two positions**
+(§3.2 step 8): the symbol moves where the reach starts, never how far it goes, because
+ranges.md §3.2a consumes at most one symbol per side. `JOINER` does not add a position either:
+it is transparent to this reach by §3.2b, on both branches, so a joiner run between the symbol
+and the dash collapses rather than counting. The reverse flip — `before` going
 from a space to a dash — is benign and needs no guard: it turns a G2 admission into a G2
 rejection, and a rejection emits nothing, so a token converted on an earlier pass simply keeps the
 form it was given.

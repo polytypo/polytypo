@@ -590,6 +590,88 @@
       "in": "„Er sagte ‚Hans'“ und ging.",
       "out": "„Er sagte ‚Hans‘“ und ging.",
       "note": "apostrophe.md §3.3 case 3a (spec 1.2.0): the same shape with the outer pair and the opening single quote already curly. `quotes` still pairs the straight closing single quote with ‚, so case 3a never sees it."
+    },
+    {
+      "id": "de-de-ranges-closed-up-currency",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "€15-€20",
+      "out": "€15⁠–⁠€20",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a (spec 1.3.0): the closed-up walk is locale-independent shape logic — it reads code points, not a currency list, so `de-DE` gets it on the same terms as `en-US`. Note that German normally sets the sign AFTER the amount (`30 EUR`), which is a spaced symbol and therefore out of scope by §7.8; this row asserts the mechanism, not that the shape is idiomatic German."
+    },
+    {
+      "id": "de-de-dashes-closed-up-range-declined",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "$15 - $20",
+      "out": "$15 - $20",
+      "note": "ranges.md §3.2a and dashes.md §1 (spec 1.3.0): the accepted cost, pinned in a locale whose `dash.parenthetical` is SPACED rather than tight — through spec 1.2.0 this input gave `$15 – $20` with default options, and the loss is the same shape in both kinds of locale."
+    },
+    {
+      "id": "de-de-dashes-t1-closed-up-symbol-adjacent",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a—$15-$20",
+      "out": "a—$15-$20",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a, via dashes.md §3.2 step 8 (spec 1.3.0): T1's reach is transparent to one CLOSED-SYMBOL between the token and the digit run. THE IDEMPOTENCY WITNESS — before the amendment T1 read the U+0024 as the neighbour, did not fire, and `dashes` converted the em dash to a spaced en dash; that U+0020 replaced the range's `before`, and the range converted on the SECOND pass. `a—15-20` was inert all along and this input now matches it. de-DE because T1 only applies where `dash.parenthetical` is spaced, which is exactly why the cluster guard's alphabet was NOT widened instead — that guard is unconditional and would have taken em-tight locales with it. To be precise about \"before the amendment\": the drift is a property of the INTERMEDIATE state — ranges.md §3.2a's widened candidacy without T1's transparency — which never shipped. Under spec 1.2.0 this input was stable, because the token was not a range candidate at all."
+    },
+    {
+      "id": "de-de-dashes-t1-closed-up-symbol-right",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a--15% - 20%",
+      "out": "a--15% - 20%",
+      "rules": {
+        "ranges": true
+      },
+      "note": "dashes.md §3.2 step 8 (spec 1.3.0): T1's outward walk from the digit run steps over one CLOSED-SYMBOL. The cluster guard cannot catch this one — a cluster ends at the U+0020 — so before the amendment the `--` became a spaced en dash and the range converted on the next pass. To be precise about \"before the amendment\": the drift is a property of the INTERMEDIATE state — ranges.md §3.2a's widened candidacy without T1's transparency — which never shipped. Under spec 1.2.0 this input was stable, because the token was not a range candidate at all."
+    },
+    {
+      "id": "de-de-dashes-t1-closed-up-symbol-left",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "$1 - $1--a",
+      "out": "$1 - $1--a",
+      "rules": {
+        "ranges": true
+      },
+      "note": "dashes.md §3.2 step 8 (spec 1.3.0): the mirror of the T1 case, with the symbol between the token and the digit run rather than beyond it — `cp[L]` is `1` here but the walk outward from the run meets `$` before the space and the dash. Both steps of the transparency are needed; each of these two cases fails without its own. To be precise about \"before the amendment\": the drift is a property of the INTERMEDIATE state — ranges.md §3.2a's widened candidacy without T1's transparency — which never shipped. Under spec 1.2.0 this input was stable, because the token was not a range candidate at all."
+    },
+    {
+      "id": "de-de-dashes-t1-closed-up-symbol-cost",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Anstieg--50%--war",
+      "out": "Anstieg--50%--war",
+      "note": "dashes.md §3.2 step 8 (spec 1.3.0): THE ACCEPTED COST of T1's CLOSED-SYMBOL transparency, with DEFAULT options — no `rules` key here, because the cost lands on `dashes`, which is on by default. Through spec 1.2.0 this gave `Anstieg – 50% – war`; T1 now fires, because the U+0025 no longer hides the far dash from its outward walk. `Anstieg--50--war` has always been left alone, so the two shapes agree. The cost is confined to locales whose `dash.parenthetical` is spaced — see en-us-dashes-t1-closed-up-symbol-unaffected for the other side of that line."
+    },
+    {
+      "id": "de-de-dashes-t1-joiner-and-closed-up-symbol",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a--$15⁠-⁠$20",
+      "out": "a--$15⁠-⁠$20",
+      "rules": {
+        "ranges": true
+      },
+      "note": "dashes.md §3.2 step 8 and §3.2b (spec 1.3.0): T1's RIGHT branch reads effective neighbours, not raw indices. Through spec 1.2.0 the branch required a DIGIT flank, which put the token, the digit run, the U+2060 pair and the far dash in one cluster, so step 7 declined before step 8 could disagree with §3.2b; §3.2a's p1 admits a CLOSED-SYMBOL flank, CLOSED-SYMBOL is deliberately not in the cluster alphabet, and step 8 now stands alone. A port transcribing the pre-1.3.0 raw reading does not fire T1 here, converts `--` to a spaced en dash, and the range converts on the SECOND pass. Nothing else in the suite separates the two readings."
+    },
+    {
+      "id": "de-de-dashes-t1-joiner-only",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a--15⁠ - 20",
+      "out": "a--15⁠ - 20",
+      "rules": {
+        "ranges": true
+      },
+      "note": "dashes.md §3.2 step 8 and §3.2b: T1's right branch reads effective neighbours, pinned WITHOUT any closed-up symbol involved. The U+0020 ends the cluster before the far dash, so step 7 never declined this shape and the raw-index reading of the right branch was always wrong here — it is spec 1.3.0 that says so out loud (the text carried the raw reading through 1.2.0 while the reference implementation read effective neighbours). Companion to de-de-dashes-t1-joiner-and-closed-up-symbol, which covers the same divergence on the symbol path."
     }
   ]
 }

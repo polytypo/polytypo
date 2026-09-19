@@ -25,12 +25,13 @@ mechanical enough to be checked by reading a rule's "Must not touch" section aga
 
 ## 2. The invariant, and why per-rule idempotency does not give it
 
-Write the pipeline as `T = R₈ ∘ R₇ ∘ … ∘ R₁`, the rules in `order.json` order:
+Write the pipeline as `T = R₈ ∘ R₇ ∘ … ∘ R₂ₐ ∘ R₂ ∘ R₁`, the rules in `order.json` order:
 
 | #   | rule         | order |
 | --- | ------------ | ----- |
 | R₁  | `spaces`     | 10    |
 | R₂  | `ellipsis`   | 20    |
+| R₂ₐ | `ranges`     | 25    |
 | R₃  | `dashes`     | 30    |
 | R₄  | `hyphen`     | 35    |
 | R₅  | `quotes`     | 40    |
@@ -41,12 +42,21 @@ Write the pipeline as `T = R₈ ∘ R₇ ∘ … ∘ R₁`, the rules in `order.
 (A disabled rule is removed from the sequence and never reorders the rest, so every statement
 below holds for any subset, in the same relative order.)
 
+**Why `ranges` is `R₂ₐ` and not `R₃`.** It was split out of `dashes` in spec 0.5.0, after the
+subscripts in this document had been cited by name from eight other rule documents. Renumbering
+`R₃ … R₈` to make the sequence contiguous would rewrite every one of those references for no
+gain in meaning, so the rule takes the letter and the composition `T = R₈ ∘ R₇ ∘ … ∘ R₂ₐ ∘ … ∘ R₁`
+reads with it in place at order 25. `ranges` is also the one rule that is **off by default**, so
+for most callers the sequence is literally the eight numbered ones; every proof below is stated
+over "the rules that run", which is the subset the caller's `rules` option selected.
+
 For each rule define the predicate
 
 > **`Iᵢ(y)` ⟺ `Rᵢ(y) = y`** — "rule `i` is a no-op on `y`".
 
-**Lemma.** If `y = T(x)` satisfies `I₁ ∧ I₂ ∧ … ∧ I₈`, then `T(y) = y`.
-_Proof._ `R₁(y) = y` by `I₁`; then `R₂(R₁(y)) = R₂(y) = y` by `I₂`; and so on through `R₈`. ∎
+**Lemma.** If `y = T(x)` satisfies `I₁ ∧ I₂ ∧ I₂ₐ ∧ … ∧ I₈`, then `T(y) = y`.
+_Proof._ `R₁(y) = y` by `I₁`; then `R₂(R₁(y)) = R₂(y) = y` by `I₂`; then `R₂ₐ(y) = y` by `I₂ₐ`;
+and so on through `R₈`. ∎
 
 So the whole problem reduces to: **make the final output a fixed point of every rule, not just
 of the last one that touched it.**
@@ -62,8 +72,10 @@ gap, and it yields the obligation:
 > In words: **a rule must never create work for an earlier-ordered rule.**
 
 With CO, an induction over `j` gives the Lemma's premise: after `Rⱼ` has run, `I₁ … Iⱼ` all
-hold — `Iⱼ` by `Rⱼ`'s own idempotency, and `I₁ … Iⱼ₋₁` because `Rⱼ` preserved them. After `R₈`
-all eight hold, and `T(T(x)) = T(x)`.
+hold — `Iⱼ` by `Rⱼ`'s own idempotency, and `I₁ … Iⱼ₋₁` because `Rⱼ` preserved them. After the
+last rule all of them hold, and `T(T(x)) = T(x)`. (`R₂ₐ` takes its place in the induction between
+`R₂` and `R₃`; the letter is a numbering artefact of the spec 0.5.0 split, not a gap in the
+sequence.)
 
 Note what CO does **not** require: nothing about `j < i`. A rule may freely create work for a
 _later_ rule, because the later rule has not run yet and will clean it up in the same pass.
@@ -131,6 +143,44 @@ runs, since a quote glyph is never itself U+002E/U+2026 and the deletion's landi
 neither (`quotes.md` 5, composition obligation against `I₂`). `I₂` is otherwise unconditionally
 preserved and needs no attention from rule authors, but it is listed so that a future rule
 emitting a full stop knows it has an obligation.
+
+### I₂ₐ — `ranges`
+
+`I₂ₐ(y)` requires that no **range candidate** in `y` is one `ranges` would edit — `ranges.md`
+§3.2 and §3.2a for candidacy, §3.2's G1-G5 for the guards, §3.3 for the replacement. A candidate
+is a dash token whose two flanks are `DIGIT`, or are `DIGIT` once a `CLOSED-SYMBOL` matched on
+the opposite member has been walked over.
+
+**Who can violate it.** `dashes` (R₃), and only `dashes` — which is why the obligation is
+discharged in that rule's own §5.3 rather than here. `ranges`' guards G1, G2 and G3 read
+`before`/`after`, code points outside the token, and a `dashes` edit that turns a tight token
+into a spaced one replaces a dash at exactly such a position with a U+0020. Two of `dashes`'
+shared guards exist for this and no other reason: the **cluster guard** (`dashes.md` §3.2
+step 7) makes the whole neighbourhood inert when it holds two dash runs, and **T1** (§3.2
+step 8) declines the tight-to-spaced transition at the one-space distance the cluster guard
+cannot see, because a cluster ends at a space.
+
+**Spec 1.3.0 widened `I₂ₐ`'s domain, and T1 with it.** `ranges.md` §3.2a made a `CLOSED-SYMBOL`
+written closed up to a digit run part of a range member, so T1's reach became transparent to one
+such symbol at each of two positions per side. `a—$15-$20`, `35%-50%—b`, `a--15% - 20%` and
+`$1 - $1--a` are the witnesses, one per transparency position and side, each of which produced a
+`transform` idempotency defect before the amendment in the locales whose `dash.parenthetical` is
+spaced **and** whose `dash.range` is not `"none"`, and each of which now behaves exactly as its
+all-digit analogue always did. The remedy is unconditional on `dash.range`, so its cost is wider
+than the defect was — see `ranges.md` §3.2a. The cluster guard's
+alphabet was deliberately **not** widened — see `dashes.md` §3.2 steps 7-8 for the comparison.
+
+**Nothing ordered after `ranges` can violate `I₂ₐ`, and the argument is positional, not
+alphabetic.** `hyphen` (R₄) emits U+2011, which *is* in `INERT-DASH` and therefore *is* in G2's
+exclusion set — the alphabetic argument would be false. What holds instead is that `hyphen`
+replaces a U+002D **in place**, inside a word, so any position where its output could satisfy G2
+already held a `DASH` and already failed G2. `quotes` (R₅) and `apostrophe` (R₆) replace code
+points one for one with quote glyphs, and `quotes`' one deletion removes an `INLINE-SPACE` run
+whose two sides are a quote glyph and a `DELETE-LANDING` member — neither is a digit or a
+`CLOSED-SYMBOL`, so no range member's `before`/`after` moves. `symbols` (R₇) emits only U+00A9,
+U+00AE and U+2122 and deletes only a `(`…`)` span. `nbsp` (R₈) converts a space it found and
+never inserts one where a guard reads (`nbsp.md` §3.3), and U+00A0/U+202F satisfy none of G1, G2
+or G3.
 
 ### I₃ — `dashes`
 

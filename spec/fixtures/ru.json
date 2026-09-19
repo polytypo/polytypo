@@ -715,6 +715,28 @@
       "in": "Он живёт в <em>Москве</em>",
       "out": "Он живёт в <em>Москве</em>",
       "note": "nbsp.md §3.1, §7 item 12 (spec 1.2.0); modes.md §3.3: the −1 span boundary marker is not in `nbsp`'s OPENISH, so N3's following-token guard does not accept it and the space after `в` stays U+0020. This pins the membership split itself: a port that also put the marker in OPENISH would bind here."
+    },
+    {
+      "id": "ru-ranges-closed-up-percent",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "35%-50%",
+      "out": "35%⁠—⁠50%",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a (spec 1.3.0): the suffix form in a locale whose `dash.range` is em-tight, so the same token produces U+2014 here and U+2013 in `en-US`. The closed-up walk decides candidacy; the locale still decides the glyph."
+    },
+    {
+      "id": "ru-dashes-t1-closed-up-symbol-suffix",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "35%-50%—b",
+      "out": "35%-50%—b",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a, via dashes.md §3.2 step 8 (spec 1.3.0): the same witness in the suffix direction and in an em-dash locale — the disturbed guard is the range's `after` rather than its `before`. Pinned separately because the two directions are separate code paths in every port. To be precise about \"before the amendment\": the drift is a property of the INTERMEDIATE state — ranges.md §3.2a's widened candidacy without T1's transparency — which never shipped. Under spec 1.2.0 this input was stable, because the token was not a range candidate at all."
     }
   ]
 }

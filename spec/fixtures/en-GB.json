@@ -1285,6 +1285,17 @@
       "in": "dell'“arte” moderna",
       "out": "dell’‘arte’ moderna",
       "note": "apostrophe.md §3.3 case 3a (spec 1.2.0), §6 row 16: `quotes` re-typesets the curly pair as en-GB's primary single quotes, and the elision before the opening glyph converts to U+2019."
+    },
+    {
+      "id": "en-gb-ranges-closed-up-pound",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "£15-£20",
+      "out": "£15⁠–⁠£20",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a (spec 1.3.0): U+00A3, pinned in the locale that actually writes it. The closed-up walk is locale-independent shape logic; `en-GB` shares `en-US`'s `range: \"en-tight\"`."
     }
   ]
 }

@@ -1,7 +1,7 @@
 # Rule: `ranges`
 
 **Order:** 25. **Default:** off. **Modes:** text, html, markdown.
-**Spec version:** 0.5.0 (new rule; split out of `dashes`).
+**Spec version:** 0.5.0 (new rule; split out of `dashes`); §3.2a (closed-up symbols) new in 1.3.0.
 
 ---
 
@@ -82,24 +82,29 @@ independent approximations of it.
 pass") is **this rule's own** re-entry condition — it is how a tight range this rule already
 converted survives a second pipeline pass without regrowing a second joiner. `dashes` shares the
 same joiner-crossing walk (it must, to correctly decline a token immediately touching a range
-this rule already produced) but never itself owns that re-entry: any joiner adjacent to a
-non-digit-flanked token is declined outright (dashes.md §3.2a's fourth bullet).
+this rule already produced) but never itself owns that re-entry: any joiner adjacent to a token
+that is **not a range candidate** (§3.2, §3.2a — wider than "digit-flanked" as of spec 1.3.0) is
+declined outright (dashes.md §3.2a's fourth bullet).
 
 ### 3.2 Range guards (G1-G5)
 
-The token is a **range candidate** iff `cp[L]` is in `DIGIT` **and** `cp[R]` is in `DIGIT` — `L`
-and `R` after the joiner-crossing walk of §3.1. If it is a range candidate, this rule owns it
-exclusively: `dashes` never processes it, whether or not `ranges` is enabled (operator decision,
-spec 0.5.0 — see [dashes.md](dashes.md) §1). If it is **not** a range candidate (either flank is
-not `DIGIT`), this rule emits nothing for it at all; it is `dashes`' concern or no rule's.
+The token is a **range candidate** iff `cp[L']` is in `DIGIT` **and** `cp[R']` is in `DIGIT` —
+`L` and `R` after the joiner-crossing walk of §3.1, and `L'`/`R'` after the closed-up-symbol walk
+of §3.2a, which moves neither index unless a symbol is there to consume. If it is a range
+candidate, this rule owns it exclusively: `dashes` never processes it, whether or not `ranges` is
+enabled (operator decision, spec 0.5.0 — see [dashes.md](dashes.md) §1). If it is **not** a range
+candidate (either flank is not `DIGIT` after that walk), this rule emits nothing for it at all;
+it is `dashes`' concern or no rule's.
 
 Compute `Lrun`, `Rrun`, `before`, `after` exactly as [dashes.md](dashes.md) §3.3 (pre-0.5.0)
-specified — reproduced here verbatim since this is now its own rule document:
+specified — reproduced here verbatim since this is now its own rule document, with `L'`/`R'`
+where it said `L`/`R`:
 
-- `Lrun` = the maximal run of `DIGIT` ending at `L` (indices `a … L`);
-- `Rrun` = the maximal run of `DIGIT` starting at `R` (indices `R … b`);
-- `before` = the **effective neighbour** (dashes.md §3.2b) to the left of index `a`;
-- `after` = the **effective neighbour** to the right of index `b`.
+- `Lrun` = the maximal run of `DIGIT` ending at `L'` (indices `a … L'`);
+- `Rrun` = the maximal run of `DIGIT` starting at `R'` (indices `R' … b`);
+- `before` = the **effective neighbour** (dashes.md §3.2b) to the left of index `a`, except as
+  §3.2a amends it;
+- `after` = the **effective neighbour** to the right of index `b`, except as §3.2a amends it.
 
 All five guards must pass:
 
@@ -127,6 +132,143 @@ All five guards must pass:
 
 If any guard fails, emit nothing. **The token is not reconsidered by `dashes`.** A stroke between
 two digits is a range or it is nothing; `dashes` never sees it (§3.1 above).
+
+### 3.2a Closed-up symbols on both members (spec 1.3.0)
+
+Before spec 1.3.0 a range whose members each carried a symbol — `$15-$20`, `35%-50%` — was not a
+range candidate, because the flank next to the dash was the symbol and not a `DIGIT`. `$15-20`
+converted and `$15-$20` did not; `15-20%` converted and `15%-20%` did not. The asymmetry was a
+consequence of where the symbol sits relative to the digit run, never a decision anyone made.
+
+**The distinction the source draws is closed-up versus spaced, not currency versus unit.**
+
+> "the abbreviation or symbol is repeated if it is closed up to the number but not if it is
+> separated: 35%–50%" — *The Chicago Manual of Style*, 18th ed., 9.19, quoted in the freely
+> readable [CMOS Online Q&A, "Numbers"](https://www.chicagomanualofstyle.org/qanda/data/faq/topics/Numbers/faq0024.html);
+> the same paragraph is applied to money on
+> [page 5 of that topic](https://www.chicagomanualofstyle.org/qanda/data/faq/topics/Numbers.html?page=5):
+> "in Chicago style an abbreviation or symbol is repeated if it is closed up to a number but not
+> if it is separated by a space: $3–$5 million".
+
+So `$15–$20` and `35%–50%` are one rule, and `15 kg–20 kg` is not that rule — `kg` is separated
+by a space, and the source says a separated abbreviation is **not** repeated. The elided forms
+`$3–5 million` and `15–20%` are permitted variants the same answer calls acceptable; they already
+convert and keep converting.
+
+**`CLOSED-SYMBOL`** is a literal code-point set, fixed here and not locale data:
+
+> U+0024, U+00A2, U+00A3, U+00A4, U+00A5, every code point from U+20A0 through U+20CF inclusive
+> (the whole Currency Symbols block, assigned or not), U+0025, U+2030, U+2031, and U+00B0.
+
+`$` and `%` are the source's own examples; the rest are the same class by the source's own
+wording — symbols conventionally written closed up to a number: the other currency signs,
+per-mille and per-ten-thousand, and the degree sign. It is written as literal code points rather
+than a Unicode category test for the same reason `DIGIT` is ASCII-only (§7.1): a category test
+makes the rule's verdict depend on which Unicode version a runtime was built against, and the
+five runtimes must agree. The currency range is the **block's own bounds**, U+20A0–U+20CF, not
+the subset assigned in some Unicode version — block bounds never move, while the assigned subset
+does, and a rule that admitted only today's assignments would drift between runtimes built
+against different UCD releases. Unassigned code points inside the block are members of the set
+and unreachable in valid text; a code point assigned there later is a currency sign by the
+block's own definition, and membership is then already correct without a spec change. `+`, `-`, `#`, `(`, `)` and the quotation marks are **not** members and
+must not be added on the reasoning that they are also written closed up: none is a symbol this
+source's rule is about, and each would admit a shape (`+15-+20`, `#15-#20`, `"15"-"20"`) nobody
+has asked for and no citation supports.
+
+**The walk.** Both sides are decided **from the original `L` and `R`, simultaneously**, before
+either index moves — never left-then-right or right-then-left. Otherwise a token whose flanks are
+both in `CLOSED-SYMBOL` (`%15%-%20%`) would have a verdict that depends on evaluation order, and
+two runtimes could disagree while both following this document. After the joiner-crossing walk of
+§3.1 has produced `L` and `R`:
+
+- **right:** if `cp[R]` is in `CLOSED-SYMBOL` **and** `cp[R + 1]` exists and is in `DIGIT`, then
+  `R' = R + 1` and the **inner right symbol** is `cp[R]`. Otherwise `R' = R` and there is none.
+- **left:** if `cp[L]` is in `CLOSED-SYMBOL` **and** `cp[L - 1]` exists and is in `DIGIT`, then
+  `L' = L - 1` and the **inner left symbol** is `cp[L]`. Otherwise `L' = L` and there is none.
+
+Each side consumes **at most one** code point, so `US$15-US$20` and `15°C-20°C` are not
+admitted — and the mechanism is candidacy, not a guard: `cp[R]` is `U` and `cp[L]` is `C`,
+neither is in `CLOSED-SYMBOL`, so no walk is taken and the flank is simply not a `DIGIT`. The
+half-written `US$15-$20` **is** a candidate (the right walk matches the outer `$` in front of
+`15`) and is declined by G1 instead, because `before` reads past that `$` and finds `S`. Both are
+recorded in §7.7.
+
+**The outer symbols** are the effective neighbour (dashes.md §3.2b) immediately left of `Lrun`'s
+first index `a`, and immediately right of `Rrun`'s last index `b`, when that code point is in
+`CLOSED-SYMBOL`.
+
+**Matching, and it is exact.** A side's walk is taken **only if** the symbol it would consume is
+matched on the opposite member: an inner right symbol must be the **same code point** as the
+outer left symbol, and an inner left symbol the same code point as the outer right symbol. Not a
+currency-equivalence table, not a per-locale list: the same code point.
+
+**An unmatched symbol means the walk is not taken at all**, so the flank stays a non-`DIGIT`, the
+token is **not** a range candidate, and it remains `dashes`' concern exactly as it was before
+spec 1.3.0. `$15-€20` is a currency conversion, not a range; `15-$20` and `15%-20` are
+half-written. None of the three changes hands, and none of them changes behaviour in this spec
+version.
+
+If a side has **no inner symbol**, the corresponding outer symbol is not examined at all, which
+is exactly what keeps `$15-20` and `15-20%` converting as they did before this section existed.
+
+**What this does not change.** `Rrun` is the maximal `DIGIT` run starting at `R'` and `Lrun` the
+one ending at `L'`; wherever the shared guards of §3.1 and the replacement of §3.3 say `cp[L]` or
+`cp[R]`, this rule reads `cp[L']` or `cp[R']`. **G4 and G5 are untouched** — they compare digit
+runs and never see a symbol. The edit span is untouched too: the replacement covers the dash run
+(and, when binding, the joiners adjacent to it), so a symbol is never inserted, removed or
+rewritten. This rule changes one dash and nothing else.
+
+**G1, G2 and G3 judge the same position they always did.** When an inner right symbol was
+matched, `before` is the effective neighbour left of the **outer left symbol** rather than left of
+`a`; when an inner left symbol was matched, `after` is the effective neighbour right of the
+**outer right symbol** rather than right of `b`. In every other case `before` and `after` are
+unchanged. So `US$15-$20` has `before` = `S`, a `LETTER`, and G1 declines it.
+
+**Idempotency, and the two shared guards this section forced open.** A bound `$15⁠–⁠$20`
+re-enters through §3.1's joiner-crossing walk, whose re-entry condition
+([dashes.md](dashes.md) §3.2a) is amended in this same spec version to read `cp[L']`/`cp[R']`;
+having re-entered, §3.3's identical-replacement test makes the second pass a no-op.
+
+That is the easy half. The hard half is that widening what counts as a range member widens what
+a **`dashes`** edit elsewhere in the text can disturb, and `dashes`' spacing-transition guard was
+keyed to `DIGIT`.
+
+**T1** ([dashes.md](dashes.md) §3.2 step 8) both gated its branches on a `DIGIT` flank and walked
+outward from the digit run without stepping over a symbol, so a tight `dashes` token next to a
+closed-up range member became spaced, that U+0020 replaced the range's `before` or `after`, and
+the range converted on the **next** pass. Four witnesses, one per position and side, each drifting
+where its all-digit analogue was already inert: `a—$15-$20`, `35%-50%—b`, `a--15% - 20%` and
+`$1 - $1--a`. T1's reach is `CLOSED-SYMBOL`-transparent at two positions per side as of spec
+1.3.0, and each witness is pinned by a fixture asserting that the input is now a **no-op** —
+which is what a conformance runner can see, since it cannot run a second pass and compare.
+
+**This is deliberately T1 and not the cluster guard** ([dashes.md](dashes.md) §3.2 step 7), which
+would have closed the same defect by putting `CLOSED-SYMBOL` in its alphabet. That guard is
+unconditional, so it would also have made `price--$50--drop` inert in an `em-tight` locale that
+has no defect to fix; T1 fires only on the tight-to-spaced transition that can actually disturb a
+neighbour. The alternative was implemented, measured and rejected on that comparison.
+
+**The cost this leaves.** In a locale whose `dash.parenthetical` is **spaced**, a tight token
+next to a closed-up range member no longer converts: `Anstieg--50%--war` is left alone in
+`de-DE`, where spec 1.2.0 gave `Anstieg – 50% – war` (measured). The all-digit
+`Anstieg--50--war` has always been left alone, so the two agree; and a locale with a tight
+parenthetical form never reaches the guard, so `price--$50--drop` still becomes `price—$50—drop`
+in `en-US`. **The remedy is unconditional on `dash.range`, while the defect was not**: the
+conversion loss therefore also lands in `fr`, `fr-CA`, `it`, `nl`, `pt-BR` and `pt-PT`, whose
+`dash.range` is `"none"` and which never had a range verdict to disturb. Making T1 consult
+`dash.range` would make a `dashes` verdict depend on a field `dashes` does not read, which is a
+worse trade than a conversion nobody has asked for in six locales.
+
+**The accepted cost, stated plainly.** Widening candidacy moves tokens **out of** `dashes`, and
+`ranges` is off by default, so text that `dashes` used to change now changes only when a caller
+turns `ranges` on — and in the eight locales whose `dash.range` is `"none"`, not even then:
+`$15 - $20` gave `$15 — $20` in `fr` through spec 1.2.0 and is a permanent no-op from 1.3.0. The affected shapes are the **spaced and multi-hyphen** ones, because a lone
+tight hyphen between two non-spaces was never converted by `dashes` either: `$15 - $20` gave
+`$15—$20` in `en-US` before this section and is a no-op with default options after it, while
+`$15-$20` was already a no-op and now converts when `ranges` is on. That is the same behaviour `$15 - 20` has had since spec 0.5.0 — the
+change makes the two consistent rather than introducing an inconsistency — and the alternative is
+worse than the cost: declining `$15-$20` does not leave `$15–20`, it leaves `$15-$20`, a hyphen
+where every reading of every source above wants a dash.
 
 ### 3.3 Replacement
 
@@ -248,6 +390,21 @@ level (dashes.md §6's own note about this applies identically here).
 | 43  | `1914–1918`                  | ⟶                                     | the token is already exactly correct for `en-tight` — glyph, length and spacing — so it is left alone. §3.3's invisible-edit test (compute the unbound form; bind only if that would itself be a visible change) is what decides this, not any property of the original glyph |
 | 44  | `1914-1918`                  | `1914⟨J⟩–⟨J⟩1918`                     | the hyphen-typed range still converts and still binds. 43 and 44 are the asymmetry dashes.md §7.14 records |
 
+#### Closed-up symbols (§3.2a, spec 1.3.0), `en-US`
+
+Every row measured against the reference implementation. `⟨J⟩` = U+2060, as above.
+
+| #   | Input               | Output                     | Why                                                                                                                                                             |
+| --- | ------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 53  | `$15-$20`           | `$15⟨J⟩–⟨J⟩$20`            | both members repeat U+0024 closed up; the walk consumes the right flank's symbol and G1-G5 then read the digit runs `15` and `20`                                |
+| 54  | `35%-50%`           | `35%⟨J⟩–⟨J⟩50%`            | the suffix mirror — the walk moves the **left** flank, and the match is against the outer symbol after `Rrun`. The literal example in the sentence §3.2a quotes  |
+| 55  | `15°-20°`           | `15°⟨J⟩–⟨J⟩20°`            | U+00B0 is in `CLOSED-SYMBOL` on the same ground as U+0024 and U+0025                                                                                            |
+| 56  | `$15-€20`           | ⟶                          | the symbols are different code points: a currency conversion, not a range. The walk is not taken, so the token is not a candidate and stays `dashes`' concern    |
+| 57  | `15-$20`            | ⟶                          | an inner symbol with no matching outer one. The match is required in both directions                                                                            |
+| 58  | `US$15-US$20`       | ⟶                          | the walk consumes at most one code point (§7.7); G1 declines it independently, since `before` reads past the matched U+0024 and finds `S`                        |
+| 59  | `$15-20 and 15-20%` | `$15⟨J⟩–⟨J⟩20 and 15⟨J⟩–⟨J⟩20%` | the elided forms, unchanged by §3.2a — the outer symbol is examined only when there is an inner one to match                                                |
+| 60  | `$15 - $20`         | `$15⟨J⟩–⟨J⟩$20`            | the spaced form of row 53. **Through spec 1.2.0 this was `dashes`' token and gave `$15—$20` with default options**; it is now a range candidate, so with default options it is a no-op — §3.2a's accepted cost |
+
 ### `de-DE` — `range: "en-tight"`
 
 | #   | Input           | Output                | Why   |
@@ -309,3 +466,24 @@ machinery rather than range-specific stay in [dashes.md](dashes.md) §7 (its can
    when this rule's behaviour still lived there.
 6. **The compound-label ambiguity (`Figure 5-10`, G4's `(1,2)` branch) is already the full current
    statement of this rule's central tradeoff — see §5 above, not duplicated here.**
+7. **A multi-code-point closed-up symbol is not admitted** (§3.2a). `US$15-US$20` and `R$15-R$20`
+   carry a two- or three-code-point prefix, and `15°C-20°C` a two-code-point suffix; §3.2a
+   consumes at most one code point per side, so all three are declined. Admitting them means
+   deciding how far to walk and what stops the walk, and a walk that crosses `LETTER` would
+   collide with G1, which exists to keep `MP3-4` and `H2-2` out. The narrow rule is the one the
+   citation supports; the wider one needs its own evidence.
+8. **A spaced unit is deliberately out of scope, and so is the mirror case.** `15 kg-20 kg` and
+   `225 nm-2400 nm` are not admitted, because the source §3.2a quotes says a symbol *separated by
+   a space* is **not** repeated — the spaced form is a different construction, and NIST SP 811
+   §7.7 goes further and recommends the word "to" rather than a range dash for quantities, on the
+   ground that a dash can be read as a minus sign. Separately: in `de-DE`, `fr` and `ru` the
+   currency sign follows the amount (`30 EUR`, `800 руб.`), so the money case in those locales is
+   shaped `15 €-20 €` — a spaced symbol, not a closed-up one, and therefore out of scope by the
+   same clause rather than by oversight. Whether a spaced, repeated unit should be admitted at
+   all is an open question with evidence pointing away from it.
+   **This is also why a `CLOSED-SYMBOL` member appearing in a locale's `nbsp.beforeUnits` does
+   not contradict the locale data.** Several locale files list `°C`, and some list `%`, as units
+   the locale sets **after a space** — `20 °C`, `20 %`. That is the spaced construction, out of
+   scope here; `15°-20°` and `35%-50%`, with the symbol closed up, are the other one. The two
+   never meet in the algorithm either: §3.2a's walk requires a `DIGIT` immediately beside the
+   symbol, so `15 %-20 %` is not a candidate at all.

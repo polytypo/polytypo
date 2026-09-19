@@ -1902,6 +1902,187 @@
       "in": "---\ntitle: \"Unclosed\"\n\nBody \"quotes\" here.\n",
       "out": "---\ntitle: “Unclosed”\n\nBody “quotes” here.\n",
       "note": "modes.md §3.7.3 skips a frontmatter block; an opening delimiter with no closing one is not a block. The leading --- is then an ordinary thematic break and everything after it is prose, so the metadata-looking line converts like any other paragraph. Pinned so the skip cannot be widened into \"anything after a leading ---\"."
+    },
+    {
+      "id": "en-us-ranges-closed-up-currency",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "$15-$20",
+      "out": "$15⁠–⁠$20",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a (spec 1.3.0): both members repeat the same closed-up symbol, so the walk consumes the U+0024 on the right flank and the token is a range candidate. Chicago 9.19 — \"an abbreviation or symbol is repeated if it is closed up to the number\" — makes `$15–$20` the form, and before 1.3.0 this input was left with a hyphen, which no reading of that source allows. The U+2060 pair is ranges.md §3.3.1's tight binding and is invisible on screen: review this row in spec/fixtures/.escaped/."
+    },
+    {
+      "id": "en-us-ranges-closed-up-percent",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "35%-50%",
+      "out": "35%⁠–⁠50%",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a (spec 1.3.0): the mirror of the currency case — the closed-up symbol is a SUFFIX, so the walk moves the LEFT flank and matches it against the outer symbol after Rrun. `35%–50%` is the literal example in the Chicago sentence §3.2a quotes; the rule is closed-up versus spaced, not currency versus unit."
+    },
+    {
+      "id": "en-us-ranges-closed-up-degree",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "15°-20°",
+      "out": "15°⁠–⁠20°",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a (spec 1.3.0): U+00B0 is in CLOSED-SYMBOL on the same ground as U+0024 and U+0025 — a symbol conventionally written closed up to a number. Pinned because the set is a literal enumeration, not a Unicode category test, so every member needs a case or the enumeration drifts per runtime."
+    },
+    {
+      "id": "en-us-ranges-closed-up-mismatched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "$15-€20",
+      "out": "$15-€20",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a (spec 1.3.0): the symbols must be the SAME code point. This is a currency conversion, not a range, and converting its hyphen would assert something false. The walk is not taken, so the right flank stays a non-DIGIT and the token is not a range candidate at all — it remains `dashes`' concern, exactly as before 1.3.0."
+    },
+    {
+      "id": "en-us-ranges-closed-up-half-written",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "15-$20",
+      "out": "15-$20",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a (spec 1.3.0): an inner symbol with no matching outer symbol on the opposite member. Declined for the same reason as the mismatched case, and this is the row that proves the match is required in BOTH directions rather than only when both members carry a symbol."
+    },
+    {
+      "id": "en-us-ranges-closed-up-multi-code-point",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "US$15-US$20",
+      "out": "US$15-US$20",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a and §7.7 (spec 1.3.0): the walk consumes at most one code point per side, and the mechanism here is CANDIDACY, not a guard — `cp[R]` is `U`, which is not in CLOSED-SYMBOL, so no walk is taken and the flank is simply not a DIGIT. The half-written `US$15-$20` IS a candidate and is declined by G1 instead, because `before` reads past the matched U+0024 and finds `S`; see en-us-ranges-closed-up-letter-prefix for that half."
+    },
+    {
+      "id": "en-us-ranges-closed-up-elided-unchanged",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "$15-20 and 15-20%",
+      "out": "$15⁠–⁠20 and 15⁠–⁠20%",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a (spec 1.3.0): the elided forms, where the symbol is written once. They converted before 1.3.0 and must keep converting — the Chicago answer §3.2a quotes calls them acceptable variants, and this row is the regression witness that adding the closed-up walk did not make the outer symbol a requirement."
+    },
+    {
+      "id": "en-us-ranges-closed-up-spaced-token",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "$15 - $20",
+      "out": "$15⁠–⁠$20",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a (spec 1.3.0): the spaced form of the same token. Before 1.3.0 this was `dashes`' token and became `$15—$20` (en-US's em-tight parenthetical form) with DEFAULT options; now it is a range candidate, so it converts to the range form when `ranges` is on and is a no-op when it is off. See en-us-dashes-closed-up-range-declined for the other half of that pair."
+    },
+    {
+      "id": "en-us-dashes-closed-up-range-declined",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "$15 - $20",
+      "out": "$15 - $20",
+      "note": "ranges.md §3.2a and dashes.md §1 (spec 1.3.0): the ACCEPTED COST of widening range candidacy. With default options this input produced `$15—$20` through spec 1.2.0; a range candidate is declined by `dashes` unconditionally, whether or not `ranges` is enabled, so it is now a no-op. That is the behaviour `$15 - 20` has had since spec 0.5.0 — the change makes the two consistent."
+    },
+    {
+      "id": "en-us-ranges-closed-up-letter-prefix",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "US$15-$20",
+      "out": "US$15-$20",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a (spec 1.3.0): the other half of the multi-code-point case. Here the right walk DOES match — the outer symbol in front of `15` is the same U+0024 — so the token is a range candidate and reaches the guards, where G1 declines it: `before` reads past the matched symbol and finds `S`, a LETTER. Pinned because §3.2a claims two different mechanisms for two inputs that look alike."
+    },
+    {
+      "id": "en-us-ranges-closed-up-joiner-wrapped-hyphen",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "$15⁠-⁠$20",
+      "out": "$15⁠–⁠$20",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.1 and §3.2a, via dashes.md §3.2a (spec 1.3.0): the ONLY input that separates the amended re-entry condition from the unamended one. ranges.md §3.1 borrows the joiner-crossing walk from dashes.md §3.2a, and before 1.3.0 that walk required DIGIT on both effective neighbours — with a symbol there, a hyphen an author typed between an existing U+2060 pair fell through to \"joiner crossed in any other configuration: emit nothing\". Without this case a port could skip the amendment and pass the whole suite."
+    },
+    {
+      "id": "en-us-ranges-closed-up-both-flanks",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "%15%-%20%",
+      "out": "%15%⁠–⁠%20%",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a (spec 1.3.0): both flanks are in CLOSED-SYMBOL, which is the shape that makes the evaluation order observable. §3.2a decides both sides from the ORIGINAL L and R simultaneously, so both walks are taken and both match; a left-then-right or right-then-left reading would leave one side's `Lrun` undefined and decline. Not idiomatic text — pinned purely to make the evaluation model conformance-testable."
+    },
+    {
+      "id": "en-us-ranges-closed-up-symbol-set-cents-pounds",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "¢15-¢20 and ¤15-¤20 and ¥15-¥20",
+      "out": "¢15⁠–⁠¢20 and ¤15⁠–⁠¤20 and ¥15⁠–⁠¥20",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a (spec 1.3.0): CLOSED-SYMBOL is a literal enumeration, not a Unicode category test, so each member needs a case or a port enumerating only the obvious few passes the whole suite. U+00A2, U+00A4 and U+00A5; U+0024 and U+20AC have their own cases, U+00A3 is pinned in en-GB."
+    },
+    {
+      "id": "en-us-ranges-closed-up-symbol-set-permille",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "15‰-20‰ and 15‱-20‱",
+      "out": "15‰⁠–⁠20‰ and 15‱⁠–⁠20‱",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a (spec 1.3.0): U+2030 and U+2031, the per-mille and per-ten-thousand signs, in the suffix position. Same reason as the currency case — the set is an enumeration and every member is part of the contract."
+    },
+    {
+      "id": "en-us-dashes-t1-closed-up-symbol-unaffected",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "price--$50--drop",
+      "out": "price—$50—drop",
+      "note": "dashes.md §3.2 step 8 (spec 1.3.0): the boundary of the accepted cost, with DEFAULT options. T1 applies only when the chosen form is `-spaced`; `en-US` sets `em-tight`, so this input is untouched by the amendment and still converts exactly as it did through spec 1.2.0. Pinned because the alternative repair — putting CLOSED-SYMBOL in the cluster guard's alphabet (§3.2 step 7) — is unconditional and would have made this a no-op in every locale. Without this case a port could take that shortcut and pass the suite."
+    },
+    {
+      "id": "en-us-ranges-closed-up-block-member",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "₹15-₹20 and ₴100-₴200",
+      "out": "₹15⁠–⁠₹20 and ₴100⁠–⁠₴200",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a (spec 1.3.0): U+20B9 and U+20B4, members of the U+20A0–U+20CF block that are NOT among the code points any other fixture names. CLOSED-SYMBOL is the whole block by its bounds, so a port that enumerates only the symbols it saw in fixtures — dollar, euro, the Latin-1 four — passes every other case and fails this one."
+    },
+    {
+      "id": "en-us-ranges-closed-up-not-a-member",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "֏15-֏20 and ￥15-￥20",
+      "out": "֏15-֏20 and ￥15-￥20",
+      "rules": {
+        "ranges": true
+      },
+      "note": "ranges.md §3.2a (spec 1.3.0): the NEGATIVE side of the enumeration. U+058F (Armenian dram) and U+FFE5 (fullwidth yen) are currency signs in Unicode's own classification and are deliberately NOT in CLOSED-SYMBOL, which is a literal code-point set precisely so that no runtime has to agree with another about a Unicode category. A port implementing the set as an Sc test — the implementation §3.2a forbids — converts these and fails here."
     }
   ]
 }
