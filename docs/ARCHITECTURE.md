@@ -207,7 +207,7 @@ Errors carry a stable machine code from the spec. Each runtime raises its idioma
 (JS `Error` subclass, Go `error` value, Python exception, PHP exception, Ruby `StandardError`)
 **carrying that code**. Messages are English and are not part of the contract; codes are.
 
-The taxonomy is **seven codes**, and this list is the contract every runtime implements:
+The taxonomy is **eight codes**, and this list is the contract every runtime implements:
 
 | Code                             | Raised when                                                                                       |
 | -------------------------------- | ------------------------------------------------------------------------------------------------- |
@@ -218,7 +218,15 @@ The taxonomy is **seven codes**, and this list is the contract every runtime imp
 | `POLYTYPO_MALFORMED_LOCALE_DATA` | Embedded locale data failed schema validation.                                                    |
 | `POLYTYPO_RULE_CONTRACT`         | A rule produced an edit violating the pipeline contract (§7.1).                                   |
 | `POLYTYPO_MALFORMED_INPUT`       | The input does not parse in the requested language. Reachable only for `mdx`, which embeds JS.    |
+| `POLYTYPO_INVALID_OPTION`        | An option's value is outside its permitted set, for an option with no more specific code (§7). Spec 1.3.0; the first such option is `narrowNbsp`. |
 
+> **`POLYTYPO_INVALID_OPTION` is deliberately general, spec 1.3.0.** `mode` and `dialect` keep
+> their own codes — they are public contract and renaming or merging them would break callers that
+> branch on them. Every option added from 1.3.0 onward shares this one instead: a code per option
+> would grow the taxonomy once per feature, and a caller who wants to know *which* option was
+> wrong reads the message, which is where a human-readable detail belongs (messages are not
+> contract; codes are).
+>
 > **Corrected 2026-08-15.** This section previously named three codes as though they were the whole
 > taxonomy. Being wrong here is worse than elsewhere: this is the section the review gate enforces
 > from, and a port built from the old text would ship an error contract missing four codes. The two
@@ -330,7 +338,12 @@ Rules for fixtures:
   an escaped `\uXXXX` mirror file — reviewing a diff full of invisible U+202F is otherwise
   impossible.
 * Every case is automatically also an idempotency case: the runner asserts
-  `transform(out) == out`. This is free coverage and catches the most common port bug.
+  `transform(out, the case's own options) == out` — **with the case's options, not with
+  defaults**. A case carrying `rules` or `narrowNbsp` (spec 1.3.0) is a fixed point under those
+  options and need not be one without them: `fr` with `narrowNbsp: "nbsp"` produces U+00A0 where
+  the default target is U+202F, so a re-run that drops the option converts it straight back and a
+  runner written to the unqualified sentence goes red on a correct implementation. This is free
+  coverage and catches the most common port bug.
 * Cases must be tagged with a `rule` so a runtime can report partial conformance honestly.
 
 ### 6.2 Conformance matrix
@@ -398,6 +411,14 @@ transform(input: string, options) -> string
 | `mode`    | no                                | `text`  | `text` \| `html` \| `markdown`.                            |
 | `dialect` | **yes when `mode` is `markdown`** | none    | `commonmark` \| `mdx`. Ignored in the other two modes.     |
 | `rules`   | no                                | all on  | Opt-out map keyed by rule id; `false` disables.            |
+| `narrowNbsp` | no                             | `narrow` | `narrow` \| `nbsp`. `nbsp` makes the engine emit U+00A0 wherever it would emit U+202F (spec 1.3.0, `nbsp.md` §3.1a). |
+
+**Validation order is contract** (spec 1.3.0, stated here because a conformance fixture cannot
+express it): `mode` → `narrowNbsp` → `rules` → `locale` → `dialect`. The two checks that read
+nothing but the call itself come first, then rule ids, then locale data, then the dialect and the
+parse. So an invalid `mode` beats an invalid `narrowNbsp`, which beats an unknown rule id, which
+beats an unknown locale — the last of those pairs was already public, tested behaviour before
+1.3.0. `narrowNbsp` is checked whether or not `nbsp` is enabled: the check belongs to the call.
 
 > **Corrected 2026-08-15.** This listed only `locale`, `mode` and `rules`. A port built from the old
 > text would ship a `markdown` mode it cannot implement: **`dialect` has no default and must not

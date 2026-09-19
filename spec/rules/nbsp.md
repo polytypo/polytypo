@@ -160,6 +160,78 @@ split and §3.3 steps 2 and 3 below give the reason for each half. The −2 line
 uses `SPACELIKE`, never `SP`. This single decision is what makes the rule idempotent: after a
 conversion the boundary that justified it still reads as a boundary.
 
+### 3.1a The narrow target, and the `narrowNbsp` option (spec 1.3.0)
+
+**This rule is the only thing in the spec that emits U+202F**, through exactly two sub-rules: N2
+(§3.4), always, and N8 (§3.10), when the pair's `innerSpace` is `"narrow-nbsp"`. **No shipped
+locale sets `"narrow-nbsp"`** — `fr`, the only locale with a non-empty `narrowBeforePunctuation`,
+sets its primary pair to `"nbsp"` — so today the option's whole visible effect is N2's. The N8
+clause is written anyway, because the two must move together the day a locale does set it, and a
+substitution that covered one emitter and not the other would be a defect nobody could see until
+that locale landed. `quotes` places
+the glyphs and leaves the inner space to N8 (quotes.md §5); no other rule writes a no-break space
+of any width.
+
+That makes one substitution expressible without touching anything else:
+
+> **`NARROW-TARGET`** is U+202F, **unless** the caller passed `narrowNbsp: "nbsp"`, in which case
+> it is U+00A0.
+
+**N2 and N8 read `NARROW-TARGET` everywhere they name U+202F** — the state their "already
+correct" branch recognises, the code point they convert a space to, and the code point they
+insert. Nothing else in this document changes.
+
+**Why a caller would ask.** U+202F is missing from many common text faces (Manrope and EB
+Garamond among them), so a browser falls back to another face for that one character and the
+advance width changes mid-line; a PDF renderer with no fallback drops the glyph entirely. That
+is a **rendering** fact about the reader's fonts, not a typographic one about the language, which
+is why it is a caller option and not locale data: `fr` still sets a narrow space before `?`, and
+the locale file still says so.
+
+**Why it rewrites the target rather than post-processing the output.** A caller can already write
+`transform(...).replaceAll("\u202f", "\u00a0")`, and that is stable **only as long as it always
+runs**: feed its output back through `transform` and N2 sees U+00A0 where its target is U+202F,
+converts it back, and the two steps disagree for ever. Rewriting the target makes the result a
+fixed point by construction — §5's argument is stated per sub-rule **target**, so substituting the
+target carries it over verbatim, with no new case to check.
+
+**Validation, and where it happens.** `narrowNbsp` is `"narrow"` or `"nbsp"`; absent means
+`"narrow"`. Any other value raises `POLYTYPO_INVALID_OPTION` (`ARCHITECTURE.md` §4.6, new in spec
+1.3.0 and general to every option added from 1.3.0 onward). It is checked **immediately after
+`mode` and before `rules`**, so the full order is `mode` → `narrowNbsp` → `rules` → `locale` →
+`dialect`: the two checks that read nothing but the call itself come first, then rule ids, then
+locale data, then the dialect and the parse. The existing pairs are untouched — an unknown rule
+still wins over an unknown locale — and this order is public, tested behaviour like the rest.
+
+The check belongs to the **call**, not to this rule: it runs whether or not `nbsp` is enabled, so
+`rules: { nbsp: false }` with a misspelled `narrowNbsp` still raises rather than silently
+accepting a value that would have mattered.
+
+**Conformance.** `spec/fixtures/*.json` carries the option as a case-level `narrowNbsp` field,
+passed through to `transform` exactly as `rules` is; omitting it means `"narrow"`, so every case
+written before spec 1.3.0 keeps its meaning. Note what a fixture **cannot** express: the schema's
+own enum admits only the two valid values, so `POLYTYPO_INVALID_OPTION` has no fixture, the same
+way a missing or misspelled `dialect` has none — a fixture with `mode: "markdown"` is required to
+name a valid dialect. Option-validation errors are each runtime's own test, and the order in the
+paragraph above is what those tests assert.
+
+**What it does not do.**
+
+- It does not change **which** positions take a no-break space. That is locale data (§2) and is
+  untouched: the same indices are claimed, by the same sub-rules, under the same guards.
+- It does not change what the rule **reads**. U+202F stays in `NOBREAK` and `SPACELIKE` (§3.1),
+  so every guard still treats an authored narrow space as the no-break space it is. The one
+  visible consequence is that an authored U+202F at an index N2 or N8 claims is now converted to
+  U+00A0, because the rule normalises a claimed index to its target and the target has moved —
+  the same normalisation N2 already performs on an authored U+00A0 in the default configuration.
+  An authored U+202F anywhere else is left alone (§4).
+- It does not touch **U+2011**, which `hyphen` (order 35) emits. Binding a hyphen is that rule's
+  entire job, so `rules: { hyphen: false }` already asks for exactly this and no new option is
+  warranted.
+- It does not touch **U+2060**, which `ranges` (order 25) emits when it binds a tight range
+  (ranges.md §3.3.1). `ranges` is off by default, so a caller who has not enabled it never sees
+  one; a caller who has can turn it off again. See §7.8.
+
 ### 3.2 Structure: ten sub-rules, first claim wins
 
 The rule is one left-to-right scan that evaluates **ten** independent sub-rules, N1 through N10. (It was eight before `beforeNumber` and `beforeWord` were added as N9 and N10; a reader who stops at N8 loses both, and with them the abbreviation binding for four locales.) Two sub-rules
@@ -283,10 +355,13 @@ For each index `i` such that `cp[i]` is a member of `nbsp.beforePunctuation`:
    - Otherwise (`left` is a content character) → emit an edit **inserting** U+00A0 at
      index `i`.
 
-### 3.4 N2 — `narrowBeforePunctuation` (U+202F)
+### 3.4 N2 — `narrowBeforePunctuation` (`NARROW-TARGET`)
 
-Identical to N1 with `NNBSP` and `NBSP` exchanged: already-correct means `left` is `NNBSP`;
-`SP` or `NBSP` is converted to U+202F; a content character causes an insertion of U+202F. The
+Identical to N1 with `NARROW-TARGET` (§3.1a — U+202F unless the caller substituted it) in place
+of U+00A0: already-correct means `left` **is** `NARROW-TARGET`; a `SP`, or a `NOBREAK` member
+that is not `NARROW-TARGET`, is converted to it; a content character causes an insertion of it.
+In the default configuration that reads exactly as it always has — already-correct is `NNBSP`,
+and `SP` or `NBSP` converts to U+202F. The
 quote-glyph guard, the `OTHER-SPACE` guard and the character-reference guard apply unchanged —
 the last one matters most here, since `;` is in `narrowBeforePunctuation` for `fr` and nowhere in
 `beforePunctuation` for any shipped locale, so N2 is the sub-rule that was destroying references.
@@ -452,8 +527,8 @@ C1 (its `cp[q+1]` is the second initial's letter, which is `UPPER`).
 ### 3.10 N8 — `quotes.innerSpace`
 
 For each of the two quote pairs `P` ∈ {`quotes.primary`, `quotes.secondary`} with
-`P.innerSpace ≠ "none"`, let `target` be U+00A0 if `P.innerSpace = "nbsp"` and U+202F if
-`P.innerSpace = "narrow-nbsp"`.
+`P.innerSpace ≠ "none"`, let `target` be U+00A0 if `P.innerSpace = "nbsp"` and `NARROW-TARGET`
+(§3.1a — U+202F unless the caller substituted it) if `P.innerSpace = "narrow-nbsp"`.
 
 **Sidedness precondition.** If `P.open` and `P.close` are the same code point, this sub-rule
 does nothing for that pair, and an implementation must not guess. See §7.5.
@@ -668,7 +743,7 @@ target of each sub-rule is exactly the state that branch recognises:
 | Sub-rule | Post-state at the claimed index                       | Recognised as already correct by           |
 | -------- | ----------------------------------------------------- | ------------------------------------------ |
 | N1       | `NBSP` immediately left of the mark                   | §3.3 step 4, first bullet                  |
-| N2       | `NNBSP` immediately left of the mark                  | §3.4                                       |
+| N2       | `NARROW-TARGET` immediately left of the mark          | §3.4                                       |
 | N3       | `NBSP` after the short word                           | §3.5 step 3                                |
 | N4       | `NBSP` at every internal position of the abbreviation | §3.6 step 1 (space-lenient match) + step 3 |
 | N5       | `NBSP` before the unit                                | §3.7 step 3                                |
@@ -683,6 +758,16 @@ i.e. that no guard's verdict flips because of an edit made on the first run.
 
 Guards test three kinds of thing:
 
+0. **The `narrowNbsp` substitution (§3.1a) needs no separate argument.** Every row of the table
+   above names a sub-rule's **target**, not a literal code point, and N2's and N8's targets are
+   the only ones the option moves. Substituting `NARROW-TARGET` therefore carries the whole
+   argument over unchanged: the post-state each branch recognises moves with the character each
+   branch writes, which is precisely what post-processing the output could not do (§3.1a). The
+   substitution also cannot create a **new** conflict between two sub-rules, because it only ever
+   makes N2's and N8's targets **equal to** N1's, never different from it, and no sub-rule's claim
+   depends on what another sub-rule's target is — the quote-glyph guard (§3.3 step 3) decides
+   ownership of the index beside a quotation glyph by position, whatever character either
+   sub-rule would have written there.
 1. **Membership in `SPACELIKE`.** Every conversion `SP → NBSP`, `SP → NNBSP`,
    `NNBSP → NBSP`, `NBSP → NNBSP` stays inside `SPACELIKE` (§3.1). Every insertion adds a
    `NOBREAK`, which is in `SPACELIKE`. So every boundary test that passed on run 1 passes on
@@ -825,14 +910,14 @@ behind it, and has since been deleted rather than softened. Both survived severa
 because nothing obliged anyone to check. A row here is a claim
 about the engine **and** about a file in `spec/locales/`, and both halves have to hold.
 
-### `fr` — `narrowBeforePunctuation: ["?","!",";"]`, `beforePunctuation: [":"]`, primary `« »` with `innerSpace: "narrow-nbsp"`
+### `fr` — `narrowBeforePunctuation: ["?","!",";"]`, `beforePunctuation: [":"]`, primary `« »` with `innerSpace: "nbsp"`
 
 | #   | Input                               | Output                               | Why                                                                                                                                                             |
 | --- | ----------------------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | `Bonjour!`                          | `Bonjour⍹!`                          | N2 insertion; the ordinary space, if any, was already removed by `spaces`                                                                                       |
 | 2   | `Bonjour⍹!`                         | ⟶                                    | N2 "already correct" — this is the round-trip case                                                                                                              |
-| 3   | `Il a dit «mot».`                   | `Il a dit «⍹mot⍹».`                  | N8 inserts on both inner edges                                                                                                                                  |
-| 4   | `Il a dit «⍹mot⍹».`                 | ⟶                                    | N8 already correct                                                                                                                                              |
+| 3   | `Il a dit «mot».`                   | `Il a dit «⍽mot⍽».`                  | N8 inserts on both inner edges. **U+00A0, not U+202F**: `fr.json` sets the primary pair's `innerSpace` to `"nbsp"` — corrected in spec 1.3.0, having claimed the narrow space since this table was written |
+| 4   | `Il a dit «⍹mot⍹».`                 | `Il a dit «⍽mot⍽».`                  | and therefore **not** already correct: N8 converts an authored narrow space to its own target. The row claimed a fixed point on the same mistake                |
 | 5   | `Voir http://example.org: la suite` | `Voir http://example.org⍽: la suite` | N1 guard 2 rejects the colon in `http://` (next code point is `/`) and accepts the sentence colon (next is a space)                                             |
 | 6   | `Vraiment?!`                        | `Vraiment⍹?!`                        | N1/N2 guard 1: only the first mark takes a space                                                                                                                |
 | 6a  | `Vraiment?…`                        | `Vraiment⍹?…`                        | U+2026 is accepted right context (§3.3 step 2). Previously the narrow space was omitted here but not in `Vraiment␣?`, purely because `ellipsis` had already run |
@@ -877,6 +962,17 @@ about the engine **and** about a file in `spec/locales/`, and both halves have t
 | 22  | `Tom␣&amp;␣Jerry` (`fr`) | ⟶ | **spec 1.3.0.** Same guard on a named reference |
 | 23  | `Oui␣;␣non` (`fr`)      | `Oui·;␣non` | The guard is not a blanket refusal of `;` — an ordinary semicolon still takes U+202F |
 
+#### `narrowNbsp: "nbsp"` (§3.1a, spec 1.3.0)
+
+Every row `fr`, and every row measured. `⍽` = U+00A0, `⍹` = U+202F.
+
+| #   | Input                        | Default (`narrow`)                    | `narrowNbsp: "nbsp"`                  | Why                                                                                                                                  |
+| --- | ---------------------------- | ------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| 31  | `Un délai ?`                 | `Un délai⍹?`                          | `Un délai⍽?`                          | N2's target moves; the index it claims, and the guard that let it claim it, do not                                                    |
+| 32  | `Oui⍹?`                      | ⟶                                     | `Oui⍽?`                               | an authored narrow space at a claimed index is normalised to the target, as an authored U+00A0 is in the default configuration        |
+| 33  | `Il a dit : « oui » ; puis ?` | `Il a dit⍽: «⍽oui⍽»⍹; puis⍹?`        | `Il a dit⍽: «⍽oui⍽»⍽; puis⍽?`        | N1 (colon) and N8 (`fr`'s pair, `innerSpace: "nbsp"`) already wrote U+00A0 and do not move; only N2 does                             |
+| 34  | `12:30 et http://x ; oui`    | `12:30 et http://x⍹; oui`             | `12:30 et http://x⍽; oui`             | the option changes what is written, never what is read: N1's right-context guard still protects the time and the URL                 |
+
 ### `fr` — `beforeWord: ["M.","Mme","Mlle"]`
 
 | #   | Input                   | Output                  | Why                                                                                                                                                                                              |
@@ -908,7 +1004,9 @@ here puts one back. That is a cited decision, not a default.
 | 27  | `10,5␣%␣φέτος` | ⟶      | `beforeUnits` is empty, so N5 is inert and the ordinary space survives as U+0020                                                                        |
 | 28  | `«καλημέρα»`   | ⟶      | `innerSpace: "none"`, so N8 inserts nothing. This is the half of the no-op claim that lives in the `quotes` object rather than the `nbsp` one           |
 
-Cases 2, 4, 6b, 8, 13, 13c, 13d, 13e, 13i, 15, 17, 18, 20, 22, 24, 26, 27 and 28 are "no change" cases.
+Cases 2, 6b, 8, 13, 13c, 13d, 13e, 13i, 15, 17, 18, 20, 22, 24, 26, 27 and 28 are "no change"
+cases. (Case 4 left that list in spec 1.3.0, when the row was corrected from a fixed point to a
+conversion; the §3.1a rows are numbered 31-34 and are outside it.)
 
 ---
 
@@ -1040,3 +1138,20 @@ Cases 2, 4, 6b, 8, 13, 13c, 13d, 13e, 13i, 15, 17, 18, 20, 22, 24, 26, 27 and 28
     has measured the false-positive profile of that. The answer in 1.2.0 is no, pinned by the
     fixture `ru-nbsp-span-boundary-not-openish-short-word` (`в <em>Москве</em>` stays unbound);
     changing it is a spec change.
+13. **U+2060 has the same font problem and no option (spec 1.3.0).** `ranges` binds a tight range
+    as `JOINER dash JOINER` (ranges.md §3.3.1), and the same production report that asked for
+    `narrowNbsp` also raised the word joiner — not for a missing glyph, since it is zero-width,
+    but for copy/paste and search indexing: a reader who copies `3⁠–⁠5` out of a page gets two
+    invisible characters with it. Nothing was decided here, deliberately. `ranges` is **off by
+    default**, so a caller who has not asked for range conversion never sees a joiner, and one
+    who has can stop asking; that is a narrower situation than U+202F, which a French locale
+    emits with default options. If a `wordJoiner` option is ever added it belongs in
+    `ranges.md`, not here, and it needs its own answer to the question §3.1a answers for this
+    rule: the joiner is what makes a converted range survive a second pass without regrowing a
+    second joiner (ranges.md §3.1's re-entry condition), so removing it removes that anchor and
+    the re-entry argument has to be rebuilt on the bare dash.
+14. **U+2011 needs no option, and that is worth stating once.** `hyphen` (order 35) exists only to
+    replace a hyphen with U+2011 in the forms a locale lists, so `rules: { hyphen: false }`
+    already expresses "do not emit U+2011" exactly. The production report asked for
+    `nonBreakingHyphen: false`, which suggests the rule table does not make that obvious — a
+    documentation gap, not a missing option.

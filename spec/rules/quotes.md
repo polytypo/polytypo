@@ -745,8 +745,11 @@ The split is asymmetric on purpose.
   nothing and deletes nothing there.
 
 So `quotes` still never inserts a space, `nbsp` keeps ownership of all no-break spacing, and
-there is no second copy of anyone's rules. `"mot"` → `«mot»` → (via `nbsp`) `«` U+202F `mot`
-U+202F `»`; `« mot »` → (no edit from `quotes`) → the same output via `nbsp`. Both paths
+there is no second copy of anyone's rules. `"mot"` → `«mot»` → (via `nbsp`) `«` U+00A0 `mot`
+U+00A0 `»` — U+00A0 because `fr`'s primary pair sets `innerSpace: "nbsp"`, and **no shipped
+locale sets `"narrow-nbsp"`** (nbsp.md §3.1a); this read U+202F until spec 1.3.0, which is a
+claim about a locale file that the file never supported. `« mot »` → (no edit from `quotes`) →
+the same output via `nbsp`. Both paths
 converge, which is the property the pipeline needs.
 
 **The landing guard is not a heuristic; it is a structural CO discharge.** The deleted run's near

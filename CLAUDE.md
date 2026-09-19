@@ -112,11 +112,13 @@ they are measured output, never typed by hand, exactly like every other example 
   `scripts/validate-spec.mjs`'s own drift check, canonical-only — see polytypo-js's `AGENTS.md`
   for its own, separate `tests/scripts/`).
 
-Current error codes (see the relevant runtime repo's `errors.ts`), all seven:
+Current error codes (see the relevant runtime repo's `errors.ts`), all eight:
 `POLYTYPO_UNKNOWN_LOCALE`, `POLYTYPO_INVALID_MODE`, `POLYTYPO_INVALID_DIALECT`,
 `POLYTYPO_UNKNOWN_RULE`, `POLYTYPO_MALFORMED_LOCALE_DATA`, `POLYTYPO_RULE_CONTRACT`,
-`POLYTYPO_MALFORMED_INPUT`. These are spec-level contract, not implementation detail — every
-runtime must expose the same seven codes.
+`POLYTYPO_MALFORMED_INPUT`, `POLYTYPO_INVALID_OPTION` (spec 1.3.0 — an option value outside its
+permitted set, for an option with no more specific code; `mode` and `dialect` keep theirs). These
+are spec-level contract, not implementation detail — every runtime must expose the same eight
+codes.
 
 Nine rules in spec order: `spaces` `ellipsis` `ranges` `dashes` `hyphen` `quotes` `apostrophe`
 `symbols` `nbsp`. `ranges` is the one rule that defaults to off (spec 0.5.0) — see `order.json`.
@@ -170,7 +172,9 @@ its cited source before it lands in a locale file; rows marked ❓ are known-unc
 
 Fixtures are flat JSON with `in`/`out` written as literal characters, plus the CI-generated escaped
 `\uXXXX` mirror so diffs of invisible U+202F are reviewable. Every case is automatically an
-idempotency case — a conformant runtime's own runner asserts `transform(out) == out`. Cases are
+idempotency case — a conformant runtime's own runner asserts `transform(out) == out`, **passing
+the case's own options on that second call**, since a case carrying `rules` or `narrowNbsp` is a
+fixed point under those options and not under the defaults. Cases are
 tagged with a `rule` id so a runtime can report partial conformance honestly.
 
 `transform(transform(x)) === transform(x)` is a hard invariant every runtime must prove with

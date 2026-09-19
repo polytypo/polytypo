@@ -334,7 +334,14 @@ is usually cheaper to write:
 > pair `(i, j)` without enumerating a single case.
 
 CO-S is not always achievable, but where it is, it is the discharge to write. The `dashes` /
-`nbsp` pair is the worked example. `E(nbsp) = { U+00A0, U+202F }`. Three successive attempts
+`nbsp` pair is the worked example. `E(nbsp) = { U+00A0, U+202F }` — an **upper bound** as of spec
+1.3.0, not an exact set: under `narrowNbsp: "nbsp"` (nbsp.md §3.1a) it shrinks to `{ U+00A0 }`.
+Every discharge against it survives that unchanged, and by construction rather than by luck: each
+one names **both** code points together, through a class that holds both (`spaces`'
+`PROTECTED-SPACE`, `dashes`' and `ranges`' `NOBREAK-SPACE`, `quotes`' `INLINE-SPACE`,
+`apostrophe`'s `SPACELIKE`), so a discharge that holds for the pair holds for either subset. A
+future option that made `E(nbsp)` **larger** would not be free this way, and would have to be
+re-argued here. Three successive attempts
 tried to specify _which_ of those counted as dash spacing and _on which side_:
 
 | Formulation                                      | Fixed                   | Exposed                                                        |

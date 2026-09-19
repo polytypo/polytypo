@@ -147,7 +147,8 @@ it claims. The suite lives in `spec/fixtures/<locale>.json` as flat `in`/`out` p
 literal characters, mirrored by a CI-generated escaped file so that a diff of an invisible U+202F is
 reviewable by a human.
 
-Every fixture is also an idempotency case: the runner asserts `transform(out) == out`. Cases are
+Every fixture is also an idempotency case: the runner asserts `transform(out) == out`, passing the
+case's own options on that second call. Cases are
 tagged with a rule id, so a runtime can report partial conformance honestly instead of claiming all
 of it.
 
