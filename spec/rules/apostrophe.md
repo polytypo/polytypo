@@ -1,6 +1,6 @@
 # Rule: `apostrophe`
 
-**Order:** 50. **Default:** on. **Modes:** text, html, markdown.
+**Order:** 50. **Default:** on. **Modes:** text, html, markdown, yaml.
 **Spec version:** 1.2.0 (0.4.1 for everything except §2, §3.4 and the §6/§7 updates for the
 withdrawal of the shared ambiguity preserve set (1.1.0), and §3.1's `OPENQUOTE` with §3.3's case 3a
 (1.2.0)).

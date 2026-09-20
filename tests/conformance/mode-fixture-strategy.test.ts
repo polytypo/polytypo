@@ -70,6 +70,33 @@ describe("mode-fixture representative-coverage minimum (spec/rules/modes.md §8)
     ).toBeGreaterThanOrEqual(2);
   });
 
+  it("carries yaml fixtures in at least two distinct locales", () => {
+    const locales = localesWith("yaml");
+    expect(
+      locales.size,
+      `yaml-mode locales: ${[...locales].sort().join(", ")}`,
+    ).toBeGreaterThanOrEqual(2);
+  });
+
+  it("carries a yaml fixture in at least one locale that actually emits a spaced dash", () => {
+    // modes.md 3.8.6's `:`/`#` split only discriminates where the replacement puts a U+0020 on a
+    // span edge — an em-tight locale emits none and applies the edit either way, so a fixture set
+    // without a `-spaced` locale passes with the split removed. The set is READ from the locale
+    // data rather than named here: a hardcoded list silently rots as locales are added, and it
+    // also admitted `el`, whose `dash.parenthetical` is "none" and which therefore emits nothing
+    // at all. Reading one declarative field is not an engine (CLAUDE.md).
+    const isSpaced = (locale: string): boolean => {
+      const data: { dash?: { parenthetical?: string } } = JSON.parse(
+        readFileSync(path.join(SPEC_DIR, "locales", `${locale}.json`), "utf8"),
+      );
+      return (data.dash?.parenthetical ?? "none").endsWith("-spaced");
+    };
+    const locales = [...localesWith("yaml")].filter(isSpaced);
+    expect(locales, "yaml fixtures in a locale whose dash.parenthetical is *-spaced").not.toEqual(
+      [],
+    );
+  });
+
   it("carries markdown/mdx fixtures in at least two distinct locales", () => {
     const locales = localesWith("markdown", "mdx");
     expect(
@@ -84,6 +111,10 @@ describe("mode-fixture representative-coverage minimum (spec/rules/modes.md §8)
 
   it("at least one markdown fixture exercises non-ASCII output (code-point/offset boundary coverage)", () => {
     expect(hasNonAsciiCase("markdown")).toBe(true);
+  });
+
+  it("at least one yaml fixture exercises non-ASCII output (code-point/offset boundary coverage)", () => {
+    expect(hasNonAsciiCase("yaml")).toBe(true);
   });
 
   it("every locale has at least one text-mode fixture for every canonical rule id (spec/rules/order.json)", () => {

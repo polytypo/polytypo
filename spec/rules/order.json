@@ -6,7 +6,7 @@
       "id": "spaces",
       "order": 10,
       "default": "on",
-      "modes": ["text", "html", "markdown"],
+      "modes": ["text", "html", "markdown", "yaml"],
       "localeData": [],
       "summary": "Collapse repeated spaces, strip spaces before punctuation, normalize spacing inside brackets."
     },
@@ -14,7 +14,7 @@
       "id": "ellipsis",
       "order": 20,
       "default": "on",
-      "modes": ["text", "html", "markdown"],
+      "modes": ["text", "html", "markdown", "yaml"],
       "localeData": ["ellipsis"],
       "summary": "Three dots to U+2026; locale-dependent abbreviated forms after terminal punctuation."
     },
@@ -22,7 +22,7 @@
       "id": "ranges",
       "order": 25,
       "default": "off",
-      "modes": ["text", "html", "markdown"],
+      "modes": ["text", "html", "markdown", "yaml"],
       "localeData": ["dash"],
       "summary": "Numeric/date range dash per locale convention (dash.range). Explicit opt-in (spec 0.5.0): a genuine range and a compound label sharing the same digit-hyphen-digit shape (`Figure 5-10`) cannot be told apart without the preceding word, which this project's rules are built never to consult. Off by default; enable with `{ rules: { ranges: true } }`."
     },
@@ -30,7 +30,7 @@
       "id": "dashes",
       "order": 30,
       "default": "on",
-      "modes": ["text", "html", "markdown"],
+      "modes": ["text", "html", "markdown", "yaml"],
       "localeData": ["dash"],
       "summary": "Parenthetical dash per locale convention (dash.parenthetical). Never reinterprets a range candidate as a parenthetical dash — that shape belongs to `ranges` alone, whether or not `ranges` is enabled (spec 0.5.0; range detection moved out of this rule). A candidate is digit-flanked, or flanked by a closed-up symbol matched on the opposite member (spec 1.3.0; ranges.md §3.2a)."
     },
@@ -38,7 +38,7 @@
       "id": "hyphen",
       "order": 35,
       "default": "on",
-      "modes": ["text", "html", "markdown"],
+      "modes": ["text", "html", "markdown", "yaml"],
       "localeData": ["hyphen"],
       "summary": "Bind morphological hyphen forms with U+2011 (non-breaking hyphen) so they cannot be broken across lines. Runs after `dashes`, which has already declined every letter-adjacent hyphen. A no-op for locales whose hyphen lists are empty."
     },
@@ -46,7 +46,7 @@
       "id": "quotes",
       "order": 40,
       "default": "on",
-      "modes": ["text", "html", "markdown"],
+      "modes": ["text", "html", "markdown", "yaml"],
       "localeData": ["quotes"],
       "summary": "Straight quotes to locale primary/secondary pairs with nesting resolution. Runs before `apostrophe` so that a straight apostrophe is still available as quote evidence. Declines to pair a medial single-quoted `n` (spec 1.1.0, every locale) or a span matching a cited `quotes.elisionIdioms` entry, so that `apostrophe` converts both marks instead."
     },
@@ -54,7 +54,7 @@
       "id": "apostrophe",
       "order": 50,
       "default": "on",
-      "modes": ["text", "html", "markdown"],
+      "modes": ["text", "html", "markdown", "yaml"],
       "localeData": [],
       "summary": "Remaining straight apostrophes to U+2019 without corrupting contractions. Reads no locale data: spec 0.5.0's `quotes.elisionIdioms` lookup existed only for the preserve set withdrawn in spec 1.1.0, so every mark `quotes` declined to claim now reaches this rule's ordinary structural case ladder."
     },
@@ -62,7 +62,7 @@
       "id": "symbols",
       "order": 60,
       "default": "on",
-      "modes": ["text", "html", "markdown"],
+      "modes": ["text", "html", "markdown", "yaml"],
       "localeData": [],
       "summary": "(c)/(r)/(tm) to the corresponding signs; multiplication sign between numerals."
     },
@@ -70,7 +70,7 @@
       "id": "nbsp",
       "order": 70,
       "default": "on",
-      "modes": ["text", "html", "markdown"],
+      "modes": ["text", "html", "markdown", "yaml"],
       "localeData": ["nbsp", "quotes"],
       "summary": "Insert no-break and narrow no-break spaces per locale. Runs last so that every other rule has already settled the surrounding characters."
     }

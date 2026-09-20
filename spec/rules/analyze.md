@@ -47,8 +47,9 @@ Change {
 
 - **Offsets are code points, never native string indices** (`ARCHITECTURE.md` §4.2). A runtime
   whose strings are UTF-16 must convert; a runtime whose strings are bytes must convert.
-- **Offsets are into `input` exactly as the caller passed it.** In `html` and `markdown` mode
-  that means offsets into the **document**, not into the span the rules actually ran over. This
+- **Offsets are into `input` exactly as the caller passed it.** In `html`, `markdown` and
+  `yaml` mode that means offsets into the **document**, not into the span the rules actually ran
+  over. This
   is not a new obligation: [modes.md](modes.md) §4 already defines the output as "the input
   source with a set of disjoint substring replacements applied **at recorded offsets**", and
   those are the offsets meant.
@@ -136,9 +137,11 @@ naming:
 
 - **A3 against the whole fixture corpus.** For every canonical fixture case, `analyze` returns
   an empty list exactly when `in == out`. That is a strong test and it costs one loop.
-- **A5 under the mode adapters.** A runtime that reports span-local offsets in `html` or
-  `markdown` mode passes every text-mode test and is still wrong. Test a document whose first
-  span does not start at offset 0.
+- **A5 under the mode adapters.** A runtime that reports span-local offsets in `html`,
+  `markdown` or `yaml` mode passes every text-mode test and is still wrong. Test a document
+  whose first span does not start at offset 0. `yaml` is the cheapest of the three to get wrong
+  and the cheapest to test: no span in it ever starts at offset 0, since every one of them is
+  preceded by at least a key and a colon.
 
 ---
 

@@ -672,6 +672,97 @@
         "ranges": true
       },
       "note": "dashes.md §3.2 step 8 and §3.2b: T1's right branch reads effective neighbours, pinned WITHOUT any closed-up symbol involved. The U+0020 ends the cluster before the far dash, so step 7 never declined this shape and the raw-index reading of the right branch was always wrong here — it is spec 1.3.0 that says so out loud (the text carried the raw reading through 1.2.0 while the reference implementation read effective neighbours). Companion to de-de-dashes-t1-joiner-and-closed-up-symbol, which covers the same divergence on the symbol path."
+    },
+    {
+      "id": "de-de-yaml-colon-split-declines-growth",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: a:--b\n",
+      "out": "description: a:--b\n",
+      "note": "modes.md §3.8.6: `:` is an opaque unit inside a plain scalar, so the dash token sits at a span extremity and the `-spaced` replacement (2 → 3) is discarded by the edge-growth rule of §3.4. Without the split this becomes `a: – b`, which no longer parses as one scalar."
+    },
+    {
+      "id": "de-de-yaml-hash-split-declines-growth",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: a--#b\n",
+      "out": "description: a--#b\n",
+      "note": "modes.md §3.8.6: `#` is an opaque unit inside a plain scalar for the same reason. Without the split this becomes `a – #b`, and everything from the hash becomes a comment."
+    },
+    {
+      "id": "de-de-yaml-block-prose",
+      "rule": "quotes",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: |\n  Er sagte \"hallo\" und ging\n",
+      "out": "description: |\n  Er sagte „hallo“ und ging\n",
+      "note": "modes.md §8 item 4: the same construct in a locale whose quote glyphs are structurally different from en-US, so a fixture is not the same English output with a different locale field."
+    },
+    {
+      "id": "de-de-yaml-unlisted-key-untouched",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "run: git diff -- a--b\n",
+      "out": "run: git diff -- a--b\n",
+      "note": "modes.md §3.8.2: the measured case. A keyless draft rewrote shell inside `run:`; `keys` is what makes it unreachable."
+    },
+    {
+      "id": "de-de-modes-three-dash-span-edge-html",
+      "rule": "dashes",
+      "mode": "html",
+      "in": "a<em>---</em>b",
+      "out": "a<em>---</em>b",
+      "note": "modes.md §3.4, character clause (spec 1.3.0): `---` → `␣–␣` is 3 → 3, so the length clause misses it while U+0020 lands on both span extremities. Before the character clause this produced `a<em> – </em>b` — an element beginning and ending with a space it never held, which is the harm §7.3 exists to prevent. Two dashes were already declined here; three now are too."
+    },
+    {
+      "id": "de-de-modes-three-dash-span-edge-markdown",
+      "rule": "dashes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "x *---* y",
+      "out": "x *---* y",
+      "note": "modes.md §3.4, character clause, and §5 item 2: before it this produced `x * – * y`, which de-flanks the asterisks so that on the next run they are literal content rather than emphasis delimiters — the span partition was not stable."
+    },
+    {
+      "id": "de-de-modes-three-dash-interior-html",
+      "rule": "dashes",
+      "mode": "html",
+      "in": "<p>a---b</p>",
+      "out": "<p>a – b</p>",
+      "note": "modes.md §3.4: the companion to de-de-modes-three-dash-span-edge-html. Interior to a span the same edit applies — the clause restricts extremities only, and a fixture set without this pair cannot tell the two apart."
+    },
+    {
+      "id": "de-de-yaml-three-dash-against-colon",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: a:---b\n",
+      "out": "description: a:---b\n",
+      "note": "modes.md §3.8.6 with §3.4's character clause: without it this became `description: a: – b`, which no longer parses — `: ` is a mapping indicator. The two-dash companion de-de-yaml-colon-split-declines-growth is caught by the length clause; only this one needs the character clause."
+    },
+    {
+      "id": "de-de-yaml-three-dash-against-hash",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: a---#b\n",
+      "out": "description: a---#b\n",
+      "note": "modes.md §3.8.6 with §3.4's character clause: without it this became `description: a – #b`, and everything from the hash became a comment — the value silently truncated to `a –`."
     }
   ]
 }

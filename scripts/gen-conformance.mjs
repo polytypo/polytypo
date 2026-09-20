@@ -71,6 +71,11 @@ automated and independently attested.
 that honestly declines an unsupported dialect with a stable error code is conformant for what it
 claims, not partially broken. See the notes below for any runtime whose claimed scope is narrower
 than the full spec.
+
+**yaml mode (spec 1.3.0) is not implemented in any runtime.** It is specified in
+spec/rules/modes.md section 3.8, and \`spec/rules/order.json\` and the fixture schema both list
+it, so silence here would under-describe the claim surface rather than lag it honestly. Every
+per-runtime line below is scoped to text, html and markdown.
 ${notes ? `\n${notes}\n` : ""}`;
 
 await writeFile(path.join(SPEC, "CONFORMANCE.md"), body);

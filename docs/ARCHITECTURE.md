@@ -38,7 +38,7 @@ the JS package without adding a fixture is how the ports drift apart. Not allowe
 ```
 L0  spec/          locale data + rule semantics + conformance fixtures   ← canonical
 L1  engine         rule pipeline over plain text, one per runtime
-L2  modes          text | html | markdown adapters, one per runtime
+L2  modes          text | html | markdown | yaml adapters, one per runtime
 L3  integrations   CLI, HTTP API, CMS plugins                            ← out of repo, out of v1
 ```
 
@@ -79,6 +79,12 @@ Per runtime, adapters that extract processable text spans and reassemble the doc
 untouched elsewhere. The parser differs per runtime (`parse5` in JS, `nokogiri` in Ruby,
 `golang.org/x/net/html` in Go, DOM in PHP, `lxml`/`html5lib` in Python) — the **skip list
 and the reassembly guarantee do not**, and both live in the spec.
+
+`yaml` (spec 1.3.0) is the exception and is deliberately one: it uses **no parser**, because two
+of the five ecosystems' YAML libraries cannot report the source offsets the reassembly guarantee
+needs (`gopkg.in/yaml.v3` reports a start and no end; `symfony/yaml` reports no positions at
+all). Its span selection is a specified left-to-right scan, in `spec/rules/modes.md` §3.8,
+written per runtime like a rule rather than delegated like a parser.
 
 ---
 
@@ -212,13 +218,13 @@ The taxonomy is **eight codes**, and this list is the contract every runtime imp
 | Code                             | Raised when                                                                                       |
 | -------------------------------- | ------------------------------------------------------------------------------------------------- |
 | `POLYTYPO_UNKNOWN_LOCALE`        | The locale is not in the registry and does not resolve to one (§4.7).                             |
-| `POLYTYPO_INVALID_MODE`          | `mode` is not `text`, `html` or `markdown`.                                                       |
+| `POLYTYPO_INVALID_MODE`          | `mode` is not `text`, `html`, `markdown` or `yaml`.                                               |
 | `POLYTYPO_INVALID_DIALECT`       | `mode` is `markdown` and `dialect` is missing, or is not `commonmark` or `mdx` (§7).               |
 | `POLYTYPO_UNKNOWN_RULE`          | The `rules` map names a rule id that does not exist in `order.json`.                              |
 | `POLYTYPO_MALFORMED_LOCALE_DATA` | Embedded locale data failed schema validation.                                                    |
 | `POLYTYPO_RULE_CONTRACT`         | A rule produced an edit violating the pipeline contract (§7.1).                                   |
 | `POLYTYPO_MALFORMED_INPUT`       | The input does not parse in the requested language. Reachable only for `mdx`, which embeds JS.    |
-| `POLYTYPO_INVALID_OPTION`        | An option's value is outside its permitted set, for an option with no more specific code (§7). Spec 1.3.0; the first such option is `narrowNbsp`. |
+| `POLYTYPO_INVALID_OPTION`        | An option's value is outside its permitted set, or a mode-required option is missing, for an option with no more specific code (§7). Spec 1.3.0; the options are `narrowNbsp` and `keys`. |
 
 > **`POLYTYPO_INVALID_OPTION` is deliberately general, spec 1.3.0.** `mode` and `dialect` keep
 > their own codes — they are public contract and renaming or merging them would break callers that
@@ -408,17 +414,29 @@ transform(input: string, options) -> string
 | Option    | Required                          | Default | Meaning                                                    |
 | --------- | --------------------------------- | ------- | ---------------------------------------------------------- |
 | `locale`  | yes                               | none    | Unknown locale throws. Never falls back (§4.7).            |
-| `mode`    | no                                | `text`  | `text` \| `html` \| `markdown`.                            |
-| `dialect` | **yes when `mode` is `markdown`** | none    | `commonmark` \| `mdx`. Ignored in the other two modes.     |
+| `mode`    | no                                | `text`  | `text` \| `html` \| `markdown` \| `yaml` (spec 1.3.0).     |
+| `dialect` | **yes when `mode` is `markdown`** | none    | `commonmark` \| `mdx`. Ignored in the other three modes.   |
 | `rules`   | no                                | all on  | Opt-out map keyed by rule id; `false` disables.            |
 | `narrowNbsp` | no                             | `narrow` | `narrow` \| `nbsp`. `nbsp` makes the engine emit U+00A0 wherever it would emit U+202F (spec 1.3.0, `nbsp.md` §3.1a). |
+| `keys`    | **yes when `mode` is `yaml`**     | none    | The mapping keys whose scalar values are processable (spec 1.3.0, `modes.md` §3.8.2). A list of strings; an empty list is legal and processes nothing. Ignored in the other three modes. |
 
 **Validation order is contract** (spec 1.3.0, stated here because a conformance fixture cannot
-express it): `mode` → `narrowNbsp` → `rules` → `locale` → `dialect`. The two checks that read
-nothing but the call itself come first, then rule ids, then locale data, then the dialect and the
-parse. So an invalid `mode` beats an invalid `narrowNbsp`, which beats an unknown rule id, which
-beats an unknown locale — the last of those pairs was already public, tested behaviour before
-1.3.0. `narrowNbsp` is checked whether or not `nbsp` is enabled: the check belongs to the call.
+express it): `mode` → `narrowNbsp` → `rules` → `locale` → `dialect` → `keys`. The two checks that
+read nothing but the call itself come first, then rule ids, then locale data, then the
+mode-dependent options and the parse. So an invalid `mode` beats an invalid `narrowNbsp`, which
+beats an unknown rule id, which beats an unknown locale — the last of those pairs was already
+public, tested behaviour before 1.3.0. `narrowNbsp` is checked whether or not `nbsp` is enabled:
+the check belongs to the call. `dialect` and `keys` are last and **never both apply**, since each
+belongs to a different mode, so their relative order is unobservable and is fixed here only so
+that no runtime has to invent one.
+
+> **`keys` has no default and must not acquire one**, for the reason `dialect` has none. YAML is a
+> data format with islands of prose in it, and nothing in its syntax marks them: `description`
+> holds a sentence and `run` holds a shell script, spelled identically. A default list would be a
+> guess about the schema above the document, and the measured cost of guessing is in `modes.md`
+> §3.8.2 — a keyless draft rewrote `if !` as `if!` inside a workflow's `run:` block. Omitting
+> `keys` raises `POLYTYPO_INVALID_OPTION` (§4.6), the general code, rather than a ninth code of
+> its own; that is what the general code was added for.
 
 > **Corrected 2026-08-15.** This listed only `locale`, `mode` and `rules`. A port built from the old
 > text would ship a `markdown` mode it cannot implement: **`dialect` has no default and must not

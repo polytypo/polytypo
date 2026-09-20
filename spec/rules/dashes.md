@@ -1,6 +1,6 @@
 # Rule: `dashes`
 
-**Order:** 30. **Default:** on. **Modes:** text, html, markdown.
+**Order:** 30. **Default:** on. **Modes:** text, html, markdown, yaml.
 **Spec version:** 0.6.0 (0.2.0 for everything except the 0.5.0/0.6.0 changes noted inline and in
 §8 History), amended in **1.3.0**: §1 and §3.4's statement of what belongs to `ranges`, §3.2a's
 re-entry condition, and §3.2 steps 7 and 8, all for [ranges.md](ranges.md) §3.2a's closed-up

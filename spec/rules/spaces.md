@@ -1,6 +1,6 @@
 # Rule: `spaces`
 
-**Order:** 10 (first). **Default:** on. **Modes:** text, html, markdown.
+**Order:** 10 (first). **Default:** on. **Modes:** text, html, markdown, yaml.
 **Spec version:** 1.2.0 (0.2.0 for everything except §3.6's mouth side and the clause it adds to
 §3.2 step 5, noted inline, and §3.4's word-start clause, added in 1.2.0).
 
@@ -112,7 +112,7 @@ Two readings were possible and they differ on `"(  )"` (two spaces between an em
 "skip the run" leaves `"(  )"`, "replacement length 1" collapses it to `"( )"`. The second is
 normative. Reasons: the guard exists to prevent _deletion_, and collapsing a double space is
 the rule's ordinary business everywhere else; a run of two spaces inside an empty bracket pair
-carries no structural meaning in any of the three modes (the GFM task-list marker is
+carries no structural meaning in any of the four modes (the GFM task-list marker is
 `"[ ]"` with exactly one space — `"[  ]"` is not a checkbox in any implementation); and the
 one-clause form keeps §3.2 step 5 a single total function of the run's context — `left`, `right`
 and the bounded lookaround of §3.4 and §3.6 — rather than a decision plus a separate skip branch,

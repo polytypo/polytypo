@@ -1,6 +1,6 @@
 # Rule: `nbsp`
 
-**Order:** 70 (last). **Default:** on. **Modes:** text, html, markdown.
+**Order:** 70 (last). **Default:** on. **Modes:** text, html, markdown, yaml.
 **Spec version:** 1.3.0 (0.1.0 for everything except §3.9's `initialBinding` change (0.6.0),
 §3.3's span-boundary paragraphs (1.2.0) and §3.3's character-reference guard (1.3.0), noted
 inline).

@@ -5,7 +5,15 @@
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Dialect, Mode, Options, PolytypoErrorCode } from "polytypo";
+import type { Dialect, Options, PolytypoErrorCode } from "polytypo";
+
+/**
+ * Declared here rather than imported from the `polytypo` package, deliberately. The spec leads
+ * every runtime by design — `yaml` is spec 1.3.0 and no published runtime ships it yet — so a
+ * loader that took its mode union from the installed package could not express the fixtures this
+ * repository is the source of. `Dialect` is still imported because it has not moved since 1.2.0.
+ */
+type Mode = "text" | "html" | "markdown" | "yaml";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -15,7 +23,7 @@ export const RESOLUTION_FILE = path.join(FIXTURES_DIR, "locale-resolution.json")
 /** Not a locale fixture file: resolution cases have no rule, no mode and no text. */
 const RESOLUTION_NAME = "locale-resolution.json";
 
-const MODES: readonly string[] = ["text", "html", "markdown"];
+const MODES: readonly string[] = ["text", "html", "markdown", "yaml"];
 const DIALECTS: readonly string[] = ["commonmark", "mdx"];
 
 export interface ConformanceCase {
@@ -28,6 +36,12 @@ export interface ConformanceCase {
    * default and detection is forbidden, so a fixture must name it exactly as a caller would).
    */
   readonly dialect?: Dialect | undefined;
+  /**
+   * Required exactly when `mode` is `"yaml"`, forbidden otherwise — mirrors the schema's second
+   * `allOf` conditional (modes.md 3.8.2: `keys` has no default, so a fixture must name the
+   * processable keys exactly as a caller would; an empty list is legal).
+   */
+  readonly keys?: readonly string[] | undefined;
   readonly in: string;
   readonly out?: string | undefined;
   readonly throws?: PolytypoErrorCode | undefined;
@@ -109,12 +123,30 @@ function parseDialect(value: unknown, mode: Mode, where: string): Dialect | unde
   return undefined;
 }
 
+/** modes.md 3.8.2: required exactly when `mode` is `"yaml"`, forbidden otherwise. */
+function parseKeys(value: unknown, mode: Mode, where: string): readonly string[] | undefined {
+  if (mode === "yaml") {
+    if (!Array.isArray(value)) {
+      throw new Error(
+        `${where}: "keys" is required when "mode" is "yaml" (modes.md 3.8.2 — no default, so a ` +
+          `fixture must name the processable keys exactly as a caller would)`,
+      );
+    }
+    return value.map((key, index) => requireString(key, `${where} "keys"[${index}]`));
+  }
+  if (value !== undefined) {
+    throw new Error(`${where}: "keys" is only meaningful when "mode" is "yaml"`);
+  }
+  return undefined;
+}
+
 function parseCase(raw: unknown, where: string): ConformanceCase {
   if (!isRecord(raw)) throw new Error(`${where}: expected an object`);
   const id = requireString(raw.id, `${where} "id"`);
   const mode = requireString(raw.mode, `${where} "mode"`);
   if (!MODES.includes(mode)) throw new Error(`${where}: unknown mode "${mode}"`);
   const dialect = parseDialect(raw.dialect, mode as Mode, where);
+  const keys = parseKeys(raw.keys, mode as Mode, where);
   const out = optionalString(raw.out, `${where} "out"`);
   const throws = optionalString(raw.throws, `${where} "throws"`);
   if ((out === undefined) === (throws === undefined)) {
@@ -125,6 +157,7 @@ function parseCase(raw: unknown, where: string): ConformanceCase {
     rule: requireString(raw.rule, `${where} "rule"`),
     mode: mode as Mode,
     dialect,
+    keys,
     in: requireString(raw.in, `${where} "in"`),
     out,
     throws: throws as PolytypoErrorCode | undefined,

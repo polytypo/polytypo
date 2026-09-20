@@ -1,7 +1,7 @@
 # Rule: `hyphen`
 
 **Order:** 35 (between `dashes` and `quotes`). **Default:** on.
-**Modes:** text, html, markdown.
+**Modes:** text, html, markdown, yaml.
 **Spec version:** 0.1.0.
 
 ---

@@ -1,6 +1,6 @@
 # Rule: `quotes`
 
-**Order:** 40. **Default:** on. **Modes:** text, html, markdown.
+**Order:** 40. **Default:** on. **Modes:** text, html, markdown, yaml.
 **Spec version:** 1.1.0 (0.4.1 for everything except the universal medial-`n` elision veto
 described in §3.2 and the History section below).
 

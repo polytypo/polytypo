@@ -1,6 +1,6 @@
 # Rule: `ranges`
 
-**Order:** 25. **Default:** off. **Modes:** text, html, markdown.
+**Order:** 25. **Default:** off. **Modes:** text, html, markdown, yaml.
 **Spec version:** 0.5.0 (new rule; split out of `dashes`); §3.2a (closed-up symbols) new in 1.3.0.
 
 ---

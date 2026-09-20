@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://polytypo.org/schema/fixtures.schema.json",
   "title": "polytypo conformance fixtures",
-  "description": "Executable form of the rule semantics. Every case is also an idempotency case: a runner must additionally assert transform(out) == out, passing the case's own options (mode, dialect, rules, narrowNbsp) on that second call exactly as on the first — a case is a fixed point under its own options, not under the defaults.",
+  "description": "Executable form of the rule semantics. Every case is also an idempotency case: a runner must additionally assert transform(out) == out, passing the case's own options (mode, dialect, keys, rules, narrowNbsp) on that second call exactly as on the first — a case is a fixed point under its own options, not under the defaults.",
   "type": "object",
   "additionalProperties": false,
   "required": ["spec", "locale", "cases"],
@@ -24,6 +24,11 @@
             "if": { "properties": { "mode": { "const": "markdown" } }, "required": ["mode"] },
             "then": { "required": ["dialect"] },
             "else": { "not": { "required": ["dialect"] } }
+          },
+          {
+            "if": { "properties": { "mode": { "const": "yaml" } }, "required": ["mode"] },
+            "then": { "required": ["keys"] },
+            "else": { "not": { "required": ["keys"] } }
           }
         ],
         "oneOf": [{ "required": ["out"] }, { "required": ["throws"] }],
@@ -47,10 +52,15 @@
             ],
             "description": "The rule under test. Required so a runtime can report partial conformance honestly."
           },
-          "mode": { "enum": ["text", "html", "markdown"] },
+          "mode": { "enum": ["text", "html", "markdown", "yaml"] },
           "dialect": {
             "enum": ["commonmark", "mdx"],
             "description": "Required when mode is \"markdown\" — spec/rules/modes.md §3.7.1 forbids detection, so a fixture must name the dialect exactly as a caller would. Meaningless for the other modes."
+          },
+          "keys": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Required when mode is \"yaml\" — spec/rules/modes.md §3.8.2 gives the option no default, so a fixture must name the processable keys exactly as a caller would. An empty array is legal and processes nothing. Meaningless for the other modes."
           },
           "in": { "type": "string" },
           "out": { "type": "string" },

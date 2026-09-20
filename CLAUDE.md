@@ -122,7 +122,15 @@ codes.
 
 Nine rules in spec order: `spaces` `ellipsis` `ranges` `dashes` `hyphen` `quotes` `apostrophe`
 `symbols` `nbsp`. `ranges` is the one rule that defaults to off (spec 0.5.0) — see `order.json`.
-All three modes — `text`, `html`, `markdown` — are specified (M2 is done for JS).
+All four modes — `text`, `html`, `markdown`, `yaml` — are specified (M2 is done for JS). `yaml`
+is spec 1.3.0 and differs from the other two document modes twice over. It uses **no parser**:
+two of the five ecosystems' YAML libraries cannot report the source offsets the round-trip
+guarantee needs, so its span selection is a specified scan (`spec/rules/modes.md` §3.8) written
+per runtime like a rule. And it takes a **required `keys` option** naming which mapping keys hold
+prose, with no default, exactly as `markdown` requires `dialect` — because YAML is a data format
+with islands of prose in it, the inverse of HTML and Markdown, so a skip list cannot work and no
+content heuristic can separate `description:` from `run:`. It also skips by default: it names
+what is processable, the inverse of the `html` skip list.
 
 ## Portability constraints every runtime's implementation must satisfy (ARCHITECTURE.md §4, §7)
 
@@ -192,7 +200,7 @@ Locales are `en-US` `en-GB` `de-DE` `de-CH` `fr` `fr-CA` `ru` `fi` `sv` `el` `es
 and site skip them until a published runtime implements them — `brand/tools/gen_examples.ts`
 drops any locale the installed engine rejects, by design, rather than failing the build. **The six-locale cap was withdrawn 2026-08-15 by operator decision — coverage is a
 goal, and the constraint is evidentiary rather than numeric: a locale ships only as the PLAN §6.2
-triple (data + fixtures + citation).** Also three modes. PLAN.md §4 lists non-goals that **must be
+triple (data + fixtures + citation).** Also four modes (`yaml` added by operator decision, spec 1.3.0). PLAN.md §4 lists non-goals that **must be
 refused without an explicit operator decision**: language auto-detection, hyphenation, optical
 alignment, spellcheck, hosted API, plugin/extension API, CMS integrations, demo page, more locales,
 framework wrappers. ARCHITECTURE.md §9 adds: no code generation or WASM core shared across

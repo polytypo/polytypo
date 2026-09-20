@@ -846,6 +846,39 @@
       "in": "Il a dit « mot ».",
       "out": "Il a dit « mot ».",
       "note": "nbsp.md §3.10 and §6 rows 3-4, corrected in spec 1.3.0. `fr.json` sets the primary pair's innerSpace to \"nbsp\", so N8's target is U+00A0 and an authored U+202F inside the quotation marks is CONVERTED, not already correct. Through spec 1.2.0 the worked-example table claimed both the narrow space and a fixed point here — a claim about a locale file the file never supported, and nothing pinned it. This case pins it."
+    },
+    {
+      "id": "fr-yaml-narrow-space-in-quoted",
+      "rule": "nbsp",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: \"Une note !\"\n",
+      "out": "description: \"Une note !\"\n",
+      "note": "modes.md §3.8.6: a quoted scalar's content is one span, and French spacing applies inside it exactly as in text mode."
+    },
+    {
+      "id": "fr-yaml-no-space-across-colon-split",
+      "rule": "nbsp",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: prose:more prose\n",
+      "out": "description: prose:more prose\n",
+      "note": "modes.md §3.8.6: the `:` is outside every span, so the insertion `nbsp` would make before it lands on a span edge and is discarded by §3.4. This is the accepted cost of the split, and it is what keeps the scalar parseable."
+    },
+    {
+      "id": "fr-yaml-guillemets-across-block-lines",
+      "rule": "quotes",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: |\n  Il a dit \"bonjour\n  monsieur\" et il est parti\n",
+      "out": "description: |\n  Il a dit « bonjour\n  monsieur » et il est parti\n",
+      "note": "modes.md §3.2 model C in a locale whose quotation output is guillemets plus U+00A0 rather than curly quotes — structurally different from the en-US case of the same shape."
     }
   ]
 }

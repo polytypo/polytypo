@@ -1,6 +1,6 @@
 # Rule: `ellipsis`
 
-**Order:** 20. **Default:** on. **Modes:** text, html, markdown.
+**Order:** 20. **Default:** on. **Modes:** text, html, markdown, yaml.
 **Spec version:** 0.1.0.
 
 ---
