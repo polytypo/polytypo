@@ -195,10 +195,12 @@ is a breaking change.
 
 ## Scope discipline
 
-Locales are `en-US` `en-GB` `de-DE` `de-CH` `fr` `fr-CA` `ru` `fi` `sv` `el` `es` `it` (aliases
-`en`→`en-US`, `de`→`de-DE`); `es` and `it` are spec 1.3.0 and unreleased, so the generated README
-and site skip them until a published runtime implements them — `brand/tools/gen_examples.ts`
-drops any locale the installed engine rejects, by design, rather than failing the build. **The six-locale cap was withdrawn 2026-08-15 by operator decision — coverage is a
+Locales are `en-US` `en-GB` `de-DE` `de-CH` `fr` `fr-CA` `ru` `fi` `sv` `el` `es` `it` `pt-PT`
+`pt-BR` `nl` `pl` `uk` `cs` — eighteen (aliases `en`→`en-US`, `de`→`de-DE`, `pt`→`pt-PT`); the
+last eight arrived in spec 1.3.0 and all ship, so the generated README and site show every one.
+`brand/tools/gen_examples.ts` still drops any locale the installed engine rejects, by design
+rather than failing the build — that is what kept the 1.3.0 locales out of the public copy while
+the engine on npm was still 1.2.0. **The six-locale cap was withdrawn 2026-08-15 by operator decision — coverage is a
 goal, and the constraint is evidentiary rather than numeric: a locale ships only as the PLAN §6.2
 triple (data + fixtures + citation).** Also four modes (`yaml` added by operator decision, spec 1.3.0). PLAN.md §4 lists non-goals that **must be
 refused without an explicit operator decision**: language auto-detection, hyphenation, optical
@@ -221,8 +223,8 @@ just because its repo exists — check ROADMAP.md's per-port checklist.
 ## Open decisions (do not resolve unilaterally)
 
 Per ROADMAP.md: **first port** — resolved, in order: Python (2026-09-07), then Go, Ruby, PHP (all
-2026-09-08; PHP still needs its `v1.0.0` tag pushed and a one-time manual Packagist bootstrap before
-it's actually published). **Spec vendoring mechanism** — the target model is resolved (2026-08-27,
+2026-09-08; all five publish from a `v*` tag, PHP's one-time Packagist submission included —
+verified 2026-09-20 by querying each registry for 1.3.0, not by reading a green workflow). **Spec vendoring mechanism** — the target model is resolved (2026-08-27,
 see "Multi-repo" above), but the manifest/dispatch **automation** in
 `REPOSITORY_SPLIT_AND_SPEC_SYNC.md` §3–§4 is not implemented; each port's manual interim copy does
 not itself resolve that remaining gap. **Repo visibility** — all five repos were created public
