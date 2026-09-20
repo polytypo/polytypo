@@ -71,12 +71,6 @@ automated and independently attested.
 that honestly declines an unsupported dialect with a stable error code is conformant for what it
 claims, not partially broken. See the notes below for any runtime whose claimed scope is narrower
 than the full spec.
-
-**yaml mode is spec 1.3.0, and no runtime has released 1.3.0 yet.** The mode is implemented on
-the main branch of all five, and each one's own suite runs the canonical 1.3.0 fixtures green —
-but the "Spec version claimed" column above is what a runtime has *published*, and a claim is
-only worth what a released package can be held to. Until those releases land, every per-runtime
-line below describes text, html and markdown at the version in that column.
 ${notes ? `\n${notes}\n` : ""}`;
 
 await writeFile(path.join(SPEC, "CONFORMANCE.md"), body);

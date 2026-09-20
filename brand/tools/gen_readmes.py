@@ -183,7 +183,8 @@ MODES = """| Mode | What it processes | Status |
 | --- | --- | --- |
 | `text` | The whole string | Implemented |
 | `html` | Text nodes only; skips `code`, `pre`, `kbd`, `samp`, `var`, `script`, `style`, `textarea`, all attributes and existing entities | Implemented |
-| `markdown` | Prose only; skips code spans, fenced blocks, link destinations, autolinks | Implemented (CommonMark; MDX is JS-only) |"""
+| `markdown` | Prose only; skips code spans, fenced blocks, link destinations, autolinks | Implemented (CommonMark; MDX is JS-only) |
+| `yaml` | Only the values of the mapping keys you name in the required `keys` option — plain, quoted and block scalars; the keys themselves and everything unnamed are left alone | Implemented |"""
 
 
 TEMPLATE = """<p align="center">

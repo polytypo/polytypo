@@ -55,6 +55,14 @@ Spec version: **1.3.0** · locales: **18** · rules: **9**.
 | `fi` | Hän kysyi: ”Eikö tämä ole se ’nurkan’ kirjakauppa?” … Kävelimme – lähes 3 km – ja löysimme sen kiinni. Copyright © 2026; tulosteen koko on 40×60 cm, hinta nousi 10,5 %. |
 | `sv` | Hon frågade: ”Är det inte affären i ’hörnet’?” … Vi gick – nästan 3 km – och hittade den stängd. Copyright © 2026; trycket mäter 40×60 cm och kostar 10,5 % mer. |
 | `el` | Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm. |
+| `es` | Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm. |
+| `it` | Ha chiesto: «Non è questo il negozio che chiamano “quello all’angolo”?» … Abbiamo camminato — quasi 3 km — ed era chiuso. Copyright © 2026, formato 40×60 cm. |
+| `pt-PT` | Perguntou: «Não é esta a loja a que chamam “a da esquina”?» … Caminhámos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm. |
+| `pt-BR` | Perguntou: “Não é esta a loja que chamam de ‘a da esquina’?” … Caminhamos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm. |
+| `nl` | Hij vroeg: “Is dit niet de winkel die ze ‘om de hoek’ noemen?” … We liepen – bijna 3 km – en hij was dicht. Copyright © 2026, formaat 40×60 cm. |
+| `pl` | Zapytał: „Czy to nie ten sklep, który nazywają »tym za rogiem«?” … Szliśmy – prawie 3 km – a był zamknięty. Copyright © 2026, format 40×60 cm. |
+| `uk` | Він запитав: «Хіба це не та крамниця, яку називають “тією за рогом”?» … Ми йшли — майже 3 км — а вона була зачинена. Copyright © 2026, формат 40×60 см. |
+| `cs` | Zeptal se: „Není to ten obchod, kterému říkají ‚ten za rohem‘?“ … Šli jsme – skoro 3 km – a byl zavřený. Copyright © 2026, formát 40×60 cm. |
 
 Every string above is real engine output, generated from `promo/examples.json` — not typed by hand.
 
@@ -72,6 +80,14 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | `fi` | Finnish | ”…” | ’…’ | en dash, spaced | en dash, unspaced |
 | `sv` | Swedish | ”…” | ’…’ | en dash, spaced | en dash, unspaced |
 | `el` | Greek | «…» | “…” | unchanged | unchanged |
+| `es` | Spanish | «…» | “…” | unchanged | unchanged |
+| `it` | Italian | «…» | “…” | em dash, spaced | unchanged |
+| `pt-PT` | Portuguese (Portugal) | «…» | “…” | em dash, spaced | unchanged |
+| `pt-BR` | Portuguese (Brazil) | “…” | ‘…’ | en dash, spaced | unchanged |
+| `nl` | Dutch | “…” | ‘…’ | en dash, spaced | unchanged |
+| `pl` | Polish | „…” | »…« | en dash, spaced | en dash, unspaced |
+| `uk` | Ukrainian | «…» | “…” | em dash, spaced | em dash, unspaced |
+| `cs` | Czech | „…“ | ‚…‘ | en dash, spaced | en dash, unspaced |
 
 Aliases resolve in the spec, never in a platform locale library: `en` → `en-US`, `de` → `de-DE`, `pt` → `pt-PT`. An unknown locale throws — there is no silent fallback to English.
 
@@ -125,6 +141,7 @@ U+00A0 and U+202F cannot be reviewed by a human.
 | `text` | The whole string | Implemented |
 | `html` | Text nodes only; skips `code`, `pre`, `kbd`, `samp`, `var`, `script`, `style`, `textarea`, all attributes and existing entities | Implemented |
 | `markdown` | Prose only; skips code spans, fenced blocks, link destinations, autolinks | Implemented (CommonMark; MDX is JS-only) |
+| `yaml` | Only the values of the mapping keys you name in the required `keys` option — plain, quoted and block scalars; the keys themselves and everything unnamed are left alone | Implemented |
 
 In every mode the output is **the input with a set of disjoint substring replacements applied, and
 nothing else**. The parser locates text; it never produces output.

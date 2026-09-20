@@ -379,6 +379,248 @@
           "out": "Ανάλυση 1920×1080"
         }
       ]
+    },
+    {
+      "locale": "es",
+      "name": "Spanish",
+      "hero": {
+        "in": "Preguntó: \"¿No es esta la tienda que llaman 'la de la esquina'?\" ... Caminamos -- casi 3 km -- y estaba cerrada. Copyright (c) 2026, tamaño 40x60 cm.",
+        "out": "Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, «Isn’t this the shop they call “round the corner”?» … We’d walked - nearly 3 km - just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Ha dicho \"buenos días\" y salió.",
+          "out": "Ha dicho «buenos días» y salió."
+        },
+        {
+          "rule": "nbsp",
+          "in": "El Sr. Pérez aprobó un 8 % de los alumnos",
+          "out": "El Sr. Pérez aprobó un 8 % de los alumnos"
+        },
+        {
+          "rule": "ellipsis",
+          "in": "Espera... ¿qué?",
+          "out": "Espera… ¿qué?"
+        },
+        {
+          "rule": "symbols",
+          "in": "Resolución 1920x1080",
+          "out": "Resolución 1920×1080"
+        }
+      ]
+    },
+    {
+      "locale": "it",
+      "name": "Italian",
+      "hero": {
+        "in": "Ha chiesto: \"Non è questo il negozio che chiamano 'quello all'angolo'?\" ... Abbiamo camminato -- quasi 3 km -- ed era chiuso. Copyright (c) 2026, formato 40x60 cm.",
+        "out": "Ha chiesto: «Non è questo il negozio che chiamano “quello all’angolo”?» … Abbiamo camminato — quasi 3 km — ed era chiuso. Copyright © 2026, formato 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, «Isn’t this the shop they call “round the corner”?» … We’d walked — nearly 3 km — just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Ha detto \"buongiorno\" ed è uscito.",
+          "out": "Ha detto «buongiorno» ed è uscito."
+        },
+        {
+          "rule": "dashes",
+          "in": "La casa - se casa era - sorgeva ai piedi del colle.",
+          "out": "La casa — se casa era — sorgeva ai piedi del colle."
+        },
+        {
+          "rule": "apostrophe",
+          "in": "un'utopia e dell'Unione",
+          "out": "un’utopia e dell’Unione"
+        },
+        {
+          "rule": "nbsp",
+          "in": "il regolamento n. 3600 e un aumento del 45 %",
+          "out": "il regolamento n. 3600 e un aumento del 45 %"
+        }
+      ]
+    },
+    {
+      "locale": "pt-PT",
+      "name": "Portuguese (Portugal)",
+      "hero": {
+        "in": "Perguntou: \"Não é esta a loja a que chamam 'a da esquina'?\" ... Caminhámos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.",
+        "out": "Perguntou: «Não é esta a loja a que chamam “a da esquina”?» … Caminhámos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, «Isn’t this the shop they call “round the corner”?» … We’d walked — nearly 3 km — just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Ele disse \"bom dia\" e saiu.",
+          "out": "Ele disse «bom dia» e saiu."
+        },
+        {
+          "rule": "dashes",
+          "in": "As condições - ordenado e subvenções - eram boas.",
+          "out": "As condições — ordenado e subvenções — eram boas."
+        },
+        {
+          "rule": "nbsp",
+          "in": "7 % do volume de negócios",
+          "out": "7 % do volume de negócios"
+        }
+      ]
+    },
+    {
+      "locale": "pt-BR",
+      "name": "Portuguese (Brazil)",
+      "hero": {
+        "in": "Perguntou: \"Não é esta a loja que chamam de 'a da esquina'?\" ... Caminhamos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.",
+        "out": "Perguntou: “Não é esta a loja que chamam de ‘a da esquina’?” … Caminhamos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Ele disse \"bom dia\" e saiu.",
+          "out": "Ele disse “bom dia” e saiu."
+        },
+        {
+          "rule": "dashes",
+          "in": "O controle - meta prioritária - será rigoroso.",
+          "out": "O controle – meta prioritária – será rigoroso."
+        },
+        {
+          "rule": "ellipsis",
+          "in": "Espere... o quê?",
+          "out": "Espere… o quê?"
+        }
+      ]
+    },
+    {
+      "locale": "nl",
+      "name": "Dutch",
+      "hero": {
+        "in": "Hij vroeg: \"Is dit niet de winkel die ze 'om de hoek' noemen?\" ... We liepen -- bijna 3 km -- en hij was dicht. Copyright (c) 2026, formaat 40x60 cm.",
+        "out": "Hij vroeg: “Is dit niet de winkel die ze ‘om de hoek’ noemen?” … We liepen – bijna 3 km – en hij was dicht. Copyright © 2026, formaat 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Hij zei \"dag\" en vertrok.",
+          "out": "Hij zei “dag” en vertrok."
+        },
+        {
+          "rule": "dashes",
+          "in": "Het nieuws - volgens de kranten - is niet bekend.",
+          "out": "Het nieuws – volgens de kranten – is niet bekend."
+        },
+        {
+          "rule": "nbsp",
+          "in": "De vaas kostte € 179.",
+          "out": "De vaas kostte € 179."
+        }
+      ]
+    },
+    {
+      "locale": "pl",
+      "name": "Polish",
+      "hero": {
+        "in": "Zapytał: \"Czy to nie ten sklep, który nazywają 'tym za rogiem'?\" ... Szliśmy -- prawie 3 km -- a był zamknięty. Copyright (c) 2026, format 40x60 cm.",
+        "out": "Zapytał: „Czy to nie ten sklep, który nazywają »tym za rogiem«?” … Szliśmy – prawie 3 km – a był zamknięty. Copyright © 2026, format 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, „Isn’t this the shop they call »round the corner«?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Powiedział \"dzień dobry\".",
+          "out": "Powiedział „dzień dobry”."
+        },
+        {
+          "rule": "nbsp",
+          "in": "Mieszkam w Warszawie i pracuję.",
+          "out": "Mieszkam w Warszawie i pracuję."
+        },
+        {
+          "rule": "ellipsis",
+          "in": "Czekaj... co?",
+          "out": "Czekaj… co?"
+        }
+      ]
+    },
+    {
+      "locale": "uk",
+      "name": "Ukrainian",
+      "hero": {
+        "in": "Він запитав: \"Хіба це не та крамниця, яку називають 'тією за рогом'?\" ... Ми йшли -- майже 3 км -- а вона була зачинена. Copyright (c) 2026, формат 40x60 см.",
+        "out": "Він запитав: «Хіба це не та крамниця, яку називають “тією за рогом”?» … Ми йшли — майже 3 км — а вона була зачинена. Copyright © 2026, формат 40×60 см."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, «Isn’t this the shop they call “round the corner”?» … We’d walked — nearly 3 km — just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Він сказав: \"Це мій Кобзар\".",
+          "out": "Він сказав: «Це мій Кобзар»."
+        },
+        {
+          "rule": "ellipsis",
+          "in": "а щоб селяни?...",
+          "out": "а щоб селяни?.."
+        },
+        {
+          "rule": "hyphen",
+          "in": "з-під столу і будь-хто",
+          "out": "з‑під столу і будь‑хто"
+        }
+      ]
+    },
+    {
+      "locale": "cs",
+      "name": "Czech",
+      "hero": {
+        "in": "Zeptal se: \"Není to ten obchod, kterému říkají 'ten za rohem'?\" ... Šli jsme -- skoro 3 km -- a byl zavřený. Copyright (c) 2026, formát 40x60 cm.",
+        "out": "Zeptal se: „Není to ten obchod, kterému říkají ‚ten za rohem‘?“ … Šli jsme – skoro 3 km – a byl zavřený. Copyright © 2026, formát 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, „Isn’t this the shop they call ‚round the corner‘?“ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Řekl \"ahoj\".",
+          "out": "Řekl „ahoj“."
+        },
+        {
+          "rule": "nbsp",
+          "in": "v Plzni a u babičky",
+          "out": "v Plzni a u babičky"
+        },
+        {
+          "rule": "dashes",
+          "in": "Tato kniha - vydaná před válkou - je úžasná.",
+          "out": "Tato kniha – vydaná před válkou – je úžasná."
+        }
+      ]
     }
   ]
 }

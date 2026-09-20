@@ -10,11 +10,11 @@ files, plus **48** locale-resolution cases.
 
 | Runtime | Package | Spec version claimed | Status | Last verified |
 | --- | --- | --- | --- | --- |
-| [JavaScript/TypeScript](https://github.com/polytypo/polytypo-js) | [package](https://www.npmjs.com/package/polytypo) | 1.2.0 | ✅ conformant | 2026-09-17 |
-| [Python](https://github.com/polytypo/polytypo-python) | [package](https://pypi.org/project/polytypo/) | 1.2.0 | ✅ conformant | 2026-09-17 |
-| [Go](https://github.com/polytypo/polytypo-go) | [package](https://pkg.go.dev/github.com/polytypo/polytypo-go) | 1.2.0 | ✅ conformant | 2026-09-17 |
-| [Ruby](https://github.com/polytypo/polytypo-ruby) | [package](https://rubygems.org/gems/polytypo) | 1.2.0 | ✅ conformant | 2026-09-17 |
-| [PHP](https://github.com/polytypo/polytypo-php) | [package](https://packagist.org/packages/polytypo/polytypo) | 1.2.0 | ✅ conformant | 2026-09-17 |
+| [JavaScript/TypeScript](https://github.com/polytypo/polytypo-js) | [package](https://www.npmjs.com/package/polytypo) | 1.3.0 | ✅ conformant | 2026-09-20 |
+| [Python](https://github.com/polytypo/polytypo-python) | [package](https://pypi.org/project/polytypo/) | 1.3.0 | ✅ conformant | 2026-09-20 |
+| [Go](https://github.com/polytypo/polytypo-go) | [package](https://pkg.go.dev/github.com/polytypo/polytypo-go) | 1.3.0 | ✅ conformant | 2026-09-20 |
+| [Ruby](https://github.com/polytypo/polytypo-ruby) | [package](https://rubygems.org/gems/polytypo) | 1.3.0 | ✅ conformant | 2026-09-20 |
+| [PHP](https://github.com/polytypo/polytypo-php) | [package](https://packagist.org/packages/polytypo/polytypo) | 1.3.0 | ✅ conformant | 2026-09-20 |
 
 "Last verified" is the date an operator last observed that runtime's own CI green against the
 spec version it claims — not a live, automated signal. See
@@ -26,13 +26,7 @@ that honestly declines an unsupported dialect with a stable error code is confor
 claims, not partially broken. See the notes below for any runtime whose claimed scope is narrower
 than the full spec.
 
-**yaml mode is spec 1.3.0, and no runtime has released 1.3.0 yet.** The mode is implemented on
-the main branch of all five, and each one's own suite runs the canonical 1.3.0 fixtures green —
-but the "Spec version claimed" column above is what a runtime has *published*, and a claim is
-only worth what a released package can be held to. Until those releases land, every per-runtime
-line below describes text, html and markdown at the version in that column.
-
-- **Python**: text and html modes fully conformant; markdown mode conformant for dialect="commonmark" only — dialect="mdx" raises POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), a narrower but honest claim rather than a silent mishandling of a dialect it does not support.
-- **Go**: text and html modes fully conformant; markdown mode conformant for dialect="commonmark" only (CommonMark plus GFM: tables, strikethrough, task lists, autolink literals) — dialect="mdx" returns POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), the same narrower but honest claim as the Python runtime.
-- **Ruby**: text and html modes fully conformant; markdown mode conformant for dialect="commonmark" only (CommonMark plus GFM: tables, strikethrough, task lists, autolink literals, via the commonmarker gem) — dialect="mdx" raises POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), the same narrower but honest claim as the Python and Go runtimes.
-- **PHP**: text and html modes fully conformant. markdown mode is not implemented for either dialect — dialect="commonmark" and dialect="mdx" both raise POLYTYPO_INVALID_DIALECT — because league/commonmark, the standard PHP CommonMark/GFM library, gives no position data at all on inline text nodes (only a line number on block nodes), so it cannot support this mode's raw-extent span reconstruction requirement, and no other maintained PHP CommonMark/GFM library with that property was found. A strictly larger, but equally honestly-declared, gap than the other four runtimes' mdx-only gap.
+- **Python**: text, html and yaml modes fully conformant; markdown mode conformant for dialect="commonmark" only — dialect="mdx" raises POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), a narrower but honest claim rather than a silent mishandling of a dialect it does not support.
+- **Go**: text, html and yaml modes fully conformant; markdown mode conformant for dialect="commonmark" only (CommonMark plus GFM: tables, strikethrough, task lists, autolink literals) — dialect="mdx" returns POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), the same narrower but honest claim as the Python runtime.
+- **Ruby**: text, html and yaml modes fully conformant; markdown mode conformant for dialect="commonmark" only (CommonMark plus GFM: tables, strikethrough, task lists, autolink literals, via the commonmarker gem) — dialect="mdx" raises POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), the same narrower but honest claim as the Python and Go runtimes.
+- **PHP**: text, html and yaml modes fully conformant. markdown mode is not implemented for either dialect — dialect="commonmark" and dialect="mdx" both raise POLYTYPO_INVALID_DIALECT — because league/commonmark, the standard PHP CommonMark/GFM library, gives no position data at all on inline text nodes (only a line number on block nodes), so it cannot support this mode's raw-extent span reconstruction requirement, and no other maintained PHP CommonMark/GFM library with that property was found. A strictly larger, but equally honestly-declared, gap than the other four runtimes' mdx-only gap.
