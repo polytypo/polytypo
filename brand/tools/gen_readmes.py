@@ -298,17 +298,20 @@ and not as another project's identity, nor on goods for sale, without permission
 """
 
 
-CHANGELOG_INTRO = """Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.2.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.2.0 and produce byte-identical
+# The version is interpolated from changelog.json's newest entry rather than written in: it was
+# spelled out as 1.2.0 and went stale the moment 1.3.0 was added, which is precisely the drift
+# every other generated page in this repository exists to prevent.
+CHANGELOG_INTRO = """Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@{latest}`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec {latest} and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
 change with a cost, stated: a rule that fires where it did not before also fires somewhere you may
 not want, and the fixtures pin both sides.
 
-**⍽ is not in the output — it marks U+00A0 NO-BREAK SPACE**, which is otherwise indistinguishable
-from an ordinary space here. A changelog whose entries are about invisible characters has to show
-them somehow."""
+**Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
+NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
+changelog whose entries are about invisible characters has to show them somehow."""
 
 
 def _pretty_date(iso):
@@ -331,7 +334,7 @@ def changelog_body():
     output captured from the published package of each version, never typed by hand."""
     with open(os.path.join(REPO, "brand", "tools", "changelog.json"), encoding="utf-8") as f:
         data = json.load(f)
-    out = ["# Changelog", "", CHANGELOG_INTRO, ""]
+    out = ["# Changelog", "", CHANGELOG_INTRO.format(latest=data["releases"][0]["version"]), ""]
     for rel in data["releases"]:
         out += [f"## {rel['version']} — {_pretty_date(rel['date'])}", "", rel["headline"], ""]
         for item in rel["items"]:
