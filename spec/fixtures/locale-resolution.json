@@ -152,10 +152,10 @@
       "note": "section 4: nb must not resolve to the nearest language sv"
     },
     {
-      "id": "unknown-es",
-      "tag": "es",
+      "id": "unknown-ja",
+      "tag": "ja",
       "throws": "POLYTYPO_UNKNOWN_LOCALE",
-      "note": "a language polytypo does not carry yet is an error, not a default"
+      "note": "a language polytypo does not carry yet is an error, not a default. This case named `es` until spec 1.3.0 added that locale; a fixture asserting a registry member is unknown contradicts section 3.4 step 1 and would fail every runtime the moment the registry was vendored."
     },
     {
       "id": "invalid-three-letter",
@@ -204,6 +204,78 @@
       "tag": "en-US-POSIX",
       "throws": "POLYTYPO_UNKNOWN_LOCALE",
       "note": "section 3.3: length 11. Section 7 open question 7: region is the only supported variation, so extra subtags are rejected rather than ignored."
+    },
+    {
+      "id": "exact-es",
+      "tag": "es",
+      "resolves": "es",
+      "note": "section 3.4 step 1. Added with the locale in spec 1.3.0 — the eight locales carried since 1.2.0 had no resolution case at all, so nothing proved a registry member resolved rather than threw."
+    },
+    {
+      "id": "exact-it",
+      "tag": "it",
+      "resolves": "it",
+      "note": "section 3.4 step 1."
+    },
+    {
+      "id": "exact-nl",
+      "tag": "nl",
+      "resolves": "nl",
+      "note": "section 3.4 step 1."
+    },
+    {
+      "id": "exact-pl",
+      "tag": "pl",
+      "resolves": "pl",
+      "note": "section 3.4 step 1."
+    },
+    {
+      "id": "exact-uk",
+      "tag": "uk",
+      "resolves": "uk",
+      "note": "section 3.4 step 1."
+    },
+    {
+      "id": "exact-cs",
+      "tag": "cs",
+      "resolves": "cs",
+      "note": "section 3.4 step 1."
+    },
+    {
+      "id": "exact-pt-pt",
+      "tag": "pt-PT",
+      "resolves": "pt-PT",
+      "note": "section 3.4 step 1: a language+region member is matched exactly, before any stripping."
+    },
+    {
+      "id": "exact-pt-br",
+      "tag": "pt-BR",
+      "resolves": "pt-BR",
+      "note": "section 3.4 step 1: pt-BR is its own locale, not a region strip of pt-PT."
+    },
+    {
+      "id": "alias-pt",
+      "tag": "pt",
+      "resolves": "pt-PT",
+      "note": "section 3.4 step 2: the third declared alias, alongside en and de."
+    },
+    {
+      "id": "strip-es-mx",
+      "tag": "es-MX",
+      "resolves": "es",
+      "note": "section 3.4 step 3a: an unlisted region strips to the base language once."
+    },
+    {
+      "id": "strip-nl-be",
+      "tag": "nl-BE",
+      "resolves": "nl",
+      "note": "section 3.4 step 3a."
+    },
+    {
+      "id": "strip-pt-ao",
+      "tag": "pt-AO",
+      "resolves": "pt-PT",
+      "note": "section 3.4 step 3b: the strip lands on an alias key, so the alias is followed — the one path through step 3 that steps 1 and 2 cannot reach."
     }
   ]
 }
