@@ -26,10 +26,11 @@ that honestly declines an unsupported dialect with a stable error code is confor
 claims, not partially broken. See the notes below for any runtime whose claimed scope is narrower
 than the full spec.
 
-**yaml mode (spec 1.3.0) is not implemented in any runtime.** It is specified in
-spec/rules/modes.md section 3.8, and `spec/rules/order.json` and the fixture schema both list
-it, so silence here would under-describe the claim surface rather than lag it honestly. Every
-per-runtime line below is scoped to text, html and markdown.
+**yaml mode is spec 1.3.0, and no runtime has released 1.3.0 yet.** The mode is implemented on
+the main branch of all five, and each one's own suite runs the canonical 1.3.0 fixtures green —
+but the "Spec version claimed" column above is what a runtime has *published*, and a claim is
+only worth what a released package can be held to. Until those releases land, every per-runtime
+line below describes text, html and markdown at the version in that column.
 
 - **Python**: text and html modes fully conformant; markdown mode conformant for dialect="commonmark" only — dialect="mdx" raises POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), a narrower but honest claim rather than a silent mishandling of a dialect it does not support.
 - **Go**: text and html modes fully conformant; markdown mode conformant for dialect="commonmark" only (CommonMark plus GFM: tables, strikethrough, task lists, autolink literals) — dialect="mdx" returns POLYTYPO_INVALID_DIALECT (no MDX/JSX parser available for this runtime), the same narrower but honest claim as the Python runtime.
