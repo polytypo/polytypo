@@ -11,7 +11,7 @@
         },
         {
           "rule": "dashes",
-          "text": "In `html` and `markdown`, **three dashes at the edge of an element no longer put spaces inside it**. `<em>---</em>` in a locale that spaces its dashes used to come back as `<em> – </em>` — an element beginning and ending with a space it never contained, invisible until it carried a border or a background. Two dashes were already left alone there; three now are too. The accepted cost is that such a dash is not converted at all in those positions, which is the same trade the two-dash case already made."
+          "text": "In `html` and `markdown`, **three dashes at the edge of an element no longer put spaces inside it**. `a<em>---</em>b` in a locale that spaces its dashes used to come back as `a<em> – </em>b` — an element beginning and ending with a space it never contained, invisible until it carried a border or a background. Two dashes were already left alone there; three now are too. The accepted cost is that such a dash is not converted at all in those positions, which is the same trade the two-dash case already made."
         },
         {
           "rule": "nbsp",
