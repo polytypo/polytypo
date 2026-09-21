@@ -874,6 +874,14 @@ def _mark_invisible(text):
     return text.replace("\u00a0", "⍽").replace("\u202f", "·")
 
 
+def _latest_released_version():
+    """The highest released version in changelog.json, by numeric comparison rather than by the
+    file's ordering — an entry appended in the wrong place should not make the intro name a stale
+    version. It was spelled out as 1.2.0 and went stale the moment 1.3.0 shipped."""
+    versions = [rel["version"] for rel in _changelog_data()["releases"]]
+    return max(versions, key=lambda v: tuple(int(part) for part in v.split(".")))
+
+
 def changelog_sections():
     """The /changelog page's body, generated from brand/tools/changelog.json — the same file
     brand/tools/gen_readmes.py renders CHANGELOG.md from, so the page and the repository file
@@ -1034,6 +1042,9 @@ def build():
         "{{showcase_list}}": showcase_list(),
         "{{showcase_mailto}}": showcase_mailto(),
         "{{changelog}}": changelog_sections(),
+        # The newest released version, so the /changelog intro cannot name a stale one.
+        # It was spelled out as 1.2.0 and went stale the moment 1.3.0 shipped.
+        "{{latest_version}}": H.escape(_latest_released_version()),
     }
     # Per-locale fixture totals — read live from spec/fixtures/, never hand-maintained, so the
     # coverage table on the Locales page cannot drift from the conformance suite it describes.
