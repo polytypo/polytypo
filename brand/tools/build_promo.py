@@ -1190,6 +1190,9 @@ def write_llms_txt(out_dir, data):
     n = len(data["locales"])
     locale_list = ", ".join(loc["locale"] for loc in data["locales"])
     rule_ids = ", ".join(r["id"] for r in _ORDER["rules"])
+    # Mode ids in the spec's own order, taken from the rules' `modes` arrays rather than a literal
+    # list here, so a mode added to the spec appears without editing this file.
+    mode_ids = list(dict.fromkeys(m for r in _ORDER["rules"] for m in r.get("modes", [])))
 
     lines = [
         "# polytypo",
@@ -1203,6 +1206,17 @@ def write_llms_txt(out_dir, data):
         "normative source (Chicago/Oxford, Duden, Imprimerie nationale, Kotus, Språkrådet, "
         f"Мильчин). Spec {data['spec']}, {n} locales ({locale_list}), rules run in this fixed "
         f"order: {rule_ids}.",
+        "",
+        f"Modes ({len(mode_ids)}): {', '.join(mode_ids)}. `text` has no parser and no skip list — "
+        "the whole string is prose to it. `html` and `markdown` parse the document and run the "
+        "rules only on prose text nodes, never inside tags, attributes, character references, "
+        "code spans or code blocks; `markdown` additionally requires an explicit `dialect` "
+        '("commonmark" or "mdx"), which is never detected, because one autolink is valid '
+        "CommonMark and a parse error in MDX. `yaml` uses no parser either and is the one mode "
+        "that skips by default: it processes only the values of the mapping keys named in its "
+        "required `keys` option, which has no default, because nothing in YAML's syntax "
+        "separates a prose `description:` from a shell command in `run:`. Whatever a mode does "
+        "not process comes back byte for byte.",
         "",
         "## Docs",
         "",
@@ -1225,6 +1239,11 @@ def write_llms_txt(out_dir, data):
         f"- [Canonical spec repo]({REPO_URL}): normative rules, locale data and conformance "
         'fixtures — runtime-agnostic, MIT licensed. An implementation is "polytypo" iff it passes '
         "this suite for the spec version it claims.",
+        f"- [Modes contract]({REPO_URL}/blob/main/spec/rules/modes.md): the normative document "
+        "behind the modes above — the span model every mode shares, the round-trip guarantee, and "
+        "each mode's skip list, including the specified scan `yaml` uses in place of a parser.",
+        f"- [Conformance matrix]({REPO_URL}/blob/main/spec/CONFORMANCE.md): which runtime claims "
+        "which spec version, and where a runtime's claimed scope is narrower than the full spec.",
         "",
         "## Optional",
         "",

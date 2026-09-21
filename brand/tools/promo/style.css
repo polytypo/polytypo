@@ -858,7 +858,9 @@ pre > code {
    neither of which lines up with the enum <select>s beside it. Shrinks on a narrow screen rather
    than forcing the bar to wrap mid-control. */
 .pg-bar input.pg-keys-input {
-  flex: 0 1 18ch;
+  /* Wide enough for the default value ("description, summary") to be read without scrolling the
+     field -- at 18ch it was cut off mid-word, which made the control look misconfigured. */
+  flex: 0 1 25ch;
   min-width: 9ch;
 }
 

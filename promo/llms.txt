@@ -4,6 +4,8 @@
 
 polytypo is a typography rules engine, not a grammar or spell checker: it normalizes punctuation and spacing to the convention of a specific locale, and every rule cites its normative source (Chicago/Oxford, Duden, Imprimerie nationale, Kotus, Språkrådet, Мильчин). Spec 1.3.0, 18 locales (en-US, en-GB, de-DE, de-CH, fr, fr-CA, ru, fi, sv, el, es, it, pt-PT, pt-BR, nl, pl, uk, cs), rules run in this fixed order: spaces, ellipsis, ranges, dashes, hyphen, quotes, apostrophe, symbols, nbsp.
 
+Modes (4): text, html, markdown, yaml. `text` has no parser and no skip list — the whole string is prose to it. `html` and `markdown` parse the document and run the rules only on prose text nodes, never inside tags, attributes, character references, code spans or code blocks; `markdown` additionally requires an explicit `dialect` ("commonmark" or "mdx"), which is never detected, because one autolink is valid CommonMark and a parse error in MDX. `yaml` uses no parser either and is the one mode that skips by default: it processes only the values of the mapping keys named in its required `keys` option, which has no default, because nothing in YAML's syntax separates a prose `description:` from a shell command in `run:`. Whatever a mode does not process comes back byte for byte.
+
 ## Docs
 
 - [Reference](https://polytypo.dev/docs/): API shape, options, the full error code contract, code examples for all five runtimes.
@@ -21,6 +23,8 @@ polytypo is a typography rules engine, not a grammar or spell checker: it normal
 ## Spec
 
 - [Canonical spec repo](https://github.com/polytypo/polytypo): normative rules, locale data and conformance fixtures — runtime-agnostic, MIT licensed. An implementation is "polytypo" iff it passes this suite for the spec version it claims.
+- [Modes contract](https://github.com/polytypo/polytypo/blob/main/spec/rules/modes.md): the normative document behind the modes above — the span model every mode shares, the round-trip guarantee, and each mode's skip list, including the specified scan `yaml` uses in place of a parser.
+- [Conformance matrix](https://github.com/polytypo/polytypo/blob/main/spec/CONFORMANCE.md): which runtime claims which spec version, and where a runtime's claimed scope is narrower than the full spec.
 
 ## Optional
 

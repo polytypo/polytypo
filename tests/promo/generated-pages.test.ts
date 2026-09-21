@@ -283,7 +283,7 @@ describe("promo site — llms.txt (llmstxt.org convention)", () => {
       expect(llms).toContain(`(${url})`);
     }
     expect(llms.match(/^- \[/gm)).toHaveLength(
-      3 /* docs */ + 5 /* packages */ + 1 /* spec */ + 3 /* optional */,
+      3 /* docs */ + 5 /* packages */ + 3 /* spec */ + 3 /* optional */,
     );
   });
 
