@@ -9,10 +9,21 @@
 // from the published `polytypo` package, so a sample that fails to demonstrate its mode fails
 // here rather than shipping as a flat example. It is the same engine the promo generator uses for
 // every other worked example on the site.
+import { readFileSync } from "node:fs";
+import path from "node:path";
+
 import { transform } from "polytypo";
 import { describe, expect, it } from "vitest";
+import YAML from "yaml";
 
-import { loadPlayground, markupDefault } from "./load-playground.js";
+import { loadPlayground, markupDefault, ROOT } from "./load-playground.js";
+
+/** Every locale the site ships, read from the generated data rather than listed here. */
+const LOCALES: string[] = (
+  JSON.parse(readFileSync(path.join(ROOT, "promo", "examples.json"), "utf8")) as {
+    locales: { locale: string }[];
+  }
+).locales.map((l) => l.locale);
 
 type Options = Parameters<typeof transform>[1];
 
@@ -101,6 +112,15 @@ describe("playground samples — each mode starts with a document that mode actu
     ).not.toContain('{"a -- b"}');
   });
 
+  /** The text of one field: a block scalar's content is the line after its `key: |` header, a
+   * plain scalar's is the header line itself. */
+  const fieldOf = (doc: string, key: string) => {
+    const lines = doc.split("\n");
+    const i = lines.findIndex((l) => l.startsWith(`${key}:`));
+    if (i < 0) return "";
+    return lines[i]?.trimEnd() === `${key}: |` ? (lines[i + 1] ?? "") : (lines[i] ?? "");
+  };
+
   it("processes every key the Keys field names, and nothing it does not", async () => {
     const pg = loadPlayground();
     await pg.set({ locale: "de-DE", mode: "yaml" });
@@ -109,22 +129,84 @@ describe("playground samples — each mode starts with a document that mode actu
     expect(keys.length, "the yaml sample should demonstrate more than one key").toBeGreaterThan(1);
 
     const out = run(input, "yaml", "de-DE", "", keys);
-    const lineFor = (doc: string, key: string) => {
-      const lines = doc.split("\n");
-      const i = lines.findIndex((l) => l.startsWith(`${key}:`));
-      // A block scalar's content is the line after its `key: |` header.
-      return lines[i + 1] ?? "";
-    };
-
     for (const key of keys) {
-      expect(lineFor(out, key), `${key} was named in keys but not processed`).not.toBe(
-        lineFor(input, key),
+      expect(fieldOf(out, key), `${key} was named in keys but not processed`).not.toBe(
+        fieldOf(input, key),
       );
     }
-    // `run:` has the same shape as the named keys and differs only in not being named.
-    const runLine = (doc: string) => doc.split("\n").find((l) => l.startsWith("run:")) ?? "";
-    expect(runLine(input), "the sample needs an unnamed key for contrast").not.toBe("");
-    expect(runLine(out), "an unnamed key was processed").toBe(runLine(input));
+    // `run:` is a plain scalar exactly like `title:` and differs only in not being named — which
+    // is the whole of what the option does.
+    expect(fieldOf(input, "run"), "the sample needs an unnamed key for contrast").not.toBe("");
+    expect(fieldOf(out, "run"), "an unnamed key was processed").toBe(fieldOf(input, "run"));
+  });
+
+  it("shows both YAML scalar forms: an ordinary one and the block form long prose needs", async () => {
+    // The question the sample has to answer on sight is why any field needs `|` at all. It does
+    // that by putting the ordinary `key: value` form next to it, not by using the block form for
+    // everything.
+    const pg = loadPlayground();
+    await pg.set({ locale: "en-US", mode: "yaml" });
+    const lines = pg.input().split("\n");
+    expect(lines.some((l) => /^title: \S/.test(l)), "no plain scalar in the yaml sample").toBe(
+      true,
+    );
+    expect(lines.some((l) => l === "description: |"), "no block scalar in the sample").toBe(true);
+    expect(lines.some((l) => /^run: \S/.test(l)), "the unnamed field should be plain too").toBe(
+      true,
+    );
+  });
+
+  it("is valid YAML in every locale, and stays valid after transform", async () => {
+    // The sample is something a visitor may copy out, so it has to parse. This is also what
+    // forces `description` into a block scalar: 16 of the 18 locales' specimen prose contains
+    // ": ", which a plain scalar may not.
+    for (const locale of LOCALES) {
+      const pg = loadPlayground();
+      await pg.set({ locale, mode: "yaml" });
+      const input = pg.input();
+      expect(() => YAML.parse(input), `${locale}: the yaml sample does not parse`).not.toThrow();
+
+      const out = run(input, "yaml", locale, "", parseKeys(pg.keysField()));
+      expect(() => YAML.parse(out), `${locale}: transform produced unparseable YAML`).not.toThrow();
+    }
+  });
+
+  it("agrees with a real YAML parser about which specimens are plain-scalar safe", async () => {
+    // The page ships no YAML parser — by the same decision that made `yaml` mode a specified scan
+    // — so it picks the plain-scalar field with a predicate instead. That predicate is only worth
+    // anything if it matches what a parser would say, which is what this checks, over every
+    // recorded case in every locale.
+    const indicators = new Set([..."-?:,[]{}#&*!|>'\"%@`"]);
+    const predicate = (v: string) =>
+      !!v &&
+      v.trim() === v &&
+      !indicators.has(v[0] ?? "") &&
+      !v.includes(": ") &&
+      !v.endsWith(":") &&
+      !v.includes(" #");
+    const parserSaysSafe = (v: string) => {
+      try {
+        const doc = YAML.parse(`k: ${v}\n`) as { k?: unknown };
+        return typeof doc.k === "string" && doc.k === v;
+      } catch {
+        return false;
+      }
+    };
+
+    const examples = JSON.parse(
+      readFileSync(path.join(ROOT, "promo", "examples.json"), "utf8"),
+    ) as { locales: { locale: string; cases: { in: string }[] }[] };
+
+    const disagreements: string[] = [];
+    let checked = 0;
+    for (const loc of examples.locales) {
+      for (const c of loc.cases) {
+        checked += 1;
+        if (predicate(c.in) !== parserSaysSafe(c.in)) disagreements.push(`${loc.locale}: ${c.in}`);
+      }
+    }
+    expect(checked, "no cases were checked").toBeGreaterThan(50);
+    expect(disagreements).toEqual([]);
   });
 
   it("names, in the Keys field's own default, keys the yaml sample really has", async () => {
