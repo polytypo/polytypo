@@ -1524,7 +1524,67 @@ const DATA = {payload};
     return recorded ? recorded.in : FALLBACK_SAMPLE;
   }}
 
-  let lastDefault = defaultFor($locale.value);
+  /** This locale's shortest recorded specimen — the first rule case, whatever rule it happens to
+   * cover. Used as a second prose field in the yaml sample; it goes inside a block scalar, which
+   * accepts any characters, so no case needs to be safe as a plain scalar. */
+  function shortProseFor(code) {{
+    const entry = DATA.locales.find((l) => l.locale === code);
+    const first = entry && entry.cases && entry.cases[0];
+    return first ? first.in : FALLBACK_SAMPLE;
+  }}
+
+  // Every sample pairs prose the mode DOES process with something adjacent it must NOT touch.
+  // That contrast is the only thing that distinguishes one mode from another, so a sample without
+  // it would show four modes doing the identical thing to the identical sentence.
+  const SKIP_DEMO = 'echo "untouched" -- still here...';
+
+  /** The starting document for a mode, built from this locale's own specimen prose. Switching mode
+   * swaps it, so the control demonstrates the mode instead of leaving prose that mode has nothing
+   * to say about. The markdown dialects get different documents on purpose: each is written in the
+   * syntax its own dialect owns, which is the same reason the dialect cannot be guessed. */
+  function sampleFor(code, mode, dialect) {{
+    const prose = defaultFor(code);
+    if (mode === "html") {{
+      return "<p>" + prose + "</p>\\n<pre><code>" + SKIP_DEMO + "</code></pre>\\n";
+    }}
+    if (mode === "markdown") {{
+      // In MDX a braced expression is JavaScript and is left alone; CommonMark reads the same
+      // braces as prose and would typeset the string inside them.
+      if (dialect === "mdx") {{
+        return (
+          '<Note label={{"a -- b"}}>\\n  ' + prose + "\\n</Note>\\n\\n" +
+          "Inline `" + SKIP_DEMO + "` stays put.\\n"
+        );
+      }}
+      // An autolink is valid CommonMark and a parse error in MDX — the other half of that reason.
+      return (
+        prose + "\\n\\nInline `" + SKIP_DEMO + "` stays put.\\n\\n<https://example.com/a-b>\\n"
+      );
+    }}
+    if (mode === "yaml") {{
+      // Block scalars: valid YAML whatever the prose contains, and one span per content line
+      // (modes.md 3.8.5). `run:` is the same shape as the two above and is left alone purely
+      // because it is not named in `keys` — the comparison the option exists for.
+      return (
+        "description: |\\n  " + prose + "\\n" +
+        "summary: |\\n  " + shortProseFor(code) + "\\n" +
+        "run: " + SKIP_DEMO + "\\n"
+      );
+    }}
+    return prose;
+  }}
+
+  const currentSample = () => sampleFor($locale.value, $mode.value, $dialect.value);
+
+  /** Replaces the input only while it still holds an untouched sample, so switching a control
+   * never discards text the visitor typed or pasted. */
+  function resample() {{
+    if ($input.value !== lastDefault) return;
+    lastDefault = currentSample();
+    $input.value = lastDefault;
+  }}
+
+  let lastDefault = sampleFor($locale.value, $mode.value, $dialect.value);
   $input.value = lastDefault;
 
   // "idle" is reachable only on the lazy page: on the eager one the bundle has either already
@@ -1841,14 +1901,12 @@ const DATA = {payload};
   // every control costs nothing on the eager page and needs no LAZY branch here.
   $locale.addEventListener("change", () => {{
     startEngineLoad();
-    if ($input.value === lastDefault) {{
-      lastDefault = defaultFor($locale.value);
-      $input.value = lastDefault;
-    }}
+    resample();
     render();
   }});
   $mode.addEventListener("change", () => {{
     startEngineLoad();
+    resample();
     render();
   }});
   $keys.addEventListener("input", () => {{
@@ -1857,6 +1915,7 @@ const DATA = {payload};
   }});
   $dialect.addEventListener("change", () => {{
     startEngineLoad();
+    resample();
     render();
   }});
   $input.addEventListener("input", () => {{
