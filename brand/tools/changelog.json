@@ -2,6 +2,20 @@
   "_comment": "Single source for CHANGELOG.md (brand/tools/gen_readmes.py) and the site's /changelog page (brand/tools/build_promo.py). Released versions only, per the project's rule that public copy describes what ships and never what is planned: a spec version appears here after its spec-v* tag exists and every runtime has published it. Example strings are real engine output, captured by running the published package of each version side by side, never typed by hand.",
   "releases": [
     {
+      "version": "1.3.1",
+      "date": "2026-09-21",
+      "headline": "No change to what polytypo does to your text — two conformance cases that pin behaviour 1.3.0 already specified but never proved.",
+      "items": [
+        {
+          "text": "Nothing in this version changes your output. Run the same text through 1.3.0 and 1.3.1 and you get the same bytes; every rule, locale, mode and option behaves identically. What changed is the conformance suite, which is the executable half of the spec: it gained two `yaml` cases, so a runtime claiming 1.3.1 has proved something a runtime claiming 1.3.0 only promised."
+        },
+        {
+          "text": "In `yaml` mode, a value written without quotes or a `|` cannot contain a colon followed by a space — `description: She asked: one...two` comes back untouched even though `description` is named in `keys`. That is not a limitation polytypo invented: YAML reads the second colon as a nested mapping, and a real parser rejects such a document outright. The engine declines the line rather than rewrite text it could not read back. The prose said so in 1.3.0; now a fixture proves it, next to its opposite — the same sentence in a block scalar, which is processed."
+        }
+      ],
+      "examples": []
+    },
+    {
       "version": "1.3.0",
       "date": "2026-09-20",
       "headline": "A fourth mode for YAML, eight more languages, and a dash fix that had been quietly putting spaces inside your markup.",

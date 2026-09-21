@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.3.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.3.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.3.1`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.3.1 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,13 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.3.1 — 21 September 2026
+
+No change to what polytypo does to your text — two conformance cases that pin behaviour 1.3.0 already specified but never proved.
+
+- Nothing in this version changes your output. Run the same text through 1.3.0 and 1.3.1 and you get the same bytes; every rule, locale, mode and option behaves identically. What changed is the conformance suite, which is the executable half of the spec: it gained two `yaml` cases, so a runtime claiming 1.3.1 has proved something a runtime claiming 1.3.0 only promised.
+- In `yaml` mode, a value written without quotes or a `|` cannot contain a colon followed by a space — `description: She asked: one...two` comes back untouched even though `description` is named in `keys`. That is not a limitation polytypo invented: YAML reads the second colon as a nested mapping, and a real parser rejects such a document outright. The engine declines the line rather than rewrite text it could not read back. The prose said so in 1.3.0; now a fixture proves it, next to its opposite — the same sentence in a block scalar, which is processed.
 
 ## 1.3.0 — 20 September 2026
 

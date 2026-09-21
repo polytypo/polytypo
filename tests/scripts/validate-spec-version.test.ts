@@ -18,6 +18,12 @@ import { afterEach, describe, expect, it } from "vitest";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const CLI = path.join(ROOT, "scripts/validate-spec.mjs");
 
+/** Read at module load, before any test body runs, so the final sanity check compares the real
+ * spec/VERSION against what it was rather than against a literal — a literal here has to be
+ * edited on every version bump, and until someone remembers, it fails the release it is meant to
+ * protect. */
+const VERSION_BEFORE = readFileSync(path.join(ROOT, "spec", "VERSION"), "utf8").trim();
+
 let tmpDir: string | undefined;
 
 afterEach(() => {
@@ -302,6 +308,8 @@ describe("scripts/validate-spec.mjs — global spec-version drift, fixture roots
     // Sanity check that the disposable-copy tests above never mutated the real repository —
     // negative controls above operate exclusively on mkdtempSync() directories.
     const version = readFileSync(path.join(ROOT, "spec", "VERSION"), "utf8").trim();
-    expect(version).toBe("1.3.0");
+    expect(version).toBe(VERSION_BEFORE);
+    // And it still looks like a spec version, not one of the values the negative controls write.
+    expect(version).toMatch(/^\d+\.\d+\.\d+$/);
   });
 });
