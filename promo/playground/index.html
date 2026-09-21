@@ -278,17 +278,34 @@ const DATA = {"spec": "1.3.0", "proofLocales": ["en-US", "en-GB", "de-DE", "de-C
       return "<p>" + prose + "</p>\n<pre><code>" + SKIP_DEMO + "</code></pre>\n";
     }
     if (mode === "markdown") {
+      // Enough real Markdown that the sample cannot be mistaken for the text mode's flat
+      // sentence: a heading, a list, emphasis, and — per dialect — the one construct that dialect
+      // owns. The rules reach the prose inside all of it and none of the structure: the `##`,
+      // `-`, `**`/`*`, the code span and a link's destination all come back untouched.
+      // `quotableProseFor` is reused here only as "this locale's short specimen"; Markdown has no
+      // quoting constraint of its own.
+      const short = quotableProseFor(code) || prose;
+      const list =
+        "- A list item - dashed, like this one\n" +
+        "- `" + SKIP_DEMO + "` in a code span\n";
+      const emphasis = "**Bold** and *italic* text - both processed.\n";
+
       // In MDX a braced expression is JavaScript and is left alone; CommonMark reads the same
       // braces as prose and would typeset the string inside them.
       if (dialect === "mdx") {
         return (
+          "## " + short + "\n\n" +
           '<Note label={"a -- b"}>\n  ' + prose + "\n</Note>\n\n" +
-          "Inline `" + SKIP_DEMO + "` stays put.\n"
+          list + "\n" + emphasis
         );
       }
       // An autolink is valid CommonMark and a parse error in MDX — the other half of that reason.
+      // A link's destination is skipped too, so the hyphen in `a-b` survives inside both.
       return (
-        prose + "\n\nInline `" + SKIP_DEMO + "` stays put.\n\n<https://example.com/a-b>\n"
+        "## " + short + "\n\n" + prose + "\n\n" +
+        list + "\n" + emphasis + "\n" +
+        "[A link - dashed](https://example.com/a-b) and an autolink: " +
+        "<https://example.com/a-b>\n"
       );
     }
     if (mode === "yaml") {
