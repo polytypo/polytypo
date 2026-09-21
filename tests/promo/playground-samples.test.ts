@@ -140,20 +140,18 @@ describe("playground samples — each mode starts with a document that mode actu
     expect(fieldOf(out, "run"), "an unnamed key was processed").toBe(fieldOf(input, "run"));
   });
 
-  it("shows both YAML scalar forms: an ordinary one and the block form long prose needs", async () => {
-    // The question the sample has to answer on sight is why any field needs `|` at all. It does
-    // that by putting the ordinary `key: value` form next to it, not by using the block form for
-    // everything.
+  it("shows three YAML scalar forms, so the form is visibly not what decides the outcome", async () => {
+    // A quoted field and a block field, both named, are both processed; a plain field that is not
+    // named is not. So the sample answers two questions at once: why `description` needs `|`, and
+    // that what governs processing is `keys` rather than the shape of the value.
     const pg = loadPlayground();
     await pg.set({ locale: "en-US", mode: "yaml" });
     const lines = pg.input().split("\n");
-    expect(lines.some((l) => /^title: \S/.test(l)), "no plain scalar in the yaml sample").toBe(
+    expect(lines.some((l) => /^title: ".*"$/.test(l)), "no quoted scalar in the sample").toBe(
       true,
     );
     expect(lines.some((l) => l === "description: |"), "no block scalar in the sample").toBe(true);
-    expect(lines.some((l) => /^run: \S/.test(l)), "the unnamed field should be plain too").toBe(
-      true,
-    );
+    expect(lines.some((l) => /^run: \S/.test(l)), "no plain scalar in the sample").toBe(true);
   });
 
   it("is valid YAML in every locale, and stays valid after transform", async () => {
@@ -171,22 +169,18 @@ describe("playground samples — each mode starts with a document that mode actu
     }
   });
 
-  it("agrees with a real YAML parser about which specimens are plain-scalar safe", async () => {
+  it("agrees with a real YAML parser about which specimens survive double quoting", async () => {
     // The page ships no YAML parser — by the same decision that made `yaml` mode a specified scan
-    // — so it picks the plain-scalar field with a predicate instead. That predicate is only worth
+    // — so it picks the quoted field with a predicate instead. The predicate is only worth
     // anything if it matches what a parser would say, which is what this checks, over every
-    // recorded case in every locale.
-    const indicators = new Set([..."-?:,[]{}#&*!|>'\"%@`"]);
+    // recorded case in every locale. A colon inside the quotes is fine (3.8.6 neutralises it);
+    // a double quote or a backslash is not, because escaping it would make the source and the
+    // content different strings.
     const predicate = (v: string) =>
-      !!v &&
-      v.trim() === v &&
-      !indicators.has(v[0] ?? "") &&
-      !v.includes(": ") &&
-      !v.endsWith(":") &&
-      !v.includes(" #");
+      !!v && v.trim() === v && !v.includes('"') && !v.includes("\\");
     const parserSaysSafe = (v: string) => {
       try {
-        const doc = YAML.parse(`k: ${v}\n`) as { k?: unknown };
+        const doc = YAML.parse(`k: "${v}"\n`) as { k?: unknown };
         return typeof doc.k === "string" && doc.k === v;
       } catch {
         return false;

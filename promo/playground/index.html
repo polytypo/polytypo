@@ -159,6 +159,15 @@
 </p>
 
 <p class="pg-note">
+  In <code>yaml</code> mode, a value written plainly cannot contain <code>:&nbsp;</code> — YAML
+  itself reads that as a nested mapping, and a document with one does not parse at all. polytypo
+  declines such a line rather than rewrite text it could not read back, so it returns untouched
+  even when its key is named in <code>keys</code>. Quote the value, or write it as a block scalar
+  with <code>|</code>. A quoted value may contain colons freely, but not an escape
+  (<code>\"</code> or <code>''</code>): that would make the source and the content different
+  strings, and the offsets this mode works in are source offsets.
+</p>
+<p class="pg-note">
   Idempotency is a headline claim, not just a property test: paste the output back into the input
   and nothing should change.
 </p>
@@ -234,31 +243,23 @@ const DATA = {"spec": "1.3.0", "proofLocales": ["en-US", "en-GB", "de-DE", "de-C
     return recorded ? recorded.in : FALLBACK_SAMPLE;
   }
 
-  // A plain scalar may not start with a YAML indicator, contain ": ", end in ":", or contain
-  // " #". Checked here rather than parsed: this page ships no YAML parser, by the same decision
-  // that made `yaml` mode a specified scan instead of a parser binding. The predicate is verified
-  // against a real YAML parser over every recorded case in tests/promo/playground-samples.test.ts.
-  const YAML_INDICATORS = new Set([..."-?:,[]{}#&*!|>'\"%@`"]);
-
-  function isPlainScalarSafe(v) {
-    return (
-      !!v &&
-      v.trim() === v &&
-      !YAML_INDICATORS.has(v[0]) &&
-      !v.includes(": ") &&
-      !v.endsWith(":") &&
-      !v.includes(" #")
-    );
+  // A double-quoted scalar may hold a colon freely — quoting neutralises it (modes.md 3.8.6) —
+  // but an escape inside it is declined: "\\"" and "''" spell one content character with two
+  // source characters, and this mode works in source offsets. So the value must contain neither a
+  // double quote nor a backslash. Checked with a predicate rather than parsed: this page ships no
+  // YAML parser, by the same decision that made `yaml` mode a specified scan instead of a parser
+  // binding. Verified against a real parser in tests/promo/playground-samples.test.ts.
+  function isDoubleQuotedSafe(v) {
+    return !!v && v.trim() === v && !v.includes('"') && !v.includes("\\");
   }
 
-  /** This locale's shortest recorded specimen that is also legal as a plain scalar — so the yaml
-   * sample can show the ordinary `key: value` form, which is how people actually write YAML,
-   * next to the block scalar the long prose needs. Every locale has at least one; the null return
-   * is a guard, not an expected path. */
-  function plainProseFor(code) {
+  /** This locale's shortest recorded specimen that can sit inside double quotes unescaped, so the
+   * yaml sample can show the quoted form too. Every locale has one; the null return is a guard,
+   * not an expected path. */
+  function quotableProseFor(code) {
     const entry = DATA.locales.find((l) => l.locale === code);
     const cases = (entry && entry.cases) || [];
-    const found = cases.find((c) => isPlainScalarSafe(c.in));
+    const found = cases.find((c) => isDoubleQuotedSafe(c.in));
     return found ? found.in : null;
   }
 
@@ -291,17 +292,17 @@ const DATA = {"spec": "1.3.0", "proofLocales": ["en-US", "en-GB", "de-DE", "de-C
       );
     }
     if (mode === "yaml") {
-      // Three fields, deliberately in two different YAML forms:
-      //   title        an ordinary plain scalar — the form people write by hand
-      //   description  a block scalar, because 16 of the 18 locales' specimen prose contains
-      //                ": ", which is not legal in a plain scalar (modes.md 3.8.5 specifies how
-      //                block scalars are processed: one span per content line)
-      //   run          a plain scalar again, and NOT named in `keys`
-      // So `title` and `run` have the identical shape and differ only in being named, which is
-      // the whole of what the option does; `description` shows why the block form is needed.
-      const title = plainProseFor(code);
+      // Three fields in three different YAML forms, so the sample shows that the form is not
+      // what decides the outcome — `keys` is:
+      //   title        a double-quoted scalar; the quotes neutralise any colon (3.8.6)
+      //   description  a block scalar, which it has to be: 16 of the 18 locales' specimen prose
+      //                contains ": ", illegal in a plain scalar, and the quoted form would need
+      //                an escape this mode declines (3.8.5 covers the block form)
+      //   run          a plain scalar, and the only one NOT named in `keys`
+      // Two named fields in two unlike forms are both processed; the unnamed one is not.
+      const title = quotableProseFor(code);
       return (
-        (title === null ? "" : "title: " + title + "\n") +
+        (title === null ? "" : 'title: "' + title + '"\n') +
         "description: |\n  " + prose + "\n" +
         "run: " + SKIP_DEMO + "\n"
       );

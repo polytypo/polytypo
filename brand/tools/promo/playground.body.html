@@ -19,6 +19,15 @@
 </p>
 
 <p class="pg-note">
+  In <code>yaml</code> mode, a value written plainly cannot contain <code>:&nbsp;</code> — YAML
+  itself reads that as a nested mapping, and a document with one does not parse at all. polytypo
+  declines such a line rather than rewrite text it could not read back, so it returns untouched
+  even when its key is named in <code>keys</code>. Quote the value, or write it as a block scalar
+  with <code>|</code>. A quoted value may contain colons freely, but not an escape
+  (<code>\"</code> or <code>''</code>): that would make the source and the content different
+  strings, and the offsets this mode works in are source offsets.
+</p>
+<p class="pg-note">
   Idempotency is a headline claim, not just a property test: paste the output back into the input
   and nothing should change.
 </p>
