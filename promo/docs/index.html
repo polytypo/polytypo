@@ -59,6 +59,9 @@
 <span class="ln"><span class="tok-com">// mode &quot;markdown&quot; requires an explicit dialect; &quot;text&quot; and &quot;html&quot; ignore it</span></span>
 <span class="ln">transform(input, { locale: <span class="tok-str">&quot;fr&quot;</span>, mode: <span class="tok-str">&quot;markdown&quot;</span>, dialect: <span class="tok-str">&quot;commonmark&quot;</span> });</span>
 <span class="ln"></span>
+<span class="ln"><span class="tok-com">// mode &quot;yaml&quot; requires the keys whose values hold prose; every other line comes back untouched</span></span>
+<span class="ln">transform(input, { locale: <span class="tok-str">&quot;en-US&quot;</span>, mode: <span class="tok-str">&quot;yaml&quot;</span>, keys: [<span class="tok-str">&quot;description&quot;</span>] });</span>
+<span class="ln"></span>
 <span class="ln"><span class="tok-com">// opt out of a single rule; the order of the rest never changes</span></span>
 <span class="ln">transform(input, { locale: <span class="tok-str">&quot;en-US&quot;</span>, rules: { dashes: false } });</span>
 <span class="ln"></span>
@@ -72,6 +75,9 @@
 <span class="ln"></span>
 <span class="ln"><span class="tok-com"># mode &quot;markdown&quot; requires an explicit dialect; &quot;text&quot; and &quot;html&quot; ignore it</span></span>
 <span class="ln">transform(input, locale=<span class="tok-str">&quot;fr&quot;</span>, mode=<span class="tok-str">&quot;markdown&quot;</span>, dialect=<span class="tok-str">&quot;commonmark&quot;</span>)</span>
+<span class="ln"></span>
+<span class="ln"><span class="tok-com"># mode &quot;yaml&quot; requires the keys whose values hold prose; every other line comes back untouched</span></span>
+<span class="ln">transform(input, locale=<span class="tok-str">&quot;en-US&quot;</span>, mode=<span class="tok-str">&quot;yaml&quot;</span>, keys=[<span class="tok-str">&quot;description&quot;</span>])</span>
 <span class="ln"></span>
 <span class="ln">transform(input, locale=<span class="tok-str">&quot;en-US&quot;</span>, rules={<span class="tok-str">&quot;dashes&quot;</span>: False})</span>
 <span class="ln"></span>
@@ -103,12 +109,22 @@
 <span class="ln">        Mode:    <span class="tok-str">&quot;markdown&quot;</span>,</span>
 <span class="ln">        Dialect: <span class="tok-str">&quot;commonmark&quot;</span>,</span>
 <span class="ln">    })</span>
+<span class="ln"></span>
+<span class="ln">    <span class="tok-com">// Mode &quot;yaml&quot; requires the Keys whose values hold prose; every other line is untouched</span></span>
+<span class="ln">    _, _ = polytypo.Transform(input, polytypo.Options{</span>
+<span class="ln">        Locale: <span class="tok-str">&quot;en-US&quot;</span>,</span>
+<span class="ln">        Mode:   <span class="tok-str">&quot;yaml&quot;</span>,</span>
+<span class="ln">        Keys:   []string{<span class="tok-str">&quot;description&quot;</span>},</span>
+<span class="ln">    })</span>
 <span class="ln">}</span></code></pre><p class="small muted" style="margin-top: 10px"><a href="https://github.com/polytypo/polytypo-go">Repo</a> · <a href="https://pkg.go.dev/github.com/polytypo/polytypo-go">Package</a></p></div><div class="pane" data-label="Ruby"><pre><code><span class="ln">require <span class="tok-str">&quot;polytypo&quot;</span></span>
 <span class="ln"></span>
 <span class="ln">output = Polytypo.transform(input, locale: <span class="tok-str">&quot;de&quot;</span>)</span>
 <span class="ln"></span>
 <span class="ln"><span class="tok-com"># mode &quot;markdown&quot; requires an explicit dialect; &quot;text&quot; and &quot;html&quot; ignore it</span></span>
 <span class="ln">Polytypo.transform(input, locale: <span class="tok-str">&quot;fr&quot;</span>, mode: <span class="tok-str">&quot;markdown&quot;</span>, dialect: <span class="tok-str">&quot;commonmark&quot;</span>)</span>
+<span class="ln"></span>
+<span class="ln"><span class="tok-com"># mode &quot;yaml&quot; requires the keys whose values hold prose; every other line comes back untouched</span></span>
+<span class="ln">Polytypo.transform(input, locale: <span class="tok-str">&quot;en-US&quot;</span>, mode: <span class="tok-str">&quot;yaml&quot;</span>, keys: [<span class="tok-str">&quot;description&quot;</span>])</span>
 <span class="ln"></span>
 <span class="ln">Polytypo.transform(input, locale: <span class="tok-str">&quot;en-US&quot;</span>, rules: { dashes: false })</span>
 <span class="ln"></span>
@@ -125,6 +141,9 @@
 <span class="ln"><span class="tok-com">// mode &#x27;markdown&#x27; requires an explicit dialect; &#x27;text&#x27; and &#x27;html&#x27; ignore it</span></span>
 <span class="ln"><span class="tok-com">// (markdown mode is not implemented by this runtime -- see spec/CONFORMANCE.md)</span></span>
 <span class="ln">Polytypo::transform($input, <span class="tok-str">&#x27;fr&#x27;</span>, mode: <span class="tok-str">&#x27;markdown&#x27;</span>, dialect: <span class="tok-str">&#x27;commonmark&#x27;</span>);</span>
+<span class="ln"></span>
+<span class="ln"><span class="tok-com">// mode &#x27;yaml&#x27; requires the keys whose values hold prose; every other line comes back untouched</span></span>
+<span class="ln">Polytypo::transform($input, <span class="tok-str">&#x27;en-US&#x27;</span>, mode: <span class="tok-str">&#x27;yaml&#x27;</span>, keys: [<span class="tok-str">&#x27;description&#x27;</span>]);</span>
 <span class="ln"></span>
 <span class="ln"><span class="tok-com">// opt out of a single rule; the order of the rest never changes</span></span>
 <span class="ln">Polytypo::transform($input, <span class="tok-str">&#x27;en-US&#x27;</span>, rules: [<span class="tok-str">&#x27;dashes&#x27;</span> =&gt; false]);</span>
@@ -162,14 +181,17 @@
       </tr>
       <tr>
         <td class="mono">mode</td>
-        <td class="mono">"text" | "html" | "markdown"</td>
+        <td class="mono">"text" | "html" | "markdown" | "yaml"</td>
         <td class="mono">"text"</td>
         <td class="small muted">
           Selects the adapter. <code>text</code> has no parser and no skip list: the whole string is
           prose to it. <code>html</code> parses with parse5 and takes a fragment as readily as a
           whole document; <code>markdown</code> parses with micromark. Both run the same rule
           pipeline only on prose text nodes, never inside tags, attributes, character references,
-          code spans or code blocks.
+          code spans or code blocks. <code>yaml</code> uses no parser either — two of the five
+          runtimes' YAML libraries cannot report the source offsets it would need — so it is a
+          specified left-to-right scan, and it is the one mode that skips by default: it processes
+          only the values of the keys you name in <code>keys</code>.
         </td>
       </tr>
       <tr>
@@ -180,7 +202,21 @@
           Required when <code>mode</code> is <code>"markdown"</code>, with no default — omitting it
           throws <code>POLYTYPO_INVALID_DIALECT</code>. Dialect detection is forbidden by design:
           one <code>&lt;https://…&gt;</code> autolink is valid CommonMark and invalid MDX, so a
-          heuristic would silently reclassify content. Ignored for the other two modes.
+          heuristic would silently reclassify content. Ignored for the other three modes.
+        </td>
+      </tr>
+      <tr>
+        <td class="mono">keys</td>
+        <td class="mono">string[]</td>
+        <td class="mono">—</td>
+        <td class="small muted">
+          Required when <code>mode</code> is <code>"yaml"</code>, with no default — omitting it
+          throws <code>POLYTYPO_INVALID_OPTION</code>. Names the mapping keys whose values hold
+          prose. There is no guess to make here: nothing in YAML's syntax separates a
+          <code>description:</code> from a <code>run:</code>, and a mode that processed every string
+          scalar would rewrite shell commands. Matching is exact, with no paths or globs, and the
+          key itself is never processed. An empty list is legal and processes nothing. Ignored for
+          the other three modes.
         </td>
       </tr>
       <tr>
@@ -199,7 +235,7 @@
 
   <h3>Error codes</h3>
   <p class="small muted" style="margin-top: -6px">
-    All seven are part of the contract in every runtime; messages are English and are not.
+    All eight are part of the contract in every runtime; messages are English and are not.
   </p>
   <div class="scroll">
     <table class="kv">
@@ -216,14 +252,23 @@
       <tr>
         <td class="mono">POLYTYPO_INVALID_MODE</td>
         <td class="small muted">
-          <code>mode</code> is set to something other than <code>text</code>, <code>html</code> or
-          <code>markdown</code>.
+          <code>mode</code> is set to something other than <code>text</code>, <code>html</code>,
+          <code>markdown</code> or <code>yaml</code>.
         </td>
       </tr>
       <tr>
         <td class="mono">POLYTYPO_INVALID_DIALECT</td>
         <td class="small muted">
           <code>mode: "markdown"</code> without a <code>dialect</code>, or an unrecognised one.
+        </td>
+      </tr>
+      <tr>
+        <td class="mono">POLYTYPO_INVALID_OPTION</td>
+        <td class="small muted">
+          An option value outside its permitted set, where no more specific code applies —
+          <code>mode: "yaml"</code> without <code>keys</code>, or a <code>narrowNbsp</code> that is
+          neither <code>"narrow"</code> nor <code>"nbsp"</code>. <code>mode</code> and
+          <code>dialect</code> keep their own codes above.
         </td>
       </tr>
       <tr>

@@ -8,13 +8,14 @@
       <select id="pg-locale"></select>
     </label>
     <label
-      title="text: no markup parsing, the whole input is prose. html: parse5 touches only text nodes, never tags or attributes. markdown: micromark touches only prose, never code spans/blocks or front matter."
+      title="text: no markup parsing, the whole input is prose. html: parse5 touches only text nodes, never tags or attributes. markdown: micromark touches only prose, never code spans/blocks or front matter. yaml: no parser at all, a specified scan that touches only the values of the keys you name."
     >
       Mode
       <select id="pg-mode">
         <option value="text">text</option>
         <option value="html">html</option>
         <option value="markdown">markdown</option>
+        <option value="yaml">yaml</option>
       </select>
     </label>
     <label
@@ -27,6 +28,27 @@
         <option value="commonmark">commonmark</option>
         <option value="mdx">mdx</option>
       </select>
+    </label>
+    <!-- The one control in this bar that is free text rather than an enum: which mapping keys hold
+         prose is a property of the visitor's document, not of polytypo. It is required in yaml mode
+         and has no default, so the field ships pre-filled with a key to type under rather than
+         opening in a state that does nothing. An empty field is legal and processes nothing. -->
+    <label
+      id="pg-keys-wrap"
+      hidden
+      title="YAML-only, required, no default. Comma-separated mapping keys whose values hold prose. Nothing in YAML's syntax separates a description: from a run:, so naming them is the only safe way — everything you do not name comes back byte for byte."
+    >
+      Keys
+      <input
+        id="pg-keys"
+        type="text"
+        class="pg-keys-input"
+        value="description"
+        spellcheck="false"
+        autocapitalize="off"
+        autocomplete="off"
+        placeholder="description, title"
+      />
     </label>
   </div>
   <div class="split">

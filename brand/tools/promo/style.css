@@ -841,7 +841,8 @@ pre > code {
   text-transform: uppercase;
 }
 
-.pg-bar select {
+.pg-bar select,
+.pg-bar input.pg-keys-input {
   padding: 4px 8px;
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -850,6 +851,15 @@ pre > code {
   font-family: var(--font-mono);
   font-size: 12px;
   text-transform: none;
+}
+
+/* The Keys field is the one free-text control in this bar, so it needs a width of its own -- a
+   bare <input> would either stretch the flex row or collapse to the browser's default size,
+   neither of which lines up with the enum <select>s beside it. Shrinks on a narrow screen rather
+   than forcing the bar to wrap mid-control. */
+.pg-bar input.pg-keys-input {
+  flex: 0 1 18ch;
+  min-width: 9ch;
 }
 
 /* Matches this section's own .tabs button padding (7px 13px, see the "code" tabs rule below) so

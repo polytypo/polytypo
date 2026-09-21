@@ -421,7 +421,7 @@ describe("promo — a code panel contains code, and nothing else", () => {
     // Positive control: the checks above are all prohibitions, and deleting the panes would
     // satisfy every one of them.
     const all = panes.map((p) => p.code).join("\n");
-    for (const needed of ["locale", "mode", "dialect", "rules", "POLYTYPO_UNKNOWN_LOCALE"]) {
+    for (const needed of ["locale", "mode", "dialect", "keys", "rules", "POLYTYPO_UNKNOWN_LOCALE"]) {
       expect(all, `no pane mentions ${needed}`).toContain(needed);
     }
     for (const { page, code } of panes) {

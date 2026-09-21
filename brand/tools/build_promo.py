@@ -201,6 +201,9 @@ const output = transform(input, { locale: "de" });
 // mode "markdown" requires an explicit dialect; "text" and "html" ignore it
 transform(input, { locale: "fr", mode: "markdown", dialect: "commonmark" });
 
+// mode "yaml" requires the keys whose values hold prose; every other line comes back untouched
+transform(input, { locale: "en-US", mode: "yaml", keys: ["description"] });
+
 // opt out of a single rule; the order of the rest never changes
 transform(input, { locale: "en-US", rules: { dashes: false } });
 
@@ -219,6 +222,9 @@ output = transform(input, locale="de")
 
 # mode "markdown" requires an explicit dialect; "text" and "html" ignore it
 transform(input, locale="fr", mode="markdown", dialect="commonmark")
+
+# mode "yaml" requires the keys whose values hold prose; every other line comes back untouched
+transform(input, locale="en-US", mode="yaml", keys=["description"])
 
 transform(input, locale="en-US", rules={"dashes": False})
 
@@ -255,6 +261,13 @@ func main() {
         Mode:    "markdown",
         Dialect: "commonmark",
     })
+
+    // Mode "yaml" requires the Keys whose values hold prose; every other line is untouched
+    _, _ = polytypo.Transform(input, polytypo.Options{
+        Locale: "en-US",
+        Mode:   "yaml",
+        Keys:   []string{"description"},
+    })
 }""",
     ),
     (
@@ -266,6 +279,9 @@ output = Polytypo.transform(input, locale: "de")
 
 # mode "markdown" requires an explicit dialect; "text" and "html" ignore it
 Polytypo.transform(input, locale: "fr", mode: "markdown", dialect: "commonmark")
+
+# mode "yaml" requires the keys whose values hold prose; every other line comes back untouched
+Polytypo.transform(input, locale: "en-US", mode: "yaml", keys: ["description"])
 
 Polytypo.transform(input, locale: "en-US", rules: { dashes: false })
 
@@ -287,6 +303,9 @@ $output = Polytypo::transform($input, 'de');
 // mode 'markdown' requires an explicit dialect; 'text' and 'html' ignore it
 // (markdown mode is not implemented by this runtime -- see spec/CONFORMANCE.md)
 Polytypo::transform($input, 'fr', mode: 'markdown', dialect: 'commonmark');
+
+// mode 'yaml' requires the keys whose values hold prose; every other line comes back untouched
+Polytypo::transform($input, 'en-US', mode: 'yaml', keys: ['description']);
 
 // opt out of a single rule; the order of the rest never changes
 Polytypo::transform($input, 'en-US', rules: ['dashes' => false]);
@@ -1470,6 +1489,8 @@ const DATA = {payload};
   const $mode = document.getElementById("pg-mode");
   const $dialectWrap = document.getElementById("pg-dialect-wrap");
   const $dialect = document.getElementById("pg-dialect");
+  const $keysWrap = document.getElementById("pg-keys-wrap");
+  const $keys = document.getElementById("pg-keys");
   const $input = document.getElementById("pg-input");
   const $output = document.getElementById("pg-output");
   const $count = document.getElementById("pg-count");
@@ -1549,6 +1570,12 @@ const DATA = {payload};
   const $callRb = document.getElementById("call-code-rb");
   const $callPhp = document.getElementById("call-code-php");
 
+  /** The `keys` field is comma-separated free text, so it needs splitting rather than reading.
+   * Empties are dropped: "description, title," would otherwise yield a trailing "", and an empty
+   * string is a legal key that matches no line — it would narrow the result silently instead of
+   * complaining. An empty field gives [], which is legal and processes nothing. */
+  const parseKeys = (raw) => raw.split(",").map((k) => k.trim()).filter((k) => k !== "");
+
   const strLit = (s) => JSON.stringify(s);
   const rubyStrLit = (s) => strLit(s).replace(/#\\{{/g, "\\\\#{{");
   const phpStrLit = (s) => "'" + s.replace(/\\\\/g, "\\\\\\\\").replace(/'/g, "\\\\'") + "'";
@@ -1557,9 +1584,18 @@ const DATA = {payload};
 
   function renderCallCode(options) {{
     const showDialect = options.mode === "markdown";
+    const showKeys = options.mode === "yaml";
     const locale = strLit(options.locale);
     const mode = strLit(options.mode);
     const dialect = strLit(options.dialect || "commonmark");
+    // `keys` is the visitor's own typed text, so every language's list goes through that
+    // language's own string escaper — the same treatment `locale` already gets, for a value that
+    // unlike `locale` is not drawn from a fixed enum.
+    const keyList = options.keys || [];
+    const keysJs = "[" + keyList.map(strLit).join(", ") + "]";
+    const keysGo = "[]string{{" + keyList.map(strLit).join(", ") + "}}";
+    const keysRb = "[" + keyList.map(rubyStrLit).join(", ") + "]";
+    const keysPhp = "[" + keyList.map(phpStrLit).join(", ") + "]";
 
     const jsCode =
       `import {{ transform }} from "polytypo";\\n\\n` +
@@ -1567,9 +1603,12 @@ const DATA = {payload};
       `  input, // your text, type: string\\n` +
       `  {{\\n` +
       `    locale: ${{locale}}, // required, type: string — one of: ${{LOCALE_LIST}}\\n` +
-      `    mode: ${{mode}}, // type: string, default: "text" — "text" | "html" | "markdown"\\n` +
+      `    mode: ${{mode}}, // type: string, default: "text" — "text" | "html" | "markdown" | "yaml"\\n` +
       (showDialect
         ? `    dialect: ${{dialect}}, // type: string, required because mode is "markdown" — "commonmark" | "mdx"\\n`
+        : "") +
+      (showKeys
+        ? `    keys: ${{keysJs}}, // type: string[], required because mode is "yaml" — the mapping keys whose values hold prose\\n`
         : "") +
       `  }},\\n` +
       `);`;
@@ -1580,9 +1619,12 @@ const DATA = {payload};
       `transform(\\n` +
       `    input,  # your text, type: str\\n` +
       `    locale=${{locale}},  # required, type: str — one of: ${{LOCALE_LIST}}\\n` +
-      `    mode=${{mode}},  # type: str, default: "text" — "text" | "html" | "markdown"\\n` +
+      `    mode=${{mode}},  # type: str, default: "text" — "text" | "html" | "markdown" | "yaml"\\n` +
       (showDialect
         ? `    dialect=${{dialect}},  # type: str, required because mode is "markdown" — "commonmark" | "mdx"\\n`
+        : "") +
+      (showKeys
+        ? `    keys=${{keysJs}},  # type: list[str], required because mode is "yaml" — the mapping keys whose values hold prose\\n`
         : "") +
       `)`;
     $callPy.innerHTML = highlightLines(pyCode, "#");
@@ -1592,9 +1634,12 @@ const DATA = {payload};
       `    input, // your text, type: string\\n` +
       `    polytypo.Options{{\\n` +
       `        Locale:  ${{locale}}, // required, type: string — one of: ${{LOCALE_LIST}}\\n` +
-      `        Mode:    ${{mode}}, // type: string, default: "text" — "text" | "html" | "markdown"\\n` +
+      `        Mode:    ${{mode}}, // type: string, default: "text" — "text" | "html" | "markdown" | "yaml"\\n` +
       (showDialect
         ? `        Dialect: ${{dialect}}, // type: string, required because Mode is "markdown" — "commonmark" | "mdx"\\n`
+        : "") +
+      (showKeys
+        ? `        Keys:    ${{keysGo}}, // type: []string, required because Mode is "yaml" — the mapping keys whose values hold prose\\n`
         : "") +
       `    }},\\n` +
       `)`;
@@ -1605,9 +1650,12 @@ const DATA = {payload};
       `Polytypo.transform(\\n` +
       `  input, # your text, type: String\\n` +
       `  locale: ${{rubyStrLit(options.locale)}}, # required, type: String — one of: ${{LOCALE_LIST}}\\n` +
-      `  mode: ${{rubyStrLit(options.mode)}}, # type: String, default: "text" — "text" | "html" | "markdown"\\n` +
+      `  mode: ${{rubyStrLit(options.mode)}}, # type: String, default: "text" — "text" | "html" | "markdown" | "yaml"\\n` +
       (showDialect
         ? `  dialect: ${{rubyStrLit(options.dialect)}}, # type: String, required because mode is "markdown" — "commonmark" | "mdx"\\n`
+        : "") +
+      (showKeys
+        ? `  keys: ${{keysRb}}, # type: Array<String>, required because mode is "yaml" — the mapping keys whose values hold prose\\n`
         : "") +
       `)`;
     $callRb.innerHTML = highlightLines(rbCode, "#");
@@ -1617,9 +1665,12 @@ const DATA = {payload};
       `    $input, // your text, type: string\\n` +
       `    [\\n` +
       `        'locale' => ${{phpStrLit(options.locale)}}, // required, type: string — one of: ${{LOCALE_LIST}}\\n` +
-      `        'mode' => ${{phpStrLit(options.mode)}}, // type: string, default: 'text' — 'text' | 'html' | 'markdown'\\n` +
+      `        'mode' => ${{phpStrLit(options.mode)}}, // type: string, default: 'text' — 'text' | 'html' | 'markdown' | 'yaml'\\n` +
       (showDialect
         ? `        'dialect' => ${{phpStrLit(options.dialect)}}, // type: string, required because mode is 'markdown' — 'commonmark' | 'mdx'\\n`
+        : "") +
+      (showKeys
+        ? `        'keys' => ${{keysPhp}}, // type: list<string>, required because mode is 'yaml' — the mapping keys whose values hold prose\\n`
         : "") +
       `    ],\\n` +
       `);`;
@@ -1699,6 +1750,7 @@ const DATA = {payload};
       const n = text.length;
       $count.textContent = n ? n.toLocaleString("en-US") + " chars" : "";
       $dialectWrap.hidden = $mode.value !== "markdown";
+      $keysWrap.hidden = $mode.value !== "yaml";
 
       if (!text) {{
         $output.classList.remove("error");
@@ -1711,6 +1763,7 @@ const DATA = {payload};
 
       const options = {{ locale: $locale.value, mode: $mode.value }};
       if ($mode.value === "markdown") options.dialect = $dialect.value;
+      if ($mode.value === "yaml") options.keys = parseKeys($keys.value);
 
       // The call block describes what the form is set to, not what the engine returned — it is
       // pure string building. Rendered before every engine branch below so it tracks the controls
@@ -1748,6 +1801,9 @@ const DATA = {payload};
   function config() {{
     const props = {{ locale: $locale.value, mode: $mode.value }};
     if ($mode.value === "markdown") props.dialect = $dialect.value;
+    // `keys` is deliberately absent: it is free text the visitor typed about their own document,
+    // not one of a fixed set of values, and this object is the one thing here that leaves the
+    // page. `mode: "yaml"` already records that the mode was used.
     return props;
   }}
 
@@ -1792,6 +1848,10 @@ const DATA = {payload};
     render();
   }});
   $mode.addEventListener("change", () => {{
+    startEngineLoad();
+    render();
+  }});
+  $keys.addEventListener("input", () => {{
     startEngineLoad();
     render();
   }});

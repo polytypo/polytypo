@@ -39,14 +39,17 @@
       </tr>
       <tr>
         <td class="mono">mode</td>
-        <td class="mono">"text" | "html" | "markdown"</td>
+        <td class="mono">"text" | "html" | "markdown" | "yaml"</td>
         <td class="mono">"text"</td>
         <td class="small muted">
           Selects the adapter. <code>text</code> has no parser and no skip list: the whole string is
           prose to it. <code>html</code> parses with parse5 and takes a fragment as readily as a
           whole document; <code>markdown</code> parses with micromark. Both run the same rule
           pipeline only on prose text nodes, never inside tags, attributes, character references,
-          code spans or code blocks.
+          code spans or code blocks. <code>yaml</code> uses no parser either — two of the five
+          runtimes' YAML libraries cannot report the source offsets it would need — so it is a
+          specified left-to-right scan, and it is the one mode that skips by default: it processes
+          only the values of the keys you name in <code>keys</code>.
         </td>
       </tr>
       <tr>
@@ -57,7 +60,21 @@
           Required when <code>mode</code> is <code>"markdown"</code>, with no default — omitting it
           throws <code>POLYTYPO_INVALID_DIALECT</code>. Dialect detection is forbidden by design:
           one <code>&lt;https://…&gt;</code> autolink is valid CommonMark and invalid MDX, so a
-          heuristic would silently reclassify content. Ignored for the other two modes.
+          heuristic would silently reclassify content. Ignored for the other three modes.
+        </td>
+      </tr>
+      <tr>
+        <td class="mono">keys</td>
+        <td class="mono">string[]</td>
+        <td class="mono">—</td>
+        <td class="small muted">
+          Required when <code>mode</code> is <code>"yaml"</code>, with no default — omitting it
+          throws <code>POLYTYPO_INVALID_OPTION</code>. Names the mapping keys whose values hold
+          prose. There is no guess to make here: nothing in YAML's syntax separates a
+          <code>description:</code> from a <code>run:</code>, and a mode that processed every string
+          scalar would rewrite shell commands. Matching is exact, with no paths or globs, and the
+          key itself is never processed. An empty list is legal and processes nothing. Ignored for
+          the other three modes.
         </td>
       </tr>
       <tr>
@@ -76,7 +93,7 @@
 
   <h3>Error codes</h3>
   <p class="small muted" style="margin-top: -6px">
-    All seven are part of the contract in every runtime; messages are English and are not.
+    All eight are part of the contract in every runtime; messages are English and are not.
   </p>
   <div class="scroll">
     <table class="kv">
@@ -93,14 +110,23 @@
       <tr>
         <td class="mono">POLYTYPO_INVALID_MODE</td>
         <td class="small muted">
-          <code>mode</code> is set to something other than <code>text</code>, <code>html</code> or
-          <code>markdown</code>.
+          <code>mode</code> is set to something other than <code>text</code>, <code>html</code>,
+          <code>markdown</code> or <code>yaml</code>.
         </td>
       </tr>
       <tr>
         <td class="mono">POLYTYPO_INVALID_DIALECT</td>
         <td class="small muted">
           <code>mode: "markdown"</code> without a <code>dialect</code>, or an unrecognised one.
+        </td>
+      </tr>
+      <tr>
+        <td class="mono">POLYTYPO_INVALID_OPTION</td>
+        <td class="small muted">
+          An option value outside its permitted set, where no more specific code applies —
+          <code>mode: "yaml"</code> without <code>keys</code>, or a <code>narrowNbsp</code> that is
+          neither <code>"narrow"</code> nor <code>"nbsp"</code>. <code>mode</code> and
+          <code>dialect</code> keep their own codes above.
         </td>
       </tr>
       <tr>
