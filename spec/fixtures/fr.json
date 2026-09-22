@@ -1,5 +1,5 @@
 {
-  "spec": "1.3.1",
+  "spec": "1.4.0",
   "locale": "fr",
   "cases": [
     {
@@ -879,6 +879,55 @@
       "in": "description: |\n  Il a dit \"bonjour\n  monsieur\" et il est parti\n",
       "out": "description: |\n  Il a dit « bonjour\n  monsieur » et il est parti\n",
       "note": "modes.md §3.2 model C in a locale whose quotation output is guillemets plus U+00A0 rather than curly quotes — structurally different from the en-US case of the same shape."
+    },
+    {
+      "id": "fr-quotes-span-boundary-elision-declined",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "Il dit 'l'<em>idée</em> est bonne.' Fin.",
+      "out": "Il dit « l’<em>idée</em> est bonne. » Fin.",
+      "note": "quotes.md §3.2's span-boundary elision veto (spec 1.4.0): the elided l' stands flush against the emphasis boundary, so modes.md §3.2's marker occupies the position the attaching word would hold and the medial-elision veto cannot fire. The cited quotes.elisionClitics.before entry l declines the mark, apostrophe (order 50) renders it U+2019 by its case 3 across the marker, and the author's own pair keeps the guillemets. Before spec 1.4.0 this produced « l » around the single letter and abandoned the real closing mark as U+0027 (canonical issue #53)."
+    },
+    {
+      "id": "fr-quotes-span-boundary-elision-multi-letter-fragment",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "Il dit 'jusqu'<em>ici</em> tout va bien.' Fin.",
+      "out": "Il dit « jusqu’<em>ici</em> tout va bien. » Fin.",
+      "note": "Why quotes.elisionClitics carries jusqu and not only qu: the veto compares the MAXIMAL LETTER run, which is jusqu here, so an entry qu could not match this at all. lorsqu, puisqu and quoiqu are listed for the same reason."
+    },
+    {
+      "id": "fr-quotes-span-boundary-elision-caps-not-folded",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "Il dit 'QU'<em>il</em> vienne.' Fin.",
+      "out": "Il dit « QU »<em>il</em> vienne.' Fin.",
+      "note": "Accepted limitation, pinned rather than left to be rediscovered: the veto folds only the run's FIRST code point, and only ASCII A-Z, so the all-caps QU' does not match the entry qu and the inversion survives. Same leniency, and same limit, as the listed elision veto's left/right words. quotes.md §7 item 10."
+    },
+    {
+      "id": "fr-quotes-span-boundary-quotation-not-declined",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "Il dit <em>'oui'</em> ici.",
+      "out": "Il dit <em>« oui »</em> ici.",
+      "note": "The negative control the whole mechanism is shaped around. A quotation wholly inside an emphasis span has the marker flush against its opening mark too, exactly as an elision does — what separates them is that the LETTER run oui is not a listed fragment. This is why the marker itself must not be allowed to satisfy the medial-elision veto's ALNUM test, and why the run is compared whole rather than as a prefix."
+    },
+    {
+      "id": "fr-quotes-span-boundary-elision-markdown",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Il dit 'l'*idée* est bonne.' Fin.\n",
+      "out": "Il dit « l’*idée* est bonne. » Fin.\n",
+      "note": "The same shape in markdown emphasis rather than an HTML element: modes.md §3.2's marker model is mode-independent, so the two agree on identical characters split the same way (modes.md §7.4)."
+    },
+    {
+      "id": "fr-quotes-span-boundary-listed-fragment-quoted",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "Il dit <em>'l'</em> ici.",
+      "out": "Il dit <em>’l’</em> ici.",
+      "note": "The accepted false positive in the locale with the widest exposure to it: fr lists thirteen fragments, eight of them a single letter, so a quotation whose whole content is one of them is read as an elision here more readily than anywhere else. Same class as en-us-html-span-boundary-listed-fragment-quoted and as the universal medial-n veto's accepted The letter 'n' is common. — pinned in both locales so the exposure sits in the suite rather than in someone's content. quotes.md §3.2, §6 row S7."
     }
   ]
 }

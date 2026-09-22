@@ -18,7 +18,11 @@
         "elided": "n",
         "right": "roll"
       }
-    ]
+    ],
+    "elisionClitics": {
+      "before": [],
+      "after": ["s"]
+    }
   },
   "dash": {
     "parenthetical": "em-tight",
@@ -128,6 +132,12 @@
       "cite": "The Chicago Manual of Style Online, Q&A, topic “Word Division”: “we don’t include any recommendation that says you must carry an abbreviation that ends in a period over to the next line when the sentence continues beyond the abbreviation. So a line is allowed to end with an ‘a.m.’ or ‘Jr.’ or the like that occurs in the middle of a sentence.”",
       "url": "https://www.chicagomanualofstyle.org/qanda/data/faq/topics/WordDivision/faq0007.html",
       "note": "`beforeNumber` and `beforeWord` are empty, and Chicago does not merely omit reference abbreviations from its nonbreaking-space guidance — it states positively that no such rule exists, so `No. 5`, `p. 12` and `pp. 12–14` are refused on the source’s own words rather than on an argument from silence (issue #30). The same answer attributes the practice to typesetters rather than to Chicago: “some typesetters will use a nonbreaking space to prevent a compound like ‘St. Louis’ or ‘Dr. Smith’ from breaking at the end of a line” — which is why `beforeWord` stays empty too; the named exception is initials in a name, carried by `initialBinding`. CMOS Shop Talk, “Navigating Spaces in Manuscripts and Beyond” (15 June 2021), cited above for `initialBinding` and `beforeUnits`, introduces its four contexts with “can be helpful in the following contexts, among others”, so it must not be described as an exhaustive list."
+    },
+    {
+      "rule": "quotes",
+      "cite": "The Chicago Manual of Style, 7.16 “Possessive form of most nouns” (section number and title confirmed against the publisher's own chapter-7 table of contents; cited as 7.16–19 and 7.22 by the CMOS Q&A on the 18th-edition site). Verbatim, as reproduced by CMOS Shop Talk, “Section 7.16 in the Spotlight”, 12 May 2015: “The possessive of most singular nouns is formed by adding an apostrophe and an s.” Reconfirmed for the current edition by CMOS Shop Talk, 31 August 2021: “Chicago adds an apostrophe and an s to form the possessive of a singular noun, including singular nouns ending in s” (see CMOS 7.16)",
+      "url": "https://cmosshoptalk.com/2021/08/31/introducing-the-chicago-manual-of-style-for-perfectit/",
+      "note": "Supports the single entry quotes.elisionClitics.after = [\"s\"] — the possessive s, not the contraction enclitics. t, ll, re, ve, d and m are deliberately absent: nobody writes `won`'t, so they have no attested occurrence in the shape this veto is scoped to, whereas possessivising a set-off identifier (`x`'s printer) is everyday technical prose and is the shape reported in canonical issue #53. Chicago states the rule, not a code point; U+2019 follows from apostrophe.md §3.3, which is unchanged. Edition and section provenance is mixed deliberately and should not be tidied into a single number: the numbered paragraph itself is paywalled, the verbatim wording above is the 16th edition's (the 2015 post carries an editor's note saying so), and the 2021 post plus the 18th-edition Q&A are what establish that 7.16 is still the general rule. CMOS 7.22's alternative practice (Burns' rather than Burns's) does not affect this entry: the veto matches the maximal LETTER run to the RIGHT of the mark, so Burns's fires on s while Burns' has no letter there and fires nothing. CMOS 7.29 “Possessive with italicized or quoted terms” is a closer fit to the reported shape than 7.16 and would strengthen this citation, but its text is paywalled and was not read — only its title, from the table of contents."
     }
   ]
 }

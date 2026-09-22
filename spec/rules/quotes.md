@@ -1,8 +1,9 @@
 # Rule: `quotes`
 
 **Order:** 40. **Default:** on. **Modes:** text, html, markdown, yaml.
-**Spec version:** 1.1.0 (0.4.1 for everything except the universal medial-`n` elision veto
-described in §3.2 and the History section below).
+**Spec version:** 1.4.0 (0.4.1 for everything except the universal medial-`n` elision veto
+(1.1.0) and the span-boundary elision veto (1.4.0), both described in §3.2 and in the History
+section below).
 
 ---
 
@@ -85,6 +86,62 @@ normalising the spacing immediately inside each pair.
   non-empty literal. Both validators read the identical pinned table `src/engine/unicode.ts`
   imports (`scripts/lib/is-letter.mjs`), so validation and the runtime engine cannot classify a
   code point differently.
+
+- `quotes.elisionClitics` (spec 1.4.0) — an object with two arrays, `before` and `after`, each
+  a list of literal lowercase strings, consulted only by the **span-boundary elision veto**
+  (§3.2) to **decline** pairing a `NARROW` mark as a quotation when the mark is flush against an
+  inline span boundary on one side and a listed word fragment on the other. Both lists may be
+  empty, and empty is the default for a locale with no citable closed set of such fragments.
+
+  **Both lists are defined positionally, not by what the fragment attaches to.** `before` is
+  matched against the maximal `LETTER` run ending immediately *before* the mark; `after` against
+  the run beginning immediately *after* it. Attachment direction is the linguistic motivation for
+  an entry, never the test — and the two do not coincide here, because the whole point of this
+  veto is that the word the fragment attaches to may be on the far side of a span boundary and
+  therefore absent from the rule's input. In `` `x`'s `` the possessive attaches back to the `x`
+  inside the code span, yet what stands to the mark's left is the `MARKER`; the fragment this
+  field must name is the `s` on the **right**. Reading the lists as attachment claims makes
+  `after` look inert (a fragment with a `LETTER` on each side is already vetoed as medial) and is
+  the one misreading to guard against.
+
+  - **`before`** — French `l'`, `d'`, `qu'`, `jusqu'` give `l`, `d`, `qu`, `jusqu`; Portuguese
+    `d'`, `n'`, `pel'`, `Sant'` give `d`, `n`, `pel`, `sant`; Italian `l'`, `un'`, `d'`.
+  - **`after`** — English `x's` gives `s`; Dutch `'s morgens`, `'t was`, `'ns kijken` give `s`,
+    `t`, `ns`.
+
+  **An entry is the whole maximal run, never a prefix of one.** French needs `jusqu`, `lorsqu`,
+  `puisqu` and `quoiqu` as entries of their own: the run in `jusqu'à` is `jusqu`, so an entry
+  `qu` cannot match it. The same arithmetic is why Italian's `l` does not cover `dell'arte` (the
+  run is `dell`), which makes a partial list honest rather than misleadingly narrow.
+
+  "Elision" here covers the possessive, exactly as `apostrophe.md` §3.3 case 3 does in its own
+  name ("Trailing elision or possessive") — English `'s` is not an elision and is the one entry
+  that locale has.
+
+  **Every code point of every entry must be a `LETTER`**, and an entry must be non-empty. The
+  constraint is enforced at the data boundary by `locale.schema.json` and by
+  `scripts/validate-spec.mjs`, for the reason §3.2 gives: the matcher walks a maximal `LETTER`
+  run, so an entry containing anything else could never match and would be dead data rather than
+  a rejected claim. Entries are authored **lowercase**; §3.2's matcher folds only the first code
+  point, and only ASCII `A`–`Z`, so `L'` matches an entry `l` and `QU'` does not match `qu`.
+  What is *enforced* at the data boundary is exactly that much and no more: an entry whose first
+  code point is ASCII `A`–`Z` is rejected, because the fold makes it unmatchable by
+  construction. An entry capitalised in a script the fold does not reach is not rejected — it is
+  simply matched as written, which is well-defined and identical in every runtime, so the
+  authoring convention is stated as a convention rather than as a validated constraint.
+
+  **The leniency is therefore Latin-only in effect, and that is a scoping fact, not an
+  oversight.** A Cyrillic or Greek entry cannot serve: `ru`'s own cited example is `Д'Аламбер`
+  with a capital U+0414, which a lowercase entry `д` will not match, while an uppercase entry
+  would miss `д'Артаньян` in the same citation. Widening the fold is `ARCHITECTURE.md` §4.4's
+  banned territory (no locale-dependent case mapping — Turkish dotless ı), so a locale whose
+  script the fold does not reach is `[]` on mechanism grounds, before its orthography is even
+  consulted. `ru`, `uk` and `el` are `[]` for exactly this reason as well as their own.
+
+  A decline-only pair of lists can never widen what this rule pairs, only narrow it — the same
+  principle `elisionIdioms` above rests on, stated normatively in `nbsp.md` §2.1 and governing
+  every list-valued field in `locale.schema.json`. Both lists empty makes the veto a total
+  no-op and classifies every mark exactly as spec 1.3.1 did.
 
 `innerSpace` is read and acted on in **one direction only**: `quotes` *deletes* an inner space
 when the assigned pair's `innerSpace` is `"none"`, and never inserts or converts one. Insertion
@@ -446,6 +503,107 @@ over these bytes could. The trade is deliberate and was made with the numbers in
 for this same shape by declining **every** short quotation in **every** locale, a far larger and
 far commoner class of error than quoting the single letter *n*.
 
+**Span-boundary elision veto (spec 1.4.0, `NARROW` marks only, locale data
+`quotes.elisionClitics`, literal reads).** The two vetoes above both need a real code point on
+each side of the mark. `modes.md` §3.2's boundary marker is not one, so in `html` and `markdown`
+a mark written flush against an inline span — `` `x`'s ``, `<code>x</code>'s`, `*x*'s`,
+`l'<em>idée</em>` — has a `MARKER` where the attaching word would be, escapes both, and is
+classified as an ordinary quotation candidate. `Llit = MARKER` is in `OPENISH`, so the mark
+`canOpen`; inside a quotation it has a partner to take, and the accepted pairing inverts:
+`He says 'avoid `` `x` ``'s printer.' Done.` was typeset with the possessive opening the
+quotation and the author's opening mark demoted to a closing glyph, in every locale (issue #53,
+measured on 1.3.1).
+
+This veto reads the attaching word instead of the missing code point:
+
+> For a mark at `i` with `cp[i] ∈ NARROW`, **both** tests below are evaluated and either firing
+> sets both capabilities false.
+>
+> - **`Llit = MARKER`** (the mark is flush against a span boundary on its left). Let `R` be the
+>   maximal run of `LETTER` code points starting at `i+1`, and `outer` the code point after that
+>   run, or `NONE`. If `R` is non-empty, `outer ∉ ALNUM`, and `R` equals an entry of
+>   `quotes.elisionClitics.after` — **every code point exact, except the first, which folds
+>   ASCII `A`–`Z` to `a`–`z` by code point and nothing else** — then veto.
+> - **`Rlit = MARKER`.** Symmetric: `L` is the maximal `LETTER` run *ending* at `i-1`, `outer`
+>   the code point before it, and the comparison is against `quotes.elisionClitics.before`.
+>
+> The folding is the one `elisionIdioms` already specifies, for the same reason and by the same
+> mechanism — never a platform locale function (`ARCHITECTURE.md` §4.4).
+
+**One literal neighbour must be the marker, and that is the whole scope of this veto.** With a
+real code point on both sides the medial-elision veto above already declines the same shape
+(`x's` needs no span boundary to be a possessive), so this one adds nothing there and is not
+consulted. In `text` mode that makes the veto vacuous: no marker is produced at all, so a
+locale's lists cannot change what `text` does.
+
+**In `yaml` the veto is reachable only if the scan ever puts two spans on one line, and it must
+not be special-cased either way.** `modes.md` §3.5 step 2 says the −2 line marker is the
+*common* case there, not the only one, so this document does not claim the veto is unreachable
+in `yaml`. What it does claim is narrower and checkable: the scan yields no spans at all inside
+a flow collection (`modes.md` §3.8.4 step 9), and a block mapping carries one key per line, so no
+construction has yet been exhibited in which two `yaml` spans are separated by a gap without a
+line terminator — and a −2 marker is in `BREAK`, which neither test reads. Whether a −1 is
+constructible in `yaml` is **open**, and nothing here depends on the answer, because the trigger
+is the marker and not the mode: **a runtime must not implement this veto behind a
+`mode == "yaml"` test, or any other mode test.** Two modes agreeing on identical characters is
+`modes.md` §7.4's requirement, and a mode conditional here would break it the moment such a
+construction is found.
+
+**The run is compared whole, never as a prefix.** `<em>'sure'</em>` mid-sentence has the run
+`sure`, which is not an entry, and pairs as the quotation it is; a prefix test would have matched
+the entry `s` and eaten it. The `outer ∉ ALNUM` test is what makes the run maximal in the
+direction it grows — without it `` `x`'st `` would match `s`.
+
+**What was tried and rejected: letting the `MARKER` count as content in the medial-elision
+veto.** The obvious one-line fix — treat `MARKER` as satisfying that veto's `ALNUM` test, on the
+marker-adjacent side or on both — was implemented and measured, and it is wrong. It cannot
+separate a possessive from a quotation that legitimately *begins or ends* at a span boundary,
+which is the shape `modes.md` §3.3 put the marker in `OPENISH` and `CLOSEISH` to support in the
+first place. Its witnesses are the `NARROW` forms of those rows — `<em>'fine'</em>` and
+`'a'<code>x</code>'b'` — and only those: this veto and the medial one are both stated over
+`NARROW`, so the `WIDE` rows `modes.md` §3.3 writes with U+0022 are untouched by either variant
+and are witnesses for a different mistake (removing the marker from the classes outright).
+Measured on polytypo-js: both variants break the released conformance fixture
+`en-us-markdown-commonmark-boundary-nested-quotes` (`*'hi'*` ⟶ `*’hi’*`, where `*‘hi’*` is
+pinned), and the symmetric variant additionally breaks every quotation whose closing mark abuts a
+span — `<em>He said 'hi'</em>`. A clitic list is narrower than the marker: it fires on
+`` `x`'s `` and not on `` `x`'fine' ``, which no test over the marker alone can do, because the
+marker is the same code point in both.
+
+**Accepted false positive, recorded rather than tolerated.** A quotation inside an inline span
+whose content is *exactly* a listed fragment is read as an elision:
+`He said <em>'s'</em> loudly.` becomes `He said <em>’s’</em> loudly.`, and `Il dit <em>'l'</em>
+ici.` likewise in `fr`. This is the same exposure, and strictly narrower than, the universal
+medial-`n` veto's accepted `The letter 'n' is common.` — it needs the span boundary as well as
+the single-fragment content. `'x'`, `'no'`, `'fine'` and `'sure thing'` in the same position are
+unaffected; the class is bounded by the lists, which are short and cited. Pinned as fixtures.
+
+**What this veto does not close, and why no veto can.** A *plural* possessive after a span —
+`` `xs`' printer `` — has the marker on its left and a space on its right, so its attaching run
+is empty and neither test above applies. That shape is also, code point for code point, a
+quotation's closing mark after a span (`'<em>hello</em>'`, a `modes.md` §3.3 row), so no test
+over these neighbours can separate them. It remains a closing candidate, and because pairing is
+resolved per document it remains able to close a mark far away: with `en-GB`,
+
+```
+A 'stray mark here.
+
+Then 'inner' text.
+```
+
+typesets as `A ’stray mark here.` / `Then ‘inner’ text.`, and appending `See `` `x`' `` data.`
+re-pairs the first mark with the new one, making the middle pair nested and changing a line the
+edit did not touch. Measured on 1.3.1 and unchanged by this veto.
+
+**This is issue #53 §3, and it stays open.** The report's own trigger lines are
+`` `quotes`' locale data `` and `` `dashes`' own admissibility `` — plural possessives, exactly
+this shape — so the cross-paragraph effect it documents in a real article is *not* repaired by
+spec 1.4.0. Measured on this change, `markdown`/`commonmark`, `en-GB`:
+`It is 'the `` `quotes`' `` locale data' here.` gives
+`It is ‘the `` `quotes`’ `` locale data’ here.` — the plural possessive closes the quotation two
+words early and the author's own closing mark is left to `apostrophe` as a stray U+2019. §1 of
+that issue is closed and §3 is not; the two must not be conflated when the issue is triaged.
+
 **V1 — same-V1-identity adjacency veto** (both widths):
 
 > Define `V1ID(c) = U+2019 if c = U+0027, else c` — the **V1 identity** of a code point. `V1ID`
@@ -774,6 +932,11 @@ rule that can falsify it named), per `pipeline-idempotency.md` §5.2.
 
 - **[P] A medial apostrophe:** `don't`, `l'été`, `O'Brien`, `Hawai'i`, `1990's` — and their
   U+2019 forms on a second pass. Vetoed in §3.2.
+- **[P] A possessive or elision written flush against an inline span boundary** (spec 1.4.0):
+  `` `x`'s ``, `<code>x</code>'s`, `*x*'s`, `l'<em>idée</em>` — where the attaching fragment is a
+  cited `quotes.elisionClitics` entry. Vetoed in §3.2's span-boundary elision veto and converted
+  by `apostrophe`. **[P]** rather than **[R]** because the guarantee is the joint outcome of two
+  rules: this one declines to pair, `apostrophe` (order 50) emits the U+2019.
 - **[R] A leading elision that finds no partner** (`'90s`, `'tis`) and **[R] a trailing
   possessive that finds no partner** (`the dogs' bowls`). Handed to `apostrophe`.
 - **[R] A foot or inch mark:** `6' 2"`. Both marks are `canClose` only with an empty stack. The
@@ -808,6 +971,13 @@ revision introduces; §5's Corollary A1 explains why no U+2019-specific restrict
 `spec/fixtures/` pins the verified behaviour across `en-GB`, `en-US`, `fi` and `sv` (§6, rows
 E1–E4) so the tradeoff is a citable fact rather than an assumption.
 
+**The same family, reachable through a span boundary, and likewise not closed (spec 1.4.0).** A
+*plural* possessive after a span — `` `xs`' printer `` — is byte-identical to a quotation's
+closing mark after a span, so §3.2's span-boundary elision veto cannot reach it and no test over
+those neighbours could: its attaching fragment is empty on both sides. It stays a `canClose`
+candidate able to close a mark arbitrarily far away, which is item 3's non-locality with a span
+boundary standing in for the elision. §3.2 carries the measured five-line witness.
+
 ---
 
 ## 5. Idempotency argument
@@ -824,11 +994,14 @@ can *gain* a capability. Claim 3 rested on both. Three replacements follow.
 > candidate at any index `i ≠ j`.
 
 *Proof.* A candidate's four neighbour reads are compared against `NONE`, `SPACELIKE`, `OPENISH`,
-`CLOSEISH`, `DASHISH`, `QUOTEMARK`, `MARKER` and `ALNUM` (the medial veto), and V1 compares
-`V1ID` of the relevant code points against `V1ID(g)` (spec 0.4.1). Every `QUOTEMARK` is in
-`OPENISH`, in `CLOSEISH`, in `QUOTEMARK`, in none of `SPACELIKE`, `DASHISH`, `ALNUM`, and is
-neither `MARKER` nor `NONE`. All seven class tests are therefore **invariant**, not merely
-monotone. The skip walks are invariant because `QUOTEMARK ∩ INLINE-SPACE = ∅`.
+`CLOSEISH`, `DASHISH`, `QUOTEMARK`, `MARKER`, `ALNUM` (the medial veto) and `LETTER` (the
+span-boundary veto's run walk, spec 1.4.0), and V1 compares `V1ID` of the relevant code points
+against `V1ID(g)` (spec 0.4.1). Every `QUOTEMARK` is in `OPENISH`, in `CLOSEISH`, in
+`QUOTEMARK`, in none of `SPACELIKE`, `DASHISH`, `ALNUM`, `LETTER`, and is neither `MARKER` nor
+`NONE`. All eight class tests are therefore **invariant**, not merely monotone. The skip walks
+are invariant because `QUOTEMARK ∩ INLINE-SPACE = ∅`, and the span-boundary veto's `LETTER` runs
+are invariant for the same reason — no quote glyph is a `LETTER`, so substituting one can neither
+extend nor truncate a run, nor change the `outer ∉ ALNUM` test that bounds it.
 
 **V1 is invariant too, as of spec 0.4.1, and this required changing V1 itself, not just arguing
 about it.** Before 0.4.1, V1 compared raw code points, and replacing a neighbour's `U+0027` with
@@ -871,7 +1044,10 @@ by the identical literal `rock`/`n`/`roll` context — the veto fires identicall
 vetoed again, `quotes` makes no pairing, and `apostrophe` does not act on U+2019 at all (§4).
 The construction is a fixed point (§6 row P4 pins it).
 
-**Modes.** `text` is the base case above. In `html` and `markdown`, `modes.md` §3.2's
+**Modes.** `text` is the base case above — and for the span-boundary veto that base case is
+vacuous, since `text` produces no marker at all and neither of its two tests can fire there. For
+`yaml` see §3.2: the veto is marker-triggered rather than mode-triggered, so it needs no separate
+argument and must not be given a mode conditional. In `html` and `markdown`, `modes.md` §3.2's
 concatenation-with-marker model means the veto's bounded lookaround can land on a `MARKER` (a
 negative integer, in none of `LETTER`, `INLINE-SPACE`, `NARROW`) exactly where a real code
 point would otherwise be — a context word split from its mark by an element or span boundary
@@ -888,7 +1064,12 @@ rest of this rule's determinism.
 > *neighbour*, Lemma A applies — **including its V1 clause**, now that V1 itself compares `V1ID`
 > rather than raw code points. As the mark *itself*: both `U+0027` and `U+2019` are in `NARROW`,
 > so the stack partition is unchanged; the medial veto is stated over `NARROW`, so its verdict is
-> unchanged; neither is in `SPACE-RIGHT`/`SPACE-LEFT`, by constraint **Q-A**; and `V1ID` maps
+> unchanged; the span-boundary veto (spec 1.4.0) is stated over `NARROW` too and reads only the
+> `LETTER` run beyond the mark and the `MARKER` beside it, neither of which `apostrophe` touches,
+> so its verdict is unchanged — which is exactly what makes the fix it performs a fixed point: a
+> vetoed mark survives pass 2 as U+0027, `apostrophe` emits U+2019 in its place (case 4 across a
+> `MARKER` on the left, case 3 across one on the right, both already specified), U+2019 is in
+> `NARROW`, and the next pass vetoes the same index again; neither is in `SPACE-RIGHT`/`SPACE-LEFT`, by constraint **Q-A**; and `V1ID` maps
 > both to the same value, so V1's verdict on the mark's own candidacy is unchanged too. Every
 > verdict is identical. This is a genuine **CO-S** discharge in the sense of
 > `pipeline-idempotency.md` §5.1a — `E(apostrophe) = {U+2019}` is wholly inert for this rule,
@@ -1138,6 +1319,22 @@ reason as N1–N5 above; they are verified against `spec/fixtures/en-US.json`.
 | H2 | `html` | `<p>rock 'n' <em>roll</em></p>` | `<p>rock ’n’ <em>roll</em></p>` | mirror case on `right` |
 | H3 | `markdown` (`commonmark`) | `*rock* 'n' roll\n` | `*rock* ’n’ roll\n` | `left` word is inside an emphasis span; same reasoning as H1, and the result matches `text` mode on the same characters split the same way |
 
+#### Span-boundary elision veto — `html`, `markdown` (spec 1.4.0)
+
+Every row is measured output, and each is pinned as a conformance fixture; the `Why` column is
+what a port should be able to re-derive from §3.2 alone.
+
+| # | Locale | Input | Output | Why |
+| --- | --- | --- | --- | --- |
+| S1 | `en-GB` | `` He says 'avoid `x`'s printer.' Done. `` | `` He says ‘avoid `x`’s printer.’ Done. `` | `Llit` is the `MARKER`, the run right of the mark is `s`, and `s` is a cited `after` entry. Vetoed; `apostrophe` case 4 emits U+2019; the author's own pair keeps the primary glyphs. Through 1.3.1 this gave `` ’avoid `x`‘s printer.’ `` |
+| S2 | `fr` | `Il dit 'l'<em>idée</em> est bonne.' Fin.` | `Il dit «⍽l’<em>idée</em> est bonne.⍽» Fin.` | the mirror direction: `Rlit` is the `MARKER`, the run left of the mark is `l`, a cited `before` entry. Through 1.3.1 this gave `Il dit «⍽l⍽»<em>idée</em> est bonne.' Fin.` — guillemets around one letter, the real closing mark abandoned |
+| S3 | `fr` | `Il dit 'jusqu'<em>ici</em> tout va bien.' Fin.` | `Il dit «⍽jusqu’<em>ici</em> tout va bien.⍽» Fin.` | the run is compared **whole**: it is `jusqu`, so an entry `qu` could not match it. This is why `jusqu`, `lorsqu`, `puisqu` and `quoiqu` are listed in their own right |
+| S4 | `fr` | `Il dit <em>'oui'</em> ici.` | `Il dit <em>«⍽oui⍽»</em> ici.` | the negative control the mechanism exists to preserve. `Llit` is the `MARKER` here too — what separates this from S2 is only that `oui` is not a listed fragment |
+| S5 | `en-GB` | `` He says 'avoid `xs`' printer.' Done. `` | `` He says ‘avoid `xs`’ printer.' Done. `` | **not closed.** The plural possessive's run is empty, so neither test applies, and these code points are also a closing mark after a span. The second mark takes the pairing, the third is abandoned as U+0027. §4, §7 item 10, issue #53 §3 |
+| S6 | `fr` | `Il dit 'QU'<em>il</em> vienne.' Fin.` | `Il dit «⍽QU⍽»<em>il</em> vienne.' Fin.` | **not closed.** The fold reaches only the run's first code point, and only ASCII `A`–`Z`, so `QU` does not match `qu` and the inversion survives. Same limit as the listed veto's context words |
+| S7 | `en-US` | `He said <em>'s'</em> loudly.` | `He said <em>’s’</em> loudly.` | the accepted false positive: a quotation inside a span whose whole content is a listed fragment. Narrower than the medial-`n` veto's own accepted `The letter 'n' is common.`, since it needs the boundary as well |
+| S8 | `nl` | `Hij zegt 'ik kom <em>vroeg </em>'s avonds terug.' Klaar.` | `Hij zegt “ik kom <em>vroeg </em>’s avonds terug.” Klaar.` | `'s` is a word-*initial* omission, so its run lies to the mark's right and the entry is an `after` one — the clearest case for reading both lists positionally (§2) |
+
 ### `en-GB` — primary `‘ ’`, secondary `“ ”`
 
 | # | Input | Output | Why |
@@ -1276,6 +1473,19 @@ Ordered by how much this matters.
    text. §6's dedicated adversarial sweep found no failures, but the protection that remains is
    the vetoes and the gate, not an independent structural guarantee.
 
+10. **The span-boundary defect is closed for a cited fragment and open for everything else
+    (spec 1.4.0).** §3.2's span-boundary elision veto reads `quotes.elisionClitics`, so a locale
+    with empty lists is classified exactly as 1.3.1 classified it — issue #53's inversion is
+    still reachable there, and the fix for that locale is a cited entry, not a change to this
+    rule. Two shapes stay open in **every** locale, both for the same reason: the attaching
+    fragment is not there to read. A plural possessive after a span (`` `xs`' ``) has an empty
+    run and is byte-identical to a closing mark after a span (§4) — **this is issue #53 §3, the
+    cross-paragraph witness that motivated the report, and it is open**; and a fragment written in
+    capitals (`QU'<em>il</em>`) fails the first-code-point folding this rule shares with item 8's
+    listed veto. Neither is a candidate for a wider mechanism: widening the folding is
+    `ARCHITECTURE.md` §4.4's banned territory, and the plural possessive has no local evidence at
+    all.
+
 ---
 
 ## History
@@ -1322,3 +1532,18 @@ every locale. Three things change together, and none of them works without the o
 The cost accepted, knowingly and with §6's N1/N2 rows kept as its permanent witnesses, is that a
 genuine quotation of the letter *n* is elided. §7 item 8 records why that is the smaller error
 than the class 0.5.0 traded it for.
+
+1.4.0 adds the **span-boundary elision veto** (§2, §3.2): `quotes.elisionClitics`, two
+locale-data lists of the word fragments that attach across an elision or possessive apostrophe,
+consulted only when the mark is flush against an inline span boundary. It closes **issue #53
+§1** — a possessive or elision written against a span (`` `x`'s ``, `l'<em>idée</em>`) was
+classified as a quotation candidate, took the pairing from the author's own mark inside a
+quotation, and inverted the pair in every locale. **It does not close issue #53 §3**, the
+cross-paragraph damage that motivated the report: that witness is a *plural* possessive after a
+span, and §3.2 records why no veto over these neighbours can reach it. The simpler design — letting the boundary marker satisfy the
+medial-elision veto's `ALNUM` test — was implemented, measured, and rejected before any release:
+it breaks a quotation that legitimately begins or ends at a span boundary, including the
+released fixture `en-us-markdown-commonmark-boundary-nested-quotes` and the `NARROW` forms of
+`modes.md` §3.3's normative rows — not their `WIDE` forms, which both vetoes leave alone. §3.2 records that measurement, the accepted false positive (a quotation whose
+whole content is one listed fragment), and the one shape no veto over these neighbours can
+reach — the plural possessive, which is byte-identical to a closing mark after a span.

@@ -12,7 +12,11 @@
       "close": "”",
       "innerSpace": "none"
     },
-    "elisionIdioms": []
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": ["s"]
+    }
   },
   "dash": {
     "parenthetical": "en-spaced",
@@ -110,6 +114,12 @@
       "rule": "hyphen",
       "cite": "No English authority prescribes non-breaking hyphens for particular word forms; lists deliberately empty",
       "note": "`prefixes`, `suffixes` and `compounds` are empty. The field exists for languages with a closed, normative set of hyphenated morphological forms (Russian кое-, -таки, из-под). The Oxford guide’s hyphen section describes when to hyphenate (adjectival phrases before a noun, verb participles) and never restricts breaking at the resulting hyphen. An English list here would be an invented sample."
+    },
+    {
+      "rule": "quotes",
+      "cite": "The Chicago Manual of Style, 7.16 “Possessive form of most nouns” (section number and title confirmed against the publisher's own chapter-7 table of contents; cited as 7.16–19 and 7.22 by the CMOS Q&A on the 18th-edition site). Verbatim, as reproduced by CMOS Shop Talk, “Section 7.16 in the Spotlight”, 12 May 2015: “The possessive of most singular nouns is formed by adding an apostrophe and an s.” Reconfirmed for the current edition by CMOS Shop Talk, 31 August 2021: “Chicago adds an apostrophe and an s to form the possessive of a singular noun, including singular nouns ending in s” (see CMOS 7.16)",
+      "url": "https://cmosshoptalk.com/2021/08/31/introducing-the-chicago-manual-of-style-for-perfectit/",
+      "note": "Supports quotes.elisionClitics.after = [\"s\"], identical to en-US. LABELLED GAP: en-GB rests on an American authority because no British one was reachable. New Hart's Rules: The Oxford Style Guide (ed. Anne Waddingham, OUP) is print and paywalled; ox.ac.uk's style guide returned HTTP 403, OUP's own free companion site for New Hart's Rules returned an empty body, and Oxford Reference is paywalled. Every British statement of the rule found was a third-party paraphrase and therefore not citable. The gap is narrow rather than papered over: the single point on which US and UK possessive practice actually diverges is whether a second s follows a sibilant (Dickens's, Chicago's preference per 7.16–19, versus Dickens', the alternative practice per 7.22), and that divergence cannot reach this entry, because the veto matches the maximal LETTER run to the RIGHT of the mark — Burns's fires on s, Burns' has no letter there and fires nothing. So the two locales take the identical entry not by assumption but because the two practices coincide wherever this field is consulted. Replace with New Hart's Rules if the book is obtained. Note also that en-GB's primary close is U+2019, so this is the locale where a wrong entry could collide with genuine quotation — a one-element list is the minimum that closes issue #53."
     }
   ]
 }

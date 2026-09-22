@@ -12,7 +12,11 @@
       "close": "”",
       "innerSpace": "none"
     },
-    "elisionIdioms": []
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": ["d", "n", "pel", "m", "t", "lh", "sant"],
+      "after": []
+    }
   },
   "dash": {
     "parenthetical": "em-spaced",
@@ -79,6 +83,12 @@
       "cite": "Código de Redação Interinstitucional (PT, 2022), anexo A3, ponto 4 «Obras»: «p. ex.  por exemplo»; «e. g.  exempli gratia (por exemplo). Utilizar de preferência p. ex.»; Quarta parte, ponto 10.9.1: «paginação corrente, parágrafos, artigos: artigo 2.º, terceiro parágrafo, alínea b), p. 24»; nota (3) do ponto 6.4: «Para o «º» ordinal (1.º, 2.º…) ou em «n.º», utilizar a terminação «o» após o ponto e em posição superior à linha [não utilizar o sinal «º» do teclado Azerty nem a sequência Alt 0176 (símbolo do grau «°»)]»",
       "url": "https://op.europa.eu/pt/publication-detail/-/publication/01ed788a-d266-11ec-a95f-01aa75ed71a1",
       "note": "Justifica as listas vazias e initialBinding = \"none\", e diz com exatidão em que se apoiam: ao contrário do guia grego, a parte portuguesa NÃO contém nenhuma frase que negue pelo nome o uso francês do espaço antes da pontuação dupla. A posição é «nenhuma fonte o exige», e não «uma fonte o proíbe»; o que se observa é que nenhum exemplo do capítulo o escreve, e isso é uma observação, assinalada como tal. beforeNumber contém apenas «p.»: o ponto 10.9.1 atesta a ligação («p. 24», «Lei n.º 123»), mas «n.º» NÃO pode ser listado, porque a nota (3) do ponto 6.4 do mesmo guia prescreve um «o» sobrescrito e RECUSA expressamente tanto U+00BA como U+00B0 — listar «n.º» seria citar uma fonte que proíbe esse mesmo carácter. A decisão do operador de 18.9.2026 sobre o «n°» francês cobre uma fonte SILENCIOSA e não se estende a uma que fala e recusa. beforeWord fica vazio: o anexo A3 enumera «Sr.», «Dr.», «Prof.», mas limita-se a expandi-los e nenhuma fonte os mostra ligados ao nome seguinte. GAP REGISTADO, não resolvido: o ponto 10.9.1 exige espaço protegido DENTRO dos grupos de algarismos («um total de 12 345 euros»; «este espaço é protegido»), e locale.schema.json não tem campo para isso. Consultado em 18.9.2026."
+    },
+    {
+      "rule": "quotes",
+      "cite": "Acordo Ortográfico da Língua Portuguesa (1990), Base XVIII « Do apóstrofo », 1.º : a) « Faz-se uso do apóstrofo para cindir graficamente uma contração ou aglutinação vocabular, quando um elemento ou fração respetiva pertence propriamente a um conjunto vocabular distinto: d'Os Lusíadas, d'Os Sertões; n'Os Lusíadas, n'Os Sertões; pel'Os Lusíadas, pel'Os Sertões » ; b) « d'Ele, n'Ele, d'Aquele, n'Aquele, d'O, n'O, pel'O, m'O, t'O, lh'O » e a série feminina correspondente ; c) « Sant'Ana, Sant'Iago » ; d) « borda-d'água, copo-d'água, estrela-d'alva, mãe-d'água, pau-d'alho, pau-d'arco »",
+      "url": "https://www.priberam.pt/docs/AcOrtog90.pdf",
+      "note": "Base XVIII is a primary normative text common to both orthographies, which is why pt-PT and pt-BR carry the identical list: d, n, pel (1.º a and b), m, t, lh (1.º b) and sant (1.º c). Base XVIII 2.º bounds the set from the other side — the apóstrofo is not admissible in the combinations of de and em with the definite-article forms (do, da, dele, no, na, nele, num and the rest) — so this is an enumerated set rather than an argument from silence. The archaic anthroponymic forms of 1.º c) (Nun'Álvares, Pedr'Eanes) are cited by the same clause but deliberately not listed: both have a letter on each side of the mark, so quotes.md §3.2's medial-elision veto already declines them and an entry would be evidenced-inert. after is empty: Portuguese enclisis takes a hyphen (Base XVII: amá-lo, dá-se), never an apostrophe. The clause that makes this list load-bearing is 1.º a), which is about book titles: a title set in emphasis rather than italics puts a span boundary immediately after the mark, d'<em>Os Lusíadas</em>, which is precisely the shape the veto reads. Retrieved from a faithful reproduction hosted by Priberam/FLiP, including the official text's own errata footnotes, rather than from the official gazette; the Academia Brasileira de Letras PDF has no extractable text layer. quotes.md §3.2's span-boundary elision veto (spec 1.4.0) reads this list only when the mark's other literal neighbour is modes.md §3.2's inline span boundary, so every entry is matched against the maximal LETTER run on one side of the mark and nothing else. The list is decline-only: the worst it can do is refuse a pairing quotes would otherwise have formed."
     }
   ]
 }

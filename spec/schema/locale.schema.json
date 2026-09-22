@@ -19,7 +19,7 @@
     "quotes": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["primary", "secondary", "elisionIdioms"],
+      "required": ["primary", "secondary", "elisionIdioms", "elisionClitics"],
       "properties": {
         "primary": { "$ref": "#/$defs/quotePair" },
         "secondary": { "$ref": "#/$defs/quotePair" },
@@ -28,7 +28,8 @@
           "items": { "$ref": "#/$defs/elisionIdiom" },
           "uniqueItems": true,
           "description": "Literal, closed-set elision idioms consulted only to decline pairing two NARROW quote marks as a quotation when the full context — the word immediately before the opening mark and the word immediately after the closing mark, not merely the elided content between them — matches (quotes.md 3.2's listed elision veto), e.g. English { left: \"rock\", elided: \"n\", right: \"roll\" } for \"rock 'n' roll\". Empty is the default and means no verified idiom of this shape — a missing citation is never a licence to guess. Matching the elided content alone (a bare word list) is insufficient and is not this field's shape: it cannot distinguish the idiom from an arbitrary quoted letter, e.g. \"The letter 'n' is common.\", which is exactly the false positive this three-part contract exists to avoid."
-        }
+        },
+        "elisionClitics": { "$ref": "#/$defs/elisionClitics" }
       }
     },
     "dash": {
@@ -207,6 +208,26 @@
       "type": "array",
       "items": { "$ref": "#/$defs/singleChar" },
       "uniqueItems": true
+    },
+    "elisionClitics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["before", "after"],
+      "description": "quotes.md 3.2's span-boundary elision veto (spec 1.4.0). Consulted ONLY when one literal neighbour of a NARROW mark is modes.md 3.2's inline boundary marker, so it is vacuous in text mode, which produces no marker. The trigger is the marker, never the mode: an implementation must not gate this on a mode test (quotes.md 3.2). Decline-only: it can never widen what quotes pairs, only narrow it. Both lists empty is the default and a total no-op, and is the correct content for a locale with no citable closed set of such fragments \u2014 a missing citation is never a licence to guess.",
+      "properties": {
+        "before": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "description": "Word fragments that stand immediately BEFORE an elision apostrophe and attach forward to the following word: French l', d', qu', n' give \"l\", \"d\", \"qu\", \"n\". Authored lowercase \u2014 the veto folds only the first code point, and only ASCII A-Z, so \"L'\" matches an entry \"l\" and \"QU'\" does not match \"qu\". Every code point must be LETTER; JSON Schema cannot express a Unicode-category constraint, so that is enforced by scripts/validate-spec.mjs against the same pinned table the engine uses, exactly as for elisionIdiom's left/right."
+        },
+        "after": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "description": "Word fragments that stand immediately AFTER an elision or possessive apostrophe and attach back to the preceding word, or forward from a word-initial omission \u2014 the lists are positional, not attachment claims (quotes.md 3.2). English ships the possessive \"s\" alone (x's); the contraction fragments t, ll, re, ve, d and m are deliberately absent, having no attested occurrence flush against a span boundary. Dutch ships \"s\", \"t\", \"ns\", \"k\", \"m\", \"em\", \"r\", \"et\" ('s morgens, 't was, 'ns kijken). Same lowercase authoring rule and same LETTER-only constraint as \"before\"."
+        }
+      }
     },
     "elisionIdiom": {
       "type": "object",

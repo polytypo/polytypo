@@ -12,7 +12,11 @@
       "close": "”",
       "innerSpace": "none"
     },
-    "elisionIdioms": []
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": []
+    }
   },
   "dash": {
     "parenthetical": "none",

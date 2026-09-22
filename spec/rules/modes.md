@@ -7,8 +7,10 @@ for all five runtimes and is parser-agnostic by construction: `parse5`, `nokogir
 `golang.org/x/net/html` and PHP's DOM disagree about almost everything this document does not
 forbid them from doing. `yaml` mode is parser-**free** rather than parser-agnostic, for the
 reason §3.8.1 measures.
-**Spec version:** 1.3.0 (0.1.0 for everything except §3.3's class-membership table rows for
-`nbsp` and `apostrophe`, split in 1.2.0, and §3.8, added in 1.3.0).
+**Spec version:** 1.4.0 (0.1.0 for everything except §3.3's class-membership table rows for
+`nbsp` and `apostrophe`, split in 1.2.0, §3.8, added in 1.3.0, and §3.3's note on `quotes`'
+span-boundary elision veto reading the marker as a trigger, added in 1.4.0 — which changes no
+row of the table it follows).
 
 ---
 
@@ -156,6 +158,25 @@ and one exemption:
 
 > In `quotes` §3.2's `canOpen` right-test, which rejects a `right` in `CLOSEISH`, the marker
 > receives **the same exemption `STRAIGHT` receives** and does not disqualify.
+
+**One rule reads the marker as a trigger rather than as a class member (spec 1.4.0).** `quotes`'
+span-boundary elision veto (`quotes.md` §3.2) fires only when a `NARROW` mark's literal left or
+right neighbour *is* the −1 marker, and then reads the `LETTER` run on the mark's other side
+against a cited locale list. That is not a class membership and adds no row above: the marker
+stays in exactly the classes this table gives it. It is recorded here because the veto exists
+precisely to repair what those memberships cost — `MARKER` in `OPENISH` and in `CLOSEISH` is
+what let `` `x`'s `` and `l'<em>idée</em>` be classified as quotation candidates, inverting the
+enclosing pair (canonical issue #53). **The memberships themselves must not be narrowed to fix
+that**: the rows below (`"<em>hello</em>"`, `"a"<code>x</code>"b"`) depend on them, and removing
+the marker from either class breaks every quotation that begins or ends at a span boundary, at
+both widths.
+
+**The two mistakes are not the same size, and conflating them misleads a port reviewer.** The
+other tempting fix — letting the marker satisfy the medial-elision veto's `ALNUM` test — is
+stated over `NARROW` (`quotes.md` §3.2), so it cannot touch the two `WIDE` rows below at all.
+Its witnesses are their `NARROW` forms: `<em>'fine'</em>` and `'a'<code>x</code>'b'`. Measured,
+not argued — that variant breaks the released fixture
+`en-us-markdown-commonmark-boundary-nested-quotes`, whose input is `*'hi'*`.
 
 Everywhere else the marker is opaque content: it is "a content character" and nothing more —
 **with one exception, which is normative and which resolves a contradiction between this
@@ -339,7 +360,11 @@ reaches the edge-growth rule. `--` is the live carrier.)
 1. Extract the span sequence from the source. Record each span's **source offsets**.
 2. Build the code-point array `S₁ ⌢ [m₁] ⌢ S₂ ⌢ [m₂] ⌢ … ⌢ Sₘ`, where each `mₖ` is **−1 or −2
    by §3.2's test on the raw source of that gap** — not always −1. In `yaml` the −2 is the common
-   case, since a block scalar's spans are separated by a line terminator.
+   case, since a block scalar's spans are separated by a line terminator. **Whether a −1 can
+   arise in `yaml` at all is open** — no construction has been exhibited, and §3.8.4 step 9
+   gives flow collections no spans — see `quotes.md` §3.2, which depends on the answer for
+   nothing but states the obligation it creates: a rule must key off the marker, never off the
+   mode.
 3. Run the pipeline **once**, in `order.json` order, over that array.
 4. Each edit lies wholly within one span (§3.4). Map it back to source offsets.
 5. Emit the **original source bytes**, with those replacements applied and nothing else changed.

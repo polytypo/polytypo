@@ -12,7 +12,11 @@
       "close": "’",
       "innerSpace": "none"
     },
-    "elisionIdioms": []
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": ["s", "t", "ns", "k", "m", "em", "r", "et"]
+    }
   },
   "dash": {
     "parenthetical": "en-spaced",
@@ -79,6 +83,18 @@
       "cite": "Nederlandse Taalunie, Taaladvies.net, «Prof.( )dr.» (12 mei 2021): «Ja, tussen bijvoorbeeld prof. dr. komt een spatie»; «Alleen als de afgekorte woorden tezamen een afkorting vormen, vervalt de spatie: a.s., a.u.b., m.b.v., n.a.v., z.o.z.»; «In verzorgd zetwerk wordt tussen voorletters en in afkortingen als v.d. bij voorkeur een halve spatie (of dunspatie) geplaatst»",
       "url": "http://taaladvies.net/legacylink.php?id=vraag/678",
       "note": "Onderbouwt abbreviations = [«prof. dr.»] — de enige Nederlandse afkorting met een interne U+0020 die letterlijk is aangetroffen. De gesloten vormen (a.s., a.u.b.) hebben geen interne spatie, zodat N4 daar niets te bevorderen heeft; dáárom telt de lijst één ingang en is hij niet leeg. initialBinding = «none»: de enige Nederlandse uitspraak hierover vraagt om een DUNNE spatie, een waarde die het schema niet kent terwijl N7 U+00A0 invoegt — en, belangrijker, geen geraadpleegde bron zegt dat een voorletter niet door een regelovergang van de achternaam gescheiden mag worden, en dát is wat N7 werkelijk doet. Geraadpleegd op 18.09.2026."
+    },
+    {
+      "rule": "quotes",
+      "cite": "Nederlandse Taalunie, Taaladvies.net, « Wat-ie wil / wat ie wil » (12 mei 2021) : « Gereduceerde vormen van persoonlijke voornaamwoorden komen voor in de gesproken taal. Bij de weergave daarvan in schrift gebruiken we bij vormen als 'k, '(e)m, 'r, d'r en '(e)t een weglatingsteken of apostrof. »",
+      "url": "https://taaladvies.net/wat-ie-wil/",
+      "note": "Attests five entries of quotes.elisionClitics.after: k ('k), m and em ('(e)m — the Taalunie's own notation covers both 'm and 'em), r ('r), and t with et ('(e)t). These are word-initial omissions: the mark stands at the start of the reduced form, so the letter run is on the mark's right, which is why they belong in after and not before even though the fragment attaches forward rather than back — both lists are positional, per quotes.md §2. before is empty: m'n, z'n, d'r, zo'n and foto's all have a letter on each side of the mark, so the medial-elision veto already declines them and any before entry would be evidenced-inert; keeping it empty also avoids having to adjudicate m, which occurs on both sides of the mark across the language ('m = hem, m'n = mijn). 'n (een) is not listed — it was not attested by a qualifying Taalunie page in this pass. quotes.md §3.2's span-boundary elision veto (spec 1.4.0) reads this list only when the mark's other literal neighbour is modes.md §3.2's inline span boundary, so every entry is matched against the maximal LETTER run on one side of the mark and nothing else. The list is decline-only: the worst it can do is refuse a pairing quotes would otherwise have formed."
+    },
+    {
+      "rule": "quotes",
+      "cite": "Nederlandse Taalunie, Taaladvies.net, « 'S avonds / 's Avonds (hoofdletter?) » (12 mei 2021, op grond van de Woordenlijst 2015) : « Als de zin met een apostrof begint, krijgt het eerstvolgende volledige woord in de zin de hoofdletter », met de voorbeelden « 's Avonds werkt John in een café », « 't Was een mooie dag » en « 'ns Kijken hoe we dat doen »",
+      "url": "https://taaladvies.net/s-avonds-of-s-avonds-hoofdletter/",
+      "note": "Attests s ('s avonds, from the older genitive des avonds), t ('t was) and ns ('ns kijken). The same entries cover 's-Gravenhage and 's-Hertogenbosch, where a hyphen rather than a space follows the letter run."
     }
   ]
 }

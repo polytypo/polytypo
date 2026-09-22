@@ -195,8 +195,39 @@ function checkElisionIdioms(file, quotes) {
   }
 }
 
+// quotes.elisionClitics (spec 1.4.0) carries the same LETTER-only constraint as elisionIdioms'
+// left/right, for the same reason: quotes.md 3.2's span-boundary elision veto compares a maximal
+// LETTER run against each entry, so an entry holding anything else is data that can never match.
+// An entry whose first code point is ASCII A-Z is rejected for the same class of reason — the
+// veto folds exactly that code point down before comparing, so such an entry is unmatchable by
+// construction, and the normative contract says entries are authored lowercase.
+function checkElisionClitics(file, quotes) {
+  const clitics = quotes?.elisionClitics;
+  if (typeof clitics !== "object" || clitics === null || Array.isArray(clitics)) return;
+  for (const side of ["before", "after"]) {
+    const entries = Array.isArray(clitics[side]) ? clitics[side] : [];
+    for (const entry of entries) {
+      if (typeof entry !== "string") continue;
+      if (!isAllLetters(entry)) {
+        fail(
+          file,
+          `quotes.elisionClitics.${side}: "${escapeNonAscii(entry)}" must consist entirely of LETTER code points (quotes.md 3.2's span-boundary elision veto walks a LETTER run)`,
+        );
+      }
+      const first = entry.codePointAt(0);
+      if (first !== undefined && first >= 0x41 && first <= 0x5a) {
+        fail(
+          file,
+          `quotes.elisionClitics.${side}: "${escapeNonAscii(entry)}" must be authored lowercase — the veto folds the first code point ASCII A-Z down before comparing, so an entry starting uppercase can never match`,
+        );
+      }
+    }
+  }
+}
+
 function checkLocaleInvariants(file, locale) {
   checkElisionIdioms(file, locale.quotes);
+  checkElisionClitics(file, locale.quotes);
 
   const nbsp = locale.nbsp ?? {};
   const wide = new Set(Array.isArray(nbsp.beforePunctuation) ? nbsp.beforePunctuation : []);

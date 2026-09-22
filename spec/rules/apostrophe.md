@@ -1,9 +1,10 @@
 # Rule: `apostrophe`
 
 **Order:** 50. **Default:** on. **Modes:** text, html, markdown, yaml.
-**Spec version:** 1.2.0 (0.4.1 for everything except §2, §3.4 and the §6/§7 updates for the
-withdrawal of the shared ambiguity preserve set (1.1.0), and §3.1's `OPENQUOTE` with §3.3's case 3a
-(1.2.0)).
+**Spec version:** 1.4.0 (0.4.1 for everything except §2, §3.4 and the §6/§7 updates for the
+withdrawal of the shared ambiguity preserve set (1.1.0), §3.1's `OPENQUOTE` with §3.3's case 3a
+(1.2.0), and §3.3 case 4's note on the traffic `quotes`' span-boundary elision veto sends it
+(1.4.0) — which adds no case and changes nothing this rule computes).
 
 ---
 
@@ -124,6 +125,16 @@ and take the **first** matching case:
 4. **Leading elision.** If (`left` is `NONE`, or `left` is in `SPACELIKE`, or `left` is in
    `OPENISH`) **and** (`right` is in `ALNUM`) → emit an edit replacing `cp[i]` with U+2019.
    Covers `’90s`, `’tis`, `’em`, `’cause`, `’n'` (the leading mark), `(’tis)`.
+
+   **It also carries a traffic its name does not describe (spec 1.4.0): a possessive or elision
+   written flush against an inline span boundary.** `modes.md` §3.2's marker is in this rule's
+   `OPENISH` (`modes.md` §3.3), so `` `x`'s `` and `<code>x</code>'s` match here rather than at
+   case 2, whose `ALNUM` left-read the marker fails. The glyph is the same U+2019 either way, so
+   the outcome is correct and no case is added — but the reason those marks now *reach* this
+   ladder is `quotes`' span-boundary elision veto (`quotes.md` §3.2, spec 1.4.0), which declines
+   to pair them. Before 1.4.0 `quotes` claimed them and inverted the enclosing pair. The mirror
+   shape, `l'<em>idée</em>`, reaches **case 3** by the same route: the marker is in `CLOSEISH`
+   too. Neither case may be narrowed to exclude the marker without reopening that defect.
    **The replacement is U+2019 — never U+2018.** A leading elision is a raised comma marking
    removed characters, not an opening quotation mark. Getting this backwards is the single
    most common apostrophe bug in existing tools, and it is visually obvious in a serif face.

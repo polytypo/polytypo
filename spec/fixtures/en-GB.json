@@ -1,5 +1,5 @@
 {
-  "spec": "1.3.1",
+  "spec": "1.4.0",
   "locale": "en-GB",
   "cases": [
     {
@@ -1296,6 +1296,49 @@
         "ranges": true
       },
       "note": "ranges.md §3.2a (spec 1.3.0): U+00A3, pinned in the locale that actually writes it. The closed-up walk is locale-independent shape logic; `en-GB` shares `en-US`'s `range: \"en-tight\"`."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-span-boundary-possessive-declined",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "He says 'avoid `x`'s printer.' Done.\n",
+      "out": "He says ‘avoid `x`’s printer.’ Done.\n",
+      "note": "Canonical issue #53's headline case. quotes.md §3.2's span-boundary elision veto (spec 1.4.0): the possessive sits flush against a code span, so modes.md §3.2's marker occupies the position the x would hold and the medial-elision veto cannot fire. The cited quotes.elisionClitics.after entry s declines the mark, apostrophe (order 50) renders it U+2019 by its case 4 across the marker, and the author's own pair keeps the primary glyphs. Through spec 1.3.1 this produced ’avoid `x`‘s printer.’ — the possessive opening the quotation and the real opening mark demoted to a closing glyph — and it was a fixed point, so a second pass never repaired it."
+    },
+    {
+      "id": "en-gb-html-span-boundary-possessive-declined",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "He says 'avoid <code>x</code>'s printer.' Done.",
+      "out": "He says ‘avoid <code>x</code>’s printer.’ Done.",
+      "note": "The same shape in html rather than markdown. modes.md §3.2's marker model is mode-independent, so the two agree on identical prose split the same way (modes.md §7.4)."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-span-boundary-possessive-strong",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "He says 'avoid **x**'s printer.' Done.\n",
+      "out": "He says ‘avoid **x**’s printer.’ Done.\n",
+      "note": "Strong emphasis behaves as a code span does: the veto reads the marker, not what kind of span produced it."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-span-boundary-plural-possessive-not-closed",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "He says 'avoid `xs`' printer.' Done.\n",
+      "out": "He says ‘avoid `xs`’ printer.' Done.\n",
+      "note": "Known non-closure, pinned so it stays visible: a PLURAL possessive after a span has the marker on its left and a space on its right, so its attaching run is empty and no entry can match. The same three code points are also a quotation's closing mark after a span, which is a modes.md §3.3 row, so no test over these neighbours could separate them. The second mark takes the pairing and the third is abandoned as U+0027. quotes.md §4 and §7 item 10."
+    },
+    {
+      "id": "en-gb-html-span-boundary-quotation-not-declined",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "'a'<code>x</code>'b'",
+      "out": "‘a’<code>x</code>‘b’",
+      "note": "The negative control, and the reason the veto reads a cited fragment rather than the marker itself. modes.md §3.3 puts the marker in OPENISH precisely so the second pair here can open flush after a span; letting the marker satisfy the medial-elision veto's ALNUM test would have broken this row and en-us-markdown-commonmark-boundary-nested-quotes with it. The run b is not a listed fragment, so the quotation stands."
     }
   ]
 }
