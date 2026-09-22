@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.3.1`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.3.1 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.4.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.4.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,21 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.4.0 — 22 September 2026
+
+An apostrophe written against inline code, emphasis or a link no longer turns the sentence's quotation marks inside out.
+
+- In `html` and `markdown`, a possessive or an elision written directly against a span — `` `x`'s ``, `<code>x</code>'s`, `l'<em>idée</em>` — was read as a quotation mark opening a quotation. If the sentence around it was already quoted, the apostrophe took the pair and your own opening mark was demoted to a closing one. The sentence came out with its quotation marks inverted, and running polytypo again did not fix it: the wrong version was a stable result, so a second pass reproduced it.
+- This is the shape technical writing hits constantly, because possessivising a name set in code is ordinary English: `` `useEffect`'s dependency array ``. French and Italian hit the mirror of it, where an elided article sits against an emphasised word: `l'<em>idée</em>` produced guillemets around the single letter `l` and abandoned the real closing mark.
+- The fix reads a new piece of locale data — the short word fragments that attach across an apostrophe in that language, each one cited to the language's own authority. English carries the possessive `s`; French carries `l`, `d`, `qu`, `jusqu` and nine more; Italian, Portuguese and Dutch carry their own. A language with no citable list of them behaves exactly as it did in 1.3.1, so nothing changes where nothing was evidenced.
+- The accepted cost, measured rather than assumed: inside a span, a quotation whose entire content is one of those fragments is now read as an apostrophe. `He said <em>'s'</em> loudly.` gives `<em>’s’</em>`. Quoting a real word — `<em>'no'</em>`, `<em>'fine'</em>` — is unaffected, and both exposures are pinned as conformance cases.
+- One related shape is still wrong and is tracked separately: a plural possessive after a span, `` `xs`' printer ``, is written with exactly the same characters as a closing quotation mark after a span, so nothing local can tell them apart. It can still close a quotation opened paragraphs earlier.
+
+| Locale | Mode | In | Before | After |
+| --- | --- | --- | --- | --- |
+| `en-GB` | `html` | `He says 'avoid <code>x</code>'s printer.' Done.` | `He says ’avoid <code>x</code>‘s printer.’ Done.` | `He says ‘avoid <code>x</code>’s printer.’ Done.` |
+| `fr` | `html` | `Il dit 'l'<em>idée</em> est bonne.' Fin.` | `Il dit « l »<em>idée</em> est bonne.' Fin.` | `Il dit «⍽l’<em>idée</em> est bonne.⍽» Fin.` |
 
 ## 1.3.1 — 21 September 2026
 
