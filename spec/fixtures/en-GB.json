@@ -1330,7 +1330,7 @@
       "dialect": "commonmark",
       "in": "He says 'avoid `xs`' printer.' Done.\n",
       "out": "He says ‘avoid `xs`’ printer.' Done.\n",
-      "note": "Known non-closure, pinned so it stays visible: a PLURAL possessive after a span has the marker on its left and a space on its right, so its attaching run is empty and no entry can match. The same three code points are also a quotation's closing mark after a span, which is a modes.md §3.3 row, so no test over these neighbours could separate them. The second mark takes the pairing and the third is abandoned as U+0027. quotes.md §4 and §7 item 10."
+      "note": "Known non-closure, pinned so it stays visible: a PLURAL possessive after a span has the marker on its left and a space on its right, so its attaching run is empty and no entry can match. The same three code points are also a quotation's closing mark after a span, which is a modes.md §3.3 row, so no test over these neighbours could separate them. The second mark takes the pairing and the third is abandoned as U+0027. quotes.md §4 and §7 item 10; tracked as issue #54."
     },
     {
       "id": "en-gb-html-span-boundary-quotation-not-declined",
