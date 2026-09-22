@@ -243,6 +243,22 @@ const DATA = {"spec": "1.3.1", "proofLocales": ["en-US", "en-GB", "de-DE", "de-C
     return recorded ? recorded.in : FALLBACK_SAMPLE;
   }
 
+  /** This locale's short specimens that the engine actually changes under the DEFAULT options —
+   * a case carrying its own `rules` (the `ranges` ones) or whose in and out are equal would sit in
+   * a sample looking untouched, which is the one thing a sample must not do. */
+  function shortProsePool(code) {
+    const entry = DATA.locales.find((l) => l.locale === code);
+    const cases = (entry && entry.cases) || [];
+    return cases.filter((c) => !c.rules && c.in !== c.out).map((c) => c.in);
+  }
+
+  /** The n-th such specimen, so one sample can place several without repeating itself. Every
+   * locale ships at least three; the modulo is a guard, not an expected path. */
+  function shortProse(code, n) {
+    const pool = shortProsePool(code);
+    return pool.length ? pool[n % pool.length] : defaultFor(code);
+  }
+
   // A double-quoted scalar may hold a colon freely — quoting neutralises it (modes.md 3.8.6) —
   // but an escape inside it is declined: "\\"" and "''" spell one content character with two
   // source characters, and this mode works in source offsets. So the value must contain neither a
@@ -253,14 +269,12 @@ const DATA = {"spec": "1.3.1", "proofLocales": ["en-US", "en-GB", "de-DE", "de-C
     return !!v && v.trim() === v && !v.includes('"') && !v.includes("\\");
   }
 
-  /** This locale's shortest recorded specimen that can sit inside double quotes unescaped, so the
+  /** This locale's shortest changing specimen that can sit inside double quotes unescaped, so the
    * yaml sample can show the quoted form too. Every locale has one; the null return is a guard,
    * not an expected path. */
   function quotableProseFor(code) {
-    const entry = DATA.locales.find((l) => l.locale === code);
-    const cases = (entry && entry.cases) || [];
-    const found = cases.find((c) => isDoubleQuotedSafe(c.in));
-    return found ? found.in : null;
+    const found = shortProsePool(code).find(isDoubleQuotedSafe);
+    return found === undefined ? null : found;
   }
 
   // Every sample pairs prose the mode DOES process with something adjacent it must NOT touch.
@@ -275,7 +289,17 @@ const DATA = {"spec": "1.3.1", "proofLocales": ["en-US", "en-GB", "de-DE", "de-C
   function sampleFor(code, mode, dialect) {
     const prose = defaultFor(code);
     if (mode === "html") {
-      return "<p>" + prose + "</p>\n<pre><code>" + SKIP_DEMO + "</code></pre>\n";
+      // Attributes carry the same dashes, quotes and dots as the prose does, and none of them is
+      // touched: `class`, `data-note`, `href` and `title` come back byte for byte while the text
+      // between the tags is processed. That is the skip list's whole job, and an attribute is
+      // where getting it wrong is most expensive — a rewritten `href` is a broken link.
+      return (
+        '<p class="lede" data-note="untouched -- attribute...">' + prose + "</p>\n" +
+        "<p>" + shortProse(code, 1) +
+        ' <a href="https://example.com/a-b" title="untouched -- title...">' +
+        shortProse(code, 2) + "</a></p>\n" +
+        "<pre><code>" + SKIP_DEMO + "</code></pre>\n"
+      );
     }
     if (mode === "markdown") {
       // Enough real Markdown that the sample cannot be mistaken for the text mode's flat
@@ -284,11 +308,12 @@ const DATA = {"spec": "1.3.1", "proofLocales": ["en-US", "en-GB", "de-DE", "de-C
       // `-`, `**`/`*`, the code span and a link's destination all come back untouched.
       // `quotableProseFor` is reused here only as "this locale's short specimen"; Markdown has no
       // quoting constraint of its own.
-      const short = quotableProseFor(code) || prose;
-      const list =
-        "- A list item - dashed, like this one\n" +
-        "- `" + SKIP_DEMO + "` in a code span\n";
-      const emphasis = "**Bold** and *italic* text - both processed.\n";
+      // Every prose string here comes from this locale's own recorded specimens, so the sample is
+      // in the visitor's language rather than half-translated. What stays English is the shell
+      // command and the URL — neither is prose, and both are there precisely to be left alone.
+      const short = shortProse(code, 0);
+      const list = "- " + shortProse(code, 1) + "\n- `" + SKIP_DEMO + "`\n";
+      const emphasis = "**" + shortProse(code, 2) + "**\n";
 
       // In MDX a braced expression is JavaScript and is left alone; CommonMark reads the same
       // braces as prose and would typeset the string inside them.
@@ -304,7 +329,10 @@ const DATA = {"spec": "1.3.1", "proofLocales": ["en-US", "en-GB", "de-DE", "de-C
       return (
         "## " + short + "\n\n" + prose + "\n\n" +
         list + "\n" + emphasis + "\n" +
-        "[A link - dashed](https://example.com/a-b) and an autolink: " +
+        // No inline link here: every locale ships three changing specimens, and the heading, the
+        // list and the emphasis already use them. A fourth place would have to repeat one, and a
+        // link destination is shown in the html sample's `href` anyway — plus the autolink below,
+        // where the whole URL is both text and destination.
         "<https://example.com/a-b>\n"
       );
     }

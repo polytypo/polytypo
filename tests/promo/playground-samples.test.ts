@@ -140,6 +140,63 @@ describe("playground samples — each mode starts with a document that mode actu
     expect(fieldOf(out, "run"), "an unnamed key was processed").toBe(fieldOf(input, "run"));
   });
 
+  it("leaves every html attribute byte for byte, including the dashes inside one", async () => {
+    // An attribute carries the same characters prose does, and a rewritten one is worse than a
+    // missed conversion: a mangled `href` is a broken link. The sample's attributes are written
+    // with the exact sequences the rules would otherwise convert — `--` and `...` — so passing
+    // this means the skip list held rather than that there was nothing to convert.
+    const pg = loadPlayground();
+    await pg.set({ locale: "en-US", mode: "html" });
+    const input = pg.input();
+    const attrs = [
+      'class="lede"',
+      'data-note="untouched -- attribute..."',
+      'href="https://example.com/a-b"',
+      'title="untouched -- title..."',
+    ];
+    for (const attr of attrs) {
+      expect(input, `the html sample no longer carries ${attr}`).toContain(attr);
+    }
+    const out = run(input, "html", "en-US", "", []);
+    for (const attr of attrs) {
+      expect(out, `html mode rewrote ${attr}`).toContain(attr);
+    }
+    // And the prose between the tags did change, so the sample is not passing by doing nothing.
+    expect(out).not.toBe(input);
+  });
+
+  it("writes every sample's prose in the locale's own language, in every locale", async () => {
+    // A sample half in the visitor's language and half in invented English reads as unfinished.
+    // Every prose string comes from that locale's recorded specimens; what may stay English is
+    // the shell command and the URL, neither of which is prose and both of which are there to be
+    // left alone.
+    const allowedEnglish = ['echo "untouched" -- still here...', "https://example.com/a-b"];
+    for (const locale of LOCALES) {
+      if (locale.startsWith("en-")) continue;
+      for (const [mode, dialect] of [
+        ["html", ""],
+        ["markdown", "commonmark"],
+        ["markdown", "mdx"],
+        ["yaml", ""],
+      ] as const) {
+        const pg = loadPlayground();
+        await pg.set({ locale, mode, ...(dialect ? { dialect } : {}) });
+        let rest = pg.input();
+        for (const allowed of allowedEnglish) rest = rest.split(allowed).join("");
+        // Attribute and JSX values are markup, not prose, and are deliberately English.
+        rest = rest
+          .replace(/(class|data-note|href|title|label)=(\{?"[^"]*"\}?)/g, "")
+          .replace(/^(title|description|run|summary):/gm, "");
+        // What remains is prose. The invented English phrases all contained one of these words.
+        for (const word of ["A list item", "dashed", "Bold", "italic", "both processed", "A link"]) {
+          expect(rest, `${locale}/${mode}${dialect ? "/" + dialect : ""} still says "${word}"`).not.toContain(
+            word,
+          );
+        }
+      }
+    }
+  });
+
   it("shows three YAML scalar forms, so the form is visibly not what decides the outcome", async () => {
     // A quoted field and a block field, both named, are both processed; a plain field that is not
     // named is not. So the sample answers two questions at once: why `description` needs `|`, and
