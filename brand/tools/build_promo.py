@@ -38,6 +38,84 @@ with open(os.path.join(SPEC, "rules", "order.json"), encoding="utf-8") as f:
 RULE_COUNT = len(_ORDER["rules"])
 
 
+# The Locales page's coverage table. Rows are GENERATED from spec/locales/*.json, in registry
+# order: the locale code, the spec's own `name`, the rule ids its `sources` actually cite, and the
+# live fixture count. It used to be ten hand-written <tr> blocks, and the eight locales spec 1.3.0
+# added were simply never typed in — the page claimed coverage of ten while README and
+# examples.json said eighteen, which is the drift this generator exists to make impossible.
+#
+# One column cannot be derived: a one-line name for the authority. A `cite` string is a full
+# citation, and shortening one by string surgery distorts it (tried: it yields "Brasil" for pt-BR
+# and lifts "No normative source found for..." out of a cited-emptiness entry). So the short form
+# is written by hand HERE, once, and verify_primary_sources() asserts that every phrase in it
+# occurs verbatim in that locale's own `sources` — a summary naming an authority the locale does
+# not cite fails the build, and so does a locale with no summary at all.
+PRIMARY_SOURCES = {
+    "en-US": "The Chicago Manual of Style; American Heritage Dictionary of the English Language; BIPM",
+    "en-GB": "University of Oxford Style Guide; The Chicago Manual of Style; BIPM",
+    "de-DE": "Duden, Rechtschreibregeln; DIN 5008",
+    "de-CH": "Schweizerische Bundeskanzlei, Schreibweisungen",
+    "fr": "Imprimerie nationale; Jacques André; Office québécois de la langue française",
+    "fr-CA": "Office québécois de la langue française; Jacques André",
+    "ru": "Правила русской орфографии и пунктуации; Мильчин А. Э., Чельцова Л. К.",
+    "fi": "Kotimaisten kielten keskus (Kotus), Kielitoimiston ohjepankki; BIPM",
+    "sv": "Språkrådet, Snabba skrivregler; BIPM",
+    "el": "Διοργανικό εγχειρίδιο σύνταξης κειμένων; Unicode Consortium",
+    "es": "RAE y ASALE, Diccionario panhispánico de dudas; BIPM",
+    "it": "Manuale interistituzionale di convenzioni redazionali; Accademia della Crusca; BIPM",
+    "pt-PT": "Código de Redação Interinstitucional; Acordo Ortográfico da Língua Portuguesa",
+    "pt-BR": "Manual de Redação da Presidência da República; Acordo Ortográfico da Língua Portuguesa; BIPM",
+    "nl": "Nederlandse Taalunie, Taaladvies.net; Genootschap Onze Taal",
+    "pl": "Słownik języka polskiego PWN; Główny Urząd Miar",
+    "uk": "Український правопис (2019)",
+    "cs": "Ústav pro jazyk český AV ČR, Internetová jazyková příručka",
+}
+
+
+def _locale_data(code):
+    with open(os.path.join(SPEC, "locales", f"{code}.json"), encoding="utf-8") as f:
+        return json.load(f)
+
+
+def verify_primary_sources(codes):
+    """Every locale needs a summary, and every phrase in it must occur in that locale's own
+    `sources`. This is what keeps a hand-written column from making a claim the data does not."""
+    missing = [c for c in codes if c not in PRIMARY_SOURCES]
+    if missing:
+        raise SystemExit(
+            f"build_promo: no PRIMARY_SOURCES entry for {', '.join(missing)} — the coverage table "
+            "cannot describe a locale whose authority nobody has named"
+        )
+    for code in codes:
+        cites = " \n".join(s["cite"] for s in _locale_data(code)["sources"])
+        for phrase in (p.strip() for p in PRIMARY_SOURCES[code].split(";")):
+            if phrase and phrase not in cites:
+                raise SystemExit(
+                    f"build_promo: PRIMARY_SOURCES[{code!r}] names {phrase!r}, which appears in "
+                    f"no `cite` of spec/locales/{code}.json"
+                )
+
+
+def coverage_rows(data):
+    """One <tr> per shipped locale, from the spec's own data."""
+    codes = [loc["locale"] for loc in data["locales"]]
+    verify_primary_sources(codes)
+    rows = []
+    for code in codes:
+        locale = _locale_data(code)
+        rules = ", ".join(sorted({s["rule"] for s in locale["sources"]}))
+        rows.append(
+            "      <tr>\n"
+            f'        <td class="mono">{H.escape(code)}</td>\n'
+            f"        <td>{H.escape(locale['name'])}</td>\n"
+            f'        <td class="mono small">{H.escape(rules)}</td>\n'
+            f"        <td>{fixture_count(code)}</td>\n"
+            f'        <td class="ready-cite">{H.escape(PRIMARY_SOURCES[code])}</td>\n'
+            "      </tr>"
+        )
+    return "\n".join(rows)
+
+
 def fixture_count(locale):
     """Live case count for one locale's spec/fixtures/<locale>.json — never hand-maintained."""
     with open(os.path.join(FIXTURES_DIR, f"{locale}.json"), encoding="utf-8") as f:
@@ -1064,6 +1142,7 @@ def build():
         # The newest released version, so the /changelog intro cannot name a stale one.
         # It was spelled out as 1.2.0 and went stale the moment 1.3.0 shipped.
         "{{latest_version}}": H.escape(_latest_released_version()),
+        "{{coverage_rows}}": coverage_rows(data),
     }
     # Per-locale fixture totals — read live from spec/fixtures/, never hand-maintained, so the
     # coverage table on the Locales page cannot drift from the conformance suite it describes.
