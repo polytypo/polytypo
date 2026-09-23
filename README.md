@@ -63,6 +63,7 @@ Spec version: **1.6.0** · locales: **19** · rules: **9**.
 | `pl` | Zapytał: „Czy to nie ten sklep, który nazywają »tym za rogiem«?” … Szliśmy – prawie 3 km – a był zamknięty. Copyright © 2026, format 40×60 cm. |
 | `uk` | Він запитав: «Хіба це не та крамниця, яку називають “тією за рогом”?» … Ми йшли — майже 3 км — а вона була зачинена. Copyright © 2026, формат 40×60 см. |
 | `cs` | Zeptal se: „Není to ten obchod, kterému říkají ‚ten za rohem‘?“ … Šli jsme – skoro 3 km – a byl zavřený. Copyright © 2026, formát 40×60 cm. |
+| `tr` | Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright © 2026, baskı 40×60 cm. |
 
 Every string above is real engine output, generated from `promo/examples.json` — not typed by hand.
 
@@ -88,6 +89,7 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | `pl` | Polish | „…” | »…« | en dash, spaced | en dash, unspaced |
 | `uk` | Ukrainian | «…» | “…” | em dash, spaced | em dash, unspaced |
 | `cs` | Czech | „…“ | ‚…‘ | en dash, spaced | en dash, unspaced |
+| `tr` | Turkish | “…” | ‘…’ | unchanged | unchanged |
 
 Aliases resolve in the spec, never in a platform locale library: `en` → `en-US`, `de` → `de-DE`, `pt` → `pt-PT`. An unknown locale throws — there is no silent fallback to English.
 

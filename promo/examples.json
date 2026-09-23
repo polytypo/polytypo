@@ -621,6 +621,40 @@
           "out": "Tato kniha – vydaná před válkou – je úžasná."
         }
       ]
+    },
+    {
+      "locale": "tr",
+      "name": "Turkish",
+      "hero": {
+        "in": "Sordu: \"Bu, 'köşedeki' dedikleri dükkân değil mi?\" ... Ankara'da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright (c) 2026, baskı 40x60 cm.",
+        "out": "Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright © 2026, baskı 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked - nearly 3 km - just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Sordu: \"Bu, 'köşedeki' dükkân mı?\"",
+          "out": "Sordu: “Bu, ‘köşedeki’ dükkân mı?”"
+        },
+        {
+          "rule": "apostrophe",
+          "in": "TBMM'nin kararı 1985'te açıklandı.",
+          "out": "TBMM’nin kararı 1985’te açıklandı."
+        },
+        {
+          "rule": "ellipsis",
+          "in": "Nasıl da akşam oldu?...",
+          "out": "Nasıl da akşam oldu?.."
+        },
+        {
+          "rule": "nbsp",
+          "in": "15 °C ve 20 kg",
+          "out": "15 °C ve 20 kg"
+        }
+      ]
     }
   ]
 }
