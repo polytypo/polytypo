@@ -16,6 +16,26 @@ name: Deploy to GitHub Pages
 # branch); a required-reviewer rule is a separate, manual step in Settings → Environments this
 # workflow file cannot configure for you.
 #
+# THE RELEASE-WINDOW GATE (added after spec 1.4.0). Every release necessarily puts main ahead of
+# the registries for a while: the version bump and the changelog entry land, then the five
+# packages publish minutes or hours later. With only the workflow_run trigger, that window got
+# published — the site announced spec 1.4.0 while npm still served 1.3.1, which is exactly what
+# the project's "describe only what ships" rule forbids. `verify` now ends by asking all five
+# registries what they actually serve, and `deploy` is SKIPPED, not failed, while any of them is
+# behind: a skip is the correct outcome mid-release, and a red run would be noise every time.
+#
+# Two consequences worth stating, because they are what make this automatic rather than a manual
+# step:
+#   - the `schedule` trigger below re-checks on its own, so the deploy happens once the last
+#     package lands without anyone pushing anything or clicking anything;
+#   - a scheduled run stops early when the live site already claims the version main is at, so
+#     the common case (nothing to publish) costs one HTTP request, not a rebuild.
+# The comparison is ">= the spec version", not "==", so it still holds if a runtime's package
+# version is ever allowed to run ahead of the spec version it implements.
+#
+# A workflow_dispatch DELIBERATELY bypasses the gate: redeploying a past site-vX.Y.Z tag, or
+# pushing out a site-only fix, is a human saying they know what they are publishing.
+#
 # Before this is used for a real, public, "announce the domain" launch: §7.3 flags
 # cache-safe (content-hashed) asset naming as a required pre-launch gate that is NOT implemented
 # yet — promo/vendor/polytypo.browser.js, promo/assets/site.js and promo/assets/style.css all
@@ -40,6 +60,12 @@ on:
     workflows: ["CI"]
     types: [completed]
     branches: [main]
+  # The retry path for the release window. A push that landed while the registries were still
+  # behind is not lost and needs no human: this fires every half hour, finds the gate now open,
+  # and publishes the tip of main. When there is nothing to publish it exits before doing any
+  # work — see "Skip a scheduled run when the live site is already current" below.
+  schedule:
+    - cron: "*/30 * * * *"
 
 # Read-only at the workflow level; the two jobs below grant themselves exactly what they each
 # need, narrowly, and nothing more.
@@ -62,6 +88,7 @@ jobs:
     # else (a failed run, a PR run against main) stops here and `deploy` below never even starts.
     if: >-
       github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'schedule' ||
       (github.event_name == 'workflow_run' &&
        github.event.workflow_run.event == 'push' &&
        github.event.workflow_run.conclusion == 'success')
@@ -70,6 +97,7 @@ jobs:
       actions: read
     outputs:
       sha: ${{ steps.pin.outputs.sha }}
+      publishable: ${{ steps.registries.outputs.publishable }}
     steps:
       # fetch-depth: 0 (full history) — the ancestry check below needs it, and a shallow clone
       # would make every commit look like a root with no ancestors.
@@ -156,9 +184,107 @@ jobs:
           fi
           echo "ok — canonical CI conclusion for ${PINNED_SHA} is success"
 
+      # The release-window gate (see the header). Everything above proves the commit is one we may
+      # publish; this proves the SITE IT WOULD PRODUCE is one we may publish — that every runtime
+      # actually serves the spec version the generated pages are about to announce.
+      #
+      # Sets `publishable`, which is the only thing `deploy` keys off. It is deliberately a SKIP
+      # and not a failure: being ahead of the registries is the normal, expected state for the
+      # minutes or hours between the version bump landing and the last package publishing, and a
+      # red run there would cry wolf on every release.
+      #
+      # `>=` rather than `==`, by semver order: a runtime whose package version ever runs ahead of
+      # the spec version it implements still satisfies "this version is published".
+      #
+      # A registry that cannot be reached, or answers in a shape this does not understand, counts
+      # as behind. That is the safe direction — the cost is a deploy deferred by thirty minutes,
+      # against the cost of announcing a version nobody can install.
+      - name: Gate on every runtime actually serving this spec version
+        id: registries
+        env:
+          PINNED_SHA: ${{ steps.pin.outputs.sha }}
+        run: |
+          set -euo pipefail
+
+          # A human dispatching this by hand is the documented escape hatch: redeploying a past
+          # site-vX.Y.Z tag, or shipping a site-only fix, is them saying what they intend.
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            echo "manual dispatch — gate bypassed by design"
+            echo "publishable=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          spec_version=$(git show "${PINNED_SHA}:spec/VERSION" | tr -d '[:space:]')
+          if ! printf '%s' "${spec_version}" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::spec/VERSION at ${PINNED_SHA} is not a version: ${spec_version}"
+            exit 1
+          fi
+          echo "the site this commit generates would announce spec ${spec_version}"
+
+          # `sort -V` is coreutils' version sort: the smaller of the two sorts first, so "$1 is the
+          # smaller" is exactly "$1 <= $2".
+          at_least() { [ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | head -1)" = "$1" ]; }
+
+          # Nothing to publish is the overwhelmingly common scheduled case. Answer it with one
+          # request against the live site rather than a checkout, an npm ci and a full rebuild.
+          # An unreadable answer falls through to the real work: a redundant deploy of identical
+          # bytes is harmless, a missed one is not.
+          if [ "${GITHUB_EVENT_NAME}" = "schedule" ]; then
+            live=$(curl -sfS --max-time 20 "https://polytypo.dev/" 2>/dev/null \
+              | grep -oE 'spec [0-9]+\.[0-9]+\.[0-9]+' | head -1 | cut -d' ' -f2 || true)
+            if [ -n "${live}" ] && at_least "${spec_version}" "${live}"; then
+              echo "the live site already announces spec ${live} — nothing to publish"
+              echo "publishable=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "live site announces \"${live:-unknown}\" — checking whether ${spec_version} is installable"
+          fi
+
+          ask() {
+            curl -sfS --retry 3 --retry-delay 2 --max-time 30 "$1" 2>/dev/null \
+              | python3 -c "$2" 2>/dev/null || true
+          }
+
+          lagging=""
+          check() {
+            local name="$1" got="${2#v}"
+            if [ -z "${got}" ]; then
+              echo "  wait ${name}: unreachable or unrecognised response"
+              lagging="${lagging} ${name}"
+            elif at_least "${spec_version}" "${got}"; then
+              echo "  ok   ${name} serves ${got}"
+            else
+              echo "  wait ${name} serves ${got}"
+              lagging="${lagging} ${name}"
+            fi
+          }
+
+          check npm "$(ask https://registry.npmjs.org/polytypo/latest \
+            'import json,sys;print(json.load(sys.stdin)["version"])')"
+          check pypi "$(ask https://pypi.org/pypi/polytypo/json \
+            'import json,sys;print(json.load(sys.stdin)["info"]["version"])')"
+          check rubygems "$(ask https://rubygems.org/api/v1/gems/polytypo.json \
+            'import json,sys;print(json.load(sys.stdin)["version"])')"
+          check packagist "$(ask https://repo.packagist.org/p2/polytypo/polytypo.json \
+            'import json,sys;d=json.load(sys.stdin);print(max(p["version"] for p in d["packages"]["polytypo/polytypo"]))')"
+          check go "$(ask https://proxy.golang.org/github.com/polytypo/polytypo-go/@latest \
+            'import json,sys;print(json.load(sys.stdin)["Version"])')"
+
+          if [ -n "${lagging}" ]; then
+            echo "::notice::deploy skipped — spec ${spec_version} is not yet served by:${lagging}. The scheduled run will publish it once they catch up; nobody needs to do anything."
+            echo "publishable=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "all five runtimes serve spec ${spec_version} or newer — publishable"
+            echo "publishable=true" >> "$GITHUB_OUTPUT"
+          fi
+
   deploy:
     name: Build and deploy
     needs: verify
+    # The one gate `verify` cannot express as a job condition on itself: `publishable` is false
+    # while any runtime is behind the spec version this commit's pages would announce, and false
+    # for a scheduled run that found nothing to publish. See the header's release-window note.
+    if: needs.verify.outputs.publishable == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read

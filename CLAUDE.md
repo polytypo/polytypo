@@ -27,8 +27,14 @@ Run `npm run generate:all` after any edit to `spec/locales/` or `spec/fixtures/`
 the worked examples shown in `README.md` and the promo site from the real engine (via the
 `polytypo` npm package), so those pages cannot drift from what the spec actually says.
 CI (`.github/workflows/ci.yml`) runs validate:spec → lint → test → generate:all (drift check) on
-Node 20 and 22. `.github/workflows/pages-deploy.yml` is the separate, manually-dispatched Pages
-publish workflow.
+Node 20 and 22. `.github/workflows/pages-deploy.yml` publishes the site and is **not**
+manually dispatched: it runs on `workflow_run` after CI succeeds on a push to main, and on a
+half-hourly `schedule`. Its `verify` job gates the deploy on all five registries actually serving
+the spec version the generated pages would announce — so the release window, where main carries
+the bump and the changelog before the packages publish, is skipped rather than published, and the
+scheduled run ships it once the last package lands. A manual dispatch bypasses that gate on
+purpose. **Consequence for any change to `spec/VERSION` or the changelog: it reaches the public
+site by itself, with no further action, as soon as the packages are out.**
 
 ## Document authority
 
