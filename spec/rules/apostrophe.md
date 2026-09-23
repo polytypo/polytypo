@@ -571,12 +571,37 @@ layouts and in text pasted from older systems. Converting them is not authorised
     gives `A ‘quoted’’s meaning`: the closing quotation mark and the possessive end up flush, and
     at text size the pair reads as one double quote.
 
-    **The authority names both the remedy and the character.** `CMOS`'s own editors describe the
-    fix as adding a space between the contiguous marks, and enumerate it by code point — U+00A0,
-    or a thin space U+2009 or hair space U+200A in print, or U+202F, which *CMOS* Online itself
-    now sets between a quotation mark and an apostrophe (18th ed. §6.11, as described in *CMOS
-    Shop Talk*, "When Quotation Marks and Apostrophes Collide", updated
-    2025-12-16).
+    The mark case 2a adds is always U+2019; the mark it abuts is whichever `CLOSEDELIM` member
+    the locale closed with, and three of that class's four quotation members are reachable as a
+    locale's primary close, so this is **not an `en-GB` phenomenon**. Grouped by `quotes.primary.close`, seventeen of the
+    nineteen locales reach it through case 2a: `’’s` in `en-GB`; `”’s` in `en-US`, `fi`, `sv`,
+    `nl`, `pl`, `pt-BR` and `tr`; `»’s` in `de-CH`, `fr`, `fr-CA`, `ru`, `el`, `es`, `it`,
+    `pt-PT` and `uk`. Only the first two are plausibly confusable, and **which pairs those are is
+    a property of the glyph pair, not of the language** — so no existing locale field expresses
+    the distinction a separator rule would have to make.
+
+    **`de-DE` and `cs` look like this and are not it.** They close with U+201C, which §3.1 puts
+    in `OPENISH` and deliberately *not* in `CLOSEDELIM`, so `A „quoted“'s meaning` reaches its
+    U+2019 through **case 4** (leading elision: `OPENISH` left, `ALNUM` right), which is 0.4.1
+    vintage — the same U+201C-is-not-closeish asymmetry case 3a records for its own reason.
+    Measured on the published packages: 1.4.0 and 1.6.0 both emit `A „quoted“’s meaning`, while
+    `en-US` emits `A “quoted”'s meaning` on 1.4.0 and `A “quoted”’s meaning` on 1.6.0. The
+    `“’s` shape predates case 2a and is unchanged by it, so it is not this item's accepted cost.
+
+    **What the authority says, and what it does not.** The remedy and the character are both
+    named, but by a *CMOS Shop Talk* post — "When Quotation Marks and Apostrophes Collide",
+    published 2020-01-14, updated 2025-12-16 — and what that post describes
+    is the typesetting *CMOS* Online applies **to its own website**, not a rule stated for English
+    text. It enumerates the separator by code point (U+00A0, thin space U+2009, hair space U+200A
+    in print, U+202F online) and cross-references 18th ed. §6.11. **That cross-reference does not
+    survive a check against §6.11's own text, which this repository already holds.**
+    `spec/locales/en-US.json` quotes it verbatim: “When single quotation marks are nested within
+    double quotation marks, and two of the marks appear next to each other, a space between the
+    two marks, though not strictly required, aids legibility.” That is about *nested quotation
+    marks*, not an apostrophe, and it is permissive (“not strictly required”) rather than
+    prescriptive. The 18th edition's index files apostrophe adjacency somewhere else entirely,
+    at `apostrophes: other punctuation with, 6.126`; §6.126 and §6.128 are behind the
+    subscription and unread.
 
     **polytypo emits the right character and inserts nothing.** This rule *cannot* insert: §1 and
     §4 make every edit one code point replacing one code point at the same index, and that is
@@ -585,8 +610,11 @@ layouts and in text pasted from older systems. Converting them is not authorised
     between them is unaddressed by every rule in `order.json` — recorded here as a decision
     rather than left as an omission, in the standing of items 2 and 3.
 
-    **A future `nbsp` sub-rule would need its own citation, not this one.** The attested passage
-    is one mark-order away from the shape case 2a produces: it separates a title's *own* trailing
+    **A future `nbsp` sub-rule would need its own citation, not this one** — for two independent
+    reasons, either sufficient on its own. First, what was retrieved is a publisher's rendering
+    practice for its own website, reported second-hand by its blog; it is not a normative
+    statement about English typography at all. Second, even taken at face value the attested
+    passage is one mark-order away from the shape case 2a produces: it separates a title's *own* trailing
     apostrophe from a following closing quotation mark — its example is the song title *Ain't
     Misbehavin'* set in single quotation marks, so the two marks there are the title's own
     apostrophe and then the closing quote, apostrophe first. The possessive ordering — closing mark, then apostrophe, then `s` —
