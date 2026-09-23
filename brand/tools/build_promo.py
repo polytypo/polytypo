@@ -1144,12 +1144,6 @@ def build():
         "{{latest_version}}": H.escape(_latest_released_version()),
         "{{coverage_rows}}": coverage_rows(data),
     }
-    # Per-locale fixture totals — read live from spec/fixtures/, never hand-maintained, so the
-    # coverage table on the Locales page cannot drift from the conformance suite it describes.
-    for loc in data["locales"]:
-        code = loc["locale"]
-        replacements[f"{{{{fixtures:{code}}}}}"] = str(fixture_count(code))
-
     for slug, title, body_file in PAGES:
         prefix = PAGE_PREFIXES[slug]
         with open(os.path.join(PROMO_SRC, body_file), encoding="utf-8") as f:
