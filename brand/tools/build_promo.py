@@ -69,6 +69,7 @@ PRIMARY_SOURCES = {
     "pl": "Słownik języka polskiego PWN; Główny Urząd Miar",
     "uk": "Український правопис (2019)",
     "cs": "Ústav pro jazyk český AV ČR, Internetová jazyková příručka",
+    "tr": "Türk Dil Kurumu, Yazım Kuralları; Türk Dil Kurumu, Kısaltmalar Dizini",
 }
 
 

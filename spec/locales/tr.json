@@ -1,0 +1,112 @@
+{
+  "locale": "tr",
+  "name": "Turkish",
+  "quotes": {
+    "primary": {
+      "open": "“",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "‘",
+      "close": "’",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": ["nin", "nın", "de", "da", "te", "ye", "yle", "nı", "dan", "den", "lik", "nci", "üm"]
+    }
+  },
+  "dash": {
+    "parenthetical": "none",
+    "range": "none"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": true
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": ["Kur. Bşk.", "Nö. Sb."],
+    "beforeUnits": ["mm", "cm", "km", "kg", "mg", "hl", "m²", "cm²", "°C", "ton"],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Türk Dil Kurumu, Yazım Kuralları, «Noktalama İşaretleri (Açıklamalar)», «Tek Tırnak İşareti»: «Tırnak içinde verilen cümlenin içinde yeniden tırnağa alınması gereken bir sözü, ibareyi belirtmek için kullanılır: Edebiyat öğretmeni \"Şiirler içinde 'Han Duvarları' gibisi var mı?\" dedi…»",
+      "url": "https://tdk.gov.tr/icerik/yazim-kurallari/noktalama-isaretleri-aciklamalar/",
+      "note": "Kuralın kendisi: birinci derece çift tırnak, ikinci derece (tırnak içinde tırnak) tek tırnaktır. Bu sayfa işaretleri düz ASCII olarak sunduğu için kod noktalarını vermez; onlar ayrı kayıtta, Türk Dili'nin metin katmanından okunmuştur. BAĞIMSIZ DOĞRULAMA: Unicode Consortium, CLDR 'tr' delimiters — quotationStart U+201C, quotationEnd U+201D, alternateQuotationStart U+2018, alternateQuotationEnd U+2019 (https://github.com/unicode-org/cldr-json, cldr-misc-full/main/tr/delimiters.json). İki kaynak aynı dört kod noktasında birleşiyor. elisionIdioms BOŞ: Türkçede kesme işaretiyle yazılan, iki yana boşluk alan bir elizyon deyimi (rock 'n' roll biçimi) yoktur. elisionClitics.before BOŞ: Türkçe ekleri sona getirir, kesme işaretinden ÖNCEki dizi her zaman sözcüğün kendisidir. elisionClitics.after DOLU ve gerekçesi ayrı kayıttadır. Erişim: 23.09.2026."
+    },
+    {
+      "rule": "quotes",
+      "cite": "Şener Mete, «Tırnak İşareti Üzerine», Türk Dili (Türk Dil Kurumu dergisi), s. 31, dipnot 1 «TDK Yazım Kılavuzu»: «TDK Yazım Kılavuzu’na göre tırnak işaretinin ( “ ” ) kullanıldığı yerler şöyle sıralanmıştır»; «Bir de Tek Tırnak İşareti ( ‘ ’ ) vardır ki o da tırnak içinde verilen ve yeniden tırnağa alınması gereken bir sözü belirtmek için kullanılır: “Atatürk henüz ‘Gazi Mustafa Kemal Paşa’ idi.”»",
+      "url": "https://tdk.gov.tr/wp-content/uploads/2012/01/31-41.pdf",
+      "note": "KOD NOKTALARI DOSYANIN KENDİ BAYTLARINDAN OKUNDU, GÖZLE DEĞİL: PDF'in metin katmanı pdftotext ile çıkarıldı ve parantez içindeki işaretler U+201C U+201D ile U+2018 U+2019 olarak sayıldı; aynı paragrafın örneğinde de çift tırnak U+201C…U+201D, iç içe tek tırnak U+2018…U+2019 olarak geçiyor. Bu, yazarın kendi tercihi değil: pasajın dipnotu doğrudan «TDK Yazım Kılavuzu»dur, yani makale Kılavuz'un kuralını işaretleriyle birlikte aktarmaktadır. KAYNAK RÜTBESİ, açıkça: Türk Dili TDK'nin kendi dergisidir ama bir yazar makalesidir; burada yüklenen iş yalnızca Kılavuz'un işaretlerinin HANGİ kod noktaları olduğunu tespit etmektir, kuralın kendisini kurmak değil — kural TDK'nin kendi Yazım Kuralları sayfasından alınmıştır (ayrı kayıt). tdk.gov.tr sayfaları düz ASCII işaretlerle (U+0022, U+0027) sunulduğu ve locale.schema.json'ın singleChar tanımı bu ikisini açıkça yasakladığı için web sayfası ilke olarak bu değerin kaynağı olamaz. #51'DE BİLDİRİLEN «…» / »…« ÇÜRÜTÜLDÜ: aynı makale s. 32'de yan tırnağı «Bazı yazarlar, çift tırnak işaretini üstten değil yandan kullanmayı uygun görmüşlerdir» diye tanıtır — kurumun normu değil, bazı yazarların tercihidir. Metin katmanında U+00AB ile U+00BB toplam birer kez geçerken U+201C 60, U+201D 56 kez geçmektedir. innerSpace = «none»: hiçbir kaynak tırnak içinde boşluk istemiyor ve Kılavuz'un örnekleri bitişiktir. Erişim: 23.09.2026."
+    },
+    {
+      "rule": "quotes",
+      "cite": "Türk Dil Kurumu, Yazım Kuralları, «Kesme İşareti»: «Özel adlara getirilen iyelik, durum ve bildirme ekleri kesme işaretiyle ayrılır: Kurtuluş Savaşı'nı, Atatürk'üm, Türkiye'mizin»; «Kısaltmalara getirilen ekleri ayırmak için konur: TBMM'nin, TDK'nin, BM'de, ABD'de, TV'ye»; «Sayılara getirilen ekleri ayırmak için konur: 1985'te, 8'inci madde, 2'nci kat; 7,65'lik, 9,65'lik, 657'yle»; aynı bölümün örneklerinden ayrıca: «Batı'da», «Sultan Ana'nın», «Çanakkale Boğazı'nın», «Yurdakul'dan», «Cebrail'den»",
+      "url": "https://tdk.gov.tr/icerik/yazim-kurallari/kesme-isareti/",
+      "note": "quotes.elisionClitics.after listesinin gerekçesi. Bu giriş listenin TAM OLDUĞUNU değil, HER PARÇANIN AYRI AYRI belgelendiğini kanıtlar — it.json'daki ölçütün aynısı ve quotes.md §3.2'nin her girişten istediği de budur. Türkçe ek zincirleri kapalı bir küme değildir; bu alan zaten kapalı bir küme istemez. ÖLÇÜT, tek biçimde uygulandı: bir parça ancak TDK'nin BASTIĞI bir örnekte kesme işaretinden sonraki EN UZUN LETTER dizisinin TAMAMI ise alınmıştır, paradigma yeterli değildir — bu yüzden «TBMM'nin» örneği «nin»i kanıtlar ama «in»i kanıtlamaz, ve «Atatürk'üm» örneği «üm»ü verir, «ü»yü değil. KABUL EDİLEN YANLIŞ POZİTİF, İngilizce «s» ile eşit sayılmadan: listelenen bir parça, içeriği TAMAMEN o parça olan ve satır içi bir span sınırına DAYANAN bir alıntıyı ek sanar — «<em>'de'</em>» biçimi, bir fikstürle sabitlenmiştir. Risk Türkçede İngilizceden YÜKSEKTİR, çünkü «da/de» ayrıca ayrı yazılan bir bağlaçtır; iki ölçülen hafifletici kaydedilir: TDK'nin kendi anma biçimi başta kısa çizgi taşır («-lık'la»; «Bulunma Durumu Eki -da / -de / -ta / -te'nin Yazılışı» başlığı) ve kısa çizgi LETTER olmadığı için dizi boş kalır ve veto çalışamaz; ayrıca «Bağlaç Olan da, de'nin Yazılışı» sayfası bağlacı tırnaksız, düz «da / de» yazar. BÜYÜK HARF KAYBI, adıyla ve fikstürle: «TBMM'NİN» eşleşmez, çünkü katlama yalnızca ilk kod noktasını ve yalnızca ASCII A-Z'yi kapsar — «N»→«n» katlanır ama kuyrukta U+0130 ≠ U+0069 olur; «TBMM'NIN» da U+0049 ≠ U+0069 ile düşer. Katlamayı genişletmek ARCHITECTURE.md §4.4'ün açıkça yasakladığı yerdir (noktasız ı, U+0131), bu yüzden kayıp giderilmez, KABUL EDİLİR. BİLEREK DIŞARIDA BIRAKILANLAR, kanıtlı oldukları hâlde: «a», «e», «i» (Samsun'a, Fatih Sultan Mehmet'e, Kâzım Karabekir'i) — tek harfler harf ADLARIdır ve TDK'nin kendi «a'dan z'ye» örneği harf alıntılama biçimini basar; bedeli açıkça söylenir, ünsüzle biten adlarda yönelme eki span sınırında onarılmadan kalır. «ya», «un», «in», «inci», «tan» da kanıtlıdır ama çıplak sözcük olarak çakışırlar. «dan», «den», «lik», «nci» ve «üm» LİSTEYE ALINDI: hepsi yukarıdaki cite'ta basılı örneklerle kanıtlıdır (Yurdakul'dan, Cebrail'den, 7,65'lik, 2'nci, Atatürk'üm), hiçbiri çıplak bir Türkçe sözcükle çakışmaz, dolayısıyla maliyetleri zaten kabul edilmiş «de/da» ikilisinden DÜŞÜKTÜR. Böylece liste, ölçüte göre kanıtlı olup çakışmayan her parçayı içerir ve dışarıda kalanların hepsi aşağıda gerekçesiyle adlandırılmıştır — keyfî bir alt küme değildir. KAPSAM BOŞLUĞU, tek tek: «ta», «ten», «nun», «nün», «ler», «lar» okunan sayfalarda tam dizi olarak basılmamıştır, dolayısıyla «Irak'ta», «Oslo'nun», «TBMM'ler» span sınırında onarılmaz; zincirli ekler («Türkiye'mizin» → dizi «mizin», «Devleti'ndeki» → «ndeki») hiçbir kısa girişle eşleşmez. Liste YALNIZCA REDDEDER: quotes'un kuracağı bir eşleştirmeyi engellemekten başka bir şey yapamaz. Erişim: 23.09.2026."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Türk Dil Kurumu, Yazım Kuralları, «Noktalama İşaretleri (Açıklamalar)», «Kısa Çizgi» 2: «Cümle içinde ara sözleri veya ara cümleleri ayırmak için ara sözlerin veya ara cümlelerin başına ve sonuna konur, bitişik yazılır: Küçük bir sürü -dört inekle birkaç koyun- köye giren geniş yolun ağzında durmuştu.»; «Uzun Çizgi»: «Yazıda satır başına alınan konuşmaları göstermek için kullanılır. Buna konuşma çizgisi de denir.» UYARI: «Konuşmalar tırnak içinde verildiğinde uzun çizgi kullanılmaz.»",
+      "url": "https://tdk.gov.tr/icerik/yazim-kurallari/noktalama-isaretleri-aciklamalar/",
+      "note": "dash.parenthetical = «none» gerekçesi, ve bu bir SUSKUNLUK DEĞİL, İFADE EDİLEMEYEN BİR NORMDUR. İki iş ayrı ayrı sınandı: uzun çizgi YALNIZCA konuşma çizgisidir — bölümün tek kuralı ve tek UYARI'sı budur, ara sözle ilgili hiçbir hükmü yoktur. Ara sözü ayıran işaret KISA ÇİZGİ'dir ve kaynak onu «bitişik yazılır» diye niteler. locale.schema.json'ın enum'u yalnızca em/en uzunluklarını tanır; kısa çizgi ne U+2014 ne U+2013'tür, dolayısıyla Türkçenin gerçek geleneği bu alanda İFADE EDİLEMEZ. «en-tight» yazmak TDK'ye aykırı bir dönüşüm üretirdi — yaklaşık bir değer yerine kuralı sessiz bırakmak seçildi. Sonuç, kısa çizginin U+002D mi U+2010 mu olduğundan bağımsızdır: hiçbiri en/em değildir. tr, her iki alanı da «none» olan ÜÇÜNCÜ locale'dir — el ve es'ten sonra; dashes kuralı Türkçe için onlarda olduğu gibi kanıtlanabilir bir total no-op'tur (dashes.md §6, «el» bölümü). Erişim: 23.09.2026."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Türk Dil Kurumu, Yazım Kuralları, «Noktalama İşaretleri (Açıklamalar)», «Kısa Çizgi» 7: «Arasında, ve, ile, ila, …-den …-e anlamlarını vermek için kelimeler veya sayılar arasında kullanılır: Aydın-İzmir yolu, Türk-Alman ilişkileri, Ural-Altay dil grubu, 09.30-10.30, 1914-1918 Birinci Dünya Savaşı, Türkçe-Fransızca Sözlük vb.»",
+      "url": "https://tdk.gov.tr/icerik/yazim-kurallari/noktalama-isaretleri-aciklamalar/",
+      "note": "dash.range = «none» gerekçesi. Aralık normludur — ve bu, alanın boş olmasının nedenidir değil, tam tersine nedeniyle birlikte kaydedilmesinin nedenidir: işaret KISA ÇİZGİ'dir, TDK hiçbir yerde sayılar arasında yarım veya tam kare çizgi istemez. Doğrulanmış bir en/em geleneği YOKTUR, dolayısıyla «none» doğru içeriktir (ranges.md §2). «ranges» kuralı zaten varsayılan olarak kapalıdır (spec 0.5.0), bu alan bir çağıran açıkça açmadıkça atıldır. Erişim: 23.09.2026."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Türk Dil Kurumu, Yazım Kuralları, «Noktalama İşaretleri (Açıklamalar)», «Üç Nokta», UYARI: «Ünlem ve soru işaretinden sonra üç nokta yerine iki nokta konulması yeterlidir: Gök ekini biçer gibi!.. Başaklar daha dolmadan. (Tarık Buğra) / Nasıl da akşam oldu?.. Nasıl da yavrucaklar sustu?.. Nasıl da serçecikler yuvalarına sığındı?.. (Necip Fazıl Kısakürek)»",
+      "url": "https://tdk.gov.tr/icerik/yazim-kurallari/noktalama-isaretleri-aciklamalar/",
+      "note": "abbreviatedAfterTerminal = true. Türkçe, Rusça ve Ukraynacadan sonra bu değeri alan üçüncü locale'dir; araştırma bunun TERSİNİ beklediği için özellikle sınandı. SINIFLANDIRMA, açıkça: «yeterlidir» «yazılır» demek değildir, yani izin verilen bir biçimdir, mutlak bir buyruk değil. Buna rağmen «true» seçilmiştir ve gerekçe tercih değil ÖLÇÜMDÜR: bu alan iki yönlüdür, «false» tarafsız değildir. polytypo 1.5.0 ile ölçüldü — abbreviatedAfterTerminal'ı false olan bir locale'de «Nasıl da akşam oldu?..» çıktısı «Nasıl da akşam oldu?…» olur, yani Kılavuz'un kendi bastığı biçim bozulur; true olan bir locale'de aynı girdi sabit noktadır ve «?...» de ona normalleştirilir. Kılavuz'un örneklerinin tamamı iki noktalıdır ve «?...» biçiminde tek bir TDK örneği yoktur, dolayısıyla iki yönden yalnızca biri kaynakla uyumludur. BEDEL, gizlenmeden: ellipsis.md §3 adım 4→6 «?...» girdisini «?..» olarak YENİDEN YAZAR, yani UYARI'nın istediğinden bir adım ileri gider. Erişim: 23.09.2026."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Türk Dil Kurumu, Yazım Kuralları, «Hece Yapısı ve Satır Sonunda Kelimelerin Bölünmesi»: «Türkçede satır sonunda kelimeler bölünebilir fakat heceler bölünemez.»; «Satıra sığmayan kelimeler bölünürken satır sonuna kısa çizgi (-) konur.»; «Ayırmada satır sonunda ve satır başında tek harf bırakılmaz.»; «Kesme işareti satır sonuna geldiğinde yalnız kesme işareti kullanılır; ayrıca çizgi kullanılmaz.»",
+      "url": "https://tdk.gov.tr/icerik/yazim-kurallari/hece-yapisi-ve-satir-sonunda-kelimelerin-bolunmesi/",
+      "note": "Üç boş listenin gerekçesi, ve bu OLUMLU bir bulgudur, bir eksiklik değil. Türkçe satır sonunda bölmeyi yalnızca hoş görmez, NORMLAR: bölme noktasına kısa çizgi konur. Bu, U+2011 (bölünmez kısa çizgi) talebinin tam tersidir. Sayfanın tamamı ile «Kısa Çizgi» bölümünün bütün UYARI'ları okundu; hâlihazırda kısa çizgi taşıyan bir biçimin satır sonunda bölünmesini yasaklayan tek bir kural yoktur. Boş listeler kuralı Türkçe için kanıtlanabilir bir no-op yapar (hyphen.md §2). Erişim: 23.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Türk Dil Kurumu, Yazım Kuralları, «Noktalama İşaretleri (Açıklamalar)», giriş hükmü: «Noktalama işaretlerinden nokta, virgül, noktalı virgül, iki nokta, üç nokta, soru, ünlem, tırnak, ayraç ve kesme işaretleri ait oldukları kelimelere bitişik olarak yazılır ve kesme dışındaki işaretlerden sonra bir harf boşluğu ara verilir.»",
+      "url": "https://tdk.gov.tr/icerik/yazim-kurallari/noktalama-isaretleri-aciklamalar/",
+      "note": "beforePunctuation ve narrowBeforePunctuation boş. Bu SESSİZLİK DEĞİL, AÇIK BİR REDDİR: işaretler ait oldukları kelimeye bitişiktir ve boşluk işaretten SONRA gelir, dolayısıyla Fransızca «mot !» geleneği Türkçede ne U+00A0 ne U+202F olarak vardır. Aynı hüküm kesme işaretinin ayrıcalığını da adlandırır: ondan sonra boşluk bırakılmaz. initialBinding = «none»: «Kısaltmalar» ve «Büyük Harflerin Kullanıldığı Yerler» sayfaları okundu, kişi adı ve soyadı baş harflerinin nasıl aralanacağına dair TDK'de bir kural bulunamadı — bu, olumlu bir dayanağa değil kaynağın suskunluğuna dayanan bir «none»'dur ve aradaki fark burada belirtilmektedir. afterShortWords boş: Türkçede tek harfli bağlaç veya edat yoktur ve TDK satır sonunda asılı kalan kısa sözcüklerle ilgili bir kural vermez; «satır sonunda ve satır başında tek harf bırakılmaz» kuralı HECE bölmeye ilişkindir, sözcüklere değil, ve aynı olgu değildir. beforeNumber ve beforeWord boş: hiçbir kısaltmayı ardından gelen bir sayıya veya kelimeye bağlayan kural bulunamadı. Erişim: 23.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Türk Dil Kurumu, Kısaltmalar Dizini: «Kur. Bşk.  Kurmay Başkanı, Başkanlığı»; «Nö. Sb.  Nöbetçi subayı»",
+      "url": "https://tdk.gov.tr/icerik/yazim-kurallari/kisaltmalar-dizini/",
+      "note": "abbreviations listesi. İki giriş, dizinin PDF'inden iç boşluklarıyla birlikte harfi harfine alındı. ÖLÇÜT, tek biçimde uygulandı: yalnızca HER İKİ parçası da noktalı kısaltma olan girişler. Bilerek dışarıda bırakıldı: «Osm. T.», «SEFD Bşk.», «TOBB ETÜ», «TÜRKİYE KOOP» — her birinde en az bir parça akronimdir, noktalı kısaltma değil. KAPSAM UYARISI: dizin baştan sona okunmadı, bu yüzden liste doğrulanmış bir ALT KÜMEDİR, tam sayım değildir; eksik bir giriş yanlış bir giriş değildir, N4 yalnızca listedekini bağlar. TDK'nin kendi yazımıyla ilgili, dizinden doğrudan okunan iki düzeltme: «MÖ» ve «MS» noktasız yazılır, «T.C.» ise iç boşluksuzdur — «M.Ö.» ve «M. Ö.» biçimleri TDK'nin biçimleri değildir ve bu alana girmezler. N4 tam eşleşme yapar, hiçbir büyük-küçük harf esnekliği yoktur (nbsp.md §3.6); N1, N2 ve N3 bu locale'de boş olduğundan «önce talep eden kazanır» çatışması da yoktur. Erişim: 23.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Türk Dil Kurumu, Sıkça Sorulan Sorular, «°C \"santigrat derece\" işaretiyle sayı arasında boşluk bırakılır mı?»: «Sayı ve ölçü birimi kısaltmaları aralarında boşluk bırakılır. Tıpkı 5 m, 20 kg, 350 ton örneklerinde olduğu gibi, °C \"santigrat derece\" işaretiyle sayı arasında boşluk bırakılır: 15 °C gibi.»; Türk Dil Kurumu, Yazım Kuralları, «Kısaltmalar» 2: «Ölçü birimlerinin uluslararası kısaltmaları kullanılır: m (metre), mm (milimetre), cm (santimetre), km (kilometre), g (gram), kg (kilogram), l (litre), hl (hektolitre), mg (miligram), m² (metrekare), cm² (santimetrekare) vb.»",
+      "url": "https://tdk.gov.tr/icerik/sikca-sorulan-sorular/c-derece-santigrat-isaretiyle-sayi-arasinda-bosluk-birakilir-mi/",
+      "note": "beforeUnits. Rol paylaşımı başka locale'lerdeki gibi iki kuruma değil tek kuruma düşüyor: hangi dizgilerin uluslararası birim simgesi olduğunu «Kısaltmalar» 2, aralarında boşluk bırakıldığını SSS söylüyor. KAYNAK RÜTBESİ açıkça belirtiliyor: Sıkça Sorulan Sorular, Yazım Kılavuzu'nun altındadır ve boşluk hükmünün tek dayanağı odur. Tek harfli simgeler (m, g, l) fr.json ve pl.json uygulamasına uyularak atlandı. «ton» ayrıca açıklanıyor: uluslararası bir simge değil bir kelimedir ve yalnızca SSS'nin düzyazı örneğinden («350 ton») gelir — listede tutulmasının nedeni N5'in sağ sınır testinin onu «tonluk» içinde eşleştirmemesi ve hiçbir şey uydurulmamış olmasıdır. «cm» ile «cm²» birlikte listelenebilir, çünkü aynı konumda EN UZUN EŞLEŞME KAZANIR (nbsp.md §3.7) — «15 cm²» girdisinde «cm» değil «cm²» eşleşir. «%» BİLEREK YOK: TDK yüzde işaretini sayıdan ÖNCE ve bitişik yazar (ayrı kayıt). N5 yalnızca var olan bir boşluğu DÖNÜŞTÜRÜR, asla eklemez (nbsp.md §3.7 madde 3), bu yüzden «20kg» dokunulmadan kalır. Erişim: 23.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Türk Dil Kurumu, Yazım Kuralları, «Sayıların Yazılışı»: «Yüzde ve binde işaretleri yazılırken sayılarla işaret arasında boşluk bırakılmaz: %25, ‰50»",
+      "url": "https://tdk.gov.tr/icerik/yazim-kurallari/sayilarin-yazilisi/",
+      "note": "afterSymbols boş, ve gerekçesi OLUMSUZ BİR KANITTIR, suskunluk değil. Türkçede yüzde işareti sayıdan ÖNCE gelir ve bitişik yazılır; bu, pl.json'un «%» girişinin hem konum hem boşluk bakımından tam tersidir. beforeUnits'e giremez, çünkü orada işaret sayıdan SONRA beklenir; afterSymbols'e de giremez, çünkü N6 sayıdan önce VAR OLAN bir boşluk arar ve norm o boşluğu yasaklar (nbsp.md §3.8). N5 ve N6 yalnızca dönüştürür, hiç eklemez, dolayısıyla «%25» biçimi her iki durumda da dokunulmadan kalır ve boş liste hiçbir şey kaybettirmez. «§» de bu listede yok: TDK bu işaret için bir kural vermiyor. Erişim: 23.09.2026."
+    }
+  ]
+}

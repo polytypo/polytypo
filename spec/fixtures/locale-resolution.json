@@ -1,5 +1,5 @@
 {
-  "spec": "1.5.0",
+  "spec": "1.6.0",
   "cases": [
     {
       "id": "exact-en-us",
@@ -276,6 +276,18 @@
       "tag": "pt-AO",
       "resolves": "pt-PT",
       "note": "section 3.4 step 3b: the strip lands on an alias key, so the alias is followed — the one path through step 3 that steps 1 and 2 cannot reach."
+    },
+    {
+      "id": "exact-tr",
+      "tag": "tr",
+      "resolves": "tr",
+      "note": "section 3.4 step 1. Added with the locale in spec 1.6.0, for the reason exact-es records: a registry member with no resolution case is a member nothing proves resolves rather than throws."
+    },
+    {
+      "id": "strip-tr-tr",
+      "tag": "tr-TR",
+      "resolves": "tr",
+      "note": "section 3.4 step 3a, and the tag a Turkish caller actually sends. tr needs no registry alias precisely because the region strip reaches it — this case is what makes that claim testable rather than asserted."
     }
   ]
 }

@@ -193,7 +193,7 @@ that "no tag was supplied at all" is expressible as a fixture rather than only a
 raise the coded error rather than a native `TypeError` — which matters because a `TypeError` is
 not in the taxonomy (ARCHITECTURE.md §4.6) and would differ in each of the five runtimes.
 
-Every row is a fixture, not a candidate: **35 resolution cases run today**, covering these rows
+Every row is a fixture, not a candidate: **50 resolution cases run today**, covering these rows
 and the malformed-tag rejections. `fixtures.schema.json` was extended with a case shape carrying
 no `mode` and no `out`, whose expected result is a locale id or a thrown code. An earlier
 revision of this paragraph said such rows "cannot be expressed in the existing fixture format";
@@ -210,11 +210,11 @@ that was true when written, and is why the schema was changed.
    language polytypo does not support yet). I have mapped both to
    `POLYTYPO_UNKNOWN_LOCALE` because inventing a code would change a documented contract.
    Recommend adding `POLYTYPO_INVALID_LOCALE`; operator decision.
-2. *(Closed.)* Resolution **is** fixture-covered: 35 resolution cases run today. The gap this
+2. *(Closed.)* Resolution **is** fixture-covered: 50 resolution cases run today. The gap this
    item reported — that `fixtures.schema.json` could not express a case with no `mode`, no `out`
    and an expected locale id or thrown code — was closed by extending the schema, and the §5
    table's rows are those cases. (The item also miscounted the pipeline as seven rules; it is
-   eight, since `hyphen` was added at order 35.)
+   nine — `hyphen` was added at order 35 and `ranges` at 37.)
 
 3. **`sv-FI` (Finland Swedish) silently resolves to `sv`.** The two genuinely differ in some
    conventions, and PLAN.md §7 already flags Swedish quote practice as uncertain. The

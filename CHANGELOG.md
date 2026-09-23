@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.5.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.5.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.6.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.6.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,17 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.6.0 — 23 September 2026
+
+Turkish, cited to the Türk Dil Kurumu — the nineteenth language, and the first whose apostrophe is grammar rather than punctuation.
+
+- Turkish ships as `tr`. Until now a caller with Turkish content had two options: skip the language, or run it through a foreign locale. The second is not free, and this is what it cost, measured: `Sordu: "Bu, 'köşedeki' dedikleri dükkân mı?"` came back from `en-GB` as `Sordu: ‘Bu, “köşedeki” dedikleri dükkân mı?’` — the nesting inverted, singles outside and doubles inside. `tr` gives `Sordu: “Bu, ‘köşedeki’ dedikleri dükkân mı?”`, which is what the TDK rule prescribes.
+- The quotation marks are U+201C and U+201D at the first level and U+2018 and U+2019 at the second. That sounds unremarkable and was the hardest fact in the file: tdk.gov.tr serves its examples with plain ASCII marks, so the website cannot say which code points it means. They were read out of the text layer of TDK's own journal, in the passage whose footnote is the Yazım Kılavuzu itself, and independently confirmed against the Unicode Consortium's CLDR data for `tr`. A production report had described Turkish quotes as the `«…»` family; the same journal article shows that form as the preference of some writers rather than the institute's norm, so it is re-typeset like any other foreign pair.
+- An ellipsis after `?` or `!` may be written with two dots, and TDK puts it as sufficient rather than as required. `Nasıl da akşam oldu?...` becomes `Nasıl da akşam oldu?..`, where every other locale but Russian and Ukrainian completes it to `?…`. This is the field's other direction, and it matters: had Turkish shipped with the default, TDK's own printed form would have been rewritten into one the guide never shows.
+- Turkish attaches case suffixes to names, abbreviations and numbers with an apostrophe — `TBMM'nin`, `1985'te`, `Ankara'da` — so the mark is grammar, not punctuation, and it is everywhere. In `html` and `markdown` that ran into the defect 1.4.0 fixed for English: written against a span, `'<b>TBMM</b>'nin kararı doğru.'` had the suffix open the quotation and the author's own marks come out inverted. Ten suffix fragments are now cited from TDK's own printed examples, each one evidenced as a whole word fragment rather than inferred from the paradigm, and the sentence comes out as `“<b>TBMM</b>’nin kararı doğru.”`
+- The accepted cost of those ten, and the two things they do not reach, are all pinned as conformance cases rather than left to be discovered. A quotation whose entire content is one of the fragments, written against a span, is read as a suffix: `<em>'de'</em>` gives `<em>’de’</em>`, and the risk is higher than English's because `de` is also a separate conjunction. An uppercase suffix does not match, because the fold is ASCII-only and Turkish `İ` is U+0130 — widening it is the one thing the portability rules forbid outright. And a suffix TDK's read pages never print whole, such as the `ta` of `Irak'ta`, is simply not in the list.
+- Three things Turkish deliberately does not get, each for a stated reason. No dash convention: TDK sets a parenthetical with the short hyphen, closed up, which is neither an en nor an em dash, so writing either would produce a transformation the guide contradicts — `tr` is the third locale, after Greek and Spanish, for which the dash rule is a provable no-op. No range dash, for the same reason. And the percent sign is not bound to its number, because Turkish writes it before the number and closed up: `%25` stays exactly as typed.
 
 ## 1.5.0 — 23 September 2026
 

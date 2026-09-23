@@ -900,7 +900,10 @@ never reaches a digit-flanked token at all.
 ### `el` — `parenthetical: "none"` (`range` is now [ranges.md](ranges.md)'s field, also `"none"`, not this rule's)
 
 The first locale with `"none"` on **both** fields, so the rule is a **total no-op** for it in the
-same provable sense `hyphen` is a no-op for a locale with empty lists. Tokens are still
+same provable sense `hyphen` is a no-op for a locale with empty lists. It is no longer the only
+one: `es` (spec 1.3.0) and `tr` (spec 1.6.0) are both-`none` too, each for its own reason and each
+recorded in its own locale file. This section stays written about `el` because its two fields are
+`"none"` for two *different* reasons, which is what makes it worth reading. Tokens are still
 classified — §3.3's "a range token is never reconsidered as a parenthetical" still holds — but no
 classification has an emission to make. The rows below are therefore all "no change" rows by
 construction, and they are worth pinning precisely because nothing else in the suite exercises

@@ -202,8 +202,10 @@ is a breaking change.
 ## Scope discipline
 
 Locales are `en-US` `en-GB` `de-DE` `de-CH` `fr` `fr-CA` `ru` `fi` `sv` `el` `es` `it` `pt-PT`
-`pt-BR` `nl` `pl` `uk` `cs` — eighteen (aliases `en`→`en-US`, `de`→`de-DE`, `pt`→`pt-PT`); the
-last eight arrived in spec 1.3.0 and all ship, so the generated README and site show every one.
+`pt-BR` `nl` `pl` `uk` `cs` `tr` — nineteen (aliases `en`→`en-US`, `de`→`de-DE`, `pt`→`pt-PT`;
+`tr-TR` needs none, since `locale-resolution.md` §3.4 strips the region and retries). Eight
+arrived in spec 1.3.0 and `tr` in 1.6.0, and all ship, so the generated README and site show
+every one.
 `brand/tools/gen_examples.ts` still drops any locale the installed engine rejects, by design
 rather than failing the build — that is what kept the 1.3.0 locales out of the public copy while
 the engine on npm was still 1.2.0. **The six-locale cap was withdrawn 2026-08-15 by operator decision — coverage is a

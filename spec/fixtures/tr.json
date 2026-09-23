@@ -1,0 +1,250 @@
+{
+  "spec": "1.6.0",
+  "locale": "tr",
+  "cases": [
+    {
+      "id": "tr-quotes-primary-and-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Sordu: \"Bu, 'köşedeki' dedikleri dükkân mı?\"",
+      "out": "Sordu: “Bu, ‘köşedeki’ dedikleri dükkân mı?”",
+      "note": "Birinci derece U+201C/U+201D, ikinci derece U+2018/U+2019 — TDK «Tek Tırnak İşareti» kuralının iki derecesi tek bir cümlede. Kod noktaları Türk Dili dergisinin metin katmanından okundu, kural ise TDK Yazım Kuralları sayfasından; ikisi de tr.json içindeki sources alanında."
+    },
+    {
+      "id": "tr-quotes-tdk-nested-example",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Atatürk henüz 'Gazi Mustafa Kemal Paşa' idi.\"",
+      "out": "“Atatürk henüz ‘Gazi Mustafa Kemal Paşa’ idi.”",
+      "note": "TDK Yazım Kılavuzu'nun tek tırnak kuralı için verdiği örneğin kendisi (Falih Rıfkı Atay), düz işaretlerle yazılıp motora verildi. Çıktı, kaynağın bastığı iç içe biçimle aynıdır."
+    },
+    {
+      "id": "tr-quotes-not-guillemets",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "«Tanrı, Musa'ya söz söylemiştir.»",
+      "out": "“Tanrı, Musa’ya söz söylemiştir.”",
+      "note": "Issue #51'de bildirilen «…» biçimi Türkçenin normu DEĞİLDİR: Türk Dili, «Tırnak İşareti Üzerine», s. 32 onu «bazı yazarlar»ın tercihi olarak tanıtır. quotes.md §0 mandate 1 uyarınca var olan her tırnak yeniden dizilebilir, bu yüzden yan tırnak TDK'nin üstten çift tırnağına çevrilir. Bu satır, hangi biçimin kazandığını sabitler."
+    },
+    {
+      "id": "tr-quotes-already-correct",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "“Kendi Gök Kubbemiz” adı altında çıktı.",
+      "out": "“Kendi Gök Kubbemiz” adı altında çıktı.",
+      "note": "Doğru dizilmiş metin sabit noktadır: locale'in kendi çifti yeniden yazılmaz."
+    },
+    {
+      "id": "tr-apostrophe-suffix-after-abbreviation-and-numeral",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "TBMM'nin kararı 1985'te açıklandı.",
+      "out": "TBMM’nin kararı 1985’te açıklandı.",
+      "note": "TDK «Kesme İşareti» 3 ve 4: kısaltmalara ve sayılara getirilen ekler kesme işaretiyle ayrılır. Her iki işaretin de iki yanı ALNUM olduğundan apostrophe.md §3.3 case 2 çalışır — bu satır locale verisi okumaz, yapısal olarak doğrudur, ve Türkçenin en sık biçimini sabitler."
+    },
+    {
+      "id": "tr-apostrophe-suffix-after-proper-noun",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Türkiye'nin ve Atatürk'ün",
+      "out": "Türkiye’nin ve Atatürk’ün",
+      "note": "Aynı kural, özel adlarda. «Atatürk'ün» parçası «ün» ile başlar; apostrophe kuralı hiçbir locale verisi okumadığı için bu, harf katlamasından bağımsız olarak çalışır."
+    },
+    {
+      "id": "tr-apostrophe-suffix-across-span-boundary",
+      "rule": "apostrophe",
+      "mode": "html",
+      "in": "<b>TBMM</b>'nin kararı",
+      "out": "<b>TBMM</b>’nin kararı",
+      "note": "Ek, satır içi bir span sınırına dayandığında: modes.md §3.2'nin işaretçisi apostrophe.md §3.1'in OPENISH kümesindedir, dolayısıyla işaret case 4'e düşer ve aynı U+2019'u verir. Burada eşleşecek ikinci bir tırnak olmadığı için quotes zaten bir şey yapamaz; çevreleyen bir alıntının olduğu biçim ayrı bir satırda sabitlenmiştir."
+    },
+    {
+      "id": "tr-ellipsis-abbreviated-after-question",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Nasıl da akşam oldu?...",
+      "out": "Nasıl da akşam oldu?..",
+      "note": "ellipsis.abbreviatedAfterTerminal = true. TDK «Üç Nokta» UYARI'sı soru ve ünlem işaretinden sonra iki noktayı yeterli sayar ve bütün örnekleri iki noktalıdır; §3 adım 4→6 üç noktayı o biçime normalleştirir. Değerin neden true olduğu ölçümle gerekçelendirilmiştir: false olsaydı «?..» girdisi «?…» olurdu, yani Kılavuz'un bastığı biçim bozulurdu."
+    },
+    {
+      "id": "tr-ellipsis-abbreviated-is-a-fixed-point",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Gök ekini biçer gibi!.. Başaklar daha dolmadan.",
+      "out": "Gök ekini biçer gibi!.. Başaklar daha dolmadan.",
+      "note": "TDK'nin kendi örneği (Tarık Buğra), olduğu gibi. Doğru biçim yeniden işlemeye dayanır — abbreviatedAfterTerminal = true olan bir locale'de iki nokta çıktının kendisidir, girdi hatası değil."
+    },
+    {
+      "id": "tr-ellipsis-plain-run",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Bekledik ... ve gitti.",
+      "out": "Bekledik … ve gitti.",
+      "note": "Terminal işaret olmadan üç nokta tek U+2026 olur; abbreviatedAfterTerminal yalnızca soru ve ünlemden SONRA devreye girer (§3 adım 6'nın TERMINAL testi)."
+    },
+    {
+      "id": "tr-dashes-parenthetical-none-is-a-total-noop",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Küçük bir sürü -dört inekle birkaç koyun- köye girdi.",
+      "out": "Küçük bir sürü -dört inekle birkaç koyun- köye girdi.",
+      "note": "dash.parenthetical = «none»: TDK ara sözü KISA ÇİZGİ ile ve bitişik yazar, locale.schema.json'ın enum'u ise yalnızca em/en uzunluklarını tanır, dolayısıyla bu gelenek ifade edilemez ve kural sessiz bırakılmıştır. Örnek TDK'nin kendisinindir ve olduğu gibi kalır. tr, dashes kuralının kanıtlanabilir biçimde total no-op olduğu üçüncü locale'dir, el ve es'ten sonra (dashes.md §6)."
+    },
+    {
+      "id": "tr-dashes-existing-em-dash-untouched",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Plan — eğer varsa — başarısız.",
+      "out": "Plan — eğer varsa — başarısız.",
+      "note": "Aynı «none» değeri, var olan bir tam kare çizgiye de dokunmaz: kuralın hiçbir emisyonu yoktur, bu yüzden yeniden dizme de yapmaz. Bu satır, «none»'ın «kısa çizgiye çevir» anlamına GELMEDİĞİNİ sabitler."
+    },
+    {
+      "id": "tr-ranges-none-even-when-the-rule-is-enabled",
+      "rule": "ranges",
+      "mode": "text",
+      "rules": {
+        "ranges": true
+      },
+      "in": "1914-1918 Birinci Dünya Savaşı",
+      "out": "1914-1918 Birinci Dünya Savaşı",
+      "note": "ranges.md §2: dash.range = «none» olduğunda kural hiçbir şey yayamaz. Girdi TDK «Kısa Çizgi» 7'nin kendi örneğidir — aralık normludur ama işaret kısa çizgidir, yani doğrulanmış bir en/em geleneği yoktur. Kural varsayılan olarak kapalı olduğundan bu satır onu açıkça açar; açıkken de çıktı değişmez, ki asıl sabitlenen budur."
+    },
+    {
+      "id": "tr-nbsp-before-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "15 °C, 20 kg ve 5 cm² ölçüldü.",
+      "out": "15 °C, 20 kg ve 5 cm² ölçüldü.",
+      "note": "N5, TDK SSS'nin «15 °C» ve «20 kg» örnekleriyle. «cm²» girişinin «cm» ile birlikte listelenmesi güvenlidir: aynı konumda en uzun eşleşme kazanır (nbsp.md §3.7)."
+    },
+    {
+      "id": "tr-nbsp-ton-and-mm",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "350 ton yük ve 12 mm kalınlık.",
+      "out": "350 ton yük ve 12 mm kalınlık.",
+      "note": "«ton» uluslararası bir simge değil bir kelimedir ve yalnızca TDK SSS'nin düzyazı örneğinden gelir; listede tutulmasının nedeni sağ sınır testinin onu «tonluk» içinde eşleştirmemesidir. Kaynak rütbesi tr.json'da açıkça yazılıdır."
+    },
+    {
+      "id": "tr-nbsp-percent-is-not-bound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "%25 ve ‰50 oranları.",
+      "out": "%25 ve ‰50 oranları.",
+      "note": "TDK «Sayıların Yazılışı»: yüzde ve binde işaretleri sayıdan ÖNCE ve bitişik yazılır. beforeUnits ve afterSymbols'in ikisi de bu işaret için boştur ve N5/N6 yalnızca var olan bir boşluğu dönüştürür, asla eklemez — bu yüzden biçim olduğu gibi kalır. pl.json'un «%» girişinin tersi, bilerek."
+    },
+    {
+      "id": "tr-nbsp-abbreviation-internal-space",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Kur. Bşk. ve Nö. Sb. geldi.",
+      "out": "Kur. Bşk. ve Nö. Sb. geldi.",
+      "note": "N4, TDK Kısaltmalar Dizini'nden harfi harfine alınan iki giriş. Ölçüt: her iki parçası da noktalı kısaltma olan girişler; akronim içeren biçimler dışarıda bırakıldı."
+    },
+    {
+      "id": "tr-nbsp-short-word-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "ve bir de o geldi",
+      "out": "ve bir de o geldi",
+      "note": "afterShortWords boş, ve bu satır onu kanıtlanabilir yapar: Türkçede tek harfli bağlaç veya edat yoktur ve TDK asılı kalan kısa sözcükler için bir kural vermez. ru ve pl'nin listeleri buraya taşınmamıştır."
+    },
+    {
+      "id": "tr-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Ural-Altay dil grubu ve Türk-Alman ilişkileri",
+      "out": "Ural-Altay dil grubu ve Türk-Alman ilişkileri",
+      "note": "Üç liste de boş: TDK satır sonunda bölmeyi normlar, yasaklamaz, dolayısıyla hiçbir biçim U+2011 talep etmez. Girdi TDK «Kısa Çizgi» 7'nin kendi örneğidir ve kural onun için kanıtlanabilir bir no-op'tur (hyphen.md §2)."
+    },
+    {
+      "id": "tr-symbols-and-spaces",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026, baskı 40x60 cm.",
+      "out": "Copyright © 2026, baskı 40×60 cm.",
+      "note": "Locale'den bağımsız kurallar Türkçe metinde de çalışır: (c) → U+00A9, x → U+00D7, ve «60 cm» beforeUnits üzerinden bağlanır."
+    },
+    {
+      "id": "tr-spaces-punctuation-is-closed-up",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Nasıl gidiyorsun ?  İyiyim , sağ ol .",
+      "out": "Nasıl gidiyorsun? İyiyim, sağ ol.",
+      "note": "TDK «Noktalama İşaretleri (Açıklamalar)» giriş hükmü: işaretler ait oldukları kelimelere bitişik yazılır ve boşluk işaretten SONRA gelir. spaces kuralı bunu tam olarak uygular — işaretten önceki boşluk silinir, ikili boşluk teke iner — ve nbsp.beforePunctuation'ın bu locale'de boş olmasının nedeni de aynı hükümdür: Fransızca «mot !» geleneği Türkçede yoktur, dolayısıyla silinen boşluğun geri konması istenmez."
+    },
+    {
+      "id": "tr-html-span-boundary-suffix-declined",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "Dedi: '<b>TBMM</b>'nin kararı doğru.' Bitti.",
+      "out": "Dedi: “<b>TBMM</b>’nin kararı doğru.” Bitti.",
+      "note": "quotes.md §3.2'nin span-boundary elizyon vetosu (spec 1.4.0), Türkçe için canlı: ek kesme işaretiyle bir satır içi span sınırına dayanır, modes.md §3.2'nin işaretçisi «M» harfinin yerini tutar ve medial-elizyon vetosu çalışamaz. quotes.elisionClitics.after'daki «nin» girişi işareti reddeder, apostrophe (order 50) onu case 4 ile U+2019 yapar, ve yazarın kendi çifti birincil glifleri korur. Liste boş olsaydı — spec 1.6.0'dan önce her locale için olduğu gibi — ek alıntıyı açar, açılış işareti düz U+0027 kalır ve kapanış işareti kapanış glifi olurdu; ölçülmüştür (canonical issue #53). Türkçede bu biçim nadir değil, dilbilgisel olarak zorunludur."
+    },
+    {
+      "id": "tr-markdown-commonmark-span-boundary-suffix-declined",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Dedi: '**Ankara**'da olacak.' Bitti.\n",
+      "out": "Dedi: “**Ankara**’da olacak.” Bitti.\n",
+      "note": "Aynı mekanizma markdown'da ve «da» girişiyle: veto işaretçiyi okur, onu üreten span türünü değil. Yer adlarına gelen bulunma eki, Türkçe metinde en sık rastlanan biçimlerden biridir."
+    },
+    {
+      "id": "tr-html-span-boundary-listed-fragment-quoted",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "Ek <em>'de'</em> biçiminde yazılır.",
+      "out": "Ek <em>’de’</em> biçiminde yazılır.",
+      "note": "Kabul edilen yanlış pozitif, birinin metninde bırakılmak yerine suite'e yazılmıştır: içeriği TAMAMEN listelenmiş bir parça olan ve satır içi bir span sınırına dayanan bir alıntı, ek sanılır. Bu, spec 1.4.0'ın İngilizce «s» için kabul ettiği bedelin aynısıdır ve Türkçede riski daha yüksektir, çünkü «de» ayrıca ayrı yazılan bir bağlaçtır. İki hafifletici tr.json'da kayıtlıdır: TDK'nin kendi anma biçimi başta kısa çizgi taşır ve kısa çizgi LETTER olmadığı için veto çalışamaz, ayrıca TDK bağlacı tırnaksız yazar."
+    },
+    {
+      "id": "tr-html-span-boundary-uppercase-suffix-not-matched",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "Dedi: '<b>TBMM</b>'NİN kararı.' Bitti.",
+      "out": "Dedi: '<b>TBMM</b>“NİN kararı.” Bitti.",
+      "note": "Kapsam sınırı, adıyla sabitlenmiştir: büyük harfli ek eşleşmez, çünkü katlama yalnızca ilk kod noktasını ve yalnızca ASCII A-Z'yi kapsar — «N»→«n» katlanır ama kuyrukta U+0130 «İ» ile U+0069 «i» ayrı kod noktalarıdır. Katlamayı genişletmek ARCHITECTURE.md §4.4'ün noktasız ı (U+0131) yüzünden açıkça yasakladığı yerdir, dolayısıyla bu kayıp giderilmez, kabul edilir ve görünür tutulur."
+    },
+    {
+      "id": "tr-html-span-boundary-unlisted-suffix-not-matched",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "Dedi: '<b>Irak</b>'ta olacak.' Bitti.",
+      "out": "Dedi: '<b>Irak</b>“ta olacak.” Bitti.",
+      "note": "İkinci kapsam sınırı: «ta» parçası, TDK'nin okunan sayfalarında kesme işaretinden sonraki dizinin TAMAMI olarak basılmadığı için listeye girmemiştir — ölçüt paradigma değil, basılı örnektir (tr.json). Liste yalnızca reddeder, dolayısıyla eksik bir giriş yanlış bir giriş değildir; bu satır hangi biçimlerin henüz onarılmadığını görünür kılar."
+    },
+    {
+      "id": "tr-html-span-boundary-quotation-outside-the-span",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "Bağlaç olan '<em>de</em>' ayrı yazılır.",
+      "out": "Bağlaç olan “<em>de</em>” ayrı yazılır.",
+      "note": "Yanlış pozitifin negatif kontrolü, ve maliyetin NE KADAR DAR olduğunu gösterir. Alıntı işaretleri span'in DIŞINDA olduğunda hiçbir işaret span sınırına dayanmaz, veto hiç çalışmaz ve cümle doğru dizilir. Terimi vurgulayıp alıntılamanın olağan yazılışı budur; veto ancak yazar işaretleri span'in İÇİNE koyduğunda yanılır."
+    },
+    {
+      "id": "tr-html-span-boundary-tdk-hyphen-citation-form",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "<em>'-de'</em> eki bitişik yazılır.",
+      "out": "<em>“-de”</em> eki bitişik yazılır.",
+      "note": "TDK'nin ekleri anma biçiminin kendisi, baştaki kısa çizgiyle («-da / -de / -ta / -te»). Kısa çizgi LETTER olmadığı için işaretin sağındaki dizi boş kalır, hiçbir giriş eşleşemez ve alıntı bozulmadan dizilir. Yanlış pozitifin iki ölçülen hafifleticisinden biri, prozada iddia olarak değil suite'te satır olarak."
+    },
+    {
+      "id": "tr-html-span-boundary-non-ascii-initial-fragment",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "Dedi: '<b>Atatürk</b>'üm dedi.' Bitti.",
+      "out": "Dedi: “<b>Atatürk</b>’üm dedi.” Bitti.",
+      "note": "Baş harfi ASCII olmayan bir parça — «üm», U+00FC ile başlar. Eşleşir, çünkü kesme işaretinden sonraki dizi zaten küçük harflidir ve TAM karşılaştırılır; katlama yalnızca büyük harfli bir dizi için gerekir ve yalnızca ASCII A-Z'yi kapsar. Bu satır, ARCHITECTURE.md §4.4'ün yasağının bu alanı KISITLAMADIĞINI sabitler: küçük harfli Türkçe parçalar hiçbir katlamaya ihtiyaç duymaz, kayıp yalnızca büyük harfte gerçekleşir (ayrı satır)."
+    },
+    {
+      "id": "tr-html-span-boundary-ordinal-fragment",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "Dedi: '<b>2</b>'nci kat.' Bitti.",
+      "out": "Dedi: “<b>2</b>’nci kat.” Bitti.",
+      "note": "Sayılara gelen sıra eki, TDK «Kesme İşareti» 4'ün kendi örneğinden («2'nci kat»). Aynı maddeden gelen «7,65'lik» ve «Atatürk'üm» de listededir; üçü de basılı örnekte kesme işaretinden sonraki dizinin TAMAMI olduğu ve çıplak bir sözcükle çakışmadığı için alınmıştır."
+    }
+  ]
+}
