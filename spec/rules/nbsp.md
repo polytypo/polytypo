@@ -1,9 +1,10 @@
 # Rule: `nbsp`
 
 **Order:** 70 (last). **Default:** on. **Modes:** text, html, markdown, yaml.
-**Spec version:** 1.3.0 (0.1.0 for everything except §3.9's `initialBinding` change (0.6.0),
-§3.3's span-boundary paragraphs (1.2.0) and §3.3's character-reference guard (1.3.0), noted
-inline).
+**Spec version:** 1.5.0 (0.1.0 for everything except §3.9's `initialBinding` change (0.6.0),
+§3.3's span-boundary paragraphs (1.2.0), §3.3's character-reference guard (1.3.0) and §5's `I₆`
+discharge against `apostrophe`'s `CLOSEDELIM` (1.5.0), noted inline — 1.5.0 adds no sub-rule and
+changes nothing this rule computes).
 
 ---
 
@@ -891,9 +892,22 @@ must be re-derived.
 over the neighbour tests; the `quotes` half is the one that matters and is written out in
 `quotes.md` §5.6, which shows that neither insertion site can _add_ a capability to a surviving
 straight mark. `apostrophe`'s case ladder reads `ALNUM`, `LETTER`, `DIGIT`, `SPACELIKE`,
-`OPENISH`, `OPENQUOTE` and `CLOSEISH`; an inserted no-break space is `SPACELIKE`, and the only cases it
-could newly satisfy require a `SPACELIKE` **left** neighbour, which is case 4 (leading elision)
-— and case 4 also requires an `ALNUM` right neighbour, which an insertion cannot create.
+`OPENISH`, `OPENQUOTE`, `CLOSEISH` and — from spec 1.5.0 — `CLOSEDELIM`; an inserted no-break
+space is `SPACELIKE`, and the only cases it could newly satisfy require a `SPACELIKE` **left**
+neighbour, which is case 4 (leading elision) — and case 4 also requires an `ALNUM` right
+neighbour, which an insertion cannot create.
+
+`CLOSEDELIM` (spec 1.5.0) needs its own line because this rule inserts *beside quote glyphs*, and
+six of that class's seven members are closing brackets and closing quotation marks. Two facts
+discharge it. First, U+00A0 and U+202F are in no `apostrophe` class but `SPACELIKE`, so an
+insertion can only ever *remove* a `CLOSEDELIM` member from a neighbour position, never create
+one — and case 2a is the only case reading that class, so removal can only decline. Second, the
+one shape where the two rules are genuinely adjacent is an inner space beside a quotation glyph
+(N1/N2): in `fr`, `«mot»'s` gains its U+00A0 on the glyph's **inner** side, giving `« mot »'s`,
+so the `»` that case 2a reads stays immediately left of the mark and the verdict is identical
+before and after. Pinned as a conformance fixture rather than left as prose. If a future
+sub-rule inserts between a closing delimiter and a following mark, this paragraph must be
+re-derived.
 `symbols` reads `ALNUM`, `DIGIT` and symmetric spacing; a no-break space is already accepted as
 spacing there (`symbols.md` §3.3 step 1), and converting U+0020 to U+00A0 leaves `lsp`/`rsp` unchanged.
 

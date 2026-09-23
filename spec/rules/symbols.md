@@ -1,7 +1,8 @@
 # Rule: `symbols`
 
 **Order:** 60. **Default:** on. **Modes:** text, html, markdown, yaml.
-**Spec version:** 0.1.0.
+**Spec version:** 1.5.0 (0.1.0 for everything except §5's `I₆` discharge against `apostrophe`'s
+`CLOSEDELIM` (1.5.0) — which adds no step and changes nothing this rule computes).
 
 ---
 
@@ -352,10 +353,29 @@ class, so no verdict moves.
 points and the emitted signs are not in `WORDISH`, so no listed hyphen form's word boundary
 changes.
 
-**Against `I₅`/`I₆` (`quotes`, `apostrophe`).** Discharged: this rule emits nothing in
-`STRAIGHT`, and the signs it does emit are not in `SPACELIKE` or `ALNUM`, so a surviving
-straight mark adjacent to one keeps every capability it had — and by `quotes` Claim 3, which
-needs only that capabilities do not _increase_, that is sufficient.
+**Against `I₅`/`I₆` (`quotes`, `apostrophe`).** Discharged, in two halves — the emission and the
+**deletion** — because this rule is the only one after `apostrophe` that shortens a span.
+
+*The emission.* This rule emits nothing in `STRAIGHT`, and the signs it does emit (U+00A9,
+U+00AE, U+2122, U+00D7) are in none of `apostrophe`'s classes and in neither `SPACELIKE` nor
+`ALNUM`, so a surviving straight mark adjacent to one keeps every capability it had. For `quotes`
+the discharge is `quotes.md` §5's **Lemma A and Corollary A1**, which are stated
+position-universally over `QUOTEMARK` substitution; the pre-0.4.1 appeal to "`quotes` Claim 3,
+which needs only that capabilities do not _increase_" is withdrawn — Claim 3 rested on Claims 1
+and 2, which `quotes.md` §0's mandate 1 withdrew, and `apostrophe.md` §5 records that citing it
+is itself a latent defect.
+
+*The deletion (spec 1.5.0).* §3.2 step 6 replaces `(c)`, `(r)` and `(tm)` with one code point,
+which **deletes a U+0029** from the text. Through spec 1.4.0 that was invisible to `apostrophe`,
+because U+0029 was in no class its ladder read on a mark's left. From 1.5.0 it is a `CLOSEDELIM`
+member (`apostrophe.md` §3.1), so the deletion removes a code point from a position the next pass
+reads. It is discharged in the candidacy-**removing** direction and cannot flip a verdict:
+a U+0027 that survived this pass with `)` immediately on its left did **not** convert, which by
+case 2a means its right neighbour was not `ALNUM`; after the replacement its left neighbour is
+the emitted sign, in no class at all, so it does not convert on the next pass either. `(c)'.`
+gives `©'.` and holds. The reverse — a mark that converted this pass — is already U+2019 and is
+not a candidate again (`apostrophe.md` §5). If this rule ever emits a bracket or a quotation
+glyph, or deletes one from the *right* of a mark, this paragraph must be re-derived.
 
 ---
 

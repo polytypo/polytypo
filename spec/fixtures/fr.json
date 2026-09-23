@@ -1,5 +1,5 @@
 {
-  "spec": "1.4.0",
+  "spec": "1.5.0",
   "locale": "fr",
   "cases": [
     {
@@ -928,6 +928,14 @@
       "in": "Il dit <em>'l'</em> ici.",
       "out": "Il dit <em>’l’</em> ici.",
       "note": "The accepted false positive in the locale with the widest exposure to it: fr lists thirteen fragments, eight of them a single letter, so a quotation whose whole content is one of them is read as an elision here more readily than anywhere else. Same class as en-us-html-span-boundary-listed-fragment-quoted and as the universal medial-n veto's accepted The letter 'n' is common. — pinned in both locales so the exposure sits in the suite rather than in someone's content. quotes.md §3.2, §6 row S7."
+    },
+    {
+      "id": "fr-apostrophe-closing-guillemet-past-an-nbsp-insertion",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Le «mot»'s résumé.",
+      "out": "Le « mot »’s résumé.",
+      "note": "The one configuration where a rule running AFTER apostrophe touches a CLOSEDELIM neighbour, so nbsp.md §5's I₆ discharge has a witness rather than only prose. N1/N2 put fr's inner no-break space on the glyph's INNER side, so the U+00BB that case 2a reads stays immediately left of the mark and the verdict is identical before and after the insertion. Synthetic rather than natural French — a possessive 's is not French — and deliberately so, in the standing quotes.md §6 gives its own adversarial de-CH witness: what is being pinned is the rule interaction, not an idiom."
     }
   ]
 }

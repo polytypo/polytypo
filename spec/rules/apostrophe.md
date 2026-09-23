@@ -1,10 +1,11 @@
 # Rule: `apostrophe`
 
 **Order:** 50. **Default:** on. **Modes:** text, html, markdown, yaml.
-**Spec version:** 1.4.0 (0.4.1 for everything except §2, §3.4 and the §6/§7 updates for the
+**Spec version:** 1.5.0 (0.4.1 for everything except §2, §3.4 and the §6/§7 updates for the
 withdrawal of the shared ambiguity preserve set (1.1.0), §3.1's `OPENQUOTE` with §3.3's case 3a
-(1.2.0), and §3.3 case 4's note on the traffic `quotes`' span-boundary elision veto sends it
-(1.4.0) — which adds no case and changes nothing this rule computes).
+(1.2.0), §3.3 case 4's note on the traffic `quotes`' span-boundary elision veto sends it
+(1.4.0) — which adds no case and changes nothing this rule computes — and §3.1's `CLOSEDELIM`
+with §3.3's case 2a (1.5.0)).
 
 ---
 
@@ -60,12 +61,13 @@ Input is a code-point array `cp[0 … n-1]`.
 | `OPENISH`   | U+0028 `(` U+005B `[` U+007B `{` U+00AB `«` U+2018 U+201A U+201B U+201C U+201E U+201F U+2039 `‹`, U+002D, U+2011, U+2013, U+2014                      |
 | `CLOSEISH`  | U+0029 `)` U+005D `]` U+007D `}` U+00BB `»` U+2019 U+201D U+203A `›` U+002C U+002E U+003B U+003A U+0021 U+003F U+2026, U+002D, U+2011, U+2013, U+2014 |
 | `OPENQUOTE` | U+00AB `«` U+2018 U+201A U+201B U+201C U+201E U+201F U+2039 `‹` — the quotation glyphs of `OPENISH`, without its brackets and dashes (spec 1.2.0, case 3a) |
+| `CLOSEDELIM` | U+0029 `)` U+005D `]` U+007D `}` U+00BB `»` U+2019 U+201D U+203A `›` — the bracket and quotation members of `CLOSEISH`, without its sentence punctuation and without the dashes `OPENISH` already carries (spec 1.5.0, case 2a) |
 | `NONE`      | index out of range                                                                                                                                    |
 
 **Unicode version.** The general categories this rule reads are those of the UCD version pinned in `spec/UNICODE` (`17.0`). The pin is normative for the **derived tables**, not for the host runtime — see [pipeline-idempotency.md](pipeline-idempotency.md) §6a, which also specifies the canary fixtures that make it detectable.
 
-Note that U+2019 is a member of `CLOSEISH` and U+0027 is a member of neither. This matters for
-idempotency and is argued in §5. U+2011 is listed alongside U+002D because `hyphen` (order 35)
+Note that U+2019 is a member of `CLOSEISH` and of `CLOSEDELIM`, and that U+0027 is a member of
+no class in this table at all. This matters for idempotency and is argued in §5. U+2011 is listed alongside U+002D because `hyphen` (order 35)
 converts one to the other and a class that held only U+002D would make a neighbouring
 apostrophe's verdict depend on whether `hyphen` had already run (`hyphen.md` §3.2).
 
@@ -100,6 +102,45 @@ and take the **first** matching case:
    `1990's`, `d'accord`, `Hawai'i`, `can't`.
    (Note that case 1 has already removed the `digit` + `non-letter` combination, so the
    `DIGIT`-left half of this case only fires for `1990's`-style forms where a letter follows.)
+2a. **Suffix or possessive after a closing delimiter (spec 1.5.0).** If `left` is in
+   `CLOSEDELIM` **and** `right` is in `ALNUM` → emit an edit replacing `cp[i]` with U+2019.
+   Covers `(order 90)'s own output`, `“Hamlet”'s first line`, `the footnote [3]'s author`,
+   `{user}'s account`.
+
+   **This closes an asymmetry between the two sides of the ladder, not a gap in a language.**
+   The **right** side has accepted a closing delimiter since 0.4.1 — case 3 takes every member of
+   `CLOSEISH`, so `dogs')` and `dogs'”` convert — while the **left** side accepted only `ALNUM`
+   (cases 1, 2, 3, 3a) and `NONE`/`SPACELIKE`/`OPENISH` (case 4). Nothing chose that: it made a
+   possessive's verdict depend on which of two tables a closing glyph happens to sit in. U+00AB
+   and U+2039 are `OPENISH` members, so `»Wort«'s` already converted through case 4, while
+   `‹Wort›'s` and `«Wort»'s` — the same shape with the other guillemet — did not. Case 2a accepts
+   on the left exactly the closing counterparts the right side already accepts, and the three
+   forms now agree.
+
+   **`CLOSEISH`'s sentence punctuation is excluded.** U+002C U+002E U+003B U+003A U+0021 U+003F
+   U+2026 are **not** in `CLOSEDELIM`. A U+0027 after one of them is at least as likely to be an
+   opening quotation mark `quotes` could not pair — `He said,'yes'`, where `canOpen`'s right-test
+   rejects the `CLOSEISH` left neighbour — as a possessive, and this rule cannot tell which. The
+   English shapes that would have argued for U+002E are the ones Chicago's own orthography
+   removes: `CMOS` 10.4(c) writes `US` and `PhD`, not `U.S.'s` and `Ph.D.'s`, so the sequence
+   U+002E U+0027 U+0073 does not arise in that orthography. Excluded on that evidence, with the
+   shape recorded at §6 row 23 so it stays visible.
+
+   **Every symbol is excluded too, for a stronger reason: nothing attests one.** `%`, `°`,
+   U+2030 and the superscript digits are not in `CLOSEDELIM`. §7 item 8 records the measurement.
+
+   **The accepted cost is §7 item 9**, and it is the mirror of the trade case 3a accepts: a mark
+   in this position is either a possessive or an *opening* quotation mark `quotes` could not pair,
+   and two neighbours cannot tell them apart.
+
+   **`MARKER` is not in `CLOSEDELIM`** (`modes.md` §3.3) and does not need to be: the marker is
+   in `OPENISH`, so a possessive written flush against an inline span already reaches case 4 and
+   emits the same U+2019 (case 4's note). `modes.md` needs no new row for this case — only the
+   `no` entry recording that the marker stays out of it.
+
+   **`(`, `[` and `{` stay out of every right-hand test**, so `f'(x)` is still a prime — case 5,
+   for the reason case 3a's bracket exclusion gives. Case 2a reads the *closing* brackets on the
+   **left**, where a bracket closes a group rather than opening one.
 3. **Trailing elision or possessive.** If `left` is in `LETTER` **and**
    (`right` is `NONE`, or `right` is in `SPACELIKE`, or `right` is in `CLOSEISH`) → emit an
    edit replacing `cp[i]` with U+2019. Covers `the dogs' bowls`, `les élèves' cahiers`,
@@ -202,7 +243,8 @@ of being falsified by another rule, which is then named.
 - **[P] An isolated U+0027** with `SPACELIKE` on both sides, or at the very start or end of the
   text unit with `SPACELIKE` on the inner side. Case 5.
 - **[P] `''`** — two adjacent U+0027 (a typewriter double quote, or a LaTeX close-quote idiom).
-  Neither has `ALNUM` on the relevant side, so case 5 applies to both.
+  U+0027 is in no class this rule tests (§3.1), so neither mark has, on the side facing the
+  other, anything a converting case accepts; case 5 applies to both.
 - **[P] U+0060 (`), U+00B4 (´), U+02BC (ʼ), U+02B9, U+2032 (′).** None is in `SQ`. In particular
 U+02BC is a *letter* in several orthographies and converting it would be a data mutation.
 Converting U+0060 or U+00B4 is a separate normalisation concern that `order.json` does not
@@ -236,17 +278,21 @@ points this rule changed are former U+0027 marks that became U+2019. So the ques
 a surviving candidate's `left` or `right` have changed class in a way that flips its
 outcome?
 
-- U+0027 is in **none** of `ALNUM`, `SPACELIKE`, `OPENISH`, `CLOSEISH`, `OPENQUOTE`, `DIGIT`,
-  `LETTER`.
-- U+2019 is in `CLOSEISH` and in none of the others.
+- U+0027 is in **none** of `ALNUM`, `SPACELIKE`, `OPENISH`, `CLOSEISH`, `OPENQUOTE`,
+  `CLOSEDELIM`, `DIGIT`, `LETTER`.
+- U+2019 is in `CLOSEISH` and `CLOSEDELIM`, and in none of the others.
 
 Neither code point is in `OPENQUOTE`, so a neighbour's edit cannot change case 3a's right-test.
 The argument below needs no new branch for it.
 
-So a neighbour changing from U+0027 to U+2019 can only _add_ `CLOSEISH` membership. Where
-does `CLOSEISH` appear in the decision? Only in case 3's right-test. So the only possible
-flip is: a candidate `u` whose right neighbour was U+0027 (giving no case-3 match) and is
-now U+2019 (giving a case-3 match), where additionally `u`'s left neighbour is a `LETTER`.
+So a neighbour changing from U+0027 to U+2019 can only _add_ `CLOSEISH` and `CLOSEDELIM`
+membership. Those two classes appear in exactly two places in the decision: `CLOSEISH` in case
+3's right-test, and `CLOSEDELIM` in case 2a's left-test (spec 1.5.0). So there are two possible
+flips, one on each side, and **both are vacuous, by the same argument mirrored**.
+
+The right-hand flip would be: a candidate `u` whose right neighbour was U+0027 (giving no case-3
+match) and is now U+2019 (giving a case-3 match), where additionally `u`'s left neighbour is a
+`LETTER`.
 
 Concretely that shape is `LETTER` U+0027 U+0027 — for example `dogs''`. On run 1: the first
 mark has `left` = `s` (letter), `right` = U+0027, which is in none of `NONE`/`SPACELIKE`/
@@ -256,10 +302,21 @@ The second mark has `left` = U+0027 (not `ALNUM`, not `LETTER`, not `SPACELIKE`,
 the flip cannot occur. The premise is vacuous.
 
 More generally: the flip requires the _right_ neighbour to have been edited, i.e. the right
-neighbour was a U+0027 that matched one of cases 2, 3, 3a, 4. Cases 2 and 4 require `ALNUM` on
-that mark's **left** — but its left is `u`, which is U+0027, not `ALNUM`. Cases 3 and 3a require
-`LETTER` on its left — same contradiction. So the right neighbour of a surviving U+0027 is
-never edited, and no surviving candidate's classification changes.
+neighbour was a U+0027 that matched one of cases 2, 2a, 3, 3a, 4. Cases 2 and 4 require `ALNUM`
+on that mark's **left** — but its left is `u`, which is U+0027, not `ALNUM`. Cases 3 and 3a
+require `LETTER` on its left, and case 2a requires `CLOSEDELIM` — the same contradiction three
+more times. So the right neighbour of a surviving U+0027 is never edited, and no surviving
+candidate's classification changes.
+
+**The left-hand flip (case 2a) is vacuous for the mirrored reason.** It would require a surviving
+candidate `u` whose _left_ neighbour was U+0027 and is now U+2019, with `ALNUM` on `u`'s right.
+So the left neighbour must have been edited — and its own right neighbour is `u`, a U+0027.
+Cases 2, 2a and 4 require `ALNUM` on the right (U+0027 is not), case 3 requires `NONE`,
+`SPACELIKE` or `CLOSEISH` (U+0027 is in none of them), and case 3a requires `OPENQUOTE` (U+0027
+is not). So the left neighbour of a surviving U+0027 is never edited either. Concretely `x''s`,
+the shape the flip would need: on run 1 the first mark's `right` is U+0027 and the second mark's
+`left` is U+0027, so neither converts, no U+2019 appears between them, and the premise is again
+vacuous.
 
 Hence `T(T(x)) = T(x)`.
 
@@ -284,8 +341,8 @@ Per [pipeline-idempotency.md](pipeline-idempotency.md) §5. This rule is **R₆*
 runs against `spaces`, `ellipsis`, `dashes`, `hyphen` and `quotes`.
 
 **What this rule emits.** One U+2019 replacing one U+0027 at the same index. Nothing else, ever
-— no insertion, no deletion, no length change. Case 3a (spec 1.2.0) changes *which* U+0027 marks
-are replaced, and does not change what is emitted. Every discharge below is written against the
+— no insertion, no deletion, no length change. Case 3a (spec 1.2.0) and case 2a (spec 1.5.0)
+change *which* U+0027 marks are replaced, and do not change what is emitted. Every discharge below is written against the
 emission, and `quotes`' V1 already treats every U+0027 as a possible U+2019 (`V1ID`, below), so
 none of them needs re-deriving.
 
@@ -370,8 +427,16 @@ are shown as they arrive at this rule, i.e. after `quotes` has run.
 | 16  | `l'“idea”`                      | `l’“idea”`              | 3a   | same, with U+201C                                                                                                                                                 |
 | 17  | `„Hans'“`                       | `„Hans’“`               | 3a   | U+201C closes in `de-DE`, and 3a does not need to know that: a letter followed by U+0027 and a quotation glyph is an elision or a possessive either way                |
 | 18  | `f'(x) = 2`                     | ⟶                       | 5    | `(` is not in `OPENQUOTE`. A prime on a function name is not an apostrophe                                                                                        |
+| 19  | `The pipeline (order 90)'s own output` | `The pipeline (order 90)’s own output` | 2a   | closing bracket left, letter right. **Spec 1.5.0**; previously case 5 left it straight                                                                       |
+| 20  | `“Hamlet”'s first line`         | `“Hamlet”’s first line` | 2a   | U+201D left — `en-US`'s own closing glyph. The rule decides what the author typed, not whether they should have: a U+0027 here is a possessive or an unpaired opening mark (§7 item 9), and never a prime                                       |
+| 21  | `»Wort«'s, ‹Wort›'s and «Wort»'s` | `»Wort«’s, ‹Wort›’s and «Wort»’s` | 4, 2a, 2a | **the asymmetry case 2a removes.** The first form already converted before 1.5.0, because U+00AB is an `OPENISH` member and case 4 reads `OPENISH` on the left; the other two stayed straight because U+203A and U+00BB are in `CLOSEISH`, which no left-hand test read. Same shape, same reading, three glyphs — now one verdict |
+| 22  | `{user}'s account`              | `{user}’s account`      | 2a   | a template placeholder closes a group the way any bracket does. U+007D is in `CLOSEDELIM`                                                                       |
+| 23  | `He said,'yes' and left.`       | `He said,'yes’ and left.` | 5, 3 | **U+002C is deliberately not in `CLOSEDELIM`.** `quotes` declined the pairing (`canOpen`'s right-test rejects a `CLOSEISH` left neighbour), and this rule cannot tell an opening quotation mark after a comma from a possessive, so the leading mark is left recoverable as U+0027 (§7 item 4). The trailing mark is case 3, exactly as before 1.5.0 — the row is unchanged by 1.5.0 and is here to pin that                                       |
+| 24  | `10%'u 24m²'ye 50°'lik`         | ⟶                       | 5    | no symbol is in `CLOSEDELIM` — not `%`, not U+00B0, not a superscript digit. §7 item 8                                                                        |
 
-Cases 6, 7, 9, 10, 12 and 18 are "no change" cases.
+| 25  | `(aside)'quoted' here`          | `(aside)’quoted’ here`  | 2a, 3 | **the accepted cost, §7 item 9.** The author meant a quotation, and both marks now read as closing glyphs. It was already mismatched before 1.5.0 in the other direction — 1.4.0 gave `(aside)'quoted’ here`, case 3 having curled the trailing mark while the leading one had no case at all                                        |
+
+Cases 6, 7, 9, 10, 12, 18 and 24 are "no change" cases.
 
 ---
 
@@ -441,3 +506,53 @@ layouts and in text pasted from older systems. Converting them is not authorised
    accepted the same trade: it curls an unmatched closing quote before a space. Case 3a extends it
    to a quotation glyph. The issue that motivated it (French and Italian elision before `«` and
    `“`) is common, and the counter-case is a malformed quotation.
+8. **(Spec 1.5.0.) A U+0027 after a symbol — `%`, U+00B0, U+2030, a superscript digit — is left
+   straight, and that is a decision rather than an omission.** Issue #28 asked for the left-hand
+   class to be widened to these on the strength of a production report of Turkish text
+   (`24 m²'ye`, `10%'u`, `{price}'den`) run through `en-GB`. The `{price}'den` half is now case 2a;
+   the symbol half is declined, on three findings:
+
+   - **The Turkish premise does not hold.** TDK, *Yazım Kuralları*, "Kesme İşareti", attests the
+     apostrophe for suffixes after abbreviations (rule 3: `TBMM'nin`, `TDK'nin`, `BM'de`, `ABD'de`,
+     `TV'ye`) and after numerals (rule 4: `1985'te`, `8'inci madde`, `7,65'lik`, `657'yle`). None
+     of its seven rules mentions the percent sign or a unit symbol, and every attested example has
+     `ALNUM` on the left of the mark, so **case 2 already converts all of them**. Turkish also
+     writes the percent sign *before* the number — `%50'si` — which puts a digit, not `%`, on the
+     mark's left. `10%'u` is not Turkish notation.
+   - **No English authority attests the shape either.** `CMOS` Q&A "Possessives and Attributives"
+     #41 (citing `CMOS` 7.17) and "Plurals" #8 (citing 7.15) put the apostrophe after a letter in
+     every example — `CBS's`, `HHS's`, `PDFs'` — and `CMOS` Q&A "Abbreviations" #112 advises
+     spelling units of measurement out in non-technical prose rather than possessivising the
+     symbol. `New Hart's Rules`, the AP Stylebook and Merriam-Webster were not reachable and are
+     recorded as unknown rather than as silence.
+   - **Measured: the shape has no witness.** Adding `%`, U+00B0, U+2030 and U+2070–U+2079 to
+     `CLOSEDELIM` changes nothing over this repository's own English prose — every `.md` file, in
+     `markdown` mode, `en-GB` — while case 2a as specified changes exactly four spans there, all
+     of them genuine possessives after a closing parenthesis.
+
+   Recorded so that a later report of the same shape is met with this evidence rather than with a
+   second design pass. What would reopen it: a normative citation that the mark is an apostrophe
+   after a symbol in some language, which is then a locale question in the sense of PLAN §6.2,
+   not a class-table preference.
+9. **(Spec 1.5.0.) Case 2a can curl an unpaired *opening* single quote — the mirror of item 7, and
+   the more visible of the two.** `(aside)'quoted' here` becomes `(aside)’quoted’ here`: the
+   author meant a quotation, and both marks now read as closing glyphs. The reasoning is item 7's,
+   one class along. `quotes` has already declined the mark — `canOpen`'s right-test rejects a
+   `CLOSEISH` left neighbour, so a quotation opening flush after `)` or `”` is exactly the shape
+   `quotes` cannot pair — and two neighbours cannot separate that from a possessive.
+
+   **It is a change in which half is wrong, not a new wrong.** Measured against the published
+   1.4.0 package: that input already came out mismatched, as `(aside)'quoted’ here`. Case 3 curled
+   the trailing mark, because a letter on the left and a space on the right is a trailing
+   possessive by every test this rule has; the leading mark matched no case and stayed straight.
+   So 1.4.0 produced one curled and one straight mark, and 1.5.0 produces two curled ones. Neither
+   is the quotation the author wrote.
+
+   **This is not the U+2018 bug case 4 warns about.** The rule still never emits U+2018 anywhere
+   (§5). What is lost here is a genuine *opening* quotation mark, in the one position `quotes`
+   declines to claim it — not a leading elision rendered backwards.
+
+   The trade is accepted for the reason cases 3, 3a and 2a all accept theirs: the possessive is
+   ordinary and frequent, the counter-case is a quotation that `quotes` could not resolve, and
+   recoverability is one character. Pinned at §6 row 25 and as a conformance fixture, so no port
+   can narrow or widen it without the suite noticing.

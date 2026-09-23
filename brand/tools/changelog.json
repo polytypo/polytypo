@@ -2,6 +2,51 @@
   "_comment": "Single source for CHANGELOG.md (brand/tools/gen_readmes.py) and the site's /changelog page (brand/tools/build_promo.py). Released versions only, per the project's rule that public copy describes what ships and never what is planned. The sequence, spelled out because the two halves of that rule pull against each other: (1) an entry is authored and committed BEFORE the spec-v* tag is pushed (CLAUDE.md, 'the entry comes first') — not necessarily in the same commit as the version bump, which usually lands earlier; (2) it reaches the public only when the site is regenerated and Pages deployed, which happens after every runtime has published. A version sitting unreleased on main may therefore have no entry here yet and that is correct; what must never happen is a deployed page describing a version no package serves. Example strings are always measured engine output, never typed by hand: for the outgoing version, its published package; for the incoming one, the build about to be tagged, which is the same commit that publishes and so is byte-identical to it. An entry whose release changes no output carries examples: [] instead (see 1.3.1). Example strings are real engine output, captured by running the published package of each version side by side, never typed by hand.",
   "releases": [
     {
+      "version": "1.5.0",
+      "date": "2026-09-23",
+      "headline": "A possessive written straight after a closing bracket or a closing quotation mark is no longer left as a typewriter apostrophe.",
+      "items": [
+        {
+          "text": "A possessive or a suffix written directly after a closing bracket or a closing quotation mark kept its straight mark. `The pipeline (order 90)'s own output`, `“Hamlet”'s first line`, `{user}'s account`, `the footnote [3]'s author` — every one of them came out with the typewriter apostrophe that `don't` and `the dogs' bowls` have not had since 1.0.0. This repository's own documentation contained four of them."
+        },
+        {
+          "text": "The cause was an asymmetry inside the rule, not a language nobody had got round to. The apostrophe decision reads exactly one character on each side of the mark. Its right-hand side has accepted a closing bracket or quotation mark since 1.0.0 — `dogs')` and `dogs'”` convert — while its left-hand side accepted a letter, a digit, a space or an opening delimiter, and no closing one. Which side of the word the delimiter happened to sit on decided the answer."
+        },
+        {
+          "text": "It also depended on the glyph, which is the half worth knowing if you write a language other than English. `»Wort«'s` converted and `«Wort»'s` did not, because the guillemet that opens a quotation was in one internal set and the one that closes it was in another. That put every locale whose quotation marks close with `»`, `›`, `”` or `’` on the losing side of a coin flip — which is most of them, English included. The three forms now give one answer."
+        },
+        {
+          "text": "The accepted cost, measured rather than assumed: a straight mark after a closing bracket that was meant to open a quotation now closes instead of opening. `(aside)'quoted' here` gives `(aside)’quoted’ here`, where 1.4.0 gave `(aside)'quoted’ here` and left the pair mismatched. Nothing local tells a possessive apart from an unmatched opening quotation mark in that position, and it is the same trade the rule already makes before a space and before a quotation glyph."
+        },
+        {
+          "text": "Two things this release was asked for and deliberately does not do. An apostrophe after a symbol stays straight — `10%'u`, `24 m²'ye`, `50°'lik` — because nothing attests it: Turkish, the language the request came from, writes the percent sign before the number, so `%50'si` was already converting, and its own authority attests the apostrophe after abbreviations and numerals, which were converting too. An apostrophe after a comma or a full stop stays straight as well: in `He said,'yes'` the first mark is as likely to be an opening quotation mark, and Chicago spells the abbreviations `US` and `PhD`, so `the U.S.'s economy` is not a shape that orthography produces."
+        }
+      ],
+      "examples": [
+        {
+          "locale": "en-US",
+          "mode": "text",
+          "in": "The pipeline (order 90)'s own output is stable.",
+          "before": "The pipeline (order 90)'s own output is stable.",
+          "after": "The pipeline (order 90)’s own output is stable."
+        },
+        {
+          "locale": "en-US",
+          "mode": "text",
+          "in": "“Hamlet”'s first line is the question.",
+          "before": "“Hamlet”'s first line is the question.",
+          "after": "“Hamlet”’s first line is the question."
+        },
+        {
+          "locale": "en-GB",
+          "mode": "text",
+          "in": "(aside)'quoted' here",
+          "before": "(aside)'quoted’ here",
+          "after": "(aside)’quoted’ here"
+        }
+      ]
+    },
+    {
       "version": "1.4.0",
       "date": "2026-09-22",
       "headline": "An apostrophe written against inline code, emphasis or a link no longer turns the sentence's quotation marks inside out.",
@@ -200,5 +245,5 @@
       "examples": []
     }
   ],
-  "patchNote": "Patch releases carry no behaviour change and no spec change. polytypo-js 1.0.1 moved npm publishing to trusted publishing (OIDC) and rewrote its README; 1.0.2, along with polytypo-python 1.0.1, polytypo-go 1.0.1 and polytypo-ruby 1.0.1, dropped the word “microtypography” from the published package description. The spec stayed at 1.0.0 throughout, and output was byte-identical. All five runtimes' 1.4.1 stopped shipping the locale citations: they are mandatory in the spec and unchanged there, but no rule reads them and they were 94% of the embedded locale data by size, so every install carried a quarter-megabyte of bibliography. The browser bundle's smallest entry dropped from 88.7 KB to 19.7 KB gzipped. Read the citations where they belong \u2014 on the Locales page, generated from the spec files that hold them."
+  "patchNote": "Patch releases carry no behaviour change and no spec change. polytypo-js 1.0.1 moved npm publishing to trusted publishing (OIDC) and rewrote its README; 1.0.2, along with polytypo-python 1.0.1, polytypo-go 1.0.1 and polytypo-ruby 1.0.1, dropped the word “microtypography” from the published package description. The spec stayed at 1.0.0 throughout, and output was byte-identical. All five runtimes' 1.4.1 stopped shipping the locale citations: they are mandatory in the spec and unchanged there, but no rule reads them and they were 94% of the embedded locale data by size, so every install carried a quarter-megabyte of bibliography. The browser bundle's smallest entry dropped from 88.7 KB to 19.7 KB gzipped. Read the citations where they belong — on the Locales page, generated from the spec files that hold them."
 }

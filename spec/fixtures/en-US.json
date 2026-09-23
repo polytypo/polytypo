@@ -1,5 +1,5 @@
 {
-  "spec": "1.4.0",
+  "spec": "1.5.0",
   "locale": "en-US",
   "cases": [
     {
@@ -2530,6 +2530,46 @@
       "in": "He said <em>'s'</em> loudly.",
       "out": "He said <em>’s’</em> loudly.",
       "note": "Accepted false positive, recorded in the suite rather than left in someone's content: a quotation inside an inline span whose content is EXACTLY a listed fragment is read as an elision. Strictly narrower than, and the same family as, the universal medial-n veto's accepted The letter 'n' is common. — it needs the span boundary as well as the single-fragment content. '<em>x</em>', '<em>no</em>' and '<em>fine</em>' in the same position are unaffected. quotes.md §3.2."
+    },
+    {
+      "id": "en-us-apostrophe-possessive-after-closing-paren",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "The pipeline (order 90)'s own output is stable.",
+      "out": "The pipeline (order 90)’s own output is stable.",
+      "note": "apostrophe.md §6 row 19, case 2a (spec 1.5.0): U+0029 is in CLOSEDELIM, so a possessive attaching to a parenthetical converts. Through spec 1.4.0 this was case 5 — the ladder's right side accepted every CLOSEISH member but its left side accepted no closing delimiter at all."
+    },
+    {
+      "id": "en-us-apostrophe-possessive-after-closing-quote",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "“Hamlet”'s first line is the question.",
+      "out": "“Hamlet”’s first line is the question.",
+      "note": "apostrophe.md §6 row 20, case 2a: U+201D is en-US's own primary closing glyph, and a quoted title's possessive is ordinary English. `quotes` leaves both existing glyphs in place (they are already this locale's pair) and declines the U+0027, which then reaches case 2a."
+    },
+    {
+      "id": "en-us-apostrophe-possessive-after-closing-brace-and-bracket",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "{user}'s account and footnote [3]'s author.",
+      "out": "{user}’s account and footnote [3]’s author.",
+      "note": "apostrophe.md §6 row 22, case 2a for U+007D and U+005D. A template placeholder closes a group the way any bracket does; this rule has no notion of interpolation syntax and needs none."
+    },
+    {
+      "id": "en-us-apostrophe-symbol-left-declined",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "10%'u 24m²'ye 50°'lik",
+      "out": "10%'u 24m²'ye 50°'lik",
+      "note": "apostrophe.md §6 row 24 and §7 item 8: no symbol is in CLOSEDELIM — not U+0025, not U+00B0, not a superscript digit — so every mark here is case 5 and the input is a fixed point. Pinned because issue #28 asked for exactly this widening and it was declined on evidence: TDK's own rules attest the apostrophe after abbreviations and numerals, where case 2 already converts it, and Turkish writes the percent sign before the number."
+    },
+    {
+      "id": "en-us-apostrophe-closing-paren-deleted-by-symbols",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "(c)'. and (c)'s",
+      "out": "©'. and ©’s",
+      "note": "symbols.md §5's I₆ discharge, deletion half (spec 1.5.0): §3.2 step 6 deletes the U+0029 that case 2a reads. Both directions in one case. The first mark does not convert — its right neighbour is U+002E, not ALNUM — and after the replacement its left neighbour is the emitted sign, which is in no class, so it does not convert on a second pass either. The second mark converts here, one rule before symbols shortens the span, and is U+2019 by the time symbols runs, which its own S2 guard accepts. Through spec 1.4.0 the second mark stayed straight."
     }
   ]
 }

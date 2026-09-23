@@ -4,7 +4,8 @@
 states the invariant that `transform` as a whole must satisfy, proves that per-rule
 idempotency does not imply it, and defines the obligation each rule must discharge so that it
 does.
-**Spec version:** 1.2.0 (0.1.0 for everything except S-b's word-start clause, added in 1.2.0).
+**Spec version:** 1.5.0 (0.1.0 for everything except S-b's word-start clause, added in 1.2.0,
+and §6's consumed-alphabet minimum, which gained U+0029 in 1.5.0).
 
 ---
 
@@ -451,7 +452,7 @@ The idempotency property test must include, in every runtime:
 
    |              |                                                                                                                                                           |
    | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-   | **consumed** | `"` `'` `-` U+0020 `.` `1` `a`, plus U+2010 (hyphen) and U+2212 (minus sign) — spec 0.2.0 added both to `dashes`' `DASH` class (`dashes.md` §3.1)                                                     |
+   | **consumed** | `"` `'` `-` U+0020 `.` `1` `a`, plus U+2010 (hyphen) and U+2212 (minus sign) — spec 0.2.0 added both to `dashes`' `DASH` class (`dashes.md` §3.1) — and U+0029 `)`, which spec 1.5.0 made a left-hand class member for `apostrophe` (`apostrophe.md` §3.1 `CLOSEDELIM`, case 2a); `)` `'` `a` is three code points, well inside the wide tier's length bound |
    | **emitted**  | every locale `quotes.*.open`/`close` glyph in the registry — at minimum `«` `»` `“` `”` `„` `‘` `’` — plus U+2013, U+2014, U+2026, U+00A0, U+202F, U+2011 |
 
    This is a normative requirement and it was learned the expensive way. **Idempotency is a

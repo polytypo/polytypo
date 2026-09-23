@@ -7,10 +7,10 @@ for all five runtimes and is parser-agnostic by construction: `parse5`, `nokogir
 `golang.org/x/net/html` and PHP's DOM disagree about almost everything this document does not
 forbid them from doing. `yaml` mode is parser-**free** rather than parser-agnostic, for the
 reason §3.8.1 measures.
-**Spec version:** 1.4.0 (0.1.0 for everything except §3.3's class-membership table rows for
-`nbsp` and `apostrophe`, split in 1.2.0, §3.8, added in 1.3.0, and §3.3's note on `quotes`'
+**Spec version:** 1.5.0 (0.1.0 for everything except §3.3's class-membership table rows for
+`nbsp` and `apostrophe`, split in 1.2.0, §3.8, added in 1.3.0, §3.3's note on `quotes`'
 span-boundary elision veto reading the marker as a trigger, added in 1.4.0 — which changes no
-row of the table it follows).
+row of the table it follows — and §3.3's `CLOSEDELIM` entry, added in 1.5.0).
 
 ---
 
@@ -152,7 +152,7 @@ simply a member of `BREAK` and of nothing else, so it needs no table: every rule
 | any literal matching list (`abbreviations`, `beforeUnits`, `hyphen.*`, the trademark table) | **no** — the marker never matches a literal |
 | `OPENISH` **and** `CLOSEISH` (`quotes`, `apostrophe`)                                       | **yes, both**                               |
 | `CLOSEISH` (`nbsp`)                                                                         | **yes**                                     |
-| `OPENISH` (`nbsp`), `OPENQUOTE` (`apostrophe`)                                              | **no**                                      |
+| `OPENISH` (`nbsp`), `OPENQUOTE` and `CLOSEDELIM` (`apostrophe`)                             | **no**                                      |
 
 and one exemption:
 

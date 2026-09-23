@@ -1,5 +1,5 @@
 {
-  "spec": "1.4.0",
+  "spec": "1.5.0",
   "locale": "en-GB",
   "cases": [
     {
@@ -1339,6 +1339,55 @@
       "in": "'a'<code>x</code>'b'",
       "out": "‘a’<code>x</code>‘b’",
       "note": "The negative control, and the reason the veto reads a cited fragment rather than the marker itself. modes.md §3.3 puts the marker in OPENISH precisely so the second pair here can open flush after a span; letting the marker satisfy the medial-elision veto's ALNUM test would have broken this row and en-us-markdown-commonmark-boundary-nested-quotes with it. The run b is not a listed fragment, so the quotation stands."
+    },
+    {
+      "id": "en-gb-apostrophe-closing-guillemets-agree",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "»Wort«'s, ‹Wort›'s and «Wort»'s.",
+      "out": "»Wort«’s, ‹Wort›’s and «Wort»’s.",
+      "note": "apostrophe.md §6 row 21 — the asymmetry case 2a removes, in one line. The first form converted before 1.5.0 because U+00AB is an OPENISH member and case 4 reads OPENISH on the left; the other two stayed straight because U+00BB and U+203A are CLOSEISH members and no left-hand test read that class. Same shape, same reading, three glyphs, now one verdict. Foreign glyphs in en-GB by design: under quotes.md §0 mandate 1 they are re-typesetting candidates, and en-GB does re-typeset them when they form a pair — «Wort» on its own becomes ‘Wort’. None of the three is paired here, and the reason is quotes' V1 same-code-point veto reading V1ID(U+0027) = U+2019 (quotes.md §5), so this case is a V1ID witness as well as a case 2a one."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-possessive-after-paren-past-code-span",
+      "rule": "apostrophe",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "The `nbsp` (R₈)'s emission alphabet is one character.\n",
+      "out": "The `nbsp` (R₈)’s emission alphabet is one character.\n",
+      "note": "Case 2a across a mode adapter: the code span is skipped, the parenthetical is prose, and the mark's left neighbour in the processable text is the literal U+0029 rather than modes.md §3.2's marker. The marker case is case 4's and is pinned separately."
+    },
+    {
+      "id": "en-gb-apostrophe-closeish-punctuation-declined",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "He said,'yes' and left.",
+      "out": "He said,'yes’ and left.",
+      "note": "apostrophe.md §6 row 23: U+002C is deliberately excluded from CLOSEDELIM. `quotes` declined the pairing because canOpen's right-test rejects a CLOSEISH left neighbour, and this rule cannot tell an opening quotation mark after a comma from a possessive — so the leading mark stays U+0027, recoverable per §7 item 4, and the trailing mark is case 3. The row's output is the same before and after spec 1.5.0 and is pinned so the exclusion stays deliberate."
+    },
+    {
+      "id": "en-gb-apostrophe-prime-after-superscript-untouched",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "f'(x) = 2 and f²'(x) = 4.",
+      "out": "f'(x) = 2 and f²'(x) = 4.",
+      "note": "Both primes survive spec 1.5.0, and for a reason worth naming: case 2a rejects them on its LEFT-test, not the case 1 prime guard, which reads DIGIT on the left only. The left neighbours here are the letter f and U+00B2, general category No, and neither is in CLOSEDELIM. The right-test rejects them as well — U+0028 is in no right-hand class — so nothing any converting case accepts is present on either side."
+    },
+    {
+      "id": "en-gb-apostrophe-possessive-after-closing-single-quote",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "A ‘quoted’'s meaning.",
+      "out": "A ‘quoted’’s meaning.",
+      "note": "U+2019 is the CLOSEDELIM member the idempotency argument turns on (apostrophe.md §5), and the one a port is most likely to leave out: it is both this rule's only emission and a member of a class the rule now reads on the left. The doubled glyph is what the ladder specifies rather than an artefact of it: the left neighbour is a closing delimiter and the right is a letter, so case 2a converts, and this rule reorders and removes nothing. Whether an editor would rather see the construction rephrased is outside its remit — it decides what the author typed, not whether they should have (§7 item 9). The case is a fixed point, which is what §5's left-hand vacuity argument predicts."
+    },
+    {
+      "id": "en-gb-apostrophe-opening-mark-after-closing-delimiter",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "(aside)'quoted' here",
+      "out": "(aside)’quoted’ here",
+      "note": "apostrophe.md §6 row 25 and §7 item 9 — case 2a's accepted cost, pinned so no port can narrow or widen it silently. The author meant a quotation and both marks now read as closing glyphs. It was mismatched before spec 1.5.0 too, in the other direction: 1.4.0 gave (aside)'quoted’ here, case 3 having curled the trailing mark while the leading one matched no case. `quotes` declines the leading mark because canOpen's right-test rejects a CLOSEISH left neighbour, so a quotation opening flush after a closing delimiter is exactly the shape it cannot pair, and two neighbours cannot separate that from a possessive."
     }
   ]
 }

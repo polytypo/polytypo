@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.4.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.4.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.5.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.5.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,22 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.5.0 — 23 September 2026
+
+A possessive written straight after a closing bracket or a closing quotation mark is no longer left as a typewriter apostrophe.
+
+- A possessive or a suffix written directly after a closing bracket or a closing quotation mark kept its straight mark. `The pipeline (order 90)'s own output`, `“Hamlet”'s first line`, `{user}'s account`, `the footnote [3]'s author` — every one of them came out with the typewriter apostrophe that `don't` and `the dogs' bowls` have not had since 1.0.0. This repository's own documentation contained four of them.
+- The cause was an asymmetry inside the rule, not a language nobody had got round to. The apostrophe decision reads exactly one character on each side of the mark. Its right-hand side has accepted a closing bracket or quotation mark since 1.0.0 — `dogs')` and `dogs'”` convert — while its left-hand side accepted a letter, a digit, a space or an opening delimiter, and no closing one. Which side of the word the delimiter happened to sit on decided the answer.
+- It also depended on the glyph, which is the half worth knowing if you write a language other than English. `»Wort«'s` converted and `«Wort»'s` did not, because the guillemet that opens a quotation was in one internal set and the one that closes it was in another. That put every locale whose quotation marks close with `»`, `›`, `”` or `’` on the losing side of a coin flip — which is most of them, English included. The three forms now give one answer.
+- The accepted cost, measured rather than assumed: a straight mark after a closing bracket that was meant to open a quotation now closes instead of opening. `(aside)'quoted' here` gives `(aside)’quoted’ here`, where 1.4.0 gave `(aside)'quoted’ here` and left the pair mismatched. Nothing local tells a possessive apart from an unmatched opening quotation mark in that position, and it is the same trade the rule already makes before a space and before a quotation glyph.
+- Two things this release was asked for and deliberately does not do. An apostrophe after a symbol stays straight — `10%'u`, `24 m²'ye`, `50°'lik` — because nothing attests it: Turkish, the language the request came from, writes the percent sign before the number, so `%50'si` was already converting, and its own authority attests the apostrophe after abbreviations and numerals, which were converting too. An apostrophe after a comma or a full stop stays straight as well: in `He said,'yes'` the first mark is as likely to be an opening quotation mark, and Chicago spells the abbreviations `US` and `PhD`, so `the U.S.'s economy` is not a shape that orthography produces.
+
+| Locale | Mode | In | Before | After |
+| --- | --- | --- | --- | --- |
+| `en-US` | `text` | `The pipeline (order 90)'s own output is stable.` | `The pipeline (order 90)'s own output is stable.` | `The pipeline (order 90)’s own output is stable.` |
+| `en-US` | `text` | `“Hamlet”'s first line is the question.` | `“Hamlet”'s first line is the question.` | `“Hamlet”’s first line is the question.` |
+| `en-GB` | `text` | `(aside)'quoted' here` | `(aside)'quoted’ here` | `(aside)’quoted’ here` |
 
 ## 1.4.0 — 22 September 2026
 
