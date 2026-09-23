@@ -2545,7 +2545,7 @@
       "mode": "text",
       "in": "“Hamlet”'s first line is the question.",
       "out": "“Hamlet”’s first line is the question.",
-      "note": "apostrophe.md §6 row 20, case 2a: U+201D is en-US's own primary closing glyph, and a quoted title's possessive is ordinary English. `quotes` leaves both existing glyphs in place (they are already this locale's pair) and declines the U+0027, which then reaches case 2a."
+      "note": "apostrophe.md §6 row 20, case 2a: U+201D is en-US's own primary closing glyph. `quotes` leaves both existing glyphs in place (they are already this locale's pair) and declines the U+0027, which then reaches case 2a. The case pins the mark's identity, not the construction's merit — CMOS's reachable answer on the possessive of a quoted title steers to an attributive rephrasing and endorses none of the possessive forms, which is advice about what to write rather than a claim about what the mark is (case 2a, §7 item 10)."
     },
     {
       "id": "en-us-apostrophe-possessive-after-closing-brace-and-bracket",

@@ -133,6 +133,16 @@ and take the **first** matching case:
    in this position is either a possessive or an *opening* quotation mark `quotes` could not pair,
    and two neighbours cannot tell them apart.
 
+   **What this case does not claim.** It decides the identity of a mark the author has already
+   typed; it does not endorse the construction. `CMOS`'s reachable statement on the possessive of
+   a quoted title answers this exact shape by steering to an attributive rephrasing — *the "Wild
+   Horses" bass line* — and endorses none of the possessive forms it was offered (Q&A,
+   "Quotations and Dialogue" #12). That is advice about what to write, not a claim about what the
+   mark is: nothing consulted reads a U+0027 in this position as anything other than an
+   apostrophe, and this rule has no licence to rephrase anyone's sentence. §7 item 10 records the
+   one place where following the same authority further would mean *inserting*, which this rule
+   cannot do.
+
    **`MARKER` is not in `CLOSEDELIM`** (`modes.md` §3.3) and does not need to be: the marker is
    in `OPENISH`, so a possessive written flush against an inline span already reaches case 4 and
    emits the same U+2019 (case 4's note). `modes.md` needs no new row for this case — only the
@@ -428,7 +438,7 @@ are shown as they arrive at this rule, i.e. after `quotes` has run.
 | 17  | `„Hans'“`                       | `„Hans’“`               | 3a   | U+201C closes in `de-DE`, and 3a does not need to know that: a letter followed by U+0027 and a quotation glyph is an elision or a possessive either way                |
 | 18  | `f'(x) = 2`                     | ⟶                       | 5    | `(` is not in `OPENQUOTE`. A prime on a function name is not an apostrophe                                                                                        |
 | 19  | `The pipeline (order 90)'s own output` | `The pipeline (order 90)’s own output` | 2a   | closing bracket left, letter right. **Spec 1.5.0**; previously case 5 left it straight                                                                       |
-| 20  | `“Hamlet”'s first line`         | `“Hamlet”’s first line` | 2a   | U+201D left — `en-US`'s own closing glyph. The rule decides what the author typed, not whether they should have: a U+0027 here is a possessive or an unpaired opening mark (§7 item 9), and never a prime                                       |
+| 20  | `“Hamlet”'s first line`         | `“Hamlet”’s first line` | 2a   | U+201D left — `en-US`'s own closing glyph. The rule decides what the author typed, not whether they should have: a U+0027 here is a possessive or an unpaired opening mark (§7 item 9), and never a prime. `CMOS` would rephrase the sentence instead — see case 2a and §7 item 10                                       |
 | 21  | `»Wort«'s, ‹Wort›'s and «Wort»'s` | `»Wort«’s, ‹Wort›’s and «Wort»’s` | 4, 2a, 2a | **the asymmetry case 2a removes.** The first form already converted before 1.5.0, because U+00AB is an `OPENISH` member and case 4 reads `OPENISH` on the left; the other two stayed straight because U+203A and U+00BB are in `CLOSEISH`, which no left-hand test read. Same shape, same reading, three glyphs — now one verdict |
 | 22  | `{user}'s account`              | `{user}’s account`      | 2a   | a template placeholder closes a group the way any bracket does. U+007D is in `CLOSEDELIM`                                                                       |
 | 23  | `He said,'yes' and left.`       | `He said,'yes’ and left.` | 5, 3 | **U+002C is deliberately not in `CLOSEDELIM`.** `quotes` declined the pairing (`canOpen`'s right-test rejects a `CLOSEISH` left neighbour), and this rule cannot tell an opening quotation mark after a comma from a possessive, so the leading mark is left recoverable as U+0027 (§7 item 4). The trailing mark is case 3, exactly as before 1.5.0 — the row is unchanged by 1.5.0 and is here to pin that                                       |
@@ -556,3 +566,30 @@ layouts and in text pasted from older systems. Converting them is not authorised
    ordinary and frequent, the counter-case is a quotation that `quotes` could not resolve, and
    recoverability is one character. Pinned at §6 row 25 and as a conformance fixture, so no port
    can narrow or widen it without the suite noticing.
+10. **(Spec 1.5.0.) Case 2a can produce two contiguous U+2019, and nothing in the pipeline
+    separates them.** In `en-GB`, whose primary pair closes with U+2019, `A ‘quoted’'s meaning`
+    gives `A ‘quoted’’s meaning`: the closing quotation mark and the possessive end up flush, and
+    at text size the pair reads as one double quote.
+
+    **The authority names both the remedy and the character.** `CMOS`'s own editors describe the
+    fix as adding a space between the contiguous marks, and enumerate it by code point — U+00A0,
+    or a thin space U+2009 or hair space U+200A in print, or U+202F, which *CMOS* Online itself
+    now sets between a quotation mark and an apostrophe (18th ed. §6.11, as described in *CMOS
+    Shop Talk*, "When Quotation Marks and Apostrophes Collide", updated
+    2025-12-16).
+
+    **polytypo emits the right character and inserts nothing.** This rule *cannot* insert: §1 and
+    §4 make every edit one code point replacing one code point at the same index, and that is
+    load-bearing for §5's idempotency argument, not an accident. Insertion is `nbsp`'s work
+    (order 70), and `nbsp` has no sub-rule for two adjacent quotation marks. So the spacing
+    between them is unaddressed by every rule in `order.json` — recorded here as a decision
+    rather than left as an omission, in the standing of items 2 and 3.
+
+    **A future `nbsp` sub-rule would need its own citation, not this one.** The attested passage
+    is one mark-order away from the shape case 2a produces: it separates a title's *own* trailing
+    apostrophe from a following closing quotation mark — its example is the song title *Ain't
+    Misbehavin'* set in single quotation marks, so the two marks there are the title's own
+    apostrophe and then the closing quote, apostrophe first. The possessive ordering — closing mark, then apostrophe, then `s` —
+    is addressed by nothing retrieved, and `CMOS` §7.29 ("Possessive with italicized or quoted
+    terms"), the paragraph that governs it, is behind a subscription and unread. Borrowing the
+    citation across that difference is exactly the move this project settles by evidence instead.
