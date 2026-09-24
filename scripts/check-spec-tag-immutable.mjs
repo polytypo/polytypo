@@ -14,6 +14,22 @@
 // Uses only the local object database (the tag is local here); it never fetches. That makes the
 // checkout depth in .github/workflows/ci.yml load-bearing — see the fetch-depth: 0 comment there —
 // so a checkout carrying no spec-v* tag at all is reported as a failure rather than a silent pass.
+//
+// Two things deliberately not done, recorded so they are not proposed again:
+//
+//   1. No retro-fix of the one other historical occurrence. Walking every spec-v* tag against the
+//      commit before the next spec/VERSION bump shows exactly one more in-place edit to a released
+//      version: spec/rules/symbols.md under spec-v1.0.0. It does not affect HEAD, which differs
+//      from spec-v1.6.3 only by CONFORMANCE.md, so this check passes today. Rewriting a published
+//      tag to repair it would be worse than the defect.
+//   2. No unit test. The two sibling hygiene checks put their logic in scripts/lib/*.mjs with a
+//      test in tests/scripts/, because both are string parsing over fabricated input. This one is
+//      git invocations, so a test would need git fixtures; it is proved instead by running it in a
+//      detached worktree at each violating commit, which is what §4 of its review records:
+//        git worktree add --detach /tmp/wt cc07ac1
+//        cp scripts/check-spec-tag-immutable.mjs /tmp/wt/scripts/
+//        node /tmp/wt/scripts/check-spec-tag-immutable.mjs   # must exit 1, naming the file
+//      Add a test only if the script grows logic that is not a git call.
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
