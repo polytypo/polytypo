@@ -27,6 +27,7 @@
     "test": "vitest run",
     "check:actions-pinned": "node scripts/check-actions-pinned.mjs",
     "check:workflow-shell-safety": "node scripts/check-workflow-shell-safety.mjs",
+    "check:spec-tag-immutable": "node scripts/check-spec-tag-immutable.mjs",
     "test:readme-gen": "python3 brand/tools/test_gen_readmes.py",
     "test:font-acquisition": "python3 brand/tools/test_gen_svg.py",
     "lint": "eslint .",
