@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.6.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.6.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.6.1`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.6.1 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,14 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.6.1 — 24 September 2026
+
+No change to what polytypo does to your text — an apostrophe rule that credited a style manual with a prescription the manual does not make.
+
+- Nothing in this version changes your output. Run the same text through 1.6.0 and 1.6.1 and you get the same bytes; every rule, locale, mode and option behaves identically. What changed is normative prose — the documents that say why the engine does what it does — in two of the nine rules.
+- `apostrophe.md` explains why nothing is inserted between a closing quotation mark and a possessive apostrophe immediately after it, as in `the “Times”’s editor`. It credited The Chicago Manual of Style with prescribing a narrow space in that position. The manual does not prescribe one. The claim rested on two things: a post on the manual's own CMOS Shop Talk blog, describing how its website is typeset, and a cross-reference to a section that says nothing about the sequence — its text is quoted verbatim in `en-US`'s citations, and has been there since the locale landed. The two marks are set side by side, in every locale, exactly as before; the rule now says so on its own authority instead of borrowed authority.
+- `quotes.md` covers a possessive apostrophe that lands directly after an inline element. Character for character, `The <code>xs</code>' printer works.` is indistinguishable from a quotation closing in that position, so polytypo reads it as one. On its own the sentence comes back untouched; inside a real quotation the same mark closes it early, and `It is 'the <code>quotes</code>' locale data' here.` becomes `It is ‘the <code>quotes</code>’ locale data’ here.` — the pair ends two words short and the author's own closing mark is left over. The rule now states what the alternative costs instead of leaving it implied: no test over the neighbouring characters separates the two readings, and the narrowest test that tries breaks seven cases in the conformance suite, five of them Turkish, where an apostrophe carrying a case suffix is grammar rather than style.
 
 ## 1.6.0 — 23 September 2026
 
