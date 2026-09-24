@@ -27,7 +27,12 @@ Run `npm run generate:all` after any edit to `spec/locales/` or `spec/fixtures/`
 the worked examples shown in `README.md` and the promo site from the real engine (via the
 `polytypo` npm package), so those pages cannot drift from what the spec actually says.
 CI (`.github/workflows/ci.yml`) runs validate:spec → lint → test → generate:all (drift check) on
-Node 20 and 22. `.github/workflows/pages-deploy.yml` publishes the site and is **not**
+Node 20 and 22. It also runs `check:spec-tag-immutable`, the mirror of each runtime's
+`check-vendored-spec.sh`: **once `spec-v<version>` is tagged, `spec/` may not be amended in place
+under that version** — a correction to released prose needs its own version bump and changelog
+entry, exactly like a behaviour change. `spec/CONFORMANCE.md` is the one exclusion, being written
+after a release. That check needs the tags, which is why the checkout carries `fetch-depth: 0`.
+`.github/workflows/pages-deploy.yml` publishes the site and is **not**
 manually dispatched: it runs on `workflow_run` after CI succeeds on a push to main, and on a
 half-hourly `schedule`. Its `verify` job gates the deploy on all five registries actually serving
 the spec version the generated pages would announce — so the release window, where main carries
