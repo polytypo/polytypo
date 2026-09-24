@@ -86,9 +86,11 @@ the whole of `rules/` — all thirteen rule documents plus `order.json` — `VER
 with `schema/` in all but JS; `polytypo-python` vendors the same data but only
 `rules/dashes.md` and `rules/order.json` of the prose. Copying happens by hand, and **each runtime's
 CI now verifies the result**: `check-vendored-spec.sh` there clones this repository at
-`spec-v<the vendored VERSION>` and fails on any difference in the files that runtime holds
-(`locales/*.json` compared with `sources` dropped from both sides — the one field a vendored copy
-legitimately narrows, because three runtimes ship theirs). That is the interim check, not
+`spec-v<the vendored VERSION>` and fails on any difference in the files that runtime holds, in CI
+on every push and again in the release job before anything is built. A `locales/*.json` file is
+compared in full when it carries its `sources` array and against canonical minus that array when
+it does not — the shipped form Go, Ruby and PHP vendor, since they embed those exact files — and
+which case applies is read off the file, not configured. That is the interim check, not
 §3–§4's manifest, which remains design-only. **Consequence for release order: push the
 `spec-v*` tag from this repository before any runtime commits that version's `VERSION`, or that
 runtime's CI fails — correctly, since the tag it names would not exist yet.** What is decided
