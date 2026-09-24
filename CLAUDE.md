@@ -74,12 +74,25 @@ via `gh api repos/polytypo/<repo>/tags`, 2026-09-09): `polytypo-js` through v1.0
 target mechanism is resolved** (ROADMAP.md "Open decisions" #2, 2026-08-27): an automated,
 content-hash-verified vendored snapshot, full design in `docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md`
 §3–§4. That automation itself is **not implemented** — every runtime instead vendors via a manual
-interim **committed copy** of the subset it needs (`locales/`, `fixtures/`, `rules/order.json`,
-`rules/dashes.md`, `VERSION`, `UNICODE`), each under a runtime-specific path chosen to avoid that
+interim **committed copy**, each under a runtime-specific path chosen to avoid that
 ecosystem's own reserved directory name (JS: `spec/`, since npm reserves nothing there; Python:
 `vendor/polytypo-spec/`; Go: `internal/spec/`, forced by `//go:embed`'s no-parent-directory rule;
 Ruby: `lib/polytypo/data/`, avoiding RSpec's own `spec/`; PHP: `resources/spec/`, avoiding
-Composer's own `vendor/`). What is decided regardless: the spec is
+Composer's own `vendor/`).
+
+**The subsets are not the same per runtime, so never assume the list.** Four of them
+(`polytypo-js`, `polytypo-go`, `polytypo-ruby`, `polytypo-php`) vendor `locales/`, `fixtures/`,
+the whole of `rules/` — all thirteen rule documents plus `order.json` — `VERSION` and `UNICODE`,
+with `schema/` in all but JS; `polytypo-python` vendors the same data but only
+`rules/dashes.md` and `rules/order.json` of the prose. Copying happens by hand, and **each runtime's
+CI now verifies the result**: `check-vendored-spec.sh` there clones this repository at
+`spec-v<the vendored VERSION>` and fails on any difference in the files that runtime holds
+(`locales/*.json` compared with `sources` dropped from both sides — the one field a vendored copy
+legitimately narrows, because three runtimes ship theirs). That is the interim check, not
+§3–§4's manifest, which remains design-only. **Consequence for release order: push the
+`spec-v*` tag from this repository before any runtime commits that version's `VERSION`, or that
+runtime's CI fails — correctly, since the tag it names would not exist yet.** What is decided
+regardless: the spec is
 vendored and pinned, never fetched at runtime, and locale data is embedded into each runtime's
 published artifact at build time — never loaded from this repository at runtime by any published
 package.
@@ -235,7 +248,8 @@ Per ROADMAP.md: **first port** — resolved, in order: Python (2026-09-07), then
 verified 2026-09-20 by querying each registry for 1.3.0, not by reading a green workflow). **Spec vendoring mechanism** — the target model is resolved (2026-08-27,
 see "Multi-repo" above), but the manifest/dispatch **automation** in
 `REPOSITORY_SPLIT_AND_SPEC_SYNC.md` §3–§4 is not implemented; each port's manual interim copy does
-not itself resolve that remaining gap. **Repo visibility** — all five repos were created public
+not itself resolve that remaining gap, and neither does the per-runtime CI check added for it
+(2026-09-24) — that detects a stale copy, it does not produce or dispatch one. **Repo visibility** — all five repos were created public
 (verified via `gh repo list polytypo`, 2026-09-09); ROADMAP.md's own "Open decisions" list does not
 mark this ~~resolved~~ explicitly, so treat it as an observed fact, not confirmed settled policy,
 until the operator says otherwise.
