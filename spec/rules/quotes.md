@@ -605,12 +605,18 @@ spec 1.4.0. Measured on this change, `markdown`/`commonmark`, `en-GB`:
 words early and the author's own closing mark is left to `apostrophe` as a stray U+2019. §1 of
 that issue is closed by the veto above; §3 is not, and is not going to be.
 
-**Why §3 is decided and not merely unfixed.** Two measurements, both on a published package.
+**Why §3 is decided and not merely unfixed.** Two measurements — the first on a published
+package, the second on a build patched with the veto it measures, since no release contains it.
 
 First, **the U+2019 at the possessive's own position is produced by the pairing, and nothing else
-can produce it.** `apostrophe` cannot reach that mark: its left neighbour is the inline `MARKER`,
-which §3.1 deliberately keeps out of [apostrophe.md](apostrophe.md) §3.1's `CLOSEDELIM`, and its
-right neighbour is a space, so no case in that rule's ladder fires. Measured on published 1.6.1,
+can produce it.** Not because `apostrophe` cannot see past a span boundary — it can, and
+[apostrophe.md](apostrophe.md) §3.3 case 4 says so: the marker is in that rule's `OPENISH`
+(`modes.md` §3.3), which is exactly why `` `x`'s `` reaches case 4 and comes out `` `x`’s ``. It is
+this shape it cannot reach. Case 4 is the only case in the ladder that accepts the marker on the
+left, and it requires `ALNUM` on the **right**; a plural possessive has a space there. Cases 2 and
+2a read `ALNUM` and `CLOSEDELIM` on the left, and cases 3 and 3a read `LETTER`; the marker is in
+none of those three classes (`modes.md` §3.3). So the ladder falls through to case 5 and emits
+nothing. Measured on published 1.6.1,
 `markdown`/`commonmark`, `en-GB`: `` The `xs`' printer works. `` comes back **unchanged** — an
 unmatched span-boundary plural possessive keeps its U+0027. So the cost of this behaviour is a
 consumed *pairing*, and the visible symptom of that appears elsewhere (a stray U+0027 at the real
@@ -1597,11 +1603,23 @@ reach — the plural possessive, which is byte-identical to a closing mark after
 1.6.2 corrects §3.2's own measurements of the decision above; no behaviour, fixture or locale
 field changes. Two errors, both introduced with the decision record on 2026-09-24 and both
 overstating how cheap the decided behaviour is. The first claimed the glyph at the possessive's
-position was "correct either way" — it is not: `apostrophe` cannot reach a mark whose left
-neighbour is the inline `MARKER`, so declining the pairing leaves U+0027 there, measured on the
-published 1.6.1 package. The second counted **7 of 2801 conformance cases** where 2801 is
-polytypo-js's vitest test total, a figure no other runtime can reproduce; the cost is **6 of the
-1366 fixture cases**, and the sixth — this section's own `en-GB` fixture — is now described
+position was "correct either way" — it is not: `apostrophe` does not reach *this* mark, the plural
+shape, for the reason the 1.6.3 entry below states, so declining the pairing leaves U+0027 there.
+Measured on the published 1.6.1 package. The second counted **7 of 2801 conformance cases** where 2801 is the test
+count of polytypo-js's conformance runner, a figure no other runtime can reproduce; the cost is
+**6 of the 1366 fixture cases**, and the sixth — this section's own `en-GB` fixture — is now described
 rather than left in the count, because the veto moves the pair to the author's mark correctly and
 moves the typewriter apostrophe to the possessive at the same time. A conformance count in this
 document is a count of fixture cases, never of one runner's tests.
+
+1.6.3 corrects §3.2's account of *why* the first of those measurements comes out the way it does;
+again no behaviour, fixture or locale field changes. The 1.6.2 text said `apostrophe` cannot reach
+a mark whose left neighbour is the inline marker and attributed that to the marker's exclusion
+from [apostrophe.md](apostrophe.md) §3.1's `CLOSEDELIM`. Both halves were wrong, and the second
+contradicted `apostrophe.md` §3.3 case 2a's own note in the same vendored tree: the marker is in
+that rule's `OPENISH`, so `` `x`'s `` does reach case 4 and is curled. What the ladder cannot
+reach is the *plural* shape, because case 4 — the only case accepting the marker on the left —
+requires `ALNUM` on the right, and cases 2, 2a, 3 and 3a all read a class the marker is not in.
+`CLOSEDELIM` is irrelevant to it either way, since case 2a reads `ALNUM` on the right as well. The
+same entry also called 2801 a vitest total; it is one runner's conformance test count, and the
+runtime's own total is 4440.

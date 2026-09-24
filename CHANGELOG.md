@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.6.2`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.6.2 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.6.3`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.6.3 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,14 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.6.3 — 24 September 2026
+
+No change to what polytypo does to your text — the explanation corrected yesterday's correction was itself blaming the wrong mechanism.
+
+- Nothing in this version changes your output. Run the same text through 1.6.2 and 1.6.3 and you get the same bytes. One paragraph of `quotes.md` changed, and it is the third pass over the same paragraph today; this one is the mechanism rather than the measurement.
+- 1.6.2 established that a possessive apostrophe written flush against an inline element keeps its typewriter form when polytypo declines to pair it. That is measured and still true. What it got wrong was why. It said the apostrophe rule cannot see past an element boundary. It can, and it is documented doing so: `The <code>xs</code>'s printer works.` comes back as `The <code>xs</code>’s printer works.` The rule reaches that mark and curls it. What it does not reach is the plural, `The <code>xs</code>' printer works.`, and the reason is what sits on the other side: the case that accepts an element boundary on its left needs a letter or digit on its right, and a plural possessive has a space there. The original explanation blamed a character class that plays no part in it, and in doing so contradicted a note in the apostrophe rule's own document, shipped in the same packages.
+- That is the failure this whole day was about, in miniature: prose that nothing checks, drifting from behaviour nobody re-measured, in documents four of the five packages ship. The documents are now verified against this repository on every push and again before every publish, which is how two of today's three corrections were found at all.
 
 ## 1.6.2 — 24 September 2026
 
