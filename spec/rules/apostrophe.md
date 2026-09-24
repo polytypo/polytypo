@@ -610,14 +610,28 @@ layouts and in text pasted from older systems. Converting them is not authorised
     between them is unaddressed by every rule in `order.json` — recorded here as a decision
     rather than left as an omission, in the standing of items 2 and 3.
 
-    **A future `nbsp` sub-rule would need its own citation, not this one** — for two independent
-    reasons, either sufficient on its own. First, what was retrieved is a publisher's rendering
-    practice for its own website, reported second-hand by its blog; it is not a normative
-    statement about English typography at all. Second, even taken at face value the attested
-    passage is one mark-order away from the shape case 2a produces: it separates a title's *own* trailing
-    apostrophe from a following closing quotation mark — its example is the song title *Ain't
-    Misbehavin'* set in single quotation marks, so the two marks there are the title's own
-    apostrophe and then the closing quote, apostrophe first. The possessive ordering — closing mark, then apostrophe, then `s` —
-    is addressed by nothing retrieved, and `CMOS` §7.29 ("Possessive with italicized or quoted
-    terms"), the paragraph that governs it, is behind a subscription and unread. Borrowing the
-    citation across that difference is exactly the move this project settles by evidence instead.
+    **No separator is inserted, and that is now a decision rather than an open question
+    (2026-09-24).** No normative source addresses the ordering case 2a produces — closing mark,
+    then apostrophe, then `s`. What exists is one mark-order away from it and is not normative
+    anyway: the attested passage separates a title's *own* trailing apostrophe from a *following*
+    closing quotation mark (the song title *Ain't Misbehavin'* in single quotation marks —
+    apostrophe first), and it describes a publisher's rendering practice for its own website. The
+    paragraph that would govern the possessive ordering, `CMOS` §7.29 ("Possessive with
+    italicized or quoted terms"), is behind a subscription. `MHRA` was read in full and is silent;
+    Kotus names no code points at all; the Swedish genitive takes no apostrophe, so the shape is
+    not Swedish. **Operator decision: where no exact answer exists, choose one behaviour and pin
+    it rather than leave the rule undefined — consistency across the five runtimes is the
+    product, not conformance to a style guide nobody can read.** The pinned choice is *no
+    separator*: the marks sit flush.
+
+    **What makes that the cheap side of the choice.** The pair a reader could actually misread as
+    one mark is `’’`, and it is **unreachable from ordinary typing** — exhaustive sweep over the
+    alphabet `'` `"` `a` `s` space, 370,975 inputs to length 6 across all nineteen locales and
+    1,464,825 to length 8 across `en-GB`, `en-US` and `fi`: zero produce it. Two straight marks
+    are vetoed by `quotes` V1, and a straight `"…"` pair in a `NARROW`-primary locale is declined
+    by the certification gate for the same adjacency, so `’’` needs a closing mark that was
+    *already* U+2019 in the source. The pairs reachable from real input — `”’s`, `“’s`, `»’s`
+    — are legible as two marks. Inserting a space would mean a new `nbsp` insertion *position*
+    class, which `nbsp.md` §5's `I₆` and `quotes.md` §5's Lemma B would both have to be
+    re-derived for, in exchange for a cosmetic gain on text someone has already typeset. Recorded
+    as the standing answer; do not reopen it on a citation hunt.

@@ -595,14 +595,39 @@ typesets as `A ’stray mark here.` / `Then ‘inner’ text.`, and appending `S
 re-pairs the first mark with the new one, making the middle pair nested and changing a line the
 edit did not touch. Measured on 1.3.1 and unchanged by this veto.
 
-**This is issue #53 §3, tracked as issue #54, and it stays open.** The report's own trigger lines are
+**This is issue #53 §3, and as of 2026-09-24 it is decided rather than open: the behaviour
+stands.** The report's own trigger lines are
 `` `quotes`' locale data `` and `` `dashes`' own admissibility `` — plural possessives, exactly
 this shape — so the cross-paragraph effect it documents in a real article is *not* repaired by
 spec 1.4.0. Measured on this change, `markdown`/`commonmark`, `en-GB`:
 `It is 'the `` `quotes`' `` locale data' here.` gives
 `It is ‘the `` `quotes`’ `` locale data’ here.` — the plural possessive closes the quotation two
 words early and the author's own closing mark is left to `apostrophe` as a stray U+2019. §1 of
-that issue is closed and §3 is not; the two must not be conflated when the issue is triaged.
+that issue is closed by the veto above; §3 is not, and is not going to be.
+
+**Why §3 is decided and not merely unfixed.** Two measurements, both on the published 1.6.0
+package. First, **the glyph at the possessive's own position is correct either way** — U+2019,
+whether the mark is taken as a closing quotation mark or left unmatched for `apostrophe`. What
+the defect costs is never the character a reader sees there; it is the *pairing it consumes*,
+which is why the visible symptom always appears somewhere else (a stray U+0027 at the real
+closing mark, or a middle paragraph re-nested from `‘ ’` to `“ ”`). Second, **separating the two
+readings was implemented and measured, and it is worse.** The narrowest local veto that can do
+it — decline a `NARROW` mark whose literal neighbour is `MARKER` and whose attaching `LETTER`
+run is empty — breaks **7 of 2801 conformance cases**, five of them `tr` cases that are correct
+today: `tr-html-span-boundary-suffix-declined`,
+`tr-markdown-commonmark-span-boundary-suffix-declined`,
+`tr-html-span-boundary-quotation-outside-the-span`,
+`tr-html-span-boundary-non-ascii-initial-fragment` and `tr-html-span-boundary-ordinal-fragment`.
+That is this section's own claim — no test over these neighbours can separate a plural
+possessive from a closing mark after a span — turned from an argument into a number.
+
+**Operator decision (2026-09-24): where no exact answer exists, choose one behaviour and pin it
+rather than leave the rule undefined.** Five runtimes agreeing byte-for-byte is the product; an
+undecided rule is worse than an arbitrary decided one. The pinned behaviour is the one specified
+here and fixtured at §6 row S5. A future change would have to be a **pairing-preference**
+mechanism, not a classification test, and §3.3's three-outcome partition is the premise §5's
+certification theorem rests on — so it replaces that premise rather than extending it, and needs
+its own idempotency argument. Nobody should spend that on this without a new reason.
 
 **V1 — same-V1-identity adjacency veto** (both widths):
 
@@ -1330,7 +1355,7 @@ what a port should be able to re-derive from §3.2 alone.
 | S2 | `fr` | `Il dit 'l'<em>idée</em> est bonne.' Fin.` | `Il dit «⍽l’<em>idée</em> est bonne.⍽» Fin.` | the mirror direction: `Rlit` is the `MARKER`, the run left of the mark is `l`, a cited `before` entry. Through 1.3.1 this gave `Il dit «⍽l⍽»<em>idée</em> est bonne.' Fin.` — guillemets around one letter, the real closing mark abandoned |
 | S3 | `fr` | `Il dit 'jusqu'<em>ici</em> tout va bien.' Fin.` | `Il dit «⍽jusqu’<em>ici</em> tout va bien.⍽» Fin.` | the run is compared **whole**: it is `jusqu`, so an entry `qu` could not match it. This is why `jusqu`, `lorsqu`, `puisqu` and `quoiqu` are listed in their own right |
 | S4 | `fr` | `Il dit <em>'oui'</em> ici.` | `Il dit <em>«⍽oui⍽»</em> ici.` | the negative control the mechanism exists to preserve. `Llit` is the `MARKER` here too — what separates this from S2 is only that `oui` is not a listed fragment |
-| S5 | `en-GB` | `` He says 'avoid `xs`' printer.' Done. `` | `` He says ‘avoid `xs`’ printer.' Done. `` | **not closed.** The plural possessive's run is empty, so neither test applies, and these code points are also a closing mark after a span. The second mark takes the pairing, the third is abandoned as U+0027. §4, §7 item 10, issue #54 |
+| S5 | `en-GB` | `` He says 'avoid `xs`' printer.' Done. `` | `` He says ‘avoid `xs`’ printer.' Done. `` | **not closed.** The plural possessive's run is empty, so neither test applies, and these code points are also a closing mark after a span. The second mark takes the pairing, the third is abandoned as U+0027. **Decided behaviour, not a pending fix** — §3.2. §4, §7 item 10, issue #54 |
 | S6 | `fr` | `Il dit 'QU'<em>il</em> vienne.' Fin.` | `Il dit «⍽QU⍽»<em>il</em> vienne.' Fin.` | **not closed.** The fold reaches only the run's first code point, and only ASCII `A`–`Z`, so `QU` does not match `qu` and the inversion survives. Same limit as the listed veto's context words |
 | S7 | `en-US` | `He said <em>'s'</em> loudly.` | `He said <em>’s’</em> loudly.` | the accepted false positive: a quotation inside a span whose whole content is a listed fragment. Narrower than the medial-`n` veto's own accepted `The letter 'n' is common.`, since it needs the boundary as well |
 | S8 | `nl` | `Hij zegt 'ik kom <em>vroeg </em>'s avonds terug.' Klaar.` | `Hij zegt “ik kom <em>vroeg </em>’s avonds terug.” Klaar.` | `'s` is a word-*initial* omission, so its run lies to the mark's right and the entry is an `after` one — the clearest case for reading both lists positionally (§2) |
@@ -1480,7 +1505,8 @@ Ordered by how much this matters.
     rule. Two shapes stay open in **every** locale, both for the same reason: the attaching
     fragment is not there to read. A plural possessive after a span (`` `xs`' ``) has an empty
     run and is byte-identical to a closing mark after a span (§4) — **this is issue #53 §3, the
-    cross-paragraph witness that motivated the report; it is open and tracked as issue #54**; and a fragment written in
+    cross-paragraph witness that motivated the report, and it is decided rather than open — §3.2
+    gives the two measurements and issue #54 records the close**; and a fragment written in
     capitals (`QU'<em>il</em>`) fails the first-code-point folding this rule shares with item 8's
     listed veto. Neither is a candidate for a wider mechanism: widening the folding is
     `ARCHITECTURE.md` §4.4's banned territory, and the plural possessive has no local evidence at
@@ -1539,7 +1565,8 @@ consulted only when the mark is flush against an inline span boundary. It closes
 §1** — a possessive or elision written against a span (`` `x`'s ``, `l'<em>idée</em>`) was
 classified as a quotation candidate, took the pairing from the author's own mark inside a
 quotation, and inverted the pair in every locale. **It does not close issue #53 §3**, the
-cross-paragraph damage that motivated the report, which is tracked separately as issue #54: that witness is a *plural* possessive after a
+cross-paragraph damage that motivated the report, which was tracked separately as issue #54 and
+is decided rather than fixed (2026-09-24, §3.2): that witness is a *plural* possessive after a
 span, and §3.2 records why no veto over these neighbours can reach it. The simpler design — letting the boundary marker satisfy the
 medial-elision veto's `ALNUM` test — was implemented, measured, and rejected before any release:
 it breaks a quotation that legitimately begins or ends at a span boundary, including the
