@@ -374,6 +374,23 @@ substitute for pretending five ports stay in lockstep.
 > from its first red run rather than reconstructed afterwards. Hand-writing it is forbidden; a
 > hand-maintained conformance table is exactly the misreporting it exists to prevent.
 
+### 6.2a Two counting and dating conventions, so they stop being re-decided
+
+**A conformance count in normative prose is a count of fixture cases.** `spec/CONFORMANCE.md`
+publishes the number (`spec/fixtures/*.json` cases, plus the locale-resolution cases separately),
+and that is the only denominator a reader of any runtime can reproduce. A runtime's own test total
+is a different number — polytypo-js's runner, for instance, emits a test per case *and* a test for
+that case's idempotency re-run — and quoting it in `spec/rules/` states a fact four of the five
+runtimes cannot check. `quotes.md` §3.2 carried such a figure between spec 1.6.1 and 1.6.2; that
+is the precedent this paragraph exists to prevent repeating.
+
+**A rule document's `**Spec version:**` header is dated by behaviour and specification, not by
+text.** It records the version in which what the rule *computes* or *requires* last changed, per
+section where the header carries a provenance map. Correcting a citation, a count, a rationale or
+a History entry does not move it, even though it does require a spec version bump of its own —
+`dashes.md` is the precedent in both directions: its header records the 1.3.0 amendment to what
+§1 and §3.4 specify, and does not record the 1.6.0 correction to a factual claim in §6.
+
 ### 6.3 CI gate
 
 Every implementation repo runs, on every PR:

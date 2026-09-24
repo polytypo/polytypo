@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.6.1`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.6.1 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.6.2`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.6.2 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,14 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.6.2 — 24 September 2026
+
+No change to what polytypo does to your text — the rule that explains one decision was measuring it wrong in its own favour.
+
+- Nothing in this version changes your output. Run the same text through 1.6.1 and 1.6.2 and you get the same bytes. What changed is one passage of normative prose in `quotes.md`, and both things it got wrong made a decision look cheaper than it is.
+- The decision is what polytypo does with a possessive apostrophe written flush against an inline element, as in `The <code>xs</code>' printer works.` Nothing can tell that mark apart from a quotation closing in the same place, so it is read as one. The passage said the character a reader sees there is right either way, and that only the pairing is spent. Measured on the published package: it is not. Left unpaired, the mark stays a typewriter apostrophe, because the rule that would curl it cannot see past the element boundary. So the choice is between a pair that closes early and a straight mark sitting in your text, not between a pair and nothing.
+- The same passage priced the alternative at "7 of 2801 conformance cases". 2801 is the JavaScript runner's test count, which no other implementation can reproduce — it counts every case twice, once for the transformation and once for running it again on its own output. The real figure is six of the suite's 1366 cases. Five are Turkish, where an apostrophe carrying a case suffix is grammar rather than style, and the sixth is the case that pins this behaviour: the alternative closes the pair at the author's own mark, which is what you want, and leaves the typewriter apostrophe on the possessive instead, which is not. A count in a rule document is a count of conformance cases from now on, never one implementation's tests.
 
 ## 1.6.1 — 24 September 2026
 

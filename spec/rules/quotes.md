@@ -605,21 +605,40 @@ spec 1.4.0. Measured on this change, `markdown`/`commonmark`, `en-GB`:
 words early and the author's own closing mark is left to `apostrophe` as a stray U+2019. §1 of
 that issue is closed by the veto above; §3 is not, and is not going to be.
 
-**Why §3 is decided and not merely unfixed.** Two measurements, both on the published 1.6.0
-package. First, **the glyph at the possessive's own position is correct either way** — U+2019,
-whether the mark is taken as a closing quotation mark or left unmatched for `apostrophe`. What
-the defect costs is never the character a reader sees there; it is the *pairing it consumes*,
-which is why the visible symptom always appears somewhere else (a stray U+0027 at the real
-closing mark, or a middle paragraph re-nested from `‘ ’` to `“ ”`). Second, **separating the two
-readings was implemented and measured, and it is worse.** The narrowest local veto that can do
-it — decline a `NARROW` mark whose literal neighbour is `MARKER` and whose attaching `LETTER`
-run is empty — breaks **7 of 2801 conformance cases**, five of them `tr` cases that are correct
-today: `tr-html-span-boundary-suffix-declined`,
+**Why §3 is decided and not merely unfixed.** Two measurements, both on a published package.
+
+First, **the U+2019 at the possessive's own position is produced by the pairing, and nothing else
+can produce it.** `apostrophe` cannot reach that mark: its left neighbour is the inline `MARKER`,
+which §3.1 deliberately keeps out of [apostrophe.md](apostrophe.md) §3.1's `CLOSEDELIM`, and its
+right neighbour is a space, so no case in that rule's ladder fires. Measured on published 1.6.1,
+`markdown`/`commonmark`, `en-GB`: `` The `xs`' printer works. `` comes back **unchanged** — an
+unmatched span-boundary plural possessive keeps its U+0027. So the cost of this behaviour is a
+consumed *pairing*, and the visible symptom of that appears elsewhere (a stray U+0027 at the real
+closing mark, or a middle paragraph re-nested from `‘ ’` to `“ ”`) — but declining the mark does
+not buy the right glyph in exchange. It moves the straight mark rather than removing it. An
+earlier revision of this paragraph claimed the glyph was "correct either way"; it is not, and the
+measurement above is what replaced the claim.
+
+Second, **separating the two readings was implemented and measured, and it is a trade rather than
+a fix.** The narrowest local veto that can do it — decline a `NARROW` mark whose literal
+neighbour is `MARKER` and whose attaching `LETTER` run is empty — breaks **6 of the 1366 fixture
+cases** (7 tests in polytypo-js's runner, which counts each case's idempotency re-run separately;
+the denominator to reproduce is the suite's case count in [CONFORMANCE.md](../CONFORMANCE.md),
+never a runtime's test total). Five are `tr` cases that are correct today:
+`tr-html-span-boundary-suffix-declined`,
 `tr-markdown-commonmark-span-boundary-suffix-declined`,
 `tr-html-span-boundary-quotation-outside-the-span`,
 `tr-html-span-boundary-non-ascii-initial-fragment` and `tr-html-span-boundary-ordinal-fragment`.
-That is this section's own claim — no test over these neighbours can separate a plural
-possessive from a closing mark after a span — turned from an argument into a number.
+
+The sixth is this section's own fixture, `en-gb-markdown-commonmark-span-boundary-plural-possessive-not-closed`,
+and it is the one worth reading: the veto does exactly what it is aimed at and still comes out
+wrong. `He says 'avoid `` `xs`' `` printer.' Done.` typesets today as
+`He says ‘avoid `` `xs`’ `` printer.' Done.` — pair closed two words early, author's own mark left
+straight. Under the veto it becomes `He says ‘avoid `` `xs`' `` printer.’ Done.` — the pair now
+closes at the author's mark, which is right, and the typewriter apostrophe has moved to the
+possessive, which is not, for the reason the first measurement gives. That is this section's own
+claim — no test over these neighbours can separate a plural possessive from a closing mark after a
+span — turned from an argument into a number, and into a second output nobody would fixture.
 
 **Operator decision (2026-09-24): where no exact answer exists, choose one behaviour and pin it
 rather than leave the rule undefined.** Five runtimes agreeing byte-for-byte is the product; an
@@ -1574,3 +1593,15 @@ released fixture `en-us-markdown-commonmark-boundary-nested-quotes` and the `NAR
 `modes.md` §3.3's normative rows — not their `WIDE` forms, which both vetoes leave alone. §3.2 records that measurement, the accepted false positive (a quotation whose
 whole content is one listed fragment), and the one shape no veto over these neighbours can
 reach — the plural possessive, which is byte-identical to a closing mark after a span.
+
+1.6.2 corrects §3.2's own measurements of the decision above; no behaviour, fixture or locale
+field changes. Two errors, both introduced with the decision record on 2026-09-24 and both
+overstating how cheap the decided behaviour is. The first claimed the glyph at the possessive's
+position was "correct either way" — it is not: `apostrophe` cannot reach a mark whose left
+neighbour is the inline `MARKER`, so declining the pairing leaves U+0027 there, measured on the
+published 1.6.1 package. The second counted **7 of 2801 conformance cases** where 2801 is
+polytypo-js's vitest test total, a figure no other runtime can reproduce; the cost is **6 of the
+1366 fixture cases**, and the sixth — this section's own `en-GB` fixture — is now described
+rather than left in the count, because the veto moves the pair to the author's mark correctly and
+moves the typewriter apostrophe to the possessive at the same time. A conformance count in this
+document is a count of fixture cases, never of one runner's tests.
