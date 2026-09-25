@@ -95,7 +95,14 @@ CI now verifies the result**: `check-vendored-spec.sh` there clones this reposit
 on every push and again in the release job before anything is built. A `locales/*.json` file is
 compared in full when it carries its `sources` array and against canonical minus that array when
 it does not — the shipped form Go, Ruby and PHP vendor, since they embed those exact files — and
-which case applies is read off the file, not configured. That is the interim check, not
+which case applies is read off the file, not configured. Completeness is checked from this
+repository's side rather than the tree's own: every file `spec/` has at that tag must be vendored
+unless that tree's `.not-vendored` names it — `CONFORMANCE.md` in all five, plus `schema/` in JS
+and the twelve rule documents Python omits — so a deleted vendored file, or a canonical file
+nobody copied, fails naming itself. The vendored `VERSION` is compared against this repository's
+newest `spec-v*` tag as well: a warning in CI, since canonical legitimately runs ahead between a
+spec release and a runtime's re-vendor, and a refusal in the release job, which passes
+`--require-current`. That is the interim check, not
 §3–§4's manifest, which remains design-only. **Consequence for release order: push the
 `spec-v*` tag from this repository before any runtime commits that version's `VERSION`, or that
 runtime's CI fails — correctly, since the tag it names would not exist yet.** What is decided
