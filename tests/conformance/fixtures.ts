@@ -42,6 +42,12 @@ export interface ConformanceCase {
    * processable keys exactly as a caller would; an empty list is legal).
    */
   readonly keys?: readonly string[] | undefined;
+  /**
+   * Optional and only meaningful when `mode` is `"markdown"` (modes.md 3.7.4, spec 1.7.0): the
+   * frontmatter keys a caller opted into. Absent means the block is skipped whole, as it was
+   * before 1.7.0.
+   */
+  readonly frontmatterKeys?: readonly string[] | undefined;
   readonly in: string;
   readonly out?: string | undefined;
   readonly throws?: PolytypoErrorCode | undefined;
@@ -140,6 +146,22 @@ function parseKeys(value: unknown, mode: Mode, where: string): readonly string[]
   return undefined;
 }
 
+/** modes.md 3.7.4: optional, and only meaningful when `mode` is `"markdown"`. */
+function parseFrontmatterKeys(
+  value: unknown,
+  mode: Mode,
+  where: string,
+): readonly string[] | undefined {
+  if (value === undefined) return undefined;
+  if (mode !== "markdown") {
+    throw new Error(`${where}: "frontmatterKeys" is only meaningful when "mode" is "markdown"`);
+  }
+  if (!Array.isArray(value)) {
+    throw new Error(`${where}: "frontmatterKeys" must be a list of strings (modes.md 3.7.4)`);
+  }
+  return value.map((key, index) => requireString(key, `${where} "frontmatterKeys"[${index}]`));
+}
+
 function parseCase(raw: unknown, where: string): ConformanceCase {
   if (!isRecord(raw)) throw new Error(`${where}: expected an object`);
   const id = requireString(raw.id, `${where} "id"`);
@@ -147,6 +169,7 @@ function parseCase(raw: unknown, where: string): ConformanceCase {
   if (!MODES.includes(mode)) throw new Error(`${where}: unknown mode "${mode}"`);
   const dialect = parseDialect(raw.dialect, mode as Mode, where);
   const keys = parseKeys(raw.keys, mode as Mode, where);
+  const frontmatterKeys = parseFrontmatterKeys(raw.frontmatterKeys, mode as Mode, where);
   const out = optionalString(raw.out, `${where} "out"`);
   const throws = optionalString(raw.throws, `${where} "throws"`);
   if ((out === undefined) === (throws === undefined)) {
@@ -158,6 +181,7 @@ function parseCase(raw: unknown, where: string): ConformanceCase {
     mode: mode as Mode,
     dialect,
     keys,
+    frontmatterKeys,
     in: requireString(raw.in, `${where} "in"`),
     out,
     throws: throws as PolytypoErrorCode | undefined,

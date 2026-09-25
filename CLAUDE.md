@@ -175,6 +175,14 @@ with islands of prose in it, the inverse of HTML and Markdown, so a skip list ca
 content heuristic can separate `description:` from `run:`. It also skips by default: it names
 what is processable, the inverse of the `html` skip list.
 
+`markdown` mode gained an **optional `frontmatterKeys`** list in spec 1.7.0 (`modes.md` §3.7.4,
+polytypo/polytypo#13): the keys in a document's YAML frontmatter whose values are prose. Absent
+means the pre-1.7.0 behaviour, the block skipped whole. It reuses `yaml`'s scan rather than
+specifying YAML twice, and the block is its **own text unit** — so the option cannot change a byte
+of the body, and an unbalanced quote in `title` cannot pair with one in the first paragraph. TOML
+`+++` stays skipped whole either way. The option's name was ratified rather than widening `keys`,
+which 1.6.3 accepts and ignores in `markdown` mode.
+
 ## Portability constraints every runtime's implementation must satisfy (ARCHITECTURE.md §4, §7)
 
 Nothing in this repository enforces these directly (there is no engine here), but spec prose must

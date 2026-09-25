@@ -1,5 +1,5 @@
 {
-  "spec": "1.6.3",
+  "spec": "1.7.0",
   "locale": "en-US",
   "cases": [
     {
@@ -1902,6 +1902,148 @@
       "in": "---\ntitle: \"Unclosed\"\n\nBody \"quotes\" here.\n",
       "out": "---\ntitle: “Unclosed”\n\nBody “quotes” here.\n",
       "note": "modes.md §3.7.3 skips a frontmatter block; an opening delimiter with no closing one is not a block. The leading --- is then an ordinary thematic break and everything after it is prose, so the metadata-looking line converts like any other paragraph. Pinned so the skip cannot be widened into \"anything after a leading ---\"."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "---\ntitle: \"He said 'hi' twice\"\nslug: \"he-said-hi\"\n---\n\nBody has \"quotes\" here.\n",
+      "out": "---\ntitle: \"He said “hi” twice\"\nslug: \"he-said-hi\"\n---\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.4: the option names title, so that scalar is processable and everything else in the block — the unlisted slug, both delimiters, every key — is not. Compare en-us-markdown-commonmark-frontmatter, the same shape with the option absent."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-empty",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [],
+      "in": "---\ntitle: \"He said 'hi' twice\"\n---\n\nBody has \"quotes\" here.\n",
+      "out": "---\ntitle: \"He said 'hi' twice\"\n---\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.4: an empty list is legal and yields no spans, as it does for keys in yaml mode. Process nothing is a choice, not an error, and the output is identical to the option being absent."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-unlisted-only",
+      "rule": "dashes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "---\ndescription: \"Fast - reliable\"\n---\n\nBody - here.\n",
+      "out": "---\ndescription: \"Fast - reliable\"\n---\n\nBody—here.\n",
+      "note": "modes.md §3.7.4: a block containing none of the listed keys is left exactly as the skip left it. The same dash converts in the body, so the case pins that the block was not processed rather than that the rule declined."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-toml",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "+++\ntitle = \"He said 'hi'\"\n+++\n\nBody has \"quotes\" here.\n",
+      "out": "+++\ntitle = \"He said 'hi'\"\n+++\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.4: a TOML block yields no spans with the option given. TOML quoting is a second grammar the scan does not claim (§7.13), so +++ keeps §3.7.3's skip-whole treatment whatever the caller lists."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-unterminated",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "---\ntitle: \"Unclosed\"\n\nBody \"quotes\" here.\n",
+      "out": "---\ntitle: “Unclosed”\n\nBody “quotes” here.\n",
+      "note": "modes.md §3.7.4: an opening delimiter with no closing one is not a block, so the option has nothing to name and adds no spans. The line converts anyway — as ordinary prose, per en-us-markdown-commonmark-frontmatter-unterminated — which is why the option must not be credited with it."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-escape-bail",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "---\ntitle: \"She said \\\"hi\\\" to me\"\n---\n\nBody has \"quotes\" here.\n",
+      "out": "---\ntitle: \"She said \\\"hi\\\" to me\"\n---\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.4 inherits every bail of §3.8.6: a double-quoted scalar whose content contains U+005C yields no spans, because the source spells the content with more characters than it has. The listed key is not enough on its own."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-single-quote-bail",
+      "rule": "apostrophe",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "---\ntitle: 'It''s a test'\n---\n\nBody it's here.\n",
+      "out": "---\ntitle: 'It''s a test'\n---\n\nBody it’s here.\n",
+      "note": "modes.md §3.7.4, and the cost §7.13 measures: a single-quoted scalar containing two consecutive U+0027 yields no spans, and an apostrophe in a single-quoted scalar is written exactly that way. Half the prose values of the §3.7.4.1 corpus bail here when re-emitted in this style."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-separate-unit",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "---\ntitle: He said \"hello\n---\n\nworld\" she said\n",
+      "out": "---\ntitle: He said \"hello\n---\n\nworld\" she said\n",
+      "note": "modes.md §3.7.4: the block is its own text unit, so the unbalanced mark in title cannot pair with the one in the body. This case discriminates: run as one unit the pair converts — measured, text mode over the same characters gives “hello … world” — and under two units both marks stay straight. A runtime that concatenates the block with the body passes every other frontmatter case and fails this one."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-nested",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "---\nseo:\n  title: He said \"hi\"\nslug: \"x\"\n---\n\nBody \"quotes\" here.\n",
+      "out": "---\nseo:\n  title: He said “hi”\nslug: \"x\"\n---\n\nBody “quotes” here.\n",
+      "note": "modes.md §3.7.4 with §3.8.2's matching: a listed key is processable at any depth and by bare name only, so a nested title converts while the sibling slug does not. §7.12's accepted cost is the same one — a caller cannot say seo.title and not title."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-block-scalar",
+      "rule": "dashes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "summary"
+      ],
+      "in": "---\nsummary: |\n  One line - here.\n  Another - line.\n---\n\nBody - here.\n",
+      "out": "---\nsummary: |\n  One line—here.\n  Another—line.\n---\n\nBody—here.\n",
+      "note": "modes.md §3.7.4 reuses §3.8.5: each non-blank content line of a listed block scalar is one span, the header and the indentation stay outside every span, and the gap between two content lines is a −2 marker."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-crlf",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "---\r\ntitle: \"He said 'hi'\"\r\n---\r\n\r\nBody has \"quotes\" here.\r\n",
+      "out": "---\r\ntitle: \"He said “hi”\"\r\n---\r\n\r\nBody has “quotes” here.\r\n",
+      "note": "modes.md §3.7.4: a U+000D before the terminator belongs to the terminator, so a CRLF document gives the same block content as the same bytes with LF and the delimiters stay outside every span."
+    },
+    {
+      "id": "en-us-markdown-mdx-frontmatter-keys",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "---\ntitle: \"He said 'hi'\"\n---\n\n<Callout>Body \"quotes\" here</Callout>\n",
+      "out": "---\ntitle: \"He said “hi”\"\n---\n\n<Callout>Body “quotes” here</Callout>\n",
+      "note": "modes.md §3.7.4 applies to both dialects: YAML frontmatter is the same construct in mdx as in commonmark, and §3.7.3 lists it once for both."
     },
     {
       "id": "en-us-ranges-closed-up-currency",

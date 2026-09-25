@@ -1,5 +1,5 @@
 {
-  "spec": "1.6.3",
+  "spec": "1.7.0",
   "locale": "de-DE",
   "cases": [
     {
@@ -763,6 +763,19 @@
       "in": "description: a---#b\n",
       "out": "description: a---#b\n",
       "note": "modes.md §3.8.6 with §3.4's character clause: without it this became `description: a – #b`, and everything from the hash became a comment — the value silently truncated to `a –`."
+    },
+    {
+      "id": "de-de-markdown-commonmark-frontmatter-keys",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title",
+        "summary"
+      ],
+      "in": "---\ntitle: Er sagte \"hallo\" laut\nsummary: Noch \"eins\" hier\nslug: \"er-sagte-hallo\"\n---\n\nIm Text \"so\" hier.\n",
+      "out": "---\ntitle: Er sagte „hallo“ laut\nsummary: Noch „eins“ hier\nslug: \"er-sagte-hallo\"\n---\n\nIm Text „so“ hier.\n",
+      "note": "modes.md §3.7.4: two listed plain scalars in a locale whose quote glyphs differ from English, with an unlisted slug between the block and the body. Each listed scalar is its own span and the marks pair inside it, so the German pair appears three times and the slug keeps its straight quotes."
     }
   ]
 }

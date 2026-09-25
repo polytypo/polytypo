@@ -1,5 +1,5 @@
 {
-  "spec": "1.6.3",
+  "spec": "1.7.0",
   "locale": "fr",
   "cases": [
     {
@@ -746,6 +746,18 @@
       "in": "---\ntitle: Une note ; suite\n---\n\n<Callout>Est-ce vrai ?</Callout>\n",
       "out": "---\ntitle: Une note ; suite\n---\n\n<Callout>Est-ce vrai ?</Callout>\n",
       "note": "modes.md §3.7.3: the same guarantee under \"mdx\", where frontmatter plus JSX is the ordinary document shape. This is the case the polytypo-js source comment above its frontmatter skip entry described as a spec gap."
+    },
+    {
+      "id": "fr-markdown-commonmark-frontmatter-keys-colon",
+      "rule": "nbsp",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "---\ntitle: \"Chapitre 1: le début\"\ndate: \"2026-09-25\"\n---\n\nVoici: le corps.\n",
+      "out": "---\ntitle: \"Chapitre 1 : le début\"\ndate: \"2026-09-25\"\n---\n\nVoici : le corps.\n",
+      "note": "modes.md §3.7.4 with the locale that made §3.7.3 skip the block in the first place: inside a listed quoted scalar a colon is content, so fr inserts its narrow no-break space, while the unlisted date field and the key itself keep every byte. That contrast is the whole argument for a caller-named list."
     },
     {
       "id": "fr-nbsp-character-reference-numeric",

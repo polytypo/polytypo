@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://polytypo.org/schema/fixtures.schema.json",
   "title": "polytypo conformance fixtures",
-  "description": "Executable form of the rule semantics. Every case is also an idempotency case: a runner must additionally assert transform(out) == out, passing the case's own options (mode, dialect, keys, rules, narrowNbsp) on that second call exactly as on the first — a case is a fixed point under its own options, not under the defaults.",
+  "description": "Executable form of the rule semantics. Every case is also an idempotency case: a runner must additionally assert transform(out) == out, passing the case's own options (mode, dialect, keys, frontmatterKeys, rules, narrowNbsp) on that second call exactly as on the first — a case is a fixed point under its own options, not under the defaults.",
   "type": "object",
   "additionalProperties": false,
   "required": ["spec", "locale", "cases"],
@@ -29,6 +29,11 @@
             "if": { "properties": { "mode": { "const": "yaml" } }, "required": ["mode"] },
             "then": { "required": ["keys"] },
             "else": { "not": { "required": ["keys"] } }
+          },
+          {
+            "if": { "properties": { "mode": { "const": "markdown" } }, "required": ["mode"] },
+            "then": true,
+            "else": { "not": { "required": ["frontmatterKeys"] } }
           }
         ],
         "oneOf": [{ "required": ["out"] }, { "required": ["throws"] }],
@@ -61,6 +66,12 @@
             "type": "array",
             "items": { "type": "string" },
             "description": "Required when mode is \"yaml\" — spec/rules/modes.md §3.8.2 gives the option no default, so a fixture must name the processable keys exactly as a caller would. An empty array is legal and processes nothing. Meaningless for the other modes."
+          },
+          "frontmatterKeys": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Optional, spec 1.7.0, and only meaningful when mode is \"markdown\" — spec/rules/modes.md §3.7.4's opt-out from the frontmatter skip. Absent means the block is skipped whole, exactly as before 1.7.0; an empty array is legal and yields no spans. A runner passes it through to transform() as it passes dialect.",
+            "$comment": "The block is its own text unit (§3.7.4), so this option cannot change a byte of the body — every case released before 1.7.0 keeps its recorded output whatever it is set to."
           },
           "in": { "type": "string" },
           "out": { "type": "string" },

@@ -7,10 +7,12 @@ for all five runtimes and is parser-agnostic by construction: `parse5`, `nokogir
 `golang.org/x/net/html` and PHP's DOM disagree about almost everything this document does not
 forbid them from doing. `yaml` mode is parser-**free** rather than parser-agnostic, for the
 reason §3.8.1 measures.
-**Spec version:** 1.5.0 (0.1.0 for everything except §3.3's class-membership table rows for
+**Spec version:** 1.7.0 (0.1.0 for everything except §3.3's class-membership table rows for
 `nbsp` and `apostrophe`, split in 1.2.0, §3.8, added in 1.3.0, §3.3's note on `quotes`'
 span-boundary elision veto reading the marker as a trigger, added in 1.4.0 — which changes no
-row of the table it follows — and §3.3's `CLOSEDELIM` entry, added in 1.5.0).
+row of the table it follows — §3.3's `CLOSEDELIM` entry, added in 1.5.0, and §3.7.4 with the
+amendments it carries to §3.1's definitions, §3.2's Model C, §3.5 step 3, §3.7.3's frontmatter
+bullet, §3.8.6's accepted-cost paragraph, §5, §6 and §7, added in 1.7.0).
 
 ---
 
@@ -49,6 +51,10 @@ sees; the pipeline decides what to do with them.
   identified by its offsets in the **original source**, and those offsets are the only handle
   the mode layer keeps.
 - The **span sequence** `S₁ … Sₘ` is the processable spans in document order.
+- A **text unit** is one span sequence and the array built from it (§3.5 step 2). A document has
+  exactly one, **except** in `markdown` with `frontmatterKeys` (§3.7.4, spec 1.7.0), where the
+  frontmatter block's spans form a second unit and the pipeline runs once per unit. The term is
+  defined here because §4 and §6 already used it informally for "the concatenation".
 - `text` mode is the degenerate case: one span covering the whole input, no skipped regions.
   Every statement below holds for it trivially.
 
@@ -88,7 +94,9 @@ each rule is behaving exactly as specified on the input it was given.
 
 **Model C — concatenation with an explicit boundary marker. Adopted.** The spans are
 concatenated with a **boundary marker** between each adjacent pair. The pipeline runs once, over
-the whole marker-separated array. Edits are then redistributed to spans by offset.
+the whole marker-separated array — once per **text unit** (§3.1), which for every mode but
+`markdown` with `frontmatterKeys` (§3.7.4) means once per document. Edits are then
+redistributed to spans by offset.
 
 The marker gives the rules what Model A denies them — the knowledge that `'hi'` sits inside a
 larger quotation — while denying them what Model B wrongly grants: the belief that the last
@@ -365,7 +373,9 @@ reaches the edge-growth rule. `--` is the live carrier.)
    gives flow collections no spans — see `quotes.md` §3.2, which depends on the answer for
    nothing but states the obligation it creates: a rule must key off the marker, never off the
    mode.
-3. Run the pipeline **once**, in `order.json` order, over that array.
+3. Run the pipeline **once**, in `order.json` order, over that array. A document with a second
+   text unit — `markdown` with `frontmatterKeys`, and only that (§3.1, §3.7.4) — repeats steps 1
+   to 4 for it. The two edit sets are disjoint, because no span of one unit lies inside the other.
 4. Each edit lies wholly within one span (§3.4). Map it back to source offsets.
 5. Emit the **original source bytes**, with those replacements applied and nothing else changed.
 
@@ -477,7 +487,9 @@ Two constraints on the throw:
 Skipped, exhaustively:
 
 - **frontmatter** — a metadata block at the very start of the document, delimited by `---`
-  (YAML) or `+++` (TOML), skipped whole including its delimiters. Without it the closing `---`
+  (YAML) or `+++` (TOML), skipped whole including its delimiters. **Since 1.7.0 a caller may
+  name keys inside a YAML block to process — §3.7.4 — and the skip stands unchanged when they
+  do not.** Without it the closing `---`
   reads as a setext underline, `title: Une note` becomes a paragraph, and `fr` inserts a narrow
   no-break space before the colon of a machine-read field. That is a guaranteed false positive
   on the M4 corpus (PLAN.md §8), where every file opens with frontmatter;
@@ -511,6 +523,174 @@ lower-cases JSX names before matching will skip a component's children.
 
 Nesting follows the same rule as `html`: a skipped construct is skipped whole, including
 anything that looks processable inside it.
+
+#### 3.7.4 Frontmatter by named keys — the one opt-out from §3.7.3
+
+**Spec 1.7.0.** §3.7.3 skips the frontmatter block whole and its reason for doing so still holds.
+It is also the one place where the default hides the sentence most readers of the page will see:
+where frontmatter carries `title`, `description` and `summary`, those strings are the heading,
+the `<title>`, the meta description and the card text, so the single most visible string on the
+page is the one polytypo will not touch. Both reports that asked for this — polytypo/polytypo#13,
+and the production integration in #26 over 196 MDX posts, independently — hand-rolled it instead,
+and the first of them corrupted its own content doing so: its extractor knew double-quoted YAML
+scalars and silently skipped every single-quoted one.
+
+> **`markdown` mode takes an optional `frontmatterKeys` option: the mapping keys in the
+> document's YAML frontmatter block whose scalar values are processable.** Absent means
+> §3.7.3 unchanged — the block is skipped whole, delimiters included. An **empty list is
+> legal** and yields no spans, as it does for `keys` (§3.8.2). A value that is not a list of
+> strings throws `POLYTYPO_INVALID_OPTION`.
+
+**Ratified by the operator as public contract, 2026-09-25**, under this name rather than by
+widening `keys`. Three reasons, in the order that decided it: `keys` is **required** in `yaml`
+mode and optional here, so one name would carry two requiredness contracts; `polytypo` 1.6.3
+**accepts a `keys` it ignores** in `markdown` mode — measured, not assumed — so reusing the name
+would silently begin typesetting frontmatter for any caller who passes one options object to both
+modes; and the name says which block it governs, which a bare `keys` on a mode whose body is also
+full of keys does not.
+
+**What the option governs, in source offsets.** The block is the frontmatter construct §3.7.3
+already recognises, and the option only changes what happens inside it:
+
+- the **content** is the source from the code point after the opening delimiter line's
+  terminator to the code point that begins the closing delimiter line. A U+000D before that
+  terminator belongs to the terminator, exactly as in §3.8.4, so a CRLF document and the same
+  bytes with LF give the same content;
+- **both delimiter lines stay outside every span**, as does every line terminator, so no edit
+  can reach `---` itself and §3.7.3's setext-underline hazard is unreachable;
+- an **unterminated** block is not a block — §3.7.3 already yields no frontmatter construct
+  there, and the option adds no spans to it;
+- a **TOML block (`+++`) yields no spans, with the option given or not.** TOML's quoting is a
+  second grammar — basic strings escape with U+005C, literal strings do not escape at all, and
+  both have multi-line forms — and §3.8.3's posture applies: a construct the scan cannot claim
+  with certainty yields no spans. Neither report asked for TOML and no corpus measured here
+  contains one, so specifying a TOML locator would be scope taken on speculation. Recorded as an
+  accepted miss in §7.13.
+
+**The option adds spans only where §3.7.3's skip removed them.** If the mode did not recognise a
+frontmatter construct — an unterminated block, a `---` that is not at the start of the document,
+anything a given parser's frontmatter support declines — there is no block, the text is ordinary
+prose in the body's own unit, and the option contributes nothing. That coupling is what makes
+double processing unreachable: no source position can belong to both units. It also means the
+option inherits whatever variance the five parsers already have in recognising the construct, which
+is a pre-existing property of §3.7.3 rather than a new one, and §7.13 records it.
+
+**Key matching is §3.8.2's, which means bare names at any depth.** `title` is processable wherever
+it occurs in the block, `seo.title` included — measured: `seo:` then an indented `title:` is
+processed under `frontmatterKeys: ["title"]` — with the cost §7.12 already accepts for `keys`: no
+paths, no globs, so a caller with a machine-read `title` nested somewhere must either take it too
+or name none. Matching is exact, code point for code point, with no case folding.
+
+**The scan is §3.8's, unchanged.** §3.8.4 steps 1–9, §3.8.5 and §3.8.6 apply to the block content
+verbatim, with `frontmatterKeys` as step 8's key predicate in place of `keys`. Nothing about YAML
+is specified twice: frontmatter **is** YAML, and the argument that made §3.8 a hand-written scan
+rather than a parser call (§3.8.1 — two of the five ecosystems' libraries cannot report an end
+offset) applies here for the same reason and with the same measurements. Every miss §7.11 lists
+is inherited with it, the quoted-escape bails included, and §7.13 gives what that costs on a real
+corpus.
+
+**The frontmatter block is its own text unit, and this is the part that is not obvious.** §3.2
+concatenates a document's spans into one array and runs the pipeline once over it, and §7.10
+records that a quotation opened in one paragraph can still pair with a mark in the next, because
+the stack is not reset at a −2 marker. Measured on `polytypo` 1.6.3 in `yaml` mode, which has
+exactly this shape:
+
+```
+a: he said "hello          →    a: he said ‘hello
+b: world" she said              b: world’ she said
+```
+
+Two spans, a −2 marker between them, and the marks paired across it. If frontmatter spans joined
+the body's array, the same mechanism would let an unbalanced mark in `title` pair with one in the
+first paragraph — and the body's output would then depend on the document's metadata.
+
+> **The frontmatter block's spans form a text unit of their own.** The pipeline runs over
+> that array and over the body's array separately; the two edit sets are disjoint by
+> construction, since no span of one lies inside the other.
+
+That is one more pipeline run per document and it buys a claim worth having, which a port can
+test directly: **`frontmatterKeys` cannot change a byte outside the frontmatter block**, so every
+case released before 1.7.0 keeps its recorded output — those cases set no option, and the body is
+not reachable from one. The narrower claim is the true one: a released case's *block* would
+convert if the option named a key in it. Measured, `fr-markdown-commonmark-frontmatter-nbsp`:
+`title: Une note ; suite` takes its narrow no-break space under `frontmatterKeys: ["title"]`,
+which is the whole point of the option and not a change to that case. The
+asymmetry with `yaml` mode, where one document's keys do pair across each other, is deliberate:
+there the whole document is data with prose in it, while here the block is metadata *about* a
+document whose prose is the body, and the two are not one sentence in any document.
+
+**The option applies to both dialects**, `commonmark` and `mdx`. YAML frontmatter is the same
+construct in both, and §3.7.3 already lists it once for both.
+
+**Validation.** `nbsp.md` §3.1a fixes the order through `dialect` — `mode` → `narrowNbsp` →
+`rules` → `locale` → `dialect` — and `ARCHITECTURE.md`'s options table carries the whole of it.
+`frontmatterKeys` joins that chain **after `dialect`**, and, like every option, is checked **before
+the parse**. Both halves decide a case that is otherwise ambiguous. A call naming neither a valid
+`dialect` nor a valid `frontmatterKeys` raises `POLYTYPO_INVALID_DIALECT`, because `dialect` is
+first — and unlike `dialect` and `keys`, which belong to different modes and so never both apply,
+these two do, which is what makes their order observable at all. A document that does not parse in
+its dialect, called with a `frontmatterKeys` that is not a list of strings, raises
+`POLYTYPO_INVALID_OPTION` and not `POLYTYPO_MALFORMED_INPUT`.
+
+In `text`, `html` and `yaml` modes the option is **ignored and not validated**, exactly as
+`dialect` is ignored in `text` and `html` (§3.7.1). That is the weaker of
+the two choices and it is taken for consistency: a mode-specific option that throws in one mode and
+is ignored in another teaches a caller nothing they can act on, and `dialect` set the precedent
+before this option existed.
+
+**What a fixture cannot express here**, the same gap `nbsp.md` §3.1a records for `narrowNbsp`: the
+schema admits only a list of strings and only on a `markdown` case, so neither the throw above nor
+the ignored-elsewhere rule has a fixture. Both are each runtime's own unit test, and the order in
+this paragraph is what those tests assert.
+
+##### 3.7.4.1 What this was tested against
+
+The corpus is **187 `.mdx` files** — the author's own site content, all of `content/`, of which the
+107 under `content/blog/` are the M4 corpus proper (PLAN.md §8). Every one of them opens with YAML
+frontmatter and none with TOML. Keys `title`, `summary`,
+`description`, `subtitle`, `quote`: **447 listed scalars**. Eight locales (`en-GB`, `en-US`,
+`de-DE`, `fr`, `ru`, `es`, `sv`, `tr`), so 1496 file/locale cases per configuration.
+
+Measured with `polytypo` 1.6.3's **`yaml` mode over the extracted block** — the scan this section
+reuses — because `markdown` mode with the option exists in no runtime yet. The separate-unit rule
+above is what makes that a faithful proxy rather than an approximation: the body cannot
+participate.
+
+Three configurations, 4488 cases — the corpus as authored, the corpus de-typeset, and the corpus
+de-typeset with **every one of its 39 frontmatter keys** listed: **no byte changed outside a
+listed scalar, no parse failure, no structural change, no change to an unlisted leaf, no
+idempotency failure.** The de-typeset corpus is derived, and reported as derived: the site's
+content is already typeset, so the characters polytypo inserts were folded back to their ASCII
+originals to obtain input that has something to convert. It is a weaker corpus than found text,
+and it is the only way this corpus can show a conversion at all.
+
+- **The M4 bar holds as written.** As authored, in `en-GB` — the site's own locale — **0 of 187
+  files change**. Each of the other six changes 13 files and `fr` changes 117, every one of them
+  inside a listed scalar and from that locale's own conventions rather than from anything missed.
+- **De-typeset, 247 of the 447 listed scalars convert** in `en-GB`, and none of the other 200
+  is a miss: the pipeline leaves them alone in `text` mode too.
+- **The measurement is discriminating, which was checked rather than assumed.** The naive thing
+  a caller hand-rolls — the same blocks through `text` mode, no scan and no key list — damages
+  **every single case**: of 748 (187 files in `en-GB`, `de-DE`, `fr` and `ru`), **420 no longer
+  parse as YAML at all, 82 come back with different mapping keys, 246 with different values, and
+  none comes back unchanged.** The witnesses are ordinary: `fr` turns the key `name:` into
+  `name :`, and `en-GB` turns `slug: "pierre-moreau-architecture"` into
+  `slug: "‘pierre-moreau-architecture’"`. A harness reporting clean for both runs would prove
+  nothing; this one separates them completely.
+- **What the key list protects here.** Listing all 39 keys converts four values the recommended
+  five do not, and two of them are damage rather than coverage: in `fr`, `seoTitle` gains a
+  narrow no-break space before the colon of a string written for a search engine, and a client
+  name `"HTPBE?"` becomes `"HTPBE ?"`. The other two are improvements a caller might well want
+  (`"Niamh O'Sullivan"` → `"Niamh O’Sullivan"`), which is the point: only the caller can tell
+  those apart, and that is the same argument §3.8.2 makes.
+- **The inherited escape bail, measured.** Re-emitting each of the 247 convertible values in
+  one quoting style and running the scan over it: **single-quoted, 130 of 247 yield no spans**;
+  double-quoted, none do. The reason is §3.8.6's — an apostrophe inside a single-quoted scalar
+  is written `''`, which spells content with more characters than it has. Every listed scalar in
+  this corpus as written is double-quoted, so the bail never fires on it; a caller whose YAML
+  style is single quotes gets nothing on half of their prose, silently. That number is the
+  accepted cost of reusing §3.8's scan rather than a defect of this section, and §7.13 records it
+  where a reader will look for it.
 
 ### 3.8 Skip list — `yaml`
 
@@ -785,7 +965,9 @@ The length test of §3.4 separates exactly the two, with no knowledge of YAML �
 makes it bind rules not yet written, while a per-rule observation would not.
 
 The accepted cost is that a conversion whose replacement would **grow** against a colon or a hash
-is missed: `fr` inserts no narrow no-break space before a colon inside a YAML scalar, and
+is missed: `fr` inserts no narrow no-break space before a colon inside a **plain** YAML scalar —
+inside a quoted one the colon is content, no split applies and the space is inserted, which
+`fr-markdown-commonmark-frontmatter-keys-colon` pins — and
 `one--two` takes its spaced dash only where the split leaves it interior to a span. That is the
 same trade §7.3 already made for `mot<em>!</em>`, and in the same direction: a miss is visible to
 the author and fixable in the source; a corrupted document is neither.
@@ -982,6 +1164,16 @@ they do not carry it over for free either. Write `M` for the whole mode transfor
    > §3.8.2's `keys` option is the repair: the predicate reads the **key**, which lies outside
    > every span and which no rule can reach, so the partition is a function of the source alone.
 
+   **`markdown` with `frontmatterKeys` (§3.7.4) inherits both**, and adds one obligation of its
+   own that is discharged by the same observation. The block's spans are selected by §3.8's scan
+   over YAML, so the four parts and the fifth hold verbatim — the predicate is `frontmatterKeys`
+   against a key, and a key is outside every span. What is new is that the document now has **two
+   units** rather than one, and `M` must partition it into the same two on the second run: the
+   boundary between them is the frontmatter construct's own delimiter lines, which lie outside
+   every span in either unit, so no edit can move, create or destroy one. A document whose
+   frontmatter is processed therefore has a partition that is a function of the source alone,
+   exactly as one whose frontmatter is skipped does.
+
    A content-dependent predicate is not merely risky here, it is unarguable: item 2's whole
    method is to show that the characters rules may write and the positions they may write to are
    disjoint from what decides structure. A predicate over span content puts the rules' own output
@@ -1004,7 +1196,9 @@ tests none of this document. In `yaml` the sweep alphabet must include `:`, `#`,
 as one token**, since those are the characters whose adjacency the argument above turns on and a
 three-dash run is not reachable from single dashes at a bounded payload length; and it must
 include U+0022 and U+005C, without which the sweep cannot reach a quoted scalar's delimiters at
-all. §3.8.7 records what each run did and did not establish — including that a sweep comparing
+all. Since 1.7.0 the `markdown` run must also carry a template with a **frontmatter block and
+`frontmatterKeys` naming a key in it** — a document with two text units (§3.1) tests a composition
+the single-unit templates cannot reach. §3.8.7 records what each run did and did not establish — including that a sweep comparing
 structure and types is blind to a string whose content is damaged, and that an alphabet without
 `---` reported clean twice while §3.4's `r = d` hole was open.
 
@@ -1020,7 +1214,11 @@ means the claim holds in those modes only.
   **[P: html, markdown, yaml]** and is now _defined_ rather than assumed — §3.6, §3.7 and §3.8
   are what those bullets refer to. In `text` mode there are no skipped regions and the bullet is
   vacuous. In `yaml` the definition runs the other way round (§3.8.2): the skipped region is
-  everything the scan did not claim.
+  everything the scan did not claim. Since 1.7.0 one region in `markdown` is skipped
+  **conditionally** — the frontmatter block, whenever `frontmatterKeys` names a key in it
+  (§3.7.4) — so the bullet is read against the options the call was made with. No rule's §4
+  changes: the block is either skipped whole, as before, or decomposed by §3.8's scan, whose
+  own claims §3.8 already states.
 - **`dashes` §4 "URLs, code spans, fenced code, HTML attributes"** — **[P: html, markdown]**.
   In `text` mode a URL is ordinary text. The rule is nevertheless safe there, but by its own
   guards (P1 declines the tight hyphens in `a-b`, the cluster guard declines `2026-08-15`), not
@@ -1040,9 +1238,13 @@ means the claim holds in those modes only.
   mark that would have been unbalanced within its own span may now pair across an element, which
   converts more, never less.
 - **`nbsp` §4 "The start or end of a text unit"** — **[P] in all modes, and strengthened.** A
-  "text unit" is the concatenation, and §3.4 additionally refuses any insertion at a span
-  boundary, so no span ever begins or ends with a character `nbsp` put there. The guarantee is
-  now about element boundaries as well as document boundaries.
+  "text unit" is §3.1's — the concatenation — and §3.4 additionally refuses any insertion at a
+  span boundary, so no span ever begins or ends with a character `nbsp` put there. The guarantee
+  is now about element boundaries as well as document boundaries. Since 1.7.0 a document may have
+  two units (§3.7.4), and the guarantee is read **per unit**: the frontmatter block's first and
+  last positions are unit extremities of their own, which refuses more than one unit would, never
+  less. That is also what makes `-separate-unit` deterministic rather than a coincidence — the
+  same reading `quotes` gives a unit edge.
 
 - **`dashes` §4, the `-spaced` forms** — a new **[R]** consequence in `html`/`markdown`, not a
   change to any existing bullet. A `-spaced` locale converts a dash only where the replacement
@@ -1222,6 +1424,36 @@ rule-local.
     it is a small language, five runtimes would have to agree on it exactly, and no measured
     document has yet needed it. If one does, this is where it reopens, and the extension is
     additive — a caller passing bare names keeps today's behaviour.
+
+13. **What `frontmatterKeys` deliberately does not claim (spec 1.7.0).** Three entries, and the
+    last is a number rather than a construct:
+
+    - **TOML frontmatter (`+++`) yields no spans**, with the option given or not. Its quoting is a
+      second grammar — U+005C escapes in basic strings, none in literal strings, multi-line forms
+      of both — and §3.8.3's posture is to claim only what the scan has proved. Neither report
+      behind the option (polytypo/polytypo#13, #26) asked for TOML, and the 187-file corpus of
+      §3.7.4.1 contains none. Widening to TOML is additive: a caller passing keys today keeps
+      today's behaviour.
+    - **The block itself is recognised by the mode, not by a scan specified here.** §3.7.4's
+      content range is exact once there is a block, but frontmatter is in neither CommonMark nor
+      GFM — every runtime reaches it through its parser's own frontmatter support, and those
+      disagree at the edges: a trailing space on either delimiter is a block in this repository's
+      reference runtime, a `...` closer is not, a `---` after a blank line is not. That variance
+      predates 1.7.0 and already changes output, since a parser that does not recognise the block
+      typesets the metadata as prose; what 1.7.0 adds is a second way for it to show. Specifying
+      the locator belongs with §3.7.3's construct recognition, which governs the skip for every
+      caller, not with an option only some callers pass.
+    - **§3.8.6's single-quoted bail costs more here than anywhere it has been measured before.**
+      Of the 247 corpus values a locale would convert, **130 yield no spans when written as a
+      single-quoted scalar**, because an apostrophe inside one is spelled `''` — and an apostrophe
+      is exactly what `apostrophe` and `quotes` convert, so the bail falls hardest on the values
+      the option exists for. Double-quoted, none bail. The corpus as authored is entirely
+      double-quoted, so its own author never meets this; a caller whose YAML style is single
+      quotes gets nothing on half their prose, and gets it silently. The repair is not this
+      section's to make: §3.8.6 is ratified and measured, and the obvious extension — treating
+      `''` as an opaque two-code-point unit, exactly as §3.8.6 already treats `:` and `#` inside a
+      plain scalar — changes `yaml` mode for every caller and needs its own measurement and its
+      own sign-off.
 
 ## 8. Fixture coverage strategy (non-normative)
 

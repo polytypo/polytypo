@@ -436,16 +436,22 @@ transform(input: string, options) -> string
 | `rules`   | no                                | all on  | Opt-out map keyed by rule id; `false` disables.            |
 | `narrowNbsp` | no                             | `narrow` | `narrow` \| `nbsp`. `nbsp` makes the engine emit U+00A0 wherever it would emit U+202F (spec 1.3.0, `nbsp.md` §3.1a). |
 | `keys`    | **yes when `mode` is `yaml`**     | none    | The mapping keys whose scalar values are processable (spec 1.3.0, `modes.md` §3.8.2). A list of strings; an empty list is legal and processes nothing. Ignored in the other three modes. |
+| `frontmatterKeys` | no                        | none    | Only meaningful when `mode` is `markdown` (spec 1.7.0, `modes.md` §3.7.4): the keys in the document's YAML frontmatter block whose scalar values are processable, scanned by §3.8's own scan. Absent means the block is skipped whole, as before 1.7.0; an empty list is legal and yields no spans. Ignored in the other three modes. |
 
 **Validation order is contract** (spec 1.3.0, stated here because a conformance fixture cannot
-express it): `mode` → `narrowNbsp` → `rules` → `locale` → `dialect` → `keys`. The two checks that
+express it): `mode` → `narrowNbsp` → `rules` → `locale` → `dialect` → `keys` / `frontmatterKeys`. The two checks that
 read nothing but the call itself come first, then rule ids, then locale data, then the
 mode-dependent options and the parse. So an invalid `mode` beats an invalid `narrowNbsp`, which
 beats an unknown rule id, which beats an unknown locale — the last of those pairs was already
 public, tested behaviour before 1.3.0. `narrowNbsp` is checked whether or not `nbsp` is enabled:
 the check belongs to the call. `dialect` and `keys` are last and **never both apply**, since each
 belongs to a different mode, so their relative order is unobservable and is fixed here only so
-that no runtime has to invent one.
+that no runtime has to invent one. **`frontmatterKeys` (spec 1.7.0) breaks that symmetry**: it
+belongs to `markdown` mode, so it and `dialect` do both apply, and their order is therefore
+observable rather than notional. `dialect` is checked first — a call naming neither a valid
+dialect nor a valid `frontmatterKeys` raises `POLYTYPO_INVALID_DIALECT`. All three mode options
+are checked **before the parse**, so a document that does not parse in its dialect still raises
+the option's code rather than `POLYTYPO_MALFORMED_INPUT`.
 
 > **`keys` has no default and must not acquire one**, for the reason `dialect` has none. YAML is a
 > data format with islands of prose in it, and nothing in its syntax marks them: `description`
