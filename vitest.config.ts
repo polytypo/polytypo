@@ -2,6 +2,7 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
+    maxWorkers: 4,
     include: ["tests/**/*.test.ts"],
     globals: false,
     // Kept at the same 30s the JS implementation (polytypo/polytypo-js) uses, a deliberate
