@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.6.3`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.6.3 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.7.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.7.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,16 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.7.0 — 25 September 2026
+
+Frontmatter you can opt into, key by key — the one string on a page that polytypo used to refuse.
+
+- `markdown` mode takes an optional `frontmatterKeys` list: the frontmatter keys whose values are prose. `transform(src, { locale: "en-GB", mode: "markdown", dialect: "mdx", frontmatterKeys: ["title", "description"] })`. Without it nothing changes — the block is skipped whole, exactly as before — and there is no default list, because only you know which of your fields a reader sees and which a machine reads.
+- Why it was worth adding: on a site whose frontmatter carries the headline, the single most visible string on the page was the one string that came back untouched. `title: He said "hello" once` now becomes `title: He said “hello” once` when you name `title`, while `slug`, `date` and everything else in the block keep every byte.
+- The block is processed separately from the body, which is not a detail you can see until it matters: an unbalanced quotation mark in `title` cannot reach into your first paragraph and pair with a mark there. Measured — `---\ntitle: He said "hello\n---\n\nworld" she said` comes back with both marks straight, where one pass over the whole document would have curled them into a quotation spanning the metadata and the prose.
+- It reads your frontmatter with the same scanner `yaml` mode uses, so it inherits that mode's refusals rather than inventing new ones. The one worth knowing: a single-quoted scalar containing `''` is left alone, and an apostrophe inside single quotes is written exactly that way — so `title: 'It''s a test'` gets nothing. Double-quoted and plain scalars are unaffected. On a real 187-file site, 130 of the 247 convertible values would be skipped if they were written with single quotes and none are as written.
+- A TOML block (`+++`) is still skipped whole whether you pass the option or not, and a key listed at any depth matches — `title` is processed wherever it appears in the block, including nested under `seo`.
 
 ## 1.6.3 — 24 September 2026
 
