@@ -134,6 +134,16 @@ rule the rest of the public copy follows. Before/after example strings are captu
 the published packages of the two versions side by side and running the same input through each —
 they are measured output, never typed by hand, exactly like every other example on the site.
 
+**Package numbers follow the spec number; a runtime-only patch moves only that runtime.** Every
+runtime publishes a spec release under the spec's own version, so `polytypo` 1.6.3 on all five
+registries means spec 1.6.3. A patch that fixes one runtime and changes no behaviour raises that
+runtime's patch component alone — `polytypo-python` 1.6.4 was spec 1.6.3 with `__version__` fixed —
+and goes in `changelog.json`'s `patchNote`, not a changelog entry of its own. The skew this leaves
+is not a defect and is never corrected by publishing empty patches elsewhere: it disappears by
+itself at the next minor, and if the next spec release is a patch instead, the runtime that already
+took that number releases the one above it. What must agree across runtimes is the spec version
+each package carries and vendors, not the package number.
+
 - `tests/conformance/` — `fixture-citation-guard.test.ts` and `mode-fixture-strategy.test.ts` check
   `spec/fixtures/*.json` structure and citation quality directly; there is no engine here to run
   them through, so this is _not_ the conformance suite itself — see the relevant runtime repo for
