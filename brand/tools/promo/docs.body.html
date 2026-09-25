@@ -78,6 +78,35 @@
         </td>
       </tr>
       <tr>
+        <td class="mono">frontmatterKeys</td>
+        <td class="mono">string[]</td>
+        <td class="mono">—</td>
+        <td class="small muted">
+          Optional, and only meaningful when <code>mode</code> is <code>"markdown"</code> (spec
+          1.7.0). Frontmatter is skipped whole by default, delimiters included, because it is a
+          machine-read block — but on a site whose frontmatter carries the headline that leaves the
+          most visible string on the page untouched. Naming keys processes their scalar values and
+          nothing else in the block, with the same scan <code>yaml</code> mode uses, so the same
+          constructs are refused: a single-quoted scalar containing <code>''</code>, which is how an
+          apostrophe is written inside single quotes, comes back untouched. A TOML
+          (<code>+++</code>) block is always skipped whole. The block is processed separately from
+          the body, so an unbalanced quotation mark in <code>title</code> cannot pair with a mark in
+          your first paragraph. Absent means the pre-1.7.0 behaviour; an empty list is legal and
+          processes nothing.
+        </td>
+      </tr>
+      <tr>
+        <td class="mono">narrowNbsp</td>
+        <td class="mono">"narrow" | "nbsp"</td>
+        <td class="mono">"narrow"</td>
+        <td class="small muted">
+          <code>"nbsp"</code> makes the engine emit U+00A0 everywhere it would emit U+202F, the
+          narrow no-break space many common faces do not carry (spec 1.3.0). It moves the rule's
+          target rather than cleaning up afterwards, so the result is still a fixed point. Checked
+          whether or not <code>nbsp</code> is enabled: the check belongs to the call.
+        </td>
+      </tr>
+      <tr>
         <td class="mono">rules</td>
         <td class="mono">Partial&lt;Record&lt;RuleId, boolean&gt;&gt;</td>
         <td class="mono">all on except ranges</td>
@@ -190,6 +219,14 @@
     indented code blocks at all, so there even four spaces is prose, and a brace inside it is a JSX
     expression: the same sample throws <code>POLYTYPO_MALFORMED_INPUT</code> instead. A fence or a
     code span is the one marker that means <em>code</em> in both dialects.
+  </p>
+  <p>
+    Frontmatter is the one skipped region you can open, key by key, with
+    <code>frontmatterKeys</code>. Named that way round on purpose: the block holds
+    <code>slug</code>, <code>date</code> and <code>serviceSlug</code> next to <code>title</code> and
+    <code>description</code>, and only you know which is which. Measured on a 187-file site, the
+    difference it makes is <code>title: He said "hello" once</code> →
+    <code>title: He said “hello” once</code> while every other field keeps every byte.
   </p>
 
   <h3>What it inserts</h3>
