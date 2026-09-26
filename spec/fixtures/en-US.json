@@ -3039,6 +3039,19 @@
       "in": "---\ntitle: café 😀 it's ok\n---\n\nBody \"q\" here...\n",
       "out": "---\ntitle: café 😀 it’s ok\n---\n\nBody “q” here…\n",
       "note": "modes.md §3.7.3a's mask is one U+0020 per index unit, not per code point: a runtime that indexes bytes and masks an astral character to a single space shortens its input by three and shifts every body offset after it. The trailing ellipsis is what a shift eats first, so this case fails loudly rather than subtly."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-lone-cr-costs-one-line",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title",
+        "slug"
+      ],
+      "in": "---\ntitle: \"a\rb\"\nslug: c \"d\"\n---\n\nBody \"q\" here.\n",
+      "out": "---\ntitle: \"a\rb\"\nslug: c “d”\n---\n\nBody “q” here.\n",
+      "note": "modes.md §3.7.4's U+000D bail is per line, not per block: `title`'s value carries a stray carriage return and is declined, `slug`'s line converts, and the body converts. The other side of the lone-U+000D document cases, which lose everything because such a document is one §3.8.4 line. Implementers: the per-line test has to run to the next line's start rather than to the line's end, or a block whose only line ends in U+000D looks clean — that is the one reading under which both this case and -keys-lone-cr-one-key pass."
     }
   ]
 }
