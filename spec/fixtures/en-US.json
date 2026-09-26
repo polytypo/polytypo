@@ -3052,6 +3052,32 @@
       "in": "---\ntitle: \"a\rb\"\nslug: c \"d\"\n---\n\nBody \"q\" here.\n",
       "out": "---\ntitle: \"a\rb\"\nslug: c “d”\n---\n\nBody “q” here.\n",
       "note": "modes.md §3.7.4's U+000D bail is per line, not per block: `title`'s value carries a stray carriage return and is declined, `slug`'s line converts, and the body converts. The other side of the lone-U+000D document cases, which lose everything because such a document is one §3.8.4 line. Implementers: the per-line test has to run to the next line's start rather than to the line's end, or a block whose only line ends in U+000D looks clean — that is the one reading under which both this case and -keys-lone-cr-one-key pass."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-lone-cr-ends-the-content",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title",
+        "slug"
+      ],
+      "in": "---\ntitle: a \"b\"\nslug: c \"d\"\n\r---\n\nBody \"q\" here.\n",
+      "out": "---\ntitle: a “b”\nslug: c \"d\"\n\r---\n\nBody “q” here.\n",
+      "note": "modes.md §3.7.4: the content's last line is a lone U+000D, and it is that line the decline costs — `title` converts, `slug` does not. Which line a content-final U+000D belongs to is the whole question here, and the answer is whatever §3.8.4's own splitting says: measured, `yaml` mode in two shipped runtimes declines the last key's line for exactly these characters, and this case must agree with it. An implementation that substitutes the U+000D for another declining character converts both keys and is wrong."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-lone-cr-in-a-value-run",
+      "rule": "dashes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "summary",
+        "title"
+      ],
+      "in": "---\nsummary: a\rb\n  title: c -- d\n---\n\nBody \"q\" here.\n",
+      "out": "---\nsummary: a\rb\n  title: c -- d\n---\n\nBody “q” here.\n",
+      "note": "modes.md §3.7.4: the decline drops the spans the content scan produced for that line and does not alter the content the scan was given. Here the U+000D sits on a listed key whose value run continues onto a more-indented line, so the scan yields nothing for the block at all — `title` is inside `summary`'s value run, not a key of its own. Substituting the U+000D for U+0009 instead converts `c -- d` and is the divergence this case exists to fail."
     }
   ]
 }

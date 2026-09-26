@@ -713,9 +713,17 @@ already recognises, and the option only changes what happens inside it:
   loses that line and keeps the rest. **The test runs to the start of the next line, not to the
   end of this one**, because §3.8.4's own splitter treats a trailing U+000D as a terminator even
   without a U+000A after it — so a block whose single line ends in one looks clean if the
-  terminator is excluded, and the two lone-U+000D fixtures disagree about it. That is the reading
-  under which both pass. Widening §3.8.4 instead would be a change to `yaml` mode for every
-  caller and wants its own measurement;
+  terminator is excluded, and one of the four lone-U+000D fixtures separates the two readings.
+  **The decline drops the spans the content scan produced for that line; it does not alter the
+  content the scan is given, and a span reaching a declined position is dropped whole rather than
+  trimmed.** Three ports reached for the shortcut of substituting the U+000D for another
+  character the scan already declines, and it is not equivalent: substitution moves the character
+  to a different line and can end a value run, so `title` / `slug` / a content-final U+000D
+  converts both keys instead of one, and a stray U+000D on a key whose value run continues onto
+  an indented line converts a key that is not a key. Both shapes are pinned, and both agree with
+  what `yaml` mode already does with the same characters — measured in two shipped runtimes,
+  which is the test of this rule, since §3.7.4 claims §3.8's scan applies verbatim. Widening
+  §3.8.4 instead would be a change to `yaml` mode for every caller and wants its own measurement;
 - **both delimiter lines stay outside every span**, as does every line terminator, so no edit
   can reach `---` itself and §3.7.3's setext-underline hazard is unreachable;
 - an **unterminated** block is not a block — §3.7.3 already yields no frontmatter construct
