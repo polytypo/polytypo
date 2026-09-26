@@ -711,8 +711,8 @@ already recognises, and the option only changes what happens inside it:
   people produce by accident and it should cost that value rather than the whole block: a
   lone-U+000D document is one §3.8.4 line and loses everything, a document with one such value
   loses that line and keeps the rest. **The test runs to the start of the next line, not to the end
-  of this one**, because §3.8.4's own splitter treats a trailing U+000D as a terminator even with no
-  U+000A after it — so a block whose single line ends in one looks clean if the terminator is
+  of this one**, because §3.8.4's own splitter treats a trailing U+000D as a terminator even
+  without a U+000A after it — so a block whose single line ends in one looks clean if the terminator is
   excluded, and the two lone-U+000D fixtures disagree about it. That is the reading under which
   both pass. Widening §3.8.4 instead would be a change to `yaml` mode for
   every caller and wants its own measurement;
