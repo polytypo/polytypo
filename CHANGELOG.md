@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.7.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.7.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.8.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.8.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,17 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.8.0 — 26 September 2026
+
+Your frontmatter is metadata again — polytypo now decides where the block is, instead of asking four different parsers.
+
+- Until now each language's build of polytypo found your frontmatter block by asking whatever Markdown parser it already had. Those parsers disagree, so the same file could come back with its metadata typeset in one language and untouched in another. Measured across twenty documents and four languages before this release: eleven disagreed somewhere.
+- The most ordinary case is a trailing space. `--- ` with one space after the dashes — which any editor that does not trim whitespace produces — used to be "not a frontmatter block" for the Go and Ruby builds, so `title: "Une note"` came back as `title: “Une note”` and `date: "2026-09-26"` grew quotation marks with it. It is a block now, in all of them, and its contents are left alone.
+- Same for a file that starts with a byte-order mark, which Windows editors add without asking: the Go and Ruby builds typeset the metadata behind it. And for the JavaScript build, a file with a mark and no frontmatter at all came back completely unconverted — `Wait for it...` stayed as it was written. Both are fixed.
+- A fenced code block inside a metadata value no longer reaches the rest of your document. If a value contained three backticks, the Go build paired them with your body's own fence, typeset the contents of your code block, and skipped the prose after it. The block is now blanked out before the parser sees the file, so nothing inside it can open or close anything outside it.
+- Files with old Mac line endings — a lone carriage return, no line feed — are handled rather than mishandled. The Ruby build used to raise a parse error on them; the Go build typeset the metadata. One accepted cost, stated: inside such a block `frontmatterKeys` converts nothing, because the part of polytypo that reads the block's contents still splits lines on line feeds alone. Your metadata is safe either way; it is the conversion you lose. A stray carriage return inside a single value costs that value and not the rest of the block.
+- Nothing here changes a document that has no frontmatter, and nothing changes what `frontmatterKeys` does to the values you name — only which files it recognises as having a block at all.
 
 ## 1.7.0 — 25 September 2026
 
