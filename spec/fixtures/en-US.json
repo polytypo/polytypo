@@ -2997,6 +2997,48 @@
       "in": "---\rtitle: a \"b\"\rslug: \"x\"\r---\r\rBody \"c\" here.\r",
       "out": "---\rtitle: a \"b\"\rslug: \"x\"\r---\r\rBody “c” here.\r",
       "note": "modes.md §3.7.3a step 5 and §7.13: the block is found by CommonMark's line model, and the content is then read by §3.8.4's LF-only one, which sees a two-line block as a single line and yields no span. So the option is inert here — nothing machine-read is typeset, the block is still skipped, and the body converts. Pinned because it is a silence, and a silence nobody pinned is a silence nobody notices."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-lone-cr-one-key",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "---\rtitle: a \"b\"\r---\r\rBody \"c\" here.\r",
+      "out": "---\rtitle: a \"b\"\r---\r\rBody “c” here.\r",
+      "note": "modes.md §3.7.4: a block whose content carries a U+000D not followed by U+000A yields no spans, however few lines it has. An earlier draft let a one-line block through and declined a two-line one, which made the rule depend on a line count rather than on the character; the two-line case is en-us-markdown-commonmark-frontmatter-keys-lone-cr-is-inert and this is the other side of it."
+    },
+    {
+      "id": "en-us-markdown-commonmark-lone-cr-no-block",
+      "rule": "ellipsis",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Wait for it... he said \"hi\"\rand then \"left\".\r",
+      "out": "Wait for it… he said “hi”\rand then “left”.\r",
+      "note": "modes.md §3.7.3a step 5 makes a lone U+000D a line ending the locator understands, so a document written that way reaches the body walk like any other. Pinned because the failure mode is not an error but silent offset corruption: one runtime reported byte columns for such a document and another raised POLYTYPO_MALFORMED_INPUT, a code §3.7.2 reserves for mdx."
+    },
+    {
+      "id": "en-us-markdown-commonmark-byte-order-mark-no-block",
+      "rule": "ellipsis",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "﻿Wait for it... he said \"hi\"\n",
+      "out": "﻿Wait for it… he said “hi”\n",
+      "note": "modes.md §3.7.3a step 1 steps over a leading U+FEFF, and a document carrying a mark but no block must convert exactly as the same document without one. Measured across the four runtimes that implement the mode: three convert and one returns the document unchanged, so this pins the majority and names the fourth as the defect."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-astral-in-the-block",
+      "rule": "apostrophe",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "---\ntitle: café 😀 it's ok\n---\n\nBody \"q\" here...\n",
+      "out": "---\ntitle: café 😀 it’s ok\n---\n\nBody “q” here…\n",
+      "note": "modes.md §3.7.3a's mask is one U+0020 per index unit, not per code point: a runtime that indexes bytes and masks an astral character to a single space shortens its input by three and shifts every body offset after it. The trailing ellipsis is what a shift eats first, so this case fails loudly rather than subtly."
     }
   ]
 }
