@@ -721,9 +721,14 @@ already recognises, and the option only changes what happens inside it:
   to a different line and can end a value run, so `title` / `slug` / a content-final U+000D
   converts both keys instead of one, and a stray U+000D on a key whose value run continues onto
   an indented line converts a key that is not a key. Both shapes are pinned, and both agree with
-  what `yaml` mode already does with the same characters — measured in two shipped runtimes,
-  which is the test of this rule, since §3.7.4 claims §3.8's scan applies verbatim. Widening
-  §3.8.4 instead would be a change to `yaml` mode for every caller and wants its own measurement;
+  what `yaml` mode already does with the same characters — measured in two shipped runtimes.
+  **Where this rule and `yaml` mode part is on purpose, and it is one shape:** a content line
+  whose terminator is a bare U+000D is clean to `yaml` mode, which strips it, and declined here,
+  because the window includes it. So `title` / `slug` / a content-final U+000D converts `slug` in
+  `yaml` mode and does not here. The wider decline is the direction this section takes everywhere
+  else — a miss is invisible, a U+000D inside a span is not — and the cost is conversions lost in
+  documents written with line endings from the last century. Widening §3.8.4 instead would be a
+  change to `yaml` mode for every caller and wants its own measurement;
 - **both delimiter lines stay outside every span**, as does every line terminator, so no edit
   can reach `---` itself and §3.7.3's setext-underline hazard is unreachable;
 - an **unterminated** block is not a block — §3.7.3 already yields no frontmatter construct

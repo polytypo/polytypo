@@ -3064,7 +3064,7 @@
       ],
       "in": "---\ntitle: a \"b\"\nslug: c \"d\"\n\r---\n\nBody \"q\" here.\n",
       "out": "---\ntitle: a “b”\nslug: c \"d\"\n\r---\n\nBody “q” here.\n",
-      "note": "modes.md §3.7.4: the content's last line is a lone U+000D, and it is that line the decline costs — `title` converts, `slug` does not. Which line a content-final U+000D belongs to is the whole question here, and the answer is whatever §3.8.4's own splitting says: measured, `yaml` mode in two shipped runtimes declines the last key's line for exactly these characters, and this case must agree with it. An implementation that substitutes the U+000D for another declining character converts both keys and is wrong."
+      "note": "modes.md §3.7.4: the content's last line is a lone U+000D, and `title` converts while `slug` does not. What this case discriminates is an implementation that substitutes the U+000D for another declining character: that converts both keys. What it does NOT discriminate is the per-line filter itself — measured in three ports, `slug` is already silent before the filter runs, because the trailing line is blank and joins `slug`'s value run, which §3.8.6's continuation bail declines. The cases that exercise the filter are -keys-lone-cr-one-key and -keys-lone-cr-costs-one-line."
     },
     {
       "id": "en-us-markdown-commonmark-frontmatter-keys-lone-cr-in-a-value-run",
