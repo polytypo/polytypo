@@ -1,5 +1,5 @@
 {
-  "spec": "1.7.0",
+  "spec": "1.8.0",
   "locale": "en-US",
   "cases": [
     {
@@ -2712,6 +2712,51 @@
       "in": "(c)'. and (c)'s",
       "out": "©'. and ©’s",
       "note": "symbols.md §5's I₆ discharge, deletion half (spec 1.5.0): §3.2 step 6 deletes the U+0029 that case 2a reads. Both directions in one case. The first mark does not convert — its right neighbour is U+002E, not ALNUM — and after the replacement its left neighbour is the emitted sign, which is in no class, so it does not convert on a second pass either. The second mark converts here, one rule before symbols shortens the span, and is U+2019 by the time symbols runs, which its own S2 guard accepts. Through spec 1.4.0 the second mark stayed straight."
+    },
+    {
+      "id": "en-us-yaml-plain-apostrophe",
+      "rule": "apostrophe",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: it's one of theirs\n",
+      "out": "description: it’s one of theirs\n",
+      "note": "modes.md §3.8.6 and §7.11: an apostrophe is ordinary content in a plain scalar — nothing about it is syntactic, so the scan claims the value and `apostrophe` curls it. The style matrix's first cell: the single-quoted bail is about how the source spells the character, not about the character."
+    },
+    {
+      "id": "en-us-yaml-double-quoted-apostrophe",
+      "rule": "apostrophe",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: \"it's one of theirs\"\n",
+      "out": "description: \"it’s one of theirs\"\n",
+      "note": "modes.md §3.8.6: inside a double-quoted scalar an apostrophe needs no escape, so the content and the source are the same characters and the scan claims it. Compare en-us-yaml-single-quoted-escape-untouched, the same sentence in the one style that has to double the mark."
+    },
+    {
+      "id": "en-us-yaml-block-scalar-apostrophe",
+      "rule": "apostrophe",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: |-\n  it's one of theirs\n",
+      "out": "description: |-\n  it’s one of theirs\n",
+      "note": "modes.md §3.8.5: a block scalar has no quoting and therefore no escaping, so an apostrophe in it is content like any other. Together with the plain and double-quoted cases this pins that only one of the four styles declines, which is what makes §7.13's measured cost a property of that style rather than of the mark."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-plain-apostrophe",
+      "rule": "apostrophe",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "---\ntitle: it's one of theirs\n---\n\nBody it's here.\n",
+      "out": "---\ntitle: it’s one of theirs\n---\n\nBody it’s here.\n",
+      "note": "modes.md §3.7.4 inherits §3.8.6 whole, so the style matrix holds inside a frontmatter block too: a plain scalar's apostrophe converts, while the single-quoted form does not (en-us-markdown-commonmark-frontmatter-keys-single-quote-bail)."
     }
   ]
 }

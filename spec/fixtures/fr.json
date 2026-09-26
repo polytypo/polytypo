@@ -1,5 +1,5 @@
 {
-  "spec": "1.7.0",
+  "spec": "1.8.0",
   "locale": "fr",
   "cases": [
     {
@@ -948,6 +948,39 @@
       "in": "Le «mot»'s résumé.",
       "out": "Le « mot »’s résumé.",
       "note": "The one configuration where a rule running AFTER apostrophe touches a CLOSEDELIM neighbour, so nbsp.md §5's I₆ discharge has a witness rather than only prose. N1/N2 put fr's inner no-break space on the glyph's INNER side, so the U+00BB that case 2a reads stays immediately left of the mark and the verdict is identical before and after the insertion. Synthetic rather than natural French — a possessive 's is not French — and deliberately so, in the standing quotes.md §6 gives its own adversarial de-CH witness: what is being pinned is the rule interaction, not an idiom."
+    },
+    {
+      "id": "fr-yaml-plain-elision",
+      "rule": "apostrophe",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: l'idee et l'autre\n",
+      "out": "description: l’idee et l’autre\n",
+      "note": "modes.md §3.8.6 in a locale where the apostrophe is elision rather than possession: the same cell as en-us-yaml-plain-apostrophe, and §8 item 4's requirement that a construct be pinned in more than one locale rather than the same English output with the locale field changed."
+    },
+    {
+      "id": "fr-yaml-single-quoted-escape-untouched",
+      "rule": "apostrophe",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: 'l''idee et l''autre'\n",
+      "out": "description: 'l''idee et l''autre'\n",
+      "note": "modes.md §3.8.6: two consecutive U+0027 in a single-quoted scalar yield no spans, in every locale — the source spells the content with more characters than it has, and that is a property of YAML, not of the language. This is the cell §7.13 measures at 1040 of 1858 values on a real corpus."
+    },
+    {
+      "id": "fr-yaml-single-quoted-no-escape",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: 'deux -- trois'\n",
+      "out": "description: 'deux — trois'\n",
+      "note": "modes.md §3.8.6: a single-quoted scalar with nothing doubled inside it is claimed like any other. The style itself never disables the mode — only the doubling does, which is what the neighbouring case pins."
     }
   ]
 }
