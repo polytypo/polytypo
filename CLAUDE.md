@@ -175,6 +175,19 @@ with islands of prose in it, the inverse of HTML and Markdown, so a skip list ca
 content heuristic can separate `description:` from `run:`. It also skips by default: it names
 what is processable, the inverse of the `html` skip list.
 
+**An accepted miss is pinned by a fixture; its cost is not, and has to be measured on purpose.**
+`scripts/miss-census.mjs <corpus-dir>` runs a real corpus through `yaml` mode and the frontmatter
+scan and reports, per class of §7.11, what the mode declined that `text` mode would have converted
+— and then re-emits the same values in each legal quoting style, because the style is the author's
+free choice and a bail keyed on quoting is invisible until it is varied. Run it before any spec
+release that touches span selection. It is not a CI gate: CI has no corpus, and a rate over a
+synthetic one measures the fixture author. Two disciplines it enforces, both learned by getting
+them wrong: every re-emission is parsed back and dropped unless it round-trips (a value containing
+`: ` cannot be a plain scalar at all, and counting that as a loss invents one), and the corpus is
+run de-typeset as well as as-authored (already-typeset text has nothing to convert and reports
+zero for reasons that have nothing to do with the mode). That is how 1.7.0's single-quote cost —
+1040 of 1858 values across eight locales — is now a number on demand rather than a discovery.
+
 `markdown` mode gained an **optional `frontmatterKeys`** list in spec 1.7.0 (`modes.md` §3.7.4,
 polytypo/polytypo#13): the keys in a document's YAML frontmatter whose values are prose. Absent
 means the pre-1.7.0 behaviour, the block skipped whole. It reuses `yaml`'s scan rather than
