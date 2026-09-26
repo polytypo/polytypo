@@ -2856,6 +2856,126 @@
       "in": "---\n---\n\nBody has \"quotes\" here.\n",
       "out": "---\n---\n\nBody has “quotes” here.\n",
       "note": "modes.md §3.7.3a: an opener immediately followed by a closer is a block with no content — the second line is the first later line that is the delimiter — so there is nothing to skip and nothing for `frontmatterKeys` to name, and the body converts either way."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-byte-order-mark",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "﻿---\ntitle: \"Une note\"\n---\n\nBody has \"quotes\" here.\n",
+      "out": "﻿---\ntitle: \"Une note\"\n---\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.3a step 1: a single leading U+FEFF is stepped over before the scan begins, so a file some editors write with a byte-order mark still has its metadata skipped. Measured on 1.7.0, two runtimes read the mark as content and typeset the block — the same split, on the same damaging side, as the trailing space."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-byte-order-mark-trailing-space",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "﻿--- \ntitle: \"Une note\"\n---\n\nBody has \"quotes\" here.\n",
+      "out": "﻿--- \ntitle: \"Une note\"\n---\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.3a steps 1 and 2 composed: the two clauses that were each a two-against-two divergence, in one document, which is the file a Windows editor produces without being asked."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-masks-the-parser",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "---\nx: |\n  ```\n---\n\n```\ncode \"q\" here\n```\n\nBody \"q\" here.\n",
+      "out": "---\nx: |\n  ```\n---\n\n```\ncode \"q\" here\n```\n\nBody “q” here.\n",
+      "note": "modes.md §3.7.3a: the parser is handed the block masked out, so a fence inside a metadata value cannot pair with the body's own fence. Without masking the two code blocks swap roles — the body's code is typeset and its prose is skipped — which no span-level check can see, because the damage is in what the parser concluded."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-masks-the-parser-trailing-space",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "--- \nx: |\n  ```\n---\n\n```\ncode \"q\" here\n```\n\nBody \"q\" here.\n",
+      "out": "--- \nx: |\n  ```\n---\n\n```\ncode \"q\" here\n```\n\nBody “q” here.\n",
+      "note": "modes.md §3.7.3a: the same document with a trailing space on the fence, which is where the widened locator and the masking rule compose — a runtime that gets either one wrong typesets the code block."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-crlf-trailing-space",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "--- \r\ntitle: \"Une note\"\r\n---\r\n\r\nBody has \"quotes\" here.\r\n",
+      "out": "--- \r\ntitle: \"Une note\"\r\n---\r\n\r\nBody has “quotes” here.\r\n",
+      "note": "modes.md §3.7.3a steps 2 and 5 composed: a runtime that splits lines on U+000A alone sees `--- \\r`, decides U+000D is not whitespace it admits, and loses the block. That is the most ordinary Windows file there is."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-crlf-closer-trailing-space",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "---\r\ntitle: \"Une note\"\r\n--- \r\n\r\nBody has \"quotes\" here.\r\n",
+      "out": "---\r\ntitle: \"Une note\"\r\n--- \r\n\r\nBody has “quotes” here.\r\n",
+      "note": "modes.md §3.7.3a steps 3 and 5: the same composition on the closing delimiter."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-trailing-space-opener",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "--- \ntitle: He said \"hello\" once\nslug: \"he-said-hello\"\n---\n\nBody \"quotes\" here.\n",
+      "out": "--- \ntitle: He said “hello” once\nslug: \"he-said-hello\"\n---\n\nBody “quotes” here.\n",
+      "note": "modes.md §3.7.4 with §3.7.3a: every other locator case takes the skip path, where a wrong extent only costs prose. Here it costs an offset — a port computing the content start as \"four code points in\" is right for every bare fence and wrong for this one, and the spans it emits land on the wrong characters."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-toml-trailing-space",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "+++ \ntitle = \"Une note\"\n+++\n\nBody has \"quotes\" here.\n",
+      "out": "+++ \ntitle = \"Une note\"\n+++\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.3a: the widening is about whitespace, not about the delimiter, so it applies to a TOML block exactly as to a YAML one — the block is skipped whole either way, which is what §7.13 records."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-closer-trailing-tab",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "---\ntitle: \"Une note\"\n---\t\n\nBody has \"quotes\" here.\n",
+      "out": "---\ntitle: \"Une note\"\n---\t\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.3a step 3 names U+0009 as well as U+0020 for the closing line, and the opener case alone would not catch a port that admitted tabs in one place only."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-only-an-opener",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "--- \n",
+      "out": "--- \n",
+      "note": "modes.md §3.7.3a step 4 with nothing after the fence: there is no later line, so there is no block, and a one-line document comes back byte for byte. The degenerate case a scan written as \"find the next delimiter\" gets wrong by running off the end."
+    },
+    {
+      "id": "en-us-markdown-mdx-frontmatter-trailing-space",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "--- \ntitle: \"Une note\"\n---\n\n<Callout>Body \"quotes\" here</Callout>\n",
+      "out": "--- \ntitle: \"Une note\"\n---\n\n<Callout>Body “quotes” here</Callout>\n",
+      "note": "modes.md §3.7.3a is dialect-independent: the locator is a scan over the source and knows nothing about JSX. Pinned in `mdx` because the claim spans both dialects and every other locator case is `commonmark`."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-final-cr-no-newline",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "---\r\ntitle: \"Une note\"\r\n---\r",
+      "out": "---\r\ntitle: \"Une note\"\r\n---\r",
+      "note": "modes.md §3.7.3a step 5: a file whose last line is the closing fence followed by U+000D and no U+000A still closes its block — end of input ends a line, and the U+000D belongs to the terminator. A literal reading of §3.8.4's LF-only model loses the block here and hands the metadata to the rules, which is why step 5 states the Markdown line model instead of borrowing the YAML one."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-lone-cr-line-endings",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "---\rtitle: \"Une note\"\r---\r\rBody has \"quotes\" here.\r",
+      "out": "---\rtitle: \"Une note\"\r---\r\rBody has “quotes” here.\r",
+      "note": "modes.md §3.7.3a step 5: lone U+000D line endings are line endings in CommonMark, so a document written with them has a frontmatter block like any other. The content inside it is still read with §3.8.4's LF-only model, because that half is YAML — the two line models are different on purpose and the note in step 5 says so."
     }
   ]
 }

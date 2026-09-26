@@ -7,7 +7,7 @@ for all five runtimes and is parser-agnostic by construction: `parse5`, `nokogir
 `golang.org/x/net/html` and PHP's DOM disagree about almost everything this document does not
 forbid them from doing. `yaml` mode is parser-**free** rather than parser-agnostic, for the
 reason §3.8.1 measures.
-**Spec version:** 1.7.0 (0.1.0 for everything except §3.3's class-membership table rows for
+**Spec version:** 1.8.0 (0.1.0 for everything except §3.3's class-membership table rows for
 `nbsp` and `apostrophe`, split in 1.2.0, §3.8, added in 1.3.0, §3.3's note on `quotes`'
 span-boundary elision veto reading the marker as a trigger, added in 1.4.0 — which changes no
 row of the table it follows — §3.3's `CLOSEDELIM` entry, added in 1.5.0, and §3.7.4 with the
@@ -547,38 +547,92 @@ that no author typed on purpose, and both were conformant, because no fixture pi
 > **The block's extent is decided by the scan below, not by a parser's frontmatter support.** A
 > runtime whose parser also recognises the construct must produce the same extent as this scan; the
 > scan is what a fixture pins and what a disagreement is measured against.
+>
+> **And the parser is handed the block masked out.** The source given to the Markdown parser is the
+> document with every code point of the located block — both delimiter lines included — replaced by
+> U+0020, line terminators kept as they are. Offsets are therefore unchanged, a masked line is a
+> blank line to every parser, and nothing inside the block can form or close a construct in the
+> body.
+
+Masking is not an implementation note, and the runtime that skipped it is measured. Suppressing a
+span inside the block's range is not enough, because the parser has already read the block's
+characters by then: a fenced-code line inside a metadata value pairs with the body's own fence, and
+the body's code block and its prose swap places. One document, the same call in four runtimes, on
+published 1.7.0:
+
+````
+--- 
+x: |
+  ```
+---
+
+```
+code "q"
+```
+
+Body "q".
+````
+
+| runtime    | result                                                                      |
+| ---------- | --------------------------------------------------------------------------- |
+| JS, Python | `code "q"` stays straight, `Body “q”` converts — correct                    |
+| Go         | **`code “q”` is typeset inside the code block**, and `Body "q"` is missed    |
+| Ruby       | correct with this bare-looking fence, wrong the moment the fence has a space |
+
+Go reaches that by parsing the whole source and suppressing spans in the block's range, which is
+the obvious way to do it without a frontmatter-aware parser and is wrong for a reason no span-level
+rule can see: the damage is in what the parser concluded, not in which spans were emitted. Masking
+costs one pass over a known range and removes the class.
 
 **The scan**, over the source's code-point array, in §3.8.4's terms:
 
 1. the document must **begin** with the delimiter — `---` or `+++` at offset 0, no leading blank
-   line and no indentation;
-2. the rest of that line must be only U+0020 and U+0009. Anything else and there is no block —
-   `--- yaml` is a thematic break followed by a word;
+   line and no indentation. **A single leading U+FEFF is stepped over first** and is not part of
+   the document for this scan. It is a byte-order mark, not content: every editor that writes one
+   writes it before the fence, and reading it as content would deny the block to every file some
+   Windows editors produce. Measured on 1.7.0, JS and Python already step over it and Go and Ruby
+   do not — the same two-against-two split, on the same damaging side, as the trailing space;
+2. the rest of that line must be only U+0020 and U+0009. Anything else and there is no block, and
+   what the line then is belongs to the dialect rather than to this scan: `--- yaml` is not a
+   thematic break, since a break admits only spaces and tabs after its run;
 3. the **closing line** is the first later line whose first code point begins the same delimiter,
    followed by only U+0020 and U+0009. Indentation disqualifies it exactly as it disqualifies the
    opening line — a closer is not searched for inside a line, it is a line. `...` is not a closer
    in either matter, a delimiter of the other kind is not one either, and a fourth delimiter
    character is not whitespace, so `----` closes nothing;
-4. with no such line there is **no block**: an opening delimiter alone is a thematic break and what
-   follows it is prose, which is what `en-us-markdown-commonmark-frontmatter-unterminated` already
-   pins;
-5. a **U+000D immediately before the terminator belongs to the terminator** (§3.8.4), so a CRLF
-   document and the same bytes with LF give the same block.
+4. with no such line there is **no block**, and the opening delimiter is whatever the dialect makes
+   of it — a thematic break for `---`, ordinary paragraph text for `+++` — with everything after it
+   prose, which is what `en-us-markdown-commonmark-frontmatter-unterminated` already pins;
+5. a **line ends as CommonMark ends one** — at U+000A, at a U+000D that is not followed by
+   U+000A, or at the end of input — and the terminator is never part of the line. So a CRLF
+   document gives the same block as the same bytes with LF, a file whose last line is `---\r`
+   with no final U+000A still closes its block, and a document written with lone U+000D line
+   endings has one at all.
+
+   **This is the Markdown document's line model, and it is deliberately not §3.8.4's.** The block
+   is a Markdown construct, so it ends its lines the way the language around it does; the content
+   inside it is YAML, whose scan keeps the LF-only model §3.8.4 states, because that is how YAML
+   ends a line. A port that harmonises the two has silently changed one of them, and the direction
+   it would change matters: all three shapes above are documents whose metadata a stricter reading
+   hands to the rules. Measured on 1.7.0, the reference runtime already treats all three as
+   blocks.
 
 **Which way to be wrong, and why this way.** A locator errs in one of two directions and they are
 not the same size. Recognising a block that is not one skips text that was prose: a miss, and
 §3.8.3 already accepts misses by the dozen. Failing to recognise a block that is one hands the
-metadata to the rules as prose: `title: Q3 review: what changed` takes a narrow no-break space
-before its colon in `fr`, and a date grows quotation marks. The first is invisible and harmless;
+metadata to the rules as prose: `title: Q3 review: what changed` takes a no-break space before
+its colon in `fr` — U+00A0, since `fr` puts `:` in `beforePunctuation` and only `;`, `!` and `?`
+in the narrow list — and a date grows quotation marks. The first is invisible and harmless;
 the second is the damage §3.7.3 exists to prevent. **So the wider reading wins every edge where
 the runtimes disagree**, and the trailing-space clause of steps 2 and 3 is that reading written
 down.
 
 The accepted cost is stated rather than hidden: a document whose very first line is a thematic
-break written as `--- `, followed by prose and another `---` line, has that prose skipped whole.
-It is skipped by JS and Python today, has been for every release, and nobody has reported it —
-while a frontmatter block carrying trailing whitespace on its fence is what any editor that trims
-nothing produces.
+break written as `--- `, followed by prose and another `---` line, has **everything up to that
+line** skipped — not one paragraph but the whole first section, heading included, since the scan
+takes the first later delimiter line whatever lies between. It is skipped by JS and Python today,
+has been for every release, and nobody has reported it — while a frontmatter block carrying
+trailing whitespace on its fence is what any editor that trims nothing produces.
 
 **What this costs each runtime.** JS and Python already behave this way, so the change there is
 that the extent stops being their parser's opinion and becomes this scan's — which also removes
