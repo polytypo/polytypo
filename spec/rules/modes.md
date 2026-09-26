@@ -549,10 +549,14 @@ that no author typed on purpose, and both were conformant, because no fixture pi
 > scan is what a fixture pins and what a disagreement is measured against.
 >
 > **And the parser is handed the block masked out.** The source given to the Markdown parser is the
-> document with every code point of the located block — both delimiter lines included — replaced by
-> U+0020, line terminators kept as they are. Offsets are therefore unchanged, a masked line is a
-> blank line to every parser, and nothing inside the block can form or close a construct in the
-> body.
+> document with every code point of the located block — both delimiter lines included, **and the
+> leading U+FEFF of step 1 if there is one** — replaced by U+0020, line terminators kept as they
+> are. Offsets are therefore unchanged, a masked line is a blank line to every parser, and nothing
+> inside the block can form or close a construct in the body.
+>
+> The mark is in that list because leaving it out makes the sentence before this one false: a first
+> line of U+FEFF followed by spaces is not blank, no parser is required to strip the mark, and
+> goldmark does not — so a runtime that masks the block and nothing else emits a span for it.
 
 Masking is not an implementation note, and the runtime that skipped it is measured. Suppressing a
 span inside the block's range is not enough, because the parser has already read the block's
@@ -610,12 +614,16 @@ costs one pass over a known range and removes the class.
    endings has one at all.
 
    **This is the Markdown document's line model, and it is deliberately not §3.8.4's.** The block
-   is a Markdown construct, so it ends its lines the way the language around it does; the content
-   inside it is YAML, whose scan keeps the LF-only model §3.8.4 states, because that is how YAML
-   ends a line. A port that harmonises the two has silently changed one of them, and the direction
-   it would change matters: all three shapes above are documents whose metadata a stricter reading
-   hands to the rules. Measured on 1.7.0, the reference runtime already treats all three as
-   blocks.
+   is a Markdown construct, so it ends its lines the way the language around it does. The content
+   inside it keeps §3.8.4's LF-only model — and the reason is not that YAML agrees, because it
+   does not: YAML 1.2.2 §5.4 admits a lone U+000D as a line break too. §3.8.4 is a deliberate
+   simplification, taken and measured in 1.3.0, and this section does not widen it, because
+   widening the content scan's line model is a change to `yaml` mode for every caller and wants
+   its own measurement. A port that harmonises the two has silently made that change. What it
+   costs here is recorded in §7.13.
+
+   All three shapes above are documents whose metadata a stricter reading hands to the rules, and
+   the reference runtime already treats all three as blocks — measured on 1.7.0.
 
 **Which way to be wrong, and why this way.** A locator errs in one of two directions and they are
 not the same size. Recognising a block that is not one skips text that was prose: a miss, and
@@ -1558,6 +1566,14 @@ rule-local.
       with the two that declined the block typesetting the metadata. The locator is now
       specified, which is where it belonged: it governs the skip for every caller, not only
       those who pass the option.
+    - **A lone-U+000D document has a block, and `frontmatterKeys` is inert inside it** as soon as
+      the block carries more than one line. §3.7.3a step 5 finds the block by CommonMark's line
+      model; §3.8.4 then reads the content by its own, sees no U+000A, and treats the whole block
+      as one line — which yields a span only when that line is itself a single `key: value`.
+      Measured on 1.7.0: `title` converts in a one-line block and nothing converts in a two-line
+      one. It fails safe — nothing machine-read is typeset, and the block is still skipped — and
+      it is the price of not widening §3.8.4 here. Widening it would be a change to `yaml` mode
+      for every caller.
     - **§3.8.6's single-quoted bail costs more here than anywhere it has been measured before.**
       Of the 1858 corpus values a locale would convert across eight locales, **1040 yield no spans
       when written as a single-quoted scalar** — 130 of 247 in `en-GB` alone, the figure 1.7.0

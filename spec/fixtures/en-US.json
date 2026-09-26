@@ -2976,6 +2976,27 @@
       "in": "---\rtitle: \"Une note\"\r---\r\rBody has \"quotes\" here.\r",
       "out": "---\rtitle: \"Une note\"\r---\r\rBody has “quotes” here.\r",
       "note": "modes.md §3.7.3a step 5: lone U+000D line endings are line endings in CommonMark, so a document written with them has a frontmatter block like any other. The content inside it is still read with §3.8.4's LF-only model, because that half is YAML — the two line models are different on purpose and the note in step 5 says so."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-masks-an-unclosed-construct",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "---\nx: |\n  ```\n---\n\nBody \"q\" here.\n",
+      "out": "---\nx: |\n  ```\n---\n\nBody “q” here.\n",
+      "note": "modes.md §3.7.3a: the shorter mask witness, and the sharper one — a construct merely OPENED inside a metadata value, with nothing in the body to pair with. Unmasked, the lone fence swallows the rest of the document into a code block and the body converts nothing at all. Measured on 1.7.0, that is what one runtime does."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-lone-cr-is-inert",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "---\rtitle: a \"b\"\rslug: \"x\"\r---\r\rBody \"c\" here.\r",
+      "out": "---\rtitle: a \"b\"\rslug: \"x\"\r---\r\rBody “c” here.\r",
+      "note": "modes.md §3.7.3a step 5 and §7.13: the block is found by CommonMark's line model, and the content is then read by §3.8.4's LF-only one, which sees a two-line block as a single line and yields no span. So the option is inert here — nothing machine-read is typeset, the block is still skipped, and the body converts. Pinned because it is a silence, and a silence nobody pinned is a silence nobody notices."
     }
   ]
 }
