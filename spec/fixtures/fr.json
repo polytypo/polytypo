@@ -981,6 +981,15 @@
       "in": "description: 'deux -- trois'\n",
       "out": "description: 'deux — trois'\n",
       "note": "modes.md §3.8.6: a single-quoted scalar with nothing doubled inside it is claimed like any other. The style itself never disables the mode — only the doubling does, which is what the neighbouring case pins."
+    },
+    {
+      "id": "fr-markdown-commonmark-frontmatter-opener-trailing-space",
+      "rule": "nbsp",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "--- \ntitle: Une note : suite\n---\n\nEst-ce vrai ?\n",
+      "out": "--- \ntitle: Une note : suite\n---\n\nEst-ce vrai ?\n",
+      "note": "modes.md §3.7.3a in the locale that makes the cost visible: without the trailing-space clause this block is prose, and `fr` puts a narrow no-break space in front of the colon of a machine-read field — the exact damage §3.7.3 exists to prevent, reached by one invisible character at the end of a fence."
     }
   ]
 }

@@ -2757,6 +2757,60 @@
       "in": "---\ntitle: it's one of theirs\n---\n\nBody it's here.\n",
       "out": "---\ntitle: it’s one of theirs\n---\n\nBody it’s here.\n",
       "note": "modes.md §3.7.4 inherits §3.8.6 whole, so the style matrix holds inside a frontmatter block too: a plain scalar's apostrophe converts, while the single-quoted form does not (en-us-markdown-commonmark-frontmatter-keys-single-quote-bail)."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-opener-trailing-space",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "--- \ntitle: \"Une note\"\n---\n\nBody has \"quotes\" here.\n",
+      "out": "--- \ntitle: \"Une note\"\n---\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.3a step 2: the rest of the opening delimiter line may be U+0020 and U+0009 and nothing else, so a fence with trailing whitespace still opens a block. Measured before it was specified: two runtimes typeset the metadata here and two skipped it, and the wider reading wins because a miss is invisible where typeset metadata is damage."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-closer-trailing-space",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "---\ntitle: \"Une note\"\n--- \n\nBody has \"quotes\" here.\n",
+      "out": "---\ntitle: \"Une note\"\n--- \n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.3a step 3: the same rule for the closing delimiter line. Whitespace an editor left behind does not turn a metadata block into prose."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-opener-trailing-tab",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "---\t\ntitle: \"Une note\"\n---\n\nBody has \"quotes\" here.\n",
+      "out": "---\t\ntitle: \"Une note\"\n---\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.3a step 2 names U+0009 as well as U+0020, because a tab is what a fence picks up from an editor that indents with tabs, and leaving it out would have made the rule depend on which whitespace character the author cannot see."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-dots-closer",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "---\ntitle: \"Une note\"\n...\n\nBody has \"quotes\" here.\n",
+      "out": "---\ntitle: “Une note”\n…\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.3a step 3: `...` closes a YAML document but does not close a frontmatter block, so there is no block and the metadata line is prose. All four runtimes already agree; the fixture is what keeps them agreeing."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-after-blank-line",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "\n---\ntitle: \"Une note\"\n---\n\nBody has \"quotes\" here.\n",
+      "out": "\n---\ntitle: “Une note”\n---\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.3a step 1: the document must begin with the delimiter. One blank line before it and the construct is a thematic break, which is what all four runtimes already do."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-opener-with-text",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "--- yaml\ntitle: \"Une note\"\n---\n\nBody has \"quotes\" here.\n",
+      "out": "--- yaml\ntitle: “Une note”\n---\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.3a step 2: anything on the opening line that is not U+0020 or U+0009 means there is no block. The wider reading widens the whitespace, not the syntax."
     }
   ]
 }
