@@ -554,9 +554,11 @@ that no author typed on purpose, and both were conformant, because no fixture pi
    line and no indentation;
 2. the rest of that line must be only U+0020 and U+0009. Anything else and there is no block —
    `--- yaml` is a thematic break followed by a word;
-3. the **closing line** is the first later line that is the same delimiter followed by only U+0020
-   and U+0009. `...` is not a closer in either matter, and a delimiter of the other kind is not
-   one either;
+3. the **closing line** is the first later line whose first code point begins the same delimiter,
+   followed by only U+0020 and U+0009. Indentation disqualifies it exactly as it disqualifies the
+   opening line — a closer is not searched for inside a line, it is a line. `...` is not a closer
+   in either matter, a delimiter of the other kind is not one either, and a fourth delimiter
+   character is not whitespace, so `----` closes nothing;
 4. with no such line there is **no block**: an opening delimiter alone is a thematic break and what
    follows it is prose, which is what `en-us-markdown-commonmark-frontmatter-unterminated` already
    pins;

@@ -2811,6 +2811,51 @@
       "in": "--- yaml\ntitle: \"Une note\"\n---\n\nBody has \"quotes\" here.\n",
       "out": "--- yaml\ntitle: “Une note”\n---\n\nBody has “quotes” here.\n",
       "note": "modes.md §3.7.3a step 2: anything on the opening line that is not U+0020 or U+0009 means there is no block. The wider reading widens the whitespace, not the syntax."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-closer-indented",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "---\ntitle: \"Une note\"\n ---\n\nBody has \"quotes\" here.\n",
+      "out": "---\ntitle: “Une note”\n ---\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.3a step 3: a closer is a line, not something searched for inside one, so one space of indentation disqualifies it and the document has no block. Without that clause the step reads as \"a line containing the delimiter\" and two implementations of it disagree."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-opener-indented",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": " ---\ntitle: \"Une note\"\n---\n\nBody has \"quotes\" here.\n",
+      "out": " ---\ntitle: “Une note”\n---\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.3a step 1: the document must begin with the delimiter, so one space before it is enough to make the construct a thematic break instead."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-four-dashes",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "----\ntitle: \"Une note\"\n----\n\nBody has \"quotes\" here.\n",
+      "out": "----\ntitle: “Une note”\n----\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.3a step 2: the rest of the delimiter line may be U+0020 and U+0009, and a fourth dash is neither. The widened rule widens the whitespace, not the delimiter."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-mixed-delimiters",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "---\ntitle: \"Une note\"\n+++\n\nBody has \"quotes\" here.\n",
+      "out": "---\ntitle: “Une note”\n+++\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.3a step 3: the closer is the same delimiter as the opener, so a `+++` line does not close a `---` block and the document has none."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-empty-block",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "---\n---\n\nBody has \"quotes\" here.\n",
+      "out": "---\n---\n\nBody has “quotes” here.\n",
+      "note": "modes.md §3.7.3a: an opener immediately followed by a closer is a block with no content — the second line is the first later line that is the delimiter — so there is nothing to skip and nothing for `frontmatterKeys` to name, and the body converts either way."
     }
   ]
 }
