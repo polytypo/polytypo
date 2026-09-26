@@ -553,19 +553,26 @@ that no author typed on purpose, and both were conformant, because no fixture pi
 > 1 if there is one** — replaced by U+0020, line terminators kept as they are, so that nothing
 > inside the block can form or close a construct in the body.
 >
-> **The replacement is one U+0020 per index unit, in whatever unit that runtime's parser reports
-> offsets in** — code points, UTF-16 code units or UTF-8 bytes. The masked source must have the
-> same length in that unit as the original, because every offset the parser reports against it is
-> then read against the original. "One space per code point" is the wrong rule for the two runtimes
-> that index bytes: masking `😀` to a single space shortens the source by three and shifts every
-> body offset after it.
+> **The masked source must be positionally aligned with the original in the unit the runtime maps
+> parser offsets back through.** That is the invariant, and it is not the same as "one U+0020 per
+> code point": a runtime that hands its parser's byte offsets straight through owes byte-length
+> preservation, and masking `😀` to a single space shortens its source by three and shifts every
+> body offset after it. A runtime that converts offsets against the **masked** source before
+> reading them against the original owes code-point alignment only, which one U+0020 per code point
+> gives it — and in a language whose strings are sequences of code points, byte-length preservation
+> cannot even be expressed. Both are conformant; stating it as an index-unit count was not, and the
+> port that indexes code points while its parser counts bytes is what showed it.
 >
 > **And no span may lie inside the block, whatever the parser did with the masked text.** Masking
 > is what makes that true for most parsers and it is not sufficient for all of them: measured,
 > tree-sitter-markdown reads a final all-space line with no terminator as a paragraph, so a
-> document whose closing `---` ends the file comes back with a span over the delimiter itself. A
-> runtime whose parser emits a span inside the block drops it. The mask is there so the parse is
-> not deformed; this sentence is there so the spans cannot be wrong even when it is.
+> document whose closing `---` ends the file comes back with a span over the delimiter itself —
+> the parser did not see the block at all, and step 5's "end of input ends a line" is the clause it
+> does not implement. A runtime whose parser emits such a span **clips it to the part outside the
+> block, and drops it when nothing is left**: the block's own characters must not reach the rules,
+> and body prose past the block must not be lost to a parser's mistake about where the block ended.
+> The mask is there so the parse is not deformed; this rule is there so the spans cannot be wrong
+> even when it is.
 >
 > The mark is masked with the block because leaving it out breaks both: a first line of U+FEFF
 > followed by spaces is not blank, no parser is required to strip the mark, and goldmark does not.
@@ -693,14 +700,18 @@ already recognises, and the option only changes what happens inside it:
   terminator to the code point that begins the closing delimiter line. A U+000D before that
   terminator belongs to the terminator, exactly as in §3.8.4, so a CRLF document and the same
   bytes with LF give the same content;
-- **content containing a U+000D that is not followed by U+000A yields no spans at all.** The two
-  line models meet here and do not compose: §3.7.3a step 5 finds the block in a lone-U+000D
+- **a line of that content containing a U+000D not followed by U+000A yields no spans**, exactly
+  as §3.8.4 step 1 already declines a line containing U+0009 and for the same kind of reason. The
+  two line models meet here and do not compose: §3.7.3a step 5 finds the block in a lone-U+000D
   document, and §3.8.4's LF-only scan then reads that whole block as one line. Measured, the
-  result is not merely inert — `title: a "b` and `c" d` on two mapping lines pair their marks
-  across the boundary, an unlisted line inside the listed key's scalar takes `fr`'s spacing, and
-  the U+000D lands **inside a span**, which §3.8.4 forbids in the same breath. Declining the
-  block's content outright is the only reading that stays safe without widening §3.8.4, which is
-  a change to `yaml` mode for every caller and wants its own measurement;
+  result of letting it through is not merely inert — `title: a "b` and `c" d` on two mapping lines
+  pair their marks across the boundary, an unlisted line inside the listed key's scalar takes
+  `fr`'s spacing, and the U+000D lands **inside a span**, which §3.8.4 forbids in the same breath.
+  Per line rather than per block, because a stray U+000D inside one quoted value is something
+  people produce by accident and it should cost that value rather than the whole block: a
+  lone-U+000D document is one §3.8.4 line and loses everything, a document with one such value
+  loses that line and keeps the rest. Widening §3.8.4 instead would be a change to `yaml` mode for
+  every caller and wants its own measurement;
 - **both delimiter lines stay outside every span**, as does every line terminator, so no edit
   can reach `---` itself and §3.7.3's setext-underline hazard is unreachable;
 - an **unterminated** block is not a block — §3.7.3 already yields no frontmatter construct
@@ -1595,9 +1606,11 @@ rule-local.
       stand and called it inert; measuring it showed it was not. On two mapping lines a quotation
       opened on one paired with a mark on the other, an unlisted line inside the listed key's
       scalar took `fr`'s spacing, and the U+000D landed inside a span — which §3.8.4 forbids in
-      the same breath. §3.7.4 therefore declines such content outright. The block is still
-      skipped, so nothing machine-read is typeset either way; what is lost is the conversion, in
-      documents nobody writes on purpose.
+      the same breath. §3.7.4 therefore declines any content line carrying such a U+000D — per
+      line, so that a stray one inside a single quoted value costs that value and not the block.
+      The block is still skipped, so nothing machine-read is typeset either way. A lone-U+000D
+      document is one line to §3.8.4 and therefore loses the whole block, which is the price of
+      not widening that section here.
     - **§3.8.6's single-quoted bail costs more here than anywhere it has been measured before.**
       Of the 1858 corpus values a locale would convert across eight locales, **1040 yield no spans
       when written as a single-quoted scalar** — 130 of 247 in `en-GB` alone, the figure 1.7.0
