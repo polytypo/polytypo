@@ -9,6 +9,7 @@ Modes (4): text, html, markdown, yaml. `text` has no parser and no skip list —
 ## Docs
 
 - [Reference](https://polytypo.dev/docs/): API shape, options, the full error code contract, code examples for all five runtimes.
+- [Error codes](https://polytypo.dev/docs/api/errors/): The eight stable polytypo error codes, when each is thrown, and why the code, not the message, is the contract.
 - [Locales](https://polytypo.dev/locales/): per-locale coverage, each backed by a citation and a conformance fixture set.
 - [Playground](https://polytypo.dev/playground/): run the real engine on your own text in the browser.
 

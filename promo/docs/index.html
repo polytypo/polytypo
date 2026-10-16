@@ -50,7 +50,12 @@
   </p>
 </header>
 
-<section id="use" style="border-top: 0; padding-top: 0">
+<section id="pages" style="border-top: 0; padding-top: 0">
+  <h2>Pages</h2>
+  <h3>API</h3><ul><li><a href="../docs/api/errors/">Error codes</a> <span class="muted">The eight stable polytypo error codes, when each is thrown, and why the code, not the message, is the contract.</span></li></ul>
+</section>
+
+<section id="use">
   <div class="tabs" id="lang-tabs"></div>
   <div id="lang-panes"><div class="pane" data-label="JavaScript / TypeScript"><pre><code><span class="ln">import { transform } from <span class="tok-str">&quot;polytypo&quot;</span>;</span>
 <span class="ln"></span>
@@ -264,72 +269,10 @@
 
   <h3>Error codes</h3>
   <p class="small muted" style="margin-top: -6px">
-    All eight are part of the contract in every runtime; messages are English and are not.
+    All eight are part of the contract in every runtime; messages are English and are not. Each
+    code, and when it is thrown, is on the
+    <a href="../docs/api/errors/">error codes</a> page.
   </p>
-  <div class="scroll">
-    <table class="kv">
-      <tr>
-        <th>Code</th>
-        <th>Thrown when</th>
-      </tr>
-      <tr>
-        <td class="mono">POLYTYPO_UNKNOWN_LOCALE</td>
-        <td class="small muted">
-          <code>locale</code> is missing or not in the spec's locale registry.
-        </td>
-      </tr>
-      <tr>
-        <td class="mono">POLYTYPO_INVALID_MODE</td>
-        <td class="small muted">
-          <code>mode</code> is set to something other than <code>text</code>, <code>html</code>,
-          <code>markdown</code> or <code>yaml</code>.
-        </td>
-      </tr>
-      <tr>
-        <td class="mono">POLYTYPO_INVALID_DIALECT</td>
-        <td class="small muted">
-          <code>mode: "markdown"</code> without a <code>dialect</code>, or an unrecognised one.
-        </td>
-      </tr>
-      <tr>
-        <td class="mono">POLYTYPO_INVALID_OPTION</td>
-        <td class="small muted">
-          An option value outside its permitted set, where no more specific code applies —
-          <code>mode: "yaml"</code> without <code>keys</code>, or a <code>narrowNbsp</code> that is
-          neither <code>"narrow"</code> nor <code>"nbsp"</code>. <code>mode</code> and
-          <code>dialect</code> keep their own codes above.
-        </td>
-      </tr>
-      <tr>
-        <td class="mono">POLYTYPO_UNKNOWN_RULE</td>
-        <td class="small muted">
-          A key in <code>rules</code> that is not one of the nine rule ids.
-        </td>
-      </tr>
-      <tr>
-        <td class="mono">POLYTYPO_MALFORMED_LOCALE_DATA</td>
-        <td class="small muted">Internal — a locale's data failed its own schema at load time.</td>
-      </tr>
-      <tr>
-        <td class="mono">POLYTYPO_RULE_CONTRACT</td>
-        <td class="small muted">
-          Internal — a rule emitted an edit outside its contract (out of bounds, overlapping, wrong
-          <code>ruleId</code>). Should never surface; if it does, it's a bug in this project, not
-          your input.
-        </td>
-      </tr>
-      <tr>
-        <td class="mono">POLYTYPO_MALFORMED_INPUT</td>
-        <td class="small muted">
-          Reachable only when <code>mode: "markdown"</code> and <code>dialect: "mdx"</code> — MDX
-          embeds JavaScript, so an unterminated JSX element or a broken <code>{…}</code> expression
-          can fail to parse. <code>html</code> parsing is recovery-based and never throws this;
-          plain CommonMark has no syntax errors at all. The underlying parser error is wrapped
-          either way, so no dependency's error type reaches the public surface.
-        </td>
-      </tr>
-    </table>
-  </div>
 
   <h3>What to pass in</h3>
   <p>

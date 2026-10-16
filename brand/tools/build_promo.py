@@ -28,6 +28,7 @@ REPO = os.path.dirname(BRAND)
 PROMO_SRC = os.path.join(HERE, "promo")
 sys.path.insert(0, HERE)
 from build_brandbook import fonts_css, inline  # noqa: E402
+import docs_md  # noqa: E402
 
 EXAMPLES = os.path.join(REPO, "promo", "examples.json")
 SPEC = os.path.join(REPO, "spec")
@@ -143,6 +144,48 @@ PAGES = [
     ("changelog", "Changelog", "changelog.body.html"),
 ]
 
+# Documentation pages: brand/tools/docs/<section>/<name>.md becomes /docs/<section>/<name>/.
+# Sections appear in the sidebar in this order; a section with no pages is not shown, so nothing
+# here promises a page that does not exist.
+DOCS_SRC = os.path.join(HERE, "docs")
+DOC_SECTIONS = [
+    ("getting-started", "Getting started"),
+    ("api", "API"),
+    ("modes", "Modes"),
+    ("rules", "Rules"),
+    ("concepts", "Concepts"),
+    ("guides", "Guides"),
+    ("runtimes", "Runtimes"),
+]
+
+
+def load_doc_pages():
+    pages = []
+    for root, _dirs, files in os.walk(DOCS_SRC):
+        for name in sorted(files):
+            if not name.endswith(".md"):
+                continue
+            path = os.path.join(root, name)
+            rel = os.path.relpath(path, DOCS_SRC)[:-3].replace(os.sep, "/")
+            with open(path, encoding="utf-8") as f:
+                meta, body = docs_md.parse_front_matter(f.read(), rel)
+            for key in ("title", "description", "section", "order"):
+                if key not in meta:
+                    raise docs_md.DocError(f"{rel}: front matter lacks {key!r}")
+            if not rel.startswith(meta["section"] + "/"):
+                raise docs_md.DocError(f"{rel}: section {meta['section']!r} does not match its directory")
+            if meta["section"] not in dict(DOC_SECTIONS):
+                raise docs_md.DocError(f"{rel}: unknown section {meta['section']!r}")
+            pages.append({"slug": f"docs/{rel}", "order": int(meta["order"]), "body": body, **meta})
+    section_rank = {sid: i for i, (sid, _l) in enumerate(DOC_SECTIONS)}
+    pages.sort(key=lambda p: (section_rank[p["section"]], p["order"], p["slug"]))
+    return pages
+
+
+DOC_PAGES = load_doc_pages()
+DOC_BY_SLUG = {p["slug"]: p for p in DOC_PAGES}
+PAGES += [(p["slug"], p["title"], None) for p in DOC_PAGES]
+
 # Per-page meta/OG description — every page previously shared the Home page's own description
 # verbatim, which is a duplicate-content SEO defect. Each entry describes what that specific page
 # actually shows, never a promise about work not yet done. "{n}" is the live locale count,
@@ -182,7 +225,7 @@ PAGE_DESCRIPTIONS = {
 # never root-relative: before a custom domain exists the site is served from
 # polytypo.github.io/polytypo/, where an absolute "/docs/" would point outside the site. A page at
 # the root resolves "docs/" directly; a page one directory down needs "../docs/".
-PAGE_PREFIXES = {"": "", **{slug: "../" for slug, _label, _body in PAGES if slug}}
+PAGE_PREFIXES = {slug: "../" * (slug.count("/") + 1) if slug else "" for slug, _l, _b in PAGES}
 
 # brand/favicon/'s exact committed contents (brand/README.md documents this set); listed here
 # rather than globbed so an accidental extra file in that directory doesn't silently ship.
@@ -1041,7 +1084,7 @@ def _md_code(text):
 _WEBSITE_NODE = {"@type": "WebSite", "name": "polytypo", "url": f"{SITE_ORIGIN}/"}
 
 
-def jsonld(slug, page_title, description, canonical_url):
+def jsonld(slug, page_title, description, canonical_url, doc_page=None):
     """Structured data for one page: a WebPage node everywhere, plus — Home only — a
     SoftwareSourceCode node describing what actually ships (MIT, the canonical spec repo, and
     every runtime currently published — read from scripts/conformance-status.json, never
@@ -1056,7 +1099,15 @@ def jsonld(slug, page_title, description, canonical_url):
         "url": canonical_url,
         "isPartOf": _WEBSITE_NODE,
     }
-    if slug != "":
+    if doc_page:
+        article = {
+            **webpage_node,
+            "@type": "TechArticle",
+            "headline": doc_page["title"],
+            "breadcrumb": doc_breadcrumb_list(doc_page, canonical_url),
+        }
+        doc = {"@context": "https://schema.org", **article}
+    elif slug != "":
         doc = {"@context": "https://schema.org", **webpage_node}
     else:
         software_node = {
@@ -1072,6 +1123,105 @@ def jsonld(slug, page_title, description, canonical_url):
     # </script> inside a JSON string would otherwise close the element early — escape the slash,
     # which JSON permits (\/ is a valid escape) and HTML parsers do not treat as a delimiter.
     return json.dumps(doc, ensure_ascii=False).replace("</", "<\\/")
+
+
+_COMMENT_TOKENS = {
+    "js": "//", "javascript": "//", "ts": "//", "typescript": "//", "go": "//", "php": "//",
+    "python": "#", "py": "#", "ruby": "#", "rb": "#", "bash": "#", "sh": "#", "yaml": "#",
+}
+
+
+def doc_code_block(lang, code):
+    token = _COMMENT_TOKENS.get(lang)
+    lines = highlight_lines(code, token) if token else number_lines(H.escape(l) for l in code.split("\n"))
+    return f'<pre><code>{lines}</code></pre>'
+
+
+def doc_nav_html(active_slug, prefix):
+    """Sidebar for the documentation pages: every section that has at least one page, in
+    DOC_SECTIONS order, linking only pages that exist."""
+    groups = [
+        f'<p class="doc-nav-head"><a href="{page_href(prefix, "docs")}"'
+        f'{" aria-current=\"page\"" if active_slug == "docs" else ""}>Overview</a></p>'
+    ]
+    for sid, label in DOC_SECTIONS:
+        items = [p for p in DOC_PAGES if p["section"] == sid]
+        if not items:
+            continue
+        links = "".join(
+            f'<li><a href="{page_href(prefix, p["slug"])}"'
+            f'{" aria-current=\"page\"" if p["slug"] == active_slug else ""}>'
+            f"{H.escape(p['title'])}</a></li>"
+            for p in items
+        )
+        groups.append(f'<p class="doc-nav-head">{H.escape(label)}</p><ul>{links}</ul>')
+    return (
+        '<details class="doc-nav"><summary>Documentation</summary>'
+        f'<nav aria-label="Documentation">{"".join(groups)}</nav></details>'
+    )
+
+
+def doc_page_body(page, prefix, replacements):
+    renderer = docs_md.Renderer(page["slug"], prefix, {s for s, _l, _b in PAGES})
+    content = renderer.render(page["body"], doc_code_block)
+    toc = ""
+    if len(renderer.toc) >= 3:
+        toc = (
+            '<nav class="doc-toc" aria-label="On this page"><p class="doc-nav-head">On this page</p><ul>'
+            + "".join(f'<li><a href="#{i}">{H.escape(t)}</a></li>' for i, t in renderer.toc)
+            + "</ul></nav>"
+        )
+    siblings = DOC_PAGES
+    idx = siblings.index(page)
+    pager = []
+    if idx > 0:
+        prev = siblings[idx - 1]
+        pager.append(f'<a rel="prev" href="{page_href(prefix, prev["slug"])}">&larr; {H.escape(prev["title"])}</a>')
+    if idx < len(siblings) - 1:
+        nxt = siblings[idx + 1]
+        pager.append(f'<a rel="next" href="{page_href(prefix, nxt["slug"])}">{H.escape(nxt["title"])} &rarr;</a>')
+    section_label = dict(DOC_SECTIONS)[page["section"]]
+    crumbs = (
+        f'<nav class="crumbs" aria-label="Breadcrumb"><a href="{page_href(prefix, "docs")}">Docs</a>'
+        f" / {H.escape(section_label)}</nav>"
+    )
+    html = (
+        f'<div class="doc-layout">{doc_nav_html(page["slug"], prefix)}<article class="doc">'
+        f'{crumbs}<h1>{H.escape(page["title"])}</h1>'
+        f'<p class="doc-lead">{H.escape(page["description"])}</p>{toc}{content}'
+        f'<nav class="doc-pager" aria-label="Pager">{"".join(pager)}</nav></article></div>'
+    )
+    for key, val in replacements.items():
+        html = html.replace(key, val)
+    return html
+
+
+def doc_index_html():
+    """The hub's list of documentation pages, grouped by section; empty when there are none."""
+    out = []
+    for sid, label in DOC_SECTIONS:
+        items = [p for p in DOC_PAGES if p["section"] == sid]
+        if not items:
+            continue
+        links = "".join(
+            f'<li><a href="{{{{prefix}}}}{p["slug"]}/">{H.escape(p["title"])}</a>'
+            f' <span class="muted">{H.escape(p["description"])}</span></li>'
+            for p in items
+        )
+        out.append(f"<h3>{H.escape(label)}</h3><ul>{links}</ul>")
+    return "".join(out)
+
+
+def doc_breadcrumb_list(page, canonical_url):
+    section_label = dict(DOC_SECTIONS)[page["section"]]
+    return {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Docs", "item": f"{SITE_ORIGIN}/docs/"},
+            {"@type": "ListItem", "position": 2, "name": section_label},
+            {"@type": "ListItem", "position": 3, "name": page["title"], "item": canonical_url},
+        ],
+    }
 
 
 def build():
@@ -1144,20 +1294,25 @@ def build():
         # It was spelled out as 1.2.0 and went stale the moment 1.3.0 shipped.
         "{{latest_version}}": H.escape(_latest_released_version()),
         "{{coverage_rows}}": coverage_rows(data),
+        "{{doc_index}}": doc_index_html(),
     }
     for slug, title, body_file in PAGES:
         prefix = PAGE_PREFIXES[slug]
-        with open(os.path.join(PROMO_SRC, body_file), encoding="utf-8") as f:
-            body = f.read()
-        for key, val in replacements.items():
-            body = body.replace(key, val)
+        doc_page = DOC_BY_SLUG.get(slug)
+        if doc_page:
+            body = doc_page_body(doc_page, prefix, replacements)
+        else:
+            with open(os.path.join(PROMO_SRC, body_file), encoding="utf-8") as f:
+                body = f.read()
+            for key, val in replacements.items():
+                body = body.replace(key, val)
         # Every cross-page href in a body template is written "{{prefix}}docs/" so one token
         # carries the page's depth; the root page substitutes "" and a nested page "../".
         body = body.replace("{{prefix}}", prefix)
         body = re.sub(r"\{\{svg:([^}]+)\}\}", lambda m: inline(m.group(1)), body)
 
         page_title = "polytypo" if title == "Home" else f"polytypo — {title}"
-        description = PAGE_DESCRIPTIONS[slug].format(n=n)
+        description = doc_page["description"] if doc_page else PAGE_DESCRIPTIONS[slug].format(n=n)
         canonical_url = f"{SITE_ORIGIN}/{slug + '/' if slug else ''}"
         image_url = f"{SITE_ORIGIN}/assets/og-image.png"
         doc = (
@@ -1187,11 +1342,11 @@ def build():
             f'<meta name="twitter:title" content="{H.escape(page_title)}">\n'
             f'<meta name="twitter:description" content="{H.escape(description)}">\n'
             f'<meta name="twitter:image" content="{image_url}">\n'
-            f"<script type=\"application/ld+json\">{jsonld(slug, page_title, description, canonical_url)}</script>\n"
+            f"<script type=\"application/ld+json\">{jsonld(slug, page_title, description, canonical_url, doc_page)}</script>\n"
             '<script defer src="https://u.rogulia.fi/script.js" '
             'data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>\n'
-            f'</head>\n<body class="page-{slug or "home"}">\n'
-            f"{nav_html(slug, prefix)}\n"
+            f'</head>\n<body class="page-{slug.replace("/", "-") or "home"}">\n'
+            f"{nav_html(slug.split('/')[0], prefix)}\n"
             f'<div class="wrap">\n{body}\n{badge_section_html(prefix)}\n{footer_html(data, prefix)}\n</div>\n'
             f'<script src="{prefix}assets/site.js"></script>\n'
         )
@@ -1204,6 +1359,13 @@ def build():
             'Polytypo.bootTabs("build-tabs", "build-panes");\n'
             "</script>\n"
         )
+        if doc_page:
+            doc += (
+                "<script>\n"
+                'if (matchMedia("(min-width: 721px)").matches) '
+                'document.querySelector("details.doc-nav").open = true;\n'
+                "</script>\n"
+            )
 
         # Both pages that carry the playground get the same script. They differ in ONE thing: the
         # home page loads the ~680 KB engine bundle lazily (first interaction, or the section
@@ -1296,6 +1458,10 @@ def write_llms_txt(out_dir, data):
         "",
         f"- [Reference]({SITE_ORIGIN}/docs/): API shape, options, the full error code contract, "
         "code examples for all five runtimes.",
+        *[
+            f"- [{p['title']}]({SITE_ORIGIN}/{p['slug']}/): {p['description']}"
+            for p in DOC_PAGES
+        ],
         f"- [Locales]({SITE_ORIGIN}/locales/): per-locale coverage, each backed by a citation and "
         "a conformance fixture set.",
         f"- [Playground]({SITE_ORIGIN}/playground/): run the real engine on your own text in the "

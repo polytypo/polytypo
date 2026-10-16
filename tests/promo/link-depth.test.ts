@@ -15,7 +15,7 @@
 // generated inline script. No attribute walk can see it, so a wrong-depth "../vendor/..." on home
 // would 404 at runtime with the whole suite green. It is extracted from the emitted `ENGINE_SRC`
 // and resolved through the same code path as everything else.
-import { existsSync, readFileSync, realpathSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse } from "parse5";
@@ -28,15 +28,19 @@ type Element = DefaultTreeAdapterMap["element"];
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const PROMO_DIR = path.join(ROOT, "promo");
 
-const PAGES = [
-  "index.html",
-  "manifesto/index.html",
-  "docs/index.html",
-  "playground/index.html",
-  "locales/index.html",
-  "showcase/index.html",
-  "changelog/index.html",
-];
+/** Every generated page: each directory index under promo/, whatever its depth, excluding the
+ * vendored bundle and static assets. */
+function listPages(dir = PROMO_DIR): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+    const full = path.join(dir, e.name);
+    if (e.isDirectory()) return e.name === "vendor" || e.name === "assets" ? [] : listPages(full);
+    return e.name === "index.html"
+      ? [path.relative(PROMO_DIR, full).split(path.sep).join("/")]
+      : [];
+  });
+}
+
+const PAGES = listPages();
 
 /** The two pages that embed the playground, and the depth each must reference the engine bundle
  * at — depth 0 from the promo root, one "../" from a directory index. */
@@ -186,6 +190,12 @@ describe("promo pages — every local href and src resolves from its own directo
       expect(failures, `${page}:\n${failures.join("\n")}`).toEqual([]);
     });
   }
+
+  it("every documentation page is covered by the walk, at its real depth", () => {
+    expect(PAGES).toContain("docs/api/errors/index.html");
+    const refs = collectReferences(readPromoPage("docs/api/errors/index.html")).map((r) => r.value);
+    expect(refs).toContain("../../../assets/style.css");
+  });
 
   it("the nav links on a nested page really do carry the extra '../' (proves depth is exercised)", () => {
     // Without this, a generator that emitted depth-0 hrefs on every page could still pass above if

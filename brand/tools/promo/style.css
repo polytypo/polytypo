@@ -1165,3 +1165,113 @@ footer a:hover {
     font-size: 19px;
   }
 }
+
+/* ---------- documentation pages ---------- */
+.doc-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: var(--space-11);
+  padding-top: var(--space-11);
+}
+
+.doc-nav summary {
+  display: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.doc-nav nav {
+  position: sticky;
+  top: var(--space-10);
+  font-size: 14px;
+}
+
+.doc-nav ul,
+.doc-toc ul {
+  margin: 0 0 var(--space-6);
+  padding: 0;
+  list-style: none;
+}
+
+.doc-nav li,
+.doc-toc li {
+  margin-bottom: 4px;
+}
+
+.doc-nav a[aria-current="page"] {
+  font-weight: 600;
+  text-decoration-color: var(--color-accent);
+}
+
+.doc-nav-head {
+  margin: var(--space-6) 0 var(--space-1);
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.doc {
+  min-width: 0;
+}
+
+.doc h1 {
+  max-width: none;
+}
+
+.doc h2 {
+  margin-top: 44px;
+  font-size: 24px;
+}
+
+.doc .anchor {
+  text-decoration: none;
+}
+
+.doc .anchor:hover {
+  text-decoration: underline;
+}
+
+.doc-lead {
+  margin-top: var(--space-5);
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.crumbs {
+  margin-bottom: var(--space-4);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.doc-toc {
+  margin: var(--space-8) 0;
+  padding: var(--space-5) var(--space-7);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+}
+
+.doc-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-6);
+  margin-top: 56px;
+  padding-top: var(--space-7);
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 720px) {
+  .doc-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+
+  .doc-nav summary {
+    display: block;
+  }
+
+  .doc-nav nav {
+    position: static;
+  }
+}

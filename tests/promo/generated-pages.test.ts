@@ -9,7 +9,7 @@
 // home page sits at the promo root. Cross-page links are document-relative and therefore
 // depth-dependent — "docs/" from home, "../docs/" from a nested page — so every href assertion
 // below names the depth it is asserting at rather than a single sitewide string.
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -26,6 +26,17 @@ const PAGES = [
   "showcase/index.html",
   "changelog/index.html",
 ];
+
+/** Documentation pages, one per Markdown source under brand/tools/docs/ (slug = relative path). */
+function docPageSlugs(dir = path.join(ROOT, "brand/tools/docs")): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+    e.isDirectory()
+      ? docPageSlugs(path.join(dir, e.name))
+      : e.name.endsWith(".md")
+        ? [path.relative(path.join(ROOT, "brand/tools/docs"), path.join(dir, e.name)).slice(0, -3)]
+        : [],
+  );
+}
 
 function readPromoPage(name: string): string {
   const p = path.join(PROMO_DIR, ...name.split("/"));
@@ -222,7 +233,7 @@ describe("promo site — favicon, robots.txt, sitemap.xml", () => {
     expect(robots).toContain("Sitemap: https://polytypo.dev/sitemap.xml");
   });
 
-  it("sitemap.xml lists exactly the seven generated pages, as absolute directory URLs", () => {
+  it("sitemap.xml lists exactly the generated pages: seven fixed plus one per documentation source, as absolute directory URLs", () => {
     const sitemap = readFileSync(path.join(PROMO_DIR, "sitemap.xml"), "utf8");
     for (const loc of [
       "https://polytypo.dev/",
@@ -235,7 +246,10 @@ describe("promo site — favicon, robots.txt, sitemap.xml", () => {
     ]) {
       expect(sitemap).toContain(`<loc>${loc}</loc>`);
     }
-    expect(sitemap.match(/<url>/g)).toHaveLength(7);
+    for (const slug of docPageSlugs()) {
+      expect(sitemap).toContain(`<loc>https://polytypo.dev/docs/${slug}/</loc>`);
+    }
+    expect(sitemap.match(/<url>/g)).toHaveLength(7 + docPageSlugs().length);
   });
 });
 
@@ -283,7 +297,7 @@ describe("promo site — llms.txt (llmstxt.org convention)", () => {
       expect(llms).toContain(`(${url})`);
     }
     expect(llms.match(/^- \[/gm)).toHaveLength(
-      3 /* docs */ + 5 /* packages */ + 3 /* spec */ + 3 /* optional */,
+      3 /* docs */ + docPageSlugs().length + 5 /* packages */ + 3 /* spec */ + 3 /* optional */,
     );
   });
 
