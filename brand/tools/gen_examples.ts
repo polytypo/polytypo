@@ -5,7 +5,7 @@
  *
  *   npx tsx brand/tools/gen_examples.ts
  */
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { transform } from "polytypo";
 
 const LOCALES = [
@@ -311,3 +311,134 @@ const data = {
 const out = new URL("../../promo/examples.json", import.meta.url);
 writeFileSync(out, JSON.stringify(data, null, 2) + "\n", "utf8");
 console.log(`wrote ${out.pathname} — ${data.locales.length} locales`);
+
+// ---------------------------------------------------------------------------------------------
+// promo/locale-examples.json — the data behind /locales/<code>/. Inputs are the spec's own
+// conformance fixtures (cited, reviewed cases), so no sentence on a locale page is typed for the
+// page; outputs are the installed engine's. A fixture whose recorded `out` differs from what the
+// installed engine returns is dropped and counted, never shown, so a page cannot display a result
+// the spec does not stand behind.
+// ---------------------------------------------------------------------------------------------
+type Fixture = {
+  id: string;
+  rule?: string;
+  mode?: string;
+  in?: string;
+  out?: string;
+  rules?: Record<string, boolean>;
+  narrowNbsp?: "nbsp" | "narrow";
+  throws?: string;
+  dialect?: string;
+  keys?: string[];
+};
+
+const PER_RULE = 3;
+const MAX_INPUT_LENGTH = 110;
+
+const NEIGHBOUR: Partial<Record<(typeof LOCALES)[number], (typeof LOCALES)[number]>> = {
+  "de-DE": "de-CH",
+  "de-CH": "de-DE",
+  "en-US": "en-GB",
+  "en-GB": "en-US",
+  fr: "fr-CA",
+  "fr-CA": "fr",
+  "pt-PT": "pt-BR",
+  "pt-BR": "pt-PT",
+};
+
+// Neutral code carrier for the mode demonstration: the same straight-quoted, dashed, dotted run
+// that the prose carries, placed where each document mode must leave it alone.
+const CODE_RUN = `say("a -- b ...")`;
+
+function modeInputs(prose: string): Record<string, string> {
+  return {
+    text: `${prose}\n${CODE_RUN}`,
+    html: `<p>${prose}</p>\n<pre><code>${CODE_RUN}</code></pre>`,
+    markdown: `${prose}\n\n\`${CODE_RUN}\``,
+  };
+}
+
+function modeOptions(mode: string): Record<string, string> {
+  return mode === "markdown" ? { mode, dialect: "commonmark" } : { mode };
+}
+
+const resolutionCases = (
+  JSON.parse(
+    readFileSync(new URL("../../spec/fixtures/locale-resolution.json", import.meta.url), "utf8"),
+  ) as {
+    cases: Array<{ id: string; tag: string; resolves?: string }>;
+  }
+).cases;
+
+const localeExamples: Record<string, unknown> = {};
+for (const locale of supported) {
+  const fixturePath = new URL(`../../spec/fixtures/${locale}.json`, import.meta.url);
+  const fixtures = existsSync(fixturePath)
+    ? (JSON.parse(readFileSync(fixturePath, "utf8")) as { cases: Fixture[] }).cases
+    : [];
+  const byRule: Record<string, unknown[]> = {};
+  let disagreed = 0;
+  for (const c of fixtures) {
+    if (c.mode !== "text" || c.throws || c.dialect || c.keys) continue;
+    if (c.in === undefined || c.out === undefined || c.rule === undefined) continue;
+    if (c.in === c.out || c.in.length > MAX_INPUT_LENGTH || c.id.includes("known-wrong")) continue;
+    const list = (byRule[c.rule] ??= []);
+    if (list.length >= PER_RULE) continue;
+    const options = {
+      locale,
+      ...(c.rules ? { rules: c.rules } : {}),
+      ...(c.narrowNbsp !== undefined ? { narrowNbsp: c.narrowNbsp } : {}),
+    };
+    const out = transform(c.in, options);
+    if (out !== c.out) {
+      disagreed += 1;
+      continue;
+    }
+    list.push({
+      id: c.id,
+      in: c.in,
+      out,
+      ...(c.rules ? { rules: c.rules } : {}),
+      ...(c.narrowNbsp !== undefined ? { narrowNbsp: c.narrowNbsp } : {}),
+    });
+  }
+
+  const modes = Object.entries(modeInputs(HERO[locale])).map(([mode, input]) => ({
+    mode,
+    in: input,
+    out: transform(input, { locale, ...modeOptions(mode) }),
+  }));
+
+  const neighbour = NEIGHBOUR[locale];
+  const compare = neighbour
+    ? {
+        neighbour,
+        in: HERO[locale],
+        out: transform(HERO[locale], { locale }),
+        neighbourOut: transform(HERO[locale], { locale: neighbour }),
+      }
+    : null;
+
+  // Only tags the installed engine accepts are listed, each with the output of one probe so a
+  // page shows that the tag and its resolved locale agree.
+  const resolution = resolutionCases
+    .filter((r) => r.resolves === locale)
+    .filter((r) => {
+      try {
+        return transform(HERO[locale], { locale: r.tag }) === transform(HERO[locale], { locale });
+      } catch {
+        return false;
+      }
+    })
+    .map((r) => r.tag);
+
+  localeExamples[locale] = { byRule, modes, compare, resolution, disagreed };
+}
+
+const localeOut = new URL("../../promo/locale-examples.json", import.meta.url);
+writeFileSync(
+  localeOut,
+  JSON.stringify({ spec: specVersion, locales: localeExamples }, null, 2) + "\n",
+  "utf8",
+);
+console.log(`wrote ${localeOut.pathname}`);

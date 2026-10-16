@@ -50,6 +50,25 @@ Modes (4): text, html, markdown, yaml. `text` has no parser and no skip list —
 - [Ruby](https://polytypo.dev/docs/runtimes/ruby/): Install the polytypo gem, call Polytypo.transform and Polytypo.analyze with keyword arguments, rescue Polytypo::Error codes, and see which modes the gem covers.
 - [PHP](https://polytypo.dev/docs/runtimes/php/): Install polytypo with Composer, call Polytypo::transform and Polytypo::analyze with named arguments, catch PolytypoException codes, and see which modes PHP covers.
 - [Locales](https://polytypo.dev/locales/): per-locale coverage, each backed by a citation and a conformance fixture set.
+- [en-US: English (United States)](https://polytypo.dev/locales/en-US/): English (United States) (en-US) in polytypo: quotes “…” and ‘…’, unspaced em dash for parenthetical breaks, 11 cited sources, 340 conformance cases.
+- [en-GB: English (United Kingdom)](https://polytypo.dev/locales/en-GB/): English (United Kingdom) (en-GB) in polytypo: quotes ‘…’ and “…”, spaced en dash for parenthetical breaks, 9 cited sources, 165 conformance cases.
+- [de-DE: German (Germany)](https://polytypo.dev/locales/de-DE/): German (Germany) (de-DE) in polytypo: quotes „…“ and ‚…‘, spaced en dash for parenthetical breaks, 7 cited sources, 89 conformance cases.
+- [de-CH: German (Switzerland)](https://polytypo.dev/locales/de-CH/): German (Switzerland) (de-CH) in polytypo: quotes «…» and ‹…›, spaced en dash for parenthetical breaks, 6 cited sources, 61 conformance cases.
+- [fr: French](https://polytypo.dev/locales/fr/): French (fr) in polytypo: quotes «…» and “…”, spaced em dash for parenthetical breaks, 10 cited sources, 118 conformance cases.
+- [fr-CA: French (Canada)](https://polytypo.dev/locales/fr-CA/): French (Canada) (fr-CA) in polytypo: quotes «…» and “…”, spaced em dash for parenthetical breaks, 9 cited sources, 40 conformance cases.
+- [ru: Russian](https://polytypo.dev/locales/ru/): Russian (ru) in polytypo: quotes «…» and „…“, spaced em dash for parenthetical breaks, 6 cited sources, 89 conformance cases.
+- [fi: Finnish](https://polytypo.dev/locales/fi/): Finnish (fi) in polytypo: quotes ”…” and ’…’, spaced en dash for parenthetical breaks, 12 cited sources, 157 conformance cases.
+- [sv: Swedish](https://polytypo.dev/locales/sv/): Swedish (sv) in polytypo: quotes ”…” and ’…’, spaced en dash for parenthetical breaks, 10 cited sources, 154 conformance cases.
+- [el: Greek](https://polytypo.dev/locales/el/): Greek (el) in polytypo: quotes «…» and “…”, no dash substitution for parenthetical breaks, 8 cited sources, 29 conformance cases.
+- [es: Spanish](https://polytypo.dev/locales/es/): Spanish (es) in polytypo: quotes «…» and “…”, no dash substitution for parenthetical breaks, 10 cited sources, 23 conformance cases.
+- [it: Italian](https://polytypo.dev/locales/it/): Italian (it) in polytypo: quotes «…» and “…”, spaced em dash for parenthetical breaks, 10 cited sources, 21 conformance cases.
+- [pt-PT: Portuguese (Portugal)](https://polytypo.dev/locales/pt-PT/): Portuguese (Portugal) (pt-PT) in polytypo: quotes «…» and “…”, spaced em dash for parenthetical breaks, 8 cited sources, 19 conformance cases.
+- [pt-BR: Portuguese (Brazil)](https://polytypo.dev/locales/pt-BR/): Portuguese (Brazil) (pt-BR) in polytypo: quotes “…” and ‘…’, spaced en dash for parenthetical breaks, 8 cited sources, 19 conformance cases.
+- [nl: Dutch](https://polytypo.dev/locales/nl/): Dutch (nl) in polytypo: quotes “…” and ‘…’, spaced en dash for parenthetical breaks, 9 cited sources, 16 conformance cases.
+- [pl: Polish](https://polytypo.dev/locales/pl/): Polish (pl) in polytypo: quotes „…” and »…«, spaced en dash for parenthetical breaks, 9 cited sources, 16 conformance cases.
+- [uk: Ukrainian](https://polytypo.dev/locales/uk/): Ukrainian (uk) in polytypo: quotes «…» and “…”, spaced em dash for parenthetical breaks, 8 cited sources, 18 conformance cases.
+- [cs: Czech](https://polytypo.dev/locales/cs/): Czech (cs) in polytypo: quotes „…“ and ‚…‘, spaced en dash for parenthetical breaks, 8 cited sources, 19 conformance cases.
+- [tr: Turkish](https://polytypo.dev/locales/tr/): Turkish (tr) in polytypo: quotes “…” and ‘…’, no dash substitution for parenthetical breaks, 11 cited sources, 30 conformance cases.
 - [Playground](https://polytypo.dev/playground/): run the real engine on your own text in the browser.
 
 ## Packages
