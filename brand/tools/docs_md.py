@@ -12,7 +12,7 @@ does not exist fails the build.
 import html as H
 import re
 
-FENCE = re.compile(r"^```(\w*)\s*$")
+FENCE = re.compile(r"^(`{3,})(\w*)\s*$")
 HEADING = re.compile(r"^(#{2,4})\s+(.+?)\s*$")
 BULLET = re.compile(r"^[-*]\s+(.*)$")
 NUMBERED = re.compile(r"^\d+\.\s+(.*)$")
@@ -103,9 +103,11 @@ class Renderer:
                 continue
             m = FENCE.match(line)
             if m:
-                lang, code = m.group(1), []
+                ticks, lang, code = m.group(1), m.group(2), []
                 i += 1
-                while i < len(lines) and not lines[i].startswith("```"):
+                while i < len(lines) and not (
+                    lines[i].startswith(ticks) and lines[i].strip() == ticks
+                ):
                     code.append(lines[i])
                     i += 1
                 if i >= len(lines):

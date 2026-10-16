@@ -52,7 +52,7 @@
 
 <section id="pages" style="border-top: 0; padding-top: 0">
   <h2>Pages</h2>
-  <h3>API</h3><ul><li><a href="../docs/api/errors/">Error codes</a> <span class="muted">The eight stable polytypo error codes, when each is thrown, and why the code, not the message, is the contract.</span></li></ul>
+  <h3>Getting started</h3><ul><li><a href="../docs/getting-started/installation/">Installation</a> <span class="muted">Install polytypo for JavaScript, Python, Go, Ruby or PHP and make a first call.</span></li><li><a href="../docs/getting-started/choosing-a-mode/">Choosing a mode</a> <span class="muted">Which mode to call for which input, and what goes wrong when a string is passed to the wrong one.</span></li></ul><h3>API</h3><ul><li><a href="../docs/api/transform/">transform</a> <span class="muted">The one function polytypo is built around: its signature in all five runtimes, what it returns, what it throws, and the purity it guarantees.</span></li><li><a href="../docs/api/options/">Options</a> <span class="muted">Every polytypo option, its type and default, what it requires, and which error an invalid value raises.</span></li><li><a href="../docs/api/analyze/">analyze</a> <span class="muted">The same pipeline as transform, reporting what it would change instead of changing it, with code-point offsets into your input.</span></li><li><a href="../docs/api/errors/">Error codes</a> <span class="muted">The eight stable polytypo error codes, when each is thrown, and why the code, not the message, is the contract.</span></li></ul><h3>Modes</h3><ul><li><a href="../docs/modes/overview/">Modes</a> <span class="muted">The four ways polytypo reads a document, what each one treats as prose, and how to choose between them.</span></li><li><a href="../docs/modes/text/">Text mode</a> <span class="muted">The default mode. The whole string is prose, there is no parser and no skip list, so everything in it is typeset.</span></li><li><a href="../docs/modes/html/">HTML mode</a> <span class="muted">Typeset the prose in an HTML document or fragment while tags, attributes, code, scripts and character references come back byte for byte.</span></li><li><a href="../docs/modes/markdown/">Markdown mode</a> <span class="muted">Typeset the prose of a CommonMark or MDX document, leaving code, links, HTML and frontmatter exactly as written.</span></li><li><a href="../docs/modes/markdown/dialects/">Markdown dialects</a> <span class="muted">Why markdown mode requires an explicit dialect, what commonmark and mdx each mean, and what happens when the document does not parse.</span></li><li><a href="../docs/modes/markdown/skip-list/">Markdown skip list</a> <span class="muted">Exactly which parts of a Markdown document markdown mode leaves untouched, and which parts it typesets.</span></li><li><a href="../docs/modes/markdown/frontmatter/">Frontmatter</a> <span class="muted">How markdown mode treats a YAML or TOML frontmatter block, how to typeset named fields with frontmatterKeys, and how the block is located.</span></li><li><a href="../docs/modes/markdown/mdx/">MDX</a> <span class="muted">How markdown mode handles MDX: JSX elements and attributes, expressions, ESM statements, and documents that fail to parse.</span></li><li><a href="../docs/modes/yaml/">YAML mode</a> <span class="muted">Typeset the prose values of named keys in a YAML file, with a specified scan instead of a parser, and everything else returned byte for byte.</span></li><li><a href="../docs/modes/yaml/keys/">YAML keys</a> <span class="muted">How the keys option selects values in yaml mode: exact matching, any depth, no paths or globs, and which lines the scan reads as keys.</span></li><li><a href="../docs/modes/yaml/quoting/">Quoting and scalar forms</a> <span class="muted">Which YAML value forms yaml mode typesets, which it leaves untouched, and why a colon or hash inside a plain scalar is treated as a boundary.</span></li></ul><h3>Rules</h3><ul><li><a href="../docs/rules/spaces/">spaces</a> <span class="muted">The spaces rule collapses runs of ordinary spaces, removes spaces before punctuation and inside brackets, and leaves indentation, hard breaks and emoticons alone.</span></li><li><a href="../docs/rules/ellipsis/">ellipsis</a> <span class="muted">The ellipsis rule turns runs of three or more dots into the single character U+2026 and writes the two-dot form after ? and ! in locales that use it.</span></li><li><a href="../docs/rules/ranges/">ranges</a> <span class="muted">The opt-in ranges rule turns a hyphen between two numbers into the locale&#x27;s range dash, with the guards that protect dates, phone numbers and decimals.</span></li><li><a href="../docs/rules/dashes/">Dashes</a> <span class="muted">The dashes rule sets the parenthetical dash in the form each locale prescribes, and leaves compound hyphens, numbers, ranges and arrows alone.</span></li><li><a href="../docs/rules/hyphen/">Hyphen</a> <span class="muted">The hyphen rule binds the hyphen in listed Russian and Ukrainian forms with a non-breaking hyphen so a line break cannot split the word.</span></li><li><a href="../docs/rules/quotes/">Quotes</a> <span class="muted">How the quotes rule turns straight and foreign quotation marks into each locale&#x27;s primary and secondary pairs, resolves nesting, and leaves unmatched marks alone.</span></li><li><a href="../docs/rules/apostrophe/">Apostrophe</a> <span class="muted">The apostrophe rule turns the straight apostrophe into U+2019 in contractions, elisions, possessives and decade abbreviations, and leaves foot marks and primes alone.</span></li><li><a href="../docs/rules/symbols/">symbols</a> <span class="muted">The symbols rule converts (c), (r) and (tm) to the copyright, registered and trademark signs, between-number x to the multiplication sign, and +/- before a digit to a plus-minus sign.</span></li><li><a href="../docs/rules/nbsp/">No-break spaces</a> <span class="muted">How the nbsp rule converts and inserts U+00A0 and U+202F per locale, with the ten lists it reads, the narrowNbsp option and what it leaves alone.</span></li></ul><h3>Concepts</h3><ul><li><a href="../docs/concepts/span-model/">The span model</a> <span class="muted">How html, markdown and yaml modes show the rules only the prose of a document, and why spans are joined with boundary markers instead of processed alone.</span></li><li><a href="../docs/concepts/round-trip/">Round trip</a> <span class="muted">In html, markdown and yaml modes the output is your input with a few substring replacements applied, and nothing is re-serialised.</span></li><li><a href="../docs/concepts/idempotency/">Idempotency</a> <span class="muted">Why transform(transform(x)) equals transform(x) is a contract in every runtime, and what it means for text that is already typeset.</span></li><li><a href="../docs/concepts/rule-order/">Rule order</a> <span class="muted">The fixed order in which the nine polytypo rules run, why each sits where it does, why ranges is off by default, and how options never reorder them.</span></li><li><a href="../docs/concepts/locale-resolution/">Locale resolution</a> <span class="muted">How the locale option becomes exactly one locale: exact match, alias, one region strip, and an error otherwise, never a fallback to English.</span></li><li><a href="../docs/concepts/invisible-characters/">Invisible characters</a> <span class="muted">The four characters polytypo inserts that you cannot see, U+00A0, U+202F, U+2011 and U+2060, what inserts each, how to spot them, and the narrowNbsp option.</span></li></ul><h3>Guides</h3><ul><li><a href="../docs/guides/build-step/">Running polytypo in a build step</a> <span class="muted">Typeset Markdown, MDX and HTML files at build time with a complete Node script, choosing locale, mode and dialect per file, with a check mode for CI.</span></li><li><a href="../docs/guides/mdx-content/">Typesetting an MDX blog</a> <span class="muted">Process MDX posts with markdown mode and the mdx dialect, typeset frontmatter title and description, and know what is skipped, what is prose and what throws.</span></li><li><a href="../docs/guides/yaml-config/">Typesetting prose in YAML config</a> <span class="muted">Use yaml mode on OpenAPI-style and config YAML, naming the keys that hold prose, and see how quoted, plain and block scalars are handled and what is skipped.</span></li></ul><h3>Runtimes</h3><ul><li><a href="../docs/runtimes/javascript/">JavaScript and TypeScript</a> <span class="muted">Install polytypo from npm, call transform and analyze in JavaScript or TypeScript, read error codes, and see which modes and dialects the package covers.</span></li><li><a href="../docs/runtimes/python/">Python</a> <span class="muted">Install polytypo from PyPI, call transform and analyze with keyword arguments, handle PolytypoError codes, and see which modes and dialects the package covers.</span></li><li><a href="../docs/runtimes/go/">Go</a> <span class="muted">Install polytypo for Go, call Transform and Analyze with an Options struct, check *polytypo.Error codes, and see which modes and dialects the module covers.</span></li><li><a href="../docs/runtimes/ruby/">Ruby</a> <span class="muted">Install the polytypo gem, call Polytypo.transform and Polytypo.analyze with keyword arguments, rescue Polytypo::Error codes, and see which modes the gem covers.</span></li><li><a href="../docs/runtimes/php/">PHP</a> <span class="muted">Install polytypo with Composer, call Polytypo::transform and Polytypo::analyze with named arguments, catch PolytypoException codes, and see which modes PHP covers.</span></li></ul>
 </section>
 
 <section id="use">
@@ -131,7 +131,7 @@
 <span class="ln"><span class="tok-com"># mode &quot;yaml&quot; requires the keys whose values hold prose; every other line comes back untouched</span></span>
 <span class="ln">Polytypo.transform(input, locale: <span class="tok-str">&quot;en-US&quot;</span>, mode: <span class="tok-str">&quot;yaml&quot;</span>, keys: [<span class="tok-str">&quot;description&quot;</span>])</span>
 <span class="ln"></span>
-<span class="ln">Polytypo.transform(input, locale: <span class="tok-str">&quot;en-US&quot;</span>, rules: { dashes: false })</span>
+<span class="ln">Polytypo.transform(input, locale: <span class="tok-str">&quot;en-US&quot;</span>, rules: { <span class="tok-str">&quot;dashes&quot;</span> =&gt; false })</span>
 <span class="ln"></span>
 <span class="ln">begin</span>
 <span class="ln">  Polytypo.transform(input, locale: <span class="tok-str">&quot;xx&quot;</span>)</span>
@@ -164,108 +164,12 @@
   </p>
 
   <h3>Options</h3>
-  <div class="scroll">
-    <table class="kv">
-      <tr>
-        <th>Option</th>
-        <th>Type</th>
-        <th>Default</th>
-        <th>Notes</th>
-      </tr>
-      <tr>
-        <td class="mono">locale</td>
-        <td class="mono">string</td>
-        <td class="mono">—</td>
-        <td class="small muted">
-          Required, no exceptions. Unknown locale throws <code>POLYTYPO_UNKNOWN_LOCALE</code> rather
-          than falling back to English. Resolution (<code>de-AT</code> → <code>de</code>) follows
-          <code>spec/rules/locale-resolution.md</code>. One call applies one locale, and the
-          language is never detected: split a document that mixes languages and transform each part
-          with its own locale.
-        </td>
-      </tr>
-      <tr>
-        <td class="mono">mode</td>
-        <td class="mono">"text" | "html" | "markdown" | "yaml"</td>
-        <td class="mono">"text"</td>
-        <td class="small muted">
-          Selects the adapter. <code>text</code> has no parser and no skip list: the whole string is
-          prose to it. <code>html</code> parses with parse5 and takes a fragment as readily as a
-          whole document; <code>markdown</code> parses with micromark. Both run the same rule
-          pipeline only on prose text nodes, never inside tags, attributes, character references,
-          code spans or code blocks. <code>yaml</code> uses no parser either — two of the five
-          runtimes' YAML libraries cannot report the source offsets it would need — so it is a
-          specified left-to-right scan, and it is the one mode that skips by default: it processes
-          only the values of the keys you name in <code>keys</code>.
-        </td>
-      </tr>
-      <tr>
-        <td class="mono">dialect</td>
-        <td class="mono">"commonmark" | "mdx"</td>
-        <td class="mono">—</td>
-        <td class="small muted">
-          Required when <code>mode</code> is <code>"markdown"</code>, with no default — omitting it
-          throws <code>POLYTYPO_INVALID_DIALECT</code>. Dialect detection is forbidden by design:
-          one <code>&lt;https://…&gt;</code> autolink is valid CommonMark and invalid MDX, so a
-          heuristic would silently reclassify content. Ignored for the other three modes.
-        </td>
-      </tr>
-      <tr>
-        <td class="mono">keys</td>
-        <td class="mono">string[]</td>
-        <td class="mono">—</td>
-        <td class="small muted">
-          Required when <code>mode</code> is <code>"yaml"</code>, with no default — omitting it
-          throws <code>POLYTYPO_INVALID_OPTION</code>. Names the mapping keys whose values hold
-          prose. There is no guess to make here: nothing in YAML's syntax separates a
-          <code>description:</code> from a <code>run:</code>, and a mode that processed every string
-          scalar would rewrite shell commands. Matching is exact, with no paths or globs, and the
-          key itself is never processed. An empty list is legal and processes nothing. Ignored for
-          the other three modes.
-        </td>
-      </tr>
-      <tr>
-        <td class="mono">frontmatterKeys</td>
-        <td class="mono">string[]</td>
-        <td class="mono">—</td>
-        <td class="small muted">
-          Optional, and only meaningful when <code>mode</code> is <code>"markdown"</code> (spec
-          1.7.0). Frontmatter is skipped whole by default, delimiters included, because it is a
-          machine-read block — but on a site whose frontmatter carries the headline that leaves the
-          most visible string on the page untouched. Naming keys processes their scalar values and
-          nothing else in the block, with the same scan <code>yaml</code> mode uses, so the same
-          constructs are refused: a single-quoted scalar containing <code>''</code>, which is how an
-          apostrophe is written inside single quotes, comes back untouched. A TOML
-          (<code>+++</code>) block is always skipped whole. The block is processed separately from
-          the body, so an unbalanced quotation mark in <code>title</code> cannot pair with a mark in
-          your first paragraph. Absent means the pre-1.7.0 behaviour; an empty list is legal and
-          processes nothing.
-        </td>
-      </tr>
-      <tr>
-        <td class="mono">narrowNbsp</td>
-        <td class="mono">"narrow" | "nbsp"</td>
-        <td class="mono">"narrow"</td>
-        <td class="small muted">
-          <code>"nbsp"</code> makes the engine emit U+00A0 everywhere it would emit U+202F, the
-          narrow no-break space many common faces do not carry (spec 1.3.0). It moves the rule's
-          target rather than cleaning up afterwards, so the result is still a fixed point. Checked
-          whether or not <code>nbsp</code> is enabled: the check belongs to the call.
-        </td>
-      </tr>
-      <tr>
-        <td class="mono">rules</td>
-        <td class="mono">Partial&lt;Record&lt;RuleId, boolean&gt;&gt;</td>
-        <td class="mono">all on except ranges</td>
-        <td class="small muted">
-          <code>{ dashes: false }</code> switches a rule off. <code>ranges</code> is the one rule
-          that is off by default: <code>{ ranges: true }</code> switches it on. Disabling a rule
-          removes it from the pipeline; it never reorders the rest. An unrecognised rule id throws
-          <code>POLYTYPO_UNKNOWN_RULE</code>.
-        </td>
-      </tr>
-    </table>
-  </div>
+  <p class="small muted" style="margin-top: -6px">
+    <code>locale</code> is always required; <code>dialect</code> with
+    <code>mode: "markdown"</code> and <code>keys</code> with <code>mode: "yaml"</code>. Every
+    option, its default and the error an invalid value raises is on the
+    <a href="../docs/api/options/">options</a> page.
+  </p>
 
   <h3>Error codes</h3>
   <p class="small muted" style="margin-top: -6px">
@@ -276,68 +180,13 @@
 
   <h3>What to pass in</h3>
   <p>
-    <code>transform()</code> sees only the string it is given. Rules read the characters on either
-    side of what they change, and that reading stops at the ends of the string. Walk a component
-    tree and transform each text node on its own, and every node boundary becomes one of those ends:
-    <code>Design</code> and <code> - the rest</code> sent as two calls leave the hyphen alone. Send
-    <code>&lt;strong&gt;Design&lt;/strong&gt; - the rest</code> to <code>html</code> mode as one
-    fragment and the dash is set, because <code>html</code> mode reads prose across inline elements.
-  </p>
-  <p>
-    <code>text</code> mode cannot tell code or markup from prose, so it typesets whatever is in the
-    string. In code that means <code>(c)</code>, <code>(r)</code>, <code>(tm)</code> and
-    <code>x</code> between numbers (<code>symbols</code>), spaces just inside <code>(</code>,
-    <code>[</code> and <code>{</code> (<code>spaces</code>), straight <code>'</code> and
-    <code>"</code> anywhere (<code>quotes</code>, <code>apostrophe</code>), and <code>-</code>
-    between words (<code>dashes</code>). In French it also puts a no-break space before the
-    <code>;</code> that ends <code>&amp;amp;</code>, and the reference is broken. Keep code out of a
-    <code>text</code> call, or use the mode that knows where the code is:
-    <code>markdown</code> skips code spans and blocks, <code>html</code> skips <code>code</code>,
-    <code>pre</code> and character references. A string that can contain <code>&amp;amp;</code> or
-    <code>&amp;#160;</code> is HTML, fragment or not.
-  </p>
-  <p>
-    In <code>markdown</code> mode those skipped regions are the dialect's own structural ones, not
-    whatever looks like code to a reader. CommonMark calls an indented block code at four spaces; at
-    two it is an ordinary paragraph, so a JSON sample indented by two spaces comes back with curly
-    quotes — valid JSON in, invalid JSON out, and nothing in the return value says so. MDX has no
-    indented code blocks at all, so there even four spaces is prose, and a brace inside it is a JSX
-    expression: the same sample throws <code>POLYTYPO_MALFORMED_INPUT</code> instead. A fence or a
-    code span is the one marker that means <em>code</em> in both dialects.
-  </p>
-  <p>
-    Frontmatter is the one skipped region you can open, key by key, with
-    <code>frontmatterKeys</code>. Named that way round on purpose: the block holds
-    <code>slug</code>, <code>date</code> and <code>serviceSlug</code> next to <code>title</code> and
-    <code>description</code>, and only you know which is which. Measured on a 187-file site, the
-    difference it makes is <code>title: He said "hello" once</code> →
-    <code>title: He said “hello” once</code> while every other field keeps every byte.
-  </p>
-
-  <h3>What it inserts</h3>
-  <p>
-    Most of what <code>transform()</code> changes is visible: three dots become one ellipsis, a
-    hyphen becomes a dash, straight quotes become the locale's own. Four insertions are not, and
-    they are the ones to know about before the text reaches a renderer you don't control.
-  </p>
-  <p>
-    <code>U+00A0</code>, the no-break space, is the common one — French keeps it inside guillemets
-    and before <code>%</code>, Russian binds it after <code>№</code> and inside
-    <code>и&nbsp;т.&nbsp;д.</code>, German holds <code>S.&nbsp;5</code> together.
-    <code>U+202F</code>, the narrow no-break space, is emitted by <code>fr</code> alone, before
-    <code>;</code> <code>!</code> and <code>?</code>; <code>fr-CA</code> removes that space instead
-    of narrowing it. <code>U+2011</code>, the non-breaking hyphen, comes from <code>hyphen</code>,
-    whose lists are non-empty in <code>ru</code> alone. <code>U+2060</code>, the word joiner, wraps
-    the dash of a bound range and appears only if you turn <code>ranges</code> on.
-  </p>
-  <p>
-    The last three are where font coverage stops being universal. A browser substitutes another face
-    for a glyph its font lacks, at a slightly different width; a PDF renderer with one embedded font
-    can drop the character instead. Check the font on that path before you ship.
-    <code>rules: { hyphen: false }</code> turns off the only rule that emits <code>U+2011</code>,
-    and <code>ranges</code> is off by default, so <code>U+2060</code> appears only where you asked
-    for it. The joiner is what keeps a range from breaking across lines, which both Мильчин and
-    Chicago require, so stripping it afterwards costs exactly that.
+    A string that is prose from end to end goes to <code>text</code>; anything with tags goes to
+    <code>html</code>; a Markdown file to <code>markdown</code> with its dialect; a YAML file to
+    <code>yaml</code> with the keys of its prose fields.
+    <a href="../docs/getting-started/choosing-a-mode/">Choosing a mode</a> covers what goes
+    wrong with the wrong one, and
+    <a href="../docs/concepts/invisible-characters/">invisible characters</a> covers what the
+    output contains that you cannot see.
   </p>
 
   <h3>Wiring it into a build step</h3>

@@ -1183,6 +1183,8 @@ footer a:hover {
 .doc-nav nav {
   position: sticky;
   top: var(--space-10);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
   font-size: 14px;
 }
 
@@ -1273,5 +1275,32 @@ footer a:hover {
 
   .doc-nav nav {
     position: static;
+  }
+}
+
+.example {
+  margin: var(--space-8) 0;
+}
+
+.example figcaption {
+  margin-bottom: var(--space-3);
+  color: var(--muted);
+  font-size: 12.5px;
+  overflow-wrap: anywhere;
+}
+
+.example-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+}
+
+.example-pair .eyebrow {
+  margin-bottom: var(--space-2);
+}
+
+@media (max-width: 720px) {
+  .example-pair {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

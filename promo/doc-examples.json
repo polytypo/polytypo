@@ -1,0 +1,569 @@
+{
+  "0a2ca0de6e2ddcd8": {
+    "out": "Pages 34⁠–⁠36 -- see “chapter” 3⁠–⁠5."
+  },
+  "3319a1c0eda9bdfc": {
+    "out": "Vraiment ? Oui !"
+  },
+  "b0987b2047c732a7": {
+    "error": "POLYTYPO_UNKNOWN_LOCALE"
+  },
+  "9194a4fc3513547d": {
+    "out": "“Wait”—it’s done…"
+  },
+  "b4f82e97c8510b65": {
+    "out": "“Wait”—it’s done…"
+  },
+  "21497d30083ab7ca": {
+    "out": "Oui ! « Non » ?"
+  },
+  "bbaf76fde0d139a1": {
+    "out": "Oui ! « Non » ?"
+  },
+  "7bb64cd078a6ab2e": {
+    "out": "в Москве, с ним"
+  },
+  "1a2dab04e88e768c": {
+    "out": "See page 5 and 10 km."
+  },
+  "ef54cbda1340cd95": {
+    "out": "Quoi ? Oui !"
+  },
+  "9ea8857fe05d6466": {
+    "out": "из‑под стола"
+  },
+  "ebab96c92b688d5c": {
+    "out": "pages 5⁠–⁠10"
+  },
+  "86505f48d3c70457": {
+    "out": "Quoi ? Oui !"
+  },
+  "58d5c7debba39745": {
+    "out": "“quoted”"
+  },
+  "932316dd1977af0c": {
+    "out": "„quoted“"
+  },
+  "d1307c0765ce7b59": {
+    "out": "«quoted»"
+  },
+  "f5a1bf5631ae3314": {
+    "out": "“quoted”"
+  },
+  "dfbc9d99ca820885": {
+    "out": "« quoted »"
+  },
+  "c57d50d6b2c044fd": {
+    "out": "“quoted”"
+  },
+  "a1ddc23f816e9173": {
+    "error": "POLYTYPO_UNKNOWN_LOCALE"
+  },
+  "a55ed865c6fcde2f": {
+    "error": "POLYTYPO_UNKNOWN_LOCALE"
+  },
+  "e20a6f67cbbb6ba6": {
+    "error": "POLYTYPO_UNKNOWN_LOCALE"
+  },
+  "2579e4ade1674ea4": {
+    "error": "POLYTYPO_UNKNOWN_LOCALE"
+  },
+  "51aa1999fa4aaf23": {
+    "out": "<!DOCTYPE html>\n<P CLASS=lead id='a'>“Hello”—it’s <BR/>fine&nbsp;now &amp; then…</P>\n<!-- keep \"this\" -- as is -->\n<pre>\"raw\" -- text</pre>\n<script>var s = \"x -- y\";</script>\n<p>She said “no”…</p>"
+  },
+  "6908695eff8934a3": {
+    "out": "# “Title”—here\n\n* “one”—it’s\n* two…\n\nPara with `\"code\" -- x` and a [link](http://x.com/a--b \"t\") and *“em”* text.\n\n    \"indented\" -- code"
+  },
+  "84a23d928d7209d0": {
+    "out": "5-10—“x”"
+  },
+  "b99f93208b6681a8": {
+    "out": "5⁠–⁠10—“x”"
+  },
+  "509aa1c3e0aacac8": {
+    "out": "5⁠–⁠10 -- “x”"
+  },
+  "59205e96b05e5ccd": {
+    "out": "“hi”"
+  },
+  "afb2b0db9eaf7e6a": {
+    "out": "“He said <em>‘hi’</em> loudly”"
+  },
+  "64901e015411bb6e": {
+    "out": "“a”<code>x</code>“b”"
+  },
+  "35830a8794998e63": {
+    "out": "He said <code>x</code> “hi”"
+  },
+  "8532fb08a91a5ff3": {
+    "out": "„Das ist <em>wirklich</em> so“, sagte er."
+  },
+  "222132ca284228b9": {
+    "out": "<em>mot</em> !"
+  },
+  "417d0be629cfdeeb": {
+    "out": "a<em>--</em>b"
+  },
+  "15a1e8a426d0bec3": {
+    "out": " - the rest"
+  },
+  "ad49b1ec0e8b4f03": {
+    "out": "<strong>Design</strong>—the rest"
+  },
+  "3f05973b5c857f59": {
+    "out": "<a href=\"/x\" title=\"it’s—a note\">link</a>"
+  },
+  "a9ad8f69993032e0": {
+    "out": "He said “wait…”—twice."
+  },
+  "b8543ac8f45713c1": {
+    "out": "---\ntitle: He said “hello”—twice\nslug: \"hello-twice\"\n---\n\nRates—all of them… see [the site](https://example.com/a--b) and `a -- b`.\n\n<Callout>It’s “fine”—really</Callout>"
+  },
+  "501ced5771d77a4e": {
+    "out": "<Callout type=\"note\" title=\"a -- b\">It’s “fine”—really…</Callout>\n\n{props.label + \" -- x\"}\n\nUse `a -- b` here—ok."
+  },
+  "d76a7a5bd8d35ac5": {
+    "out": "export const meta = {slug: \"une-note\"}\n\nUne note : « salut » — ok !"
+  },
+  "cd76fe4ecabb06fc": {
+    "out": "---\ntitle: He said “hello”—twice\ndescription: It’s “fine”—really…\nslug: \"hello-twice\"\ndate: 2026-10-01\n---\n\nBody text—“quoted”…"
+  },
+  "39258d94ac4a832d": {
+    "out": "---\ntitle: He said \"hello\" -- twice\n---\n\nBody text—“quoted”…"
+  },
+  "2ea00cdd6c70f865": {
+    "out": "---\ntitle: 'It''s -- a \"test\"'\n---\n\nBody"
+  },
+  "32f7412791dfd396": {
+    "error": "POLYTYPO_MALFORMED_INPUT"
+  },
+  "b0c26bae65fa7d0f": {
+    "out": "Intro:\n\n    indented—“text”…"
+  },
+  "d03185a213cc6d6d": {
+    "out": "openapi: 3.0.0\ninfo:\n  title: Rates API\n  description: \"Returns rates -- all of them... \\\"quoted\\\"\"\npaths:\n  /rates:\n    get:\n      summary: List rates—“all” of them\n      description: |\n        First line—“one”…\n        Second line.\n      operationId: list--rates\n      x-run: echo \"a\" -- b"
+  },
+  "a1bde2e0d92cfc73": {
+    "out": "description: Rates—all # note -- here\ndescription: key: value -- a\ndescription: first -- line\n  second -- line\ndescription: [a -- b]"
+  },
+  "5b75ef032ad1b36d": {
+    "out": "a: 'x'\ndescription: 'It''s \"fine\" -- really'\nother: x"
+  },
+  "cd4ac2be2f15ba38": {
+    "out": "title: Chapter 1: \"the beginning\"!\ntitle: \"Chapter 1 : the beginning !\"\ntitle: 'Chapter 1 : the beginning !'"
+  },
+  "503bd4bd873c0417": {
+    "out": "<p class=\"lead\" title=\"Don't touch\">He said “hello”—<em>really</em>…</p>"
+  },
+  "26c64c2b91eb6e57": {
+    "out": "<p>“He said <em>‘hi’</em> loudly”</p>"
+  },
+  "53aa64db14697710": {
+    "out": "<p>Run “make” or <code>echo \"a\" -- \"b\"</code>.</p>\n<pre><em>\"x\" - y</em></pre>"
+  },
+  "47fe87dc52364eee": {
+    "out": "# The “new” plan—v2\n\nHe said “wait…” and left. Read [the “docs”](https://example.com/a--b \"A -- title\").\n\nUse `echo \"x\"` here."
+  },
+  "b65fd692872d16f2": {
+    "out": "Say “hello” first:\n\n```js\nconsole.log(\"hi\" -- \"there\");\n```\n\nThen “goodbye”."
+  },
+  "de0340f7542581b9": {
+    "out": "“He said *‘hi’* loudly,” she wrote."
+  },
+  "489e1e9529c2f6fd": {
+    "error": "POLYTYPO_INVALID_DIALECT"
+  },
+  "28246ff9ee27d39d": {
+    "out": "See <https://example.com/a--b> for “details”."
+  },
+  "48e70305e478b4b5": {
+    "error": "POLYTYPO_MALFORMED_INPUT"
+  },
+  "ca3632b7ee5c9f0b": {
+    "out": "A paragraph.\n\n    echo \"x\" -- \"y\""
+  },
+  "91b772ac43baca1b": {
+    "out": "A paragraph.\n\n    echo “x”—“y”"
+  },
+  "c09d85311c8ac902": {
+    "out": "---\ntitle: He said “hello” once\ndescription: A note—short\nslug: \"a--b\"\ndate: 2026-09-26\n---\n\n“Body” text."
+  },
+  "d0190caf2eec1a30": {
+    "out": "---\ntitle: He said \"hello\" once\n---\n\n“Body” text."
+  },
+  "6f76b89756790edf": {
+    "out": "import { Callout } from \"./callout\"\n\nexport const meta = { title: \"A -- B\" }\n\n<Callout kind=\"it's\" label={\"x\" + \"y\"}>He said “stop”—twice</Callout>\n\nTotal: {count + \"a\"} items—“done”."
+  },
+  "253bec43ea5c7e32": {
+    "error": "POLYTYPO_MALFORMED_INPUT"
+  },
+  "a9c9e88659947748": {
+    "out": "| Name | Note |\n| --- | --- |\n| “A” | it’s—fine |\n\n- [x] “done”—really\n- [ ] see <https://example.com/x--y>\n\n<span title=\"a -- b\">“inline” html</span> and <code>\"x\" -- \"y\"</code>"
+  },
+  "885b2a5db2f2dea5": {
+    "out": "“He said ‘wait’…”—and then he left © 2026."
+  },
+  "b57573f6f1351789": {
+    "out": "Il a dit : « Vraiment ? » … Non !"
+  },
+  "e3521feb6238af8d": {
+    "out": "if (a!= b) {return “x”—“y”;} // ©"
+  },
+  "a6d70f11fa0a5d42": {
+    "out": "openapi: 3.1.0\ninfo:\n  title: Pets -- \"API\"\n  description: A service for “pets”—all of them…\npaths:\n  /pets:\n    get:\n      summary: List pets—paginated\n      operationId: \"list -- pets\""
+  },
+  "de5a5016eedb1a2a": {
+    "out": "title: A “quoted”—title\nmeta:\n  title: nested “one”\nTitle: capitalised \"key\"\n\"title\": quoted key"
+  },
+  "0bc23c973e0c479f": {
+    "out": "- name: \"one\"\n  description: first \"item\" -- done\n- description: second “item”—done\nitems:\n  - description: third “item”—done"
+  },
+  "35585f7412f41f68": {
+    "out": "note: a “plain” value—with a comment # keep \"this\""
+  },
+  "aa1890e95675c5c4": {
+    "out": "k: a:—b"
+  },
+  "e77038fe9c97a5dd": {
+    "out": "k: a:--b"
+  },
+  "fc3ed623c2d7fd54": {
+    "out": "a: \"She said -- \\\"no\\\"\"\nb: 'It''s a \"test\" -- really'\nc: \"plain “quotes”—fine\""
+  },
+  "64a4beb9905b2958": {
+    "out": "description: |-\n  First line “quoted”—done…\n  Second line\n\n  after a blank\nother: |\n  keep \"this\" -- as is"
+  },
+  "0887861f302627b7": {
+    "out": "Don’t go; the dogs’ bowls; back in the ’90s; ’Tis the season; it’s 5 o’clock"
+  },
+  "489b9fd7c9a5c57d": {
+    "out": "The 1990’s were loud. He is 6' 2\" tall, at 55° 40' N."
+  },
+  "b583f74052e729f8": {
+    "out": "L’été n’est pas d’accord. Qu’« il » parte et d’« urine » aussi."
+  },
+  "96fe765676188548": {
+    "out": "„Hans’“ Buch"
+  },
+  "74fd824a781f7943": {
+    "out": "I said “hello” to them, and “goodbye”."
+  },
+  "b5f6be2c1157aa95": {
+    "out": "The pipeline (order 90)’s own output"
+  },
+  "98dc5b90e3b040c2": {
+    "out": "<code>x</code>’s value"
+  },
+  "8f65385ee5e1ec93": {
+    "out": "rock ’n’ roll"
+  },
+  "e844c236921a592a": {
+    "out": "The letter ’n’ is common."
+  },
+  "6332daa543bb208d": {
+    "out": "a ' b and dogs''"
+  },
+  "f8de4b3314417258": {
+    "out": "He said,'yes’ and left."
+  },
+  "a2a9194195db2e6b": {
+    "out": "It’s `don't` and ok"
+  },
+  "2d72018481719399": {
+    "out": "<p>It’s</p><a href=\"x\" title=\"it's\">a</a><code>don't</code>"
+  },
+  "97885317f524f844": {
+    "out": "Don't go"
+  },
+  "c68a089d39439c29": {
+    "out": "The plan—if there is one—fails."
+  },
+  "485f5dd7ae8a6699": {
+    "out": "The plan – if there is one – fails."
+  },
+  "615a3dbc95bb3950": {
+    "out": "Москва — столица"
+  },
+  "b9485d5abf916723": {
+    "out": "Der Plan – falls es einen gibt – scheitert."
+  },
+  "b416400699cbddc9": {
+    "out": "The plan—if there is one—fails."
+  },
+  "0eef85ee3700f828": {
+    "out": "Der Plan – falls es einen gibt – fällt."
+  },
+  "570eb5f35de5c64f": {
+    "out": "a—b"
+  },
+  "911472a3c6343587": {
+    "out": "1 May – 3 June"
+  },
+  "700629f9207e6d07": {
+    "out": "A well-known e-mail address, COVID-19, Jean-Luc"
+  },
+  "56b89845acccd381": {
+    "out": "Run --force to override, -5 °C outside, a -> b"
+  },
+  "456a0e568fec87e5": {
+    "out": "Title\n---\nBody text"
+  },
+  "c67a5558889b9fa1": {
+    "out": "Released 2026-08-15, pp. 34-36"
+  },
+  "b7d5df7324f1e1af": {
+    "out": "Released 2026-08-15, pp. 34⁠–⁠36"
+  },
+  "4eb56eb15b6a72ef": {
+    "out": "Prices run $15 - $20, up 35%-50%."
+  },
+  "c0021ed12549ce31": {
+    "out": "Price—$50—drop"
+  },
+  "ae83d10eebb04bb6": {
+    "out": "в XV—XVII веках"
+  },
+  "430a5b1525786f5d": {
+    "out": "Ein Satz.--. Ende"
+  },
+  "dc462bc821d41003": {
+    "out": "Ein Satz.—. Ende"
+  },
+  "b3f99f2519d95903": {
+    "out": "Use `a -- b` for the flag—not the dash."
+  },
+  "5795067d82f0be36": {
+    "out": "The plan - if there is one - fails."
+  },
+  "238bc565082c4d26": {
+    "out": "Το σχέδιο - αν υπάρχει - αποτυγχάνει"
+  },
+  "a0a4d9f15998a980": {
+    "out": "Wait… what? Hmm… He left… Yes. No."
+  },
+  "5e3f46c33d0f0a22": {
+    "out": "Wait… what? and … and …"
+  },
+  "b2ca529136f6f536": {
+    "out": "See ../docs and Version 1..5 and e.g. .."
+  },
+  "f6f8bed59c4a12dd": {
+    "out": "Really?… and Really!… and nothing..here"
+  },
+  "358a84c610c4fc1e": {
+    "out": "Что?.. Что?.. Что?!.. Он ушёл… см. ../"
+  },
+  "f4f7e990bf4ed93a": {
+    "out": "Ne?.. Ne?.. Gitti…"
+  },
+  "6c2535313f639146": {
+    "out": "Vraiment ?… Il est parti…"
+  },
+  "4c54b0b7af4ebae2": {
+    "out": "Wait … and Hello… and more"
+  },
+  "630993965c1f4a41": {
+    "out": "Run `foo...bar` then wait…"
+  },
+  "93bfb603b63b45de": {
+    "out": "Достал из‑под стола. Из‑за дождя ушёл."
+  },
+  "69b8ff42a6b60f70": {
+    "out": "кое‑что и кой‑кого, что‑нибудь или что‑либо, он сделал‑таки это, скажи‑ка"
+  },
+  "b8c997d7a8d3346f": {
+    "out": "кое- и кое‑что"
+  },
+  "8d296766edda03b9": {
+    "out": "квазииз-подный и научно-технический"
+  },
+  "67439b82d6037c07": {
+    "out": "-таки в начале"
+  },
+  "a370af60dca658c2": {
+    "out": "будь‑який, з‑під столу, хтозна‑що, ін‑т, гр‑н"
+  },
+  "5705bda644ee1bde": {
+    "out": "Достал из‑под стола"
+  },
+  "791d17a61f6b0e8d": {
+    "out": "ИЗ-ПОД СТОЛА"
+  },
+  "292db7b19ec4dc18": {
+    "out": "См. https://example.com/из-под и из‑под стола."
+  },
+  "beb2e05ee9c2a5da": {
+    "out": "Достал из-под стола"
+  },
+  "a88bf407b9ceea92": {
+    "out": "Vraiment ? Oui ! Et alors ; voici : un test."
+  },
+  "d2b05923b7cf77b1": {
+    "out": "Vraiment ?! Voir http://example.org et 12:30."
+  },
+  "2f0a0cff9a9154fd": {
+    "out": "Он живёт в Москве и работает на заводе."
+  },
+  "24bb647405415092": {
+    "out": "Byl jsem v Praze a u moře."
+  },
+  "b0cdd5514406d031": {
+    "out": "Ala ma kota i idzie w las."
+  },
+  "2cff9429a69801c8": {
+    "out": "Es sind 20 km, z. B. bis Berlin, siehe Nr. 5 und S. 12, § 3."
+  },
+  "d8e6eff87f7d7415": {
+    "out": "Мы жили на ул. Ленина, г. Москва, в 1990 г. см. № 5"
+  },
+  "33e654b8e706c260": {
+    "out": "Es sind 20 km und 5 %."
+  },
+  "a7cdf5d068f9cfd0": {
+    "out": "Es sind 20km und 50%."
+  },
+  "1b9415952afe25b0": {
+    "out": "J. R. R. Tolkien wrote it. Meet A. Smith there."
+  },
+  "94b059605e763457": {
+    "out": "Il a dit « mot » et « autre »."
+  },
+  "ba3b2433e27ba5d7": {
+    "out": "Vraiment ? Oui ! Et alors ; voici : un test."
+  },
+  "8298d4d927b6af50": {
+    "out": "Τι κάνεις; Έχει 10,5 % φέτος και «καλημέρα»."
+  },
+  "3473dde4556fd226": {
+    "out": "He said “she told me ‘go home’ twice” and left. “I don’t know,” she added."
+  },
+  "dac556b0c47bccba": {
+    "out": "“He said ‘no’ to me,” she noted."
+  },
+  "763a592c5441e30d": {
+    "out": "He said „she told me ‚go home‘ twice“ and left."
+  },
+  "2b123fbe00348971": {
+    "out": "He said «she told me ‹go home› twice» and left."
+  },
+  "045799a01853e5bb": {
+    "out": "Powiedział „to jest »ważne« dziś”."
+  },
+  "5ec496a816ce9310": {
+    "out": "Он сказал: «это „моё“ дело»."
+  },
+  "09c23abc10353af2": {
+    "out": "He said ‘she told me “go home” twice’ and left."
+  },
+  "968eee2436cceb45": {
+    "out": "‘Already curly,’ he said, and ‘this too.’"
+  },
+  "eb24c8749ef59ff8": {
+    "out": "Er sagte „Wort“ leise."
+  },
+  "039e1c6b1be6a1e4": {
+    "out": "Il a dit « bonjour » puis « merci »."
+  },
+  "0cb05b6bf60696a0": {
+    "out": "rock ’n’ roll and the “quoted” word"
+  },
+  "dda0d8ac4bf87e45": {
+    "out": "She said \"hello"
+  },
+  "6accd715c49e4fe9": {
+    "out": "He is 6' 2\" tall."
+  },
+  "94a95449139df47e": {
+    "out": "He said \"\" then left."
+  },
+  "a05bec9a14c4326b": {
+    "out": "He says ‘avoid `x`’s printer.’ Done."
+  },
+  "2e2827e7117f556d": {
+    "out": "Takes 5-10 days. See Figure 5-10 and 1914-1918."
+  },
+  "7ead452d8594fcb5": {
+    "out": "Takes 5⁠–⁠10 days. See Figure 5⁠–⁠10 and 1914⁠–⁠1918."
+  },
+  "6a7bfde7987dc85c": {
+    "out": "1914⁠–⁠1918 and pp. 34⁠–⁠36, takes 5⁠–⁠10 days"
+  },
+  "9adbe3f195f8873b": {
+    "out": "Годы 1941⁠—⁠1945 были тяжёлыми"
+  },
+  "167779c521096257": {
+    "out": "1914⁠–⁠1918 und 5⁠–⁠10 Tage"
+  },
+  "b647cc3ef37e5980": {
+    "out": "Années 1914-1918"
+  },
+  "73cddee61899d8c2": {
+    "out": "2026-08-15, 212-555-1234, ISO 8859-1, 2020-24, 10-7, 1.5-2.5, MP3-4, 1-800, 9-05"
+  },
+  "c8472db3f79d4a2b": {
+    "out": "$15⁠–⁠$20, 35%⁠–⁠50%, $15⁠–⁠20, 15⁠–⁠20%"
+  },
+  "eb0c0fbbe3a13240": {
+    "out": "$15-€20, 15 kg-20 kg, US$15-$20"
+  },
+  "187032a62abf927f": {
+    "out": "Takes `5-10` days, 5⁠–⁠10 days"
+  },
+  "f95378c70ae505d4": {
+    "out": "Hello world, and (text) here!"
+  },
+  "d99af8be2ab0024a": {
+    "out": "a (b, c) d"
+  },
+  "6c62adbb8bcc3f70": {
+    "out": "Bonjour ! Ça va ?"
+  },
+  "b074ed3a305fdba8": {
+    "out": "Wait … what? See ../docs and use .NET, .NET Core"
+  },
+  "e0fa0c1e379d814e": {
+    "out": "Hello… and then more"
+  },
+  "3ab5764d3054d7bb": {
+    "out": "Привет :-) and a :( b"
+  },
+  "1b79b23c478a7279": {
+    "out": "- [ ] task with gap\n- [x] done  \nnext line"
+  },
+  "de05fe4435233f81": {
+    "out": "text with   `code   span`  and more\n\n    indented   code\n\n```\nfenced   code\n```"
+  },
+  "48d7948863464063": {
+    "out": "Acme © 2026, Acme(R), Acme ™, Acme™. f(c) and (r)evolution and ((c)) and (s)he"
+  },
+  "a30272e8d65b446b": {
+    "out": "©(r) and ©™ and ™(c)"
+  },
+  "185eeeddeab9fab1": {
+    "out": "A 1920×1080 screen, 5×4×3 box, 3 × 4 and 3 x4 and 1080x and x264 and 0x1F and H2x4"
+  },
+  "63f001f94167f8b5": {
+    "out": "Размер 5×4 см и 5×4×3 и 3 × 4"
+  },
+  "0782728d544f5de2": {
+    "out": "Maße 3 × 4 cm"
+  },
+  "b0d24effd4e175ea": {
+    "out": "Error ±5 and ± 5 and [+/-]5 and +/- indicates rows and +-5"
+  },
+  "513c4e2d7ffe0189": {
+    "out": "Use © in `f(c) 5x4` and © here 5×4"
+  },
+  "8094531177edbb17": {
+    "out": "<p>© 2026 5×4</p><pre>(c) 5x4</pre><a href=\"/a(c)\">x</a>"
+  },
+  "c150550dfe4ed49d": {
+    "out": "She said, „it’s fine“ – but I wasn’t sure…"
+  },
+  "84835a57f3d6dae5": {
+    "out": "She said, “it’s fine”—but I wasn’t sure…"
+  },
+  "a81952a2b7c65a72": {
+    "out": "She said, “it’s fine” -- but I wasn’t sure…"
+  }
+}

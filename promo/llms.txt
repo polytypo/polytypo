@@ -9,7 +9,46 @@ Modes (4): text, html, markdown, yaml. `text` has no parser and no skip list —
 ## Docs
 
 - [Reference](https://polytypo.dev/docs/): API shape, options, the full error code contract, code examples for all five runtimes.
+- [Installation](https://polytypo.dev/docs/getting-started/installation/): Install polytypo for JavaScript, Python, Go, Ruby or PHP and make a first call.
+- [Choosing a mode](https://polytypo.dev/docs/getting-started/choosing-a-mode/): Which mode to call for which input, and what goes wrong when a string is passed to the wrong one.
+- [transform](https://polytypo.dev/docs/api/transform/): The one function polytypo is built around: its signature in all five runtimes, what it returns, what it throws, and the purity it guarantees.
+- [Options](https://polytypo.dev/docs/api/options/): Every polytypo option, its type and default, what it requires, and which error an invalid value raises.
+- [analyze](https://polytypo.dev/docs/api/analyze/): The same pipeline as transform, reporting what it would change instead of changing it, with code-point offsets into your input.
 - [Error codes](https://polytypo.dev/docs/api/errors/): The eight stable polytypo error codes, when each is thrown, and why the code, not the message, is the contract.
+- [Modes](https://polytypo.dev/docs/modes/overview/): The four ways polytypo reads a document, what each one treats as prose, and how to choose between them.
+- [Text mode](https://polytypo.dev/docs/modes/text/): The default mode. The whole string is prose, there is no parser and no skip list, so everything in it is typeset.
+- [HTML mode](https://polytypo.dev/docs/modes/html/): Typeset the prose in an HTML document or fragment while tags, attributes, code, scripts and character references come back byte for byte.
+- [Markdown mode](https://polytypo.dev/docs/modes/markdown/): Typeset the prose of a CommonMark or MDX document, leaving code, links, HTML and frontmatter exactly as written.
+- [Markdown dialects](https://polytypo.dev/docs/modes/markdown/dialects/): Why markdown mode requires an explicit dialect, what commonmark and mdx each mean, and what happens when the document does not parse.
+- [Markdown skip list](https://polytypo.dev/docs/modes/markdown/skip-list/): Exactly which parts of a Markdown document markdown mode leaves untouched, and which parts it typesets.
+- [Frontmatter](https://polytypo.dev/docs/modes/markdown/frontmatter/): How markdown mode treats a YAML or TOML frontmatter block, how to typeset named fields with frontmatterKeys, and how the block is located.
+- [MDX](https://polytypo.dev/docs/modes/markdown/mdx/): How markdown mode handles MDX: JSX elements and attributes, expressions, ESM statements, and documents that fail to parse.
+- [YAML mode](https://polytypo.dev/docs/modes/yaml/): Typeset the prose values of named keys in a YAML file, with a specified scan instead of a parser, and everything else returned byte for byte.
+- [YAML keys](https://polytypo.dev/docs/modes/yaml/keys/): How the keys option selects values in yaml mode: exact matching, any depth, no paths or globs, and which lines the scan reads as keys.
+- [Quoting and scalar forms](https://polytypo.dev/docs/modes/yaml/quoting/): Which YAML value forms yaml mode typesets, which it leaves untouched, and why a colon or hash inside a plain scalar is treated as a boundary.
+- [spaces](https://polytypo.dev/docs/rules/spaces/): The spaces rule collapses runs of ordinary spaces, removes spaces before punctuation and inside brackets, and leaves indentation, hard breaks and emoticons alone.
+- [ellipsis](https://polytypo.dev/docs/rules/ellipsis/): The ellipsis rule turns runs of three or more dots into the single character U+2026 and writes the two-dot form after ? and ! in locales that use it.
+- [ranges](https://polytypo.dev/docs/rules/ranges/): The opt-in ranges rule turns a hyphen between two numbers into the locale's range dash, with the guards that protect dates, phone numbers and decimals.
+- [Dashes](https://polytypo.dev/docs/rules/dashes/): The dashes rule sets the parenthetical dash in the form each locale prescribes, and leaves compound hyphens, numbers, ranges and arrows alone.
+- [Hyphen](https://polytypo.dev/docs/rules/hyphen/): The hyphen rule binds the hyphen in listed Russian and Ukrainian forms with a non-breaking hyphen so a line break cannot split the word.
+- [Quotes](https://polytypo.dev/docs/rules/quotes/): How the quotes rule turns straight and foreign quotation marks into each locale's primary and secondary pairs, resolves nesting, and leaves unmatched marks alone.
+- [Apostrophe](https://polytypo.dev/docs/rules/apostrophe/): The apostrophe rule turns the straight apostrophe into U+2019 in contractions, elisions, possessives and decade abbreviations, and leaves foot marks and primes alone.
+- [symbols](https://polytypo.dev/docs/rules/symbols/): The symbols rule converts (c), (r) and (tm) to the copyright, registered and trademark signs, between-number x to the multiplication sign, and +/- before a digit to a plus-minus sign.
+- [No-break spaces](https://polytypo.dev/docs/rules/nbsp/): How the nbsp rule converts and inserts U+00A0 and U+202F per locale, with the ten lists it reads, the narrowNbsp option and what it leaves alone.
+- [The span model](https://polytypo.dev/docs/concepts/span-model/): How html, markdown and yaml modes show the rules only the prose of a document, and why spans are joined with boundary markers instead of processed alone.
+- [Round trip](https://polytypo.dev/docs/concepts/round-trip/): In html, markdown and yaml modes the output is your input with a few substring replacements applied, and nothing is re-serialised.
+- [Idempotency](https://polytypo.dev/docs/concepts/idempotency/): Why transform(transform(x)) equals transform(x) is a contract in every runtime, and what it means for text that is already typeset.
+- [Rule order](https://polytypo.dev/docs/concepts/rule-order/): The fixed order in which the nine polytypo rules run, why each sits where it does, why ranges is off by default, and how options never reorder them.
+- [Locale resolution](https://polytypo.dev/docs/concepts/locale-resolution/): How the locale option becomes exactly one locale: exact match, alias, one region strip, and an error otherwise, never a fallback to English.
+- [Invisible characters](https://polytypo.dev/docs/concepts/invisible-characters/): The four characters polytypo inserts that you cannot see, U+00A0, U+202F, U+2011 and U+2060, what inserts each, how to spot them, and the narrowNbsp option.
+- [Running polytypo in a build step](https://polytypo.dev/docs/guides/build-step/): Typeset Markdown, MDX and HTML files at build time with a complete Node script, choosing locale, mode and dialect per file, with a check mode for CI.
+- [Typesetting an MDX blog](https://polytypo.dev/docs/guides/mdx-content/): Process MDX posts with markdown mode and the mdx dialect, typeset frontmatter title and description, and know what is skipped, what is prose and what throws.
+- [Typesetting prose in YAML config](https://polytypo.dev/docs/guides/yaml-config/): Use yaml mode on OpenAPI-style and config YAML, naming the keys that hold prose, and see how quoted, plain and block scalars are handled and what is skipped.
+- [JavaScript and TypeScript](https://polytypo.dev/docs/runtimes/javascript/): Install polytypo from npm, call transform and analyze in JavaScript or TypeScript, read error codes, and see which modes and dialects the package covers.
+- [Python](https://polytypo.dev/docs/runtimes/python/): Install polytypo from PyPI, call transform and analyze with keyword arguments, handle PolytypoError codes, and see which modes and dialects the package covers.
+- [Go](https://polytypo.dev/docs/runtimes/go/): Install polytypo for Go, call Transform and Analyze with an Options struct, check *polytypo.Error codes, and see which modes and dialects the module covers.
+- [Ruby](https://polytypo.dev/docs/runtimes/ruby/): Install the polytypo gem, call Polytypo.transform and Polytypo.analyze with keyword arguments, rescue Polytypo::Error codes, and see which modes the gem covers.
+- [PHP](https://polytypo.dev/docs/runtimes/php/): Install polytypo with Composer, call Polytypo::transform and Polytypo::analyze with named arguments, catch PolytypoException codes, and see which modes PHP covers.
 - [Locales](https://polytypo.dev/locales/): per-locale coverage, each backed by a citation and a conformance fixture set.
 - [Playground](https://polytypo.dev/playground/): run the real engine on your own text in the browser.
 

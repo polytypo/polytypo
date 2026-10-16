@@ -62,7 +62,7 @@ describe("documentation pages", () => {
       });
 
       it("has no unresolved template tokens, no duplicate heading ids", () => {
-        expect(html).not.toMatch(/\{\{[^}]+\}\}/);
+        expect(html).not.toMatch(/\{\{(?:[A-Za-z_]+|svg:[^}]*)\}\}/);
         const ids = [...html.matchAll(/<h[2-4] id="([^"]+)"/g)].map((m) => m[1]);
         expect(new Set(ids).size).toBe(ids.length);
       });

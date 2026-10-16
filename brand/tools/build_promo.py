@@ -14,6 +14,7 @@ Shared CSS and client-side JS live in brand/tools/promo/{style.css,site.js} and 
 verbatim to promo/assets/ — edit them there, never in promo/assets/ directly, or the next
 build silently discards the edit."""
 import difflib
+import hashlib
 import html as H
 import json
 import os
@@ -405,7 +406,7 @@ Polytypo.transform(input, locale: "fr", mode: "markdown", dialect: "commonmark")
 # mode "yaml" requires the keys whose values hold prose; every other line comes back untouched
 Polytypo.transform(input, locale: "en-US", mode: "yaml", keys: ["description"])
 
-Polytypo.transform(input, locale: "en-US", rules: { dashes: false })
+Polytypo.transform(input, locale: "en-US", rules: { "dashes" => false })
 
 begin
   Polytypo.transform(input, locale: "xx")
@@ -1131,7 +1132,72 @@ _COMMENT_TOKENS = {
 }
 
 
+_DOC_EXAMPLES = None
+
+
+def _doc_examples():
+    global _DOC_EXAMPLES
+    if _DOC_EXAMPLES is None:
+        with open(os.path.join(REPO, "promo", "doc-examples.json"), encoding="utf-8") as f:
+            _DOC_EXAMPLES = json.load(f)
+    return _DOC_EXAMPLES
+
+
+def _js_call(header):
+    """The call an example block stands for, as JavaScript, shown above its input and output."""
+    parts = [f'locale: "{header["locale"]}"']
+    if header.get("mode"):
+        parts.append(f'mode: "{header["mode"]}"')
+    if header.get("dialect"):
+        parts.append(f'dialect: "{header["dialect"]}"')
+    for key in ("keys", "frontmatterKeys"):
+        if key in header:
+            names = ", ".join(f'"{k.strip()}"' for k in header[key].split(",") if k.strip())
+            parts.append(f"{key}: [{names}]")
+    if header.get("rules"):
+        rules = ", ".join(
+            f'{r.strip().lstrip("-")}: {"false" if r.strip().startswith("-") else "true"}'
+            for r in header["rules"].split(",")
+        )
+        parts.append(f"rules: {{ {rules} }}")
+    if header.get("narrowNbsp"):
+        parts.append(f'narrowNbsp: "{header["narrowNbsp"]}"')
+    return "transform(input, { " + ", ".join(parts) + " })"
+
+
+def doc_example_block(code):
+    """An ```example block: the call, the input, and the output the real engine produced for it
+    (promo/doc-examples.json, written by brand/tools/gen_doc_examples.ts). A block with no
+    measured result fails the build rather than render unmeasured."""
+    key = hashlib.sha256(code.encode("utf-8")).hexdigest()[:16]
+    measured = _doc_examples().get(key)
+    if measured is None:
+        raise docs_md.DocError(f"example has no measured output (run npm run gen:docs):\n{code}")
+    head, _sep, source = code.partition("\n---\n")
+    header = dict(line.split(": ", 1) for line in head.split("\n") if ": " in line)
+    call = H.escape(_js_call(header))
+    if "error" in measured:
+        result = (
+            f'<p class="eyebrow">Result</p><p>Throws <code>{H.escape(measured["error"])}</code></p>'
+        )
+        return (
+            f'<figure class="example"><figcaption class="mono">{call}</figcaption>'
+            f'<div class="example-pair"><div><p class="eyebrow">Input</p>{specimen(reveal(source))}</div>'
+            f"<div>{result}</div></div></figure>"
+        )
+    before, after = diff_html(source, measured["out"])
+    return (
+        f'<figure class="example"><figcaption class="mono">{call}</figcaption>'
+        '<div class="example-pair">'
+        f'<div><p class="eyebrow">Input</p>{specimen(before)}</div>'
+        f'<div><p class="eyebrow">Output</p>{specimen(after)}</div>'
+        "</div></figure>"
+    )
+
+
 def doc_code_block(lang, code):
+    if lang == "example":
+        return doc_example_block(code)
     token = _COMMENT_TOKENS.get(lang)
     lines = highlight_lines(code, token) if token else number_lines(H.escape(l) for l in code.split("\n"))
     return f'<pre><code>{lines}</code></pre>'
