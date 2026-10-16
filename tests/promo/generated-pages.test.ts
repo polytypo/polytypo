@@ -27,6 +27,13 @@ const PAGES = [
   "changelog/index.html",
 ];
 
+/** One page per registered locale, at /locales/<code>/. */
+const LOCALE_PAGE_COUNT = (
+  JSON.parse(readFileSync(path.join(ROOT, "spec/locales/registry.json"), "utf8")) as {
+    locales: string[];
+  }
+).locales.length;
+
 /** Documentation pages, one per Markdown source under brand/tools/docs/ (slug = relative path). */
 function docPageSlugs(dir = path.join(ROOT, "brand/tools/docs")): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
@@ -249,7 +256,7 @@ describe("promo site — favicon, robots.txt, sitemap.xml", () => {
     for (const slug of docPageSlugs()) {
       expect(sitemap).toContain(`<loc>https://polytypo.dev/docs/${slug}/</loc>`);
     }
-    expect(sitemap.match(/<url>/g)).toHaveLength(7 + docPageSlugs().length);
+    expect(sitemap.match(/<url>/g)).toHaveLength(7 + docPageSlugs().length + LOCALE_PAGE_COUNT);
   });
 });
 
@@ -297,7 +304,12 @@ describe("promo site — llms.txt (llmstxt.org convention)", () => {
       expect(llms).toContain(`(${url})`);
     }
     expect(llms.match(/^- \[/gm)).toHaveLength(
-      3 /* docs */ + docPageSlugs().length + 5 /* packages */ + 3 /* spec */ + 3 /* optional */,
+      3 /* docs */ +
+        docPageSlugs().length +
+        LOCALE_PAGE_COUNT +
+        5 /* packages */ +
+        3 /* spec */ +
+        3 /* optional */,
     );
   });
 

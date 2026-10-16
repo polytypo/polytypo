@@ -20,6 +20,7 @@ import os
 import re
 import shutil
 import sys
+import types
 import urllib.parse
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -29,6 +30,7 @@ PROMO_SRC = os.path.join(HERE, "promo")
 sys.path.insert(0, HERE)
 from build_brandbook import fonts_css, inline  # noqa: E402
 import docs_md  # noqa: E402
+import gen_locale_pages  # noqa: E402
 
 EXAMPLES = os.path.join(REPO, "promo", "examples.json")
 SPEC = os.path.join(REPO, "spec")
@@ -108,7 +110,7 @@ def coverage_rows(data):
         rules = ", ".join(sorted({s["rule"] for s in locale["sources"]}))
         rows.append(
             "      <tr>\n"
-            f'        <td class="mono">{H.escape(code)}</td>\n'
+            f'        <td class="mono"><a href="{{{{prefix}}}}locales/{H.escape(code)}/">{H.escape(code)}</a></td>\n'
             f"        <td>{H.escape(locale['name'])}</td>\n"
             f'        <td class="mono small">{H.escape(rules)}</td>\n'
             f"        <td>{fixture_count(code)}</td>\n"
@@ -185,6 +187,11 @@ def load_doc_pages():
 DOC_PAGES = load_doc_pages()
 DOC_BY_SLUG = {p["slug"]: p for p in DOC_PAGES}
 PAGES += [(p["slug"], p["title"], None) for p in DOC_PAGES]
+
+# One page per registered locale (brand/tools/gen_locale_pages.py), at /locales/<code>/.
+LOCALE_PAGES = gen_locale_pages.pages()
+LOCALE_BY_SLUG = {p["slug"]: p for p in LOCALE_PAGES}
+PAGES += [(p["slug"], p["title"], None) for p in LOCALE_PAGES]
 
 # Per-page meta/OG description — every page previously shared the Home page's own description
 # verbatim, which is a duplicate-content SEO defect. Each entry describes what that specific page
@@ -711,7 +718,7 @@ def locale_card(loc):
     before, after = diff_html(loc["hero"]["in"], loc["hero"]["out"])
     return (
         '<div class="card"><div class="lang">'
-        f'{H.escape(loc["name"])} · {H.escape(loc["locale"])}</div>'
+        f'<a href="{{{{prefix}}}}locales/{H.escape(loc["locale"])}/">{H.escape(loc["name"])} · {H.escape(loc["locale"])}</a></div>'
         f'<div class="pair">{specimen(before, "in")}{specimen(after, "out")}</div></div>'
     )
 
@@ -1213,6 +1220,13 @@ def doc_index_html():
 
 
 def doc_breadcrumb_list(page, canonical_url):
+    if "trail" in page:
+        items = [
+            {"@type": "ListItem", "position": i, "name": name, "item": f"{SITE_ORIGIN}/{path}"}
+            for i, (name, path) in enumerate(page["trail"], 1)
+        ]
+        items.append({"@type": "ListItem", "position": len(items) + 1, "name": page["title"], "item": canonical_url})
+        return {"@type": "BreadcrumbList", "itemListElement": items}
     section_label = dict(DOC_SECTIONS)[page["section"]]
     return {
         "@type": "BreadcrumbList",
@@ -1222,6 +1236,9 @@ def doc_breadcrumb_list(page, canonical_url):
             {"@type": "ListItem", "position": 3, "name": page["title"], "item": canonical_url},
         ],
     }
+
+
+LOCALE_HELPERS = types.SimpleNamespace(reveal=reveal, specimen=specimen, diff_html=diff_html)
 
 
 def build():
@@ -1299,8 +1316,11 @@ def build():
     for slug, title, body_file in PAGES:
         prefix = PAGE_PREFIXES[slug]
         doc_page = DOC_BY_SLUG.get(slug)
+        locale_page = LOCALE_BY_SLUG.get(slug)
         if doc_page:
             body = doc_page_body(doc_page, prefix, replacements)
+        elif locale_page:
+            body = gen_locale_pages.body(locale_page, prefix, LOCALE_HELPERS, LOCALE_PAGES)
         else:
             with open(os.path.join(PROMO_SRC, body_file), encoding="utf-8") as f:
                 body = f.read()
@@ -1312,6 +1332,7 @@ def build():
         body = re.sub(r"\{\{svg:([^}]+)\}\}", lambda m: inline(m.group(1)), body)
 
         page_title = "polytypo" if title == "Home" else f"polytypo — {title}"
+        doc_page = doc_page or locale_page
         description = doc_page["description"] if doc_page else PAGE_DESCRIPTIONS[slug].format(n=n)
         canonical_url = f"{SITE_ORIGIN}/{slug + '/' if slug else ''}"
         image_url = f"{SITE_ORIGIN}/assets/og-image.png"
@@ -1464,6 +1485,10 @@ def write_llms_txt(out_dir, data):
         ],
         f"- [Locales]({SITE_ORIGIN}/locales/): per-locale coverage, each backed by a citation and "
         "a conformance fixture set.",
+        *[
+            f"- [{p['title']}]({SITE_ORIGIN}/{p['slug']}/): {p['description']}"
+            for p in LOCALE_PAGES
+        ],
         f"- [Playground]({SITE_ORIGIN}/playground/): run the real engine on your own text in the "
         "browser.",
         "",

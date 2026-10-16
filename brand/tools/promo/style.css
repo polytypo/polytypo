@@ -1166,6 +1166,22 @@ footer a:hover {
   }
 }
 
+/* ---------- locale pages ---------- */
+.glyph {
+  font-size: 1.4em;
+  line-height: 1;
+}
+
+.chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.sources li {
+  margin-bottom: var(--space-5);
+}
+
 /* ---------- documentation pages ---------- */
 .doc-layout {
   display: grid;
