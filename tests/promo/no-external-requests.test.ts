@@ -126,6 +126,20 @@ const ALLOWED_EXTERNAL_URLS = new Set([
   "https://pkg.go.dev/badge/github.com/polytypo/polytypo-go.svg",
   "https://img.shields.io/gem/v/polytypo.svg",
   "https://img.shields.io/packagist/v/polytypo/polytypo.svg",
+  // Per-runtime extras on /docs/runtimes/<language>/ — see RUNTIME_BADGES in build_promo.py.
+  "https://img.shields.io/node/v/polytypo.svg",
+  "https://img.shields.io/npm/types/polytypo.svg",
+  "https://img.shields.io/npm/dm/polytypo.svg",
+  "https://img.shields.io/npm/l/polytypo.svg",
+  "https://img.shields.io/pypi/pyversions/polytypo.svg",
+  "https://img.shields.io/pypi/dm/polytypo.svg",
+  "https://img.shields.io/pypi/l/polytypo.svg",
+  "https://img.shields.io/github/go-mod/go-version/polytypo/polytypo-go.svg",
+  "https://img.shields.io/github/license/polytypo/polytypo-go.svg",
+  "https://img.shields.io/github/license/polytypo/polytypo-ruby.svg",
+  "https://img.shields.io/gem/dt/polytypo.svg",
+  "https://img.shields.io/packagist/dependency-v/polytypo/polytypo/php.svg",
+  "https://img.shields.io/packagist/l/polytypo/polytypo.svg",
 ]);
 
 function isDisallowedExternalUrl(url: string | undefined): boolean {

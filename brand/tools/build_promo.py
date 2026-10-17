@@ -671,9 +671,63 @@ def package_badges_row():
         parts.append(
             f'<a href="{H.escape(rt["package"])}">'
             f'<img src="{H.escape(shield_url)}" alt="{H.escape(rt["name"])} package version" '
-            f'style="vertical-align: middle; height: 20px"></a>'
+            f'height="20"></a>'
         )
-    return " ".join(parts)
+    parts.append(
+        f'<img src="{_SHIELDS}npm/l/polytypo.svg" alt="License" height="20">'
+    )
+    return f'<p class="pkg-badges">{"".join(parts)}</p>'
+
+
+# Extra live badges per runtime page, in the order that ecosystem expects: version, what it runs on,
+# downloads, license. Only badges that were observed to render for these packages (2026-10-17);
+# every URL must also be in tests/promo/no-external-requests.test.ts's ALLOWED_EXTERNAL_URLS.
+_SHIELDS = "https://img.shields.io/"
+RUNTIME_BADGES = {
+    "javascript": [
+        ("npm version", _SHIELDS + "npm/v/polytypo.svg", "https://www.npmjs.com/package/polytypo"),
+        ("Node.js versions", _SHIELDS + "node/v/polytypo.svg", None),
+        ("TypeScript types", _SHIELDS + "npm/types/polytypo.svg", None),
+        ("npm downloads per month", _SHIELDS + "npm/dm/polytypo.svg", "https://www.npmjs.com/package/polytypo"),
+        ("License", _SHIELDS + "npm/l/polytypo.svg", None),
+    ],
+    "python": [
+        ("PyPI version", _SHIELDS + "pypi/v/polytypo.svg", "https://pypi.org/project/polytypo/"),
+        ("Python versions", _SHIELDS + "pypi/pyversions/polytypo.svg", None),
+        ("PyPI downloads per month", _SHIELDS + "pypi/dm/polytypo.svg", "https://pypi.org/project/polytypo/"),
+        ("License", _SHIELDS + "pypi/l/polytypo.svg", None),
+    ],
+    "go": [
+        (
+            "Go package version",
+            "https://pkg.go.dev/badge/github.com/polytypo/polytypo-go.svg",
+            "https://pkg.go.dev/github.com/polytypo/polytypo-go",
+        ),
+        ("Go version", _SHIELDS + "github/go-mod/go-version/polytypo/polytypo-go.svg", None),
+        ("License", _SHIELDS + "github/license/polytypo/polytypo-go.svg", None),
+    ],
+    "ruby": [
+        ("RubyGems version", _SHIELDS + "gem/v/polytypo.svg", "https://rubygems.org/gems/polytypo"),
+        ("RubyGems total downloads", _SHIELDS + "gem/dt/polytypo.svg", "https://rubygems.org/gems/polytypo"),
+        ("License", _SHIELDS + "github/license/polytypo/polytypo-ruby.svg", None),
+    ],
+    "php": [
+        ("Packagist version", _SHIELDS + "packagist/v/polytypo/polytypo.svg", "https://packagist.org/packages/polytypo/polytypo"),
+        ("PHP versions", _SHIELDS + "packagist/dependency-v/polytypo/polytypo/php.svg", None),
+        ("License", _SHIELDS + "packagist/l/polytypo/polytypo.svg", None),
+    ],
+}
+
+
+def runtime_badges_row(slug):
+    badges = RUNTIME_BADGES.get(slug.rsplit("/", 1)[-1]) if slug.startswith("docs/runtimes/") else None
+    if not badges:
+        return ""
+    parts = []
+    for alt, src, href in badges:
+        img = f'<img src="{H.escape(src)}" alt="{H.escape(alt)}" height="20">'
+        parts.append(f'<a href="{H.escape(href)}">{img}</a>' if href else img)
+    return f'<p class="pkg-badges">{"".join(parts)}</p>'
 
 
 # label, code — all three are JS, shown in "Wiring it into a build step" on Docs.
@@ -1363,7 +1417,7 @@ def doc_page_body(page, prefix, replacements):
     html = (
         f'<div class="doc-layout">{doc_nav_html(page["slug"], prefix)}<article class="doc">'
         f'{crumbs}<h1>{H.escape(page["title"])}</h1>'
-        f'<p class="doc-lead">{H.escape(page["description"])}</p>{updated_html()}{content}'
+        f'<p class="doc-lead">{H.escape(page["description"])}</p>{updated_html()}{runtime_badges_row(page["slug"])}{content}'
         f'<nav class="doc-pager" aria-label="Pager">{"".join(pager)}</nav></article>{toc}</div>'
     )
     for key, val in replacements.items():

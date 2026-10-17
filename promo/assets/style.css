@@ -622,7 +622,7 @@ section > .section-intro {
   display: grid;
   gap: var(--space-5);
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-6);
 }
 
 .card-grid--six {
@@ -686,7 +686,7 @@ section > .section-intro {
 }
 
 .proof-shared-input {
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-6);
   padding: var(--space-4) var(--space-5);
   border: 1px dashed var(--line);
   border-radius: var(--radius-md);
@@ -911,7 +911,7 @@ textarea {
 }
 
 .demo {
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-6);
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
@@ -1759,7 +1759,7 @@ select {
 .workbench {
   display: flex;
   flex-direction: column;
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-6);
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
@@ -2221,4 +2221,30 @@ h3:hover > .anchor,
 /* Room for the copy icon in the corner of the result. */
 .workbench .wb-body .wb-output {
   padding-right: calc(var(--space-4) + 36px + var(--space-3));
+}
+
+.pkg-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+}
+
+.pkg-badges img {
+  display: block;
+  height: 20px;
+}
+
+/* Home rhythm: four steps only. 12 label to heading, 16 between related text, 32 between blocks,
+   80 between sections (the hero included). */
+.page-head--home {
+  padding-bottom: var(--section-y);
+}
+
+.page-head--home .pkg-badges {
+  margin-top: var(--space-6);
+}
+
+#call-panes + p {
+  margin-top: var(--space-6);
 }
