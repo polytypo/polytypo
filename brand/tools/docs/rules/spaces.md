@@ -1,5 +1,6 @@
 ---
 title: spaces
+seo_title: Spaces rule: collapse double spaces and fix punctuation spacing | polytypo
 description: The spaces rule collapses runs of ordinary spaces, removes spaces before punctuation and inside brackets, and leaves indentation, hard breaks and emoticons alone.
 section: rules
 order: 10

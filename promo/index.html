@@ -24,7 +24,7 @@
 <meta name="twitter:title" content="polytypo — fix typography in any text: smart quotes, dashes, no-break spaces">
 <meta name="twitter:description" content="Fix typography in any text: locale-correct quotes, dashes, ellipses and no-break spaces for 19 languages. Five runtimes, one portable spec, byte-identical output.">
 <meta name="twitter:image" content="https://polytypo.dev/assets/og-image.png">
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "name": "polytypo — fix typography in any text: smart quotes, dashes, no-break spaces", "description": "Fix typography in any text: locale-correct quotes, dashes, ellipses and no-break spaces for 19 languages. Five runtimes, one portable spec, byte-identical output.", "url": "https://polytypo.dev/", "isPartOf": {"@type": "WebSite", "name": "polytypo", "url": "https://polytypo.dev/"}}, {"@type": "SoftwareSourceCode", "name": "polytypo", "description": "Fix typography in any text: locale-correct quotes, dashes, ellipses and no-break spaces for 19 languages. Five runtimes, one portable spec, byte-identical output.", "url": "https://polytypo.dev/", "codeRepository": "https://github.com/polytypo/polytypo", "license": "https://spdx.org/licenses/MIT.html", "programmingLanguage": ["JavaScript/TypeScript", "Python", "Go", "Ruby", "PHP"]}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "name": "polytypo — fix typography in any text: smart quotes, dashes, no-break spaces", "description": "Fix typography in any text: locale-correct quotes, dashes, ellipses and no-break spaces for 19 languages. Five runtimes, one portable spec, byte-identical output.", "url": "https://polytypo.dev/", "isPartOf": {"@id": "https://polytypo.dev/#website"}, "datePublished": "2026-09-07", "dateModified": "2026-10-17"}, {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, {"@type": "Organization", "@id": "https://polytypo.dev/#organization", "name": "polytypo", "url": "https://polytypo.dev/", "logo": "https://polytypo.dev/assets/favicon/apple-touch-icon-180.png", "sameAs": ["https://github.com/polytypo", "https://www.npmjs.com/package/polytypo", "https://pypi.org/project/polytypo/", "https://pkg.go.dev/github.com/polytypo/polytypo-go", "https://rubygems.org/gems/polytypo", "https://packagist.org/packages/polytypo/polytypo"]}, {"@type": "SoftwareSourceCode", "name": "polytypo", "description": "Fix typography in any text: locale-correct quotes, dashes, ellipses and no-break spaces for 19 languages. Five runtimes, one portable spec, byte-identical output.", "url": "https://polytypo.dev/", "codeRepository": "https://github.com/polytypo/polytypo", "license": "https://spdx.org/licenses/MIT.html", "programmingLanguage": ["JavaScript/TypeScript", "Python", "Go", "Ruby", "PHP"]}]}</script>
 <script defer src="https://u.rogulia.fi/script.js" data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>
 </head>
 <body class="page-home">
@@ -63,6 +63,12 @@
     Paste your own text below and pick a locale — this is the real engine, running in your browser.
   </p>
   <p class="small muted" style="margin-top: var(--space-4)"><a href="https://www.npmjs.com/package/polytypo"><img src="https://img.shields.io/npm/v/polytypo.svg" alt="JavaScript/TypeScript package version" style="vertical-align: middle; height: 20px"></a> <a href="https://pypi.org/project/polytypo/"><img src="https://img.shields.io/pypi/v/polytypo.svg" alt="Python package version" style="vertical-align: middle; height: 20px"></a> <a href="https://pkg.go.dev/github.com/polytypo/polytypo-go"><img src="https://pkg.go.dev/badge/github.com/polytypo/polytypo-go.svg" alt="Go package version" style="vertical-align: middle; height: 20px"></a> <a href="https://rubygems.org/gems/polytypo"><img src="https://img.shields.io/gem/v/polytypo.svg" alt="Ruby package version" style="vertical-align: middle; height: 20px"></a> <a href="https://packagist.org/packages/polytypo/polytypo"><img src="https://img.shields.io/packagist/v/polytypo/polytypo.svg" alt="PHP package version" style="vertical-align: middle; height: 20px"></a></p>
+  <p class="small" style="margin-top: var(--space-6); max-width: 62ch">
+    <strong>polytypo</strong> fixes typography in any text: it turns straight quotes into the
+    locale's quotation marks, sets dashes and ellipses, and inserts no-break spaces. It supports
+    19 languages in JavaScript, Python, Go, Ruby and PHP, and gives byte-identical
+    output in all five.
+  </p>
 </header>
 
 <p class="eyebrow" style="margin-top: var(--space-9)">Try it</p>
@@ -190,6 +196,38 @@
     Quotes, dashes and spacing for every language, with the sources behind each rule —
     <a href="locales/">typography rules by language</a>. To add one, see
     <a href="contribute/">Contribute</a>.
+  </p>
+</section>
+
+<section id="faq">
+  <p class="eyebrow" style="margin-top: 0">Questions</p>
+  <h2>Common questions</h2>
+  <h3>How do I turn straight quotes into curly quotes automatically?</h3>
+  <p class="small" style="max-width: 62ch">
+    Call <code>transform(text, { locale })</code>. It replaces straight quotes with the locale's
+    primary and secondary pairs, for example <code>“…”</code> in en-US and <code>„…“</code> in
+    de-DE, and resolves nesting.
+  </p>
+  <h3>Which languages does polytypo support?</h3>
+  <p class="small" style="max-width: 62ch">
+    19 locales, each backed by cited style guides. See
+    <a href="locales/">typography rules by language</a>.
+  </p>
+  <h3>Can it typeset Markdown, MDX, HTML and YAML without breaking code?</h3>
+  <p class="small" style="max-width: 62ch">
+    Yes. The <code>markdown</code>, <code>html</code> and <code>yaml</code> modes change only prose
+    and leave tags, attributes, code spans, code blocks and URLs alone. See
+    <a href="docs/modes/overview/">modes</a>.
+  </p>
+  <h3>Does running it twice change the text again?</h3>
+  <p class="small" style="max-width: 62ch">
+    No. <code>transform(transform(x))</code> equals <code>transform(x)</code> in every runtime; see
+    <a href="docs/concepts/idempotency/">idempotency</a>.
+  </p>
+  <h3>Is the em dash a sign of AI-written text?</h3>
+  <p class="small" style="max-width: 62ch">
+    No. It is standard punctuation in several style guides, and polytypo sets it only where a
+    locale's guide prescribes it. Read the <a href="manifesto/">manifesto</a>.
   </p>
 </section>
 

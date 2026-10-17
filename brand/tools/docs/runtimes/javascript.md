@@ -1,5 +1,6 @@
 ---
 title: JavaScript and TypeScript
+seo_title: polytypo for JavaScript and TypeScript: install and API (npm)
 description: Install polytypo from npm, call transform and analyze in JavaScript or TypeScript, read error codes, and see which modes and dialects the package covers.
 section: runtimes
 order: 10

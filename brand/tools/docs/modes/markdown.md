@@ -1,5 +1,6 @@
 ---
 title: Markdown mode
+seo_title: Markdown mode: fix typography in CommonMark and MDX | polytypo
 description: Typeset the prose of a CommonMark or MDX document, leaving code, links, HTML and frontmatter exactly as written.
 section: modes
 order: 40

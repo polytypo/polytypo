@@ -1,5 +1,6 @@
 ---
 title: Typesetting an MDX blog
+seo_title: Fix typography in an MDX blog, including frontmatter | polytypo
 description: Process MDX posts with markdown mode and the mdx dialect, typeset frontmatter title and description, and know what is skipped, what is prose and what throws.
 section: guides
 order: 20

@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.8.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.8.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.8.1`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.8.1 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,14 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.8.1 — 17 October 2026
+
+No change to what polytypo does to your text — the French locale now says which French it is.
+
+- Nothing in this version changes your output. Run the same text through 1.8.0 and 1.8.1 and you get the same bytes, in every language and every mode.
+- The one change is a name. The `fr` locale was labelled “French” while `fr-CA` was “French (Canada)”, which read as if `fr` were the neutral base of both. Its rules are those of France, cited from the French style guides in the locale file, and its label is now “French (France)”, the way `de-DE` is “German (Germany)”. The locale code is unchanged, so `locale: "fr"` keeps working.
+- The accepted cost is on the reading side only: anything that displays the locale's `name` field, such as a locale picker built from the spec data, now shows the longer label.
 
 ## 1.8.0 — 26 September 2026
 

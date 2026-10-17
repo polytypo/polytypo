@@ -1,5 +1,6 @@
 ---
 title: Text mode
+seo_title: Text mode: fix typography in a plain string | polytypo
 description: The default mode. The whole string is prose, there is no parser and no skip list, so everything in it is typeset.
 section: modes
 order: 20

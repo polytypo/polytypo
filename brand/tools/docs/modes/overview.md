@@ -1,5 +1,6 @@
 ---
 title: Modes
+seo_title: polytypo modes: text, html, markdown and yaml compared
 description: The four ways polytypo reads a document, what each one treats as prose, and how to choose between them.
 section: modes
 order: 10

@@ -934,6 +934,7 @@ def _language_icon_svg(name):
 SHOWCASE_SITES = [
     ("htpbe.tech", "PDF Tamper Detection Tool"),
     ("iurii.rogulia.fi", "Software Engineer Iurii Rogulia"),
+    ("kri.rocks", "Online Booking and Website for Beauty Professionals"),
     ("pi-pi.ee", "Plastic Sanitary Ware Manufacturer"),
     ("vatnode.dev", "VIES API for EU VAT Validation"),
 ]
@@ -1119,7 +1120,37 @@ def _md_code(text):
     )
 
 
-_WEBSITE_NODE = {"@type": "WebSite", "name": "polytypo", "url": f"{SITE_ORIGIN}/"}
+_WEBSITE_NODE = {"@type": "WebSite", "@id": f"{SITE_ORIGIN}/#website", "name": "polytypo",
+                 "url": f"{SITE_ORIGIN}/", "publisher": {"@id": f"{SITE_ORIGIN}/#organization"}}
+
+
+def _release_dates():
+    """(first, latest) release date in changelog.json. A page's dateModified is the latest release:
+    the site is only deployed once a release is out, so its content is as of that release, and the
+    date is deterministic where a git or build-time date would make the generated output drift."""
+    dates = sorted(rel["date"] for rel in _changelog_data()["releases"])
+    return dates[0], dates[-1]
+
+
+def _organization_node():
+    same_as = [REPO_URL.rsplit("/", 1)[0]] + [rt["package"] for rt in _runtime_status().values()]
+    return {
+        "@type": "Organization",
+        "@id": f"{SITE_ORIGIN}/#organization",
+        "name": "polytypo",
+        "url": f"{SITE_ORIGIN}/",
+        "logo": f"{SITE_ORIGIN}/assets/favicon/apple-touch-icon-180.png",
+        "sameAs": same_as,
+    }
+
+
+def updated_html():
+    """The visible 'Updated' line shown under a docs or locale page's lead, matching dateModified."""
+    _first, latest = _release_dates()
+    return (
+        f'<p class="doc-meta small muted">Updated <time datetime="{latest}">'
+        f"{_pretty_date(latest)}</time> · spec {_latest_released_version()}</p>"
+    )
 
 
 def jsonld(slug, page_title, description, canonical_url, doc_page=None):
@@ -1130,18 +1161,23 @@ def jsonld(slug, page_title, description, canonical_url, doc_page=None):
     type implies an installable app with an `offers` price point, which overclaims what a
     library is.
     """
+    first, latest = _release_dates()
     webpage_node = {
         "@type": "WebPage",
         "name": page_title,
         "description": description,
         "url": canonical_url,
-        "isPartOf": _WEBSITE_NODE,
+        "isPartOf": {"@id": _WEBSITE_NODE["@id"]} if slug == "" else _WEBSITE_NODE,
+        "datePublished": first,
+        "dateModified": latest,
     }
     if doc_page:
         article = {
             **webpage_node,
             "@type": "TechArticle",
             "headline": doc_page["title"],
+            "author": {"@type": "Organization", "name": "polytypo", "url": f"{SITE_ORIGIN}/"},
+            "publisher": {"@type": "Organization", "name": "polytypo", "url": f"{SITE_ORIGIN}/"},
             **doc_page.get("jsonld_extra", {}),
             "breadcrumb": doc_breadcrumb_list(doc_page, canonical_url),
         }
@@ -1158,7 +1194,7 @@ def jsonld(slug, page_title, description, canonical_url, doc_page=None):
             "license": "https://spdx.org/licenses/MIT.html",
             "programmingLanguage": [rt["name"] for rt in _runtime_status().values()],
         }
-        doc = {"@context": "https://schema.org", "@graph": [webpage_node, software_node]}
+        doc = {"@context": "https://schema.org", "@graph": [webpage_node, _WEBSITE_NODE, _organization_node(), software_node]}
     # </script> inside a JSON string would otherwise close the element early — escape the slash,
     # which JSON permits (\/ is a valid escape) and HTML parsers do not treat as a delimiter.
     return json.dumps(doc, ensure_ascii=False).replace("</", "<\\/")
@@ -1305,7 +1341,7 @@ def doc_page_body(page, prefix, replacements):
     html = (
         f'<div class="doc-layout">{doc_nav_html(page["slug"], prefix)}<article class="doc">'
         f'{crumbs}<h1>{H.escape(page["title"])}</h1>'
-        f'<p class="doc-lead">{H.escape(page["description"])}</p>{toc}{content}'
+        f'<p class="doc-lead">{H.escape(page["description"])}</p>{updated_html()}{toc}{content}'
         f'<nav class="doc-pager" aria-label="Pager">{"".join(pager)}</nav></article></div>'
     )
     for key, val in replacements.items():
@@ -1348,7 +1384,9 @@ def doc_breadcrumb_list(page, canonical_url):
     }
 
 
-LOCALE_HELPERS = types.SimpleNamespace(reveal=reveal, specimen=specimen, diff_html=diff_html)
+LOCALE_HELPERS = types.SimpleNamespace(
+    reveal=reveal, specimen=specimen, diff_html=diff_html, updated=updated_html
+)
 
 
 def build():
@@ -1444,6 +1482,8 @@ def build():
 
         page_title = "polytypo" if title == "Home" else f"polytypo — {title}"
         page_title = PAGE_TITLES.get(slug) or (locale_page or {}).get("seo_title") or page_title
+        if slug in DOC_BY_SLUG and DOC_BY_SLUG[slug].get("seo_title"):
+            page_title = DOC_BY_SLUG[slug]["seo_title"]
         doc_page = doc_page or locale_page
         description = doc_page["description"] if doc_page else PAGE_DESCRIPTIONS[slug].format(n=n)
         canonical_url = f"{SITE_ORIGIN}/{slug + '/' if slug else ''}"
@@ -1535,8 +1575,9 @@ def write_robots_and_sitemap(out_dir):
     with open(os.path.join(out_dir, "robots.txt"), "w", encoding="utf-8") as f:
         f.write(f"User-agent: *\nAllow: /\n\nSitemap: {SITE_ORIGIN}/sitemap.xml\n")
 
+    lastmod = _release_dates()[1]
     urls = "".join(
-        f"<url><loc>{SITE_ORIGIN}/{slug + '/' if slug else ''}</loc></url>\n"
+        f"<url><loc>{SITE_ORIGIN}/{slug + '/' if slug else ''}</loc><lastmod>{lastmod}</lastmod></url>\n"
         for slug, _label, _body in PAGES
     )
     sitemap = (

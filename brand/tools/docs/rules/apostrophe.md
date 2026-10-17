@@ -1,5 +1,6 @@
 ---
 title: Apostrophe
+seo_title: Apostrophe rule: straight ' to U+2019 in contractions and elisions | polytypo
 description: The apostrophe rule turns the straight apostrophe into U+2019 in contractions, elisions, possessives and decade abbreviations, and leaves foot marks and primes alone.
 section: rules
 order: 70

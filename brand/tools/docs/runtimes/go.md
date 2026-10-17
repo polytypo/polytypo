@@ -1,5 +1,6 @@
 ---
 title: Go
+seo_title: polytypo for Go: Transform and Analyze with Options
 description: Install polytypo for Go, call Transform and Analyze with an Options struct, check *polytypo.Error codes, and see which modes and dialects the module covers.
 section: runtimes
 order: 30

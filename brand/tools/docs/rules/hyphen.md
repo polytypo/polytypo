@@ -1,5 +1,6 @@
 ---
 title: Hyphen
+seo_title: Hyphen rule: non-breaking hyphens in Russian and Ukrainian | polytypo
 description: The hyphen rule binds the hyphen in listed Russian and Ukrainian forms with a non-breaking hyphen so a line break cannot split the word.
 section: rules
 order: 50

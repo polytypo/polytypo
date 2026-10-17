@@ -1,5 +1,6 @@
 ---
 title: Locale resolution
+seo_title: Locale resolution: how de-AT, pt or en become one locale | polytypo
 description: How the locale option becomes exactly one locale: exact match, alias, one region strip, and an error otherwise, never a fallback to English.
 section: concepts
 order: 50

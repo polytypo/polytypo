@@ -89,7 +89,13 @@ describe("promo pages — Sites using polytypo", () => {
     const hosts = [
       ...html.matchAll(/<li>[^<]+ <a href="https:\/\/([^/"]+)\/" rel="nofollow noopener">\1<\/a>/g),
     ].map((m) => m[1]);
-    expect(hosts).toEqual(["htpbe.tech", "pi-pi.ee", "iurii.rogulia.fi", "vatnode.dev"]);
+    expect(hosts).toEqual([
+      "kri.rocks",
+      "htpbe.tech",
+      "pi-pi.ee",
+      "iurii.rogulia.fi",
+      "vatnode.dev",
+    ]);
   });
 
   it("offers a mailto submission link with a pre-filled subject and a free-form body", () => {

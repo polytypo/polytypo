@@ -1,5 +1,6 @@
 ---
 title: Frontmatter
+seo_title: Typeset Markdown frontmatter: frontmatterKeys option | polytypo
 description: How markdown mode treats a YAML or TOML frontmatter block, how to typeset named fields with frontmatterKeys, and how the block is located.
 section: modes
 order: 43

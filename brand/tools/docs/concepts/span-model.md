@@ -1,5 +1,6 @@
 ---
 title: The span model
+seo_title: The span model: how polytypo typesets prose and skips code | polytypo
 description: How html, markdown and yaml modes show the rules only the prose of a document, and why spans are joined with boundary markers instead of processed alone.
 section: concepts
 order: 10

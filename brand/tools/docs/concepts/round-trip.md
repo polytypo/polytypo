@@ -1,5 +1,6 @@
 ---
 title: Round trip
+seo_title: Round trip: how HTML, Markdown and YAML output stays your input | polytypo
 description: In html, markdown and yaml modes the output is your input with a few substring replacements applied, and nothing is re-serialised.
 section: concepts
 order: 20

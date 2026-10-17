@@ -1,5 +1,6 @@
 ---
 title: analyze
+seo_title: analyze(): preview typography changes without applying them | polytypo
 description: The same pipeline as transform, reporting what it would change instead of changing it, with code-point offsets into your input.
 section: api
 order: 30

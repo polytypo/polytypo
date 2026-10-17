@@ -1,5 +1,6 @@
 ---
 title: Quoting and scalar forms
+seo_title: YAML quoting and scalar forms typeset by polytypo
 description: Which YAML value forms yaml mode typesets, which it leaves untouched, and why a colon or hash inside a plain scalar is treated as a boundary.
 section: modes
 order: 52

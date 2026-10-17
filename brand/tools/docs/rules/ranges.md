@@ -1,5 +1,6 @@
 ---
 title: ranges
+seo_title: Ranges rule: hyphen to en dash between numbers per locale | polytypo
 description: The opt-in ranges rule turns a hyphen between two numbers into the locale's range dash, with the guards that protect dates, phone numbers and decimals.
 section: rules
 order: 30

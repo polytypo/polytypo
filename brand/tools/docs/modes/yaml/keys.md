@@ -1,5 +1,6 @@
 ---
 title: YAML keys
+seo_title: YAML keys option: choose which values polytypo typesets
 description: How the keys option selects values in yaml mode: exact matching, any depth, no paths or globs, and which lines the scan reads as keys.
 section: modes
 order: 51

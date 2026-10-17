@@ -1,5 +1,6 @@
 ---
 title: Idempotency
+seo_title: Idempotent typography: why transform(transform(x)) equals transform(x) | polytypo
 description: Why transform(transform(x)) equals transform(x) is a contract in every runtime, and what it means for text that is already typeset.
 section: concepts
 order: 30

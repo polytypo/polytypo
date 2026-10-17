@@ -1,5 +1,6 @@
 ---
 title: Invisible characters
+seo_title: Invisible characters in typography: U+00A0, U+202F, U+2011 and more | polytypo
 description: The four characters polytypo inserts that you cannot see, U+00A0, U+202F, U+2011 and U+2060, what inserts each, how to spot them, and the narrowNbsp option.
 section: concepts
 order: 60

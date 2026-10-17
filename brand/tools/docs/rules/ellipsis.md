@@ -1,5 +1,6 @@
 ---
 title: ellipsis
+seo_title: Ellipsis rule: three dots to U+2026 per locale | polytypo
 description: The ellipsis rule turns runs of three or more dots into the single character U+2026 and writes the two-dot form after ? and ! in locales that use it.
 section: rules
 order: 20

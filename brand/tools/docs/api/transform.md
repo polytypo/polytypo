@@ -1,5 +1,6 @@
 ---
 title: transform
+seo_title: transform(): fix quotes, dashes and spaces in JS, Python, Go, Ruby, PHP | polytypo
 description: The one function polytypo is built around: its signature in all five runtimes, what it returns, what it throws, and the purity it guarantees.
 section: api
 order: 10

@@ -1,5 +1,6 @@
 ---
 title: Options
+seo_title: polytypo options: locale, mode, dialect, keys, rules and narrowNbsp
 description: Every polytypo option, its type and default, what it requires, and which error an invalid value raises.
 section: api
 order: 20

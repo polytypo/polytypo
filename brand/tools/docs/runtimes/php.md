@@ -1,5 +1,6 @@
 ---
 title: PHP
+seo_title: polytypo for PHP: Composer install and Polytypo::transform
 description: Install polytypo with Composer, call Polytypo::transform and Polytypo::analyze with named arguments, catch PolytypoException codes, and see which modes PHP covers.
 section: runtimes
 order: 50

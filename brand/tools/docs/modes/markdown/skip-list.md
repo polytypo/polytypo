@@ -1,5 +1,6 @@
 ---
 title: Markdown skip list
+seo_title: Markdown skip list: what polytypo leaves untouched
 description: Exactly which parts of a Markdown document markdown mode leaves untouched, and which parts it typesets.
 section: modes
 order: 42

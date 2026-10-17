@@ -1,5 +1,6 @@
 ---
 title: symbols
+seo_title: Symbols rule: (c), (r), (tm) to ©, ®, ™ | polytypo
 description: The symbols rule converts (c), (r) and (tm) to the copyright, registered and trademark signs, between-number x to the multiplication sign, and +/- before a digit to a plus-minus sign.
 section: rules
 order: 80

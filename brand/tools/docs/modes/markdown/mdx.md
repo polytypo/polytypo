@@ -1,5 +1,6 @@
 ---
 title: MDX
+seo_title: MDX typography: JSX, expressions and ESM in polytypo markdown mode
 description: How markdown mode handles MDX: JSX elements and attributes, expressions, ESM statements, and documents that fail to parse.
 section: modes
 order: 44

@@ -1,5 +1,6 @@
 ---
 title: Dashes
+seo_title: Dashes rule: em dash, en dash and spacing per locale | polytypo
 description: The dashes rule sets the parenthetical dash in the form each locale prescribes, and leaves compound hyphens, numbers, ranges and arrows alone.
 section: rules
 order: 40

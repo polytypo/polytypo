@@ -1,5 +1,6 @@
 ---
 title: HTML mode
+seo_title: HTML mode: fix typography in HTML without touching tags or code | polytypo
 description: Typeset the prose in an HTML document or fragment while tags, attributes, code, scripts and character references come back byte for byte.
 section: modes
 order: 30

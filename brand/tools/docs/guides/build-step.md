@@ -1,5 +1,6 @@
 ---
 title: Running polytypo in a build step
+seo_title: Fix typography in Markdown, MDX and HTML at build time | polytypo
 description: Typeset Markdown, MDX and HTML files at build time with a complete Node script, choosing locale, mode and dialect per file, with a check mode for CI.
 section: guides
 order: 10

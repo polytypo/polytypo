@@ -1,5 +1,6 @@
 ---
 title: Quotes
+seo_title: Quotes rule: straight quotes to locale-correct quotation marks | polytypo
 description: How the quotes rule turns straight and foreign quotation marks into each locale's primary and secondary pairs, resolves nesting, and leaves unmatched marks alone.
 section: rules
 order: 60

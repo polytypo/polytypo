@@ -10,6 +10,12 @@
     Paste your own text below and pick a locale — this is the real engine, running in your browser.
   </p>
   <p class="small muted" style="margin-top: var(--space-4)">{{package_badges}}</p>
+  <p class="small" style="margin-top: var(--space-6); max-width: 62ch">
+    <strong>polytypo</strong> fixes typography in any text: it turns straight quotes into the
+    locale's quotation marks, sets dashes and ellipses, and inserts no-break spaces. It supports
+    {{locale_count}} languages in JavaScript, Python, Go, Ruby and PHP, and gives byte-identical
+    output in all five.
+  </p>
 </header>
 
 <p class="eyebrow" style="margin-top: var(--space-9)">Try it</p>
@@ -39,5 +45,37 @@
     Quotes, dashes and spacing for every language, with the sources behind each rule —
     <a href="{{prefix}}locales/">typography rules by language</a>. To add one, see
     <a href="{{prefix}}contribute/">Contribute</a>.
+  </p>
+</section>
+
+<section id="faq">
+  <p class="eyebrow" style="margin-top: 0">Questions</p>
+  <h2>Common questions</h2>
+  <h3>How do I turn straight quotes into curly quotes automatically?</h3>
+  <p class="small" style="max-width: 62ch">
+    Call <code>transform(text, { locale })</code>. It replaces straight quotes with the locale's
+    primary and secondary pairs, for example <code>“…”</code> in en-US and <code>„…“</code> in
+    de-DE, and resolves nesting.
+  </p>
+  <h3>Which languages does polytypo support?</h3>
+  <p class="small" style="max-width: 62ch">
+    {{Locale_count}} locales, each backed by cited style guides. See
+    <a href="{{prefix}}locales/">typography rules by language</a>.
+  </p>
+  <h3>Can it typeset Markdown, MDX, HTML and YAML without breaking code?</h3>
+  <p class="small" style="max-width: 62ch">
+    Yes. The <code>markdown</code>, <code>html</code> and <code>yaml</code> modes change only prose
+    and leave tags, attributes, code spans, code blocks and URLs alone. See
+    <a href="{{prefix}}docs/modes/overview/">modes</a>.
+  </p>
+  <h3>Does running it twice change the text again?</h3>
+  <p class="small" style="max-width: 62ch">
+    No. <code>transform(transform(x))</code> equals <code>transform(x)</code> in every runtime; see
+    <a href="{{prefix}}docs/concepts/idempotency/">idempotency</a>.
+  </p>
+  <h3>Is the em dash a sign of AI-written text?</h3>
+  <p class="small" style="max-width: 62ch">
+    No. It is standard punctuation in several style guides, and polytypo sets it only where a
+    locale's guide prescribes it. Read the <a href="{{prefix}}manifesto/">manifesto</a>.
   </p>
 </section>

@@ -1,5 +1,6 @@
 ---
 title: No-break spaces
+seo_title: No-break spaces rule: U+00A0 and U+202F per locale | polytypo
 description: How the nbsp rule converts and inserts U+00A0 and U+202F per locale, with the ten lists it reads, the narrowNbsp option and what it leaves alone.
 section: rules
 order: 90

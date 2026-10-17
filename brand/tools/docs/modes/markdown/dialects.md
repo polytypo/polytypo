@@ -1,5 +1,6 @@
 ---
 title: Markdown dialects
+seo_title: Markdown dialects: commonmark vs mdx in polytypo
 description: Why markdown mode requires an explicit dialect, what commonmark and mdx each mean, and what happens when the document does not parse.
 section: modes
 order: 41

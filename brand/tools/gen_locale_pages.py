@@ -581,6 +581,7 @@ def body(page, prefix, h, all_pages):
         f"{crumbs}<h1>{H.escape(d['name'])} typography rules <span class=\"muted\">&middot; {H.escape(code)}</span></h1>"
         f'<p class="muted" lang="{_lang(code)}">{H.escape(native_name(code))}</p>'
         f'<p class="doc-lead">{quick_answer(d)}</p>'
+        + h.updated()
         + _try_section(code, d["name"], prefix)
         + _h2("at-a-glance", f"{n} typography at a glance")
         + glance

@@ -1,5 +1,6 @@
 ---
 title: Python
+seo_title: polytypo for Python: PyPI install and transform()
 description: Install polytypo from PyPI, call transform and analyze with keyword arguments, handle PolytypoError codes, and see which modes and dialects the package covers.
 section: runtimes
 order: 20

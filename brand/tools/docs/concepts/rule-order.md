@@ -1,5 +1,6 @@
 ---
 title: Rule order
+seo_title: Typography rule order: the nine polytypo rules and why they run in this order
 description: The fixed order in which the nine polytypo rules run, why each sits where it does, why ranges is off by default, and how options never reorder them.
 section: concepts
 order: 40

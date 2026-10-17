@@ -1,5 +1,6 @@
 ---
 title: Error codes
+seo_title: polytypo error codes: the eight stable codes and when each is thrown
 description: The eight stable polytypo error codes, when each is thrown, and why the code, not the message, is the contract.
 section: api
 order: 40

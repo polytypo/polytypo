@@ -1,5 +1,6 @@
 ---
 title: Ruby
+seo_title: polytypo for Ruby: gem install and Polytypo.transform
 description: Install the polytypo gem, call Polytypo.transform and Polytypo.analyze with keyword arguments, rescue Polytypo::Error codes, and see which modes the gem covers.
 section: runtimes
 order: 40

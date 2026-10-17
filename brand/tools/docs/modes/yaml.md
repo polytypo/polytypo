@@ -1,5 +1,6 @@
 ---
 title: YAML mode
+seo_title: YAML mode: fix typography in prose values of named keys | polytypo
 description: Typeset the prose values of named keys in a YAML file, with a specified scan instead of a parser, and everything else returned byte for byte.
 section: modes
 order: 50
