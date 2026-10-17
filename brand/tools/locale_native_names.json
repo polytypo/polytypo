@@ -1,0 +1,22 @@
+{
+  "_comment": "Each locale's name in its own language (CLDR endonyms), used for page headings, JSON-LD alternateName and search-visible text. Site-only: not part of the spec, so the locale files and schema stay as released.",
+  "en-US": "English (United States)",
+  "en-GB": "English (United Kingdom)",
+  "de-DE": "Deutsch (Deutschland)",
+  "de-CH": "Deutsch (Schweiz)",
+  "fr": "Français",
+  "fr-CA": "Français (Canada)",
+  "ru": "Русский",
+  "fi": "Suomi",
+  "sv": "Svenska",
+  "el": "Ελληνικά",
+  "es": "Español",
+  "it": "Italiano",
+  "pt-PT": "Português (Portugal)",
+  "pt-BR": "Português (Brasil)",
+  "nl": "Nederlands",
+  "pl": "Polski",
+  "uk": "Українська",
+  "cs": "Čeština",
+  "tr": "Türkçe"
+}

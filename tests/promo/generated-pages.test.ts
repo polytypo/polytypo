@@ -256,7 +256,7 @@ describe("promo site — favicon, robots.txt, sitemap.xml", () => {
     for (const slug of docPageSlugs()) {
       expect(sitemap).toContain(`<loc>https://polytypo.dev/docs/${slug}/</loc>`);
     }
-    expect(sitemap.match(/<url>/g)).toHaveLength(7 + docPageSlugs().length + LOCALE_PAGE_COUNT);
+    expect(sitemap.match(/<url>/g)).toHaveLength(8 + docPageSlugs().length + LOCALE_PAGE_COUNT);
   });
 });
 
@@ -309,7 +309,8 @@ describe("promo site — llms.txt (llmstxt.org convention)", () => {
         LOCALE_PAGE_COUNT +
         5 /* packages */ +
         3 /* spec */ +
-        3 /* optional */,
+        3 /* optional */ +
+        1 /* contribute */,
     );
   });
 
