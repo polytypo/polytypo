@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.8.1** · locales: **19** · rules: **9**.
+Spec version: **1.9.0** · locales: **19** · rules: **9**.
 
 ## Implementations
 

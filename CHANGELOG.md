@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.8.1`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.8.1 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.9.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.9.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,15 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.9.0 — 17 October 2026
+
+Single-quoted YAML now gets typeset — the apostrophe is the one thing it leaves straight.
+
+- In `yaml` mode, and in the frontmatter block of `markdown` mode when you pass `frontmatterKeys`, a single-quoted value containing an apostrophe used to come back untouched, whole. YAML writes an apostrophe inside single quotes as two, `''`, and polytypo declined any value that held one. Nothing told you: the value looked like one that needed no changes.
+- It now converts everything around the `''` and leaves the `''` itself alone. `description: 'It''s a "quiet" year -- really...'` in `en-GB` used to return unchanged and now returns `description: 'It''s a ‘quiet’ year – really…'`. In `fr`, `description: 'l''idee -- et ... fin'` becomes `description: 'l''idee — et … fin'`. Double-quoted, plain and block scalars are unaffected.
+- The accepted cost: the apostrophe that `''` spells stays straight, so a single-quoted value whose only convertible character was that apostrophe still comes back unchanged. Measured on 1913 values from a real 207-file site, de-typeset and re-written as single-quoted scalars in eight languages: 1104 came back unchanged before this version and 672 do now, 602 of them because the apostrophe was all there was to convert. The other 70 that remain include phrases written in single quotation marks, which are the same `''` seen from the other side.
+- Converting the apostrophe as well would mean polytypo decoding the YAML string and mapping positions back to your source, which five language builds would each have to do their own way. It is left straight, deliberately.
 
 ## 1.8.1 — 17 October 2026
 

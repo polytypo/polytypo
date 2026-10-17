@@ -7,13 +7,14 @@ for all five runtimes and is parser-agnostic by construction: `parse5`, `nokogir
 `golang.org/x/net/html` and PHP's DOM disagree about almost everything this document does not
 forbid them from doing. `yaml` mode is parser-**free** rather than parser-agnostic, for the
 reason §3.8.1 measures.
-**Spec version:** 1.8.0 (0.1.0 for everything except §3.3's class-membership table rows for
+**Spec version:** 1.9.0 (0.1.0 for everything except §3.3's class-membership table rows for
 `nbsp` and `apostrophe`, split in 1.2.0, §3.8, added in 1.3.0, §3.3's note on `quotes`'
 span-boundary elision veto reading the marker as a trigger, added in 1.4.0 — which changes no
 row of the table it follows — §3.3's `CLOSEDELIM` entry, added in 1.5.0, and §3.7.4 with the
 amendments it carries to §3.1's definitions, §3.2's Model C, §3.5 step 3, §3.7.3's frontmatter
-bullet, §3.8.6's accepted-cost paragraph, §5, §6 and §7, added in 1.7.0, and §3.7.3a, added in
-1.8.0).
+bullet, §3.8.6's accepted-cost paragraph, §5, §6 and §7, added in 1.7.0, §3.7.3a, added in
+1.8.0, and §3.8.6's treatment of `''` in a single-quoted scalar, which replaces the bail it had
+until 1.9.0, with the matching amendments to §3.7.4.1, §3.8.7, §5, §7.13 and §8).
 
 ---
 
@@ -859,14 +860,13 @@ and it is the only way this corpus can show a conversion at all.
   name `"HTPBE?"` becomes `"HTPBE ?"`. The other two are improvements a caller might well want
   (`"Niamh O'Sullivan"` → `"Niamh O’Sullivan"`), which is the point: only the caller can tell
   those apart, and that is the same argument §3.8.2 makes.
-- **The inherited escape bail, measured.** Re-emitting each of the 247 convertible values in
-  one quoting style and running the scan over it: **single-quoted, 130 of 247 yield no spans**;
-  double-quoted, none do. The reason is §3.8.6's — an apostrophe inside a single-quoted scalar
-  is written `''`, which spells content with more characters than it has. Every listed scalar in
-  this corpus as written is double-quoted, so the bail never fires on it; a caller whose YAML
-  style is single quotes gets nothing on half of their prose, silently. That number is the
-  accepted cost of reusing §3.8's scan rather than a defect of this section, and §7.13 records it
-  where a reader will look for it.
+- **The inherited escape bail, measured — and removed in 1.9.0.** Re-emitting each of the 247
+  convertible values in one quoting style and running the scan over it gave **single-quoted, 130 of
+  247 yield no spans**; double-quoted, none. The reason was §3.8.6's bail on `''`: an apostrophe
+  inside a single-quoted scalar is written that way. Every listed scalar in this corpus as written
+  is double-quoted, so the bail never fired on it; a caller whose YAML style is single quotes got
+  nothing on half of their prose, silently. 1.9.0 replaced the bail with a split at each `''`
+  (§3.8.6), and §7.13 records what that did and did not recover.
 
 ### 3.8 Skip list — `yaml`
 
@@ -1091,16 +1091,43 @@ that line the value yields no spans, and its continuation lines are consumed by 
 rather than rescanned. After the closing quote only U+0020 and an optional `#` comment may
 follow. The span is the content between the quotes, exclusive of both.
 
-Two bails make source characters and content characters the same thing, which §3.1's offset model
-requires:
+The offset model of §3.1 requires that source characters and content characters be the same thing,
+and two constructs break that:
 
 - a double-quoted scalar whose content contains U+005C yields no spans — `\n`, `\"` and `é`
   are content the source spells with more characters than it has;
-- a single-quoted scalar whose content contains two consecutive U+0027 yields no spans, for the
-  same reason.
+- in a single-quoted scalar, **two consecutive U+0027 are one apostrophe of content, spelled with
+  two code points.** Since 1.9.0 that pair is an **opaque skipped unit**, treated as §3.8.6 treats
+  `:` and `#` in a plain scalar: the scalar's range is split around it, and the unit lies outside
+  every span. Until 1.9.0 the whole scalar yielded no spans instead.
 
-This is the treatment `html` gives a character reference (§3.6), reached from the same constraint
-rather than by analogy. **No colon test applies to a quoted scalar** — quoting neutralises the
+Neither is a mapping from source to content. A backslash escape has dozens of forms and each would
+need its own decoding table in five runtimes; `''` is one fixed pair, and a skipped unit needs no
+table at all. That is the treatment `html` gives a character reference (§3.6), reached from the
+same constraint rather than by analogy.
+
+> **The single-quoted scan, normative.** Starting after the opening quote, advance `j` one code
+> point at a time. A U+0027 at `j` followed by another U+0027 is a unit: end the current segment
+> before `j`, begin the next at `j + 2`, and continue at `j + 2`. A U+0027 at `j` not followed by
+> another U+0027 is the closing quote. If the line ends first, the value yields no spans, as for
+> any unterminated quoted scalar. The segments, each non-empty one a span, are what remains once
+> the units are removed. The scan is left to right and each pair is claimed as it is met, so
+> `'''a'` is the unit followed by `a`, and `''''` is one unit and the closing quote.
+
+**A span may begin or end at a unit, and §3.4 decides what that allows — identically to `:` and
+`#`.** Nothing about `''` needs a rule of its own. A replacement that is longer than what it
+replaced is discarded at an extremity, so `fr`'s spaced dash does not grow against a unit
+(`'a''--''b'` is left alone in `fr` and `de-DE`), while a contraction is applied (`'a''--''b'` →
+`'a''—''b'` in `en-US`). The unit is a boundary marker (§3.2) between the two spans it separates:
+no rule edits a code point that lies outside every span, so the apostrophe it spells **stays
+U+0027**. That is the accepted cost of the split, and it is not small: in `'l''idee'` everything
+but the elision converts, and a value whose only convertible character was that apostrophe still
+comes back unchanged. §7.13 measures it.
+
+**Why not convert the apostrophe too.** Replacing `''` with U+2019 outright would convert it and
+the result still parses, since U+2019 is ordinary content in a single-quoted scalar. It is
+rejected for the reason §3.8.1 gives: that is decode-then-remap, the offset mapping is no longer
+the identity, and five runtimes would each invent it. **No colon test applies to a quoted scalar** — quoting neutralises the
 colon, and applying the plain-scalar test here is what made the first draft decline
 `title: "Chapter 1: the beginning"`.
 
@@ -1176,6 +1203,21 @@ clause reverted, the same run reports **480 structural changes** — `k: a:---a`
 `k: a: – a`, a string turning into a nested mapping — in every locale that emits a spaced dash. A
 measurement that passes both with and without the thing it is supposed to protect proves nothing,
 and two earlier versions of this sweep were in exactly that position.
+
+**The same sweep, extended for `''` (1.9.0).** The alphabet gained `''` as one token beside the
+lone U+0027, and this run used four single-quoted templates alone, because the apostrophe check below cannot hold on a plain scalar, where `apostrophe` legitimately converts `a'a`. They are the payload alone, followed by a
+comment, between fixed `x''` and `''y`, and as a value in a sequence of mappings. Payloads of
+length 1–4, 19 locales, the sources that are not valid YAML discarded before the run,
+**872 328 cases over those four templates, 65 033 of them changed by the transform: no parse failure, no structural change, no idempotency failure, and the number of U+0027 in the output
+equal to the number in the source in every case** — the last check is what a structure-and-type
+comparison cannot see, since a `''` turned into `’’` leaves the document's shape intact. It
+discriminates, but narrowly, and that should be said: with the unit's width off by one (the
+second U+0027 left inside the span) the same run reports failures — `k: '''a'` becoming
+`k: ''’a'`, in `cs` and others — whereas an implementation that does not split at all, and hands
+the pair to the rules as two ordinary characters, **also passes**, because `quotes`' same-kind
+adjacency veto leaves an adjacent pair alone. The split is therefore specified for the reason
+§3.8.1 gives, that it needs no mapping and puts the pair out of every rule's reach by construction,
+and not because the sweep shows the unsplit alternative to be unsafe at payload length four.
 
 **Three things it could not find**, each worth naming because each cost something.
 
@@ -1372,7 +1414,10 @@ tests none of this document. In `yaml` the sweep alphabet must include `:`, `#`,
 as one token**, since those are the characters whose adjacency the argument above turns on and a
 three-dash run is not reachable from single dashes at a bounded payload length; and it must
 include U+0022 and U+005C, without which the sweep cannot reach a quoted scalar's delimiters at
-all. Since 1.7.0 the `markdown` run must also carry a template with a **frontmatter block and
+all. Since 1.9.0 it must also include **`''` as one token** next to a lone U+0027, and its
+single-quoted templates must carry the pair at the start, in the middle and at the end of the
+payload, because a unit's behaviour at a span extremity is a different path from its behaviour
+between two letters. Since 1.7.0 the `markdown` run must also carry a template with a **frontmatter block and
 `frontmatterKeys` naming a key in it** — a document with two text units (§3.1) tests a composition
 the single-unit templates cannot reach. §3.8.7 records what each run did and did not establish — including that a sweep comparing
 structure and types is blind to a string whose content is damaged, and that an alphabet without
@@ -1628,19 +1673,25 @@ rule-local.
       The block is still skipped, so nothing machine-read is typeset either way. A lone-U+000D
       document is one line to §3.8.4 and therefore loses the whole block, which is the price of
       not widening that section here.
-    - **§3.8.6's single-quoted bail costs more here than anywhere it has been measured before.**
-      Of the 1858 corpus values a locale would convert across eight locales, **1040 yield no spans
-      when written as a single-quoted scalar** — 130 of 247 in `en-GB` alone, the figure 1.7.0
-      shipped with, and `scripts/miss-census.mjs` in this repository is what reproduces either on
-      demand. An apostrophe inside such a scalar is spelled `''`, and an apostrophe
-      is exactly what `apostrophe` and `quotes` convert, so the bail falls hardest on the values
-      the option exists for. Double-quoted, none bail. The corpus as authored is entirely
-      double-quoted, so its own author never meets this; a caller whose YAML style is single
-      quotes gets nothing on half their prose, and gets it silently. The repair is not this
-      section's to make: §3.8.6 is ratified and measured, and the obvious extension — treating
-      `''` as an opaque two-code-point unit, exactly as §3.8.6 already treats `:` and `#` inside a
-      plain scalar — changes `yaml` mode for every caller and needs its own measurement and its
-      own sign-off.
+    - **§3.8.6's treatment of `''` in a single-quoted scalar: the cost, before and after 1.9.0.**
+      Until 1.9.0 a single-quoted scalar containing `''` yielded no spans. An apostrophe inside
+      such a scalar is spelled `''`, and an apostrophe is exactly what `apostrophe` and `quotes`
+      convert, so the bail fell hardest on the values the option exists for. On the author's own
+      207-file corpus, de-typeset and re-emitted as single-quoted, in eight locales: **1104 of
+      1913 values a locale would convert came back unchanged**. Since 1.9.0 the scalar is split at
+      each `''` (§3.8.6) and **672 of 1913** do — 35.1% against 57.7%. The remainder is not one
+      cost but two. **602 of the 672 have nothing else to convert**: the apostrophe is the only
+      thing a locale would have changed, it lies outside every span by construction, and it stays
+      straight. **The other 70 also change when their `'` are already curly**, so something besides
+      an apostrophe is lost — in the samples read, a phrase written `'like this'`, which a locale
+      would pair as a quotation, and whose two marks are units here. Not all 70 were read.
+      Double-quoted and plain scalars are unaffected, and the corpus as authored is entirely
+      double-quoted, so its own author never met either figure.
+      The "before" figure is what `scripts/miss-census.mjs` prints with a 1.8.x engine
+      installed; the "after" figure is the same run with the 1.9.0 engine, and the 602/70 split
+      is a separate run of that comparison on values with every `'` already curly, which the
+      script does not perform. The corpus has grown since 1.7.0 measured it (187 files, 1040 of
+      1858), which is why the denominator differs from that figure.
 
 ## 8. Fixture coverage strategy (non-normative)
 
@@ -1677,7 +1728,7 @@ changes.
    blocks, and the JSX-vs-skipped-element case distinction (`tests/modes/markdown.test.ts`).
 3a. **YAML span selection** — the three scalar forms, the `keys` option (a listed key, an
    unlisted one, a quoted one, the same name at two depths), block-scalar indentation and
-   chomping, the `:`/`#` split of §3.8.6, step 7's consumption of an inline value's continuation
+   chomping, the `:`/`#` split of §3.8.6, the `''` split of §3.8.6 (since 1.9.0), step 7's consumption of an inline value's continuation
    lines, and every bail of §3.8.4. `yaml` carries a heavier fixture burden than the other two
    for a reason §8's opening argument does not cover: its span selection is **specified rather
    than delegated** (§3.8.1), so a fixture is the only thing standing between five hand-written

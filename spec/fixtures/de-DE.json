@@ -1,5 +1,5 @@
 {
-  "spec": "1.8.1",
+  "spec": "1.9.0",
   "locale": "de-DE",
   "cases": [
     {
@@ -776,6 +776,17 @@
       "in": "---\ntitle: Er sagte \"hallo\" laut\nsummary: Noch \"eins\" hier\nslug: \"er-sagte-hallo\"\n---\n\nIm Text \"so\" hier.\n",
       "out": "---\ntitle: Er sagte „hallo“ laut\nsummary: Noch „eins“ hier\nslug: \"er-sagte-hallo\"\n---\n\nIm Text „so“ hier.\n",
       "note": "modes.md §3.7.4: two listed plain scalars in a locale whose quote glyphs differ from English, with an unlisted slug between the block and the body. Each listed scalar is its own span and the marks pair inside it, so the German pair appears three times and the slug keeps its straight quotes."
+    },
+    {
+      "id": "de-de-yaml-single-quoted-escape-growth-declined",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: 'a''--''b'\n",
+      "out": "description: 'a''--''b'\n",
+      "note": "modes.md §3.8.6 and §3.4: de-DE is a `-spaced` locale, so the dash would grow against a unit and the edge-growth rule discards it, as in fr. A second locale so that an implementation that does not split cannot pass on one cell alone."
     }
   ]
 }

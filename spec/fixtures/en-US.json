@@ -1,5 +1,5 @@
 {
-  "spec": "1.8.1",
+  "spec": "1.9.0",
   "locale": "en-US",
   "cases": [
     {
@@ -1974,16 +1974,16 @@
       "note": "modes.md §3.7.4 inherits every bail of §3.8.6: a double-quoted scalar whose content contains U+005C yields no spans, because the source spells the content with more characters than it has. The listed key is not enough on its own."
     },
     {
-      "id": "en-us-markdown-commonmark-frontmatter-keys-single-quote-bail",
-      "rule": "apostrophe",
+      "id": "en-us-markdown-commonmark-frontmatter-keys-single-quote-escape",
+      "rule": "ellipsis",
       "mode": "markdown",
       "dialect": "commonmark",
       "frontmatterKeys": [
         "title"
       ],
-      "in": "---\ntitle: 'It''s a test'\n---\n\nBody it's here.\n",
-      "out": "---\ntitle: 'It''s a test'\n---\n\nBody it’s here.\n",
-      "note": "modes.md §3.7.4, and the cost §7.13 measures: a single-quoted scalar containing two consecutive U+0027 yields no spans, and an apostrophe in a single-quoted scalar is written exactly that way. Half the prose values of the §3.7.4.1 corpus bail here when re-emitted in this style."
+      "in": "---\ntitle: 'It''s a test...'\n---\n\nBody it's here.\n",
+      "out": "---\ntitle: 'It''s a test…'\n---\n\nBody it’s here.\n",
+      "note": "modes.md §3.7.4 inherits §3.8.6's split of `''` (spec 1.9.0): the value converts on both sides of the unit and the apostrophe it spells stays straight, while the body's own apostrophe converts. Until 1.9.0 the whole value yielded no spans."
     },
     {
       "id": "en-us-markdown-commonmark-frontmatter-keys-separate-unit",
@@ -2545,15 +2545,70 @@
       "note": "modes.md §3.8.6: a single-quoted scalar's content is one span; the quotes themselves are outside it."
     },
     {
-      "id": "en-us-yaml-single-quoted-escape-untouched",
+      "id": "en-us-yaml-single-quoted-escape-split",
       "rule": "ellipsis",
       "mode": "yaml",
       "keys": [
         "description"
       ],
       "in": "description: 'it''s one...two'\n",
-      "out": "description: 'it''s one...two'\n",
-      "note": "modes.md §3.8.6: `''` makes the source spell the content with more characters than it has, so the offset model of §3.1 cannot hold and the scalar yields no spans."
+      "out": "description: 'it''s one…two'\n",
+      "note": "modes.md §3.8.6 (spec 1.9.0): `''` is one apostrophe of content spelled with two code points, so it is an opaque skipped unit and the scalar is split around it. Everything on either side converts; the apostrophe it spells is outside every span and stays U+0027. Until 1.9.0 the whole scalar yielded no spans."
+    },
+    {
+      "id": "en-us-yaml-single-quoted-escape-quotes",
+      "rule": "quotes",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: 'It''s -- he said \"hi\" to me...'\n",
+      "out": "description: 'It''s—he said “hi” to me…'\n",
+      "note": "modes.md §3.8.6: the same scalar with a double-quoted run after the unit. The run pairs and converts, the dash and ellipsis convert, and the apostrophe stays straight."
+    },
+    {
+      "id": "en-us-yaml-single-quoted-escape-at-ends",
+      "rule": "ellipsis",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: '''one...two'''\n",
+      "out": "description: '''one…two'''\n",
+      "note": "modes.md §3.8.6: a unit directly after the opening quote and directly before the closing one. The scan claims each pair as it is met, so `'''` is the unit followed by content and `'''` at the end is the unit followed by the closing quote."
+    },
+    {
+      "id": "en-us-yaml-single-quoted-escape-only",
+      "rule": "ellipsis",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: ''''\n",
+      "out": "description: ''''\n",
+      "note": "modes.md §3.8.6: a scalar that is nothing but one unit yields no non-empty segment, so no span, and comes back byte for byte."
+    },
+    {
+      "id": "en-us-yaml-single-quoted-escape-contraction-at-unit",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: 'a''--''b'\n",
+      "out": "description: 'a''—''b'\n",
+      "note": "modes.md §3.8.6 and §3.4: the dash sits between two units, so it is a whole span. A contraction (2 → 1) is applied at a span extremity, exactly as it is against `:` and `#` in a plain scalar."
+    },
+    {
+      "id": "en-us-yaml-single-quoted-escape-unterminated",
+      "rule": "ellipsis",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: 'it''s one...two\n",
+      "out": "description: 'it''s one...two\n",
+      "note": "modes.md §3.8.6: after a unit the scan keeps looking for a closing quote on the same line, finds none, and the value yields no spans — a trailing unit is not mistaken for a close."
     },
     {
       "id": "en-us-yaml-double-quoted-escape-untouched",

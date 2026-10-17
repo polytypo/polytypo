@@ -1,5 +1,5 @@
 {
-  "spec": "1.8.1",
+  "spec": "1.9.0",
   "locale": "fr",
   "cases": [
     {
@@ -961,7 +961,7 @@
       "note": "modes.md §3.8.6 in a locale where the apostrophe is elision rather than possession: the same cell as en-us-yaml-plain-apostrophe, and §8 item 4's requirement that a construct be pinned in more than one locale rather than the same English output with the locale field changed."
     },
     {
-      "id": "fr-yaml-single-quoted-escape-untouched",
+      "id": "fr-yaml-single-quoted-escape-elision-stays",
       "rule": "apostrophe",
       "mode": "yaml",
       "keys": [
@@ -969,7 +969,29 @@
       ],
       "in": "description: 'l''idee et l''autre'\n",
       "out": "description: 'l''idee et l''autre'\n",
-      "note": "modes.md §3.8.6: two consecutive U+0027 in a single-quoted scalar yield no spans, in every locale — the source spells the content with more characters than it has, and that is a property of YAML, not of the language. This is the cell §7.13 measures at 1040 of 1858 values on a real corpus."
+      "note": "modes.md §3.8.6: in a locale where the apostrophe is elision, the unit is the elision, and it is outside every span. The scalar has nothing else to convert and comes back unchanged — the cost §7.13 measures, pinned so that it is a documented property and not a surprise."
+    },
+    {
+      "id": "fr-yaml-single-quoted-escape-split",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: 'l''idee -- et ''l''autre...'\n",
+      "out": "description: 'l''idee — et ''l''autre…'\n",
+      "note": "modes.md §3.8.6: a spaced dash and an ellipsis interior to a span convert, either side of units; the elisions stay straight."
+    },
+    {
+      "id": "fr-yaml-single-quoted-escape-growth-declined",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "description"
+      ],
+      "in": "description: 'a''--''b'\n",
+      "out": "description: 'a''--''b'\n",
+      "note": "modes.md §3.8.6 and §3.4: `fr` is a `-spaced` locale, so the dash would grow from 2 to 3 code points against a unit. The edge-growth rule discards it, as it does against `:` and `#`. The en-US case with the same input is applied, which is what makes this one discriminate."
     },
     {
       "id": "fr-yaml-single-quoted-no-escape",
