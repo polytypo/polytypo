@@ -10,6 +10,10 @@ Run after changing the spec or the examples:
 """
 import json
 import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from locale_order import sorted_codes  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
@@ -115,15 +119,15 @@ def hero_block():
     # wraps a code block's long lines, so a plain-text rendering forces a horizontal scrollbar on
     # every row here — exactly the sentence whose typography is the entire point, made harder to
     # read on the one page most visitors see first. One input, one locale per row, in
-    # spec/locales/registry.json's own order (REGISTRY["locales"]) rather than a hand-picked
+    # the site-wide locale order (locale_order.py) rather than a hand-picked
     # subset, so a locale can't silently go missing from this table as more are added.
     en = HERO["en-US"]
     rows = ["| Locale | Output |", "| --- | --- |"]
     # A locale the spec has added but no published runtime implements yet has no entry in
     # promo/examples.json (see brand/tools/gen_examples.ts), and is skipped rather than invented:
     # this table is real engine output, and the README describes what ships.
-    for code in [c for c in REGISTRY["locales"] if c in HERO]:
-        rows.append(f"| `{code}` | {HERO[code]['hero']['out']} |")
+    for code in [c for c in sorted_codes(REGISTRY["locales"]) if c in HERO]:
+        rows.append(f"| {LOCALE_DATA[code]['name']} (`{code}`) | {HERO[code]['hero']['out']} |")
     table = "\n".join(rows)
     return f"**Input**\n\n> {en['hero']['in']}\n\n{table}"
 
@@ -134,7 +138,7 @@ def locale_table():
     # Same rule as the hero table above: a locale that exists in the spec but not yet in any
     # published runtime is not listed as available. It appears here the moment the bumped
     # devDependency can run it, with no edit to this file.
-    for code in [c for c in REGISTRY["locales"] if c in HERO]:
+    for code in [c for c in sorted_codes(REGISTRY["locales"]) if c in HERO]:
         d = LOCALE_DATA[code]
         q, s = d["quotes"]["primary"], d["quotes"]["secondary"]
         inner = {"none": "", "nbsp": " + U+00A0", "narrow-nbsp": " + U+202F"}[q["innerSpace"]]

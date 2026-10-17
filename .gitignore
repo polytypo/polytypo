@@ -21,3 +21,6 @@ docs/PLAN.md
 docs/ROADMAP.md
 docs/AUDIT_REMEDIATION_AND_RELEASE_PLAN.md
 docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md
+
+# Pagefind index, built by npm run gen:search
+promo/pagefind/

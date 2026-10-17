@@ -12,8 +12,12 @@ live there (reveal, specimen, diff_html) are passed in so the two modules do not
 import html as H
 import json
 import os
+import sys
 import unicodedata
 from urllib.parse import urlparse
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from locale_order import sorted_codes  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
@@ -28,7 +32,7 @@ def _load(*parts):
 
 NATIVE = _load(HERE, "locale_native_names.json")
 REGISTRY = _load(SPEC, "locales", "registry.json")
-CODES = REGISTRY["locales"]
+CODES = sorted_codes(REGISTRY["locales"])
 ALIASES = REGISTRY["aliases"]
 RULES = _load(SPEC, "rules", "order.json")["rules"]
 CODE_RUN = 'say("a -- b ...")'  # must match gen_examples.ts
@@ -155,7 +159,7 @@ def quick_answer(d):
 
 
 def pages():
-    """One page record per registered locale, in registry order."""
+    """One page record per registered locale, in the site-wide locale order (locale_order.py)."""
     out = []
     for code in CODES:
         d = locale_data(code)
@@ -164,6 +168,7 @@ def pages():
             {
                 "slug": f"locales/{code}",
                 "code": code,
+                "name": d["name"],
                 "title": f"{d['name']} ({code})",
                 "seo_title": (
                     f"{d['name']} typography rules: {_quote_pair_text(q['primary'])} quotes, "
@@ -376,15 +381,50 @@ def _sources_section(d, code):
     )
 
 
-def _sidebar(code, prefix, all_pages):
-    links = "".join(
-        f'<li><a href="{prefix}{p["slug"]}/"{" aria-current=\"page\"" if p["code"] == code else ""}>'
-        f"{H.escape(p['title'])}</a></li>"
-        for p in all_pages
+def _split_name(name):
+    """'English (United States)' -> ('English', 'United States'); 'French' -> ('French', None)."""
+    if name.endswith(")") and " (" in name:
+        lang, _, rest = name.partition(" (")
+        return lang, rest[:-1]
+    return name, None
+
+
+def _nav_row(p, prefix, code, label):
+    current = ' aria-current="page"' if p["code"] == code else ""
+    return (
+        f'<li><a href="{prefix}{p["slug"]}/"{current}><span>{H.escape(label)}</span>'
+        f'<code>{H.escape(p["code"])}</code></a></li>'
     )
+
+
+def _sidebar(code, prefix, all_pages):
+    """Locales in the site-wide order, with the regions of one language grouped under its name
+    when every member of that language has a region (English, German, Portuguese)."""
+    parts = []
+    i = 0
+    while i < len(all_pages):
+        lang, _variant = _split_name(all_pages[i]["name"])
+        j = i
+        while j < len(all_pages) and _split_name(all_pages[j]["name"])[0] == lang:
+            j += 1
+        group = all_pages[i:j]
+        if len(group) > 1 and all(_split_name(p["name"])[1] for p in group):
+            rows = "".join(_nav_row(p, prefix, code, _split_name(p["name"])[1]) for p in group)
+            parts.append(f'<li class="nav-group"><span>{H.escape(lang)}</span><ul>{rows}</ul></li>')
+        else:
+            parts.extend(_nav_row(p, prefix, code, p["name"]) for p in group)
+        i = j
     return (
         '<details class="doc-nav"><summary>Locales</summary><nav aria-label="Locales">'
-        f'<p class="doc-nav-head"><a href="{prefix}locales/">All locales</a></p><ul>{links}</ul></nav></details>'
+        f'<a class="nav-top" href="{prefix}locales/">All locales</a><ul class="nav-flat">{"".join(parts)}</ul></nav></details>'
+    )
+
+
+def _pager_link(rel, href, title):
+    label = "Previous" if rel == "prev" else "Next"
+    return (
+        f'<a class="pg {rel}" rel="{rel}" href="{href}"><span>{label}</span>'
+        f"<strong>{H.escape(title)}</strong></a>"
     )
 
 
@@ -515,14 +555,14 @@ def body(page, prefix, h, all_pages):
     pager = []
     if idx > 0:
         p = all_pages[idx - 1]
-        pager.append(f'<a rel="prev" href="{prefix}{p["slug"]}/">&larr; {H.escape(p["title"])}</a>')
+        pager.append(_pager_link("prev", f'{prefix}{p["slug"]}/', p["title"]))
     if idx < len(all_pages) - 1:
         p = all_pages[idx + 1]
-        pager.append(f'<a rel="next" href="{prefix}{p["slug"]}/">{H.escape(p["title"])} &rarr;</a>')
+        pager.append(_pager_link("next", f'{prefix}{p["slug"]}/', p["title"]))
 
     crumbs = f'<nav class="crumbs" aria-label="Breadcrumb"><a href="{prefix}">Home</a> / <a href="{prefix}locales/">Locales</a> / {H.escape(code)}</nav>'
     return (
-        f'<div class="doc-layout">{_sidebar(code, prefix, all_pages)}<article class="doc">'
+        f'<div class="doc-layout">{_sidebar(code, prefix, all_pages)}<article class="doc" data-pagefind-body>'
         f"{crumbs}<h1>{H.escape(d['name'])} typography rules <span class=\"muted\">&middot; {H.escape(code)}</span></h1>"
         f'<p class="muted" lang="{_lang(code)}">{H.escape(native_name(code))}</p>'
         f'<p class="doc-lead">{quick_answer(d)}</p>'

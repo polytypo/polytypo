@@ -273,13 +273,24 @@ const NAMES: Record<(typeof LOCALES)[number], string> = {
 // ever changes.
 const PROOF_LOCALES = ["en-US", "en-GB", "de-DE", "de-CH", "fr", "ru"] as const;
 
+// Every list of locales is presented in one order: alphabetical by the spec's English locale name,
+// then by code (brand/tools/locale_order.py is the same rule for the Python generators).
+const specName = (code: string): string =>
+  (
+    JSON.parse(
+      readFileSync(new URL(`../../spec/locales/${code}.json`, import.meta.url), "utf8"),
+    ) as { name: string }
+  ).name.toLowerCase();
+const byLocaleOrder = (a: string, b: string): number =>
+  specName(a) < specName(b) ? -1 : specName(a) > specName(b) ? 1 : a < b ? -1 : a > b ? 1 : 0;
+
 const specVersion = readFileSync(new URL("../../spec/VERSION", import.meta.url), "utf8").trim();
 
 // A locale the spec has added but no published runtime implements yet is skipped here rather than
 // crashing the build: the promo site and README describe what ships, never what sits unreleased on
 // main, and every worked example on them is real output from the INSTALLED `polytypo` package. The
 // locale reappears on its own, with no edit to this file, once the bumped devDependency knows it.
-const supported = LOCALES.filter((locale) => {
+const supported = [...LOCALES].sort(byLocaleOrder).filter((locale) => {
   try {
     transform("", { locale });
     return true;
@@ -293,7 +304,7 @@ const supported = LOCALES.filter((locale) => {
 
 const data = {
   spec: specVersion,
-  proofLocales: PROOF_LOCALES as unknown as string[],
+  proofLocales: [...PROOF_LOCALES].sort(byLocaleOrder),
   locales: supported.map((locale) => ({
     locale,
     name: NAMES[locale],

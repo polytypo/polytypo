@@ -105,7 +105,7 @@ Run `foo...bar` then wait...
 
 ## Locale data
 
-The rule reads one field, `ellipsis.abbreviatedAfterTerminal` (a boolean). It is true for `ru`, `uk` and `tr`, and false for the other locales shipped with polytypo, including `en-US`, `de-DE`, `fr`, `fi`, `sv` and `el`.
+The rule reads one field, `ellipsis.abbreviatedAfterTerminal` (a boolean). It is true for `ru`, `tr` and `uk`, and false for the other locales shipped with polytypo, including `en-US`, `fi`, `fr`, `de-DE`, `el` and `sv`.
 
 ## Options
 

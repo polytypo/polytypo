@@ -31,6 +31,8 @@ PROMO_SRC = os.path.join(HERE, "promo")
 sys.path.insert(0, HERE)
 from build_brandbook import fonts_css, inline  # noqa: E402
 import docs_md  # noqa: E402
+from locale_order import sort_key as locale_sort_key
+from doc_search import SEARCH_BUTTON, SEARCH_DIALOG, search_script  # noqa: E402
 import gen_locale_pages  # noqa: E402
 
 EXAMPLES = os.path.join(REPO, "promo", "examples.json")
@@ -280,6 +282,7 @@ OG_IMAGE_HEIGHT = 630
 # bodies via {{playground}}) and therefore need its script. The home page carries it so a first-time
 # visitor can try the engine before reading anything; /playground is the same component at full size.
 PLAYGROUND_SLUGS = ("", "playground")
+DEFAULT_PLAYGROUND_LOCALE = "en-US"
 
 
 def page_href(prefix, slug):
@@ -470,7 +473,12 @@ NUMBER_WORDS = {
 
 def load_examples():
     with open(EXAMPLES, encoding="utf-8") as f:
-        return json.load(f)
+        data = json.load(f)
+    # One order for every list of locales (locale_order.py), whatever order examples.json was
+    # written in.
+    data["locales"].sort(key=lambda loc: locale_sort_key(loc["locale"]))
+    data["proofLocales"].sort(key=locale_sort_key)
+    return data
 
 
 INVISIBLE = {
@@ -823,7 +831,7 @@ def nav_html(active_slug, prefix):
     return (
         '<nav class="site-nav"><div class="wrap">'
         f'<a class="brand" href="{page_href(prefix, "")}">{mark}polytypo</a>'
-        f'<div class="links">{links}{GITHUB_LINK}</div>'
+        f'<div class="links">{links}{SEARCH_BUTTON}{GITHUB_LINK}</div>'
         "</div></nav>"
     )
 
@@ -1233,12 +1241,21 @@ def doc_code_block(lang, code):
     return f'<pre><code>{lines}</code></pre>'
 
 
+def pager_link(rel, href, title):
+    label = "Previous" if rel == "prev" else "Next"
+    return (
+        f'<a class="pg {rel}" rel="{rel}" href="{href}"><span>{label}</span>'
+        f"<strong>{H.escape(title)}</strong></a>"
+    )
+
+
 def doc_nav_html(active_slug, prefix):
     """Sidebar for the documentation pages: every section that has at least one page, in
-    DOC_SECTIONS order, linking only pages that exist."""
+    DOC_SECTIONS order, linking only pages that exist. A section is collapsed unless it holds the
+    current page; on the hub every section is open."""
     groups = [
-        f'<p class="doc-nav-head"><a href="{page_href(prefix, "docs")}"'
-        f'{" aria-current=\"page\"" if active_slug == "docs" else ""}>Overview</a></p>'
+        f'<a class="nav-top" href="{page_href(prefix, "docs")}"'
+        f'{" aria-current=\"page\"" if active_slug == "docs" else ""}>Overview</a>'
     ]
     for sid, label in DOC_SECTIONS:
         items = [p for p in DOC_PAGES if p["section"] == sid]
@@ -1250,7 +1267,11 @@ def doc_nav_html(active_slug, prefix):
             f"{H.escape(p['title'])}</a></li>"
             for p in items
         )
-        groups.append(f'<p class="doc-nav-head">{H.escape(label)}</p><ul>{links}</ul>')
+        is_open = active_slug == "docs" or any(p["slug"] == active_slug for p in items)
+        groups.append(
+            f'<details class="nav-sec"{" open" if is_open else ""}>'
+            f"<summary>{H.escape(label)}</summary><ul>{links}</ul></details>"
+        )
     return (
         '<details class="doc-nav"><summary>Documentation</summary>'
         f'<nav aria-label="Documentation">{"".join(groups)}</nav></details>'
@@ -1272,17 +1293,17 @@ def doc_page_body(page, prefix, replacements):
     pager = []
     if idx > 0:
         prev = siblings[idx - 1]
-        pager.append(f'<a rel="prev" href="{page_href(prefix, prev["slug"])}">&larr; {H.escape(prev["title"])}</a>')
+        pager.append(pager_link("prev", page_href(prefix, prev["slug"]), prev["title"]))
     if idx < len(siblings) - 1:
         nxt = siblings[idx + 1]
-        pager.append(f'<a rel="next" href="{page_href(prefix, nxt["slug"])}">{H.escape(nxt["title"])} &rarr;</a>')
+        pager.append(pager_link("next", page_href(prefix, nxt["slug"]), nxt["title"]))
     section_label = dict(DOC_SECTIONS)[page["section"]]
     crumbs = (
         f'<nav class="crumbs" aria-label="Breadcrumb"><a href="{page_href(prefix, "docs")}">Docs</a>'
         f" / {H.escape(section_label)}</nav>"
     )
     html = (
-        f'<div class="doc-layout">{doc_nav_html(page["slug"], prefix)}<article class="doc">'
+        f'<div class="doc-layout">{doc_nav_html(page["slug"], prefix)}<article class="doc" data-pagefind-body>'
         f'{crumbs}<h1>{H.escape(page["title"])}</h1>'
         f'<p class="doc-lead">{H.escape(page["description"])}</p>{toc}{content}'
         f'<nav class="doc-pager" aria-label="Pager">{"".join(pager)}</nav></article></div>'
@@ -1477,6 +1498,7 @@ def build():
                 'document.querySelector("details.doc-nav").open = true;\n'
                 "</script>\n"
             )
+        doc += SEARCH_DIALOG + search_script(prefix)
 
         # Both pages that carry the playground get the same script. They differ in ONE thing: the
         # home page loads the ~680 KB engine bundle lazily (first interaction, or the section
@@ -1629,22 +1651,22 @@ def write_llms_txt(out_dir, data):
 # labels. See BADGE_LANG_NAMES for the picker's own display names, in this same order.
 BADGE_TEXT = {
     "en": "Typographic cleanup by <b>polytypo</b>",
-    "de": "Typografische Bereinigung durch <b>polytypo</b>",
-    "fr": "Nettoyage typographique par <b>polytypo</b>",
-    "ru": "Текст оттипографен <b>polytypo</b>",
     "fi": "Typografinen siistiminen <b>polytypon</b> avulla",
-    "sv": "Typografisk uppstädning av <b>polytypo</b>",
+    "fr": "Nettoyage typographique par <b>polytypo</b>",
+    "de": "Typografische Bereinigung durch <b>polytypo</b>",
     "el": "Τυπογραφικός καθαρισμός από το <b>polytypo</b>",
+    "ru": "Текст оттипографен <b>polytypo</b>",
+    "sv": "Typografisk uppstädning av <b>polytypo</b>",
 }
 
 BADGE_LANG_NAMES = {
     "en": "English",
-    "de": "German",
-    "fr": "French",
-    "ru": "Russian",
     "fi": "Finnish",
-    "sv": "Swedish",
+    "fr": "French",
+    "de": "German",
     "el": "Greek",
+    "ru": "Russian",
+    "sv": "Swedish",
 }
 
 _BADGE_THEME_COLORS = {
@@ -1876,9 +1898,10 @@ const DATA = {payload};
 
   for (const [code, name] of LOCALES) {{
     const o = document.createElement("option");
-    o.value = code; o.textContent = code + " — " + name;
+    o.value = code; o.textContent = name + " (" + code + ")";
     $locale.appendChild(o);
   }}
+  $locale.value = "{DEFAULT_PLAYGROUND_LOCALE}";
 
   // Mirrors HERO["en-US"] in gen_examples.ts — unreachable in practice (every locale in the
   // dropdown has its own recorded hero), kept in sync anyway so it isn't a stale copy of text

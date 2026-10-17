@@ -34,7 +34,7 @@ The rule reads one field, `dash.parenthetical`, which has five possible values: 
 | Value | Result | Locales |
 | --- | --- | --- |
 | `em-tight` | `word—word` | en-US |
-| `en-spaced` | `word – word` | cs, de-CH, de-DE, en-GB, fi, nl, pl, pt-BR, sv |
+| `en-spaced` | `word – word` | cs, nl, en-GB, fi, de-DE, de-CH, pl, pt-BR, sv |
 | `em-spaced` | `word — word` | fr, fr-CA, it, pt-PT, ru, uk |
 | `none` | left as written | el, es, tr |
 

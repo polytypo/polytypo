@@ -134,9 +134,9 @@ The rule reads `dash.range`, one of `em-tight`, `em-spaced`, `en-tight`, `en-spa
 
 | Value | Locales |
 | --- | --- |
-| `en-tight` | `en-US`, `en-GB`, `de-DE`, `de-CH`, `fi`, `sv`, `pl`, `cs` |
+| `en-tight` | `cs`, `en-GB`, `en-US`, `fi`, `de-DE`, `de-CH`, `pl`, `sv` |
 | `em-tight` | `ru`, `uk` |
-| `none` | `fr`, `fr-CA`, `it`, `nl`, `pt-PT`, `pt-BR`, `es`, `el`, `tr` |
+| `none` | `nl`, `fr`, `fr-CA`, `el`, `it`, `pt-BR`, `pt-PT`, `es`, `tr` |
 
 `none` means the locale has no verified range convention. The rule emits nothing there, and does not fall back to the parenthetical dash.
 

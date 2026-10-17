@@ -1,178 +1,200 @@
 {
   "spec": "1.8.0",
   "locales": {
-    "en-US": {
+    "cs": {
       "byRule": {
-        "spaces": [
+        "quotes": [
           {
-            "id": "en-us-spaces-collapse-run",
-            "in": "Hello   world.",
-            "out": "Hello world."
+            "id": "cs-quotes-primary",
+            "in": "Řekl \"ahoj\".",
+            "out": "Řekl „ahoj“."
           },
           {
-            "id": "en-us-spaces-strip-before-punctuation",
-            "in": "Hello , world !",
-            "out": "Hello, world!"
+            "id": "cs-quotes-not-polish",
+            "in": "„ahoj”",
+            "out": "„ahoj“"
           },
           {
-            "id": "en-us-spaces-bracket-inner",
-            "in": "( ok ) and [ x ]",
-            "out": "(ok) and [x]"
+            "id": "cs-quotes-nested",
+            "in": "\"Toto je 'citát' v citátu\"",
+            "out": "„Toto je ‚citát‘ v citátu“"
           }
         ],
         "ellipsis": [
           {
-            "id": "en-us-ellipsis-three-dots",
-            "in": "Wait... what?",
-            "out": "Wait… what?"
+            "id": "cs-ellipsis-three-dots",
+            "in": "Počkej... co?",
+            "out": "Počkej… co?"
           },
           {
-            "id": "en-us-ellipsis-mixed-run",
-            "in": "Wait…… what?",
-            "out": "Wait… what?"
-          },
-          {
-            "id": "en-us-ellipsis-two-dots-after-terminal",
-            "in": "Really?..",
-            "out": "Really?…"
+            "id": "cs-ellipsis-not-abbreviated",
+            "in": "Opravdu?.. ano",
+            "out": "Opravdu?… ano"
           }
         ],
         "dashes": [
           {
-            "id": "en-us-dashes-parenthetical-spaced-input",
-            "in": "The plan - if there is one - fails.",
-            "out": "The plan—if there is one—fails."
-          },
-          {
-            "id": "en-us-dashes-parenthetical-double-hyphen",
-            "in": "The plan--if there is one--fails.",
-            "out": "The plan—if there is one—fails."
-          },
-          {
-            "id": "en-us-dashes-hyphen-glyph-parenthetical",
-            "in": "x ‐ y",
-            "out": "x—y"
+            "id": "cs-dashes-parenthetical",
+            "in": "Tato kniha - vydaná ještě před válkou - je opravdu úžasná.",
+            "out": "Tato kniha – vydaná ještě před válkou – je opravdu úžasná."
           }
         ],
         "ranges": [
           {
-            "id": "en-us-ranges",
-            "in": "1914-1918 and pp. 34-36",
-            "out": "1914⁠–⁠1918 and pp. 34⁠–⁠36",
+            "id": "cs-ranges-en-tight",
+            "in": "strana 23-26",
+            "out": "strana 23⁠–⁠26",
             "rules": {
               "ranges": true
             }
-          },
-          {
-            "id": "en-us-ranges-minus-sign-glyph-range",
-            "in": "1990−2000",
-            "out": "1990⁠–⁠2000",
-            "rules": {
-              "ranges": true
-            }
-          },
-          {
-            "id": "en-us-ranges-far-dash-still-rejects-g2",
-            "in": "a--1 - 1",
-            "out": "a—1 - 1",
-            "rules": {
-              "ranges": true
-            }
-          }
-        ],
-        "quotes": [
-          {
-            "id": "en-us-quotes-basic",
-            "in": "She said \"hello\" twice.",
-            "out": "She said “hello” twice."
-          },
-          {
-            "id": "en-us-quotes-nested",
-            "in": "\"He said 'no' to me,\" she noted.",
-            "out": "“He said ‘no’ to me,” she noted."
-          },
-          {
-            "id": "en-us-quotes-nested-inverted-input",
-            "in": "'He said \"no\" to me,' she noted.",
-            "out": "“He said ‘no’ to me,” she noted."
-          }
-        ],
-        "apostrophe": [
-          {
-            "id": "en-us-apostrophe-contraction",
-            "in": "don't",
-            "out": "don’t"
-          },
-          {
-            "id": "en-us-apostrophe-elision",
-            "in": "l'été",
-            "out": "l’été"
-          },
-          {
-            "id": "en-us-apostrophe-possessive-plural",
-            "in": "the dogs' bowls",
-            "out": "the dogs’ bowls"
-          }
-        ],
-        "symbols": [
-          {
-            "id": "en-us-symbols-copyright",
-            "in": "Copyright (c) 2026 Iurii Rogulia",
-            "out": "Copyright © 2026 Iurii Rogulia"
-          },
-          {
-            "id": "en-us-symbols-tm-and-registered",
-            "in": "Acme(tm) and Acme (R)",
-            "out": "Acme™ and Acme ®"
-          },
-          {
-            "id": "en-us-symbols-s1-asymmetry",
-            "in": "f(c) and f(tm)",
-            "out": "f(c) and f™"
           }
         ],
         "nbsp": [
           {
-            "id": "en-us-nbsp-unit",
-            "in": "It is 20 km to the coast",
-            "out": "It is 20 km to the coast"
+            "id": "cs-nbsp-short-words",
+            "in": "v Plzni a u babičky",
+            "out": "v Plzni a u babičky"
           },
           {
-            "id": "en-us-nbsp-percent-spaced",
-            "in": "Prices rose 5 %",
-            "out": "Prices rose 5 %"
+            "id": "cs-nbsp-units",
+            "in": "10 ha, 14 % a 19 °C",
+            "out": "10 ha, 14 % a 19 °C"
           },
           {
-            "id": "en-us-nbsp-initials",
-            "in": "E. B. White wrote it",
-            "out": "E. B. White wrote it"
+            "id": "cs-nbsp-paragraph-sign",
+            "in": "§ 23",
+            "out": "§ 23"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "cs-spaces-brackets-and-final-stop",
+            "in": "Text ( běžný ) se nemění  .",
+            "out": "Text (běžný) se nemění."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "cs-symbols-copyright-and-dimensions",
+            "in": "Copyright (c) 2026, formát 40x60 cm",
+            "out": "Copyright © 2026, formát 40×60 cm"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "cs-apostrophe-elision",
+            "in": "Šel do McDonald's a zpět",
+            "out": "Šel do McDonald’s a zpět"
           }
         ]
       },
       "modes": [
         {
           "mode": "text",
-          "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.\nsay(\"a -- b ...\")",
-          "out": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm.\nsay(“a—b …”)"
+          "in": "Zeptal se: \"Není to ten obchod, kterému říkají 'ten za rohem'?\" ... Šli jsme -- skoro 3 km -- a byl zavřený. Copyright (c) 2026, formát 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Zeptal se: „Není to ten obchod, kterému říkají ‚ten za rohem‘?“ … Šli jsme – skoro 3 km – a byl zavřený. Copyright © 2026, formát 40×60 cm.\nsay(„a – b …“)"
         },
         {
           "mode": "html",
-          "in": "<p>She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
-          "out": "<p>She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+          "in": "<p>Zeptal se: \"Není to ten obchod, kterému říkají 'ten za rohem'?\" ... Šli jsme -- skoro 3 km -- a byl zavřený. Copyright (c) 2026, formát 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Zeptal se: „Není to ten obchod, kterému říkají ‚ten za rohem‘?“ … Šli jsme – skoro 3 km – a byl zavřený. Copyright © 2026, formát 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
         },
         {
           "mode": "markdown",
-          "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.\n\n`say(\"a -- b ...\")`",
-          "out": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm.\n\n`say(\"a -- b ...\")`"
+          "in": "Zeptal se: \"Není to ten obchod, kterému říkají 'ten za rohem'?\" ... Šli jsme -- skoro 3 km -- a byl zavřený. Copyright (c) 2026, formát 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Zeptal se: „Není to ten obchod, kterému říkají ‚ten za rohem‘?“ … Šli jsme – skoro 3 km – a byl zavřený. Copyright © 2026, formát 40×60 cm.\n\n`say(\"a -- b ...\")`"
         }
       ],
-      "compare": {
-        "neighbour": "en-GB",
-        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
-        "out": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm.",
-        "neighbourOut": "She asked, ‘Isn’t this the shop they call “round the corner”?’ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      "compare": null,
+      "resolution": ["cs"],
+      "disagreed": 0
+    },
+    "nl": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "nl-quotes-primary",
+            "in": "Hij zei \"dag\" en vertrok.",
+            "out": "Hij zei “dag” en vertrok."
+          },
+          {
+            "id": "nl-quotes-nested",
+            "in": "De koning zei: \"Ik hoorde iemand 'hoera' roepen.\"",
+            "out": "De koning zei: “Ik hoorde iemand ‘hoera’ roepen.”"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "nl-quotes-apostrophe-not-a-quote",
+            "in": "Hij kocht twee auto's.",
+            "out": "Hij kocht twee auto’s."
+          }
+        ],
+        "dashes": [
+          {
+            "id": "nl-dashes-parenthetical",
+            "in": "Het nieuws - volgens de kranten - is niet bekend.",
+            "out": "Het nieuws – volgens de kranten – is niet bekend."
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "nl-ellipsis-three-dots",
+            "in": "Hou je van jazz, blues, soul ...?",
+            "out": "Hou je van jazz, blues, soul …?"
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "nl-nbsp-currency",
+            "in": "De vaas kostte € 179.",
+            "out": "De vaas kostte € 179."
+          },
+          {
+            "id": "nl-nbsp-unit",
+            "in": "De afstand was 15 cm.",
+            "out": "De afstand was 15 cm."
+          },
+          {
+            "id": "nl-nbsp-abbreviation",
+            "in": "prof. dr. Jansen",
+            "out": "prof. dr. Jansen"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "nl-spaces-brackets-and-final-stop",
+            "in": "De tekst ( gewoon ) verandert niet  .",
+            "out": "De tekst (gewoon) verandert niet."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "nl-symbols-copyright-and-dimensions",
+            "in": "Copyright (c) 2026, formaat 40x60 cm",
+            "out": "Copyright © 2026, formaat 40×60 cm"
+          }
+        ]
       },
-      "resolution": ["en-US", "en", "en-AU", "EN-us", "en_US"],
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Hij vroeg: \"Is dit niet de winkel die ze 'om de hoek' noemen?\" ... We liepen -- bijna 3 km -- en hij was dicht. Copyright (c) 2026, formaat 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Hij vroeg: “Is dit niet de winkel die ze ‘om de hoek’ noemen?” … We liepen – bijna 3 km – en hij was dicht. Copyright © 2026, formaat 40×60 cm.\nsay(“a – b …”)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Hij vroeg: \"Is dit niet de winkel die ze 'om de hoek' noemen?\" ... We liepen -- bijna 3 km -- en hij was dicht. Copyright (c) 2026, formaat 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Hij vroeg: “Is dit niet de winkel die ze ‘om de hoek’ noemen?” … We liepen – bijna 3 km – en hij was dicht. Copyright © 2026, formaat 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Hij vroeg: \"Is dit niet de winkel die ze 'om de hoek' noemen?\" ... We liepen -- bijna 3 km -- en hij was dicht. Copyright (c) 2026, formaat 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Hij vroeg: “Is dit niet de winkel die ze ‘om de hoek’ noemen?” … We liepen – bijna 3 km – en hij was dicht. Copyright © 2026, formaat 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": ["nl", "nl-BE"],
       "disagreed": 0
     },
     "en-GB": {
@@ -350,6 +372,600 @@
         "neighbourOut": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm."
       },
       "resolution": ["en-GB"],
+      "disagreed": 0
+    },
+    "en-US": {
+      "byRule": {
+        "spaces": [
+          {
+            "id": "en-us-spaces-collapse-run",
+            "in": "Hello   world.",
+            "out": "Hello world."
+          },
+          {
+            "id": "en-us-spaces-strip-before-punctuation",
+            "in": "Hello , world !",
+            "out": "Hello, world!"
+          },
+          {
+            "id": "en-us-spaces-bracket-inner",
+            "in": "( ok ) and [ x ]",
+            "out": "(ok) and [x]"
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "en-us-ellipsis-three-dots",
+            "in": "Wait... what?",
+            "out": "Wait… what?"
+          },
+          {
+            "id": "en-us-ellipsis-mixed-run",
+            "in": "Wait…… what?",
+            "out": "Wait… what?"
+          },
+          {
+            "id": "en-us-ellipsis-two-dots-after-terminal",
+            "in": "Really?..",
+            "out": "Really?…"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "en-us-dashes-parenthetical-spaced-input",
+            "in": "The plan - if there is one - fails.",
+            "out": "The plan—if there is one—fails."
+          },
+          {
+            "id": "en-us-dashes-parenthetical-double-hyphen",
+            "in": "The plan--if there is one--fails.",
+            "out": "The plan—if there is one—fails."
+          },
+          {
+            "id": "en-us-dashes-hyphen-glyph-parenthetical",
+            "in": "x ‐ y",
+            "out": "x—y"
+          }
+        ],
+        "ranges": [
+          {
+            "id": "en-us-ranges",
+            "in": "1914-1918 and pp. 34-36",
+            "out": "1914⁠–⁠1918 and pp. 34⁠–⁠36",
+            "rules": {
+              "ranges": true
+            }
+          },
+          {
+            "id": "en-us-ranges-minus-sign-glyph-range",
+            "in": "1990−2000",
+            "out": "1990⁠–⁠2000",
+            "rules": {
+              "ranges": true
+            }
+          },
+          {
+            "id": "en-us-ranges-far-dash-still-rejects-g2",
+            "in": "a--1 - 1",
+            "out": "a—1 - 1",
+            "rules": {
+              "ranges": true
+            }
+          }
+        ],
+        "quotes": [
+          {
+            "id": "en-us-quotes-basic",
+            "in": "She said \"hello\" twice.",
+            "out": "She said “hello” twice."
+          },
+          {
+            "id": "en-us-quotes-nested",
+            "in": "\"He said 'no' to me,\" she noted.",
+            "out": "“He said ‘no’ to me,” she noted."
+          },
+          {
+            "id": "en-us-quotes-nested-inverted-input",
+            "in": "'He said \"no\" to me,' she noted.",
+            "out": "“He said ‘no’ to me,” she noted."
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "en-us-apostrophe-contraction",
+            "in": "don't",
+            "out": "don’t"
+          },
+          {
+            "id": "en-us-apostrophe-elision",
+            "in": "l'été",
+            "out": "l’été"
+          },
+          {
+            "id": "en-us-apostrophe-possessive-plural",
+            "in": "the dogs' bowls",
+            "out": "the dogs’ bowls"
+          }
+        ],
+        "symbols": [
+          {
+            "id": "en-us-symbols-copyright",
+            "in": "Copyright (c) 2026 Iurii Rogulia",
+            "out": "Copyright © 2026 Iurii Rogulia"
+          },
+          {
+            "id": "en-us-symbols-tm-and-registered",
+            "in": "Acme(tm) and Acme (R)",
+            "out": "Acme™ and Acme ®"
+          },
+          {
+            "id": "en-us-symbols-s1-asymmetry",
+            "in": "f(c) and f(tm)",
+            "out": "f(c) and f™"
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "en-us-nbsp-unit",
+            "in": "It is 20 km to the coast",
+            "out": "It is 20 km to the coast"
+          },
+          {
+            "id": "en-us-nbsp-percent-spaced",
+            "in": "Prices rose 5 %",
+            "out": "Prices rose 5 %"
+          },
+          {
+            "id": "en-us-nbsp-initials",
+            "in": "E. B. White wrote it",
+            "out": "E. B. White wrote it"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm.\nsay(“a—b …”)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": {
+        "neighbour": "en-GB",
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm.",
+        "neighbourOut": "She asked, ‘Isn’t this the shop they call “round the corner”?’ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "resolution": ["en-US", "en", "en-AU", "EN-us", "en_US"],
+      "disagreed": 0
+    },
+    "fi": {
+      "byRule": {
+        "spaces": [
+          {
+            "id": "fi-spaces-collapse-run",
+            "in": "Hello   world.",
+            "out": "Hello world."
+          },
+          {
+            "id": "fi-spaces-strip-before-punctuation",
+            "in": "Hello , world !",
+            "out": "Hello, world!"
+          },
+          {
+            "id": "fi-spaces-bracket-inner",
+            "in": "( ok ) and [ x ]",
+            "out": "(ok) and [x]"
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "fi-ellipsis-three-dots",
+            "in": "Wait... what?",
+            "out": "Wait… what?"
+          },
+          {
+            "id": "fi-ellipsis-mixed-run",
+            "in": "Wait…… what?",
+            "out": "Wait… what?"
+          },
+          {
+            "id": "fi-ellipsis-two-dots-after-terminal",
+            "in": "Really?..",
+            "out": "Really?…"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "fi-dashes-parenthetical-spaced-input",
+            "in": "Suunnitelma - jos sellainen on - kaatuu.",
+            "out": "Suunnitelma – jos sellainen on – kaatuu."
+          },
+          {
+            "id": "fi-dashes-parenthetical-double-hyphen",
+            "in": "Suunnitelma--jos sellainen on--kaatuu.",
+            "out": "Suunnitelma – jos sellainen on – kaatuu."
+          },
+          {
+            "id": "fi-dashes-authored-em-dash-converts",
+            "in": "asiakirjat — PDF-tiedostot — ja sinä",
+            "out": "asiakirjat – PDF-tiedostot – ja sinä"
+          }
+        ],
+        "ranges": [
+          {
+            "id": "fi-ranges",
+            "in": "1914-1918 and pp. 34-36",
+            "out": "1914⁠–⁠1918 and pp. 34⁠–⁠36",
+            "rules": {
+              "ranges": true
+            }
+          },
+          {
+            "id": "fi-ranges-hyphen-range-bound",
+            "in": "1914-1918",
+            "out": "1914⁠–⁠1918",
+            "rules": {
+              "ranges": true
+            }
+          },
+          {
+            "id": "fi-ranges-one-two-digits",
+            "in": "Kestää 5-10 päivää",
+            "out": "Kestää 5⁠–⁠10 päivää",
+            "rules": {
+              "ranges": true
+            }
+          }
+        ],
+        "quotes": [
+          {
+            "id": "fi-quotes-basic",
+            "in": "Hän sanoi \"moi\" ja lähti.",
+            "out": "Hän sanoi ”moi” ja lähti."
+          },
+          {
+            "id": "fi-quotes-nested",
+            "in": "\"Hän sanoi 'moi'\", totesin.",
+            "out": "”Hän sanoi ’moi’”, totesin."
+          },
+          {
+            "id": "fi-quotes-nesting-with-question",
+            "in": "\"Hän kysyi: 'mitä nyt?'\"",
+            "out": "”Hän kysyi: ’mitä nyt?’”"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "fi-apostrophe-contraction",
+            "in": "don't",
+            "out": "don’t"
+          },
+          {
+            "id": "fi-apostrophe-elision",
+            "in": "l'été",
+            "out": "l’été"
+          },
+          {
+            "id": "fi-apostrophe-possessive-plural",
+            "in": "the dogs' bowls",
+            "out": "the dogs’ bowls"
+          }
+        ],
+        "symbols": [
+          {
+            "id": "fi-symbols-copyright",
+            "in": "Copyright (c) 2026 Iurii Rogulia",
+            "out": "Copyright © 2026 Iurii Rogulia"
+          },
+          {
+            "id": "fi-symbols-tm-and-registered",
+            "in": "Acme(tm) and Acme (R)",
+            "out": "Acme™ and Acme ®"
+          },
+          {
+            "id": "fi-symbols-s1-asymmetry",
+            "in": "f(c) and f(tm)",
+            "out": "f(c) and f™"
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "fi-nbsp-unit",
+            "in": "Matkaa on 20 km rannikolle",
+            "out": "Matkaa on 20 km rannikolle"
+          },
+          {
+            "id": "fi-nbsp-percent",
+            "in": "Hinta nousi 10,5 %",
+            "out": "Hinta nousi 10,5 %"
+          },
+          {
+            "id": "fi-nbsp-section-sign",
+            "in": "Katso 6 § tarkemmin",
+            "out": "Katso 6 § tarkemmin"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Hän kysyi: \"Eikö tämä ole se 'nurkan' kirjakauppa?\" ... Kävelimme - lähes 3 km - ja löysimme sen kiinni. Copyright (c) 2026; tulosteen koko on 40x60 cm, hinta nousi 10,5 %.\nsay(\"a -- b ...\")",
+          "out": "Hän kysyi: ”Eikö tämä ole se ’nurkan’ kirjakauppa?” … Kävelimme – lähes 3 km – ja löysimme sen kiinni. Copyright © 2026; tulosteen koko on 40×60 cm, hinta nousi 10,5 %.\nsay(”a – b …”)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Hän kysyi: \"Eikö tämä ole se 'nurkan' kirjakauppa?\" ... Kävelimme - lähes 3 km - ja löysimme sen kiinni. Copyright (c) 2026; tulosteen koko on 40x60 cm, hinta nousi 10,5 %.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Hän kysyi: ”Eikö tämä ole se ’nurkan’ kirjakauppa?” … Kävelimme – lähes 3 km – ja löysimme sen kiinni. Copyright © 2026; tulosteen koko on 40×60 cm, hinta nousi 10,5 %.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Hän kysyi: \"Eikö tämä ole se 'nurkan' kirjakauppa?\" ... Kävelimme - lähes 3 km - ja löysimme sen kiinni. Copyright (c) 2026; tulosteen koko on 40x60 cm, hinta nousi 10,5 %.\n\n`say(\"a -- b ...\")`",
+          "out": "Hän kysyi: ”Eikö tämä ole se ’nurkan’ kirjakauppa?” … Kävelimme – lähes 3 km – ja löysimme sen kiinni. Copyright © 2026; tulosteen koko on 40×60 cm, hinta nousi 10,5 %.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": ["fi", "fi-FI"],
+      "disagreed": 0
+    },
+    "fr": {
+      "byRule": {
+        "spaces": [
+          {
+            "id": "fr-spaces-collapse-run",
+            "in": "Bonjour   le   monde.",
+            "out": "Bonjour le monde."
+          },
+          {
+            "id": "fr-spaces-before-punctuation",
+            "in": "Bonjour !  Ça va ?",
+            "out": "Bonjour ! Ça va ?"
+          },
+          {
+            "id": "fr-spaces-brackets",
+            "in": "a  (  b  ,  c  )  d",
+            "out": "a (b, c) d"
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "fr-ellipsis-three-dots",
+            "in": "Attendez... quoi ?",
+            "out": "Attendez… quoi ?"
+          },
+          {
+            "id": "fr-ellipsis-mixed-run",
+            "in": "Attendez…… quoi",
+            "out": "Attendez… quoi"
+          },
+          {
+            "id": "fr-ellipsis-two-dots-after-terminal",
+            "in": "Vraiment?..",
+            "out": "Vraiment ?…"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "fr-dashes-parenthetical-tight-input",
+            "in": "Le plan--s'il existe--échoue.",
+            "out": "Le plan — s’il existe — échoue."
+          },
+          {
+            "id": "fr-dashes-parenthetical-spaced-input",
+            "in": "Le plan - il existe - échoue.",
+            "out": "Le plan — il existe — échoue."
+          }
+        ],
+        "quotes": [
+          {
+            "id": "fr-quotes-primary",
+            "in": "Il a dit \"bonjour\".",
+            "out": "Il a dit « bonjour »."
+          },
+          {
+            "id": "fr-quotes-existing-guillemets-ordinary-space",
+            "in": "Il a dit « bonjour ».",
+            "out": "Il a dit « bonjour »."
+          },
+          {
+            "id": "fr-quotes-nested",
+            "in": "\"Il a dit 'oui' hier.\"",
+            "out": "« Il a dit “oui” hier. »"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "fr-apostrophe-elision",
+            "in": "l'été et l'hiver",
+            "out": "l’été et l’hiver"
+          },
+          {
+            "id": "fr-apostrophe-contractions",
+            "in": "Aujourd'hui c'est d'accord, n'est-ce pas",
+            "out": "Aujourd’hui c’est d’accord, n’est-ce pas"
+          },
+          {
+            "id": "fr-apostrophe-elision-before-guillemet",
+            "in": "un mélange d'« urine diluée »",
+            "out": "un mélange d’« urine diluée »"
+          }
+        ],
+        "symbols": [
+          {
+            "id": "fr-symbols-copyright",
+            "in": "Copyright (c) 2026 Iurii Rogulia",
+            "out": "Copyright © 2026 Iurii Rogulia"
+          },
+          {
+            "id": "fr-symbols-multiplication",
+            "in": "Une carte 3x5",
+            "out": "Une carte 3×5"
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "fr-nbsp-narrow-question",
+            "in": "Ça va ?",
+            "out": "Ça va ?"
+          },
+          {
+            "id": "fr-nbsp-narrow-exclamation",
+            "in": "Bonjour !",
+            "out": "Bonjour !"
+          },
+          {
+            "id": "fr-nbsp-narrow-semicolon",
+            "in": "Oui ; non",
+            "out": "Oui ; non"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm.\nsay(« a — b … »)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": {
+        "neighbour": "fr-CA",
+        "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.",
+        "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm.",
+        "neighbourOut": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm."
+      },
+      "resolution": ["fr", "fr-BE"],
+      "disagreed": 0
+    },
+    "fr-CA": {
+      "byRule": {
+        "spaces": [
+          {
+            "id": "fr-ca-spaces-collapse-run",
+            "in": "Bonjour   le   monde.",
+            "out": "Bonjour le monde."
+          },
+          {
+            "id": "fr-ca-spaces-brackets",
+            "in": "a  (  b  ,  c  )  d",
+            "out": "a (b, c) d"
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "fr-ca-ellipsis-three-dots",
+            "in": "Attendez... quoi?",
+            "out": "Attendez… quoi?"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "fr-ca-dashes-parenthetical-spaced-input",
+            "in": "Le plan - il existe - échoue.",
+            "out": "Le plan — il existe — échoue."
+          }
+        ],
+        "quotes": [
+          {
+            "id": "fr-ca-quotes-primary",
+            "in": "Il a dit \"bonjour\".",
+            "out": "Il a dit « bonjour »."
+          },
+          {
+            "id": "fr-ca-quotes-nested",
+            "in": "\"Il a dit 'oui' hier.\"",
+            "out": "« Il a dit “oui” hier. »"
+          },
+          {
+            "id": "fr-ca-quotes-030-adversarial-interleaved",
+            "in": "«a“b«c»d”e»",
+            "out": "« a“b« c »d”e »"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "fr-ca-apostrophe-elision",
+            "in": "l'été et l'hiver",
+            "out": "l’été et l’hiver"
+          },
+          {
+            "id": "fr-ca-apostrophe-elision-before-straight-quote",
+            "in": "l'\"idée\" est simple",
+            "out": "l’« idée » est simple"
+          }
+        ],
+        "symbols": [
+          {
+            "id": "fr-ca-symbols-copyright",
+            "in": "Copyright (c) 2026 Iurii Rogulia",
+            "out": "Copyright © 2026 Iurii Rogulia"
+          },
+          {
+            "id": "fr-ca-symbols-multiplication",
+            "in": "Une carte 3x5",
+            "out": "Une carte 3×5"
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "fr-ca-nbsp-question-no-space",
+            "in": "Ça va ?",
+            "out": "Ça va?"
+          },
+          {
+            "id": "fr-ca-nbsp-exclamation-no-space",
+            "in": "Bonjour !",
+            "out": "Bonjour!"
+          },
+          {
+            "id": "fr-ca-nbsp-semicolon-no-space",
+            "in": "Oui ; non",
+            "out": "Oui; non"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm.\nsay(« a — b … »)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": {
+        "neighbour": "fr",
+        "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.",
+        "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm.",
+        "neighbourOut": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm."
+      },
+      "resolution": ["fr-CA"],
       "disagreed": 0
     },
     "de-DE": {
@@ -677,255 +1293,495 @@
       "resolution": ["de-CH", "de_ch"],
       "disagreed": 0
     },
-    "fr": {
+    "el": {
       "byRule": {
         "spaces": [
           {
-            "id": "fr-spaces-collapse-run",
-            "in": "Bonjour   le   monde.",
-            "out": "Bonjour le monde."
+            "id": "el-spaces-collapse-run",
+            "in": "Ελλάδα   και   Κύπρος",
+            "out": "Ελλάδα και Κύπρος"
           },
           {
-            "id": "fr-spaces-before-punctuation",
-            "in": "Bonjour !  Ça va ?",
-            "out": "Bonjour ! Ça va ?"
+            "id": "el-spaces-before-erotimatiko",
+            "in": "Τι κάνεις ;",
+            "out": "Τι κάνεις;"
           },
           {
-            "id": "fr-spaces-brackets",
-            "in": "a  (  b  ,  c  )  d",
-            "out": "a (b, c) d"
+            "id": "el-spaces-before-punctuation",
+            "in": "Καλημέρα , κόσμε !",
+            "out": "Καλημέρα, κόσμε!"
           }
         ],
         "ellipsis": [
           {
-            "id": "fr-ellipsis-three-dots",
-            "in": "Attendez... quoi ?",
-            "out": "Attendez… quoi ?"
+            "id": "el-ellipsis-three-dots",
+            "in": "Περίμενε... τι έγινε",
+            "out": "Περίμενε… τι έγινε"
           },
           {
-            "id": "fr-ellipsis-mixed-run",
-            "in": "Attendez…… quoi",
-            "out": "Attendez… quoi"
-          },
-          {
-            "id": "fr-ellipsis-two-dots-after-terminal",
-            "in": "Vraiment?..",
-            "out": "Vraiment ?…"
-          }
-        ],
-        "dashes": [
-          {
-            "id": "fr-dashes-parenthetical-tight-input",
-            "in": "Le plan--s'il existe--échoue.",
-            "out": "Le plan — s’il existe — échoue."
-          },
-          {
-            "id": "fr-dashes-parenthetical-spaced-input",
-            "in": "Le plan - il existe - échoue.",
-            "out": "Le plan — il existe — échoue."
+            "id": "el-ellipsis-not-abbreviated-after-terminal",
+            "in": "Πράγματι?..",
+            "out": "Πράγματι?…"
           }
         ],
         "quotes": [
           {
-            "id": "fr-quotes-primary",
-            "in": "Il a dit \"bonjour\".",
-            "out": "Il a dit « bonjour »."
+            "id": "el-quotes-primary",
+            "in": "Είπε \"καλημέρα\" και έφυγε.",
+            "out": "Είπε «καλημέρα» και έφυγε."
           },
           {
-            "id": "fr-quotes-existing-guillemets-ordinary-space",
-            "in": "Il a dit « bonjour ».",
-            "out": "Il a dit « bonjour »."
+            "id": "el-quotes-nested",
+            "in": "\"Είπε 'όχι' σε μένα\", σημείωσε.",
+            "out": "«Είπε “όχι” σε μένα», σημείωσε."
           },
           {
-            "id": "fr-quotes-nested",
-            "in": "\"Il a dit 'oui' hier.\"",
-            "out": "« Il a dit “oui” hier. »"
+            "id": "el-quotes-elision-inside-straight-quotes",
+            "in": "Είπε \"σ' αυτό το βιβλίο\" χθες.",
+            "out": "Είπε «σ’ αυτό το βιβλίο» χθες."
           }
         ],
         "apostrophe": [
           {
-            "id": "fr-apostrophe-elision",
-            "in": "l'été et l'hiver",
-            "out": "l’été et l’hiver"
+            "id": "el-apostrophe-elision",
+            "in": "γι' αυτό και απ' την αρχή",
+            "out": "γι’ αυτό και απ’ την αρχή"
           },
           {
-            "id": "fr-apostrophe-contractions",
-            "in": "Aujourd'hui c'est d'accord, n'est-ce pas",
-            "out": "Aujourd’hui c’est d’accord, n’est-ce pas"
+            "id": "el-apostrophe-elision-inside-guillemets",
+            "in": "Είπε «σ' αυτό το βιβλίο» χθες.",
+            "out": "Είπε «σ’ αυτό το βιβλίο» χθες."
           },
           {
-            "id": "fr-apostrophe-elision-before-guillemet",
-            "in": "un mélange d'« urine diluée »",
-            "out": "un mélange d’« urine diluée »"
+            "id": "el-apostrophe-elision-before-guillemet",
+            "in": "η εφημερίδα l'\"Humanité\"",
+            "out": "η εφημερίδα l’«Humanité»"
           }
         ],
         "symbols": [
           {
-            "id": "fr-symbols-copyright",
-            "in": "Copyright (c) 2026 Iurii Rogulia",
-            "out": "Copyright © 2026 Iurii Rogulia"
-          },
-          {
-            "id": "fr-symbols-multiplication",
-            "in": "Une carte 3x5",
-            "out": "Une carte 3×5"
-          }
-        ],
-        "nbsp": [
-          {
-            "id": "fr-nbsp-narrow-question",
-            "in": "Ça va ?",
-            "out": "Ça va ?"
-          },
-          {
-            "id": "fr-nbsp-narrow-exclamation",
-            "in": "Bonjour !",
-            "out": "Bonjour !"
-          },
-          {
-            "id": "fr-nbsp-narrow-semicolon",
-            "in": "Oui ; non",
-            "out": "Oui ; non"
+            "id": "el-symbols-copyright-and-multiplication",
+            "in": "Ανάλυση 1920x1080, Copyright (c) 2026",
+            "out": "Ανάλυση 1920×1080, Copyright © 2026"
           }
         ]
       },
       "modes": [
         {
           "mode": "text",
-          "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.\nsay(\"a -- b ...\")",
-          "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm.\nsay(« a — b … »)"
+          "in": "Ρώτησε: \"Δεν είναι αυτό το μαγαζί 'στη γωνία';\" ... Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright (c) 2026, μέγεθος 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm.\nsay(«a -- b …»)"
         },
         {
           "mode": "html",
-          "in": "<p>Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
-          "out": "<p>Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+          "in": "<p>Ρώτησε: \"Δεν είναι αυτό το μαγαζί 'στη γωνία';\" ... Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright (c) 2026, μέγεθος 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
         },
         {
           "mode": "markdown",
-          "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.\n\n`say(\"a -- b ...\")`",
-          "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm.\n\n`say(\"a -- b ...\")`"
+          "in": "Ρώτησε: \"Δεν είναι αυτό το μαγαζί 'στη γωνία';\" ... Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright (c) 2026, μέγεθος 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm.\n\n`say(\"a -- b ...\")`"
         }
       ],
-      "compare": {
-        "neighbour": "fr-CA",
-        "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.",
-        "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm.",
-        "neighbourOut": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm."
-      },
-      "resolution": ["fr", "fr-BE"],
+      "compare": null,
+      "resolution": ["el", "el-GR"],
       "disagreed": 0
     },
-    "fr-CA": {
+    "it": {
       "byRule": {
-        "spaces": [
+        "quotes": [
           {
-            "id": "fr-ca-spaces-collapse-run",
-            "in": "Bonjour   le   monde.",
-            "out": "Bonjour le monde."
+            "id": "it-quotes-primary",
+            "in": "Ha detto \"buongiorno\" ed è uscito.",
+            "out": "Ha detto «buongiorno» ed è uscito."
           },
           {
-            "id": "fr-ca-spaces-brackets",
-            "in": "a  (  b  ,  c  )  d",
-            "out": "a (b, c) d"
-          }
-        ],
-        "ellipsis": [
+            "id": "it-quotes-nested",
+            "in": "Scrisse: \"Mi disse 'arrivo subito' e sparì.\"",
+            "out": "Scrisse: «Mi disse “arrivo subito” e sparì.»"
+          },
           {
-            "id": "fr-ca-ellipsis-three-dots",
-            "in": "Attendez... quoi?",
-            "out": "Attendez… quoi?"
+            "id": "it-quotes-inner-space-deleted",
+            "in": "Ha detto « buongiorno » ed è uscito.",
+            "out": "Ha detto «buongiorno» ed è uscito."
           }
         ],
         "dashes": [
           {
-            "id": "fr-ca-dashes-parenthetical-spaced-input",
-            "in": "Le plan - il existe - échoue.",
-            "out": "Le plan — il existe — échoue."
+            "id": "it-dashes-parenthetical-em-spaced",
+            "in": "La casa - se casa si poteva definire quel rudere - sorgeva ai piedi del colle.",
+            "out": "La casa — se casa si poteva definire quel rudere — sorgeva ai piedi del colle."
+          },
+          {
+            "id": "it-dashes-date-range-accepted-cost",
+            "in": "25 maggio - 10 giugno 1985",
+            "out": "25 maggio — 10 giugno 1985"
           }
         ],
-        "quotes": [
+        "ellipsis": [
           {
-            "id": "fr-ca-quotes-primary",
-            "in": "Il a dit \"bonjour\".",
-            "out": "Il a dit « bonjour »."
+            "id": "it-ellipsis-three-dots",
+            "in": "Ti chiami Leone... ma sei un coniglio.",
+            "out": "Ti chiami Leone… ma sei un coniglio."
           },
           {
-            "id": "fr-ca-quotes-nested",
-            "in": "\"Il a dit 'oui' hier.\"",
-            "out": "« Il a dit “oui” hier. »"
-          },
-          {
-            "id": "fr-ca-quotes-030-adversarial-interleaved",
-            "in": "«a“b«c»d”e»",
-            "out": "« a“b« c »d”e »"
-          }
-        ],
-        "apostrophe": [
-          {
-            "id": "fr-ca-apostrophe-elision",
-            "in": "l'été et l'hiver",
-            "out": "l’été et l’hiver"
-          },
-          {
-            "id": "fr-ca-apostrophe-elision-before-straight-quote",
-            "in": "l'\"idée\" est simple",
-            "out": "l’« idée » est simple"
-          }
-        ],
-        "symbols": [
-          {
-            "id": "fr-ca-symbols-copyright",
-            "in": "Copyright (c) 2026 Iurii Rogulia",
-            "out": "Copyright © 2026 Iurii Rogulia"
-          },
-          {
-            "id": "fr-ca-symbols-multiplication",
-            "in": "Une carte 3x5",
-            "out": "Une carte 3×5"
+            "id": "it-ellipsis-not-abbreviated-after-terminal",
+            "in": "Davvero?..",
+            "out": "Davvero?…"
           }
         ],
         "nbsp": [
           {
-            "id": "fr-ca-nbsp-question-no-space",
-            "in": "Ça va ?",
-            "out": "Ça va?"
+            "id": "it-nbsp-no-space-before-punctuation",
+            "in": "Che cosa dici ? Nulla ! Davvero ; sì : nulla.",
+            "out": "Che cosa dici? Nulla! Davvero; sì: nulla."
           },
           {
-            "id": "fr-ca-nbsp-exclamation-no-space",
-            "in": "Bonjour !",
-            "out": "Bonjour!"
+            "id": "it-nbsp-percent",
+            "in": "un aumento del 45 % quest'anno",
+            "out": "un aumento del 45 % quest’anno"
           },
           {
-            "id": "fr-ca-nbsp-semicolon-no-space",
-            "in": "Oui ; non",
-            "out": "Oui; non"
+            "id": "it-nbsp-celsius",
+            "in": "una temperatura di 20 °C",
+            "out": "una temperatura di 20 °C"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "it-apostrophe-elision",
+            "in": "un'utopia, un'assurda aspirazione dell'Unione",
+            "out": "un’utopia, un’assurda aspirazione dell’Unione"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "it-spaces-brackets-and-final-stop",
+            "in": "Disse ( senza dubbio ) di sì  .",
+            "out": "Disse (senza dubbio) di sì."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "it-symbols-copyright-and-dimensions",
+            "in": "Copyright (c) 2026, formato 40x60 cm",
+            "out": "Copyright © 2026, formato 40×60 cm"
           }
         ]
       },
       "modes": [
         {
           "mode": "text",
-          "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.\nsay(\"a -- b ...\")",
-          "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm.\nsay(« a — b … »)"
+          "in": "Ha chiesto: \"Non è questo il negozio che chiamano 'quello all'angolo'?\" ... Abbiamo camminato -- quasi 3 km -- ed era chiuso. Copyright (c) 2026, formato 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Ha chiesto: «Non è questo il negozio che chiamano “quello all’angolo”?» … Abbiamo camminato — quasi 3 km — ed era chiuso. Copyright © 2026, formato 40×60 cm.\nsay(«a — b …»)"
         },
         {
           "mode": "html",
-          "in": "<p>Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
-          "out": "<p>Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+          "in": "<p>Ha chiesto: \"Non è questo il negozio che chiamano 'quello all'angolo'?\" ... Abbiamo camminato -- quasi 3 km -- ed era chiuso. Copyright (c) 2026, formato 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Ha chiesto: «Non è questo il negozio che chiamano “quello all’angolo”?» … Abbiamo camminato — quasi 3 km — ed era chiuso. Copyright © 2026, formato 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
         },
         {
           "mode": "markdown",
-          "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.\n\n`say(\"a -- b ...\")`",
-          "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm.\n\n`say(\"a -- b ...\")`"
+          "in": "Ha chiesto: \"Non è questo il negozio che chiamano 'quello all'angolo'?\" ... Abbiamo camminato -- quasi 3 km -- ed era chiuso. Copyright (c) 2026, formato 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Ha chiesto: «Non è questo il negozio che chiamano “quello all’angolo”?» … Abbiamo camminato — quasi 3 km — ed era chiuso. Copyright © 2026, formato 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": ["it"],
+      "disagreed": 0
+    },
+    "pl": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "pl-quotes-primary",
+            "in": "Powiedział \"dzień dobry\".",
+            "out": "Powiedział „dzień dobry”."
+          },
+          {
+            "id": "pl-quotes-nested",
+            "in": "Powiedział \"cytat 'w cytacie' koniec\".",
+            "out": "Powiedział „cytat »w cytacie« koniec”."
+          }
+        ],
+        "dashes": [
+          {
+            "id": "pl-dashes-parenthetical",
+            "in": "Wtrącenie - tak jest - kończy zdanie.",
+            "out": "Wtrącenie – tak jest – kończy zdanie."
+          }
+        ],
+        "ranges": [
+          {
+            "id": "pl-ranges-en-tight",
+            "in": "W latach 1756-1763 toczyła się wojna.",
+            "out": "W latach 1756⁠–⁠1763 toczyła się wojna.",
+            "rules": {
+              "ranges": true
+            }
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "pl-ellipsis-three-dots",
+            "in": "Czekaj... co?",
+            "out": "Czekaj… co?"
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "pl-nbsp-short-words",
+            "in": "Mieszkam w Warszawie i pracuję.",
+            "out": "Mieszkam w Warszawie i pracuję."
+          },
+          {
+            "id": "pl-nbsp-paragraph-sign",
+            "in": "Zgodnie z § 5 ustawy.",
+            "out": "Zgodnie z § 5 ustawy."
+          },
+          {
+            "id": "pl-nbsp-unit",
+            "in": "Waży 5 kg.",
+            "out": "Waży 5 kg."
+          }
+        ],
+        "spaces": [
+          {
+            "id": "pl-spaces-brackets-and-final-stop",
+            "in": "Tekst ( bieżący ) nie zmienia się  .",
+            "out": "Tekst (bieżący) nie zmienia się."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "pl-symbols-copyright-and-dimensions",
+            "in": "Copyright (c) 2026, format 40x60 cm",
+            "out": "Copyright © 2026, format 40×60 cm"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "pl-apostrophe-foreign-name",
+            "in": "d'Artagnan",
+            "out": "d’Artagnan"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Zapytał: \"Czy to nie ten sklep, który nazywają 'tym za rogiem'?\" ... Szliśmy -- prawie 3 km -- a był zamknięty. Copyright (c) 2026, format 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Zapytał: „Czy to nie ten sklep, który nazywają »tym za rogiem«?” … Szliśmy – prawie 3 km – a był zamknięty. Copyright © 2026, format 40×60 cm.\nsay(„a – b …”)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Zapytał: \"Czy to nie ten sklep, który nazywają 'tym za rogiem'?\" ... Szliśmy -- prawie 3 km -- a był zamknięty. Copyright (c) 2026, format 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Zapytał: „Czy to nie ten sklep, który nazywają »tym za rogiem«?” … Szliśmy – prawie 3 km – a był zamknięty. Copyright © 2026, format 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Zapytał: \"Czy to nie ten sklep, który nazywają 'tym za rogiem'?\" ... Szliśmy -- prawie 3 km -- a był zamknięty. Copyright (c) 2026, format 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Zapytał: „Czy to nie ten sklep, który nazywają »tym za rogiem«?” … Szliśmy – prawie 3 km – a był zamknięty. Copyright © 2026, format 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": ["pl"],
+      "disagreed": 0
+    },
+    "pt-BR": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "pt-br-quotes-primary",
+            "in": "Ele disse \"bom dia\" e saiu.",
+            "out": "Ele disse “bom dia” e saiu."
+          },
+          {
+            "id": "pt-br-quotes-nested",
+            "in": "Escreveu: \"Disse-me 'chego já' e desapareceu.\"",
+            "out": "Escreveu: “Disse-me ‘chego já’ e desapareceu.”"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "pt-br-dashes-parenthetical",
+            "in": "As condições - ordenado e subvenções - eram boas.",
+            "out": "As condições – ordenado e subvenções – eram boas."
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "pt-br-ellipsis-three-dots",
+            "in": "Espere... o quê?",
+            "out": "Espere… o quê?"
+          },
+          {
+            "id": "pt-br-ellipsis-not-abbreviated-after-terminal",
+            "in": "É o dianho!..",
+            "out": "É o dianho!…"
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "pt-br-nbsp-percent",
+            "in": "7 % do volume de negócios",
+            "out": "7 % do volume de negócios"
+          },
+          {
+            "id": "pt-br-nbsp-celsius",
+            "in": "a temperatura atingiu hoje os 39 °C",
+            "out": "a temperatura atingiu hoje os 39 °C"
+          },
+          {
+            "id": "pt-br-nbsp-abbreviation",
+            "in": "p. ex. isto",
+            "out": "p. ex. isto"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "pt-br-spaces-brackets-and-final-stop",
+            "in": "O texto ( corrente ) não muda  .",
+            "out": "O texto (corrente) não muda."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "pt-br-symbols-copyright-and-dimensions",
+            "in": "Copyright (c) 2026, formato 40x60 cm",
+            "out": "Copyright © 2026, formato 40×60 cm"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "pt-br-apostrophe-elision",
+            "in": "pinga d'água",
+            "out": "pinga d’água"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Perguntou: \"Não é esta a loja que chamam de 'a da esquina'?\" ... Caminhamos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Perguntou: “Não é esta a loja que chamam de ‘a da esquina’?” … Caminhamos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm.\nsay(“a – b …”)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Perguntou: \"Não é esta a loja que chamam de 'a da esquina'?\" ... Caminhamos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Perguntou: “Não é esta a loja que chamam de ‘a da esquina’?” … Caminhamos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Perguntou: \"Não é esta a loja que chamam de 'a da esquina'?\" ... Caminhamos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Perguntou: “Não é esta a loja que chamam de ‘a da esquina’?” … Caminhamos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm.\n\n`say(\"a -- b ...\")`"
         }
       ],
       "compare": {
-        "neighbour": "fr",
-        "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.",
-        "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm.",
-        "neighbourOut": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm."
+        "neighbour": "pt-PT",
+        "in": "Perguntou: \"Não é esta a loja que chamam de 'a da esquina'?\" ... Caminhamos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.",
+        "out": "Perguntou: “Não é esta a loja que chamam de ‘a da esquina’?” … Caminhamos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm.",
+        "neighbourOut": "Perguntou: «Não é esta a loja que chamam de “a da esquina”?» … Caminhamos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm."
       },
-      "resolution": ["fr-CA"],
+      "resolution": ["pt-BR"],
+      "disagreed": 0
+    },
+    "pt-PT": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "pt-pt-quotes-primary",
+            "in": "Ele disse \"bom dia\" e saiu.",
+            "out": "Ele disse «bom dia» e saiu."
+          },
+          {
+            "id": "pt-pt-quotes-nested",
+            "in": "Escreveu: \"Disse-me 'chego já' e desapareceu.\"",
+            "out": "Escreveu: «Disse-me “chego já” e desapareceu.»"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "pt-pt-dashes-parenthetical",
+            "in": "As condições - ordenado e subvenções - eram boas.",
+            "out": "As condições — ordenado e subvenções — eram boas."
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "pt-pt-ellipsis-three-dots",
+            "in": "Espere... o quê?",
+            "out": "Espere… o quê?"
+          },
+          {
+            "id": "pt-pt-ellipsis-not-abbreviated-after-terminal",
+            "in": "É o dianho!..",
+            "out": "É o dianho!…"
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "pt-pt-nbsp-percent",
+            "in": "7 % do volume de negócios",
+            "out": "7 % do volume de negócios"
+          },
+          {
+            "id": "pt-pt-nbsp-celsius",
+            "in": "a temperatura atingiu hoje os 39 °C",
+            "out": "a temperatura atingiu hoje os 39 °C"
+          },
+          {
+            "id": "pt-pt-nbsp-abbreviation",
+            "in": "p. ex. isto",
+            "out": "p. ex. isto"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "pt-pt-spaces-brackets-and-final-stop",
+            "in": "O texto ( corrente ) não muda  .",
+            "out": "O texto (corrente) não muda."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "pt-pt-symbols-copyright-and-dimensions",
+            "in": "Copyright (c) 2026, formato 40x60 cm",
+            "out": "Copyright © 2026, formato 40×60 cm"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "pt-pt-apostrophe-elision",
+            "in": "pinga d'água",
+            "out": "pinga d’água"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Perguntou: \"Não é esta a loja a que chamam 'a da esquina'?\" ... Caminhámos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Perguntou: «Não é esta a loja a que chamam “a da esquina”?» … Caminhámos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm.\nsay(«a — b …»)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Perguntou: \"Não é esta a loja a que chamam 'a da esquina'?\" ... Caminhámos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Perguntou: «Não é esta a loja a que chamam “a da esquina”?» … Caminhámos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Perguntou: \"Não é esta a loja a que chamam 'a da esquina'?\" ... Caminhámos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Perguntou: «Não é esta a loja a que chamam “a da esquina”?» … Caminhámos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": {
+        "neighbour": "pt-BR",
+        "in": "Perguntou: \"Não é esta a loja a que chamam 'a da esquina'?\" ... Caminhámos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.",
+        "out": "Perguntou: «Não é esta a loja a que chamam “a da esquina”?» … Caminhámos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm.",
+        "neighbourOut": "Perguntou: “Não é esta a loja a que chamam ‘a da esquina’?” … Caminhámos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm."
+      },
+      "resolution": ["pt-PT", "pt", "pt-AO"],
       "disagreed": 0
     },
     "ru": {
@@ -1101,173 +1957,95 @@
       "resolution": ["ru", "ru-BY"],
       "disagreed": 0
     },
-    "fi": {
+    "es": {
       "byRule": {
-        "spaces": [
+        "quotes": [
           {
-            "id": "fi-spaces-collapse-run",
-            "in": "Hello   world.",
-            "out": "Hello world."
+            "id": "es-quotes-primary",
+            "in": "Ha dicho \"buenos días\" y salió.",
+            "out": "Ha dicho «buenos días» y salió."
           },
           {
-            "id": "fi-spaces-strip-before-punctuation",
-            "in": "Hello , world !",
-            "out": "Hello, world!"
+            "id": "es-quotes-nested",
+            "in": "Escribió: \"Me dijo 'llego enseguida' y desapareció.\"",
+            "out": "Escribió: «Me dijo “llego enseguida” y desapareció.»"
           },
           {
-            "id": "fi-spaces-bracket-inner",
-            "in": "( ok ) and [ x ]",
-            "out": "(ok) and [x]"
+            "id": "es-quotes-inner-space-deleted",
+            "in": "Ha dicho « buenos días » y salió.",
+            "out": "Ha dicho «buenos días» y salió."
           }
         ],
         "ellipsis": [
           {
-            "id": "fi-ellipsis-three-dots",
-            "in": "Wait... what?",
-            "out": "Wait… what?"
+            "id": "es-ellipsis-three-dots",
+            "in": "Espera... ¿qué?",
+            "out": "Espera… ¿qué?"
           },
           {
-            "id": "fi-ellipsis-mixed-run",
-            "in": "Wait…… what?",
-            "out": "Wait… what?"
-          },
-          {
-            "id": "fi-ellipsis-two-dots-after-terminal",
-            "in": "Really?..",
-            "out": "Really?…"
-          }
-        ],
-        "dashes": [
-          {
-            "id": "fi-dashes-parenthetical-spaced-input",
-            "in": "Suunnitelma - jos sellainen on - kaatuu.",
-            "out": "Suunnitelma – jos sellainen on – kaatuu."
-          },
-          {
-            "id": "fi-dashes-parenthetical-double-hyphen",
-            "in": "Suunnitelma--jos sellainen on--kaatuu.",
-            "out": "Suunnitelma – jos sellainen on – kaatuu."
-          },
-          {
-            "id": "fi-dashes-authored-em-dash-converts",
-            "in": "asiakirjat — PDF-tiedostot — ja sinä",
-            "out": "asiakirjat – PDF-tiedostot – ja sinä"
-          }
-        ],
-        "ranges": [
-          {
-            "id": "fi-ranges",
-            "in": "1914-1918 and pp. 34-36",
-            "out": "1914⁠–⁠1918 and pp. 34⁠–⁠36",
-            "rules": {
-              "ranges": true
-            }
-          },
-          {
-            "id": "fi-ranges-hyphen-range-bound",
-            "in": "1914-1918",
-            "out": "1914⁠–⁠1918",
-            "rules": {
-              "ranges": true
-            }
-          },
-          {
-            "id": "fi-ranges-one-two-digits",
-            "in": "Kestää 5-10 päivää",
-            "out": "Kestää 5⁠–⁠10 päivää",
-            "rules": {
-              "ranges": true
-            }
-          }
-        ],
-        "quotes": [
-          {
-            "id": "fi-quotes-basic",
-            "in": "Hän sanoi \"moi\" ja lähti.",
-            "out": "Hän sanoi ”moi” ja lähti."
-          },
-          {
-            "id": "fi-quotes-nested",
-            "in": "\"Hän sanoi 'moi'\", totesin.",
-            "out": "”Hän sanoi ’moi’”, totesin."
-          },
-          {
-            "id": "fi-quotes-nesting-with-question",
-            "in": "\"Hän kysyi: 'mitä nyt?'\"",
-            "out": "”Hän kysyi: ’mitä nyt?’”"
-          }
-        ],
-        "apostrophe": [
-          {
-            "id": "fi-apostrophe-contraction",
-            "in": "don't",
-            "out": "don’t"
-          },
-          {
-            "id": "fi-apostrophe-elision",
-            "in": "l'été",
-            "out": "l’été"
-          },
-          {
-            "id": "fi-apostrophe-possessive-plural",
-            "in": "the dogs' bowls",
-            "out": "the dogs’ bowls"
-          }
-        ],
-        "symbols": [
-          {
-            "id": "fi-symbols-copyright",
-            "in": "Copyright (c) 2026 Iurii Rogulia",
-            "out": "Copyright © 2026 Iurii Rogulia"
-          },
-          {
-            "id": "fi-symbols-tm-and-registered",
-            "in": "Acme(tm) and Acme (R)",
-            "out": "Acme™ and Acme ®"
-          },
-          {
-            "id": "fi-symbols-s1-asymmetry",
-            "in": "f(c) and f(tm)",
-            "out": "f(c) and f™"
+            "id": "es-ellipsis-not-abbreviated-after-terminal",
+            "in": "¿De verdad?..",
+            "out": "¿De verdad?…"
           }
         ],
         "nbsp": [
           {
-            "id": "fi-nbsp-unit",
-            "in": "Matkaa on 20 km rannikolle",
-            "out": "Matkaa on 20 km rannikolle"
+            "id": "es-nbsp-percent",
+            "in": "Aprobó un 8 % de los alumnos",
+            "out": "Aprobó un 8 % de los alumnos"
           },
           {
-            "id": "fi-nbsp-percent",
-            "in": "Hinta nousi 10,5 %",
-            "out": "Hinta nousi 10,5 %"
+            "id": "es-nbsp-celsius",
+            "in": "La temperatura es de 27 °C",
+            "out": "La temperatura es de 27 °C"
           },
           {
-            "id": "fi-nbsp-section-sign",
-            "in": "Katso 6 § tarkemmin",
-            "out": "Katso 6 § tarkemmin"
+            "id": "es-nbsp-abbreviation-internal-space",
+            "in": "Viajó a los EE. UU. el lunes",
+            "out": "Viajó a los EE. UU. el lunes"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "es-apostrophe-foreign-name",
+            "in": "L'Hospitalet de Llobregat",
+            "out": "L’Hospitalet de Llobregat"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "es-spaces-brackets-and-final-stop",
+            "in": "Dijo ( sin dudar ) que sí  .",
+            "out": "Dijo (sin dudar) que sí."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "es-symbols-copyright-and-dimensions",
+            "in": "Copyright (c) 2026, tamaño 40x60 cm",
+            "out": "Copyright © 2026, tamaño 40×60 cm"
           }
         ]
       },
       "modes": [
         {
           "mode": "text",
-          "in": "Hän kysyi: \"Eikö tämä ole se 'nurkan' kirjakauppa?\" ... Kävelimme - lähes 3 km - ja löysimme sen kiinni. Copyright (c) 2026; tulosteen koko on 40x60 cm, hinta nousi 10,5 %.\nsay(\"a -- b ...\")",
-          "out": "Hän kysyi: ”Eikö tämä ole se ’nurkan’ kirjakauppa?” … Kävelimme – lähes 3 km – ja löysimme sen kiinni. Copyright © 2026; tulosteen koko on 40×60 cm, hinta nousi 10,5 %.\nsay(”a – b …”)"
+          "in": "Preguntó: \"¿No es esta la tienda que llaman 'la de la esquina'?\" ... Caminamos -- casi 3 km -- y estaba cerrada. Copyright (c) 2026, tamaño 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm.\nsay(«a -- b …»)"
         },
         {
           "mode": "html",
-          "in": "<p>Hän kysyi: \"Eikö tämä ole se 'nurkan' kirjakauppa?\" ... Kävelimme - lähes 3 km - ja löysimme sen kiinni. Copyright (c) 2026; tulosteen koko on 40x60 cm, hinta nousi 10,5 %.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
-          "out": "<p>Hän kysyi: ”Eikö tämä ole se ’nurkan’ kirjakauppa?” … Kävelimme – lähes 3 km – ja löysimme sen kiinni. Copyright © 2026; tulosteen koko on 40×60 cm, hinta nousi 10,5 %.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+          "in": "<p>Preguntó: \"¿No es esta la tienda que llaman 'la de la esquina'?\" ... Caminamos -- casi 3 km -- y estaba cerrada. Copyright (c) 2026, tamaño 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
         },
         {
           "mode": "markdown",
-          "in": "Hän kysyi: \"Eikö tämä ole se 'nurkan' kirjakauppa?\" ... Kävelimme - lähes 3 km - ja löysimme sen kiinni. Copyright (c) 2026; tulosteen koko on 40x60 cm, hinta nousi 10,5 %.\n\n`say(\"a -- b ...\")`",
-          "out": "Hän kysyi: ”Eikö tämä ole se ’nurkan’ kirjakauppa?” … Kävelimme – lähes 3 km – ja löysimme sen kiinni. Copyright © 2026; tulosteen koko on 40×60 cm, hinta nousi 10,5 %.\n\n`say(\"a -- b ...\")`"
+          "in": "Preguntó: \"¿No es esta la tienda que llaman 'la de la esquina'?\" ... Caminamos -- casi 3 km -- y estaba cerrada. Copyright (c) 2026, tamaño 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm.\n\n`say(\"a -- b ...\")`"
         }
       ],
       "compare": null,
-      "resolution": ["fi", "fi-FI"],
+      "resolution": ["es", "es-MX"],
       "disagreed": 0
     },
     "sv": {
@@ -1439,674 +2217,100 @@
       "resolution": ["sv", "sv-FI"],
       "disagreed": 0
     },
-    "el": {
+    "tr": {
       "byRule": {
-        "spaces": [
-          {
-            "id": "el-spaces-collapse-run",
-            "in": "Ελλάδα   και   Κύπρος",
-            "out": "Ελλάδα και Κύπρος"
-          },
-          {
-            "id": "el-spaces-before-erotimatiko",
-            "in": "Τι κάνεις ;",
-            "out": "Τι κάνεις;"
-          },
-          {
-            "id": "el-spaces-before-punctuation",
-            "in": "Καλημέρα , κόσμε !",
-            "out": "Καλημέρα, κόσμε!"
-          }
-        ],
-        "ellipsis": [
-          {
-            "id": "el-ellipsis-three-dots",
-            "in": "Περίμενε... τι έγινε",
-            "out": "Περίμενε… τι έγινε"
-          },
-          {
-            "id": "el-ellipsis-not-abbreviated-after-terminal",
-            "in": "Πράγματι?..",
-            "out": "Πράγματι?…"
-          }
-        ],
         "quotes": [
           {
-            "id": "el-quotes-primary",
-            "in": "Είπε \"καλημέρα\" και έφυγε.",
-            "out": "Είπε «καλημέρα» και έφυγε."
+            "id": "tr-quotes-primary-and-nested",
+            "in": "Sordu: \"Bu, 'köşedeki' dedikleri dükkân mı?\"",
+            "out": "Sordu: “Bu, ‘köşedeki’ dedikleri dükkân mı?”"
           },
           {
-            "id": "el-quotes-nested",
-            "in": "\"Είπε 'όχι' σε μένα\", σημείωσε.",
-            "out": "«Είπε “όχι” σε μένα», σημείωσε."
+            "id": "tr-quotes-tdk-nested-example",
+            "in": "\"Atatürk henüz 'Gazi Mustafa Kemal Paşa' idi.\"",
+            "out": "“Atatürk henüz ‘Gazi Mustafa Kemal Paşa’ idi.”"
           },
           {
-            "id": "el-quotes-elision-inside-straight-quotes",
-            "in": "Είπε \"σ' αυτό το βιβλίο\" χθες.",
-            "out": "Είπε «σ’ αυτό το βιβλίο» χθες."
+            "id": "tr-quotes-not-guillemets",
+            "in": "«Tanrı, Musa'ya söz söylemiştir.»",
+            "out": "“Tanrı, Musa’ya söz söylemiştir.”"
           }
         ],
         "apostrophe": [
           {
-            "id": "el-apostrophe-elision",
-            "in": "γι' αυτό και απ' την αρχή",
-            "out": "γι’ αυτό και απ’ την αρχή"
+            "id": "tr-apostrophe-suffix-after-abbreviation-and-numeral",
+            "in": "TBMM'nin kararı 1985'te açıklandı.",
+            "out": "TBMM’nin kararı 1985’te açıklandı."
           },
           {
-            "id": "el-apostrophe-elision-inside-guillemets",
-            "in": "Είπε «σ' αυτό το βιβλίο» χθες.",
-            "out": "Είπε «σ’ αυτό το βιβλίο» χθες."
+            "id": "tr-apostrophe-suffix-after-proper-noun",
+            "in": "Türkiye'nin ve Atatürk'ün",
+            "out": "Türkiye’nin ve Atatürk’ün"
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "tr-ellipsis-abbreviated-after-question",
+            "in": "Nasıl da akşam oldu?...",
+            "out": "Nasıl da akşam oldu?.."
           },
           {
-            "id": "el-apostrophe-elision-before-guillemet",
-            "in": "η εφημερίδα l'\"Humanité\"",
-            "out": "η εφημερίδα l’«Humanité»"
+            "id": "tr-ellipsis-plain-run",
+            "in": "Bekledik ... ve gitti.",
+            "out": "Bekledik … ve gitti."
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "tr-nbsp-before-units",
+            "in": "15 °C, 20 kg ve 5 cm² ölçüldü.",
+            "out": "15 °C, 20 kg ve 5 cm² ölçüldü."
+          },
+          {
+            "id": "tr-nbsp-ton-and-mm",
+            "in": "350 ton yük ve 12 mm kalınlık.",
+            "out": "350 ton yük ve 12 mm kalınlık."
+          },
+          {
+            "id": "tr-nbsp-abbreviation-internal-space",
+            "in": "Kur. Bşk. ve Nö. Sb. geldi.",
+            "out": "Kur. Bşk. ve Nö. Sb. geldi."
           }
         ],
         "symbols": [
           {
-            "id": "el-symbols-copyright-and-multiplication",
-            "in": "Ανάλυση 1920x1080, Copyright (c) 2026",
-            "out": "Ανάλυση 1920×1080, Copyright © 2026"
+            "id": "tr-symbols-and-spaces",
+            "in": "Copyright (c) 2026, baskı 40x60 cm.",
+            "out": "Copyright © 2026, baskı 40×60 cm."
+          }
+        ],
+        "spaces": [
+          {
+            "id": "tr-spaces-punctuation-is-closed-up",
+            "in": "Nasıl gidiyorsun ?  İyiyim , sağ ol .",
+            "out": "Nasıl gidiyorsun? İyiyim, sağ ol."
           }
         ]
       },
       "modes": [
         {
           "mode": "text",
-          "in": "Ρώτησε: \"Δεν είναι αυτό το μαγαζί 'στη γωνία';\" ... Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright (c) 2026, μέγεθος 40x60 cm.\nsay(\"a -- b ...\")",
-          "out": "Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm.\nsay(«a -- b …»)"
+          "in": "Sordu: \"Bu, 'köşedeki' dedikleri dükkân değil mi?\" ... Ankara'da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright (c) 2026, baskı 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright © 2026, baskı 40×60 cm.\nsay(“a -- b …”)"
         },
         {
           "mode": "html",
-          "in": "<p>Ρώτησε: \"Δεν είναι αυτό το μαγαζί 'στη γωνία';\" ... Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright (c) 2026, μέγεθος 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
-          "out": "<p>Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+          "in": "<p>Sordu: \"Bu, 'köşedeki' dedikleri dükkân değil mi?\" ... Ankara'da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright (c) 2026, baskı 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright © 2026, baskı 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
         },
         {
           "mode": "markdown",
-          "in": "Ρώτησε: \"Δεν είναι αυτό το μαγαζί 'στη γωνία';\" ... Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright (c) 2026, μέγεθος 40x60 cm.\n\n`say(\"a -- b ...\")`",
-          "out": "Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm.\n\n`say(\"a -- b ...\")`"
+          "in": "Sordu: \"Bu, 'köşedeki' dedikleri dükkân değil mi?\" ... Ankara'da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright (c) 2026, baskı 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright © 2026, baskı 40×60 cm.\n\n`say(\"a -- b ...\")`"
         }
       ],
       "compare": null,
-      "resolution": ["el", "el-GR"],
-      "disagreed": 0
-    },
-    "es": {
-      "byRule": {
-        "quotes": [
-          {
-            "id": "es-quotes-primary",
-            "in": "Ha dicho \"buenos días\" y salió.",
-            "out": "Ha dicho «buenos días» y salió."
-          },
-          {
-            "id": "es-quotes-nested",
-            "in": "Escribió: \"Me dijo 'llego enseguida' y desapareció.\"",
-            "out": "Escribió: «Me dijo “llego enseguida” y desapareció.»"
-          },
-          {
-            "id": "es-quotes-inner-space-deleted",
-            "in": "Ha dicho « buenos días » y salió.",
-            "out": "Ha dicho «buenos días» y salió."
-          }
-        ],
-        "ellipsis": [
-          {
-            "id": "es-ellipsis-three-dots",
-            "in": "Espera... ¿qué?",
-            "out": "Espera… ¿qué?"
-          },
-          {
-            "id": "es-ellipsis-not-abbreviated-after-terminal",
-            "in": "¿De verdad?..",
-            "out": "¿De verdad?…"
-          }
-        ],
-        "nbsp": [
-          {
-            "id": "es-nbsp-percent",
-            "in": "Aprobó un 8 % de los alumnos",
-            "out": "Aprobó un 8 % de los alumnos"
-          },
-          {
-            "id": "es-nbsp-celsius",
-            "in": "La temperatura es de 27 °C",
-            "out": "La temperatura es de 27 °C"
-          },
-          {
-            "id": "es-nbsp-abbreviation-internal-space",
-            "in": "Viajó a los EE. UU. el lunes",
-            "out": "Viajó a los EE. UU. el lunes"
-          }
-        ],
-        "apostrophe": [
-          {
-            "id": "es-apostrophe-foreign-name",
-            "in": "L'Hospitalet de Llobregat",
-            "out": "L’Hospitalet de Llobregat"
-          }
-        ],
-        "spaces": [
-          {
-            "id": "es-spaces-brackets-and-final-stop",
-            "in": "Dijo ( sin dudar ) que sí  .",
-            "out": "Dijo (sin dudar) que sí."
-          }
-        ],
-        "symbols": [
-          {
-            "id": "es-symbols-copyright-and-dimensions",
-            "in": "Copyright (c) 2026, tamaño 40x60 cm",
-            "out": "Copyright © 2026, tamaño 40×60 cm"
-          }
-        ]
-      },
-      "modes": [
-        {
-          "mode": "text",
-          "in": "Preguntó: \"¿No es esta la tienda que llaman 'la de la esquina'?\" ... Caminamos -- casi 3 km -- y estaba cerrada. Copyright (c) 2026, tamaño 40x60 cm.\nsay(\"a -- b ...\")",
-          "out": "Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm.\nsay(«a -- b …»)"
-        },
-        {
-          "mode": "html",
-          "in": "<p>Preguntó: \"¿No es esta la tienda que llaman 'la de la esquina'?\" ... Caminamos -- casi 3 km -- y estaba cerrada. Copyright (c) 2026, tamaño 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
-          "out": "<p>Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
-        },
-        {
-          "mode": "markdown",
-          "in": "Preguntó: \"¿No es esta la tienda que llaman 'la de la esquina'?\" ... Caminamos -- casi 3 km -- y estaba cerrada. Copyright (c) 2026, tamaño 40x60 cm.\n\n`say(\"a -- b ...\")`",
-          "out": "Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm.\n\n`say(\"a -- b ...\")`"
-        }
-      ],
-      "compare": null,
-      "resolution": ["es", "es-MX"],
-      "disagreed": 0
-    },
-    "it": {
-      "byRule": {
-        "quotes": [
-          {
-            "id": "it-quotes-primary",
-            "in": "Ha detto \"buongiorno\" ed è uscito.",
-            "out": "Ha detto «buongiorno» ed è uscito."
-          },
-          {
-            "id": "it-quotes-nested",
-            "in": "Scrisse: \"Mi disse 'arrivo subito' e sparì.\"",
-            "out": "Scrisse: «Mi disse “arrivo subito” e sparì.»"
-          },
-          {
-            "id": "it-quotes-inner-space-deleted",
-            "in": "Ha detto « buongiorno » ed è uscito.",
-            "out": "Ha detto «buongiorno» ed è uscito."
-          }
-        ],
-        "dashes": [
-          {
-            "id": "it-dashes-parenthetical-em-spaced",
-            "in": "La casa - se casa si poteva definire quel rudere - sorgeva ai piedi del colle.",
-            "out": "La casa — se casa si poteva definire quel rudere — sorgeva ai piedi del colle."
-          },
-          {
-            "id": "it-dashes-date-range-accepted-cost",
-            "in": "25 maggio - 10 giugno 1985",
-            "out": "25 maggio — 10 giugno 1985"
-          }
-        ],
-        "ellipsis": [
-          {
-            "id": "it-ellipsis-three-dots",
-            "in": "Ti chiami Leone... ma sei un coniglio.",
-            "out": "Ti chiami Leone… ma sei un coniglio."
-          },
-          {
-            "id": "it-ellipsis-not-abbreviated-after-terminal",
-            "in": "Davvero?..",
-            "out": "Davvero?…"
-          }
-        ],
-        "nbsp": [
-          {
-            "id": "it-nbsp-no-space-before-punctuation",
-            "in": "Che cosa dici ? Nulla ! Davvero ; sì : nulla.",
-            "out": "Che cosa dici? Nulla! Davvero; sì: nulla."
-          },
-          {
-            "id": "it-nbsp-percent",
-            "in": "un aumento del 45 % quest'anno",
-            "out": "un aumento del 45 % quest’anno"
-          },
-          {
-            "id": "it-nbsp-celsius",
-            "in": "una temperatura di 20 °C",
-            "out": "una temperatura di 20 °C"
-          }
-        ],
-        "apostrophe": [
-          {
-            "id": "it-apostrophe-elision",
-            "in": "un'utopia, un'assurda aspirazione dell'Unione",
-            "out": "un’utopia, un’assurda aspirazione dell’Unione"
-          }
-        ],
-        "spaces": [
-          {
-            "id": "it-spaces-brackets-and-final-stop",
-            "in": "Disse ( senza dubbio ) di sì  .",
-            "out": "Disse (senza dubbio) di sì."
-          }
-        ],
-        "symbols": [
-          {
-            "id": "it-symbols-copyright-and-dimensions",
-            "in": "Copyright (c) 2026, formato 40x60 cm",
-            "out": "Copyright © 2026, formato 40×60 cm"
-          }
-        ]
-      },
-      "modes": [
-        {
-          "mode": "text",
-          "in": "Ha chiesto: \"Non è questo il negozio che chiamano 'quello all'angolo'?\" ... Abbiamo camminato -- quasi 3 km -- ed era chiuso. Copyright (c) 2026, formato 40x60 cm.\nsay(\"a -- b ...\")",
-          "out": "Ha chiesto: «Non è questo il negozio che chiamano “quello all’angolo”?» … Abbiamo camminato — quasi 3 km — ed era chiuso. Copyright © 2026, formato 40×60 cm.\nsay(«a — b …»)"
-        },
-        {
-          "mode": "html",
-          "in": "<p>Ha chiesto: \"Non è questo il negozio che chiamano 'quello all'angolo'?\" ... Abbiamo camminato -- quasi 3 km -- ed era chiuso. Copyright (c) 2026, formato 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
-          "out": "<p>Ha chiesto: «Non è questo il negozio che chiamano “quello all’angolo”?» … Abbiamo camminato — quasi 3 km — ed era chiuso. Copyright © 2026, formato 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
-        },
-        {
-          "mode": "markdown",
-          "in": "Ha chiesto: \"Non è questo il negozio che chiamano 'quello all'angolo'?\" ... Abbiamo camminato -- quasi 3 km -- ed era chiuso. Copyright (c) 2026, formato 40x60 cm.\n\n`say(\"a -- b ...\")`",
-          "out": "Ha chiesto: «Non è questo il negozio che chiamano “quello all’angolo”?» … Abbiamo camminato — quasi 3 km — ed era chiuso. Copyright © 2026, formato 40×60 cm.\n\n`say(\"a -- b ...\")`"
-        }
-      ],
-      "compare": null,
-      "resolution": ["it"],
-      "disagreed": 0
-    },
-    "pt-PT": {
-      "byRule": {
-        "quotes": [
-          {
-            "id": "pt-pt-quotes-primary",
-            "in": "Ele disse \"bom dia\" e saiu.",
-            "out": "Ele disse «bom dia» e saiu."
-          },
-          {
-            "id": "pt-pt-quotes-nested",
-            "in": "Escreveu: \"Disse-me 'chego já' e desapareceu.\"",
-            "out": "Escreveu: «Disse-me “chego já” e desapareceu.»"
-          }
-        ],
-        "dashes": [
-          {
-            "id": "pt-pt-dashes-parenthetical",
-            "in": "As condições - ordenado e subvenções - eram boas.",
-            "out": "As condições — ordenado e subvenções — eram boas."
-          }
-        ],
-        "ellipsis": [
-          {
-            "id": "pt-pt-ellipsis-three-dots",
-            "in": "Espere... o quê?",
-            "out": "Espere… o quê?"
-          },
-          {
-            "id": "pt-pt-ellipsis-not-abbreviated-after-terminal",
-            "in": "É o dianho!..",
-            "out": "É o dianho!…"
-          }
-        ],
-        "nbsp": [
-          {
-            "id": "pt-pt-nbsp-percent",
-            "in": "7 % do volume de negócios",
-            "out": "7 % do volume de negócios"
-          },
-          {
-            "id": "pt-pt-nbsp-celsius",
-            "in": "a temperatura atingiu hoje os 39 °C",
-            "out": "a temperatura atingiu hoje os 39 °C"
-          },
-          {
-            "id": "pt-pt-nbsp-abbreviation",
-            "in": "p. ex. isto",
-            "out": "p. ex. isto"
-          }
-        ],
-        "spaces": [
-          {
-            "id": "pt-pt-spaces-brackets-and-final-stop",
-            "in": "O texto ( corrente ) não muda  .",
-            "out": "O texto (corrente) não muda."
-          }
-        ],
-        "symbols": [
-          {
-            "id": "pt-pt-symbols-copyright-and-dimensions",
-            "in": "Copyright (c) 2026, formato 40x60 cm",
-            "out": "Copyright © 2026, formato 40×60 cm"
-          }
-        ],
-        "apostrophe": [
-          {
-            "id": "pt-pt-apostrophe-elision",
-            "in": "pinga d'água",
-            "out": "pinga d’água"
-          }
-        ]
-      },
-      "modes": [
-        {
-          "mode": "text",
-          "in": "Perguntou: \"Não é esta a loja a que chamam 'a da esquina'?\" ... Caminhámos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.\nsay(\"a -- b ...\")",
-          "out": "Perguntou: «Não é esta a loja a que chamam “a da esquina”?» … Caminhámos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm.\nsay(«a — b …»)"
-        },
-        {
-          "mode": "html",
-          "in": "<p>Perguntou: \"Não é esta a loja a que chamam 'a da esquina'?\" ... Caminhámos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
-          "out": "<p>Perguntou: «Não é esta a loja a que chamam “a da esquina”?» … Caminhámos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
-        },
-        {
-          "mode": "markdown",
-          "in": "Perguntou: \"Não é esta a loja a que chamam 'a da esquina'?\" ... Caminhámos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.\n\n`say(\"a -- b ...\")`",
-          "out": "Perguntou: «Não é esta a loja a que chamam “a da esquina”?» … Caminhámos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm.\n\n`say(\"a -- b ...\")`"
-        }
-      ],
-      "compare": {
-        "neighbour": "pt-BR",
-        "in": "Perguntou: \"Não é esta a loja a que chamam 'a da esquina'?\" ... Caminhámos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.",
-        "out": "Perguntou: «Não é esta a loja a que chamam “a da esquina”?» … Caminhámos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm.",
-        "neighbourOut": "Perguntou: “Não é esta a loja a que chamam ‘a da esquina’?” … Caminhámos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm."
-      },
-      "resolution": ["pt-PT", "pt", "pt-AO"],
-      "disagreed": 0
-    },
-    "pt-BR": {
-      "byRule": {
-        "quotes": [
-          {
-            "id": "pt-br-quotes-primary",
-            "in": "Ele disse \"bom dia\" e saiu.",
-            "out": "Ele disse “bom dia” e saiu."
-          },
-          {
-            "id": "pt-br-quotes-nested",
-            "in": "Escreveu: \"Disse-me 'chego já' e desapareceu.\"",
-            "out": "Escreveu: “Disse-me ‘chego já’ e desapareceu.”"
-          }
-        ],
-        "dashes": [
-          {
-            "id": "pt-br-dashes-parenthetical",
-            "in": "As condições - ordenado e subvenções - eram boas.",
-            "out": "As condições – ordenado e subvenções – eram boas."
-          }
-        ],
-        "ellipsis": [
-          {
-            "id": "pt-br-ellipsis-three-dots",
-            "in": "Espere... o quê?",
-            "out": "Espere… o quê?"
-          },
-          {
-            "id": "pt-br-ellipsis-not-abbreviated-after-terminal",
-            "in": "É o dianho!..",
-            "out": "É o dianho!…"
-          }
-        ],
-        "nbsp": [
-          {
-            "id": "pt-br-nbsp-percent",
-            "in": "7 % do volume de negócios",
-            "out": "7 % do volume de negócios"
-          },
-          {
-            "id": "pt-br-nbsp-celsius",
-            "in": "a temperatura atingiu hoje os 39 °C",
-            "out": "a temperatura atingiu hoje os 39 °C"
-          },
-          {
-            "id": "pt-br-nbsp-abbreviation",
-            "in": "p. ex. isto",
-            "out": "p. ex. isto"
-          }
-        ],
-        "spaces": [
-          {
-            "id": "pt-br-spaces-brackets-and-final-stop",
-            "in": "O texto ( corrente ) não muda  .",
-            "out": "O texto (corrente) não muda."
-          }
-        ],
-        "symbols": [
-          {
-            "id": "pt-br-symbols-copyright-and-dimensions",
-            "in": "Copyright (c) 2026, formato 40x60 cm",
-            "out": "Copyright © 2026, formato 40×60 cm"
-          }
-        ],
-        "apostrophe": [
-          {
-            "id": "pt-br-apostrophe-elision",
-            "in": "pinga d'água",
-            "out": "pinga d’água"
-          }
-        ]
-      },
-      "modes": [
-        {
-          "mode": "text",
-          "in": "Perguntou: \"Não é esta a loja que chamam de 'a da esquina'?\" ... Caminhamos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.\nsay(\"a -- b ...\")",
-          "out": "Perguntou: “Não é esta a loja que chamam de ‘a da esquina’?” … Caminhamos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm.\nsay(“a – b …”)"
-        },
-        {
-          "mode": "html",
-          "in": "<p>Perguntou: \"Não é esta a loja que chamam de 'a da esquina'?\" ... Caminhamos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
-          "out": "<p>Perguntou: “Não é esta a loja que chamam de ‘a da esquina’?” … Caminhamos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
-        },
-        {
-          "mode": "markdown",
-          "in": "Perguntou: \"Não é esta a loja que chamam de 'a da esquina'?\" ... Caminhamos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.\n\n`say(\"a -- b ...\")`",
-          "out": "Perguntou: “Não é esta a loja que chamam de ‘a da esquina’?” … Caminhamos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm.\n\n`say(\"a -- b ...\")`"
-        }
-      ],
-      "compare": {
-        "neighbour": "pt-PT",
-        "in": "Perguntou: \"Não é esta a loja que chamam de 'a da esquina'?\" ... Caminhamos -- quase 3 km -- e estava fechada. Copyright (c) 2026, formato 40x60 cm.",
-        "out": "Perguntou: “Não é esta a loja que chamam de ‘a da esquina’?” … Caminhamos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm.",
-        "neighbourOut": "Perguntou: «Não é esta a loja que chamam de “a da esquina”?» … Caminhamos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm."
-      },
-      "resolution": ["pt-BR"],
-      "disagreed": 0
-    },
-    "nl": {
-      "byRule": {
-        "quotes": [
-          {
-            "id": "nl-quotes-primary",
-            "in": "Hij zei \"dag\" en vertrok.",
-            "out": "Hij zei “dag” en vertrok."
-          },
-          {
-            "id": "nl-quotes-nested",
-            "in": "De koning zei: \"Ik hoorde iemand 'hoera' roepen.\"",
-            "out": "De koning zei: “Ik hoorde iemand ‘hoera’ roepen.”"
-          }
-        ],
-        "apostrophe": [
-          {
-            "id": "nl-quotes-apostrophe-not-a-quote",
-            "in": "Hij kocht twee auto's.",
-            "out": "Hij kocht twee auto’s."
-          }
-        ],
-        "dashes": [
-          {
-            "id": "nl-dashes-parenthetical",
-            "in": "Het nieuws - volgens de kranten - is niet bekend.",
-            "out": "Het nieuws – volgens de kranten – is niet bekend."
-          }
-        ],
-        "ellipsis": [
-          {
-            "id": "nl-ellipsis-three-dots",
-            "in": "Hou je van jazz, blues, soul ...?",
-            "out": "Hou je van jazz, blues, soul …?"
-          }
-        ],
-        "nbsp": [
-          {
-            "id": "nl-nbsp-currency",
-            "in": "De vaas kostte € 179.",
-            "out": "De vaas kostte € 179."
-          },
-          {
-            "id": "nl-nbsp-unit",
-            "in": "De afstand was 15 cm.",
-            "out": "De afstand was 15 cm."
-          },
-          {
-            "id": "nl-nbsp-abbreviation",
-            "in": "prof. dr. Jansen",
-            "out": "prof. dr. Jansen"
-          }
-        ],
-        "spaces": [
-          {
-            "id": "nl-spaces-brackets-and-final-stop",
-            "in": "De tekst ( gewoon ) verandert niet  .",
-            "out": "De tekst (gewoon) verandert niet."
-          }
-        ],
-        "symbols": [
-          {
-            "id": "nl-symbols-copyright-and-dimensions",
-            "in": "Copyright (c) 2026, formaat 40x60 cm",
-            "out": "Copyright © 2026, formaat 40×60 cm"
-          }
-        ]
-      },
-      "modes": [
-        {
-          "mode": "text",
-          "in": "Hij vroeg: \"Is dit niet de winkel die ze 'om de hoek' noemen?\" ... We liepen -- bijna 3 km -- en hij was dicht. Copyright (c) 2026, formaat 40x60 cm.\nsay(\"a -- b ...\")",
-          "out": "Hij vroeg: “Is dit niet de winkel die ze ‘om de hoek’ noemen?” … We liepen – bijna 3 km – en hij was dicht. Copyright © 2026, formaat 40×60 cm.\nsay(“a – b …”)"
-        },
-        {
-          "mode": "html",
-          "in": "<p>Hij vroeg: \"Is dit niet de winkel die ze 'om de hoek' noemen?\" ... We liepen -- bijna 3 km -- en hij was dicht. Copyright (c) 2026, formaat 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
-          "out": "<p>Hij vroeg: “Is dit niet de winkel die ze ‘om de hoek’ noemen?” … We liepen – bijna 3 km – en hij was dicht. Copyright © 2026, formaat 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
-        },
-        {
-          "mode": "markdown",
-          "in": "Hij vroeg: \"Is dit niet de winkel die ze 'om de hoek' noemen?\" ... We liepen -- bijna 3 km -- en hij was dicht. Copyright (c) 2026, formaat 40x60 cm.\n\n`say(\"a -- b ...\")`",
-          "out": "Hij vroeg: “Is dit niet de winkel die ze ‘om de hoek’ noemen?” … We liepen – bijna 3 km – en hij was dicht. Copyright © 2026, formaat 40×60 cm.\n\n`say(\"a -- b ...\")`"
-        }
-      ],
-      "compare": null,
-      "resolution": ["nl", "nl-BE"],
-      "disagreed": 0
-    },
-    "pl": {
-      "byRule": {
-        "quotes": [
-          {
-            "id": "pl-quotes-primary",
-            "in": "Powiedział \"dzień dobry\".",
-            "out": "Powiedział „dzień dobry”."
-          },
-          {
-            "id": "pl-quotes-nested",
-            "in": "Powiedział \"cytat 'w cytacie' koniec\".",
-            "out": "Powiedział „cytat »w cytacie« koniec”."
-          }
-        ],
-        "dashes": [
-          {
-            "id": "pl-dashes-parenthetical",
-            "in": "Wtrącenie - tak jest - kończy zdanie.",
-            "out": "Wtrącenie – tak jest – kończy zdanie."
-          }
-        ],
-        "ranges": [
-          {
-            "id": "pl-ranges-en-tight",
-            "in": "W latach 1756-1763 toczyła się wojna.",
-            "out": "W latach 1756⁠–⁠1763 toczyła się wojna.",
-            "rules": {
-              "ranges": true
-            }
-          }
-        ],
-        "ellipsis": [
-          {
-            "id": "pl-ellipsis-three-dots",
-            "in": "Czekaj... co?",
-            "out": "Czekaj… co?"
-          }
-        ],
-        "nbsp": [
-          {
-            "id": "pl-nbsp-short-words",
-            "in": "Mieszkam w Warszawie i pracuję.",
-            "out": "Mieszkam w Warszawie i pracuję."
-          },
-          {
-            "id": "pl-nbsp-paragraph-sign",
-            "in": "Zgodnie z § 5 ustawy.",
-            "out": "Zgodnie z § 5 ustawy."
-          },
-          {
-            "id": "pl-nbsp-unit",
-            "in": "Waży 5 kg.",
-            "out": "Waży 5 kg."
-          }
-        ],
-        "spaces": [
-          {
-            "id": "pl-spaces-brackets-and-final-stop",
-            "in": "Tekst ( bieżący ) nie zmienia się  .",
-            "out": "Tekst (bieżący) nie zmienia się."
-          }
-        ],
-        "symbols": [
-          {
-            "id": "pl-symbols-copyright-and-dimensions",
-            "in": "Copyright (c) 2026, format 40x60 cm",
-            "out": "Copyright © 2026, format 40×60 cm"
-          }
-        ],
-        "apostrophe": [
-          {
-            "id": "pl-apostrophe-foreign-name",
-            "in": "d'Artagnan",
-            "out": "d’Artagnan"
-          }
-        ]
-      },
-      "modes": [
-        {
-          "mode": "text",
-          "in": "Zapytał: \"Czy to nie ten sklep, który nazywają 'tym za rogiem'?\" ... Szliśmy -- prawie 3 km -- a był zamknięty. Copyright (c) 2026, format 40x60 cm.\nsay(\"a -- b ...\")",
-          "out": "Zapytał: „Czy to nie ten sklep, który nazywają »tym za rogiem«?” … Szliśmy – prawie 3 km – a był zamknięty. Copyright © 2026, format 40×60 cm.\nsay(„a – b …”)"
-        },
-        {
-          "mode": "html",
-          "in": "<p>Zapytał: \"Czy to nie ten sklep, który nazywają 'tym za rogiem'?\" ... Szliśmy -- prawie 3 km -- a był zamknięty. Copyright (c) 2026, format 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
-          "out": "<p>Zapytał: „Czy to nie ten sklep, który nazywają »tym za rogiem«?” … Szliśmy – prawie 3 km – a był zamknięty. Copyright © 2026, format 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
-        },
-        {
-          "mode": "markdown",
-          "in": "Zapytał: \"Czy to nie ten sklep, który nazywają 'tym za rogiem'?\" ... Szliśmy -- prawie 3 km -- a był zamknięty. Copyright (c) 2026, format 40x60 cm.\n\n`say(\"a -- b ...\")`",
-          "out": "Zapytał: „Czy to nie ten sklep, który nazywają »tym za rogiem«?” … Szliśmy – prawie 3 km – a był zamknięty. Copyright © 2026, format 40×60 cm.\n\n`say(\"a -- b ...\")`"
-        }
-      ],
-      "compare": null,
-      "resolution": ["pl"],
+      "resolution": ["tr", "tr-TR"],
       "disagreed": 0
     },
     "uk": {
@@ -2227,210 +2431,6 @@
       ],
       "compare": null,
       "resolution": ["uk"],
-      "disagreed": 0
-    },
-    "cs": {
-      "byRule": {
-        "quotes": [
-          {
-            "id": "cs-quotes-primary",
-            "in": "Řekl \"ahoj\".",
-            "out": "Řekl „ahoj“."
-          },
-          {
-            "id": "cs-quotes-not-polish",
-            "in": "„ahoj”",
-            "out": "„ahoj“"
-          },
-          {
-            "id": "cs-quotes-nested",
-            "in": "\"Toto je 'citát' v citátu\"",
-            "out": "„Toto je ‚citát‘ v citátu“"
-          }
-        ],
-        "ellipsis": [
-          {
-            "id": "cs-ellipsis-three-dots",
-            "in": "Počkej... co?",
-            "out": "Počkej… co?"
-          },
-          {
-            "id": "cs-ellipsis-not-abbreviated",
-            "in": "Opravdu?.. ano",
-            "out": "Opravdu?… ano"
-          }
-        ],
-        "dashes": [
-          {
-            "id": "cs-dashes-parenthetical",
-            "in": "Tato kniha - vydaná ještě před válkou - je opravdu úžasná.",
-            "out": "Tato kniha – vydaná ještě před válkou – je opravdu úžasná."
-          }
-        ],
-        "ranges": [
-          {
-            "id": "cs-ranges-en-tight",
-            "in": "strana 23-26",
-            "out": "strana 23⁠–⁠26",
-            "rules": {
-              "ranges": true
-            }
-          }
-        ],
-        "nbsp": [
-          {
-            "id": "cs-nbsp-short-words",
-            "in": "v Plzni a u babičky",
-            "out": "v Plzni a u babičky"
-          },
-          {
-            "id": "cs-nbsp-units",
-            "in": "10 ha, 14 % a 19 °C",
-            "out": "10 ha, 14 % a 19 °C"
-          },
-          {
-            "id": "cs-nbsp-paragraph-sign",
-            "in": "§ 23",
-            "out": "§ 23"
-          }
-        ],
-        "spaces": [
-          {
-            "id": "cs-spaces-brackets-and-final-stop",
-            "in": "Text ( běžný ) se nemění  .",
-            "out": "Text (běžný) se nemění."
-          }
-        ],
-        "symbols": [
-          {
-            "id": "cs-symbols-copyright-and-dimensions",
-            "in": "Copyright (c) 2026, formát 40x60 cm",
-            "out": "Copyright © 2026, formát 40×60 cm"
-          }
-        ],
-        "apostrophe": [
-          {
-            "id": "cs-apostrophe-elision",
-            "in": "Šel do McDonald's a zpět",
-            "out": "Šel do McDonald’s a zpět"
-          }
-        ]
-      },
-      "modes": [
-        {
-          "mode": "text",
-          "in": "Zeptal se: \"Není to ten obchod, kterému říkají 'ten za rohem'?\" ... Šli jsme -- skoro 3 km -- a byl zavřený. Copyright (c) 2026, formát 40x60 cm.\nsay(\"a -- b ...\")",
-          "out": "Zeptal se: „Není to ten obchod, kterému říkají ‚ten za rohem‘?“ … Šli jsme – skoro 3 km – a byl zavřený. Copyright © 2026, formát 40×60 cm.\nsay(„a – b …“)"
-        },
-        {
-          "mode": "html",
-          "in": "<p>Zeptal se: \"Není to ten obchod, kterému říkají 'ten za rohem'?\" ... Šli jsme -- skoro 3 km -- a byl zavřený. Copyright (c) 2026, formát 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
-          "out": "<p>Zeptal se: „Není to ten obchod, kterému říkají ‚ten za rohem‘?“ … Šli jsme – skoro 3 km – a byl zavřený. Copyright © 2026, formát 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
-        },
-        {
-          "mode": "markdown",
-          "in": "Zeptal se: \"Není to ten obchod, kterému říkají 'ten za rohem'?\" ... Šli jsme -- skoro 3 km -- a byl zavřený. Copyright (c) 2026, formát 40x60 cm.\n\n`say(\"a -- b ...\")`",
-          "out": "Zeptal se: „Není to ten obchod, kterému říkají ‚ten za rohem‘?“ … Šli jsme – skoro 3 km – a byl zavřený. Copyright © 2026, formát 40×60 cm.\n\n`say(\"a -- b ...\")`"
-        }
-      ],
-      "compare": null,
-      "resolution": ["cs"],
-      "disagreed": 0
-    },
-    "tr": {
-      "byRule": {
-        "quotes": [
-          {
-            "id": "tr-quotes-primary-and-nested",
-            "in": "Sordu: \"Bu, 'köşedeki' dedikleri dükkân mı?\"",
-            "out": "Sordu: “Bu, ‘köşedeki’ dedikleri dükkân mı?”"
-          },
-          {
-            "id": "tr-quotes-tdk-nested-example",
-            "in": "\"Atatürk henüz 'Gazi Mustafa Kemal Paşa' idi.\"",
-            "out": "“Atatürk henüz ‘Gazi Mustafa Kemal Paşa’ idi.”"
-          },
-          {
-            "id": "tr-quotes-not-guillemets",
-            "in": "«Tanrı, Musa'ya söz söylemiştir.»",
-            "out": "“Tanrı, Musa’ya söz söylemiştir.”"
-          }
-        ],
-        "apostrophe": [
-          {
-            "id": "tr-apostrophe-suffix-after-abbreviation-and-numeral",
-            "in": "TBMM'nin kararı 1985'te açıklandı.",
-            "out": "TBMM’nin kararı 1985’te açıklandı."
-          },
-          {
-            "id": "tr-apostrophe-suffix-after-proper-noun",
-            "in": "Türkiye'nin ve Atatürk'ün",
-            "out": "Türkiye’nin ve Atatürk’ün"
-          }
-        ],
-        "ellipsis": [
-          {
-            "id": "tr-ellipsis-abbreviated-after-question",
-            "in": "Nasıl da akşam oldu?...",
-            "out": "Nasıl da akşam oldu?.."
-          },
-          {
-            "id": "tr-ellipsis-plain-run",
-            "in": "Bekledik ... ve gitti.",
-            "out": "Bekledik … ve gitti."
-          }
-        ],
-        "nbsp": [
-          {
-            "id": "tr-nbsp-before-units",
-            "in": "15 °C, 20 kg ve 5 cm² ölçüldü.",
-            "out": "15 °C, 20 kg ve 5 cm² ölçüldü."
-          },
-          {
-            "id": "tr-nbsp-ton-and-mm",
-            "in": "350 ton yük ve 12 mm kalınlık.",
-            "out": "350 ton yük ve 12 mm kalınlık."
-          },
-          {
-            "id": "tr-nbsp-abbreviation-internal-space",
-            "in": "Kur. Bşk. ve Nö. Sb. geldi.",
-            "out": "Kur. Bşk. ve Nö. Sb. geldi."
-          }
-        ],
-        "symbols": [
-          {
-            "id": "tr-symbols-and-spaces",
-            "in": "Copyright (c) 2026, baskı 40x60 cm.",
-            "out": "Copyright © 2026, baskı 40×60 cm."
-          }
-        ],
-        "spaces": [
-          {
-            "id": "tr-spaces-punctuation-is-closed-up",
-            "in": "Nasıl gidiyorsun ?  İyiyim , sağ ol .",
-            "out": "Nasıl gidiyorsun? İyiyim, sağ ol."
-          }
-        ]
-      },
-      "modes": [
-        {
-          "mode": "text",
-          "in": "Sordu: \"Bu, 'köşedeki' dedikleri dükkân değil mi?\" ... Ankara'da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright (c) 2026, baskı 40x60 cm.\nsay(\"a -- b ...\")",
-          "out": "Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright © 2026, baskı 40×60 cm.\nsay(“a -- b …”)"
-        },
-        {
-          "mode": "html",
-          "in": "<p>Sordu: \"Bu, 'köşedeki' dedikleri dükkân değil mi?\" ... Ankara'da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright (c) 2026, baskı 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
-          "out": "<p>Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright © 2026, baskı 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
-        },
-        {
-          "mode": "markdown",
-          "in": "Sordu: \"Bu, 'köşedeki' dedikleri dükkân değil mi?\" ... Ankara'da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright (c) 2026, baskı 40x60 cm.\n\n`say(\"a -- b ...\")`",
-          "out": "Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright © 2026, baskı 40×60 cm.\n\n`say(\"a -- b ...\")`"
-        }
-      ],
-      "compare": null,
-      "resolution": ["tr", "tr-TR"],
       "disagreed": 0
     }
   }

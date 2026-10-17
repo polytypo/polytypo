@@ -167,7 +167,7 @@ Locales differ in which lists are filled. Each entry is attested by a source for
 - **ru, uk:** short prepositions, abbreviations such as `т. д.`, units and `№`, `ул.`, initials in chains.
 - **de-DE, de-CH:** `z. B.` `d. h.`, `Nr.` `S.` `Art.`, units, `§`.
 - **cs, pl:** one- or two-letter prepositions, `§`, units, Czech `tj.` `tzv.`, Polish `lek. med.`.
-- **en-US, en-GB, sv:** units (sv also `§`); en-US adds initial chains.
+- **en-GB, en-US, sv:** units (sv also `§`); en-US adds initial chains.
 - **el:** every list is empty. For Greek the rule changes nothing, and the source for Greek explicitly rejects a space before punctuation.
 
 ```example

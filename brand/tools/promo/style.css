@@ -1191,34 +1191,133 @@ footer a:hover {
 }
 
 .doc-nav summary {
-  display: none;
   cursor: pointer;
   font-weight: 600;
+}
+
+/* On desktop the outer <details> is forced open by an inline script and its summary hidden; on
+   a phone it is the collapsed "Documentation" / "Locales" control. */
+.doc-nav > summary {
+  display: none;
 }
 
 .doc-nav nav {
   position: sticky;
   top: var(--space-10);
   max-height: calc(100vh - 48px);
+  padding-right: var(--space-3);
   overflow-y: auto;
   font-size: 14px;
+  line-height: 1.4;
+  scrollbar-color: var(--line) transparent;
+  scrollbar-width: thin;
 }
 
 .doc-nav ul,
 .doc-toc ul {
-  margin: 0 0 var(--space-6);
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.doc-nav li,
+.doc-toc ul {
+  margin-bottom: 0;
+}
+
 .doc-toc li {
   margin-bottom: 4px;
 }
 
+.doc-nav a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: 1px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.doc-nav a:hover {
+  background: var(--surface);
+  color: var(--fg);
+}
+
 .doc-nav a[aria-current="page"] {
+  background: var(--surface-strong);
+  color: var(--fg);
   font-weight: 600;
-  text-decoration-color: var(--color-accent);
+}
+
+.doc-nav a code {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.doc-nav .nav-top {
+  margin-bottom: var(--space-2);
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.nav-sec {
+  margin-top: var(--space-2);
+}
+
+.nav-sec > summary,
+.nav-group > span {
+  display: block;
+  padding: 6px 10px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.nav-sec > summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.nav-sec > summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-sec > summary::after {
+  float: right;
+  content: "+";
+  font-weight: 400;
+}
+
+.nav-sec[open] > summary::after {
+  content: "\2212";
+}
+
+.nav-group > span {
+  padding-bottom: 2px;
+  letter-spacing: normal;
+  text-transform: none;
+  font-size: 13px;
+  color: var(--fg);
+}
+
+.nav-group ul {
+  margin-left: var(--space-5);
+  padding-left: var(--space-2);
+  border-left: 1px solid var(--line);
+}
+
+.nav-flat > li {
+  margin-bottom: 1px;
+}
+
+.doc-toc ul a,
+.doc-toc ul li {
+  display: block;
 }
 
 .doc-nav-head {
@@ -1257,9 +1356,11 @@ footer a:hover {
 }
 
 .crumbs {
-  margin-bottom: var(--space-4);
+  margin: 0 0 var(--space-4);
+  padding-top: 5px;
   color: var(--muted);
   font-size: 13px;
+  line-height: 1.4;
 }
 
 .doc-toc {
@@ -1270,20 +1371,10 @@ footer a:hover {
   font-size: 14px;
 }
 
-.doc-pager {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-6);
-  margin-top: 56px;
-  padding-top: var(--space-7);
-  border-top: 1px solid var(--line);
-  line-height: 1.5;
-}
-
 /* The page's last block is followed by the full-width badge section, which carries its own top
    rule: without room below the pager the two rules stack against the pager links. */
 .doc-layout {
-  padding-bottom: 56px;
+  padding-bottom: 24px;
 }
 
 @media (max-width: 720px) {
@@ -1292,8 +1383,11 @@ footer a:hover {
     gap: var(--space-6);
   }
 
-  .doc-nav summary {
+  .doc-nav > summary {
     display: block;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
   }
 
   .doc-nav nav {
@@ -1325,5 +1419,230 @@ footer a:hover {
 @media (max-width: 720px) {
   .example-pair {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Search (Pagefind) */
+.site-nav .links .search-open {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 32px;
+  padding: 4px 8px 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.search-open:hover {
+  color: var(--fg);
+  border-color: var(--muted);
+}
+
+.search-open kbd {
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font: inherit;
+  font-size: 12px;
+}
+
+.search-dialog {
+  width: min(640px, calc(100% - 32px));
+  max-height: min(70vh, 640px);
+  margin: 12vh auto 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--fg);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+}
+
+.search-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-dialog::backdrop {
+  background: rgba(15, 17, 20, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.search-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-5);
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.search-head input {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  font-size: 17px;
+}
+
+.search-close {
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.search-results {
+  flex: 1;
+  margin: 0;
+  padding: var(--space-2);
+  overflow-y: auto;
+  list-style: none;
+}
+
+.search-results:empty {
+  display: none;
+}
+
+.search-results a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.search-results a:hover,
+.search-results a.is-active {
+  background: var(--surface-strong);
+}
+
+.search-results small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.search-results strong {
+  display: block;
+  font-size: 15px;
+}
+
+.search-results span,
+.search-note {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.search-note {
+  padding: 12px;
+}
+
+.search-results mark {
+  background: transparent;
+  color: var(--fg);
+  font-weight: 700;
+}
+
+.search-foot {
+  max-width: none;
+  margin: 0;
+  padding: 8px var(--space-5);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (max-width: 720px) {
+  .search-open-label,
+  .search-open kbd {
+    display: none;
+  }
+
+  .site-nav .links .search-open {
+    padding: 4px 8px;
+  }
+
+  .search-dialog {
+    margin-top: 16px;
+    max-height: calc(100vh - 32px);
+  }
+}
+
+/* Previous / next */
+.doc-pager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+  margin-top: var(--space-11);
+  padding: 0;
+  border: 0;
+}
+
+.doc-pager .pg {
+  display: block;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.doc-pager .pg:hover {
+  border-color: var(--muted);
+  background: var(--surface);
+}
+
+.doc-pager .pg span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.doc-pager .pg strong {
+  display: block;
+  margin-top: 2px;
+  font-weight: 600;
+}
+
+.doc-pager .prev span::before {
+  content: "\2190  ";
+}
+
+.doc-pager .next {
+  grid-column: 2;
+  text-align: right;
+}
+
+.doc-pager .next span::after {
+  content: "  \2192";
+}
+
+@media (max-width: 720px) {
+  .doc-pager {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .doc-pager .next {
+    grid-column: 1;
   }
 }

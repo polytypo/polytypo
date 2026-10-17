@@ -43,11 +43,11 @@ class HeroBlockTest(unittest.TestCase):
         # The input string must appear exactly once — it is not repeated per locale row.
         self.assertEqual(block.count(gen_readmes.HERO["en-US"]["hero"]["in"]), 1)
 
-    def test_renders_one_table_row_per_registry_locale_in_registry_order(self):
+    def test_renders_one_table_row_per_registry_locale_in_site_order(self):
         block = gen_readmes.hero_block()
-        lines = [l for l in block.splitlines() if l.startswith("| `")]
-        codes = [l.split("`")[1] for l in lines]
-        self.assertEqual(codes, gen_readmes.REGISTRY["locales"])
+        lines = [l for l in block.splitlines() if l.startswith("| ") and "`" in l.split("|")[1]]
+        codes = [l.split("|")[1].split("`")[1] for l in lines]
+        self.assertEqual(codes, gen_readmes.sorted_codes(gen_readmes.REGISTRY["locales"]))
 
     def test_every_row_shows_that_locales_own_real_output(self):
         block = gen_readmes.hero_block()

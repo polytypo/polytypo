@@ -24,7 +24,7 @@ The region is dropped once. There is no second retry, a language is never droppe
 
 ## Supported locales and aliases
 
-Nineteen locales: `en-US`, `en-GB`, `de-DE`, `de-CH`, `fr`, `fr-CA`, `ru`, `fi`, `sv`, `el`, `es`, `it`, `pt-PT`, `pt-BR`, `nl`, `pl`, `uk`, `cs`, `tr`. Three aliases: `en` is `en-US`, `de` is `de-DE`, and `pt` is `pt-PT`. See [all locales](/locales/).
+Nineteen locales: `cs`, `nl`, `en-GB`, `en-US`, `fi`, `fr`, `fr-CA`, `de-DE`, `de-CH`, `el`, `it`, `pl`, `pt-BR`, `pt-PT`, `ru`, `es`, `sv`, `tr`, `uk`. Three aliases: `en` is `en-US`, `de` is `de-DE`, and `pt` is `pt-PT`. See [all locales](/locales/).
 
 ## Examples
 

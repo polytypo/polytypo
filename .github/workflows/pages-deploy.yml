@@ -349,6 +349,11 @@ jobs:
             promo/vendor/polytypo.browser.js \
             brand/BRANDBOOK.html
 
+      # The search index is built from the verified output and published beside it; it is not
+      # committed, so it is not part of the drift check above.
+      - name: Build the search index
+        run: npm run gen:search
+
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 
       # promo/ is the deterministic generated output already verified driftless above — the
