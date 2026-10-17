@@ -127,31 +127,18 @@ window.Polytypo = (function () {
   }
 
   /**
-   * Wraps one already-escaped HTML fragment per source line into the numbered line spans every
-   * code panel on this site is built from. The number itself is never emitted here: it is CSS
-   * generated content on `.ln::before` (see style.css), so it is not a text node, is not part of
-   * `textContent`, and does not reach the clipboard when a block is selected and copied.
-   *
-   * The literal "\n" between spans is what makes that true — the line break has to be real text
-   * for a copy to reproduce it, which is also why `.ln` stays inline rather than becoming a block.
-   */
-  function numberLines(lineHtmls) {
-    return lineHtmls.map((html) => '<span class="ln">' + html + "</span>").join("\n");
-  }
-
-  /**
-   * The playground's `#pg-foot` status line, factored out so it's testable without parsing
+   * The playground's result label ("13 changes"), factored out so it's testable without parsing
    * generated page source. `segments` is diff(a, b)'s OUTPUT-only representation — it has no
    * way to represent characters removed from `text` with nothing put back in their place, so a
    * deletion-only change (e.g. "Hello  , world !" -> "Hello, world!") produces zero changed
-   * segments even though text !== out. Reporting "0 changed regions" there would be false, so
-   * that case gets its own wording rather than being folded into the region count.
+   * segments even though text !== out. Reporting "0 changes" there would be false, so that case
+   * gets its own wording rather than being folded into the count.
    */
   function summarizeChange(text, out, segments) {
     if (text === out) return "unchanged";
     const regions = segments.filter(([changed]) => changed).length;
-    if (regions === 0) return "changed by removals only";
-    return regions + " highlighted output region" + (regions === 1 ? "" : "s");
+    if (regions === 0) return "removals only";
+    return regions + (regions === 1 ? " change" : " changes");
   }
 
   /** Concise counterpart to the full error text already shown in the labelled Output region —
@@ -168,29 +155,76 @@ window.Polytypo = (function () {
     return ok ? what + " copied." : what + " could not be copied — copy it manually.";
   }
 
-  /** Minimal highlighting: string literals and line comments only, in source order. */
-  function highlight(code, commentToken) {
-    const pattern = new RegExp(
-      `"(?:[^"\\\\]|\\\\.)*"|'(?:[^'\\\\]|\\\\.)*'|${commentToken}.*$`,
-      "gm",
-    );
-    let html = "";
-    let last = 0;
-    for (const m of code.matchAll(pattern)) {
-      html += esc(code.slice(last, m.index));
-      const cls = m[0].startsWith(commentToken) ? "tok-com" : "tok-str";
-      html += `<span class="${cls}">${esc(m[0])}</span>`;
-      last = m.index + m[0].length;
+  const KEYWORDS =
+    /^(?:import|from|as|const|let|var|function|return|if|else|try|catch|throw|new|use|require|def|end|class|package|func|type|struct|true|false|null|nil|None|True|False|await|async|export|default|npm|pip|go|gem|composer|install|get)$/;
+
+  /**
+   * Syntax colours for a code sample, as escaped HTML. One tokenizer for every language on the
+   * site: line comments, string literals, numbers, keywords and calls, and a separate pass for
+   * markup. Everything else keeps the block's plain foreground colour rather than a wrong guess.
+   * Run on a block's own text, so it never changes what a copy puts on the clipboard.
+   */
+  function highlight(src) {
+    if (/^\s*</.test(src)) {
+      return esc(src).replace(/(&lt;\/?)([\w-]+)([^]*?)(&gt;)/g, (m, open, tag, rest, close) => {
+        rest = rest.replace(
+          /([\w-]+)=(&quot;|")(.*?)\2/g,
+          '<span class="tok-attr">$1</span>=<span class="tok-str">$2$3$2</span>',
+        );
+        return open + '<span class="tok-tag">' + tag + "</span>" + rest + close;
+      });
     }
-    html += esc(code.slice(last));
-    return html;
+    const re =
+      /(\/\/[^\n]*|#[^\n]*)|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)(\()?/g;
+    let out = "";
+    let last = 0;
+    let m;
+    while ((m = re.exec(src))) {
+      out += esc(src.slice(last, m.index));
+      if (m[1]) out += '<span class="tok-com">' + esc(m[1]) + "</span>";
+      else if (m[2]) out += '<span class="tok-str">' + esc(m[2]) + "</span>";
+      else if (m[3]) out += '<span class="tok-num">' + m[3] + "</span>";
+      else if (KEYWORDS.test(m[4]))
+        out += '<span class="tok-kw">' + m[4] + "</span>" + (m[5] || "");
+      else if (m[5]) out += '<span class="tok-fn">' + m[4] + "</span>(";
+      else out += esc(m[4]);
+      last = re.lastIndex;
+    }
+    return out + esc(src.slice(last));
   }
 
-  /** highlight(), split into numbered lines. Tokenising each line on its own is what keeps a
-   * token from straddling a line boundary: line comments are line-scoped already, and an
-   * unterminated quote can then only mis-colour its own line instead of swallowing the next. */
-  function highlightLines(code, commentToken) {
-    return numberLines(code.split("\n").map((line) => highlight(line, commentToken)));
+  const ICONS = {
+    copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',
+    check: '<path d="m5 12 5 5 9-10"/>',
+    expand: '<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
+    close: '<path d="M6 6l12 12M18 6 6 18"/>',
+    right: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+    left: '<path d="M19 12H5M11 6l-6 6 6 6"/>',
+  };
+  const icon = (name) =>
+    '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    ICONS[name] +
+    "</svg>";
+
+  /** A button's face: its label and an icon, before the label or (`after`) behind it. */
+  function setButton(button, label, name, after) {
+    button.innerHTML = after
+      ? "<span>" + label + "</span>" + icon(name)
+      : icon(name) + "<span>" + label + "</span>";
+  }
+
+  /** Copies `text`, shows "Copied" (or "Copy failed") on the button for a moment, and resolves to
+   * whether the clipboard accepted it. */
+  async function copyButton(button, text, label) {
+    let ok = true;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      ok = false;
+    }
+    setButton(button, ok ? "Copied" : "Copy failed", ok ? "check" : "copy");
+    setTimeout(() => setButton(button, label, "copy"), 1500);
+    return ok;
   }
 
   /** Wires a `.tabs` bar + a set of `.pane[data-label]` elements into a click-to-switch tab set. */
@@ -201,12 +235,14 @@ window.Polytypo = (function () {
     panes.forEach((p, i) => {
       const b = document.createElement("button");
       b.type = "button";
+      b.setAttribute("role", "tab");
       b.textContent = p.dataset.label;
-      b.setAttribute("aria-pressed", String(i === 0));
+      b.setAttribute("aria-selected", String(i === 0));
+      p.setAttribute("role", "tabpanel");
       b.addEventListener("click", () => {
         panes.forEach((q, j) => {
           q.hidden = j !== i;
-          tabs.children[j].setAttribute("aria-pressed", String(j === i));
+          tabs.children[j].setAttribute("aria-selected", String(j === i));
         });
         // One event for every tab set on the site (install snippets, build steps, the playground's
         // call block), so `set` is what tells them apart.
@@ -224,7 +260,8 @@ window.Polytypo = (function () {
     paint,
     describeChange,
     highlight,
-    highlightLines,
+    setButton,
+    copyButton,
     bootTabs,
     summarizeChange,
     summarizeError,

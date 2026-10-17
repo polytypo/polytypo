@@ -188,10 +188,18 @@ describe("playground samples — each mode starts with a document that mode actu
           .replace(/(class|data-note|href|title|label)=(\{?"[^"]*"\}?)/g, "")
           .replace(/^(title|description|run|summary):/gm, "");
         // What remains is prose. The invented English phrases all contained one of these words.
-        for (const word of ["A list item", "dashed", "Bold", "italic", "both processed", "A link"]) {
-          expect(rest, `${locale}/${mode}${dialect ? "/" + dialect : ""} still says "${word}"`).not.toContain(
-            word,
-          );
+        for (const word of [
+          "A list item",
+          "dashed",
+          "Bold",
+          "italic",
+          "both processed",
+          "A link",
+        ]) {
+          expect(
+            rest,
+            `${locale}/${mode}${dialect ? "/" + dialect : ""} still says "${word}"`,
+          ).not.toContain(word);
         }
       }
     }
@@ -204,11 +212,18 @@ describe("playground samples — each mode starts with a document that mode actu
     const pg = loadPlayground();
     await pg.set({ locale: "en-US", mode: "yaml" });
     const lines = pg.input().split("\n");
-    expect(lines.some((l) => /^title: ".*"$/.test(l)), "no quoted scalar in the sample").toBe(
-      true,
-    );
-    expect(lines.some((l) => l === "description: |"), "no block scalar in the sample").toBe(true);
-    expect(lines.some((l) => /^run: \S/.test(l)), "no plain scalar in the sample").toBe(true);
+    expect(
+      lines.some((l) => /^title: ".*"$/.test(l)),
+      "no quoted scalar in the sample",
+    ).toBe(true);
+    expect(
+      lines.some((l) => l === "description: |"),
+      "no block scalar in the sample",
+    ).toBe(true);
+    expect(
+      lines.some((l) => /^run: \S/.test(l)),
+      "no plain scalar in the sample",
+    ).toBe(true);
   });
 
   it("is valid YAML in every locale, and stays valid after transform", async () => {
@@ -233,8 +248,7 @@ describe("playground samples — each mode starts with a document that mode actu
     // recorded case in every locale. A colon inside the quotes is fine (3.8.6 neutralises it);
     // a double quote or a backslash is not, because escaping it would make the source and the
     // content different strings.
-    const predicate = (v: string) =>
-      !!v && v.trim() === v && !v.includes('"') && !v.includes("\\");
+    const predicate = (v: string) => !!v && v.trim() === v && !v.includes('"') && !v.includes("\\");
     const parserSaysSafe = (v: string) => {
       try {
         const doc = YAML.parse(`k: "${v}"\n`) as { k?: unknown };

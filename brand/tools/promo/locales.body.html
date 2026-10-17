@@ -1,9 +1,7 @@
-<header class="hero" style="padding: 40px 0 24px">
+<header class="page-head">
   <p class="eyebrow">Typography rules by language</p>
-  <h1 style="max-width: none">
-    Typography rules for {{locale_count}} languages and regions: quotes, dashes, spaces.
-  </h1>
-  <p class="tagline" style="font-size: 17px">
+  <h1>Typography rules for {{locale_count}} languages and regions: quotes, dashes, spaces.</h1>
+  <p class="lead">
     Every locale below is a data file with a normative source cited for each rule it sets, backed by
     fixtures the conformance suite runs on every change. Each locale has its own page with the
     quotation marks, dashes, ellipsis, no-break spaces, worked examples and the full list of
@@ -11,7 +9,7 @@
   </p>
 </header>
 
-<section id="all-locales" style="border-top: 0; padding-top: 0">
+<section id="all-locales">
   <p class="eyebrow">The same sentence, {{locale_count}} locales</p>
   <h2>Nobody agrees about quotation marks.</h2>
   <p>
@@ -22,7 +20,7 @@
     exactly one place.
   </p>
   <div class="card-grid card-grid--two">{{locale_cards}}</div>
-  <p class="small muted">
+  <p>
     Rendered by the engine from the inputs shown, not typed by hand. Regenerate with
     <code>npx tsx brand/tools/gen_examples.ts</code>.
   </p>
@@ -43,7 +41,7 @@
       {{coverage_rows}}
     </table>
   </div>
-  <p class="small muted" style="margin-top: -8px">
+  <p>
     Locale count and citations read directly from <code>spec/locales/</code>; fixture totals from
     <code>spec/fixtures/</code>. <code>en</code> and <code>de</code> are aliases resolving to
     <code>en-US</code> and <code>de-DE</code> (<code>spec/rules/locale-resolution.md</code>).

@@ -21,8 +21,9 @@ export interface PolytypoSiteJs {
   diff: (a: string[], b: string[]) => Array<[boolean, string]>;
   paint: (segments: Array<[boolean, string]>) => string;
   describeChange: (text: string) => string | undefined;
-  highlight: (code: string, commentToken: string) => string;
-  highlightLines: (code: string, commentToken: string) => string;
+  highlight: (code: string) => string;
+  setButton: (button: unknown, label: string, name: string, after?: boolean) => void;
+  copyButton: (button: unknown, text: string, label: string) => Promise<boolean>;
   bootTabs: (tabsId: string, panesId: string) => void;
   summarizeChange: (text: string, out: string, segments: Array<[boolean, string]>) => string;
   summarizeError: (code: string) => string;

@@ -1,28 +1,25 @@
-<header class="hero" style="padding: 40px 0 24px">
+<header class="page-head">
   <p class="eyebrow">Reference</p>
-  <h1 style="max-width: none">One function. No configuration, no globals, no I/O.</h1>
-  <p class="tagline" style="font-size: 17px">
+  <h1>One function. No configuration, no globals, no I/O.</h1>
+  <p class="lead">
     <code>transform(input, options)</code> takes a string and a locale and returns a string. It is
     pure: no filesystem, no network, no clock, no ambient config, no module-level state. Locale is
     required — an unknown locale throws rather than silently falling back to English.
   </p>
 </header>
 
-<section id="pages" style="border-top: 0; padding-top: 0">
-  <h2>Pages</h2>
-  {{doc_index}}
-</section>
+<section id="pages">{{doc_index}}</section>
 
 <section id="use">
   <div class="tabs" id="lang-tabs"></div>
   <div id="lang-panes">{{code_panes}}</div>
-  <p class="small muted" style="margin-top: 14px">
+  <p>
     Error codes are part of the contract in every runtime — full list below. Messages are English
     and are not part of the contract.
   </p>
 
   <h3>Options</h3>
-  <p class="small muted" style="margin-top: -6px">
+  <p>
     <code>locale</code> is always required; <code>dialect</code> with
     <code>mode: "markdown"</code> and <code>keys</code> with <code>mode: "yaml"</code>. Every
     option, its default and the error an invalid value raises is on the
@@ -30,7 +27,7 @@
   </p>
 
   <h3>Error codes</h3>
-  <p class="small muted" style="margin-top: -6px">
+  <p>
     All eight are part of the contract in every runtime; messages are English and are not. Each
     code, and when it is thrown, is on the
     <a href="{{prefix}}docs/api/errors/">error codes</a> page.
@@ -67,7 +64,7 @@
     default. Any rule can be switched on or off; nothing else moves when you do.
   </p>
   <div class="scroll">{{rules_table}}</div>
-  <p class="small muted">
+  <p>
     Examples are real engine output for the locale named in each row. Grey marks what was typed; red
     marks what the engine set instead. Try any of these live in the
     <a href="{{prefix}}playground/">Playground</a>.
@@ -79,45 +76,45 @@
   <h2>Because the fifth port is where regex-based typography dies.</h2>
   <div class="card-grid card-grid--six">
     <div class="card">
-      <h3 style="margin: 0 0 6px">The spec is the product</h3>
-      <p class="small muted" style="margin: 0">
+      <h3>The spec is the product</h3>
+      <p>
         Locale data, rule semantics and conformance fixtures live in one repository. An
         implementation is polytypo <em>iff</em> it passes the suite for the spec version it claims.
         Runtimes are replaceable; the spec is not.
       </p>
     </div>
     <div class="card">
-      <h3 style="margin: 0 0 6px">No regex in the core</h3>
-      <p class="small muted" style="margin: 0">
+      <h3>No regex in the core</h3>
+      <p>
         Go's RE2 has no lookbehind. A rule written as a clever regex in one language is a rule
         rewritten from scratch in the next. Rules are a single left-to-right scan over code points
         with explicit lookaround.
       </p>
     </div>
     <div class="card">
-      <h3 style="margin: 0 0 6px">Idempotent by contract</h3>
-      <p class="small muted" style="margin: 0">
+      <h3>Idempotent by contract</h3>
+      <p>
         <code>transform(transform(x)) === transform(x)</code>, proven by property-based tests, not
         hoped for. Running it twice — in a CMS, in CI, in a build step — cannot corrupt text.
       </p>
     </div>
     <div class="card">
-      <h3 style="margin: 0 0 6px">Every locale is cited</h3>
-      <p class="small muted" style="margin: 0">
+      <h3>Every locale is cited</h3>
+      <p>
         Duden, Imprimerie nationale, Kotus, Språkrådet, Chicago, Мильчин. A locale ships only as a
         triple: data, fixtures, citation. Disagreements are settled by source, not by preference.
       </p>
     </div>
     <div class="card">
-      <h3 style="margin: 0 0 6px">{{Locale_count}} correct beats fifty guessed</h3>
-      <p class="small muted" style="margin: 0">
+      <h3>{{Locale_count}} correct beats fifty guessed</h3>
+      <p>
         The competing library with fifty locales guesses most of them. When the choice is "add a
         language" or "make an existing one provably correct", this project picks correctness.
       </p>
     </div>
     <div class="card">
-      <h3 style="margin: 0 0 6px">Invisible characters, on purpose</h3>
-      <p class="small muted" style="margin: 0">
+      <h3>Invisible characters, on purpose</h3>
+      <p>
         U+00A0, U+202F and U+2011 are the whole point of the <code>nbsp</code> and
         <code>hyphen</code> rules. Every demo on this site reveals them with an underline — hover a
         highlighted character to see exactly what it is.
@@ -141,36 +138,36 @@
         >Ilya Birman's Typography Layout</a
       ></strong
     >
-    is what we recommend, without reservation, for macOS and Windows. It leaves your usual layout
+    is what we recommend, without reservation. It leaves your usual layout
     alone and adds the correct characters on the right-hand modifier: em dash, en dash, the
     quotation marks of several languages, the ellipsis, the no-break space, degrees, arrows,
     currency signs. You stop thinking about it within a week, and then you never type
     <code>--</code> again.
   </p>
-  <div class="card-grid card-grid--responsive">
+  <div class="card-grid">
     <div class="card">
-      <h3 style="margin: 0 0 6px">Typing beats fixing</h3>
-      <p class="small muted" style="margin: 0">
+      <h3>Typing beats fixing</h3>
+      <p>
         A rule engine has to infer intent from context. Your fingers already know it. Every
         character typed correctly is a character no heuristic has to guess at.
       </p>
     </div>
     <div class="card">
-      <h3 style="margin: 0 0 6px">They compose</h3>
-      <p class="small muted" style="margin: 0">
+      <h3>They compose</h3>
+      <p>
         Use the layout while writing, run polytypo over the result. Text that is already correct
         passes through unchanged — that is what idempotency means in practice.
       </p>
     </div>
     <div class="card">
-      <h3 style="margin: 0 0 6px">Where each one wins</h3>
-      <p class="small muted" style="margin: 0">
+      <h3>Where each one wins</h3>
+      <p>
         The layout works where a person types. polytypo works where nobody is typing at all:
         imported catalogues, user submissions, migrated content, other people's Markdown.
       </p>
     </div>
   </div>
-  <p class="small muted">
+  <p>
     No affiliation, no arrangement — just the tool this project's author actually uses. Available
     for macOS and Windows at
     <a href="https://ilyabirman.net/typography-layout/" target="_blank" rel="noopener noreferrer"

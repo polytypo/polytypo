@@ -93,13 +93,18 @@ describe("promo/examples.json — the pre-engine seed is real recorded engine ou
 });
 
 describe("promo pages — one playground component, embedded twice", () => {
-  const partial = readFileSync(PARTIAL_PATH, "utf8").trim();
+  // The leading build comment is stripped on output; the only token is the per-page size.
+  const partial = readFileSync(PARTIAL_PATH, "utf8")
+    .replace(/<!--.*?-->\s*/s, "")
+    .trim();
 
-  it.each(PLAYGROUND_PAGES)("%s embeds the shared partial verbatim", (page) => {
-    // Byte-for-byte: the partial carries no {{prefix}} token precisely so both depths can share it
-    // unchanged. If one is ever added, this fails loudly rather than letting the two instances
-    // drift into being separately maintained copies.
-    expect(readPromoPage(page)).toContain(partial);
+  it.each([
+    ["index.html", "compact"],
+    ["playground/index.html", "full"],
+  ])("%s embeds the shared partial verbatim (size %s)", (page, size) => {
+    // Byte-for-byte apart from the size: if the two instances ever differ in anything else, this
+    // fails loudly rather than letting them drift into separately maintained copies.
+    expect(readPromoPage(page)).toContain(partial.replace("{{wb_size}}", size));
   });
 
   it.each(PLAYGROUND_PAGES)("%s puts the code block immediately after the form", (page) => {
@@ -114,9 +119,12 @@ describe("promo pages — one playground component, embedded twice", () => {
   });
 
   it("the home page leads with the playground, before any section", () => {
-    // The point of the move: a first-time visitor reaches the tool after one paragraph, without
-    // navigating. If a section is ever inserted above it, the playground is below the fold again.
+    // The tool is the first section of the page; if another is ever inserted above it, the
+    // playground is below the fold again.
     const html = readPromoPage("index.html");
-    expect(html.indexOf('id="pg-demo"')).toBeLessThan(html.indexOf("<section"));
+    expect(html.indexOf('<section id="try">')).toBe(html.indexOf("<section"));
+    expect(html.indexOf('id="pg-demo"')).toBeLessThan(
+      html.indexOf("<section", html.indexOf("<section") + 1),
+    );
   });
 });

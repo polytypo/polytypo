@@ -15,7 +15,8 @@ SEARCH_ICON = (
 
 SEARCH_BUTTON = (
     '<button class="search-open" type="button" aria-haspopup="dialog" aria-label="Search">'
-    f'{SEARCH_ICON}<span class="search-open-label">Search</span><kbd>/</kbd></button>'
+    f'{SEARCH_ICON.replace('width="16" height="16"', 'width="18" height="18"')}'
+    '<span class="search-label">Search</span><kbd>/</kbd></button>'
 )
 
 SEARCH_DIALOG = (

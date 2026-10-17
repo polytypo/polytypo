@@ -1,7 +1,7 @@
-<header class="hero" style="padding: 40px 0 24px">
+<header class="page-head">
   <p class="eyebrow">Contribute</p>
-  <h1 style="max-width: none">Add your language, or fix a rule.</h1>
-  <p class="tagline" style="font-size: 17px">
+  <h1>Add your language, or fix a rule.</h1>
+  <p class="lead">
     polytypo is open source and the spec is the product: a locale is a data file, fixtures and a
     citation, and a rule is prose that every runtime implements. Pull requests are welcome on
     <a href="https://github.com/polytypo/polytypo">GitHub</a>. Locales that exist today are listed
@@ -9,7 +9,7 @@
   </p>
 </header>
 
-<section id="contribute" style="border-top: 0; padding-top: 0">
+<section id="contribute">
   <h3>Adding a locale</h3>
   <p>
     This is the sequence every locale is added through. <code>xx</code> stands for the new locale's
@@ -18,7 +18,7 @@
   <ol class="steps">
     <li>
       <h4>Read <code>spec/schema/locale.schema.json</code></h4>
-      <p class="small muted">
+      <p>
         It defines what a locale file may say: quote glyphs and inner-space rule, the parenthetical
         and range dash convention, whether ellipsis abbreviates after terminal punctuation,
         hyphen-binding word lists, and the no-break-space triggers. Literal strings, literal code
@@ -29,7 +29,7 @@
     </li>
     <li>
       <h4>Write <code>spec/locales/xx.json</code></h4>
-      <p class="small muted">
+      <p>
         One field at a time, each backed by a citation in the mandatory <code>sources</code>
         array — a national style guide, a standards body (Accademia della Crusca, a major dictionary
         or publisher's house style), never a blog post or a contributor's own habit. A locale is
@@ -41,7 +41,7 @@
     </li>
     <li>
       <h4>Add cases to <code>spec/fixtures/xx.json</code></h4>
-      <p class="small muted">
+      <p>
         One <code>{ "in", "out", "rule" }</code> pair per behaviour the citation asserts, plus at
         least one edge case per rule — the ordinary sentence is not the interesting test, the nested
         quote or nasty numeric range is. Every fixture is automatically also an idempotency case:
@@ -50,14 +50,14 @@
     </li>
     <li>
       <h4>Register it in <code>spec/locales/registry.json</code></h4>
-      <p class="small muted">
+      <p>
         Add <code>"xx"</code> to the <code>locales</code> array. Only add an alias if the fallback
         is itself a cited decision, not a guess of convenience.
       </p>
     </li>
     <li>
       <h4>Validate and test</h4>
-      <p class="small muted">
+      <p>
         <code>npm run validate:spec</code> checks the file against the schema and NFC-normalizes it;
         <code>npm test</code> checks the structure and citations of the new fixtures. Each runtime's
         conformance suite then runs every fixture, and every fixture doubles as an idempotency case.
@@ -66,7 +66,7 @@
     </li>
     <li>
       <h4>Open a pull request</h4>
-      <p class="small muted">
+      <p>
         Disagreements about what a language actually does are settled by citation, not preference —
         if a review turns up a more normative source, that source wins, not whoever argued longer.
       </p>

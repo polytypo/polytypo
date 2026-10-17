@@ -16,14 +16,14 @@ describe("brand/tools/promo/site.js — summarizeChange()", () => {
     const text = "abc";
     const out = "aXc";
     const segments = Polytypo.diff([...text], [...out]);
-    expect(Polytypo.summarizeChange(text, out, segments)).toBe("1 highlighted output region");
+    expect(Polytypo.summarizeChange(text, out, segments)).toBe("1 change");
   });
 
   it("reports multiple highlighted output regions in the plural", () => {
     const text = "a-b-c";
     const out = "aXbXc";
     const segments = Polytypo.diff([...text], [...out]);
-    expect(Polytypo.summarizeChange(text, out, segments)).toBe("2 highlighted output regions");
+    expect(Polytypo.summarizeChange(text, out, segments)).toBe("2 changes");
   });
 
   it("reports a deletion-only change truthfully instead of '0 changed regions'", () => {
@@ -34,7 +34,7 @@ describe("brand/tools/promo/site.js — summarizeChange()", () => {
     const out = "Hello, world!";
     const segments = Polytypo.diff([...text], [...out]);
     expect(segments.filter(([changed]) => changed).length).toBe(0); // sanity: the bug precondition
-    expect(Polytypo.summarizeChange(text, out, segments)).toBe("changed by removals only");
+    expect(Polytypo.summarizeChange(text, out, segments)).toBe("removals only");
   });
 });
 

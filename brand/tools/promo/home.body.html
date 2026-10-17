@@ -1,39 +1,61 @@
-<header class="hero">
-  <div class="logo" style="max-width: 330px; margin-bottom: 40px">
-    {{svg:logo/polytypo-lockup-current.svg}}
+<header class="page-head">
+  <div class="lockup">{{svg:logo/polytypo-lockup-current.svg}}</div>
+  <h1 class="display">The em dash was mine before AI.</h1>
+  <p class="lead"><code>«—»</code> is typography, not an AI watermark.</p>
+  <p>
+    polytypo fixes typography in any text: it turns straight quotes into the locale's quotation
+    marks, sets dashes and ellipses, and inserts no-break spaces. It supports {{locale_count}}
+    languages in JavaScript, Python, Go, Ruby and PHP, and gives byte-identical output in all five.
+  </p>
+  <div class="cta-row">
+    <a class="btn" href="{{prefix}}playground/">Open the playground</a>
+    <a class="btn secondary" href="{{prefix}}docs/">Read the docs</a>
   </div>
-  <h1>The em dash was mine before AI.</h1>
-  <p class="tagline" style="margin-top: var(--space-3)">
-    <code>«—»</code> is typography, not an AI watermark.
-  </p>
-  <p class="tagline" style="margin-top: var(--space-6)">
-    Paste your own text below and pick a locale — this is the real engine, running in your browser.
-  </p>
-  <p class="small muted" style="margin-top: var(--space-4)">{{package_badges}}</p>
-  <p class="small" style="margin-top: var(--space-6); max-width: 62ch">
-    <strong>polytypo</strong> fixes typography in any text: it turns straight quotes into the
-    locale's quotation marks, sets dashes and ellipses, and inserts no-break spaces. It supports
-    {{locale_count}} languages in JavaScript, Python, Go, Ruby and PHP, and gives byte-identical
-    output in all five.
-  </p>
+  <div class="agent-hint">
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="4" y="8" width="16" height="12" rx="3" />
+      <path d="M12 8V4.5" />
+      <circle cx="12" cy="3.5" r="1" />
+      <path d="M2 13.5v2M22 13.5v2" />
+      <circle cx="9" cy="13.5" r="1.1" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="13.5" r="1.1" fill="currentColor" stroke="none" />
+      <path d="M9.5 17h5" />
+    </svg>
+    <p>
+      <strong>Using an AI coding agent?</strong> Give it the
+      <a href="{{skill_url}}">polytypo SKILL.md</a> and ask it to set polytypo up in your project.
+    </p>
+  </div>
 </header>
 
-<p class="eyebrow" style="margin-top: var(--space-9)">Try it</p>
-{{playground}}
-<p class="small muted" style="margin-top: var(--space-4)">
-  Full call reference — <a href="{{prefix}}docs/">Docs</a>.
-</p>
+<section id="try">
+  <p class="eyebrow">Try it</p>
+  <h2>Paste your text. Pick a locale.</h2>
+  <p>This is the real engine, running in your browser. Nothing you type is sent anywhere.</p>
+  {{playground}}
+  <p class="small muted">Full call reference — <a href="{{prefix}}docs/">Docs</a>.</p>
+</section>
 
 <section id="proof">
-  <p class="eyebrow" style="margin-top: 0">Proof</p>
+  <p class="eyebrow">Proof</p>
   <h2>The same sentence. {{Proof_count}} different, correct answers.</h2>
-  <p class="small muted" style="max-width: 60ch">
+  <p>
     Every card below runs the exact same input string through <code>transform()</code>. Only the
     locale changes; quote style, dash style, and spacing all follow.
   </p>
   {{proof_input}}
   <div class="card-grid card-grid--six">{{proof_grid}}</div>
-  <p class="small muted" style="max-width: 60ch">
+  <p>
     English (US) opens with a curly double quote and a tight em dash. British English swaps the
     primary and secondary levels round, with a spaced en dash instead. German lowers the opening
     quote. Swiss German turns it into guillemets pointing outward. French puts a no-break space
@@ -41,7 +63,7 @@
     pairs French-style guillemets with German's low-high secondary marks. Every one of these is
     correct — in exactly one place.
   </p>
-  <p class="small muted">
+  <p>
     Quotes, dashes and spacing for every language, with the sources behind each rule —
     <a href="{{prefix}}locales/">typography rules by language</a>. To add one, see
     <a href="{{prefix}}contribute/">Contribute</a>.
@@ -49,33 +71,45 @@
 </section>
 
 <section id="faq">
-  <p class="eyebrow" style="margin-top: 0">Questions</p>
+  <p class="eyebrow">Questions</p>
   <h2>Common questions</h2>
-  <h3>How do I turn straight quotes into curly quotes automatically?</h3>
-  <p class="small" style="max-width: 62ch">
-    Call <code>transform(text, { locale })</code>. It replaces straight quotes with the locale's
-    primary and secondary pairs, for example <code>“…”</code> in en-US and <code>„…“</code> in
-    de-DE, and resolves nesting.
-  </p>
-  <h3>Which languages does polytypo support?</h3>
-  <p class="small" style="max-width: 62ch">
-    {{Locale_count}} locales, each backed by cited style guides. See
-    <a href="{{prefix}}locales/">typography rules by language</a>.
-  </p>
-  <h3>Can it typeset Markdown, MDX, HTML and YAML without breaking code?</h3>
-  <p class="small" style="max-width: 62ch">
-    Yes. The <code>markdown</code>, <code>html</code> and <code>yaml</code> modes change only prose
-    and leave tags, attributes, code spans, code blocks and URLs alone. See
-    <a href="{{prefix}}docs/modes/overview/">modes</a>.
-  </p>
-  <h3>Does running it twice change the text again?</h3>
-  <p class="small" style="max-width: 62ch">
-    No. <code>transform(transform(x))</code> equals <code>transform(x)</code> in every runtime; see
-    <a href="{{prefix}}docs/concepts/idempotency/">idempotency</a>.
-  </p>
-  <h3>Is the em dash a sign of AI-written text?</h3>
-  <p class="small" style="max-width: 62ch">
-    No. It is standard punctuation in several style guides, and polytypo sets it only where a
-    locale's guide prescribes it. Read the <a href="{{prefix}}manifesto/">manifesto</a>.
-  </p>
+  <div class="faq">
+    <div class="faq-item">
+      <h3>How do I turn straight quotes into curly quotes automatically?</h3>
+      <p>
+        Call <code>transform(text, { locale })</code>. It replaces straight quotes with the locale's
+        primary and secondary pairs, for example <code>“…”</code> in en-US and <code>„…“</code> in
+        de-DE, and resolves nesting.
+      </p>
+    </div>
+    <div class="faq-item">
+      <h3>Which languages does polytypo support?</h3>
+      <p>
+        {{Locale_count}} locales, each backed by cited style guides. See
+        <a href="{{prefix}}locales/">typography rules by language</a>.
+      </p>
+    </div>
+    <div class="faq-item">
+      <h3>Can it typeset Markdown, MDX, HTML and YAML without breaking code?</h3>
+      <p>
+        Yes. The <code>markdown</code>, <code>html</code> and <code>yaml</code> modes change only
+        prose and leave tags, attributes, code spans, code blocks and URLs alone. See
+        <a href="{{prefix}}docs/modes/overview/">modes</a>.
+      </p>
+    </div>
+    <div class="faq-item">
+      <h3>Does running it twice change the text again?</h3>
+      <p>
+        No. <code>transform(transform(x))</code> equals <code>transform(x)</code> in every runtime;
+        see <a href="{{prefix}}docs/concepts/idempotency/">idempotency</a>.
+      </p>
+    </div>
+    <div class="faq-item">
+      <h3>Is the em dash a sign of AI-written text?</h3>
+      <p>
+        No. It is standard punctuation in several style guides, and polytypo sets it only where a
+        locale's guide prescribes it. Read the <a href="{{prefix}}manifesto/">manifesto</a>.
+      </p>
+    </div>
+  </div>
 </section>

@@ -128,7 +128,7 @@ export function loadPlayground(applyMarkupDefaults = true): Harness {
   sandbox.window = sandbox;
   vm.createContext(sandbox);
 
-  // site.js supplies highlightLines/bootTabs/track, which the playground script reads off
+  // site.js supplies highlight/bootTabs/track, which the playground script reads off
   // window.Polytypo — the same dependency direction the page has.
   vm.runInContext(readFileSync(path.join(ROOT, "brand/tools/promo/site.js"), "utf8"), sandbox, {
     filename: "site.js",
@@ -162,9 +162,9 @@ export function loadPlayground(applyMarkupDefaults = true): Harness {
     await new Promise((r) => setTimeout(r, 200));
   };
 
-  // What a reader sees: highlightLines wraps each line in <span class="ln"> and escapes the
+  // What a reader sees: highlight wraps tokens in spans and escapes the
   // markup-significant characters, so assertions are written against the visible text rather than
-  // against that wrapping — the wrapping is pinned by code-panels.test.ts, which owns it.
+  // against that wrapping.
   const visible = (html: string) =>
     html
       .replace(/<[^>]+>/g, "")

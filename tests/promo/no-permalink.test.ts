@@ -9,7 +9,7 @@
 //   - a real parse5 walk over every generated page catches a button reintroduced under a different
 //     id or label, which a string search for "pg-copy-link" would sail straight past.
 //
-// The positive controls at the bottom are what keep this from passing vacuously: Copy Output must
+// The positive controls at the bottom are what keep this from passing vacuously: Copy output must
 // still exist, must sit INSIDE the output pane (the point of the move, not merely "not deleted"),
 // and copyStatusText — the one clipboard helper the removal keeps — must still be exported.
 import { existsSync, readFileSync } from "node:fs";
@@ -158,14 +158,15 @@ describe("brand/tools/promo/site.js — the permalink helpers are gone from the 
     expect(Object.keys(exported).sort()).toEqual(
       [
         "bootTabs",
+        "copyButton",
         "copyStatusText",
         "describeChange",
         "diff",
         "esc",
         "highlight",
-        "highlightLines",
         "mark",
         "paint",
+        "setButton",
         "summarizeChange",
         "summarizeError",
         "track",
@@ -174,23 +175,22 @@ describe("brand/tools/promo/site.js — the permalink helpers are gone from the 
   });
 });
 
-describe("positive controls — Copy Output survives, and inside the output pane", () => {
-  it("copyStatusText is still exported (the removal kept the clipboard helper Copy Output uses)", () => {
+describe("positive controls — Copy output survives, and inside the output pane", () => {
+  it("copyStatusText is still exported (the removal kept the clipboard helper Copy output uses)", () => {
     const exported = loadRawPolytypoSiteJs();
     expect(typeof exported.copyStatusText).toBe("function");
   });
 
   for (const page of PLAYGROUND_PAGES) {
-    it(`${page} still has a Copy Output button, and it sits inside the output pane`, () => {
+    it(`${page} still has a Copy output button, in the result panel of the workbench`, () => {
       const document = parse(readPromoPage(page));
-      // Located by walking down from .pane-r rather than by id from the document root: the point
-      // of this chip's move is *where* the button is, so proving it is a descendant of the pane it
-      // copies is the assertion, not merely that the id still exists somewhere on the page.
-      const panes = findAll(document, (el) => hasClass(el, "pane-r"));
-      expect(panes.length, `${page}: expected an output pane`).toBe(1);
-      const buttons = findAll(panes[0]!, (el) => el.tagName === "button");
+      // Located by walking down from the workbench body rather than by id from the document root:
+      // the assertion is *where* the button is, not merely that the id exists somewhere.
+      const bodies = findAll(document, (el) => hasClass(el, "wb-body"));
+      expect(bodies.length, `${page}: expected one workbench body`).toBe(1);
+      const buttons = findAll(bodies[0]!, (el) => el.tagName === "button");
       expect(buttons.map((b) => attr(b, "id"))).toContain("pg-copy-output");
-      expect(buttons.map((b) => extractText(b).trim())).toContain("Copy Output");
+      expect(buttons.map((b) => attr(b, "aria-label"))).toContain("Copy output");
     });
 
     it(`${page} no longer renders the separate action bar the button used to live in`, () => {

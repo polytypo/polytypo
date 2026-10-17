@@ -299,6 +299,7 @@ with open(os.path.join(REPO, "package.json"), encoding="utf-8") as f:
     _PKG = json.load(f)
     SITE_ORIGIN = _PKG["homepage"].rstrip("/")
     REPO_URL = _PKG["repository"]["url"].removeprefix("git+").removesuffix(".git")
+    SKILL_URL = f"{REPO_URL}/blob/main/skills/polytypo/SKILL.md"
     LICENSE = _PKG["license"]
 
 # Served at promo/assets/og-image.png — see OG_IMAGE_FILE below. 1200x630 is the OG/Twitter
@@ -369,7 +370,6 @@ SPACES_ROW = {"in": "Hello  ,   world !", "out": "Hello, world!"}
 CODE = [
     (
         "JavaScript / TypeScript",
-        "//",
         """import { transform } from "polytypo";
 
 const output = transform(input, { locale: "de" });
@@ -391,7 +391,6 @@ try {
     ),
     (
         "Python",
-        "#",
         """from polytypo import transform, PolytypoError
 
 output = transform(input, locale="de")
@@ -411,7 +410,6 @@ except PolytypoError as error:
     ),
     (
         "Go",
-        "//",
         """package main
 
 import (
@@ -448,7 +446,6 @@ func main() {
     ),
     (
         "Ruby",
-        "#",
         """require "polytypo"
 
 output = Polytypo.transform(input, locale: "de")
@@ -469,7 +466,6 @@ end""",
     ),
     (
         "PHP",
-        "//",
         """<?php
 use Polytypo\\Polytypo;
 use Polytypo\\PolytypoException;
@@ -542,16 +538,6 @@ def reveal(text):
     )
 
 
-def number_lines(line_htmls):
-    """Wraps one already-escaped HTML fragment per source line into the numbered line spans every
-    code panel on this site is built from. The number itself is never emitted here: it is CSS
-    generated content on `.ln::before` (brand/tools/promo/style.css), so it is not a text node,
-    is not part of the element's text content, and does not reach the clipboard when a reader
-    selects a block and copies it. The literal newline between spans is what makes a copied block
-    keep its line breaks. Server-side twin of site.js's numberLines()."""
-    return "\n".join(f'<span class="ln">{html}</span>' for html in line_htmls)
-
-
 def specimen(marked_html, extra_class=""):
     """A prose before/after example. Deliberately NOT a code panel and deliberately without a
     line-number gutter: a specimen is set in the page's reading face because that is the only way
@@ -561,34 +547,6 @@ def specimen(marked_html, extra_class=""):
     the code-panel treatment; the face and the gutter do not."""
     cls = f"specimen {extra_class}".rstrip()
     return f'<div class="{cls}">{marked_html}</div>'
-
-
-def highlight_lines(code, comment_token):
-    """highlight(), split into numbered lines. Tokenising each line on its own is what keeps a
-    token from straddling a line boundary; mirrors site.js's highlightLines()."""
-    return number_lines(highlight(line, comment_token) for line in code.split("\n"))
-
-
-def highlight(code, comment_token):
-    """Minimal syntax highlighting for a static code sample: string literals and line
-    comments only, in source order — everything else keeps the block's plain foreground
-    color rather than a wrong guess. Mirrors brand/tools/promo/site.js's client-side
-    `highlight()`, used for the playground's dynamically generated call examples; this is
-    the server-side twin for content that's static at build time."""
-    pattern = re.compile(
-        r'"(?:[^"\\]|\\.)*"' + r"|'(?:[^'\\]|\\.)*'" + r"|" + re.escape(comment_token) + r".*$",
-        re.MULTILINE,
-    )
-    out = []
-    last = 0
-    for m in pattern.finditer(code):
-        out.append(H.escape(code[last : m.start()]))
-        text = m.group(0)
-        cls = "tok-com" if text.startswith(comment_token) else "tok-str"
-        out.append(f'<span class="{cls}">{H.escape(text)}</span>')
-        last = m.end()
-    out.append(H.escape(code[last:]))
-    return "".join(out)
 
 
 def diff_html(a, b):
@@ -683,19 +641,19 @@ def code_panes():
     # same package.
     by_name = _runtime_status()
     panes = []
-    for label, comment_token, code in CODE:
+    for label, code in CODE:
         rt = by_name.get(_CODE_LABEL_TO_STATUS_NAME.get(label))
         links_html = ""
         if rt is not None:
             links_html = (
-                '<p class="small muted" style="margin-top: 10px">'
+                '<p class="small muted">'
                 f'<a href="{H.escape(rt["repo"])}">Repo</a> · '
                 f'<a href="{H.escape(rt["package"])}">Package</a>'
                 "</p>"
             )
         panes.append(
             f'<div class="pane" data-label="{H.escape(label)}">'
-            f"<pre><code>{highlight_lines(code, comment_token)}</code></pre>{links_html}</div>"
+            f"<pre><code>{H.escape(code)}</code></pre>{links_html}</div>"
         )
     return "".join(panes)
 
@@ -761,7 +719,7 @@ def build_panes():
     for label, code in BUILD_CODE:
         panes.append(
             f'<div class="pane" data-label="{H.escape(label)}">'
-            f"<pre><code>{highlight_lines(code, '//')}</code></pre></div>"
+            f"<pre><code>{H.escape(code)}</code></pre></div>"
         )
     return "".join(panes)
 
@@ -788,7 +746,7 @@ def proof_input(data):
     by_locale = {loc["locale"]: loc for loc in data["locales"]}
     text = by_locale[data["proofLocales"][0]]["proof"]["in"]
     return (
-        '<p class="small muted" style="margin: 0 0 8px">Input, unchanged</p>'
+        '<p class="small muted">Input, unchanged</p>'
         f"{specimen(reveal(text), 'proof-shared-input')}"
     )
 
@@ -843,24 +801,39 @@ GITHUB_ICON = (
 )
 
 # The GitHub icon link sits outside NAV_LINKS because it is icon-only (no visible text) and
-# external — it does not trigger the Stage-7 320px layout concern that applies to text links.
+# external.
 GITHUB_LINK = (
-    '<a href="https://github.com/polytypo/polytypo" aria-label="GitHub"'
+    '<a class="icon-btn" href="https://github.com/polytypo/polytypo" aria-label="GitHub"'
     f' rel="noopener noreferrer">{GITHUB_ICON}</a>'
 )
+
+# Below 861px the five links collapse behind this button (ui.js toggles body.nav-open).
+MENU_BUTTON = (
+    '<button class="icon-btn nav-toggle" type="button" aria-label="Menu" aria-expanded="false">'
+    '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"'
+    ' stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/>'
+    "</svg></button>"
+)
+
+
+def brand_mark():
+    """The nav and footer mark: decorative, because the wordmark beside it is the name."""
+    mark = inline("logo/polytypo-mark-current.svg")
+    mark = re.sub(r' aria-labelledby="[^"]*"', ' aria-hidden="true"', mark)
+    return re.sub(r"<title.*?</desc>", "", mark, flags=re.S)
 
 
 def nav_html(active_slug, prefix):
     links = "".join(
-        f'<a href="{page_href(prefix, slug)}"'
-        f'{" aria-current=\"page\"" if slug == active_slug else ""}>{label}</a>'
+        f'<li><a href="{page_href(prefix, slug)}"'
+        f'{" aria-current=\"page\"" if slug == active_slug else ""}>{label}</a></li>'
         for slug, label in NAV_LINKS
     )
-    mark = inline("logo/polytypo-mark-current.svg")
     return (
-        '<nav class="site-nav"><div class="wrap">'
-        f'<a class="brand" href="{page_href(prefix, "")}">{mark}polytypo</a>'
-        f'<div class="links">{links}{SEARCH_BUTTON}{GITHUB_LINK}</div>'
+        '<nav class="site-nav" aria-label="Main"><div class="wrap">'
+        f'<a class="brand" href="{page_href(prefix, "")}">{brand_mark()}polytypo</a>'
+        f'<ul class="links">{links}</ul>'
+        f'<div class="actions">{SEARCH_BUTTON}{GITHUB_LINK}{MENU_BUTTON}</div>'
         "</div></nav>"
     )
 
@@ -952,7 +925,7 @@ def _language_icon_svg(name):
         return ""
     return (
         '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" '
-        f'style="vertical-align:-2px;margin-right:4px" aria-hidden="true"><path d="{d}"/></svg>'
+        f'aria-hidden="true"><path d="{d}"/></svg>'
     )
 
 
@@ -976,8 +949,9 @@ def showcase_list():
     # nofollow on every entry alike: a listing is granted in return for the badge's link back,
     # which makes these reciprocal links.
     items = "".join(
-        f'<li>{H.escape(title)} <a href="https://{H.escape(host)}/" rel="nofollow noopener">'
-        f"{H.escape(host)}</a></li>"
+        f'<li><a class="site-card" href="https://{H.escape(host)}/" rel="nofollow noopener">'
+        f'<span class="site-name">{H.escape(host)}</span>'
+        f'<span class="site-desc">{H.escape(title)}</span></a></li>'
         for host, title in sorted(SHOWCASE_SITES, key=lambda site: site[1])
     )
     return f'<ul class="showcase-list">{items}</ul>'
@@ -989,11 +963,6 @@ def showcase_mailto():
 
 
 def footer_html(data, prefix):
-    # No nested .wrap here: footer_html()'s output is placed inside build()'s own outer .wrap
-    # (see the f'<div class="wrap">...{footer_html(...)}...</div>' below), so a second .wrap
-    # around this content would apply that class's width-inset and bottom-padding rules twice —
-    # once from the page's wrap, once from this one — narrowing and right-shifting the footer
-    # relative to the content above it, and doubling the page's bottom whitespace.
     # Package links, one per published runtime, short language labels (not the full
     # conformance-status.json "name" — "JavaScript/TypeScript" reads better shortened here) — read
     # from the same one file the Home badges and README Implementations table already use, so a
@@ -1005,58 +974,64 @@ def footer_html(data, prefix):
         "Ruby": "Ruby",
         "PHP": "PHP",
     }
-    package_links = " · ".join(
-        f'<a href="{H.escape(rt["package"])}">{_language_icon_svg(rt["name"])}'
-        f'{H.escape(_footer_labels.get(rt["name"], rt["name"]))}</a>'
+    package_links = "".join(
+        f'<li><a href="{H.escape(rt["package"])}">{_language_icon_svg(rt["name"])}'
+        f'{H.escape(_footer_labels.get(rt["name"], rt["name"]))}</a></li>'
         for rt in _runtime_status().values()
     )
     return (
-        "<footer><p>"
-        f'polytypo · spec {data["spec"]} · MIT for the code, separate terms for the brand assets · '
-        "every before/after typography example on this site is generated with the engine.</p>"
-        f'<p><a href="{page_href(prefix, "manifesto")}">Manifesto</a> · '
-        f'<a href="{page_href(prefix, "changelog")}">Changelog</a> · '
-        f'<a href="{page_href(prefix, "showcase")}">Sites using polytypo</a></p>'
-        f"<p>Packages: {package_links}</p>"
-        '<p>Created by <a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p>'
-        "</footer>"
+        '<footer><div class="wrap"><div class="footer-grid">'
+        f'<div><div class="footer-brand">{brand_mark()}polytypo</div>'
+        '<p class="muted">Typographic cleanup for text, HTML, Markdown and YAML, in five languages '
+        "of code. Every before/after example on this site is generated with the engine.</p></div>"
+        "<div><h2>Project</h2><ul>"
+        f'<li><a href="{page_href(prefix, "manifesto")}">Manifesto</a></li>'
+        f'<li><a href="{page_href(prefix, "changelog")}">Changelog</a></li>'
+        f'<li><a href="{page_href(prefix, "showcase")}">Sites using polytypo</a></li>'
+        f'<li><a href="{H.escape(SKILL_URL)}">Agent SKILL.md</a></li>'
+        f'<li><a href="{H.escape(REPO_URL)}">GitHub</a></li>'
+        "</ul></div>"
+        f"<div><h2>Packages</h2><ul>{package_links}</ul></div>"
+        "</div>"
+        f'<p class="footer-legal small">polytypo · spec {data["spec"]} · MIT for the code, separate '
+        "terms for the brand assets · Created by "
+        '<a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p>'
+        "</div></footer>"
     )
 
 
 def badge_section_html(prefix):
-    """The embeddable-badge picker: the exact section that used to live only at the bottom of the
-    Docs page's own content, now emitted on every page (build()) right before footer_html() --
-    same markup, same page-section styling (h2, .small.muted) it always had, just no longer
-    docs-only. Kept as its own <section>, not folded into <footer>'s markup or type scale: the
-    operator's call was "same as it was on docs, only on every page", not a footer-sized version
-    of it.
-    """
+    """The embeddable-badge picker, emitted on every page (build()) right before the footer. Only
+    the band around the badge is styled by style.css: the badge itself is rendered by promo/badge.js
+    and its appearance is frozen, because sites embed it as-is."""
+    options = "".join(
+        f'<option value="{H.escape(lang)}">{H.escape(name)}</option>'
+        for lang, name in BADGE_LANG_NAMES.items()
+    )
+    snippet = H.escape(
+        f'<script async src="{SITE_ORIGIN}/badge.js"></script>\n'
+        '<span data-polytypo-lang="en" data-polytypo-theme="light"></span>'
+    )
     return (
-        '<section id="badge" data-pagefind-ignore>'
+        '<section id="badge" data-pagefind-ignore><div class="badge-band"><div>'
         "<h2>Already using polytypo? Add our badge</h2>"
-        '<p class="small muted" style="max-width: 60ch">'
-        "Two lines, same shape as any other embeddable badge — a script tag and a span. No "
-        "per-embed network call: the whole render table ships in that one script. Pick a "
-        "language and a theme, then copy the code into your footer, About page, or credits "
-        "section. "
-        f'<a href="{page_href(prefix, "docs")}#badge-notes">Embedding notes</a> cover what a '
-        "Content Security Policy has to allow and how to re-render on a theme switch. "
-        f'Sites with the badge are listed on <a href="{page_href(prefix, "showcase")}">Sites using '
-        "polytypo</a>."
-        "</p>"
-        '<div class="badge-controls" '
-        'style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 14px 0">'
-        '<select id="badge-lang" aria-label="Badge language"></select>'
-        '<div class="tabs" id="badge-theme-tabs">'
-        '<button type="button" data-theme="light" aria-pressed="true">Light</button>'
-        '<button type="button" data-theme="dark" aria-pressed="false">Dark</button>'
+        "<p>Two lines: a script tag and a span. No per-embed network call. Pick a language and a "
+        "theme, then copy the code into your footer or credits. "
+        f'<a href="{page_href(prefix, "docs")}#badge-notes">Embedding notes</a> cover Content '
+        "Security Policy. Sites with the badge are listed on "
+        f'<a href="{page_href(prefix, "showcase")}">Sites using polytypo</a>.</p>'
+        "</div><div>"
+        '<div class="badge-controls">'
+        f'<select id="badge-lang" aria-label="Badge language">{options}</select>'
+        '<div class="btn-group" role="group" aria-label="Badge theme">'
+        '<button class="seg" type="button" data-badge-theme="light" aria-pressed="true">Light</button>'
+        '<button class="seg" type="button" data-badge-theme="dark" aria-pressed="false">Dark</button>'
         "</div>"
         "</div>"
-        '<span id="badge-preview" data-polytypo-lang="en" data-polytypo-theme="light" '
-        'style="display: inline-block; margin: 0 0 14px"></span>'
-        '<div class="scroll"><pre><code id="badge-code"></code></pre></div>'
-        '<button type="button" id="badge-copy" class="btn" style="margin-top: 10px">Copy</button>'
-        "</section>"
+        '<div class="badge-stage"><span id="badge-preview" data-polytypo-lang="en" '
+        'data-polytypo-theme="light"></span></div>'
+        f'<pre id="badge-code"><code>{snippet}</code></pre>'
+        "</div></div></section>"
     )
 
 
@@ -1123,17 +1098,19 @@ def changelog_sections():
                 + "</table></div>"
             )
         out.append(
-            f'<section id="v{H.escape(rel["version"])}">'
+            f'<section id="v{H.escape(rel["version"])}" class="release">'
+            '<div class="release-meta">'
             f'<p class="eyebrow">{H.escape(_pretty_date(rel["date"]))}</p>'
-            f'<h2>{H.escape(rel["version"])}</h2>'
-            f'<p style="max-width: 70ch">{H.escape(rel["headline"])}</p>'
-            f'<ul class="small muted" style="max-width: 70ch">{items}</ul>'
+            f'<h2>{H.escape(rel["version"])}</h2></div>'
+            '<div class="release-body">'
+            f'<p>{H.escape(rel["headline"])}</p>'
+            f"<ul>{items}</ul>"
             f"{rows}"
-            "</section>"
+            "</div></section>"
         )
     out.append(
         '<section id="patch-releases"><h2>Patch releases</h2>'
-        f'<p class="small muted" style="max-width: 70ch">{_md_code(data["patchNote"])}</p>'
+        f'<p>{_md_code(data["patchNote"])}</p>'
         "</section>"
     )
     return "".join(out)
@@ -1229,12 +1206,6 @@ def jsonld(slug, page_title, description, canonical_url, doc_page=None):
     return json.dumps(doc, ensure_ascii=False).replace("</", "<\\/")
 
 
-_COMMENT_TOKENS = {
-    "js": "//", "javascript": "//", "ts": "//", "typescript": "//", "go": "//", "php": "//",
-    "python": "#", "py": "#", "ruby": "#", "rb": "#", "bash": "#", "sh": "#", "yaml": "#",
-}
-
-
 _DOC_EXAMPLES = None
 
 
@@ -1301,9 +1272,7 @@ def doc_example_block(code):
 def doc_code_block(lang, code):
     if lang == "example":
         return doc_example_block(code)
-    token = _COMMENT_TOKENS.get(lang)
-    lines = highlight_lines(code, token) if token else number_lines(H.escape(l) for l in code.split("\n"))
-    return f'<pre><code>{lines}</code></pre>'
+    return f"<pre><code>{H.escape(code)}</code></pre>"
 
 
 def pager_link(rel, href, title):
@@ -1360,7 +1329,7 @@ def section_index_body(page, prefix, replacements):
         f'<div class="doc-layout">{doc_nav_html(page["slug"], prefix)}<article class="doc">'
         f'{crumbs}<h1>{H.escape(page["title"])}</h1>'
         f'<p class="doc-lead">{H.escape(page["description"])}</p>{updated_html()}'
-        f"<ul>{links}</ul></article></div>"
+        f'<ul class="page-list">{links}</ul></article></div>'
     )
     for key, val in replacements.items():
         html = html.replace(key, val)
@@ -1394,8 +1363,8 @@ def doc_page_body(page, prefix, replacements):
     html = (
         f'<div class="doc-layout">{doc_nav_html(page["slug"], prefix)}<article class="doc">'
         f'{crumbs}<h1>{H.escape(page["title"])}</h1>'
-        f'<p class="doc-lead">{H.escape(page["description"])}</p>{updated_html()}{toc}{content}'
-        f'<nav class="doc-pager" aria-label="Pager">{"".join(pager)}</nav></article></div>'
+        f'<p class="doc-lead">{H.escape(page["description"])}</p>{updated_html()}{content}'
+        f'<nav class="doc-pager" aria-label="Pager">{"".join(pager)}</nav></article>{toc}</div>'
     )
     for key, val in replacements.items():
         html = html.replace(key, val)
@@ -1415,9 +1384,10 @@ def doc_index_html():
             for p in items
         )
         out.append(
-            f'<h3><a href="{{{{prefix}}}}docs/{sid}/">{H.escape(label)}</a></h3><ul>{links}</ul>'
+            f'<h3><a href="{{{{prefix}}}}docs/{sid}/">{H.escape(label)}</a></h3>'
+            f'<ul class="page-list">{links}</ul>'
         )
-    return "".join(out)
+    return f'<div class="docs-index">{"".join(out)}</div>'
 
 
 def doc_breadcrumb_list(page, canonical_url):
@@ -1460,6 +1430,7 @@ def build():
     os.makedirs(assets_dir, exist_ok=True)
     shutil.copyfile(os.path.join(PROMO_SRC, "style.css"), os.path.join(assets_dir, "style.css"))
     shutil.copyfile(os.path.join(PROMO_SRC, "site.js"), os.path.join(assets_dir, "site.js"))
+    shutil.copyfile(os.path.join(PROMO_SRC, "ui.js"), os.path.join(assets_dir, "ui.js"))
     # brand/favicon/ is a committed, hand-produced asset set (brand/README.md documents its
     # contents) — nothing here generates it, this just copies it into the served tree.
     favicon_src = os.path.join(BRAND, "favicon")
@@ -1498,7 +1469,6 @@ def build():
         "{{code_panes}}": code_panes(),
         "{{build_panes}}": build_panes(),
         "{{package_badges}}": package_badges_row(),
-        "{{playground}}": playground_markup,
         "{{locale_count}}": locale_count_word,
         "{{Locale_count}}": locale_count_word.capitalize(),
         "{{rules_count}}": rules_count_word,
@@ -1516,6 +1486,7 @@ def build():
         "{{latest_version}}": H.escape(_latest_released_version()),
         "{{coverage_rows}}": coverage_rows(data),
         "{{doc_index}}": doc_index_html(),
+        "{{skill_url}}": H.escape(SKILL_URL),
     }
     for slug, title, body_file in PAGES:
         prefix = PAGE_PREFIXES[slug]
@@ -1528,10 +1499,13 @@ def build():
             body = section_index_body(section_page, prefix, replacements)
         elif locale_page:
             body = gen_locale_pages.body(locale_page, prefix, LOCALE_HELPERS, LOCALE_PAGES)
-            body = body.replace("{{playground}}", fixed_locale_playground(playground_markup))
+            body = body.replace(
+                "{{playground}}", workbench_size(fixed_locale_playground(playground_markup), slug)
+            )
         else:
             with open(os.path.join(PROMO_SRC, body_file), encoding="utf-8") as f:
                 body = f.read()
+            body = body.replace("{{playground}}", workbench_size(playground_markup, slug))
             for key, val in replacements.items():
                 body = body.replace(key, val)
         # Every cross-page href in a body template is written "{{prefix}}docs/" so one token
@@ -1581,8 +1555,10 @@ def build():
             'data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>\n'
             f'</head>\n<body class="page-{slug.replace("/", "-") or "home"}">\n'
             f"{nav_html(slug.split('/')[0], prefix)}\n"
-            f'<div class="wrap">\n{body}\n{badge_section_html(prefix)}\n{footer_html(data, prefix)}\n</div>\n'
+            f'<main class="wrap">\n{body}\n{badge_section_html(prefix)}\n</main>\n'
+            f"{footer_html(data, prefix)}\n"
             f'<script src="{prefix}assets/site.js"></script>\n'
+            f'<script src="{prefix}assets/ui.js"></script>\n'
         )
 
         # bootTabs() is a no-op for a tab set this page doesn't have, so one call per known tab set
@@ -1593,13 +1569,6 @@ def build():
             'Polytypo.bootTabs("build-tabs", "build-panes");\n'
             "</script>\n"
         )
-        if doc_page:
-            doc += (
-                "<script>\n"
-                'if (matchMedia("(min-width: 721px)").matches) '
-                'document.querySelector("details.doc-nav").open = true;\n'
-                "</script>\n"
-            )
         doc += SEARCH_DIALOG + search_script(prefix)
 
         # Both pages that carry the playground get the same script. They differ in ONE thing: the
@@ -1766,12 +1735,12 @@ BADGE_TEXT = {
 
 BADGE_LANG_NAMES = {
     "en": "English",
-    "fi": "Finnish",
-    "fr": "French",
-    "de": "German",
-    "el": "Greek",
-    "ru": "Russian",
-    "sv": "Swedish",
+    "fi": "Suomi",
+    "fr": "Français",
+    "de": "Deutsch",
+    "el": "Ελληνικά",
+    "ru": "Русский",
+    "sv": "Svenska",
 }
 
 _BADGE_THEME_COLORS = {
@@ -1889,66 +1858,17 @@ def write_badge_js(out_dir):
 
 
 def build_badge_script(prefix):
-    """The badge picker's own wiring, emitted on every page (badge_section_html() is now called
-    for every page in build(), not just "docs"): a language <select> (the seven BADGE_TEXT keys,
-    not the ten locales -- see badge_matrix()) and a light/dark toggle drive a live `<span
-    data-polytypo-lang data-polytypo-theme>` preview via `window.PolytypoBadge` (loaded
-    synchronously here, not `async`, so it is guaranteed ready before this script runs -- an
-    external embedder is told to use `async` for their own page's load performance, but this page
-    controls its own script order already). The copy-code box always shows the real two-line
-    embed -- `<script async src=".../badge.js">` is built via string concatenation, never a
-    literal "</script>" substring, so it cannot prematurely close this containing <script> tag.
-    """
-    options = "".join(
-        f'<option value="{H.escape(lang)}">{H.escape(name)}</option>'
-        for lang, name in BADGE_LANG_NAMES.items()
-    )
-    return f"""<script src="{prefix}badge.js"></script>
-<script>
-(function () {{
-  var langSel = document.getElementById("badge-lang");
-  langSel.innerHTML = {json.dumps(options)};
-  var themeButtons = [].slice.call(document.querySelectorAll("#badge-theme-tabs button"));
-  var preview = document.getElementById("badge-preview");
-  var codeEl = document.getElementById("badge-code");
-  var copyBtn = document.getElementById("badge-copy");
-  var theme = "light";
+    """Loads badge.js on every page (badge_section_html() is emitted everywhere). Synchronous, not
+    `async`, so window.PolytypoBadge is ready before the picker in ui.js is first used: an external
+    embedder is told to use `async` for their own page's load performance, but this page controls
+    its own script order already."""
+    return f'<script src="{prefix}badge.js"></script>\n'
 
-  function snippet() {{
-    return '<script async src="{SITE_ORIGIN}/badge.js"><' + '/script>\\n' +
-      '<span data-polytypo-lang="' + langSel.value + '" data-polytypo-theme="' + theme + '"></span>';
-  }}
-  function render() {{
-    preview.setAttribute("data-polytypo-lang", langSel.value);
-    preview.setAttribute("data-polytypo-theme", theme);
-    window.PolytypoBadge.render(preview);
-    codeEl.textContent = snippet();
-  }}
-  // site.js is a local file loaded above this script, but the badge section is the one part of
-  // the page that has no other reason to need it — so missing it must stay harmless.
-  function track(name, props) {{
-    if (window.Polytypo) window.Polytypo.track(name, props);
-  }}
-  langSel.addEventListener("change", render);
-  themeButtons.forEach(function (b) {{
-    b.addEventListener("click", function () {{
-      theme = b.dataset.theme;
-      themeButtons.forEach(function (o) {{ o.setAttribute("aria-pressed", String(o === b)); }});
-      render();
-    }});
-  }});
-  copyBtn.addEventListener("click", function () {{
-    navigator.clipboard.writeText(codeEl.textContent).then(function () {{
-      var was = copyBtn.textContent;
-      copyBtn.textContent = "Copied";
-      setTimeout(function () {{ copyBtn.textContent = was; }}, 1500);
-      // Inside the success branch on purpose: a copy the clipboard refused is not a copy.
-      track("badge-copy", {{ lang: langSel.value, theme: theme }});
-    }});
-  }});
-  render();
-}})();
-</script>"""
+
+def workbench_size(markup, slug):
+    """/playground is the tool page and gets the tall workbench; everywhere else it is a compact
+    panel that Expand takes to full screen."""
+    return markup.replace("{{wb_size}}", "full" if slug == "playground" else "compact")
 
 
 def fixed_locale_playground(markup):
@@ -1997,15 +1917,13 @@ def build_playground_script(data, prefix, lazy, fixed_locale=None):
 const DATA = {payload};
 (function playground() {{
   const {{
-    mark, diff, paint, highlightLines, bootTabs, summarizeChange, summarizeError, copyStatusText,
-    track,
+    mark, diff, paint, highlight, bootTabs, summarizeChange, summarizeError, copyStatusText,
+    copyButton, track,
   }} = window.Polytypo;
   const LAZY = {lazy_literal};
   const ENGINE_SRC = "{engine_src}";
   const LOCALES = DATA.locales.map((l) => [l.locale, l.name]);
   const DIFF_CAP = 4000; // above this, skip character-level highlighting (O(n*m) LCS)
-  const TA_MIN_H = 120; // keep in sync with textarea.pg-textarea / .pg-output in style.css
-  const TA_MAX_H = 320;
 
   const $demo = document.getElementById("pg-demo");
   const $locale = document.getElementById("pg-locale");
@@ -2021,10 +1939,15 @@ const DATA = {payload};
   const $foot = document.getElementById("pg-foot");
   const $copyOutput = document.getElementById("pg-copy-output");
   const $actionStatus = document.getElementById("pg-action-status");
+  const $tabOut = document.getElementById("pg-tab-out");
+
+  // The foot is the panel's status line: the privacy note until something needs saying.
+  const FOOT_NOTE = "Runs in your browser. Nothing you paste is sent anywhere.";
+  const setFoot = (text) => {{ $foot.textContent = text || FOOT_NOTE; }};
 
   for (const [code, name] of LOCALES) {{
     const o = document.createElement("option");
-    o.value = code; o.textContent = name + " (" + code + ")";
+    o.value = code; o.textContent = name + " · " + code;
     $locale.appendChild(o);
   }}
   $locale.value = "{fixed_locale or DEFAULT_PLAYGROUND_LOCALE}";
@@ -2261,7 +2184,7 @@ const DATA = {payload};
         : "") +
       `  }},\\n` +
       `);`;
-    $callJs.innerHTML = highlightLines(jsCode, "//");
+    $callJs.innerHTML = highlight(jsCode);
 
     const pyCode =
       `from polytypo import transform\\n\\n` +
@@ -2276,7 +2199,7 @@ const DATA = {payload};
         ? `    keys=${{keysJs}},  # type: list[str], required because mode is "yaml" — the mapping keys whose values hold prose\\n`
         : "") +
       `)`;
-    $callPy.innerHTML = highlightLines(pyCode, "#");
+    $callPy.innerHTML = highlight(pyCode);
 
     const goCode =
       `out, err := polytypo.Transform(\\n` +
@@ -2292,7 +2215,7 @@ const DATA = {payload};
         : "") +
       `    }},\\n` +
       `)`;
-    $callGo.innerHTML = highlightLines(goCode, "//");
+    $callGo.innerHTML = highlight(goCode);
 
     const rbCode =
       `require "polytypo"\\n\\n` +
@@ -2307,7 +2230,7 @@ const DATA = {payload};
         ? `  keys: ${{keysRb}}, # type: Array<String>, required because mode is "yaml" — the mapping keys whose values hold prose\\n`
         : "") +
       `)`;
-    $callRb.innerHTML = highlightLines(rbCode, "#");
+    $callRb.innerHTML = highlight(rbCode);
 
     const phpCode =
       `Polytypo::transform(\\n` +
@@ -2323,25 +2246,29 @@ const DATA = {payload};
         : "") +
       `    ],\\n` +
       `);`;
-    $callPhp.innerHTML = highlightLines(phpCode, "//");
+    $callPhp.innerHTML = highlight(phpCode);
   }}
 
   function clearCallCode() {{
     for (const el of [$callJs, $callPy, $callGo, $callRb, $callPhp]) el.textContent = "";
   }}
 
-  /** Paints one before/after pair into the output pane and returns the tail of #pg-foot's status
-   * line. Shared by the live-engine path and the recorded-example path so both render identically —
-   * the recorded example is real engine output and is shown as such, not as a lesser placeholder. */
+  /** Paints one before/after pair into the output pane and returns the result label ("13 changes")
+   * and a note for the status line. Shared by the live-engine path and the recorded-example path
+   * so both render identically — the recorded example is real engine output and is shown as such,
+   * not as a lesser placeholder. */
   function paintPair(before, after) {{
     if (before.length <= DIFF_CAP) {{
       const segments = diff([...before], [...after]);
       $output.innerHTML = paint(segments);
-      return summarizeChange(before, after, segments);
+      return {{ label: summarizeChange(before, after, segments), note: "" }};
     }}
     $output.innerHTML = mark(after);
-    return before.length.toLocaleString("en-US") +
-      " chars — change-highlighting skipped above " + DIFF_CAP.toLocaleString("en-US") + " chars";
+    return {{
+      label: "not highlighted",
+      note: before.length.toLocaleString("en-US") +
+        " chars — change-highlighting skipped above " + DIFF_CAP.toLocaleString("en-US") + " chars",
+    }};
   }}
 
   /** Everything the page can honestly show before, or without, the engine.
@@ -2357,8 +2284,9 @@ const DATA = {payload};
     $output.classList.remove("error");
 
     if (isRecordedState) {{
-      $outputSummary.textContent = paintPair(recorded.in, recorded.out);
-      $foot.textContent = RECORDED_NOTE[engineState] || "";
+      const pair = paintPair(recorded.in, recorded.out);
+      $outputSummary.textContent = pair.label;
+      setFoot(RECORDED_NOTE[engineState] || pair.note);
       return;
     }}
 
@@ -2366,83 +2294,65 @@ const DATA = {payload};
       if (recorded) paintPair(recorded.in, recorded.out);
       else $output.innerHTML = "";
       $outputSummary.textContent = "";
-      $foot.textContent =
-        "The engine bundle (" + ENGINE_SRC + ") did not load — the output above is the recorded " +
-        options.locale + " example, not your own text.";
+      setFoot(
+        "The engine bundle (" + ENGINE_SRC + ") did not load — the output is the recorded " +
+        options.locale + " example, not your own text.",
+      );
       return;
     }}
 
     $output.innerHTML = "";
     $outputSummary.textContent = "";
-    $foot.textContent = isLoadSlow
-      ? "Loading the engine — your text is typeset the moment it arrives."
-      : "";
-  }}
-
-  // Fits both panes to whichever needs more room, between TA_MIN_H and TA_MAX_H, instead of
-  // sizing off the textarea alone: the mono input face and the output's larger reading face wrap
-  // the same character count into a different number of lines, so matching heights off only one
-  // side can clip the other. Called from render()'s `finally` below, so it runs after every exit
-  // path — including the early returns — has already finished setting both panes' content.
-  function fitPanes() {{
-    $input.style.height = "auto";
-    $output.style.height = "auto";
-    const needed = Math.max($input.scrollHeight, $output.scrollHeight);
-    const h = Math.min(Math.max(needed, TA_MIN_H), TA_MAX_H);
-    $input.style.height = h + "px";
-    $output.style.height = h + "px";
+    setFoot(isLoadSlow ? "Loading the engine — your text is typeset the moment it arrives." : "");
   }}
 
   function render() {{
-    try {{
-      const text = $input.value;
-      const n = text.length;
-      $count.textContent = n ? n.toLocaleString("en-US") + " chars" : "";
-      $dialectWrap.hidden = $mode.value !== "markdown";
-      $keysWrap.hidden = $mode.value !== "yaml";
+    const text = $input.value;
+    const n = text.length;
+    $count.textContent = n ? n.toLocaleString("en-US") + " chars" : "";
+    $dialectWrap.hidden = $mode.value !== "markdown";
+    $keysWrap.hidden = $mode.value !== "yaml";
 
-      if (!text) {{
-        $output.classList.remove("error");
-        $output.innerHTML = "";
-        $outputSummary.textContent = "";
-        $foot.textContent = "";
-        clearCallCode();
-        return;
-      }}
-
-      const options = {{ locale: $locale.value, mode: $mode.value }};
-      if ($mode.value === "markdown") options.dialect = $dialect.value;
-      if ($mode.value === "yaml") options.keys = parseKeys($keys.value);
-
-      // The call block describes what the form is set to, not what the engine returned — it is
-      // pure string building. Rendered before every engine branch below so it tracks the controls
-      // even while the bundle is still loading, and still shows the call that threw when one does.
-      renderCallCode(options);
-
-      if (engineState !== "ready") {{
-        renderWithoutEngine(options, text);
-        return;
-      }}
-
-      let out;
-      try {{
-        out = engine.transform(text, options);
-      }} catch (error) {{
-        $output.classList.add("error");
-        const code = error && error.code ? error.code : "Error";
-        $output.textContent =
-          code + ": " + (error && error.message ? error.message : String(error));
-        $outputSummary.textContent = "";
-        $foot.textContent = summarizeError(code);
-        return;
-      }}
-
+    if (!text) {{
       $output.classList.remove("error");
-      $outputSummary.textContent = paintPair(text, out);
-      $foot.textContent = "";
-    }} finally {{
-      fitPanes();
+      $output.innerHTML = "";
+      $outputSummary.textContent = "";
+      setFoot("");
+      clearCallCode();
+      return;
     }}
+
+    const options = {{ locale: $locale.value, mode: $mode.value }};
+    if ($mode.value === "markdown") options.dialect = $dialect.value;
+    if ($mode.value === "yaml") options.keys = parseKeys($keys.value);
+
+    // The call block describes what the form is set to, not what the engine returned — it is
+    // pure string building. Rendered before every engine branch below so it tracks the controls
+    // even while the bundle is still loading, and still shows the call that threw when one does.
+    renderCallCode(options);
+
+    if (engineState !== "ready") {{
+      renderWithoutEngine(options, text);
+      return;
+    }}
+
+    let out;
+    try {{
+      out = engine.transform(text, options);
+    }} catch (error) {{
+      $output.classList.add("error");
+      const code = error && error.code ? error.code : "Error";
+      $output.textContent =
+        code + ": " + (error && error.message ? error.message : String(error));
+      $outputSummary.textContent = "";
+      setFoot(summarizeError(code));
+      return;
+    }}
+
+    $output.classList.remove("error");
+    const pair = paintPair(text, out);
+    $outputSummary.textContent = pair.label;
+    setFoot(pair.note);
   }}
 
   // What the form is set to — enum values only. The text in the panes is the visitor's own and
@@ -2466,24 +2376,25 @@ const DATA = {payload};
     track("playground-use", config());
   }}
 
-  async function copyText(text) {{
-    try {{
-      await navigator.clipboard.writeText(text);
-      return true;
-    }} catch {{
-      return false;
-    }}
-  }}
-
   $copyOutput.addEventListener("click", async () => {{
     const text = $output.textContent;
     if (!text) {{
       $actionStatus.textContent = "Nothing to copy yet.";
       return;
     }}
-    const ok = await copyText(text);
+    const ok = await copyButton($copyOutput, text, "Copy output");
     $actionStatus.textContent = copyStatusText("Output", ok);
     if (ok) track("playground-copy", config());
+  }});
+
+  // The result is rendered in the background as the visitor types, 120ms behind. Pressing the
+  // button inside that window must not show the previous text's result, and on the lazy page it
+  // is also a sign of intent: the click handler that switches the panel is ui.js's, which runs
+  // after this one.
+  $tabOut.addEventListener("click", () => {{
+    startEngineLoad();
+    clearTimeout(timer);
+    render();
   }});
 
   // startEngineLoad() returns immediately unless the engine is still unrequested, so wiring it to
@@ -2514,31 +2425,6 @@ const DATA = {payload};
     trackFirstUse();
     run();
   }});
-
-  // Both panes are capped at the same height (see .pg-output in style.css) and scroll on their
-  // own past that — without this, comparing a long before/after means scrolling one pane, losing
-  // your place, and hunting for it again in the other. Guarded by a lock rather than removing the
-  // listener mid-callback, since scrolling `to` fires `to`'s own scroll event straight back in.
-  let syncingScroll = false;
-  function syncScroll(from, to) {{
-    if (syncingScroll) return;
-    const fromMax = from.scrollHeight - from.clientHeight;
-    const toMax = to.scrollHeight - to.clientHeight;
-    if (fromMax <= 0 || toMax <= 0) return;
-    syncingScroll = true;
-    to.scrollTop = (from.scrollTop / fromMax) * toMax;
-    syncingScroll = false;
-  }}
-  $input.addEventListener("scroll", () => syncScroll($input, $output));
-  $output.addEventListener("scroll", () => syncScroll($output, $input));
-
-  // `resize: vertical` on the textarea (style.css) only resizes the textarea itself; mirror
-  // whatever height a visitor drags it to onto the output pane so the two stay matched.
-  if (typeof ResizeObserver === "function") {{
-    new ResizeObserver(() => {{
-      $output.style.height = $input.offsetHeight + "px";
-    }}).observe($input);
-  }}
 
   if (LAZY) {{
     // First sign of intent, whichever comes first: focusing the input (before a single character

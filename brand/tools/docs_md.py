@@ -122,8 +122,8 @@ class Renderer:
                 if level == 2:
                     self.toc.append((hid, re.sub(r"`", "", text)))
                 out.append(
-                    f'<h{level} id="{hid}"><a class="anchor" href="#{hid}">'
-                    f"{self.inline(text)}</a></h{level}>"
+                    f'<h{level} id="{hid}">{self.inline(text)} '
+                    f'<a class="anchor" href="#{hid}" aria-label="Link to this section">#</a></h{level}>'
                 )
                 i += 1
                 continue

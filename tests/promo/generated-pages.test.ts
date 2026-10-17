@@ -87,7 +87,9 @@ describe("promo pages — Sites using polytypo", () => {
   it("every listed site links out over https with the same rel, sorted by title", () => {
     const html = readPromoPage("showcase/index.html");
     const hosts = [
-      ...html.matchAll(/<li>[^<]+ <a href="https:\/\/([^/"]+)\/" rel="nofollow noopener">\1<\/a>/g),
+      ...html.matchAll(
+        /<li><a class="site-card" href="https:\/\/([^/"]+)\/" rel="nofollow noopener"><span class="site-name">\1<\/span>/g,
+      ),
     ].map((m) => m[1]);
     expect(hosts).toEqual([
       "kri.rocks",

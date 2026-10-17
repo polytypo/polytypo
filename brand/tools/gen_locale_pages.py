@@ -270,7 +270,10 @@ def _kv(rows):
 
 
 def _h2(anchor, title):
-    return f'<h2 id="{anchor}"><a class="anchor" href="#{anchor}">{H.escape(title)}</a></h2>'
+    return (
+        f'<h2 id="{anchor}">{H.escape(title)} '
+        f'<a class="anchor" href="#{anchor}" aria-label="Link to this section">#</a></h2>'
+    )
 
 
 def _flatten(d, prefix=""):

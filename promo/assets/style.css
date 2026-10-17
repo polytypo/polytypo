@@ -1,6 +1,11 @@
+/* polytypo design system.
+   One file, tokens first. Every size, space, radius and width on every page comes from a token
+   below; pages carry no inline styles. */
+
 :root {
   color-scheme: light dark;
 
+  /* ── Brand colour (unchanged from the live site) ─────────────────────────────────────── */
   --color-ink: #14161a;
   --color-paper: #fbfaf7;
   --color-accent: #d64027;
@@ -16,10 +21,8 @@
   --surface-strong: #e9e6df;
 
   /* Code surface. A CODE block — and only a code block — sits on a dark ground in both themes,
-     so everything drawn on it is theme-independent and lives here rather than in the four theme
-     blocks. Only --code-bg and --code-line vary, and they vary to stay distinguishable from the
-     page: a dark panel on the light page, a deeper well on the dark one (where --surface,
-     #181b20, is what the cards around them use).
+     so everything drawn on it is theme-independent and lives here rather than in the theme
+     blocks. Only --code-bg and --code-line vary, to stay distinguishable from the page.
 
      A prose specimen is NOT drawn from these. It is set in the page's own reading face on the
      page's own ground, because a fixed-width face is exactly where `“ ” „ « »` lose their shapes,
@@ -32,33 +35,70 @@
   --tok-string: #8fc79a;
   --tok-comment: #8b939d;
 
-  /* Line-number gutter. --ln-pad is the panel's own left inset, re-declared per panel type;
-     --ln-total re-computes from it wherever it is used, so one geometry serves both. */
-  --ln-w: 2.5ch;
-  --ln-gap: 1.1ch;
-  --ln-pad: var(--space-4);
-  --ln-total: calc(var(--ln-pad) + var(--ln-w) + var(--ln-gap));
-
+  /* ── Type ────────────────────────────────────────────────────────────────────────────── */
   --font-sans: "Inter Brand", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JB Mono Brand", ui-monospace, "SF Mono", Menlo, monospace;
 
-  --content-width: 1000px;
-  --text-width: 68ch;
-  --radius-md: 12px;
-  --radius-lg: 14px;
+  /* Seven steps plus one code size. Nothing readable is set below 13px; body text is 17px.
+     Roles:  xs  mono labels, eyebrows, kbd, captions on a card
+             code  code blocks and "before" samples
+             sm  secondary text: table cells, card notes, nav, buttons
+             md  body — every paragraph, list and answer
+             lg  lead paragraphs, h3
+             xl  h2 on narrow screens, large numerals
+             2xl h2
+             3xl h1
+             display  home h1 only */
+  --fs-xs: 13px;
+  --fs-code: 14px;
+  --fs-sm: 15px;
+  --fs-md: 17px;
+  --fs-lg: 20px;
+  --fs-xl: 26px;
+  --fs-2xl: 34px;
+  --fs-3xl: 46px;
+  --fs-display: clamp(40px, 7vw, 64px);
 
-  --space-1: 6px;
+  --lh-tight: 1.12;
+  --lh-snug: 1.3;
+  --lh-ui: 1.5;
+  --lh-body: 1.65;
+
+  /* ── Space: a 4px grid, nine steps ───────────────────────────────────────────────────── */
+  --space-1: 4px;
   --space-2: 8px;
-  --space-3: 10px;
-  --space-4: 12px;
-  --space-5: 14px;
-  --space-6: 16px;
-  --space-7: 18px;
-  --space-8: 20px;
-  --space-9: 22px;
-  --space-10: 24px;
-  --space-11: 26px;
-  --space-12: 28px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  /* ── Layout ──────────────────────────────────────────────────────────────────────────── */
+  --container: 1200px;
+  --gutter: 24px;
+  --measure: 66ch; /* every paragraph, list and answer */
+  --measure-lead: 56ch; /* lead paragraphs */
+  --section-y: 80px; /* the one vertical rhythm between sections */
+  --nav-h: 64px;
+  --control-h: 44px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --fs-md: 16px;
+    --fs-lg: 18px;
+    --fs-xl: 22px;
+    --fs-2xl: 28px;
+    --fs-3xl: 34px;
+    --gutter: 16px;
+    --section-y: 56px;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -98,58 +138,21 @@
   --code-line: rgb(237 235 230 / 14%);
 }
 
+/* ── Base ───────────────────────────────────────────────────────────────────────────────── */
+
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-/* The native `hidden` attribute must always win over an author `display` rule — otherwise a
-   selector like `.pg-bar label { display: flex }` can silently keep a `hidden` element visible
-   and keyboard/screen-reader reachable (found on the playground's Markdown-dialect control,
-   which stayed on screen and in the tab order in every mode, not just "markdown"). This is a
-   blanket safeguard, not a one-off fix scoped to that selector, so the same class of bug can't
-   recur wherever `hidden` and a component's own `display` rule collide next. */
 [hidden] {
   display: none !important;
 }
 
-/* One consistent, visible keyboard-focus treatment for every interactive control on the site —
-   links, buttons (language tabs, code-sample tabs, playground call-code tabs), and form controls
-   (select, textarea). `:focus-visible` (not `:focus`) so the ring appears for keyboard/AT users
-   without also showing on an ordinary mouse click. Nothing here removes an outline without
-   substituting this ring — see textarea.pg-textarea:focus-visible below for its own, layout-aware
-   variant of the same treatment. */
-a:focus-visible,
-button:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
 html {
   -webkit-text-size-adjust: 100%;
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-}
-
-@supports (font-variation-settings: normal) {
-  html {
-    font-family:
-      InterVariable,
-      system-ui,
-      -apple-system,
-      BlinkMacSystemFont,
-      "Segoe UI",
-      sans-serif;
-  }
+  scroll-padding-top: calc(var(--nav-h) + var(--space-5));
 }
 
 body {
@@ -157,9 +160,19 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: var(--fs-md);
+  line-height: var(--lh-body);
   -webkit-font-smoothing: antialiased;
+}
+
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+input:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 button,
@@ -167,13 +180,28 @@ input,
 textarea,
 select {
   font: inherit;
+  color: inherit;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 .wrap {
-  width: min(100% - 56px, var(--content-width));
+  width: min(100% - 2 * var(--gutter), var(--container));
   margin-inline: auto;
-  padding-bottom: 120px;
 }
+
+main.wrap {
+  padding-bottom: var(--space-9);
+}
+
+/* ── Text ───────────────────────────────────────────────────────────────────────────────── */
 
 h1,
 h2,
@@ -181,47 +209,66 @@ h3,
 h4 {
   margin: 0;
   font-weight: 600;
-  line-height: 1.15;
+  line-height: var(--lh-tight);
   letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 h1 {
-  max-width: 20ch;
-  font-size: clamp(28px, 4.4vw, 40px);
+  font-size: var(--fs-3xl);
 }
 
 h2 {
-  margin-bottom: var(--space-2);
-  font-size: 30px;
+  font-size: var(--fs-2xl);
+  margin-bottom: var(--space-4);
 }
 
 h3 {
-  margin: 34px 0 var(--space-3);
-  font-size: 18px;
+  font-size: var(--fs-lg);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+  margin: var(--space-6) 0 var(--space-3);
+}
+
+h4 {
+  font-size: var(--fs-md);
+  line-height: var(--lh-snug);
+  margin: var(--space-5) 0 var(--space-2);
 }
 
 p,
-ul {
-  max-width: var(--text-width);
+ul,
+ol,
+dl {
+  margin: 0 0 var(--space-4);
+  max-width: var(--measure);
 }
 
-p {
-  margin: 0 0 var(--space-6);
-}
-
-ul {
-  margin: 0 0 var(--space-6);
-  padding-left: 20px;
+ul,
+ol {
+  padding-left: var(--space-5);
 }
 
 li {
-  margin-bottom: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+
+li > p {
+  margin-bottom: 0;
 }
 
 a {
   color: inherit;
-  text-decoration-color: var(--color-grey-300);
+  text-decoration-color: var(--color-grey-500);
   text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration-color: var(--color-accent);
+}
+
+strong {
+  font-weight: 600;
 }
 
 code,
@@ -230,57 +277,181 @@ code,
 }
 
 code {
-  font-size: 0.9em;
+  font-size: 0.88em;
 }
 
-/* Prose inline code (e.g. `promo/vendor/polytypo.browser.js` in a <p>) has no horizontal-scroll
-   affordance of its own, unlike a <pre><code> block — so at narrow viewports a long identifier
-   can push the whole document wider than the viewport (found: 320px viewport, clientWidth 305px
-   after the vertical scrollbar, scrollWidth 312px). `pre code` keeps pre's own overflow-x: auto
-   and must not wrap, hence :not(pre) > code rather than a blanket `code` rule. */
 :not(pre) > code {
   overflow-wrap: anywhere;
-}
-
-section {
-  padding: 70px 0 10px;
-  border-top: 1px solid var(--line);
-}
-
-/* Every other section's 10px bottom padding relies on the next section's own 70px top padding
-   for real whitespace -- but #badge is now the last section before <footer> on every page
-   (badge_section_html(), build_promo.py), and footer isn't a section, so without this override
-   its divider line sits only 10px below the Copy button. */
-#badge {
-  padding-bottom: 70px;
-}
-
-.eyebrow {
-  margin: 0 0 var(--space-4);
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 }
 
 .muted {
   color: var(--muted);
 }
 
+/* Secondary text: captions, meta lines, card notes. Never for a paragraph a reader has to read
+   to use the page. */
 .small {
-  font-size: 13px;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
 }
 
-/* ---------- top nav ---------- */
+.eyebrow {
+  margin: 0 0 var(--space-3);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-ui);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.lead,
+.doc-lead,
+.tagline,
+.lede {
+  max-width: var(--measure-lead);
+  margin-bottom: var(--space-4);
+  color: var(--muted);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-snug);
+}
+
+.doc-meta {
+  color: var(--muted);
+  margin-bottom: var(--space-5);
+}
+
+kbd {
+  padding: 0 var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+/* ── Page head and sections: the vertical rhythm ──────────────────────────────────────────
+   page head  → 64 above, 48 below, then the first section without a divider
+   section    → 80 above and below, 1px divider
+   eyebrow 12 → heading 16 → intro 32 → content                                           */
+
+.page-head,
+.hero {
+  padding: var(--space-8) 0 var(--space-7);
+}
+
+.page-head h1,
+.hero h1 {
+  max-width: 22ch;
+  margin-bottom: var(--space-4);
+}
+
+.page-head > :last-child,
+.hero > :last-child {
+  margin-bottom: 0;
+}
+
+section {
+  padding: var(--section-y) 0;
+  border-top: 1px solid var(--line);
+}
+
+.page-head + section,
+.hero + section {
+  border-top: 0;
+  padding-top: 0;
+}
+
+section > :first-child {
+  margin-top: 0;
+}
+
+section > :last-child {
+  margin-bottom: 0;
+}
+
+section > h2 + p,
+section > .section-intro {
+  margin-bottom: var(--space-6);
+}
+
+/* ── Buttons ────────────────────────────────────────────────────────────────────────────── */
+
+.btn,
+.pg-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-h);
+  padding: 0 var(--space-5);
+  border: 1px solid var(--fg);
+  border-radius: var(--radius-pill);
+  color: var(--bg);
+  background: var(--fg);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  opacity: 0.86;
+}
+
+.btn.secondary,
+.pg-copy {
+  color: var(--fg);
+  background: none;
+  border-color: var(--line);
+}
+
+.btn.secondary:hover,
+.pg-copy:hover {
+  border-color: var(--fg);
+  opacity: 1;
+}
+
+.pg-copy {
+  min-height: 32px;
+  padding: 0 var(--space-4);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+}
+
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.agent-hint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  max-width: 60ch;
+  margin-top: var(--space-6);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.agent-hint svg {
+  flex: none;
+  color: var(--color-accent);
+}
+
+.agent-hint p {
+  margin: 0;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────────────────── */
+
 .site-nav {
   position: sticky;
   top: 0;
   z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-6);
   border-bottom: 1px solid var(--line);
   background: color-mix(in srgb, var(--bg) 92%, transparent);
   backdrop-filter: blur(8px);
@@ -289,10 +460,8 @@ section {
 .site-nav .wrap {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-6);
-  padding-top: var(--space-5);
-  padding-bottom: var(--space-5);
+  gap: var(--space-5);
+  min-height: var(--nav-h);
 }
 
 .site-nav .brand {
@@ -300,34 +469,39 @@ section {
   align-items: center;
   gap: var(--space-3);
   color: var(--fg);
+  font-size: var(--fs-lg);
   font-weight: 600;
   text-decoration: none;
 }
 
 .site-nav .brand svg {
-  width: 28px;
+  width: 44px;
   height: auto;
-  color: var(--fg);
 }
 
 .site-nav .links {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-8);
+  gap: var(--space-5);
+  margin: 0 0 0 auto;
+  padding: 0;
+  list-style: none;
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: var(--fs-sm);
+}
+
+.site-nav .links li {
+  margin: 0;
 }
 
 .site-nav .links a {
   display: inline-flex;
   align-items: center;
-  /* Vertical padding widens the tap target well past the text's own line-height (WCAG 2.5.8
-     "Target Size (Minimum)" — 24px is the AA minimum; this keeps some margin above it) without
-     changing the link's visible size or the brand's compact nav look. */
-  padding: 10px 0;
+  min-height: var(--nav-h);
   color: var(--muted);
   text-decoration: none;
+  border-bottom: 2px solid transparent;
+  border-top: 2px solid transparent;
 }
 
 .site-nav .links a:hover {
@@ -336,160 +510,192 @@ section {
 
 .site-nav .links a[aria-current="page"] {
   color: var(--fg);
-  border-bottom: 2px solid var(--color-accent);
-  /* Same total tap-target height as every other nav link: the 2px border eats into the 10px
-     base padding rather than shrinking it, so the active link isn't the one exception with a
-     smaller touch target. */
-  padding-bottom: 8px;
+  border-bottom-color: var(--color-accent);
 }
 
-/* ---------- hero ---------- */
-.hero {
-  padding: 56px 0 64px;
-}
-
-.hero .tagline {
-  max-width: 56ch;
-  margin-top: var(--space-7);
-  color: var(--muted);
-  font-size: 19px;
-}
-
-/* Not scoped to .hero: the home page's CTA row now sits below the playground, and the manifesto's
-   has always been inside an ordinary <section>. Same row, wherever it is used. */
-.cta-row {
+.site-nav .actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-5);
-  margin-top: var(--space-9);
-  /* A paragraph's own line-height leaves slack below it before a section's 10px bottom padding
-     kicks in; a flex row of buttons has none, so the following border (section-to-section, or
-     section-to-footer) sits visibly pressed against it without this. */
-  margin-bottom: var(--space-6);
+  align-items: center;
+  gap: var(--space-2);
 }
 
-.btn {
-  display: inline-block;
-  padding: 11px 20px;
-  border: 1px solid var(--fg);
-  border-radius: 999px;
-  color: var(--bg);
-  background: var(--fg);
-  font-size: 14px;
-  font-weight: 600;
-  text-decoration: none;
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  background: none;
   cursor: pointer;
 }
 
-.btn.secondary {
+.icon-btn:hover {
   color: var(--fg);
-  background: none;
 }
 
-/* ---------- interactive demo / playground ---------- */
-/* Square, borderless bottom edge on purpose: the "call" card (.call-eyebrow, #call-tabs,
-   #call-panes below) picks up immediately where this leaves off, with no border and no vertical
-   gap between them, so the two read as one module — try it, then see the call it just made —
-   instead of two unrelated blocks separated by whitespace. */
-.demo {
-  margin-top: 44px;
-  overflow: hidden;
+.search-open {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 40px;
+  padding: 0 var(--space-3);
   border: 1px solid var(--line);
-  border-bottom: none;
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-radius: var(--radius-md);
+  color: var(--muted);
+  background: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+
+.search-open:hover {
+  color: var(--fg);
+  border-color: var(--fg);
+}
+
+.nav-toggle {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .site-nav .wrap {
+    justify-content: space-between;
+  }
+
+  .site-nav .actions {
+    margin-left: auto;
+  }
+
+  .site-nav .search-open .search-label,
+  .site-nav .search-open kbd {
+    display: none;
+  }
+
+  .site-nav .search-open {
+    width: 40px;
+    padding: 0;
+    justify-content: center;
+    border: 0;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .site-nav .links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin: 0;
+    padding: var(--space-2) var(--gutter) var(--space-4);
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    font-size: var(--fs-md);
+  }
+
+  .nav-open .site-nav .links {
+    display: flex;
+  }
+
+  .site-nav .links a {
+    min-height: 48px;
+    border: 0;
+  }
+
+  .site-nav .links a[aria-current="page"] {
+    color: var(--color-accent);
+  }
+}
+
+/* ── Cards and specimens ────────────────────────────────────────────────────────────────── */
+
+.card-grid {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  margin-bottom: var(--space-5);
+}
+
+.card-grid--six {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+}
+
+.card-grid--two {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr));
+}
+
+.card {
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
   background: var(--surface);
 }
 
-.demo .bar,
-.tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1);
+.card h3 {
+  margin-top: 0;
 }
 
-.demo .bar {
-  padding: var(--space-4) var(--space-5);
-  border-bottom: 1px solid var(--line);
+.card > :last-child {
+  margin-bottom: 0;
 }
 
-.demo .bar button,
-.tabs button {
-  border-radius: 999px;
-  cursor: pointer;
-  font-family: var(--font-mono);
-}
-
-.demo .bar button {
-  padding: 5px 10px;
-  border: 1px solid transparent;
-  background: none;
-  color: var(--muted);
-  font-size: 11.5px;
-  letter-spacing: 0.04em;
-}
-
-.demo .bar button:hover {
-  color: var(--fg);
-}
-
-.demo .bar button[aria-pressed="true"],
-.tabs button[aria-pressed="true"] {
-  background: var(--fg);
-  color: var(--bg);
-}
-
-.split {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.split .pane-l,
-.split .pane-r {
-  min-width: 0;
-  padding: 24px 26px 30px;
-}
-
-.split .pane-l {
-  border-right: 1px solid var(--line);
-}
-
-.split .who {
-  margin-bottom: var(--space-5);
+.card .lang {
+  margin-bottom: var(--space-3);
   color: var(--muted);
   font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.demo .foot {
-  padding: var(--space-4) 26px;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 11.5px;
+.card .pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: var(--space-4);
+  align-items: start;
 }
 
-/* Change marks and revealed invisible characters. These appear only in prose specimens and in the
-   playground's output pane — never in a code panel, since highlight() emits token classes only —
-   so they are tuned for the page's own ground and need the per-theme pair back: the 30%/38% wash
-   is right on a dark page and too loud on the light one. */
+.card .pair--solo {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.card .in {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-code);
+  line-height: 1.7;
+}
+
+.card .out {
+  font-size: var(--fs-md);
+  line-height: var(--lh-ui);
+}
+
+.specimen {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.proof-shared-input {
+  margin-bottom: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-md);
+}
+
 .chg {
   border-radius: 3px;
   background: rgb(214 64 39 / 16%);
   box-shadow: 0 0 0 1px rgb(214 64 39 / 22%);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .chg {
-    background: rgb(214 64 39 / 30%);
-    box-shadow: 0 0 0 1px rgb(214 64 39 / 38%);
-  }
-}
-
-:root[data-theme="dark"] .chg {
-  background: rgb(214 64 39 / 30%);
-  box-shadow: 0 0 0 1px rgb(214 64 39 / 38%);
 }
 
 .nb {
@@ -501,89 +707,79 @@ section {
   border-bottom: 2px dotted var(--color-accent);
 }
 
-/* ---------- card grids ---------- */
-.card-grid {
-  display: grid;
-  gap: var(--space-5);
-  margin: var(--space-8) 0 var(--space-2);
+.glyph {
+  font-size: var(--fs-lg);
 }
 
-.card-grid--two {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
+/* ── Code ───────────────────────────────────────────────────────────────────────────────── */
 
-.card-grid--responsive {
-  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
-}
-
-/* A fixed six-card grid (Docs "Why this and not a regex"): 3+3, not auto-fit's width-driven 4+2 —
-   see the two @media overrides below for the 2+2+2 and 1×6 steps. */
-.card-grid--six {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.card {
-  padding: var(--space-7) var(--space-8);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-}
-
-.card .lang {
-  color: var(--muted);
+pre {
+  margin: 0 0 var(--space-5);
+  padding: var(--space-5);
+  overflow-x: auto;
+  border: 1px solid var(--code-line);
+  border-radius: var(--radius-lg);
+  color: var(--code-fg);
+  background: var(--code-bg);
   font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.card .pair {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-6);
-  align-items: start;
-  margin-top: var(--space-3);
-}
-
-/* The proof grid's cards carry only the output (the shared input is proof_input(), rendered once
-   above the grid) — one child, not two, so the 2-column grid above would otherwise leave it
-   sitting in the first column at half width. */
-.card .pair--solo {
-  grid-template-columns: 1fr;
-}
-
-/* The two halves of a card's before/after pair differ in typeface and scale, and that is the whole
-   argument: "what was typed" is raw source, so it is small, grey and monospaced; "what the engine
-   set" is typography, so it is set in the reading face at a size where a quote glyph has a shape. */
-.card .in {
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 12.5px;
+  font-size: var(--fs-code);
   line-height: 1.7;
 }
 
-.card .out {
-  font-size: 16px;
-  line-height: 1.55;
+pre code {
+  font-size: inherit;
 }
 
-/* ---------- tables ---------- */
+.tok-com {
+  color: var(--tok-comment);
+  font-style: italic;
+}
+
+.tok-str {
+  color: var(--tok-string);
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin-bottom: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.tabs button {
+  min-height: 36px;
+  padding: 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  background: none;
+  cursor: pointer;
+}
+
+.tabs button[aria-selected="true"] {
+  color: var(--fg);
+  border-bottom-color: var(--color-accent);
+}
+
+/* ── Tables ─────────────────────────────────────────────────────────────────────────────── */
+
 .scroll {
-  max-width: 100%;
+  margin-bottom: var(--space-5);
   overflow-x: auto;
 }
 
 table {
-  width: auto;
-  max-width: 100%;
-  margin: var(--space-5) 0 var(--space-9);
+  width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
 }
 
 th,
 td {
-  padding: var(--space-3) var(--space-5) var(--space-3) 0;
+  padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid var(--line);
   text-align: left;
   vertical-align: top;
@@ -592,240 +788,140 @@ td {
 th {
   color: var(--muted);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-td.mono,
-.mono {
-  font-size: 13px;
-  /* Table auto-layout sizes a column by its cells' min-content width; overflow-wrap:anywhere
-     lets that shrink to a single character, which collapses these columns to nothing. These
-     are short tokens (rule ids, error codes, option names) that should never wrap — nowrap
-     keeps them at their natural width, and the .scroll wrapper around every such table
-     handles the case where that's still too wide for a narrow viewport. */
   white-space: nowrap;
 }
 
-/* Same split as a card's pair: the In cell is raw source, the Out cell is typography. min-width
-   keeps a short specimen from being squeezed to its own longest word by table auto-layout. */
-.rule-in,
-.rule-out {
-  min-width: 20ch;
+table.kv th {
+  width: 200px;
 }
 
-.rule-in {
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 13px;
-}
+/* ── Steps, chips, callouts ─────────────────────────────────────────────────────────────── */
 
-.rule-out {
-  font-size: 16px;
-}
-
-.kv {
-  border-collapse: collapse;
-  width: auto;
-  max-width: 100%;
-  margin: var(--space-5) 0 var(--space-9);
-  font-size: 14px;
-}
-
-.kv th,
-.kv td {
-  padding: var(--space-3) var(--space-5) var(--space-3) 0;
-  border-bottom: 1px solid var(--line);
-  text-align: left;
-  vertical-align: top;
-}
-
-.ready-cite {
-  max-width: 42ch;
-  color: var(--muted);
-  font-size: 12.5px;
-}
-
-/* ---------- code ---------- */
-.tabs {
-  margin-top: var(--space-7);
-}
-
-.tabs button {
-  padding: 7px 13px;
-  border: 1px solid var(--line);
-  background: none;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.tabs button[aria-pressed="true"] {
-  border-color: var(--fg);
-}
-
-/* A real code sample. Left padding is 0 here and carried by `pre > code` instead, so the
-   line-number gutter can sit inside it — see .ln::before. */
-pre {
-  --ln-pad: var(--space-5);
-
-  margin: var(--space-5) 0 0;
-  padding: var(--space-8) var(--space-9) var(--space-8) 0;
-  overflow-x: auto;
-  border: 1px solid var(--code-line);
-  border-radius: var(--radius-md);
-  background: var(--code-bg);
-  color: var(--code-fg);
-  counter-reset: ln;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-/* Present for assistive tech only — the label that used to sit visibly above the call card named
-   the relationship in words; the merged card below (.demo flowing straight into #call-tabs, zero
-   gap, one dark ground) now shows that relationship instead of stating it. A sighted visitor reads
-   "the same thing, as code" from the layout; a screen-reader user still gets the sentence. */
-.sr-only {
-  position: absolute;
-  overflow: hidden;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
+.steps {
+  counter-reset: step;
+  margin-bottom: var(--space-5);
   padding: 0;
-  white-space: nowrap;
-  clip-path: inset(50%);
-  border: 0;
+  list-style: none;
 }
 
-/* The "call" card: #call-tabs and #call-panes stacked with zero gap, sharing one dark ground and
-   one pair of side borders, so they read as a single card continuing .demo above (which loses its
-   own bottom border/radius for exactly this join) rather than two separate blocks. Language tabs
-   live inside the card's own header row instead of floating above it. #call-tabs carries the
-   card's top border and radius, since the sr-only label before it no longer occupies any space.
-   Placed after the generic `pre` rule on purpose — tests/promo/style.test.ts's findRule("pre")
-   does a plain substring search for "pre {" with no selector-boundary anchoring, so a compound
-   selector ending in " pre {" that sorts earlier in the file would be picked up instead of the
-   bare one it means to test. */
-/* Square, not rounded: this is the continuation of .demo above (itself square at the bottom for
-   the same reason), not a new card of its own — rounding this corner would put a visible notch
-   where the two meet instead of one unbroken edge. */
-#call-tabs {
-  gap: var(--space-6);
+.steps > li {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  column-gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  counter-increment: step;
+}
+
+.steps > li::before {
+  content: counter(step);
+  grid-row: 1 / span 10;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--muted);
+  background: var(--surface-strong);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.steps > li > * {
+  grid-column: 2;
+  min-width: 0;
+}
+
+/* Centre the first line on the 32px numeral: 2px + 28px line = 32px. */
+.steps > li > :first-child {
+  margin-top: 2px;
+  line-height: 28px;
+}
+
+.steps h4 {
+  margin-bottom: var(--space-1);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+
+.chips li {
   margin: 0;
-  padding: var(--space-4) var(--space-8) 0;
-  border-right: 1px solid var(--code-line);
-  border-left: 1px solid var(--code-line);
-  background: var(--code-bg);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
 }
 
-#call-tabs button {
-  padding: 0 0 var(--space-3);
-  border: 0;
-  border-bottom: 2px solid transparent;
-  border-radius: 0;
-  color: var(--code-gutter);
-  background: none;
+.faq {
+  display: grid;
+  gap: var(--space-6) var(--space-7);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
 }
 
-#call-tabs button:hover {
-  color: var(--code-fg);
+.faq-item h3 {
+  margin-top: 0;
 }
 
-#call-tabs button[aria-pressed="true"] {
-  border-bottom-color: var(--color-accent);
-  color: var(--code-fg);
-  background: none;
+.faq-item p:last-child {
+  margin-bottom: 0;
 }
 
-#call-panes {
-  border-right: 1px solid var(--code-line);
-  border-bottom: 1px solid var(--code-line);
-  border-left: 1px solid var(--code-line);
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-  background: var(--code-bg);
+/* ── Form controls and the playground ───────────────────────────────────────────────────── */
+
+select,
+input[type="text"],
+textarea {
+  min-height: var(--control-h);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  font-size: 16px; /* never below 16px: iOS zooms smaller fields */
+}
+
+select {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+/* One-line controls sit in rows with the pill buttons and share their shape; multi-line fields
+   keep the plain radius. */
+select,
+.pg-keys-input {
+  border-radius: var(--radius-pill);
+  padding-left: var(--space-4);
+}
+
+textarea {
+  width: 100%;
+  padding: var(--space-3);
+  line-height: var(--lh-ui);
+  resize: vertical;
+}
+
+.demo {
+  margin-bottom: var(--space-5);
   overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
 }
 
-#call-panes pre {
-  margin: 0;
-  border: 0;
-  border-radius: 0;
-}
-
-pre > code {
-  display: block;
-  padding-left: var(--ln-total);
-}
-
-/* A prose specimen — a before/after example. No ground, no border, no gutter and no monospace: it
-   inherits the face and colour of whatever card or table cell holds it, and those are the page's
-   own. The only thing it declares is how the text has to behave.
-
-   pre-wrap, not the surrounding prose's collapsing whitespace: a specimen for the `spaces` rule
-   is about repeated spaces, and collapsing them hides the very thing it demonstrates. It also
-   keeps a multi-line example's line breaks, which is what the removed line spans used to do.
-
-   overflow-wrap:anywhere, so a long unbroken run wraps inside the card instead of widening it and
-   pushing the page into a horizontal scroll. */
-.specimen {
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-/* One source line of a code panel. The number is CSS generated content and is marked
-   unselectable, so it is not a text node and does not reach the clipboard: selecting a block
-   and copying yields the text alone. The negative margin pulls the number back into the panel's
-   left inset — which is why the inset lives on the code element as padding rather than on the
-   panel — so a wrapped line aligns under its own first character, not under the gutter.
-   `sticky` keeps the number in view while a wide code sample scrolls sideways. */
-.ln::before {
-  counter-increment: ln;
-  content: counter(ln);
-  position: sticky;
-  left: 0;
-  display: inline-block;
-  width: var(--ln-total);
-  padding-right: var(--ln-gap);
-  padding-left: var(--ln-pad);
-  margin-left: calc(-1 * var(--ln-total));
-  background: var(--code-bg);
-  color: var(--code-gutter);
-  text-align: right;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-/* Minimal hand-rolled highlighting for the generated call samples — no highlighter
-   dependency, just two token classes (string literals, line comments); everything else
-   stays the code block's own foreground color. */
-.tok-str {
-  color: var(--tok-string);
-}
-
-.tok-com {
-  color: var(--tok-comment);
-  font-style: italic;
-}
-
-.pane[hidden] {
-  display: none;
-}
-
-.note {
-  max-width: 66ch;
-  margin: var(--space-10) 0;
-  padding-left: var(--space-7);
-  border-left: 2px solid var(--color-accent);
-}
-
-/* ---------- playground ---------- */
 .pg-bar {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-6);
+  gap: var(--space-4) var(--space-5);
   padding: var(--space-4) var(--space-5);
   border-bottom: 1px solid var(--line);
 }
@@ -836,449 +932,294 @@ pre > code {
   gap: var(--space-2);
   color: var(--muted);
   font-family: var(--font-mono);
-  font-size: 11.5px;
-  letter-spacing: 0.04em;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.pg-bar select,
-.pg-bar input.pg-keys-input {
-  padding: 4px 8px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--bg);
-  color: var(--fg);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-transform: none;
+.split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-/* The Keys field is the one free-text control in this bar, so it needs a width of its own -- a
-   bare <input> would either stretch the flex row or collapse to the browser's default size,
-   neither of which lines up with the enum <select>s beside it. Shrinks on a narrow screen rather
-   than forcing the bar to wrap mid-control. */
-.pg-bar input.pg-keys-input {
-  /* Wide enough for the default value ("description, summary") to be read without scrolling the
-     field -- at 18ch it was cut off mid-word, which made the control look misconfigured. */
-  flex: 0 1 25ch;
-  min-width: 9ch;
+.pane-l,
+.pane-r {
+  padding: var(--space-5);
 }
 
-/* Matches this section's own .tabs button padding (7px 13px, see the "code" tabs rule below) so
-   the language <select> and the light/dark toggle read as one control row, not two mismatched
-   form widgets bolted together. The generic .tabs { margin-top } (for the code/build/lang tab
-   strips elsewhere on this page, where a tab row follows a paragraph) has to be zeroed out here --
-   #badge-theme-tabs is a sibling *inside* this same flex row, not a block below one. */
-.badge-controls select {
-  height: 32px;
-  box-sizing: border-box;
-  padding: 0 13px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--bg);
-  color: var(--fg);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 1;
+.pane-r {
+  border-left: 1px solid var(--line);
 }
 
-.badge-controls .tabs {
-  margin-top: 0;
-}
-
-.badge-controls .tabs button {
-  height: 32px;
-  box-sizing: border-box;
-}
-
-/* The input is a real <textarea>, on the same ground and in the same face as the output panel so
-   the two read as one unit — but deliberately without a line-number gutter. A gutter cannot stay
-   aligned with a soft-wrapping textarea without reimplementing text editing, and a gutter that
-   drifts out of step with its own text is worse than none. */
-/* A plain form control, not a code editor: light ground, ordinary border, the same surface every
-   other input on the page sits on — so it reads as "type here" on sight, the way a native
-   <textarea> does. Only the output pane earns the dark/code treatment, and only because it shows
-   what the engine actually emits, in a code panel elsewhere on the site. */
-textarea.pg-textarea {
-  display: block;
-  width: 100%;
-  height: 120px;
-  min-height: 120px;
-  max-height: 320px;
-  margin-top: var(--space-4);
-  resize: vertical;
-  border: 1px solid var(--line);
-  outline: 0;
-  border-radius: 8px;
-  padding: var(--space-4);
-  background: var(--bg);
-  color: var(--fg);
-  font-family: var(--font-mono);
-  font-size: 14px;
-  line-height: 1.7;
-  box-shadow: inset 0 1px 2px rgb(20 22 26 / 6%);
-}
-
-textarea.pg-textarea::placeholder {
+.who {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 36px;
+  margin-bottom: var(--space-3);
   color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-textarea.pg-textarea:focus-visible {
-  /* Overrides the generic outline ring above with a layout-aware one: an outline would sit
-     outside the textarea's rounded border and clip against the surrounding panel padding, so
-     this uses the same accent color as a border-color change plus an inset-safe box-shadow ring
-     instead — still a clearly visible replacement, not merely "no outline". */
-  outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgb(214 64 39 / 14%);
-}
-
-/* The typeset result. This is the largest text on the site on purpose: it is the one place a
-   visitor comes specifically to see what the engine did to a quote glyph, a dash and a narrow
-   space, and none of those survive being set at code size in a fixed-width face. The size lived on
-   `.split .txt.set` before and is declared here now — that selector had exactly one user, this
-   element, so the indirection is not worth restoring with it.
-
-   margin-top matches textarea.pg-textarea's, so the two panes of the split start on the same line.
-   pre-wrap keeps the input's own line breaks and repeated spaces; overflow-wrap keeps a long
-   unbroken run from widening the pane. */
-/* Capped at the textarea's own height (see textarea.pg-textarea above) and independently
-   scrollable, rather than growing to fit a long output and stretching the whole page — the two
-   panes are kept comparable at any input length, and their scroll positions are kept in step by
-   the syncScroll() wiring in build_playground_script(). */
 .pg-output {
-  height: 120px;
-  margin-top: var(--space-4);
-  overflow-y: auto;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 1.5;
+  min-height: 180px;
+  padding: var(--space-3);
+  border: 1px solid transparent;
+  font-size: var(--fs-md);
+  line-height: var(--lh-ui);
 }
 
-/* An error is a machine code and an English message — code, not a specimen — so it drops out of
-   the display setting above rather than being shown at 22px. */
-.pg-output.error {
-  color: var(--color-accent);
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 1.6;
+@media (max-width: 720px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pane-r {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
 }
 
-.pg-note {
-  margin-top: var(--space-4);
+/* ── Badge band: one component, same on every page ──────────────────────────────────────── */
+
+#badge {
+  padding: var(--space-7) 0;
+}
+
+.badge-band {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: start;
+}
+
+.badge-band h2 {
+  margin-bottom: var(--space-3);
+  font-size: var(--fs-xl);
+}
+
+.badge-band p {
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
   color: var(--muted);
-  font-size: 12px;
 }
 
-/* Copy Output lives in the output pane's own header, on the same row as the label for the thing
-   it copies — not in a separate action bar below the whole panel. Same pill the removed action bar
-   used; `.who` above it is uppercase mono, which the button must not inherit. */
-.pg-out-head {
+.badge-controls {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
 }
 
-.pg-copy {
-  padding: 7px 13px;
+.btn-group {
+  display: inline-flex;
+  overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+}
+
+.btn-group .seg {
+  min-height: calc(var(--control-h) - 2px);
+  padding: 0 var(--space-5);
+  border: 0;
+  color: inherit;
   background: none;
-  color: var(--fg);
   font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0;
-  text-transform: none;
+  font-size: var(--fs-sm);
   cursor: pointer;
 }
 
-.pg-copy:hover {
-  border-color: var(--fg);
+.btn-group .seg + .seg {
+  border-left: 1px solid var(--line);
 }
 
-.pg-action-status {
-  margin: var(--space-4) 0 0;
+.btn-group .seg[aria-pressed="true"] {
+  color: var(--bg);
+  background: var(--fg);
+}
+
+.badge-stage {
+  margin-bottom: var(--space-3);
+}
+
+@media (max-width: 860px) {
+  .badge-band {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────────────────────── */
+
+footer {
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
+}
+
+footer .wrap {
+  padding: var(--space-7) 0 var(--space-6);
+}
+
+.footer-grid {
+  display: grid;
+  gap: var(--space-6) var(--space-7);
+  grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+  margin-bottom: var(--space-6);
+}
+
+.footer-grid h2 {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--muted);
-  font-size: 12.5px;
 }
 
-/* ---------- steps ---------- */
-.steps {
-  counter-reset: step;
-  margin: var(--space-8) 0 var(--space-2);
+.footer-grid ul {
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.steps > li {
-  position: relative;
-  margin: 0 0 var(--space-7);
-  padding-left: 38px;
-}
-
-.steps > li::before {
-  counter-increment: step;
-  content: counter(step);
-  position: absolute;
-  left: 0;
-  top: 0;
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 999px;
-  background: var(--surface-strong);
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 12px;
-}
-
-.steps h4 {
-  margin: 0 0 4px;
-  font-size: 15px;
-}
-
-.steps p {
+.footer-grid li {
   margin: 0;
 }
 
-/* ---------- footer ---------- */
-footer {
-  padding-top: 70px;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 13px;
-}
-
-footer p {
-  margin: 0;
-}
-
-footer p + p {
-  margin-top: var(--space-2);
-}
-
-footer a {
-  color: inherit;
-  text-underline-offset: 0.18em;
-}
-
-footer a:hover {
-  color: var(--fg);
-}
-
-/* ---------- home page ----------
-   Scoped to .page-home (set on <body> only for promo/index.html) so the home page can carry a
-   different rhythm — bigger hero, panel-style "Ship it", a two-column reasons list — without
-   touching the shared .hero/.card/.steps rules the other four pages still use as declared above. */
-.page-home h1 {
-  max-width: 15ch;
-  font-size: clamp(34px, 6vw, 58px);
-}
-
-.page-home .hero {
-  padding-bottom: 8px;
-}
-
-.page-home .hero .tagline:last-of-type {
-  color: var(--fg);
-  font-size: 21px;
-}
-
-.page-home .demo {
-  margin-top: 32px;
-}
-
-.page-home #proof {
-  padding-top: 64px;
-}
-
-/* ---------- responsive ---------- */
-@media (max-width: 720px) {
-  .card-grid--two,
-  .split {
-    grid-template-columns: 1fr;
-  }
-
-  .card-grid--six {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .split .pane-l {
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .card .pair {
-    grid-template-columns: 1fr;
-    gap: var(--space-3);
-  }
-}
-
-@media (max-width: 640px) {
-  .wrap {
-    width: min(100% - 36px, var(--content-width));
-    padding-bottom: 88px;
-  }
-
-  .card-grid--six {
-    grid-template-columns: 1fr;
-  }
-
-  /* Below 640px, four nav links plus the logo no longer fit on one row. Rather than let them
-     wrap wherever the text happens to break (previously: three links on row one, "Locales"
-     stranded alone on row two — the same awkward split repeated at narrower widths, e.g. two
-     links stranding at 320px), commit to an intentional two-row layout: the logo on its own
-     row, the full set of links on the row below it, evenly spread across the same width so
-     the wrap point is a deliberate row boundary, not leftover text-wrap behaviour. */
-  .site-nav .wrap {
-    flex-wrap: wrap;
-    row-gap: 0;
-  }
-
-  .site-nav .brand {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .site-nav .links {
-    width: 100%;
-    justify-content: space-between;
-    gap: var(--space-3);
-  }
-
-  .hero {
-    padding: 36px 0 48px;
-  }
-
-  section {
-    padding-top: 56px;
-  }
-
-  /* Still the largest text on the page, but 22px starts forcing awkward breaks in a 320px column. */
-  .pg-output {
-    font-size: 19px;
-  }
-}
-
-/* ---------- locale pages ---------- */
-.glyph {
-  font-size: 1.4em;
-  line-height: 1;
-}
-
-.chips {
+.footer-grid li a {
   display: inline-flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-2);
+  min-height: 32px;
 }
 
-.sources li {
-  margin-bottom: var(--space-5);
+.footer-grid svg {
+  flex: none;
 }
 
-/* ---------- documentation pages ---------- */
-.doc-layout {
-  display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
-  gap: var(--space-11);
-  padding-top: var(--space-11);
-}
-
-.doc-nav summary {
-  cursor: pointer;
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  font-size: var(--fs-lg);
   font-weight: 600;
 }
 
-/* On desktop the outer <details> is forced open by an inline script and its summary hidden; on
-   a phone it is the collapsed "Documentation" / "Locales" control. */
+.footer-brand svg {
+  width: 44px;
+  height: auto;
+}
+
+.footer-legal {
+  margin: 0;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  max-width: none;
+}
+
+@media (max-width: 720px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-grid > :first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ── Docs: sidebar, article, rail ───────────────────────────────────────────────────────── */
+
+.doc-layout {
+  display: grid;
+  gap: var(--space-7);
+  grid-template-columns: 232px minmax(0, 1fr) 200px;
+  grid-template-areas: "nav article toc";
+  padding-top: var(--space-7);
+  align-items: start;
+}
+
+.doc-layout > .doc-nav {
+  grid-area: nav;
+}
+
+.doc-layout > article {
+  grid-area: article;
+  min-width: 0;
+}
+
+.doc-layout > .doc-toc {
+  grid-area: toc;
+}
+
+.doc-nav {
+  position: sticky;
+  top: calc(var(--nav-h) + var(--space-5));
+  max-height: calc(100vh - var(--nav-h) - var(--space-6));
+  overflow-y: auto;
+  padding-right: var(--space-2);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
+}
+
 .doc-nav > summary {
   display: none;
 }
 
-.doc-nav nav {
-  position: sticky;
-  top: var(--space-10);
-  max-height: calc(100vh - 48px);
-  padding-right: var(--space-3);
-  overflow-y: auto;
-  font-size: 14px;
-  line-height: 1.4;
-  scrollbar-color: var(--line) transparent;
-  scrollbar-width: thin;
-}
-
-.doc-nav ul,
-.doc-toc ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.doc-toc ul {
-  margin-bottom: 0;
-}
-
-.doc-toc li {
-  margin-bottom: 4px;
-}
-
 .doc-nav a {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-3);
-  margin-bottom: 1px;
-  padding: 5px 10px;
-  border-radius: 6px;
+  display: block;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
   color: var(--muted);
   text-decoration: none;
 }
 
 .doc-nav a:hover {
-  background: var(--surface);
   color: var(--fg);
+  background: var(--surface);
 }
 
 .doc-nav a[aria-current="page"] {
-  background: var(--surface-strong);
   color: var(--fg);
+  background: var(--surface-strong);
   font-weight: 600;
-}
-
-.doc-nav a code {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 400;
 }
 
 .doc-nav .nav-top {
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-3);
   color: var(--fg);
   font-weight: 600;
 }
 
-.nav-sec {
-  margin-top: var(--space-2);
+.doc-nav ul {
+  margin: 0 0 var(--space-2);
+  padding: 0;
+  list-style: none;
 }
 
-.nav-sec > summary,
-.nav-group > span {
-  display: block;
-  padding: 6px 10px;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+.doc-nav li {
+  margin: 0;
 }
 
 .nav-sec > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 36px;
+  padding: 0 var(--space-3);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   cursor: pointer;
   list-style: none;
 }
@@ -1288,179 +1229,878 @@ footer a:hover {
 }
 
 .nav-sec > summary::after {
-  float: right;
   content: "+";
-  font-weight: 400;
+  font-size: var(--fs-md);
 }
 
 .nav-sec[open] > summary::after {
-  content: "\2212";
+  content: "–";
 }
 
-.nav-group > span {
-  padding-bottom: 2px;
-  letter-spacing: normal;
-  text-transform: none;
-  font-size: 13px;
-  color: var(--fg);
-}
-
-.nav-group ul {
-  margin-left: var(--space-5);
-  padding-left: var(--space-2);
-  border-left: 1px solid var(--line);
-}
-
-.nav-flat > li {
-  margin-bottom: 1px;
-}
-
-.doc-toc ul a,
-.doc-toc ul li {
-  display: block;
-}
-
-.doc-nav-head {
-  margin: var(--space-6) 0 var(--space-1);
+.nav-group {
+  margin: var(--space-3) var(--space-3) var(--space-1);
   color: var(--muted);
-  font-size: 12px;
-  letter-spacing: 0.06em;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.doc {
-  min-width: 0;
+.doc-toc {
+  position: sticky;
+  top: calc(var(--nav-h) + var(--space-5));
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
 }
 
-.doc h1 {
-  max-width: none;
+.doc-nav-head {
+  margin: 0 0 var(--space-3);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.doc h2 {
-  margin-top: 44px;
-  font-size: 24px;
+.doc-toc ul {
+  margin: 0;
+  padding: 0 0 0 var(--space-4);
+  border-left: 1px solid var(--line);
+  list-style: none;
 }
 
-.doc .anchor {
+.doc-toc li {
+  margin: 0 0 var(--space-2);
+}
+
+.doc-toc a {
+  color: var(--muted);
   text-decoration: none;
 }
 
-.doc .anchor:hover {
-  text-decoration: underline;
-}
-
-.doc-lead {
-  margin-top: var(--space-5);
-  color: var(--muted);
-  font-size: 17px;
+.doc-toc a:hover {
+  color: var(--fg);
 }
 
 .crumbs {
-  margin: 0 0 var(--space-4);
-  padding-top: 5px;
+  margin-bottom: var(--space-4);
   color: var(--muted);
-  font-size: 13px;
-  line-height: 1.4;
+  font-size: var(--fs-sm);
 }
 
-.doc-toc {
-  margin: var(--space-8) 0;
-  padding: var(--space-5) var(--space-7);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  font-size: 14px;
+.doc h1 {
+  margin-bottom: var(--space-4);
 }
 
-/* The page's last block is followed by the full-width badge section, which carries its own top
-   rule: without room below the pager the two rules stack against the pager links. */
-.doc-layout {
-  padding-bottom: 24px;
+.doc h2 {
+  margin: var(--space-7) 0 var(--space-4);
+  padding-top: var(--space-7);
+  border-top: 1px solid var(--line);
 }
 
-@media (max-width: 720px) {
-  .doc-layout {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-6);
-  }
+.doc h2:first-of-type {
+  margin-top: var(--space-6);
+}
 
-  .doc-nav > summary {
-    display: block;
-    padding: 8px 10px;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-  }
+.doc h3 {
+  margin-top: var(--space-6);
+}
 
-  .doc-nav nav {
-    position: static;
-  }
+.anchor {
+  color: inherit;
+  text-decoration: none;
 }
 
 .example {
-  margin: var(--space-8) 0;
+  margin: 0 0 var(--space-5);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
 }
 
 .example figcaption {
-  margin-bottom: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--line);
   color: var(--muted);
-  font-size: 12.5px;
+  background: var(--surface);
+  font-size: var(--fs-code);
   overflow-wrap: anywhere;
 }
 
 .example-pair {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-6);
 }
 
-.example-pair .eyebrow {
-  margin-bottom: var(--space-2);
+.example-pair > div {
+  padding: var(--space-4) var(--space-5);
+}
+
+.example-pair > div + div {
+  border-left: 1px solid var(--line);
+}
+
+.example .specimen {
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
 }
 
 @media (max-width: 720px) {
   .example-pair {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .example-pair > div + div {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
 }
 
-/* Search (Pagefind) */
-.site-nav .links .search-open {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-height: 32px;
-  padding: 4px 8px 4px 10px;
+.doc-pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-top: var(--space-7);
+}
+
+.doc-pager .pg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-5);
   border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--bg);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+}
+
+.doc-pager .pg:hover {
+  border-color: var(--fg);
+}
+
+.doc-pager .pg span {
   color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.doc-pager .next {
+  text-align: right;
+}
+
+/* A section index: title, then one line per page. */
+.doc ul.page-list {
+  max-width: none;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.page-list li {
+  display: grid;
+  gap: var(--space-1) var(--space-5);
+  grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+  margin: 0;
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.page-list li > a {
+  font-weight: 600;
+}
+
+.page-list li > .muted {
+  max-width: var(--measure);
+}
+
+@media (max-width: 1100px) {
+  .doc-layout {
+    grid-template-columns: 232px minmax(0, 1fr);
+    grid-template-areas:
+      "nav toc"
+      "nav article";
+    gap: var(--space-5) var(--space-7);
+  }
+
+  .doc-layout > .doc-toc {
+    position: static;
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+  }
+
+  .doc-toc ul {
+    padding: 0;
+    border: 0;
+  }
+}
+
+@media (max-width: 860px) {
+  .doc-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "nav"
+      "toc"
+      "article";
+    padding-top: var(--space-5);
+  }
+
+  .doc-nav {
+    position: static;
+    max-height: none;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+  }
+
+  .doc-nav > summary {
+    display: flex;
+    align-items: center;
+    min-height: var(--control-h);
+    padding: 0 var(--space-4);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .doc-nav[open] > summary {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .doc-nav > nav {
+    padding: var(--space-3);
+  }
+
+  .page-list li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ── Changelog ──────────────────────────────────────────────────────────────────────────── */
+
+.release {
+  display: grid;
+  gap: var(--space-5) var(--space-7);
+  grid-template-columns: 160px minmax(0, 1fr);
+  align-items: start;
+}
+
+.release-meta {
+  position: sticky;
+  top: calc(var(--nav-h) + var(--space-5));
+}
+
+.release-meta h2 {
+  margin: 0;
+  font-size: var(--fs-2xl);
+}
+
+.release-body > :last-child {
+  margin-bottom: 0;
+}
+
+.release-body > p:first-child {
+  max-width: var(--measure-lead);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-snug);
+  font-weight: 500;
+}
+
+@media (max-width: 860px) {
+  .release {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .release-meta {
+    position: static;
+  }
+}
+
+/* ── Showcase ───────────────────────────────────────────────────────────────────────────── */
+
+.showcase-list {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.showcase-list li {
+  margin: 0;
+}
+
+.site-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  height: 100%;
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  text-decoration: none;
+}
+
+.site-card:hover {
+  border-color: var(--fg);
+}
+
+.site-card .site-name {
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  font-weight: 500;
+}
+
+.site-card .site-desc {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
+}
+
+/* ── Locale page extras ─────────────────────────────────────────────────────────────────── */
+
+.sources {
+  max-width: none;
+}
+
+.sources li {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
+}
+
+.nav-cta,
+.nav-flat {
+  display: block;
+}
+
+/* ── Home hero (the one place --fs-display is used) ─────────────────────────────────────── */
+
+.page-head h1.display {
+  max-width: 14ch;
+  font-size: var(--fs-display);
+  line-height: 1.05;
+}
+
+.lockup {
+  margin-bottom: var(--space-6);
+}
+
+.lockup svg {
+  width: 220px;
+  max-width: 100%;
+  height: auto;
+}
+
+.docs-index h3 {
+  margin-top: var(--space-6);
+}
+
+.docs-index h3:first-child {
+  margin-top: 0;
+}
+
+.doc-nav a:has(> code) {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.doc-nav a > code {
+  font-size: var(--fs-xs);
+  opacity: 0.8;
+}
+
+.doc-nav .nav-group > span {
+  display: block;
+  margin: var(--space-3) var(--space-3) var(--space-1);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.doc-nav .nav-group ul {
+  padding-left: var(--space-3);
+}
+
+/* Sections inside an article are headings, not page bands. */
+.doc section {
+  padding: 0;
+  border: 0;
+}
+
+.doc section > h2 {
+  margin-top: var(--space-6);
+}
+
+/* The playground adapts to its container, not the viewport. */
+.demo {
+  container-type: inline-size;
+}
+
+@container (max-width: 640px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pane-r {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+}
+
+.who {
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.doc-nav a span {
   font: inherit;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.card .pair {
+  margin-bottom: var(--space-4);
+}
+
+.card .pair:last-child {
+  margin-bottom: 0;
+}
+
+.badge-band > *,
+.release > * {
+  min-width: 0;
+}
+
+/* ── Selects: the arrow has its own gutter ──────────────────────────────────────────────── */
+
+select {
+  appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%238b9098' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m1 1.5 5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
   cursor: pointer;
 }
 
-.search-open:hover {
-  color: var(--fg);
-  border-color: var(--muted);
+/* ── Layout bottom edge ─────────────────────────────────────────────────────────────────── */
+
+.doc-layout {
+  padding-bottom: var(--section-y);
 }
 
-.search-open kbd {
-  padding: 0 6px;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  font: inherit;
-  font-size: 12px;
+/* ── Code: copy button and syntax colours ───────────────────────────────────────────────── */
+
+.code {
+  position: relative;
+  margin-bottom: var(--space-5);
 }
+
+.code > pre {
+  margin-bottom: 0;
+  padding-right: 88px;
+}
+
+.code .pg-copy {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  color: var(--code-fg);
+  border-color: var(--code-line);
+}
+
+.code .pg-copy:hover {
+  border-color: var(--code-fg);
+}
+
+.tok-kw {
+  color: #e59a7e;
+}
+
+.tok-fn {
+  color: #9cc2e8;
+}
+
+.tok-num {
+  color: #e3c07a;
+}
+
+.tok-tag {
+  color: #e59a7e;
+}
+
+.tok-attr {
+  color: #9cc2e8;
+}
+
+/* One copy button everywhere: same size, face and weight on a page and on a code panel. */
+.pg-copy {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ── Workbench: one component for every "try it" ───────────────────────────────────────────
+   Input and Output share the same place and are switched by tabs. Three sizes of the same
+   thing: compact (home, locale pages), full (playground), expanded (compact, opened to the
+   whole window). */
+
+.workbench {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--space-5);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.wb-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+  padding: var(--space-3) var(--space-4);
+}
+
+.wb-go {
+  min-height: 40px;
+}
+
+.wb-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-4);
+}
+
+.wb-controls label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.wb-meta,
+.wb-badge {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+.wb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.workbench:not([data-tab="output"]) [data-copy-output] {
+  display: none;
+}
+
+.wb-body {
+  min-height: 0;
+  background: var(--bg);
+}
+
+.wb-body > div {
+  height: 100%;
+}
+
+.workbench[data-size="compact"] .wb-body {
+  height: 220px;
+}
+
+.workbench[data-size="full"] .wb-body {
+  height: clamp(420px, 64vh, 780px);
+}
+
+.wb-body textarea {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: var(--space-4) var(--space-5);
+  border: 0;
+  border-radius: 0;
+  resize: none;
+  line-height: var(--lh-body);
+}
+
+.wb-output {
+  overflow-y: auto;
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--fs-md);
+  line-height: var(--lh-body);
+}
+
+.workbench[data-size="full"] .wb-body textarea,
+.workbench[data-size="full"] .wb-output {
+  padding: var(--space-5) var(--space-6);
+}
+
+.wb-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+
+.workbench.is-expanded {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.workbench.is-expanded .wb-body {
+  flex: 1;
+  height: auto;
+}
+
+.workbench.is-expanded textarea,
+.workbench.is-expanded .wb-output {
+  padding: var(--space-5) var(--space-6);
+}
+
+body.wb-locked {
+  overflow: hidden;
+}
+
+.wb-meta,
+.wb-badge {
+  white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+  .doc-layout > .doc-toc {
+    display: none;
+  }
+}
+
+.workbench {
+  container-type: inline-size;
+}
+
+/* The state is a label, the single control is at the bottom, next to where the eye ends. */
+.wb-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 48px;
+  padding: 0 var(--space-4);
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.wb-label {
+  align-items: flex-end;
+  min-height: 0;
+  padding: var(--space-3) var(--space-4) 0;
+}
+
+.wb-body {
+  position: relative;
+}
+
+.pg-copy-icon {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-4);
+  width: 36px;
+  min-height: 36px;
+  padding: 0;
+  justify-content: center;
+}
+
+.pg-copy-icon span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.pg-copy-icon[hidden] {
+  display: none;
+}
+
+.wb-tabs {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.wb-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  margin-bottom: -1px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--line);
+  border-bottom-color: transparent;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  color: var(--muted);
+  background: var(--surface-strong);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+}
+
+.wb-tab:hover {
+  color: var(--fg);
+}
+
+.wb-tab[aria-selected="true"] {
+  color: var(--fg);
+  background: var(--bg);
+  border-bottom-color: var(--bg);
+  font-weight: 600;
+}
+
+.wb-label .wb-meta {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.wb-foot {
+  align-items: center;
+}
+
+.wb-go {
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.pg-copy {
+  gap: var(--space-2);
+}
+
+.pg-copy svg,
+.wb-go svg {
+  flex: none;
+}
+
+@container (max-width: 520px) {
+  .wb-go {
+    width: 100%;
+  }
+}
+
+/* ── Tables: row headers wrap; a long row header reads as a sentence, not a label ───────── */
+
+table.kv th {
+  white-space: normal;
+}
+
+table.kv th.long {
+  width: 46%;
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: var(--lh-ui);
+  text-transform: none;
+}
+
+/* ── Heading permalinks: the heading is text; a "#" appears on hover or focus ───────────── */
+
+.anchor {
+  margin-left: var(--space-2);
+  color: var(--muted);
+  font-weight: 400;
+  opacity: 0;
+  text-decoration: none;
+}
+
+h2:hover > .anchor,
+h3:hover > .anchor,
+.anchor:focus-visible {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .anchor {
+    opacity: 0.5;
+  }
+}
+
+/* ── The playground's own states ────────────────────────────────────────────────────────── */
+
+/* An error is a machine code and an English message: code, not a specimen. */
+.wb-output .error {
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-code);
+  line-height: var(--lh-body);
+}
+
+.pg-keys-input {
+  flex: 0 1 25ch;
+  min-width: 9ch;
+}
+
+/* ── The rules table: In is source, Out is typography ───────────────────────────────────── */
+
+.rule-in,
+.rule-out {
+  min-width: 20ch;
+}
+
+.rule-in {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-code);
+}
+
+/* ── Search (Pagefind) ──────────────────────────────────────────────────────────────────── */
 
 .search-dialog {
   width: min(640px, calc(100% - 32px));
   max-height: min(70vh, 640px);
   margin: 12vh auto 0;
   padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--bg);
-  color: var(--fg);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
   overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  color: var(--fg);
+  background: var(--bg);
+  box-shadow: 0 24px 64px rgb(0 0 0 / 28%);
 }
 
 .search-dialog[open] {
@@ -1469,7 +2109,7 @@ footer a:hover {
 }
 
 .search-dialog::backdrop {
-  background: rgba(15, 17, 20, 0.45);
+  background: rgb(15 17 20 / 45%);
   backdrop-filter: blur(2px);
 }
 
@@ -1485,23 +2125,24 @@ footer a:hover {
 .search-head input {
   flex: 1;
   min-width: 0;
-  padding: 16px 0;
+  min-height: 0;
+  padding: var(--space-4) 0;
   border: 0;
   outline: 0;
-  background: transparent;
   color: var(--fg);
+  background: transparent;
   font: inherit;
-  font-size: 17px;
+  font-size: var(--fs-md);
 }
 
 .search-close {
-  padding: 2px 8px;
+  padding: var(--space-1) var(--space-2);
   border: 1px solid var(--line);
   border-radius: 4px;
-  background: transparent;
   color: var(--muted);
-  font: inherit;
-  font-size: 12px;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
   cursor: pointer;
 }
 
@@ -1519,8 +2160,8 @@ footer a:hover {
 
 .search-results a {
   display: block;
-  padding: 10px 12px;
-  border-radius: 8px;
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
   color: var(--fg);
   text-decoration: none;
 }
@@ -1533,136 +2174,51 @@ footer a:hover {
 .search-results small {
   display: block;
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .search-results strong {
   display: block;
-  font-size: 15px;
+  font-size: var(--fs-sm);
 }
 
 .search-results span,
 .search-note {
   display: block;
   color: var(--muted);
-  font-size: 13px;
-  line-height: 1.45;
+  font-size: var(--fs-xs);
+  line-height: var(--lh-ui);
 }
 
 .search-note {
-  padding: 12px;
+  padding: var(--space-3);
 }
 
 .search-results mark {
-  background: transparent;
   color: var(--fg);
+  background: transparent;
   font-weight: 700;
 }
 
 .search-foot {
   max-width: none;
   margin: 0;
-  padding: 8px var(--space-5);
+  padding: var(--space-2) var(--space-5);
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 
-@media (max-width: 720px) {
-  .search-open-label,
-  .search-open kbd {
-    display: none;
-  }
-
-  .site-nav .links .search-open {
-    padding: 4px 8px;
-  }
-
+@media (max-width: 640px) {
   .search-dialog {
-    margin-top: 16px;
+    margin-top: var(--space-4);
     max-height: calc(100vh - 32px);
   }
 }
 
-/* Previous / next */
-.doc-pager {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-5);
-  margin-top: var(--space-11);
-  padding: 0;
-  border: 0;
-}
-
-.doc-pager .pg {
-  display: block;
-  padding: var(--space-4) var(--space-5);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  color: var(--fg);
-  text-decoration: none;
-}
-
-.doc-pager .pg:hover {
-  border-color: var(--muted);
-  background: var(--surface);
-}
-
-.doc-pager .pg span {
-  display: block;
-  color: var(--muted);
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.doc-pager .pg strong {
-  display: block;
-  margin-top: 2px;
-  font-weight: 600;
-}
-
-.doc-pager .prev span::before {
-  content: "\2190  ";
-}
-
-.doc-pager .next {
-  grid-column: 2;
-  text-align: right;
-}
-
-.doc-pager .next span::after {
-  content: "  \2192";
-}
-
-@media (max-width: 720px) {
-  .doc-pager {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .doc-pager .next {
-    grid-column: 1;
-  }
-}
-
-.doc-nav a.nav-cta {
-  display: block;
-  margin-top: var(--space-5);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.doc-nav a.nav-cta:hover {
-  border-color: var(--muted);
-  color: var(--fg);
-}
-
-.doc-nav a.nav-cta strong {
-  display: block;
-  color: var(--fg);
+/* Room for the copy icon in the corner of the result. */
+.workbench .wb-body .wb-output {
+  padding-right: calc(var(--space-4) + 36px + var(--space-3));
 }

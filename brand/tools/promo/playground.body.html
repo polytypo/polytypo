@@ -1,41 +1,49 @@
-<header class="hero" style="padding: 40px 0 24px">
+<header class="page-head">
   <p class="eyebrow">Try it</p>
-  <h1 style="max-width: none">This runs the real engine, right here in your browser.</h1>
-  <p class="tagline" style="font-size: 17px">
-    No server round trip: <code>promo/vendor/polytypo.browser.js</code> bundles the published
-    <code>polytypo</code> npm package for the browser, with the same locale data it ships with. Each
-    locale starts with its own default example; edit it, or switch languages to see how the same
-    idea is punctuated differently everywhere.
+  <h1>Paste your text. See what changes.</h1>
+  <p class="lead">
+    This is the real engine, running in your browser. Open the Result tab and the typeset text
+    appears in the same place.
   </p>
 </header>
 
-{{playground}}
+<section id="try">{{playground}}</section>
 
-<p class="small muted" style="margin-top: var(--space-4)">
-  Every field's own comment carries its type, default and allowed values.
-  <strong>None of them fall back to a default when the value is wrong or missing</strong> — each
-  throws its own error, with a machine-readable <code>code</code>, rather than guessing what you
-  meant. Full option and error-code reference — <a href="{{prefix}}docs/#use">Docs</a>.
-</p>
-
-<p class="pg-note">
-  In <code>yaml</code> mode, a value written plainly cannot contain <code>:&nbsp;</code> — YAML
-  itself reads that as a nested mapping, and a document with one does not parse at all. polytypo
-  declines such a line rather than rewrite text it could not read back, so it returns untouched even
-  when its key is named in <code>keys</code>. Quote the value, or write it as a block scalar with
-  <code>|</code>. A quoted value may contain colons freely, but not an escape (<code>\"</code> or
-  <code>''</code>): that would make the source and the content different strings, and the offsets
-  this mode works in are source offsets.
-</p>
-<p class="pg-note">
-  Idempotency is a headline claim, not just a property test: paste the output back into the input
-  and nothing should change.
-</p>
-<p class="pg-note">
-  No hard size limit on <code>transform()</code> — ordinary prose runs at roughly 250K characters
-  per second, so even a full novel pasted in typesets in a couple of seconds. Pathological input
-  (long runs of alternating quote or dash characters with no real content between them) is
-  measurably slower, since a couple of rules re-check their own output to guarantee idempotency —
-  real text never has that shape, so this only matters if you're piping in machine-generated or
-  adversarial input.
-</p>
+<section id="notes">
+  <div class="card-grid card-grid--two">
+    <div class="card">
+      <h3>None of the options fall back to a default</h3>
+      <p>
+        A wrong or missing value throws its own error with a machine-readable code, rather than
+        guessing what you meant.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Idempotent</h3>
+      <p>Paste the output back into the input and nothing should change.</p>
+    </div>
+    <div class="card">
+      <h3>YAML values and colons</h3>
+      <p>
+        In <code>yaml</code> mode, a value written plainly cannot contain <code>:&nbsp;</code> —
+        YAML itself reads that as a nested mapping, and a document with one does not parse at all.
+        polytypo declines such a line rather than rewrite text it could not read back, so it returns
+        untouched even when its key is named in <code>keys</code>. Quote the value, or write it as a
+        block scalar with <code>|</code>. A quoted value may contain colons freely, but not an
+        escape (<code>\"</code> or <code>''</code>): that would make the source and the content
+        different strings, and the offsets this mode works in are source offsets.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Size</h3>
+      <p>
+        No hard size limit on <code>transform()</code> — ordinary prose runs at roughly 250K
+        characters per second, so even a full novel pasted in typesets in a couple of seconds.
+        Pathological input (long runs of alternating quote or dash characters with no real content
+        between them) is measurably slower, since a couple of rules re-check their own output to
+        guarantee idempotency — real text never has that shape, so this only matters if you're
+        piping in machine-generated or adversarial input.
+      </p>
+    </div>
+  </div>
+</section>

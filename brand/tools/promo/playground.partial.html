@@ -1,84 +1,150 @@
-<!-- Shared by the home page and /playground via the {{playground}} token — see build_promo.py. -->
-<div class="demo" id="pg-demo">
-  <div class="pg-bar">
-    <label
-      title="Which locale's quotes, dashes and spacing to apply. Required — no fallback to English."
-    >
-      Locale
-      <select id="pg-locale"></select>
-    </label>
-    <label
-      title="text: no markup parsing, the whole input is prose. html: parse5 touches only text nodes, never tags or attributes. markdown: micromark touches only prose, never code spans/blocks or front matter. yaml: no parser at all, a specified scan that touches only the values of the keys you name."
-    >
-      Mode
-      <select id="pg-mode">
-        <option value="text">text</option>
-        <option value="html">html</option>
-        <option value="markdown">markdown</option>
-        <option value="yaml">yaml</option>
-      </select>
-    </label>
-    <label
-      id="pg-dialect-wrap"
-      hidden
-      title="Markdown-only, no default. commonmark vs mdx changes how ambiguous syntax like &lt;https://…&gt; is parsed — the two disagree, so this can't be auto-detected."
-    >
-      Dialect
-      <select id="pg-dialect">
-        <option value="commonmark">commonmark</option>
-        <option value="mdx">mdx</option>
-      </select>
-    </label>
-    <!-- The one control in this bar that is free text rather than an enum: which mapping keys hold
-         prose is a property of the visitor's document, not of polytypo. It is required in yaml mode
-         and has no default, so the field ships pre-filled with a key to type under rather than
-         opening in a state that does nothing. An empty field is legal and processes nothing. -->
-    <label
-      id="pg-keys-wrap"
-      hidden
-      title="YAML-only, required, no default. Comma-separated mapping keys whose values hold prose. Nothing in YAML's syntax separates a description: from a run:, so naming them is the only safe way — everything you do not name comes back byte for byte."
-    >
-      Keys
-      <input
-        id="pg-keys"
-        type="text"
-        class="pg-keys-input"
-        value="title, description"
-        spellcheck="false"
-        autocapitalize="off"
-        autocomplete="off"
-        placeholder="title, description"
-      />
-    </label>
+<!-- Shared by the home page, /playground and the locale pages via the {{playground}} token; `data-size` is set per page — see build_promo.py. -->
+<div class="workbench" id="pg-demo" data-size="{{wb_size}}" data-tab="input">
+  <div class="wb-bar">
+    <div class="wb-controls">
+      <label
+        title="Which locale's quotes, dashes and spacing to apply. Required — no fallback to English."
+      >
+        Locale
+        <select id="pg-locale"></select>
+      </label>
+      <label
+        title="text: no markup parsing, the whole input is prose. html: parse5 touches only text nodes, never tags or attributes. markdown: micromark touches only prose, never code spans/blocks or front matter. yaml: no parser at all, a specified scan that touches only the values of the keys you name."
+      >
+        Mode
+        <select id="pg-mode">
+          <option value="text">text</option>
+          <option value="html">html</option>
+          <option value="markdown">markdown</option>
+          <option value="yaml">yaml</option>
+        </select>
+      </label>
+      <label
+        id="pg-dialect-wrap"
+        hidden
+        title="Markdown-only, no default. commonmark vs mdx changes how ambiguous syntax like &lt;https://…&gt; is parsed — the two disagree, so this can't be auto-detected."
+      >
+        Dialect
+        <select id="pg-dialect">
+          <option value="commonmark">commonmark</option>
+          <option value="mdx">mdx</option>
+        </select>
+      </label>
+      <!-- The one control in this bar that is free text rather than an enum: which mapping keys hold
+           prose is a property of the visitor's document, not of polytypo. It is required in yaml mode
+           and has no default, so the field ships pre-filled with a key to type under rather than
+           opening in a state that does nothing. An empty field is legal and processes nothing. -->
+      <label
+        id="pg-keys-wrap"
+        hidden
+        title="YAML-only, required, no default. Comma-separated mapping keys whose values hold prose. Nothing in YAML's syntax separates a description: from a run:, so naming them is the only safe way — everything you do not name comes back byte for byte."
+      >
+        Keys
+        <input
+          id="pg-keys"
+          type="text"
+          class="pg-keys-input"
+          value="title, description"
+          spellcheck="false"
+          autocapitalize="off"
+          autocomplete="off"
+          placeholder="title, description"
+        />
+      </label>
+    </div>
+    <div class="wb-actions">
+      <button class="pg-copy wb-expand" type="button" aria-expanded="false">
+        <svg
+          viewBox="0 0 24 24"
+          width="14"
+          height="14"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" /></svg
+        ><span>Expand</span>
+      </button>
+    </div>
   </div>
-  <div class="split">
-    <div class="pane-l">
-      <label class="who" for="pg-input">Input <span id="pg-count"></span></label>
+  <div class="wb-label">
+    <div class="wb-tabs" role="tablist" aria-label="Your text and the result">
+      <button
+        class="wb-tab"
+        type="button"
+        role="tab"
+        id="pg-tab-in"
+        aria-selected="true"
+        aria-controls="pg-panel-in"
+        data-wb-back
+      >
+        Your text <span class="wb-meta" id="pg-count"></span>
+      </button>
+      <button
+        class="wb-tab"
+        type="button"
+        role="tab"
+        id="pg-tab-out"
+        aria-selected="false"
+        aria-controls="pg-panel-out"
+        data-wb-go
+      >
+        <span id="pg-output-label">Result</span>
+        <span class="wb-meta" id="pg-output-summary"></span>
+      </button>
+    </div>
+  </div>
+  <div class="wb-body">
+    <div id="pg-panel-in" role="tabpanel" aria-labelledby="pg-tab-in">
       <textarea
         id="pg-input"
-        class="pg-textarea"
+        aria-label="Your text"
         spellcheck="false"
         autocapitalize="off"
         placeholder='Paste or type text here — try: "It&apos;s a test" - said no one -- ever...'
       ></textarea>
     </div>
-    <div class="pane-r">
-      <div class="who pg-out-head">
-        <span>
-          <span id="pg-output-label">Output</span>
-          <span id="pg-output-summary" role="status" aria-atomic="true"></span>
-        </span>
-        <button type="button" class="pg-copy" id="pg-copy-output">Copy Output</button>
-      </div>
-      <div class="pg-output" id="pg-output" role="region" aria-labelledby="pg-output-label"></div>
-      <p class="pg-action-status" id="pg-action-status" role="status" aria-atomic="true"></p>
+    <div class="wb-output" id="pg-panel-out" role="tabpanel" aria-labelledby="pg-tab-out" hidden>
+      <div class="specimen" id="pg-output"></div>
     </div>
+    <button
+      class="pg-copy pg-copy-icon"
+      type="button"
+      id="pg-copy-output"
+      data-copy-output
+      aria-label="Copy output"
+      title="Copy output"
+      hidden
+    >
+      <svg
+        viewBox="0 0 24 24"
+        width="14"
+        height="14"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <rect x="9" y="9" width="11" height="11" rx="2" />
+        <path d="M5 15V6a2 2 0 0 1 2-2h9" /></svg
+      ><span>Copy output</span>
+    </button>
   </div>
-  <div class="foot" id="pg-foot" role="status" aria-atomic="true"></div>
+  <div class="wb-foot">
+    <span class="wb-note" id="pg-foot" role="status" aria-atomic="true"
+      >Runs in your browser. Nothing you paste is sent anywhere.</span
+    >
+  </div>
+  <p class="sr-only" id="pg-action-status" role="status" aria-atomic="true"></p>
 </div>
 
 <p class="eyebrow sr-only">The call the form above is making, right now</p>
-<div class="tabs" id="call-tabs"></div>
+<div class="tabs" id="call-tabs" role="tablist"></div>
 <div id="call-panes">
   <div class="pane" data-label="JavaScript / TypeScript">
     <pre><code id="call-code-js"></code></pre>
