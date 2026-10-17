@@ -192,6 +192,35 @@ DOC_PAGES = load_doc_pages()
 DOC_BY_SLUG = {p["slug"]: p for p in DOC_PAGES}
 PAGES += [(p["slug"], p["title"], None) for p in DOC_PAGES]
 
+# Every directory a documentation URL passes through is itself a page: a reader who trims
+# /docs/concepts/idempotency/ to /docs/concepts/ lands on that section's list, not a 404.
+SECTION_DESCRIPTIONS = {
+    "getting-started": "Install polytypo for JavaScript, Python, Go, Ruby or PHP, then pick the mode that fits your input.",
+    "api": "The transform and analyze functions, every option with its default, and the eight stable error codes.",
+    "modes": "The four ways polytypo reads a document: text, html, markdown and yaml, and what each treats as prose.",
+    "rules": "The nine typography rules, in the order they run, with what each changes per locale.",
+    "concepts": "The guarantees behind polytypo: idempotency, rule order, locale resolution, the span model and round trip.",
+    "guides": "Complete recipes: typeset Markdown, MDX and HTML at build time, and prose in YAML config.",
+    "runtimes": "Install and call polytypo from JavaScript and TypeScript, Python, Go, Ruby and PHP.",
+}
+SECTION_PAGES = [
+    {
+        "slug": f"docs/{sid}",
+        "title": label,
+        "seo_title": f"polytypo documentation: {label}",
+        "description": SECTION_DESCRIPTIONS[sid],
+        "section": sid,
+        "is_section_index": True,
+        "jsonld_type": "CollectionPage",
+        "trail": [("Home", ""), ("Docs", "docs/")],
+    }
+    for sid, label in DOC_SECTIONS
+    if any(p["section"] == sid for p in DOC_PAGES)
+]
+SECTION_BY_SLUG = {p["slug"]: p for p in SECTION_PAGES}
+assert not set(SECTION_BY_SLUG) & {s for s, _l, _b in PAGES}, "a section index collides with a page"
+PAGES += [(p["slug"], p["title"], None) for p in SECTION_PAGES]
+
 # One page per registered locale (brand/tools/gen_locale_pages.py), at /locales/<code>/.
 LOCALE_PAGES = gen_locale_pages.pages()
 LOCALE_BY_SLUG = {p["slug"]: p for p in LOCALE_PAGES}
@@ -1174,7 +1203,7 @@ def jsonld(slug, page_title, description, canonical_url, doc_page=None):
     if doc_page:
         article = {
             **webpage_node,
-            "@type": "TechArticle",
+            "@type": doc_page.get("jsonld_type", "TechArticle"),
             "headline": doc_page["title"],
             "author": {"@type": "Organization", "name": "polytypo", "url": f"{SITE_ORIGIN}/"},
             "publisher": {"@type": "Organization", "name": "polytypo", "url": f"{SITE_ORIGIN}/"},
@@ -1303,7 +1332,9 @@ def doc_nav_html(active_slug, prefix):
             f"{H.escape(p['title'])}</a></li>"
             for p in items
         )
-        is_open = active_slug == "docs" or any(p["slug"] == active_slug for p in items)
+        is_open = (
+            active_slug in ("docs", f"docs/{sid}") or any(p["slug"] == active_slug for p in items)
+        )
         groups.append(
             f'<details class="nav-sec"{" open" if is_open else ""}>'
             f"<summary>{H.escape(label)}</summary><ul>{links}</ul></details>"
@@ -1312,6 +1343,28 @@ def doc_nav_html(active_slug, prefix):
         '<details class="doc-nav"><summary>Documentation</summary>'
         f'<nav aria-label="Documentation">{"".join(groups)}</nav></details>'
     )
+
+
+def section_index_body(page, prefix, replacements):
+    items = [p for p in DOC_PAGES if p["section"] == page["section"]]
+    links = "".join(
+        f'<li><a href="{page_href(prefix, p["slug"])}">{H.escape(p["title"])}</a>'
+        f' <span class="muted">{H.escape(p["description"])}</span></li>'
+        for p in items
+    )
+    crumbs = (
+        f'<nav class="crumbs" aria-label="Breadcrumb"><a href="{page_href(prefix, "docs")}">Docs</a>'
+        f" / {H.escape(page['title'])}</nav>"
+    )
+    html = (
+        f'<div class="doc-layout">{doc_nav_html(page["slug"], prefix)}<article class="doc">'
+        f'{crumbs}<h1>{H.escape(page["title"])}</h1>'
+        f'<p class="doc-lead">{H.escape(page["description"])}</p>{updated_html()}'
+        f"<ul>{links}</ul></article></div>"
+    )
+    for key, val in replacements.items():
+        html = html.replace(key, val)
+    return html
 
 
 def doc_page_body(page, prefix, replacements):
@@ -1336,7 +1389,7 @@ def doc_page_body(page, prefix, replacements):
     section_label = dict(DOC_SECTIONS)[page["section"]]
     crumbs = (
         f'<nav class="crumbs" aria-label="Breadcrumb"><a href="{page_href(prefix, "docs")}">Docs</a>'
-        f" / {H.escape(section_label)}</nav>"
+        f' / <a href="{page_href(prefix, "docs/" + page["section"])}">{H.escape(section_label)}</a></nav>'
     )
     html = (
         f'<div class="doc-layout">{doc_nav_html(page["slug"], prefix)}<article class="doc">'
@@ -1361,7 +1414,9 @@ def doc_index_html():
             f' <span class="muted">{H.escape(p["description"])}</span></li>'
             for p in items
         )
-        out.append(f"<h3>{H.escape(label)}</h3><ul>{links}</ul>")
+        out.append(
+            f'<h3><a href="{{{{prefix}}}}docs/{sid}/">{H.escape(label)}</a></h3><ul>{links}</ul>'
+        )
     return "".join(out)
 
 
@@ -1378,7 +1433,8 @@ def doc_breadcrumb_list(page, canonical_url):
         "@type": "BreadcrumbList",
         "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Docs", "item": f"{SITE_ORIGIN}/docs/"},
-            {"@type": "ListItem", "position": 2, "name": section_label},
+            {"@type": "ListItem", "position": 2, "name": section_label,
+             "item": f"{SITE_ORIGIN}/docs/{page['section']}/"},
             {"@type": "ListItem", "position": 3, "name": page["title"], "item": canonical_url},
         ],
     }
@@ -1465,8 +1521,11 @@ def build():
         prefix = PAGE_PREFIXES[slug]
         doc_page = DOC_BY_SLUG.get(slug)
         locale_page = LOCALE_BY_SLUG.get(slug)
+        section_page = SECTION_BY_SLUG.get(slug)
         if doc_page:
             body = doc_page_body(doc_page, prefix, replacements)
+        elif section_page:
+            body = section_index_body(section_page, prefix, replacements)
         elif locale_page:
             body = gen_locale_pages.body(locale_page, prefix, LOCALE_HELPERS, LOCALE_PAGES)
             body = body.replace("{{playground}}", fixed_locale_playground(playground_markup))
@@ -1484,7 +1543,9 @@ def build():
         page_title = PAGE_TITLES.get(slug) or (locale_page or {}).get("seo_title") or page_title
         if slug in DOC_BY_SLUG and DOC_BY_SLUG[slug].get("seo_title"):
             page_title = DOC_BY_SLUG[slug]["seo_title"]
-        doc_page = doc_page or locale_page
+        if section_page:
+            page_title = section_page["seo_title"]
+        doc_page = doc_page or locale_page or section_page
         description = doc_page["description"] if doc_page else PAGE_DESCRIPTIONS[slug].format(n=n)
         canonical_url = f"{SITE_ORIGIN}/{slug + '/' if slug else ''}"
         image_url = f"{SITE_ORIGIN}/assets/og-image.png"

@@ -262,7 +262,26 @@ describe("promo site — favicon, robots.txt, sitemap.xml", () => {
     for (const slug of docPageSlugs()) {
       expect(sitemap).toContain(`<loc>https://polytypo.dev/docs/${slug}/</loc>`);
     }
-    expect(sitemap.match(/<url>/g)).toHaveLength(8 + docPageSlugs().length + LOCALE_PAGE_COUNT);
+    const sections = new Set(docPageSlugs().map((slug) => slug.split("/")[0]));
+    expect(sitemap.match(/<url>/g)).toHaveLength(
+      8 + docPageSlugs().length + sections.size + LOCALE_PAGE_COUNT,
+    );
+  });
+
+  it("every ancestor directory of every page is itself a page, so trimming a URL never 404s", () => {
+    const sitemap = readFileSync(path.join(PROMO_DIR, "sitemap.xml"), "utf8");
+    const paths = [...sitemap.matchAll(/<loc>https:\/\/polytypo\.dev\/([^<]*)<\/loc>/g)].map((m) =>
+      (m[1] ?? "").replace(/\/$/, ""),
+    );
+    const missing = new Set<string>();
+    for (const p of paths) {
+      const parts = p.split("/").filter(Boolean);
+      for (let i = 1; i < parts.length; i++) {
+        const ancestor = parts.slice(0, i).join("/");
+        if (!existsSync(path.join(PROMO_DIR, ancestor, "index.html"))) missing.add(ancestor);
+      }
+    }
+    expect([...missing]).toEqual([]);
   });
 });
 
