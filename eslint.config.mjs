@@ -42,7 +42,7 @@ export default tseslint.config(
   {
     // Client-side script for the promo site — copied verbatim to promo/assets/site.js
     // (ignored above) by brand/tools/build_promo.py, and runs in the browser, not Node.
-    files: ["brand/tools/promo/*.js"],
+    files: ["brand/tools/promo/*.js", "brand/mockups/*.js"],
     languageOptions: {
       globals: globals.browser,
     },

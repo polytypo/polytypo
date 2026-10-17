@@ -4,7 +4,7 @@
     try {
       if (v === undefined) return localStorage.getItem(k);
       localStorage.setItem(k, v);
-    } catch (e) {
+    } catch {
       return null;
     }
   }
@@ -73,7 +73,7 @@
       setBtn(b, "Copied", "check");
       setTimeout(function () { setBtn(b, label, "copy"); }, 1500);
     };
-    try { navigator.clipboard.writeText(text).then(done, done); } catch (err) { done(); }
+    try { navigator.clipboard.writeText(text).then(done, done); } catch { done(); }
   }
 
   function setTab(wb, which) {
@@ -167,7 +167,7 @@
     if (window.PolytypoBadge) window.PolytypoBadge.render(el);
     var code = document.querySelector("#badge-code code");
     code.innerHTML = highlight(
-      '<script async src="https://polytypo.dev/badge.js"><\/script>\n<span data-polytypo-lang="' +
+      '<script async src="https://polytypo.dev/badge.js"></script>\n<span data-polytypo-lang="' +
         bsel.value + '" data-polytypo-theme="' + el.getAttribute("data-polytypo-theme") + '"></span>'
     );
   }
