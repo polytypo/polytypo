@@ -104,6 +104,29 @@ describe("locale pages", () => {
     });
   }
 
+  it("titles and H1s are unique, lead with the locale and carry the query words", () => {
+    const titles = registry.locales.map((c) => page(c).match(/<title>([^<]*)<\/title>/)?.[1]);
+    expect(new Set(titles).size).toBe(titles.length);
+    for (const t of titles) expect(t).toMatch(/ typography rules: .* \| polytypo$/);
+    const h1s = registry.locales.map((c) => page(c).match(/<h1>(.*?)<\/h1>/)?.[1]);
+    expect(new Set(h1s).size).toBe(h1s.length);
+  });
+
+  it("each page carries the native name, a quick answer, a playground link and 3-level breadcrumbs", () => {
+    const natives = JSON.parse(
+      readFileSync(path.join(ROOT, "brand/tools/locale_native_names.json"), "utf8"),
+    ) as Record<string, string>;
+    for (const code of registry.locales) {
+      const html = page(code);
+      expect(natives[code], code).toBeTruthy();
+      expect(html).toContain(natives[code]!);
+      expect(html).toContain('<p class="doc-lead">');
+      expect(html).toContain('href="../../playground/">Try ');
+      expect(html.match(/"@type": "ListItem"/g)).toHaveLength(3);
+      expect(html).toContain('"inLanguage": "en"');
+    }
+  });
+
   it("descriptions are unique across locale pages", () => {
     const d = registry.locales.map(
       (c) => page(c).match(/<meta name="description" content="([^"]*)">/)?.[1],

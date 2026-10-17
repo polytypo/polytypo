@@ -26,6 +26,7 @@ def _load(*parts):
         return json.load(f)
 
 
+NATIVE = _load(HERE, "locale_native_names.json")
 REGISTRY = _load(SPEC, "locales", "registry.json")
 CODES = REGISTRY["locales"]
 ALIASES = REGISTRY["aliases"]
@@ -107,6 +108,52 @@ def _quote_pair_text(pair):
     return f"{pair['open']}…{pair['close']}"
 
 
+def native_name(code):
+    return NATIVE[code]
+
+
+def _codes(chars):
+    return " ".join(f"<code>{H.escape(c)}</code>" for c in chars)
+
+
+def quick_answer(d):
+    """Two or three plain sentences stating the locale's main conventions, every clause read from
+    the locale file."""
+    q, dash, nb = d["quotes"], d["dash"], d["nbsp"]
+    name = H.escape(d["name"])
+    p, s2 = q["primary"], q["secondary"]
+    inner = ""
+    if p["innerSpace"] != "none" or s2["innerSpace"] != "none":
+        inner = f", with {INNER_SPACE[p['innerSpace']]}"
+        if s2["innerSpace"] != p["innerSpace"]:
+            inner += f" (secondary: {INNER_SPACE[s2['innerSpace']]})"
+    out = [
+        f"{name} sets primary quotation marks as <code>{H.escape(_quote_pair_text(p))}</code> and "
+        f"secondary quotation marks as <code>{H.escape(_quote_pair_text(s2))}</code>{inner}."
+    ]
+    par = (
+        f"A break in a sentence is written with {DASHES[dash['parenthetical']]}"
+        if dash["parenthetical"] != "none"
+        else "No parenthetical dash convention is verified, so none is substituted"
+    )
+    rng = (
+        f"number and date ranges take {DASHES[dash['range']]}"
+        if dash["range"] != "none"
+        else "no range convention is verified, so none is substituted"
+    )
+    out.append(f"{par}; {rng}.")
+    parts = []
+    if nb["beforePunctuation"]:
+        parts.append(f"U+00A0 goes before {_codes(nb['beforePunctuation'])}")
+    if nb["narrowBeforePunctuation"]:
+        parts.append(f"U+202F goes before {_codes(nb['narrowBeforePunctuation'])}")
+    if not parts and nb["beforeUnits"]:
+        parts.append(f"numbers bind to units such as {_codes(nb['beforeUnits'][:3])} with U+00A0")
+    if parts:
+        out.append("; ".join(parts)[0].upper() + "; ".join(parts)[1:] + ".")
+    return " ".join(out)
+
+
 def pages():
     """One page record per registered locale, in registry order."""
     out = []
@@ -117,14 +164,27 @@ def pages():
             {
                 "slug": f"locales/{code}",
                 "code": code,
-                "title": f"{code}: {d['name']}",
-                "description": (
-                    f"{d['name']} ({code}) in polytypo: quotes {_quote_pair_text(q['primary'])} "
-                    f"and {_quote_pair_text(q['secondary'])}, {DASH_SHORT[d['dash']['parenthetical']]}"
-                    f" for parenthetical breaks, {len({s['cite'] for s in d['sources']})} cited "
-                    f"sources, {fixture_count(code)} conformance cases."
+                "title": f"{d['name']} ({code})",
+                "seo_title": (
+                    f"{d['name']} typography rules: {_quote_pair_text(q['primary'])} quotes, "
+                    f"{DASH_SHORT[d['dash']['parenthetical']]} | polytypo"
                 ),
-                "trail": [("Locales", "locales/")],
+                "description": (
+                    f"{d['name']} ({code}): quotation marks {_quote_pair_text(q['primary'])} and "
+                    f"{_quote_pair_text(q['secondary'])}, {DASH_SHORT[d['dash']['parenthetical']]} "
+                    f"for breaks; {len({s['cite'] for s in d['sources']})} cited sources, "
+                    f"{fixture_count(code)} tested examples."
+                ),
+                "trail": [("Home", ""), ("Locales", "locales/")],
+                "jsonld_extra": {
+                    "inLanguage": "en",
+                    "about": {
+                        "@type": "Thing",
+                        "name": f"{d['name']} typography",
+                        "alternateName": native_name(code),
+                    },
+                    "citation": [s["cite"] for s in d["sources"]],
+                },
             }
         )
     return out
@@ -250,7 +310,7 @@ def _compare_section(code, d, ex, h, prefix):
     )
     link = f'<a href="{prefix}locales/{other}/">{H.escape(other)}</a>'
     return (
-        _h2("compare", f"Compared with {other}")
+        _h2("compare", f"How does {d['name']} differ from {od['name']}?")
         + f"<p>{H.escape(code)} and {link} are separate locales. Fields whose values differ:</p>"
         + table
         + "<p>The same input through both:</p>"
@@ -262,7 +322,7 @@ def _compare_section(code, d, ex, h, prefix):
     )
 
 
-def _modes_section(ex, h):
+def _modes_section(ex, h, n):
     rows = []
     claims = {}
     for m in ex["modes"]:
@@ -285,7 +345,7 @@ def _modes_section(ex, h):
             "byte for byte; only the prose is set."
         )
     sentence += "</p>"
-    return _h2("modes", "Text, HTML and Markdown") + sentence + f'<div class="card-grid">{"".join(rows)}</div>'
+    return _h2("modes", f"How does {n} text behave in text, HTML and Markdown modes?") + sentence + f'<div class="card-grid">{"".join(rows)}</div>'
 
 
 def _sources_section(d, code):
@@ -309,7 +369,7 @@ def _sources_section(d, code):
         parts.append(f'<h3><code>{rid}</code></h3><ul class="sources">{"".join(items)}</ul>')
     n = len(d["sources"])
     return (
-        _h2("sources", "Sources")
+        _h2("sources", f"Which sources define {d['name']} typography?")
         + f"<p>{n} citation{'s' if n != 1 else ''} in <code>spec/locales/{H.escape(code)}.json</code>, "
         "grouped by the rule each one supports. A citation names the authority; the note records what "
         "the source does and does not settle.</p>" + "".join(parts)
@@ -319,7 +379,7 @@ def _sources_section(d, code):
 def _sidebar(code, prefix, all_pages):
     links = "".join(
         f'<li><a href="{prefix}{p["slug"]}/"{" aria-current=\"page\"" if p["code"] == code else ""}>'
-        f"{H.escape(p['code'])}</a></li>"
+        f"{H.escape(p['title'])}</a></li>"
         for p in all_pages
     )
     return (
@@ -333,6 +393,7 @@ def body(page, prefix, h, all_pages):
     code = page["code"]
     d = locale_data(code)
     ex = examples()["locales"][code]
+    n = d["name"]
     q, dash, ell, hy, nb = d["quotes"], d["dash"], d["ellipsis"], d["hyphen"], d["nbsp"]
     cites = d["sources"]
     cited_rules = ", ".join(f"<code>{r}</code>" for r in dict.fromkeys(s["rule"] for s in cites))
@@ -353,7 +414,7 @@ def body(page, prefix, h, all_pages):
     aliases_here = [a for a, v in ALIASES.items() if v == code]
     res_rows = resolution_rows(code, ex["resolution"])
     resolution = (
-        _h2("resolution", "Locale tags that resolve here")
+        _h2("resolution", f"Which locale tags resolve to {n}?")
         + "<p>The locale option is resolved exactly, then by declared alias, then by dropping the region once; "
         "anything else throws <code>POLYTYPO_UNKNOWN_LOCALE</code>.</p>"
         + (
@@ -393,13 +454,13 @@ def body(page, prefix, h, all_pages):
             "inline span; a narrow mark next to one is not paired as a quotation.</p>"
             + _kv([("Before the apostrophe", _chips(clit["before"], "before")), ("After the apostrophe", _chips(clit["after"], "after"))])
         )
-    quotes = _h2("quotes", "Quotation marks") + pair_rows + elision + _rule_examples(ex, SECTION_RULES["quotes"], h)
+    quotes = _h2("quotes", f"Which quotation marks does {n} use?") + pair_rows + elision + _rule_examples(ex, SECTION_RULES["quotes"], h)
 
     apos = _rule_examples(ex, SECTION_RULES["apostrophes"], h)
-    apostrophes = (_h2("apostrophe", "Apostrophes") + apos) if apos else ""
+    apostrophes = (_h2("apostrophe", f"How are apostrophes set in {n}?") + apos) if apos else ""
 
     dashes = (
-        _h2("dashes", "Dashes and ranges")
+        _h2("dashes", f"Which dashes does {n} use for breaks and ranges?")
         + _kv(
             [
                 ("Parenthetical break (<code>dash.parenthetical</code>)", H.escape(DASHES[dash["parenthetical"]])),
@@ -412,7 +473,7 @@ def body(page, prefix, h, all_pages):
     )
 
     ellipsis = (
-        _h2("ellipsis", "Ellipsis")
+        _h2("ellipsis", f"How is the ellipsis set in {n}?")
         + (
             "<p>An ellipsis directly after <code>!</code> or <code>?</code> is written with two dots rather than three.</p>"
             if ell["abbreviatedAfterTerminal"]
@@ -423,7 +484,7 @@ def body(page, prefix, h, all_pages):
 
     if hy["prefixes"] or hy["suffixes"] or hy["compounds"]:
         hyphens = (
-            _h2("hyphens", "Hyphens")
+            _h2("hyphens", f"How are hyphens handled in {n}?")
             + "<p>Morphological forms whose hyphen is bound with U+2011 so it cannot break across lines.</p>"
             + _kv(
                 [
@@ -435,18 +496,18 @@ def body(page, prefix, h, all_pages):
             + _rule_examples(ex, SECTION_RULES["hyphens"], h)
         )
     else:
-        hyphens = _h2("hyphens", "Hyphens") + "<p>The hyphen lists are empty for this locale, so the <code>hyphen</code> rule changes nothing.</p>"
+        hyphens = _h2("hyphens", f"How are hyphens handled in {n}?") + "<p>The hyphen lists are empty for this locale, so the <code>hyphen</code> rule changes nothing.</p>"
 
     spacing_rows = [(label + f" (<code>nbsp.{key}</code>)", _chips(nb[key], label)) for key, label in NBSP_LISTS]
     spacing_rows.append(("Initials (<code>nbsp.initialBinding</code>)", f"<code>{nb['initialBinding']}</code> — {H.escape(INITIAL_BINDING[nb['initialBinding']])}"))
     spacing = (
-        _h2("spacing", "Spaces and no-break spaces")
+        _h2("spacing", f"Where does {n} use no-break spaces?")
         + _kv(spacing_rows)
         + _rule_examples(ex, SECTION_RULES["spacing"], h)
     )
 
     sym = _rule_examples(ex, SECTION_RULES["symbols"], h)
-    symbols = (_h2("symbols", "Symbols") + sym) if sym else ""
+    symbols = (_h2("symbols", f"How are symbols set in {n}?") + sym) if sym else ""
 
     compare = _compare_section(code, d, ex, h, prefix) if ex["compare"] else ""
 
@@ -454,17 +515,19 @@ def body(page, prefix, h, all_pages):
     pager = []
     if idx > 0:
         p = all_pages[idx - 1]
-        pager.append(f'<a rel="prev" href="{prefix}{p["slug"]}/">&larr; {H.escape(p["code"])}</a>')
+        pager.append(f'<a rel="prev" href="{prefix}{p["slug"]}/">&larr; {H.escape(p["title"])}</a>')
     if idx < len(all_pages) - 1:
         p = all_pages[idx + 1]
-        pager.append(f'<a rel="next" href="{prefix}{p["slug"]}/">{H.escape(p["code"])} &rarr;</a>')
+        pager.append(f'<a rel="next" href="{prefix}{p["slug"]}/">{H.escape(p["title"])} &rarr;</a>')
 
-    crumbs = f'<nav class="crumbs" aria-label="Breadcrumb"><a href="{prefix}locales/">Locales</a> / {H.escape(code)}</nav>'
+    crumbs = f'<nav class="crumbs" aria-label="Breadcrumb"><a href="{prefix}">Home</a> / <a href="{prefix}locales/">Locales</a> / {H.escape(code)}</nav>'
     return (
         f'<div class="doc-layout">{_sidebar(code, prefix, all_pages)}<article class="doc">'
-        f"{crumbs}<h1>{H.escape(d['name'])} <span class=\"muted\">&middot; {H.escape(code)}</span></h1>"
-        f'<p class="doc-lead">{H.escape(page["description"])}</p>'
-        + _h2("at-a-glance", "At a glance")
+        f"{crumbs}<h1>{H.escape(d['name'])} typography rules <span class=\"muted\">&middot; {H.escape(code)}</span></h1>"
+        f'<p class="muted" lang="{_lang(code)}">{H.escape(native_name(code))}</p>'
+        f'<p class="doc-lead">{quick_answer(d)}</p>'
+        f'<p><a href="{prefix}playground/">Try {H.escape(d["name"])} in the playground</a></p>'
+        + _h2("at-a-glance", f"{n} typography at a glance")
         + glance
         + resolution
         + quotes
@@ -474,7 +537,7 @@ def body(page, prefix, h, all_pages):
         + hyphens
         + spacing
         + symbols
-        + _modes_section(ex, h)
+        + _modes_section(ex, h, n)
         + compare
         + _sources_section(d, code)
         + f'<nav class="doc-pager" aria-label="Pager">{"".join(pager)}</nav></article></div>'

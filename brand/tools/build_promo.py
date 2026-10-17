@@ -144,6 +144,7 @@ PAGES = [
     # Footer only, for the same 4-link mobile-nav reason. Its content is generated from
     # brand/tools/changelog.json, the same file CHANGELOG.md is rendered from.
     ("changelog", "Changelog", "changelog.body.html"),
+    ("contribute", "Contribute", "contribute.body.html"),
 ]
 
 # Documentation pages: brand/tools/docs/<section>/<name>.md becomes /docs/<section>/<name>/.
@@ -199,8 +200,8 @@ PAGES += [(p["slug"], p["title"], None) for p in LOCALE_PAGES]
 # substituted where used (see PAGE_DESCRIPTIONS below). Keep each under ~160 characters.
 PAGE_DESCRIPTIONS = {
     "": (
-        "polytypo — locale-correct quotes, dashes, ellipses and no-break spaces for {n} locales. "
-        "Five runtimes, one portable spec, byte-identical output."
+        "Fix typography in any text: locale-correct quotes, dashes, ellipses and no-break spaces "
+        "for {n} languages. Five runtimes, one portable spec, byte-identical output."
     ),
     "docs": (
         "polytypo reference: transform(input, options) is pure and locale-required. Code examples "
@@ -211,8 +212,8 @@ PAGE_DESCRIPTIONS = {
         "locale-correct quotes, dashes, ellipses and no-break spaces applied live."
     ),
     "locales": (
-        "polytypo locale coverage: {n} locales, each backed by a normative typographic source and "
-        "a conformance fixture set. See what is covered, and how a locale is added."
+        "Typography rules by language: quotation marks, dashes, ellipsis and no-break spaces for "
+        "{n} locales, each rule backed by a cited normative source and tested examples."
     ),
     "manifesto": (
         "The em dash was mine before AI. Why locale-correct typography is craft, set by locale "
@@ -222,9 +223,22 @@ PAGE_DESCRIPTIONS = {
         "Sites that run their text through polytypo and show the polytypo badge. Add yours by "
         "email once the badge is on your site."
     ),
+    "contribute": (
+        "Add a locale to polytypo or change a rule: a locale is a data file, fixtures and a "
+        "citation, a rule is spec prose first. How to open a pull request."
+    ),
     "changelog": (
         "What changed in each released polytypo spec version, with the before-and-after of every "
         "behaviour change and the cost each one carries."
+    ),
+}
+
+# Titles that carry the query words their page answers; every other page is "polytypo — <label>".
+PAGE_TITLES = {
+    "": "polytypo — fix typography in any text: smart quotes, dashes, no-break spaces",
+    "locales": (
+        f"Typography rules by language: quotes, dashes, spaces for {len(gen_locale_pages.CODES)} "
+        "locales | polytypo"
     ),
 }
 
@@ -718,8 +732,10 @@ def locale_card(loc):
     before, after = diff_html(loc["hero"]["in"], loc["hero"]["out"])
     return (
         '<div class="card"><div class="lang">'
-        f'<a href="{{{{prefix}}}}locales/{H.escape(loc["locale"])}/">{H.escape(loc["name"])} · {H.escape(loc["locale"])}</a></div>'
-        f'<div class="pair">{specimen(before, "in")}{specimen(after, "out")}</div></div>'
+        f'{H.escape(loc["name"])} · {H.escape(loc["locale"])}</div>'
+        f'<div class="pair">{specimen(before, "in")}{specimen(after, "out")}</div>'
+        f'<p class="small"><a href="{{{{prefix}}}}locales/{H.escape(loc["locale"])}/">'
+        f'{H.escape(loc["name"])} typography rules</a></p></div>'
     )
 
 
@@ -766,7 +782,13 @@ def proof_grid(data):
     return "".join(cards)
 
 
-NAV_LINKS = [("", "Home"), ("docs", "Docs"), ("playground", "Playground"), ("locales", "Locales")]
+NAV_LINKS = [
+    ("", "Home"),
+    ("docs", "Docs"),
+    ("playground", "Playground"),
+    ("locales", "Locales"),
+    ("contribute", "Contribute"),
+]
 
 
 GITHUB_ICON = (
@@ -1111,6 +1133,7 @@ def jsonld(slug, page_title, description, canonical_url, doc_page=None):
             **webpage_node,
             "@type": "TechArticle",
             "headline": doc_page["title"],
+            **doc_page.get("jsonld_extra", {}),
             "breadcrumb": doc_breadcrumb_list(doc_page, canonical_url),
         }
         doc = {"@context": "https://schema.org", **article}
@@ -1332,6 +1355,7 @@ def build():
         body = re.sub(r"\{\{svg:([^}]+)\}\}", lambda m: inline(m.group(1)), body)
 
         page_title = "polytypo" if title == "Home" else f"polytypo — {title}"
+        page_title = PAGE_TITLES.get(slug) or (locale_page or {}).get("seo_title") or page_title
         doc_page = doc_page or locale_page
         description = doc_page["description"] if doc_page else PAGE_DESCRIPTIONS[slug].format(n=n)
         canonical_url = f"{SITE_ORIGIN}/{slug + '/' if slug else ''}"
@@ -1483,12 +1507,13 @@ def write_llms_txt(out_dir, data):
             f"- [{p['title']}]({SITE_ORIGIN}/{p['slug']}/): {p['description']}"
             for p in DOC_PAGES
         ],
-        f"- [Locales]({SITE_ORIGIN}/locales/): per-locale coverage, each backed by a citation and "
-        "a conformance fixture set.",
+        f"- [Locales]({SITE_ORIGIN}/locales/): typography rules by language, each backed by a "
+        "citation and a conformance fixture set.",
         *[
             f"- [{p['title']}]({SITE_ORIGIN}/{p['slug']}/): {p['description']}"
             for p in LOCALE_PAGES
         ],
+        f"- [Contribute]({SITE_ORIGIN}/contribute/): add a locale or change a rule.",
         f"- [Playground]({SITE_ORIGIN}/playground/): run the real engine on your own text in the "
         "browser.",
         "",

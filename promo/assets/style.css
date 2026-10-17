@@ -1275,6 +1275,13 @@ footer a:hover {
   margin-top: 56px;
   padding-top: var(--space-7);
   border-top: 1px solid var(--line);
+  line-height: 1.5;
+}
+
+/* The page's last block is followed by the full-width badge section, which carries its own top
+   rule: without room below the pager the two rules stack against the pager links. */
+.doc-layout {
+  padding-bottom: 56px;
 }
 
 @media (max-width: 720px) {
