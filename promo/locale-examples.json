@@ -1,5 +1,5 @@
 {
-  "spec": "1.8.0",
+  "spec": "1.8.1",
   "locales": {
     "cs": {
       "byRule": {
@@ -717,6 +717,119 @@
       "resolution": ["fi", "fi-FI"],
       "disagreed": 0
     },
+    "fr-CA": {
+      "byRule": {
+        "spaces": [
+          {
+            "id": "fr-ca-spaces-collapse-run",
+            "in": "Bonjour   le   monde.",
+            "out": "Bonjour le monde."
+          },
+          {
+            "id": "fr-ca-spaces-brackets",
+            "in": "a  (  b  ,  c  )  d",
+            "out": "a (b, c) d"
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "fr-ca-ellipsis-three-dots",
+            "in": "Attendez... quoi?",
+            "out": "Attendez… quoi?"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "fr-ca-dashes-parenthetical-spaced-input",
+            "in": "Le plan - il existe - échoue.",
+            "out": "Le plan — il existe — échoue."
+          }
+        ],
+        "quotes": [
+          {
+            "id": "fr-ca-quotes-primary",
+            "in": "Il a dit \"bonjour\".",
+            "out": "Il a dit « bonjour »."
+          },
+          {
+            "id": "fr-ca-quotes-nested",
+            "in": "\"Il a dit 'oui' hier.\"",
+            "out": "« Il a dit “oui” hier. »"
+          },
+          {
+            "id": "fr-ca-quotes-030-adversarial-interleaved",
+            "in": "«a“b«c»d”e»",
+            "out": "« a“b« c »d”e »"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "fr-ca-apostrophe-elision",
+            "in": "l'été et l'hiver",
+            "out": "l’été et l’hiver"
+          },
+          {
+            "id": "fr-ca-apostrophe-elision-before-straight-quote",
+            "in": "l'\"idée\" est simple",
+            "out": "l’« idée » est simple"
+          }
+        ],
+        "symbols": [
+          {
+            "id": "fr-ca-symbols-copyright",
+            "in": "Copyright (c) 2026 Iurii Rogulia",
+            "out": "Copyright © 2026 Iurii Rogulia"
+          },
+          {
+            "id": "fr-ca-symbols-multiplication",
+            "in": "Une carte 3x5",
+            "out": "Une carte 3×5"
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "fr-ca-nbsp-question-no-space",
+            "in": "Ça va ?",
+            "out": "Ça va?"
+          },
+          {
+            "id": "fr-ca-nbsp-exclamation-no-space",
+            "in": "Bonjour !",
+            "out": "Bonjour!"
+          },
+          {
+            "id": "fr-ca-nbsp-semicolon-no-space",
+            "in": "Oui ; non",
+            "out": "Oui; non"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm.\nsay(« a — b … »)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": {
+        "neighbour": "fr",
+        "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.",
+        "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm.",
+        "neighbourOut": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm."
+      },
+      "resolution": ["fr-CA"],
+      "disagreed": 0
+    },
     "fr": {
       "byRule": {
         "spaces": [
@@ -853,119 +966,6 @@
         "neighbourOut": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm."
       },
       "resolution": ["fr", "fr-BE"],
-      "disagreed": 0
-    },
-    "fr-CA": {
-      "byRule": {
-        "spaces": [
-          {
-            "id": "fr-ca-spaces-collapse-run",
-            "in": "Bonjour   le   monde.",
-            "out": "Bonjour le monde."
-          },
-          {
-            "id": "fr-ca-spaces-brackets",
-            "in": "a  (  b  ,  c  )  d",
-            "out": "a (b, c) d"
-          }
-        ],
-        "ellipsis": [
-          {
-            "id": "fr-ca-ellipsis-three-dots",
-            "in": "Attendez... quoi?",
-            "out": "Attendez… quoi?"
-          }
-        ],
-        "dashes": [
-          {
-            "id": "fr-ca-dashes-parenthetical-spaced-input",
-            "in": "Le plan - il existe - échoue.",
-            "out": "Le plan — il existe — échoue."
-          }
-        ],
-        "quotes": [
-          {
-            "id": "fr-ca-quotes-primary",
-            "in": "Il a dit \"bonjour\".",
-            "out": "Il a dit « bonjour »."
-          },
-          {
-            "id": "fr-ca-quotes-nested",
-            "in": "\"Il a dit 'oui' hier.\"",
-            "out": "« Il a dit “oui” hier. »"
-          },
-          {
-            "id": "fr-ca-quotes-030-adversarial-interleaved",
-            "in": "«a“b«c»d”e»",
-            "out": "« a“b« c »d”e »"
-          }
-        ],
-        "apostrophe": [
-          {
-            "id": "fr-ca-apostrophe-elision",
-            "in": "l'été et l'hiver",
-            "out": "l’été et l’hiver"
-          },
-          {
-            "id": "fr-ca-apostrophe-elision-before-straight-quote",
-            "in": "l'\"idée\" est simple",
-            "out": "l’« idée » est simple"
-          }
-        ],
-        "symbols": [
-          {
-            "id": "fr-ca-symbols-copyright",
-            "in": "Copyright (c) 2026 Iurii Rogulia",
-            "out": "Copyright © 2026 Iurii Rogulia"
-          },
-          {
-            "id": "fr-ca-symbols-multiplication",
-            "in": "Une carte 3x5",
-            "out": "Une carte 3×5"
-          }
-        ],
-        "nbsp": [
-          {
-            "id": "fr-ca-nbsp-question-no-space",
-            "in": "Ça va ?",
-            "out": "Ça va?"
-          },
-          {
-            "id": "fr-ca-nbsp-exclamation-no-space",
-            "in": "Bonjour !",
-            "out": "Bonjour!"
-          },
-          {
-            "id": "fr-ca-nbsp-semicolon-no-space",
-            "in": "Oui ; non",
-            "out": "Oui; non"
-          }
-        ]
-      },
-      "modes": [
-        {
-          "mode": "text",
-          "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.\nsay(\"a -- b ...\")",
-          "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm.\nsay(« a — b … »)"
-        },
-        {
-          "mode": "html",
-          "in": "<p>Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
-          "out": "<p>Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
-        },
-        {
-          "mode": "markdown",
-          "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.\n\n`say(\"a -- b ...\")`",
-          "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm.\n\n`say(\"a -- b ...\")`"
-        }
-      ],
-      "compare": {
-        "neighbour": "fr",
-        "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.",
-        "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm.",
-        "neighbourOut": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm."
-      },
-      "resolution": ["fr-CA"],
       "disagreed": 0
     },
     "de-DE": {

@@ -1646,3 +1646,23 @@ footer a:hover {
     grid-column: 1;
   }
 }
+
+.doc-nav a.nav-cta {
+  display: block;
+  margin-top: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.doc-nav a.nav-cta:hover {
+  border-color: var(--muted);
+  color: var(--fg);
+}
+
+.doc-nav a.nav-cta strong {
+  display: block;
+  color: var(--fg);
+}

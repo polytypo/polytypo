@@ -19,7 +19,7 @@ SEARCH_BUTTON = (
 )
 
 SEARCH_DIALOG = (
-    '<dialog class="search-dialog" aria-label="Search">'
+    '<dialog class="search-dialog" aria-label="Search" data-pagefind-ignore>'
     f'<div class="search-head">{SEARCH_ICON}'
     '<input type="search" placeholder="Search documentation and locales" aria-label="Search"'
     ' autocomplete="off" spellcheck="false">'
@@ -43,7 +43,7 @@ def search_script(prefix):
         "  var seq = 0;\n"
         "  var active = -1;\n"
         "  function load() {\n"
-        f'    if (!pf) pf = import("{prefix}pagefind/pagefind.js").then(function (m) {{ return m.init().then(function () {{ return m; }}); }});\n'
+        f'    if (!pf) pf = import("{prefix or './'}pagefind/pagefind.js").then(function (m) {{ return m.init().then(function () {{ return m; }}); }});\n'
         "    return pf;\n"
         "  }\n"
         "  function note(text) {\n"
@@ -54,7 +54,8 @@ def search_script(prefix):
         "    list.appendChild(li);\n"
         "  }\n"
         "  function where(url) {\n"
-        '    if (url.indexOf("/locales/") === 0) return "Locales";\n'
+        '    if (url.indexOf("/locales/") === 0) return url === "/locales/" ? "Site" : "Locales";\n'
+        '    if (url.indexOf("/docs/") !== 0) return "Site";\n'
         '    var part = url.split("/")[2];\n'
         '    return part ? "Docs / " + part.replace(/-/g, " ") : "Docs";\n'
         "  }\n"

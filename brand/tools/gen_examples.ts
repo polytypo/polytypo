@@ -242,7 +242,7 @@ const NAMES: Record<(typeof LOCALES)[number], string> = {
   "en-GB": "English (UK)",
   "de-DE": "German",
   "de-CH": "Swiss German",
-  fr: "French",
+  fr: "French (France)",
   "fr-CA": "French (Canada)",
   ru: "Russian",
   fi: "Finnish",

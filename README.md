@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.8.0** · locales: **19** · rules: **9**.
+Spec version: **1.8.1** · locales: **19** · rules: **9**.
 
 ## Implementations
 
@@ -50,8 +50,8 @@ Spec version: **1.8.0** · locales: **19** · rules: **9**.
 | English (United Kingdom) (`en-GB`) | She asked, ‘Isn’t this the shop they call “round the corner”?’ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm. |
 | English (United States) (`en-US`) | She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm. |
 | Finnish (`fi`) | Hän kysyi: ”Eikö tämä ole se ’nurkan’ kirjakauppa?” … Kävelimme – lähes 3 km – ja löysimme sen kiinni. Copyright © 2026; tulosteen koko on 40×60 cm, hinta nousi 10,5 %. |
-| French (`fr`) | Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm. |
 | French (Canada) (`fr-CA`) | Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm. |
+| French (France) (`fr`) | Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm. |
 | German (Germany) (`de-DE`) | Sie fragte: „Ist das nicht der Laden namens ‚an der Ecke‘?“ … Wir liefen – fast 3 km – und fanden ihn leider geschlossen. Copyright © 2026, Format 40×60 cm, z. B. für Poster. |
 | German (Switzerland) (`de-CH`) | Sie fragte: «Ist das nicht der Laden namens ‹an der Ecke›?» … Wir liefen – fast 3 km – und fanden ihn leider geschlossen. Copyright © 2026, Format 40×60 cm, z. B. für Poster. |
 | Greek (`el`) | Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm. |
@@ -76,8 +76,8 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | `en-GB` | English (United Kingdom) | ‘…’ | “…” | en dash, spaced | en dash, unspaced |
 | `en-US` | English (United States) | “…” | ‘…’ | em dash, unspaced | en dash, unspaced |
 | `fi` | Finnish | ”…” | ’…’ | en dash, spaced | en dash, unspaced |
-| `fr` | French | «…» + U+00A0 | “…” | em dash, spaced | unchanged |
 | `fr-CA` | French (Canada) | «…» + U+00A0 | “…” | em dash, spaced | unchanged |
+| `fr` | French (France) | «…» + U+00A0 | “…” | em dash, spaced | unchanged |
 | `de-DE` | German (Germany) | „…“ | ‚…‘ | en dash, spaced | en dash, unspaced |
 | `de-CH` | German (Switzerland) | «…» | ‹…› | en dash, spaced | en dash, unspaced |
 | `el` | Greek | «…» | “…” | unchanged | unchanged |

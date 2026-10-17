@@ -398,8 +398,8 @@ def _nav_row(p, prefix, code, label):
 
 
 def _sidebar(code, prefix, all_pages):
-    """Locales in the site-wide order, with the regions of one language grouped under its name
-    when every member of that language has a region (English, German, Portuguese)."""
+    """Locales in the site-wide order, with every language that has more than one locale grouped
+    under its name; the locale named by the language alone (French) is that group's "Base"."""
     parts = []
     i = 0
     while i < len(all_pages):
@@ -408,15 +408,30 @@ def _sidebar(code, prefix, all_pages):
         while j < len(all_pages) and _split_name(all_pages[j]["name"])[0] == lang:
             j += 1
         group = all_pages[i:j]
-        if len(group) > 1 and all(_split_name(p["name"])[1] for p in group):
-            rows = "".join(_nav_row(p, prefix, code, _split_name(p["name"])[1]) for p in group)
+        if len(group) > 1:
+            rows = "".join(_nav_row(p, prefix, code, _split_name(p["name"])[1] or "Base") for p in group)
             parts.append(f'<li class="nav-group"><span>{H.escape(lang)}</span><ul>{rows}</ul></li>')
         else:
             parts.extend(_nav_row(p, prefix, code, p["name"]) for p in group)
         i = j
     return (
         '<details class="doc-nav"><summary>Locales</summary><nav aria-label="Locales">'
-        f'<a class="nav-top" href="{prefix}locales/">All locales</a><ul class="nav-flat">{"".join(parts)}</ul></nav></details>'
+        f'<a class="nav-top" href="{prefix}locales/">All locales</a><ul class="nav-flat">{"".join(parts)}</ul>'
+        f'<a class="nav-cta" href="{prefix}contribute/"><strong>Are you a developer?</strong>'
+        "<span>Add your locale and contribute to polytypo ⇨</span></a></nav></details>"
+    )
+
+
+def _try_section(code, name, prefix):
+    return (
+        f'<section id="try">'
+        f"<h2>Run polytypo with {H.escape(name)} rules</h2>"
+        f"<p>Edit the text and polytypo typesets it with the <code>{H.escape(code)}</code> locale, "
+        "in your browser. The code under the form is the call that produces the result.</p>"
+        "{{playground}}"
+        f'<p class="small muted">Other locales, and all the options, are in the '
+        f'<a href="{prefix}playground/?locale={H.escape(code)}">full playground</a>.</p>'
+        "</section>"
     )
 
 
@@ -562,11 +577,11 @@ def body(page, prefix, h, all_pages):
 
     crumbs = f'<nav class="crumbs" aria-label="Breadcrumb"><a href="{prefix}">Home</a> / <a href="{prefix}locales/">Locales</a> / {H.escape(code)}</nav>'
     return (
-        f'<div class="doc-layout">{_sidebar(code, prefix, all_pages)}<article class="doc" data-pagefind-body>'
+        f'<div class="doc-layout">{_sidebar(code, prefix, all_pages)}<article class="doc">'
         f"{crumbs}<h1>{H.escape(d['name'])} typography rules <span class=\"muted\">&middot; {H.escape(code)}</span></h1>"
         f'<p class="muted" lang="{_lang(code)}">{H.escape(native_name(code))}</p>'
         f'<p class="doc-lead">{quick_answer(d)}</p>'
-        f'<p><a href="{prefix}playground/">Try {H.escape(d["name"])} in the playground</a></p>'
+        + _try_section(code, d["name"], prefix)
         + _h2("at-a-glance", f"{n} typography at a glance")
         + glance
         + resolution

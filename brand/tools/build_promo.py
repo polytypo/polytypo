@@ -1002,7 +1002,7 @@ def badge_section_html(prefix):
     of it.
     """
     return (
-        '<section id="badge">'
+        '<section id="badge" data-pagefind-ignore>'
         "<h2>Already using polytypo? Add our badge</h2>"
         '<p class="small muted" style="max-width: 60ch">'
         "Two lines, same shape as any other embeddable badge — a script tag and a span. No "
@@ -1303,7 +1303,7 @@ def doc_page_body(page, prefix, replacements):
         f" / {H.escape(section_label)}</nav>"
     )
     html = (
-        f'<div class="doc-layout">{doc_nav_html(page["slug"], prefix)}<article class="doc" data-pagefind-body>'
+        f'<div class="doc-layout">{doc_nav_html(page["slug"], prefix)}<article class="doc">'
         f'{crumbs}<h1>{H.escape(page["title"])}</h1>'
         f'<p class="doc-lead">{H.escape(page["description"])}</p>{toc}{content}'
         f'<nav class="doc-pager" aria-label="Pager">{"".join(pager)}</nav></article></div>'
@@ -1431,6 +1431,7 @@ def build():
             body = doc_page_body(doc_page, prefix, replacements)
         elif locale_page:
             body = gen_locale_pages.body(locale_page, prefix, LOCALE_HELPERS, LOCALE_PAGES)
+            body = body.replace("{{playground}}", fixed_locale_playground(playground_markup))
         else:
             with open(os.path.join(PROMO_SRC, body_file), encoding="utf-8") as f:
                 body = f.read()
@@ -1506,6 +1507,8 @@ def build():
         # /playground — which they did choose — loads it eagerly with an ordinary <script src>.
         if slug in PLAYGROUND_SLUGS:
             doc += build_playground_script(data, prefix, lazy=slug != "playground")
+        elif locale_page:
+            doc += build_playground_script(data, prefix, lazy=True, fixed_locale=locale_page["code"])
 
         # badge_section_html() is emitted on every page now, not just "docs", so its wiring
         # script loads unconditionally here too.
@@ -1846,7 +1849,23 @@ def build_badge_script(prefix):
 </script>"""
 
 
-def build_playground_script(data, prefix, lazy):
+def fixed_locale_playground(markup):
+    """The shared playground markup with its locale control replaced by a hidden select the script
+    still drives: a locale page is about one locale, and /playground is the place to compare."""
+    markup = re.sub(r"<!--.*?-->\s*", "", markup, count=1, flags=re.S)
+    fixed, n = re.subn(
+        r'<label\s+title="Which locale.*?</label>',
+        '<select id="pg-locale" hidden></select>',
+        markup,
+        count=1,
+        flags=re.S,
+    )
+    if n != 1:
+        raise RuntimeError("playground.partial.html: locale control not found")
+    return fixed
+
+
+def build_playground_script(data, prefix, lazy, fixed_locale=None):
     """The playground's inline script, emitted for every page that embeds the playground.
 
     `lazy` changes exactly one thing: how the ~680 KB engine bundle arrives.
@@ -1863,7 +1882,12 @@ def build_playground_script(data, prefix, lazy):
     that state: this locale's own default example, in text mode. Anything else has no recorded
     answer and must not be guessed at.
     """
-    payload = json.dumps(data, ensure_ascii=False)
+    # A locale page fixes the locale: only that locale's data ships, and the form has no locale
+    # control. The call block still lists every locale the option accepts.
+    shipped = dict(data, allLocales=[l["locale"] for l in data["locales"]])
+    if fixed_locale:
+        shipped["locales"] = [l for l in data["locales"] if l["locale"] == fixed_locale]
+    payload = json.dumps(shipped, ensure_ascii=False)
     engine_src = f"{prefix}vendor/polytypo.browser.js"
     eager_script = "" if lazy else f'<script src="{engine_src}"></script>\n'
     lazy_literal = "true" if lazy else "false"
@@ -1901,7 +1925,10 @@ const DATA = {payload};
     o.value = code; o.textContent = name + " (" + code + ")";
     $locale.appendChild(o);
   }}
-  $locale.value = "{DEFAULT_PLAYGROUND_LOCALE}";
+  $locale.value = "{fixed_locale or DEFAULT_PLAYGROUND_LOCALE}";
+  // /locales/<code>/ links here with ?locale=<code>; an unknown value is ignored, not an error.
+  const requested = new URLSearchParams(location.search).get("locale");
+  if (LOCALES.some(([code]) => code === requested)) $locale.value = requested;
 
   // Mirrors HERO["en-US"] in gen_examples.ts — unreachable in practice (every locale in the
   // dropdown has its own recorded hero), kept in sync anyway so it isn't a stale copy of text
@@ -2100,7 +2127,7 @@ const DATA = {payload};
   const rubyStrLit = (s) => strLit(s).replace(/#\\{{/g, "\\\\#{{");
   const phpStrLit = (s) => "'" + s.replace(/\\\\/g, "\\\\\\\\").replace(/'/g, "\\\\'") + "'";
 
-  const LOCALE_LIST = LOCALES.map(([code]) => code).join(", ");
+  const LOCALE_LIST = DATA.allLocales.join(", ");
 
   function renderCallCode(options) {{
     const showDialect = options.mode === "markdown";

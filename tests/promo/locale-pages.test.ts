@@ -121,7 +121,8 @@ describe("locale pages", () => {
       expect(natives[code], code).toBeTruthy();
       expect(html).toContain(natives[code]!);
       expect(html).toContain('<p class="doc-lead">');
-      expect(html).toContain('href="../../playground/">Try ');
+      expect(html).toContain(`href="../../playground/?locale=${code}">full playground`);
+      expect(html).toContain('id="pg-demo"');
       expect(html.match(/"@type": "ListItem"/g)).toHaveLength(3);
       expect(html).toContain('"inLanguage": "en"');
     }

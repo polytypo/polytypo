@@ -1,5 +1,5 @@
 {
-  "spec": "1.8.0",
+  "spec": "1.8.1",
   "proofLocales": ["en-GB", "en-US", "fr", "de-DE", "de-CH", "ru"],
   "locales": [
     {
@@ -181,8 +181,42 @@
       ]
     },
     {
+      "locale": "fr-CA",
+      "name": "French (Canada)",
+      "hero": {
+        "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.",
+        "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, « Isn’t this the shop they call “round the corner”? » … We’d walked — nearly 3 km — just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Il a dit \"bonjour\".",
+          "out": "Il a dit « bonjour »."
+        },
+        {
+          "rule": "dashes",
+          "in": "Le plan - il existe - échoue.",
+          "out": "Le plan — il existe — échoue."
+        },
+        {
+          "rule": "nbsp",
+          "in": "Ça va? Bonjour!",
+          "out": "Ça va? Bonjour!"
+        },
+        {
+          "rule": "nbsp",
+          "in": "Rendez-vous à 15 h: bureau 204.",
+          "out": "Rendez-vous à 15 h : bureau 204."
+        }
+      ]
+    },
+    {
       "locale": "fr",
-      "name": "French",
+      "name": "French (France)",
       "hero": {
         "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.",
         "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm."
@@ -216,40 +250,6 @@
           "rule": "apostrophe",
           "in": "l'été et l'hiver",
           "out": "l’été et l’hiver"
-        }
-      ]
-    },
-    {
-      "locale": "fr-CA",
-      "name": "French (Canada)",
-      "hero": {
-        "in": "Elle a dit : \"Ce n'est pas la librairie qu'on appelle 'le coin', si ?\" ... On a marché - presque 3 km - pour la trouver fermée. Copyright (c) 2026 ; le tirage fait 40x60 cm.",
-        "out": "Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm."
-      },
-      "proof": {
-        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
-        "out": "She asked, « Isn’t this the shop they call “round the corner”? » … We’d walked — nearly 3 km — just to find it closed. Copyright © 2026; the print measures 40×60 cm."
-      },
-      "cases": [
-        {
-          "rule": "quotes",
-          "in": "Il a dit \"bonjour\".",
-          "out": "Il a dit « bonjour »."
-        },
-        {
-          "rule": "dashes",
-          "in": "Le plan - il existe - échoue.",
-          "out": "Le plan — il existe — échoue."
-        },
-        {
-          "rule": "nbsp",
-          "in": "Ça va? Bonjour!",
-          "out": "Ça va? Bonjour!"
-        },
-        {
-          "rule": "nbsp",
-          "in": "Rendez-vous à 15 h: bureau 204.",
-          "out": "Rendez-vous à 15 h : bureau 204."
         }
       ]
     },

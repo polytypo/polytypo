@@ -121,6 +121,8 @@ export function loadPlayground(applyMarkupDefaults = true): Harness {
     setTimeout,
     clearTimeout,
     console,
+    URLSearchParams,
+    location: { search: "" },
     navigator: { clipboard: { writeText: async () => {} } },
   };
   sandbox.window = sandbox;
