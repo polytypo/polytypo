@@ -2244,7 +2244,7 @@ const DATA = {payload};
       `from polytypo import transform\\n\\n` +
       `transform(\\n` +
       `    input,\\n` +
-      `    locale=${{locale}},  # required, type: str — one of: ${{LOCALE_LIST}}\\n` +
+      `    locale=${{locale}},\\n` +
       `    mode=${{mode}},\\n` +
       (showDialect
         ? `    dialect=${{dialect}},\\n`
