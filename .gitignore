@@ -24,3 +24,6 @@ docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md
 
 # Pagefind index, built by npm run gen:search
 promo/pagefind/
+
+# Promo video: scene, renderer and rendered files. Private, never published.
+video/

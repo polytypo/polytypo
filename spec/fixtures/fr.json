@@ -1,5 +1,5 @@
 {
-  "spec": "1.9.0",
+  "spec": "1.10.0",
   "locale": "fr",
   "cases": [
     {
@@ -1025,6 +1025,19 @@
       "in": "---\ntitle: \"a\rb\"\nslug: c \"d\"\n---\n\nBody \"q\" here.\n",
       "out": "---\ntitle: \"a\rb\"\nslug: c « d »\n---\n\nBody « q » here.\n",
       "note": "modes.md §3.7.4 per-line U+000D bail in a locale whose quotation marks carry their own spacing, so the declined line and the converted one are visibly different constructions rather than the same English output relabelled (§8 item 4)."
+    },
+    {
+      "id": "fr-yaml-lone-cr-costs-one-line",
+      "rule": "quotes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: a \"b\"\nslug: c\rd \"e\"\n",
+      "out": "title: a « b »\nslug: c\rd \"e\"\n",
+      "note": "modes.md §3.8.4 step 9 in a locale whose quotation marks carry their own spacing: the line with the lone U+000D is declined and the line before it converts, so the cost is one line and not the document."
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "spec": "1.9.0",
+  "spec": "1.10.0",
   "locale": "en-US",
   "cases": [
     {
@@ -3145,6 +3145,136 @@
       "in": "﻿---\rtitle: a \"b\"\r---\r\rBody \"q\".\r",
       "out": "﻿---\rtitle: a \"b\"\r---\r\rBody “q”.\r",
       "note": "modes.md §3.7.3a steps 1 and 5 composed: a byte-order mark in front of a document whose lines end with lone U+000D. Each clause is pinned alone and their combination is where one runtime lost the body entirely — found by an adversarial pass over a finished port, not by any fixture then in the suite. The block is located and skipped, its content is declined for the U+000D, and the body converts."
+    },
+    {
+      "id": "en-us-yaml-lone-cr-plain-untouched",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: a\rb -- c\n",
+      "out": "title: a\rb -- c\n",
+      "note": "modes.md §3.8.4 step 9 (spec 1.10.0): a U+000D that is not a line's terminator would land inside the scalar's span, and line terminators are never inside a span. The line yields no spans and comes back byte for byte. Until 1.10.0 this converted, with the carriage return inside the span."
+    },
+    {
+      "id": "en-us-yaml-lone-cr-quoted-untouched",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: \"a\rb -- c\"\n",
+      "out": "title: \"a\rb -- c\"\n",
+      "note": "modes.md §3.8.4 step 9: the same line with a double-quoted scalar. The decline is on the line, not on the scalar form."
+    },
+    {
+      "id": "en-us-yaml-lone-cr-block-scalar-untouched",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: |\n  a -- b\n  c\rd -- e\n",
+      "out": "title: |\n  a -- b\n  c\rd -- e\n",
+      "note": "modes.md §3.8.5 (spec 1.10.0): a U+000D on any line of a block scalar's run makes the whole block yield no spans, as a tab does — the first line, which is clean, is not converted either."
+    },
+    {
+      "id": "en-us-yaml-lone-cr-value-run-consumed",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "summary: a\rb\n  title: c -- d\n",
+      "out": "summary: a\rb\n  title: c -- d\n",
+      "note": "modes.md §3.8.4 step 9: the declined line's value run is still consumed, so the indented `title: c -- d` stays a continuation of `summary` and is not read as a mapping line of its own. Declining without consuming would convert a key that is not a key."
+    },
+    {
+      "id": "en-us-yaml-trailing-cr-is-a-terminator",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: a -- b\r",
+      "out": "title: a—b\r",
+      "note": "modes.md §3.8.4: a U+000D that ends the input with no U+000A after it is a terminator, like one before a U+000A, so it is not a lone carriage return and the line converts."
+    },
+    {
+      "id": "en-us-yaml-crlf-still-converts",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: a -- b\r\nslug: c -- d\r\n",
+      "out": "title: a—b\r\nslug: c—d\r\n",
+      "note": "modes.md §3.8.4: CRLF is two terminator characters and neither is lone, so step 9 does not apply to a Windows-line-ended document."
+    },
+    {
+      "id": "en-us-yaml-cr-line-is-not-blank",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: |\n  a -- b\n\r  \n  c -- d\n",
+      "out": "title: |\n  a—b\n\r  \n  c -- d\n",
+      "note": "modes.md §3.8.4 step 1 (spec 1.10.0): a line is blank only if it is empty or all U+0020, so `<CR>␣␣` is not blank. It has indent 0, which ends the block's value run, and `a -- b` converts while `c -- d` is outside the block. A port that trims U+000D before testing blankness keeps the line in the run and declines the whole block instead."
+    },
+    {
+      "id": "en-us-yaml-double-trailing-cr-untouched",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: a -- b\r\r",
+      "out": "title: a -- b\r\r",
+      "note": "modes.md §3.8.4: only the last U+000D at the end of the input is a terminator, so the first is a lone one and the line yields no spans. A port that strips every trailing U+000D converts it."
+    },
+    {
+      "id": "en-us-yaml-cr-before-lf-after-cr-untouched",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: a -- b\r\r\n",
+      "out": "title: a -- b\r\r\n",
+      "note": "modes.md §3.8.4: a U+000D immediately before a U+000A is a terminator, and only that one; the U+000D before it is lone. The same line as the previous case with a final U+000A."
+    },
+    {
+      "id": "en-us-yaml-cr-then-hash-untouched",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: a\r#c -- d\n",
+      "out": "title: a\r#c -- d\n",
+      "note": "modes.md §3.8.4 step 9: YAML 1.2 reads `<CR>#c -- d` as a comment line, which step 2 declines when it starts a line. The LF-only model sees one line, so the decline has to be on the carriage return itself."
     }
   ]
 }

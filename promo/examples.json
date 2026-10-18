@@ -1,5 +1,5 @@
 {
-  "spec": "1.9.0",
+  "spec": "1.10.0",
   "proofLocales": ["en-GB", "en-US", "fr", "de-DE", "de-CH", "ru"],
   "locales": [
     {

@@ -7,14 +7,15 @@ for all five runtimes and is parser-agnostic by construction: `parse5`, `nokogir
 `golang.org/x/net/html` and PHP's DOM disagree about almost everything this document does not
 forbid them from doing. `yaml` mode is parser-**free** rather than parser-agnostic, for the
 reason §3.8.1 measures.
-**Spec version:** 1.9.0 (0.1.0 for everything except §3.3's class-membership table rows for
+**Spec version:** 1.10.0 (0.1.0 for everything except §3.3's class-membership table rows for
 `nbsp` and `apostrophe`, split in 1.2.0, §3.8, added in 1.3.0, §3.3's note on `quotes`'
 span-boundary elision veto reading the marker as a trigger, added in 1.4.0 — which changes no
 row of the table it follows — §3.3's `CLOSEDELIM` entry, added in 1.5.0, and §3.7.4 with the
 amendments it carries to §3.1's definitions, §3.2's Model C, §3.5 step 3, §3.7.3's frontmatter
 bullet, §3.8.6's accepted-cost paragraph, §5, §6 and §7, added in 1.7.0, §3.7.3a, added in
 1.8.0, and §3.8.6's treatment of `''` in a single-quoted scalar, which replaces the bail it had
-until 1.9.0, with the matching amendments to §3.7.4.1, §3.8.7, §5, §7.13 and §8).
+until 1.9.0, with the matching amendments to §3.7.4.1, §3.8.7, §5, §7.13 and §8, and §3.8.4
+step 9 with §3.8.5's content-line condition, added in 1.10.0).
 
 ---
 
@@ -728,8 +729,11 @@ already recognises, and the option only changes what happens inside it:
   because the window includes it. So `title` / `slug` / a content-final U+000D converts `slug` in
   `yaml` mode and does not here. The wider decline is the direction this section takes everywhere
   else — a miss is invisible, a U+000D inside a span is not — and the cost is conversions lost in
-  documents written with line endings from the last century. Widening §3.8.4 instead would be a
-  change to `yaml` mode for every caller and wants its own measurement;
+  documents written with line endings from the last century. Since 1.10.0 `yaml` mode declines a
+  line containing a lone U+000D itself (§3.8.4 step 9), so the two paths agree on a stray U+000D
+  inside a line; they still part on the shape named just above. It does
+  so by declining rather than by widening §3.8.4's line model to YAML's or CommonMark's, which
+  would change what `yaml` mode converts for every caller;
 - **both delimiter lines stay outside every span**, as does every line terminator, so no edit
   can reach `---` itself and §3.7.3's setext-underline hazard is unreachable;
 - an **unterminated** block is not a block — §3.7.3 already yields no frontmatter construct
@@ -988,8 +992,10 @@ throw this mode adds is the option throw of §3.8.2, which is about the call, no
 
 The source is the code-point array of §3.1. A **line** is a maximal run containing no U+000A,
 **and a U+000D immediately before that U+000A is not part of the line** — it is a terminator like
-the U+000A itself, so it lies outside every span and comes back untouched. Line terminators are
-never inside a span, so no rule can create or destroy one. `indent` is the number of leading
+the U+000A itself, so it lies outside every span and comes back untouched. **The same holds for a
+U+000D that ends the input with no U+000A after it.** Line terminators are never inside a span,
+so no rule can create or destroy one — and since 1.10.0 that sentence is true of a lone U+000D as
+well, by step 9 below and §3.8.5, rather than only of the terminators this paragraph defines. `indent` is the number of leading
 U+0020 on the line and `i` the index of the first code point after them.
 
 The carriage-return clause is normative rather than obvious, and it is here because five runtimes
@@ -1006,7 +1012,10 @@ return **inside** its span and hands it to the rules as content.
 Lines are processed in order.
 
 1. The line yields no spans if it is empty or all U+0020, or if it contains U+0009 anywhere. A
-   tab makes indentation undecidable, which is what every step below depends on.
+   tab makes indentation undecidable, which is what every step below depends on. **A line is
+   blank only if it is empty or all U+0020**, here and wherever this section says blank (step 7,
+   §3.8.5): a line containing U+0009 or U+000D is never blank, and a port must not test blankness
+   with a trim that strips either.
 2. The line yields no spans if `cp[i]` is `#` (comment) or `%` (directive).
 3. The line yields no spans if it begins at `i` with `---` or with `...` and the next code point
    is U+0020 or the line ends there. The trailing-content form is declined as well as the bare
@@ -1041,7 +1050,14 @@ Lines are processed in order.
    and its value run yield no spans. This is the step that makes `run:`, `if:` and `image:`
    unreachable, and it is checked before the value's form so that an unlisted key costs nothing
    to decline.
-9. `cp[v]` selects the form:
+9. **If the line contains a U+000D, it yields no spans, and its value run (step 7) is still
+   consumed.** The U+000D here is one the line definition above did not take for a terminator — a
+   *lone* one, which YAML 1.2.2 §5.4 reads as a line break and this section's LF-only model does
+   not. It would otherwise land inside a span and be handed to the rules as content, which the
+   opening of this section forbids in terms. The value run is consumed rather than left to be
+   rescanned for the reason step 7 gives: a continuation line is not a mapping line, and
+   `summary: a<CR>b` followed by an indented `title: c` must not make `title` a key. Otherwise
+   `cp[v]` selects the form:
    - `&`, `*` or `!` — anchor, alias or tag — and `{` or `[` — a flow collection: no spans.
    - `#`: the value is absent and only a comment follows: no spans.
    - `|` or `>`: §3.8.5, block scalar.
@@ -1057,10 +1073,14 @@ spans. **The header is never inside a span.**
 
 The block's content is the value run of §3.8.4 step 7. Let `bi` be the indentation of its first
 non-blank line, or `indent + n` when the header carried an explicit indentation indicator `n`.
-**One definition, and three conditions that make the whole block yield no spans** — the block is
+**One definition, and four conditions that make the whole block yield no spans** — the block is
 consumed either way, never rescanned:
 
 - any line of the run contains U+0009;
+- any line of the run contains a U+000D (§3.8.4 step 9, 1.10.0) — a lone one, since a terminator's
+  is not part of its line. The whole block goes, as for a tab, rather than the one line: the
+  block's lines are one construct, and a carriage return in the middle of it is evidence that
+  the author's line model is not the one this section reads;
 - the run's first non-blank line is indented less than `bi`, which can only happen when an
   explicit indicator disagrees with the block as written;
 - any later non-blank line of the run is indented less than `bi`.
@@ -1218,6 +1238,21 @@ the pair to the rules as two ordinary characters, **also passes**, because `quot
 adjacency veto leaves an adjacent pair alone. The split is therefore specified for the reason
 §3.8.1 gives, that it needs no mapping and puts the pair out of every rule's reach by construction,
 and not because the sweep shows the unsplit alternative to be unsafe at payload length four.
+
+**A targeted sweep for U+000D (1.10.0).** It is narrower than the sweeps above on purpose —
+its alphabet carries neither U+005C, `''` nor `---`, which §5 requires of the idempotency sweeps
+and which those sweeps still carry — because it checks one property, §3.8.4's, that they never
+tested: **no span contains a line terminator.** Over documents built from the
+alphabet `a`, U+0020, U+000D, U+000A, `:`, `#`, `'`, `"`, `-` and `|`, in seven templates — a
+plain, a double-quoted and a single-quoted scalar, a block scalar, an unterminated final line, a
+payload ahead of a key, and a payload on the continuation line of a CRLF value — at payload
+lengths 1–5, **777 770 documents**, the scan's spans were read out and tested directly. Before
+1.10.0, **95 505 of them (12.3%) had a span containing a U+000D**; `title: a<CR>b -- c` was
+converted with the carriage return inside the span, and `"aaaa<CR>"` was a quoted scalar whose
+span ended in one. After, **none**. This check is discriminating by construction, since it
+failed 95 505 times on the engine it was written against. It reads spans rather than output
+because no rule emits or deletes a U+000D, so the output never showed it — the guarantee was
+false and nothing downstream noticed.
 
 **Three things it could not find**, each worth naming because each cost something.
 
@@ -1414,7 +1449,10 @@ tests none of this document. In `yaml` the sweep alphabet must include `:`, `#`,
 as one token**, since those are the characters whose adjacency the argument above turns on and a
 three-dash run is not reachable from single dashes at a bounded payload length; and it must
 include U+0022 and U+005C, without which the sweep cannot reach a quoted scalar's delimiters at
-all. Since 1.9.0 it must also include **`''` as one token** next to a lone U+0027, and its
+all. Since 1.10.0 it must also include **U+000D**, and a `yaml` run must test the property §3.8.4
+states — that no span contains a line terminator — directly on the spans, because a rule that
+neither emits nor deletes a U+000D leaves the output unchanged whether or not one is inside a
+span. Since 1.9.0 it must also include **`''` as one token** next to a lone U+0027, and its
 single-quoted templates must carry the pair at the start, in the middle and at the end of the
 payload, because a unit's behaviour at a span extremity is a different path from its behaviour
 between two letters. Since 1.7.0 the `markdown` run must also carry a template with a **frontmatter block and
@@ -1634,7 +1672,11 @@ rule-local.
     - **a flow collection** — `tags: [one, two]` and `{a: b}` — even on one line;
     - **a quoted scalar containing an escape** — `"say \"hi\""` — where the source spells the
       content with more characters than it has;
-    - **a block scalar whose indentation is ambiguous**, per §3.8.5's three bail conditions.
+    - **a block scalar whose indentation is ambiguous**, per §3.8.5's bail conditions;
+    - **a line carrying a lone U+000D** (1.10.0), and a block scalar with one on any line. Measured
+      on the author's 367-file content directory: no file contains one. It is the price of keeping §3.8.4's line model
+      LF-only while not letting a carriage return into a span, and it falls on documents
+      written with Classic Mac line endings.
 
 12. **`keys` matches a bare name at any depth, and nothing narrower.** `description` is
     processable wherever it occurs, which is what makes the option portable — no paths, no
@@ -1672,7 +1714,13 @@ rule-local.
       line, so that a stray one inside a single quoted value costs that value and not the block.
       The block is still skipped, so nothing machine-read is typeset either way. A lone-U+000D
       document is one line to §3.8.4 and therefore loses the whole block, which is the price of
-      not widening that section here.
+      not widening that section here. Since 1.10.0 `yaml` mode makes the same decline for itself
+      (§3.8.4 step 9), per line and consuming the value run, so the two paths no longer differ on
+      a stray U+000D inside a line. One shape of the same character is still missed in both, and
+      is recorded rather than fixed: a U+000D at column 0 of a line inside an *unlisted* key's
+      block scalar ends that value run under §3.8.4's LF-only model, so a listed-looking line
+      after it is scanned as a mapping line of its own, which YAML would read as block content.
+      Closing it needs the line model widened, which this release declines to do.
     - **§3.8.6's treatment of `''` in a single-quoted scalar: the cost, before and after 1.9.0.**
       Until 1.9.0 a single-quoted scalar containing `''` yielded no spans. An apostrophe inside
       such a scalar is spelled `''`, and an apostrophe is exactly what `apostrophe` and `quotes`
@@ -1728,7 +1776,7 @@ changes.
    blocks, and the JSX-vs-skipped-element case distinction (`tests/modes/markdown.test.ts`).
 3a. **YAML span selection** — the three scalar forms, the `keys` option (a listed key, an
    unlisted one, a quoted one, the same name at two depths), block-scalar indentation and
-   chomping, the `:`/`#` split of §3.8.6, the `''` split of §3.8.6 (since 1.9.0), step 7's consumption of an inline value's continuation
+   chomping, the `:`/`#` split of §3.8.6, the `''` split of §3.8.6 (since 1.9.0), a lone U+000D (since 1.10.0), step 7's consumption of an inline value's continuation
    lines, and every bail of §3.8.4. `yaml` carries a heavier fixture burden than the other two
    for a reason §8's opening argument does not cover: its span selection is **specified rather
    than delegated** (§3.8.1), so a fixture is the only thing standing between five hand-written

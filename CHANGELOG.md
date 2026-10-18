@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.9.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.9.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.10.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.10.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,14 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.10.0 — 18 October 2026
+
+A stray carriage return no longer ends up inside a YAML value polytypo rewrites.
+
+- In `yaml` mode, a line holding a carriage return that is not part of a normal line ending is now left exactly as it was. Until now polytypo converted the text on that line and carried the carriage return along inside the part it rewrote: `title: a<CR>b -- c` came back as `title: a<CR>b—c`, and `title: a<CR>#c -- d` rewrote text that YAML reads as a comment. Both now come back unchanged. The rule polytypo states for itself — line endings stay outside everything it rewrites — was not true of this case.
+- The same applies to a block scalar (`|` or `>`): a carriage return inside one of its lines leaves the whole block alone, the way a tab already did. Ordinary line endings are unaffected — `\r\n` files, and a file whose last line ends in a bare `\r`, convert as before. Two carriage returns in a row at the end of a line count as one line ending plus a stray one, so that line is left alone.
+- The accepted cost: a value on a line with a lone carriage return, which is how old Mac files ended every line, is no longer typeset. Measured on the author's own 367-file content directory, no file contains one. In `markdown` mode with `frontmatterKeys` the same decline already applied, so the two agree on a stray carriage return inside a line.
 
 ## 1.9.0 — 17 October 2026
 
