@@ -2226,15 +2226,15 @@ const DATA = {payload};
     const jsCode =
       `import {{ transform }} from "polytypo";\\n\\n` +
       `transform(\\n` +
-      `  input, // your text, type: string\\n` +
+      `  input,\\n` +
       `  {{\\n` +
-      `    locale: ${{locale}}, // required, type: string — one of: ${{LOCALE_LIST}}\\n` +
-      `    mode: ${{mode}}, // type: string, default: "text" — "text" | "html" | "markdown" | "yaml"\\n` +
+      `    locale: ${{locale}},\\n` +
+      `    mode: ${{mode}},\\n` +
       (showDialect
-        ? `    dialect: ${{dialect}}, // type: string, required because mode is "markdown" — "commonmark" | "mdx"\\n`
+        ? `    dialect: ${{dialect}},\\n`
         : "") +
       (showKeys
-        ? `    keys: ${{keysJs}}, // type: string[], required because mode is "yaml" — the mapping keys whose values hold prose\\n`
+        ? `    keys: ${{keysJs}},\\n`
         : "") +
       `  }},\\n` +
       `);`;
@@ -2243,29 +2243,29 @@ const DATA = {payload};
     const pyCode =
       `from polytypo import transform\\n\\n` +
       `transform(\\n` +
-      `    input,  # your text, type: str\\n` +
+      `    input,\\n` +
       `    locale=${{locale}},  # required, type: str — one of: ${{LOCALE_LIST}}\\n` +
-      `    mode=${{mode}},  # type: str, default: "text" — "text" | "html" | "markdown" | "yaml"\\n` +
+      `    mode=${{mode}},\\n` +
       (showDialect
-        ? `    dialect=${{dialect}},  # type: str, required because mode is "markdown" — "commonmark" | "mdx"\\n`
+        ? `    dialect=${{dialect}},\\n`
         : "") +
       (showKeys
-        ? `    keys=${{keysJs}},  # type: list[str], required because mode is "yaml" — the mapping keys whose values hold prose\\n`
+        ? `    keys=${{keysJs}},\\n`
         : "") +
       `)`;
     $callPy.innerHTML = highlight(pyCode);
 
     const goCode =
       `out, err := polytypo.Transform(\\n` +
-      `    input, // your text, type: string\\n` +
+      `    input,\\n` +
       `    polytypo.Options{{\\n` +
-      `        Locale:  ${{locale}}, // required, type: string — one of: ${{LOCALE_LIST}}\\n` +
-      `        Mode:    ${{mode}}, // type: string, default: "text" — "text" | "html" | "markdown" | "yaml"\\n` +
+      `        Locale:  ${{locale}},\\n` +
+      `        Mode:    ${{mode}},\\n` +
       (showDialect
-        ? `        Dialect: ${{dialect}}, // type: string, required because Mode is "markdown" — "commonmark" | "mdx"\\n`
+        ? `        Dialect: ${{dialect}},\\n`
         : "") +
       (showKeys
-        ? `        Keys:    ${{keysGo}}, // type: []string, required because Mode is "yaml" — the mapping keys whose values hold prose\\n`
+        ? `        Keys:    ${{keysGo}},\\n`
         : "") +
       `    }},\\n` +
       `)`;
@@ -2274,29 +2274,29 @@ const DATA = {payload};
     const rbCode =
       `require "polytypo"\\n\\n` +
       `Polytypo.transform(\\n` +
-      `  input, # your text, type: String\\n` +
-      `  locale: ${{rubyStrLit(options.locale)}}, # required, type: String — one of: ${{LOCALE_LIST}}\\n` +
-      `  mode: ${{rubyStrLit(options.mode)}}, # type: String, default: "text" — "text" | "html" | "markdown" | "yaml"\\n` +
+      `  input,\\n` +
+      `  locale: ${{rubyStrLit(options.locale)}},\\n` +
+      `  mode: ${{rubyStrLit(options.mode)}},\\n` +
       (showDialect
-        ? `  dialect: ${{rubyStrLit(options.dialect)}}, # type: String, required because mode is "markdown" — "commonmark" | "mdx"\\n`
+        ? `  dialect: ${{rubyStrLit(options.dialect)}},\\n`
         : "") +
       (showKeys
-        ? `  keys: ${{keysRb}}, # type: Array<String>, required because mode is "yaml" — the mapping keys whose values hold prose\\n`
+        ? `  keys: ${{keysRb}},\\n`
         : "") +
       `)`;
     $callRb.innerHTML = highlight(rbCode);
 
     const phpCode =
       `Polytypo::transform(\\n` +
-      `    $input, // your text, type: string\\n` +
+      `    $input,\\n` +
       `    [\\n` +
-      `        'locale' => ${{phpStrLit(options.locale)}}, // required, type: string — one of: ${{LOCALE_LIST}}\\n` +
-      `        'mode' => ${{phpStrLit(options.mode)}}, // type: string, default: 'text' — 'text' | 'html' | 'markdown' | 'yaml'\\n` +
+      `        'locale' => ${{phpStrLit(options.locale)}},\\n` +
+      `        'mode' => ${{phpStrLit(options.mode)}},\\n` +
       (showDialect
-        ? `        'dialect' => ${{phpStrLit(options.dialect)}}, // type: string, required because mode is 'markdown' — 'commonmark' | 'mdx'\\n`
+        ? `        'dialect' => ${{phpStrLit(options.dialect)}},\\n`
         : "") +
       (showKeys
-        ? `        'keys' => ${{keysPhp}}, // type: list<string>, required because mode is 'yaml' — the mapping keys whose values hold prose\\n`
+        ? `        'keys' => ${{keysPhp}},\\n`
         : "") +
       `    ],\\n` +
       `);`;
