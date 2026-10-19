@@ -28,7 +28,11 @@ with open(os.path.join(SPEC, "locales", "registry.json"), encoding="utf-8") as f
     _REGISTRY = json.load(f)
 with open(os.path.join(SPEC, "rules", "order.json"), encoding="utf-8") as f:
     _ORDER = json.load(f)
-LOCALE_COUNT = len(_REGISTRY["locales"])
+# Counted like the pages and the README rows: a registry locale the installed engine cannot run is
+# not announced until it can.
+with open(os.path.join(os.path.dirname(SPEC), "promo", "locale-examples.json"), encoding="utf-8") as f:
+    _EXEMPLIFIED = json.load(f)["locales"]
+LOCALE_COUNT = len([c for c in _REGISTRY["locales"] if c in _EXEMPLIFIED])
 RULE_COUNT = len(_ORDER["rules"])
 
 # Spelled out rather than hardcoded, same convention as brand/tools/gen_readmes.py: the count

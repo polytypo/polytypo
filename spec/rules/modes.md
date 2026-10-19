@@ -7,7 +7,7 @@ for all five runtimes and is parser-agnostic by construction: `parse5`, `nokogir
 `golang.org/x/net/html` and PHP's DOM disagree about almost everything this document does not
 forbid them from doing. `yaml` mode is parser-**free** rather than parser-agnostic, for the
 reason §3.8.1 measures.
-**Spec version:** 1.10.0 (0.1.0 for everything except §3.3's class-membership table rows for
+**Spec version:** 1.11.0 (0.1.0 for everything except §3.3's class-membership table rows for
 `nbsp` and `apostrophe`, split in 1.2.0, §3.8, added in 1.3.0, §3.3's note on `quotes`'
 span-boundary elision veto reading the marker as a trigger, added in 1.4.0 — which changes no
 row of the table it follows — §3.3's `CLOSEDELIM` entry, added in 1.5.0, and §3.7.4 with the
@@ -15,7 +15,10 @@ amendments it carries to §3.1's definitions, §3.2's Model C, §3.5 step 3, §3
 bullet, §3.8.6's accepted-cost paragraph, §5, §6 and §7, added in 1.7.0, §3.7.3a, added in
 1.8.0, and §3.8.6's treatment of `''` in a single-quoted scalar, which replaces the bail it had
 until 1.9.0, with the matching amendments to §3.7.4.1, §3.8.7, §5, §7.13 and §8, and §3.8.4
-step 9 with §3.8.5's content-line condition, added in 1.10.0).
+step 9 with §3.8.5's content-line condition, added in 1.10.0, §3.8.4's carriage-return region, which replaces step 9's decline of a line carrying a U+000D, added in 1.11.0, §3.8.4 step 7's definition of a
+continuation line with the bails of §3.8.6 that use it, added in 1.11.0, and §3.8.4's node lines,
+declined keys, node markers and own-line region, with the changes to steps 1, 3, 4, 5, 6, 7 and 8
+that go with them, added in 1.11.0).
 
 ---
 
@@ -720,17 +723,18 @@ already recognises, and the option only changes what happens inside it:
   content the scan is given, and a span reaching a declined position is dropped whole rather than
   trimmed.** Three ports reached for the shortcut of substituting the U+000D for another
   character the scan already declines, and it is not equivalent: substitution moves the character
-  to a different line and can end a value run, so `title` / `slug` / a content-final U+000D
-  converts both keys instead of one, and a stray U+000D on a key whose value run continues onto
-  an indented line converts a key that is not a key. Both shapes are pinned, and both agree with
+  to a different line and can change a value run, so `title` / `slug` / a content-final U+000D,
+  which converts both keys, would silence `slug` (a substituted character makes that last line
+  non-blank, hence a continuation line, §3.8.4 step 7), and a stray U+000D on a key whose value
+  run continues onto an indented line converts a key that is not a key. Both shapes are pinned, and both agree with
   what `yaml` mode already does with the same characters — measured in two shipped runtimes.
   **Where this rule and `yaml` mode part is on purpose, and it is one shape:** a content line
   whose terminator is a bare U+000D is clean to `yaml` mode, which strips it, and declined here,
-  because the window includes it. So `title` / `slug` / a content-final U+000D converts `slug` in
-  `yaml` mode and does not here. The wider decline is the direction this section takes everywhere
+  because the window includes it. So `title` / `slug` with `slug`'s line ending in a bare U+000D
+  converts `slug` in `yaml` mode and does not here (measured, 1.11.0). The wider decline is the direction this section takes everywhere
   else — a miss is invisible, a U+000D inside a span is not — and the cost is conversions lost in
   documents written with line endings from the last century. Since 1.10.0 `yaml` mode declines a
-  line containing a lone U+000D itself (§3.8.4 step 9), so the two paths agree on a stray U+000D
+  line containing a lone U+000D itself (§3.8.4's carriage-return region), so the two paths agree on a stray U+000D
   inside a line; they still part on the shape named just above. It does
   so by declining rather than by widening §3.8.4's line model to YAML's or CommonMark's, which
   would change what `yaml` mode converts for every caller;
@@ -762,8 +766,8 @@ processed under `frontmatterKeys: ["title"]` — with the cost §7.12 already ac
 paths, no globs, so a caller with a machine-read `title` nested somewhere must either take it too
 or name none. Matching is exact, code point for code point, with no case folding.
 
-**The scan is §3.8's, unchanged.** §3.8.4 steps 1–9, §3.8.5 and §3.8.6 apply to the block content
-verbatim, with `frontmatterKeys` as step 8's key predicate in place of `keys`. Nothing about YAML
+**The scan is §3.8's, unchanged.** §3.8.4 steps 1–9, its carriage-return region, §3.8.5 and
+§3.8.6 apply to the block content verbatim, with `frontmatterKeys` as step 8's key predicate in place of `keys`. Nothing about YAML
 is specified twice: frontmatter **is** YAML, and the argument that made §3.8 a hand-written scan
 rather than a parser call (§3.8.1 — two of the five ecosystems' libraries cannot report an end
 offset) applies here for the same reason and with the same measurements. Every miss §7.11 lists
@@ -960,8 +964,8 @@ a key matches iff its source text, with trailing U+0020 removed, equals a member
 point for code point. No case folding — ARCHITECTURE.md §4.4 forbids locale-dependent case
 operations and Turkish dotless ı is the standing reason. No paths, no globs, no wildcards, no
 nesting: a key named `description` is processable wherever it occurs and at any depth. A **quoted
-key never matches**, because §3.8.4 step 5 has already declined the line; that is an accepted
-cost, recorded in §7.11.
+key never matches**, because §3.8.4 step 5 reads it as a declined key or as a node line, and neither
+is ever compared; that is an accepted cost, recorded in §7.11.
 
 **The option also removes a defect the content test carried**, which is why nothing of it
 survives. A content test is a predicate on the text inside a span, and `spaces` can delete the
@@ -995,7 +999,7 @@ The source is the code-point array of §3.1. A **line** is a maximal run contain
 the U+000A itself, so it lies outside every span and comes back untouched. **The same holds for a
 U+000D that ends the input with no U+000A after it.** Line terminators are never inside a span,
 so no rule can create or destroy one — and since 1.10.0 that sentence is true of a lone U+000D as
-well, by step 9 below and §3.8.5, rather than only of the terminators this paragraph defines. `indent` is the number of leading
+well, by the carriage-return region below and §3.8.5, rather than only of the terminators this paragraph defines. `indent` is the number of leading
 U+0020 on the line and `i` the index of the first code point after them.
 
 The carriage-return clause is normative rather than obvious, and it is here because five runtimes
@@ -1005,64 +1009,125 @@ and is unrecognised, so the block yields no spans, while a plain scalar carries 
 return **inside** its span and hands it to the rules as content.
 
 > **Normative, and the repair of a defect the first draft shipped: a line consumed by a construct
-> is never scanned again.** Step 7 defines the one case — an inline value's continuation lines —
-> and without it a multi-line quoted scalar, a multi-line flow collection and a folded plain
-> scalar all leak their continuation lines back into the scan as if they were mappings.
+> is never scanned again.** Three constructs consume lines: an inline value's continuation lines
+> (step 7), a **node line** — a line that opens a node without being the value of a key (step 5)
+> — and a document marker followed by content (step 3). Without them a multi-line quoted scalar,
+> a flow collection, a block scalar header and a folded plain scalar all leak their continuation
+> lines back into the scan as if they were mappings. The first draft closed only the first of the
+> three, and 1.11.0 closed the other two (polytypo/polytypo#64): `- |` followed by `  title: c -- d`
+> converted text that YAML reads as the content of a block scalar.
 
 Lines are processed in order.
 
-1. The line yields no spans if it is empty or all U+0020, or if it contains U+0009 anywhere. A
-   tab makes indentation undecidable, which is what every step below depends on. **A line is
-   blank only if it is empty or all U+0020**, here and wherever this section says blank (step 7,
-   §3.8.5): a line containing U+0009 or U+000D is never blank, and a port must not test blankness
-   with a trim that strips either.
-2. The line yields no spans if `cp[i]` is `#` (comment) or `%` (directive).
-3. The line yields no spans if it begins at `i` with `---` or with `...` and the next code point
-   is U+0020 or the line ends there. The trailing-content form is declined as well as the bare
-   one: `--- key: value` is a node introduced by a document marker, and reading the marker as part
-   of a key is how the first draft produced a key of `--- key`.
-4. **Block sequence entries are consumed, not skipped.** While `cp[i]` is `-` and `cp[i+1]` is
-   U+0020, advance `i` past the marker and past any U+0020 after it. Repeat — `- - key: v` is
-   legal and nests. If `i` reaches the end of the line, it yields no spans.
-5. **Find the key.** Scan `j` upward from `i`.
-   - If `cp[j]` is `"`, `'`, `{`, `[`, `&`, `*`, `!` or `#`, the line yields no spans. This test
-     applies at **every** `j`, not only at `j = i`: it declines a quoted, flow, anchored, aliased
-     or tagged key, and equally a key that merely contains one of those characters anywhere —
-     `a!b: value` yields nothing. The wider reading is the normative one, and saying so is what
-     stops a second implementer from testing only the first position and getting a different span
-     set. The cost is recorded in §7.11.
-   - If `cp[j]` is `:` **and** `j` is the last code point of the line or `cp[j+1]` is U+0020, the
-     key is `cp[i … j−1]` with trailing U+0020 removed, and the scan continues at step 6.
-   - **Otherwise `j` advances by one and the scan continues**, including when `cp[j]` is a colon
-     that is not followed by U+0020 or the line end — such a colon is an ordinary character of the
-     key, and `a:b: v` has the key `a:b`. Stating the else-branch is not pedantry: without it the
-     first draft admitted two readings of that line, which is the exact divergence §3.8.1 says
-     the scan exists to prevent.
-   - If no such `j` exists, or the key is empty, the line yields no spans.
+1. A line that is empty or all U+0020 yields no spans and absorbs nothing. **A line is blank only
+   if it is empty or all U+0020**, here and wherever this section says blank (step 7, §3.8.5): a
+   line containing U+0009 or U+000D is never blank, and a port must not test blankness with a
+   trim that strips either. **A line containing U+0009 anywhere yields no spans, and neither does
+   anything it absorbs** (1.11.0): a tab makes indentation undecidable, which is what every step
+   below depends on, but it does not stop a scalar the line opens from owning the lines under
+   it, so steps 2 to 7 still decide what the line absorbs and the run is then skipped without
+   spans.
+2. The line yields no spans and absorbs nothing if `cp[i]` is `#` (comment) or `%` (directive).
+3. A line is a **document marker** if it begins at `i` with `---` or with `...` and the next code
+   point is U+0020 or the line ends there. A marker followed, after any U+0020, by the end of the
+   line or by `#` yields no spans and absorbs nothing. **A marker in column 0 followed by
+   anything else opens a node** (1.11.0): it yields no spans and absorbs every following line up
+   to, but not including, the next line that begins in column 0 with a document marker, or up to
+   the end of the input. An indented one yields no spans and absorbs nothing, since YAML reads a
+   marker only in column 0. The trailing-content form is declined as well as the bare one: `--- key: value`
+   is a node introduced by a document marker, and reading the marker as part of a key is how the
+   first draft produced a key of `--- key`; `--- |` and `--- "x` are nodes whose lines are not
+   mapping lines.
+4. **Node markers are consumed, not skipped.** While `cp[i]` is `-`, `?` or `:` and the next code
+   point is U+0020 or the line ends there, advance `i` past the marker and past any U+0020 after
+   it. Repeat — `- - key: v` is legal and nests. If `i` reaches the end of the line, or `cp[i]` is
+   `#`, the line yields no spans and absorbs nothing: a marker with nothing after it opens a
+   nested node whose lines are scanned on their own. The line **has a marker** if `i` moved. `?`
+   and `:` are markers since 1.11.0: `? |` and `: |` open a block scalar exactly as `- |` does.
+5. **Find the key.** Let `first` be `cp[i]`.
+   - If `first` is `"` or `'`, find the quote that closes it on the line. For `'`, `''` is one
+     unit and does not close it. For `"`, a U+005C and the code point after it are skipped together and
+     never close the quote: nothing is decoded, and no YAML escape ends in a code point that
+     would close it, so `"a\"b": 1` is a quoted key. A quote not closed on the line has none. If a closing quote is found at `c`, and after any U+0020 the next code
+     point is a `:` that is the last code point of the line or is followed by U+0020, the line has
+     a **declined key** `cp[i … c]` with that colon, and the scan continues at step 6. Otherwise
+     the line is a **node line**. Any doubt resolves to "node line", which costs a miss; the other
+     error treats a scalar as a key and lets its continuation lines convert.
+   - If `first` is `{`, `[`, `&`, `*` or `!`, the line is a **node line**.
+   - Otherwise scan `j` upward from `i`.
+     - If `cp[j]` is `#` and `cp[j−1]` is U+0020, a comment begins and the line has no key: it is
+       a node line.
+     - If `cp[j]` is `:` **and** `j` is the last code point of the line or `cp[j+1]` is U+0020,
+       the key is `cp[i … j−1]` with trailing U+0020 removed, and the scan continues at step 6.
+     - **Otherwise `j` advances by one and the scan continues**, including when `cp[j]` is a colon
+       that is not followed by U+0020 or the line end — such a colon is an ordinary character of
+       the key, and `a:b: v` has the key `a:b`. Stating the else-branch is not pedantry: without
+       it the first draft admitted two readings of that line, which is the exact divergence
+       §3.8.1 says the scan exists to prevent.
+     - If the scan reached the end of the line without a key, the line is a node line.
+     - A key containing `"`, `'`, `{`, `[`, `&`, `*`, `!` or `#` anywhere — `a!b: value`,
+       `/users/{id}:` — is a **declined key**. The wider reading is the normative one, and saying
+       so is what stops a second implementer from testing only the first position and getting a
+       different span set. The cost is recorded in §7.11.
+   - **A node line yields no spans and absorbs its value run** (defined at step 7). A node line
+     that has no marker (step 4) and at which `first` is `|`, `>`, `{` or `[`, or is a quote with
+     no closing quote on the line, is **own-line**, and absorbs instead every following
+     line up to, but not including, the first one that is non-empty and does not begin with
+     U+0020 — or, when its indent is 0, up to the next line that begins in column 0 with a
+     document marker or the end of the input (1.11.0). The floor is column 0 for the reason the
+     carriage-return region's is: the scan does not track the key above, and a flow collection, a
+     block scalar header or a quote on a line of its own continues at any depth below it — or at
+     its own, for a block scalar and a flow collection.
 6. Let `v` be the index of the first code point after the colon that is not U+0020. **If there is
    none, the value is empty**: the following, more-indented lines are a nested node and are
-   scanned on their own. The line yields no spans; go to the next line.
+   scanned on their own. The line yields no spans and absorbs nothing, a declined key included
+   (`"k":` and `/users/{id}:` open nested mappings); go to the next line.
 7. Otherwise the line carries an **inline value**, and the **value run** — every following line
    that is blank or indented more than `indent` — belongs to that value. Those lines are never
    scanned as lines of their own. The only spans they can contribute are the ones step 9 takes
    from a recognised block scalar; every other step below yields no spans for the whole run.
-8. **The key must be listed.** If the key of step 5 is not a member of `keys` (§3.8.2), the line
-   and its value run yield no spans. This is the step that makes `run:`, `if:` and `image:`
-   unreachable, and it is checked before the value's form so that an unlisted key costs nothing
-   to decline.
-9. **If the line contains a U+000D, it yields no spans, and its value run (step 7) is still
-   consumed.** The U+000D here is one the line definition above did not take for a terminator — a
-   *lone* one, which YAML 1.2.2 §5.4 reads as a line break and this section's LF-only model does
-   not. It would otherwise land inside a span and be handed to the rules as content, which the
-   opening of this section forbids in terms. The value run is consumed rather than left to be
-   rescanned for the reason step 7 gives: a continuation line is not a mapping line, and
-   `summary: a<CR>b` followed by an indented `title: c` must not make `title` a key. Otherwise
-   `cp[v]` selects the form:
+   **A line of the run that is not blank is a continuation line; a run of blank lines only has
+   none.** Blank lines after a value's last line are trivia — YAML folds them into a plain scalar
+   only when a more-indented line follows — so a file ending in a blank line, or a blank line
+   between two mapping entries, does not make the value above it a continuation (1.11.0). §3.8.6
+   uses the term. **A declined key absorbs its value run only if its value can continue on the
+   next line** (1.11.0): `cp[v]` is `|`, `>`, `{`, `[`, `&` or `!`, or a quote that has no closing
+   quote on the line (as in step 5) or is followed, after the closing quote and any U+0020, by
+   something other than the end of the line or `#`. Any other value of a declined key — plain, alias, comment, a closed
+   quoted scalar — absorbs nothing, because none of them can be continued by a line that has a
+   key shape, so `- "a": 1` / `  title: c -- d` leaves `title` a sibling key and it converts.
+8. **The key must be listed.** A declined key is never a member of `keys` (§3.8.2), and neither
+   is a key of step 5 that is not listed: the line and its value run yield no spans. This is the
+   step that makes `run:`, `if:` and `image:` unreachable, and it is checked before the value's
+   form so that an unlisted key costs nothing to decline.
+9. `cp[v]` selects the form:
    - `&`, `*` or `!` — anchor, alias or tag — and `{` or `[` — a flow collection: no spans.
    - `#`: the value is absent and only a comment follows: no spans.
    - `|` or `>`: §3.8.5, block scalar.
    - `"` or `'`: §3.8.6, quoted scalar.
    - anything else: §3.8.6, plain scalar.
+
+**The carriage-return region (1.10.0, widened in 1.11.0).** A line containing a U+000D yields no
+spans, and neither does any later line up to, but not including, the first later line that is
+non-empty, does not begin with U+0020 and contains no U+000D. Any U+000D a line contains is a lone
+one, since a terminator's is not part of its line (above), and YAML 1.2.2 §5.4 reads it as a line
+break that this section's LF-only model does not — so it would otherwise land inside a span and be
+handed to the rules as content, which the opening of this section forbids in terms. The rule is
+applied to the spans steps 1–9, §3.8.5 and §3.8.6 produce, whatever those steps did with the lines
+it covers: it removes spans, never adds one, and does not change which lines any value run
+consumes. **The floor is column 0, not the line's own indent**, because the LF-only scan and YAML
+agree on nothing between a lone U+000D and the next line in column 0: a key shape can open inside
+the line that carries it, deeper than the piece after it; the line can sit inside another key's
+value run and never be visited; and a comment line has no key at all. In 1.10.0 this was step 9,
+which declined only a line on which a key was found, and so missed `run: |` / `  echo a` /
+`<CR>  x` / `  title: c -- d`, where `<CR>  x` has indent 0, ends the unlisted block's value run,
+and left `title` to be converted inside what YAML reads as a script (polytypo/polytypo#63). The
+cost is a miss and no more: in a nested document everything up to the next column-0 line is
+declined although YAML sees real keys there, and a comment, document marker or empty-valued key
+carrying a U+000D declines the indented lines under it. A model that floors the region at the
+carrying line's own indent was rejected: it leaves the first shape above open. So was a floor
+computed per piece, which agrees with column 0 only on nested documents and adds the places five
+scanners can part (empty and blank pieces, pieces opening with `- `).
 
 #### 3.8.5 Block scalars — one span per content line, and the chomping indicator never enters
 
@@ -1077,7 +1142,7 @@ non-blank line, or `indent + n` when the header carried an explicit indentation 
 consumed either way, never rescanned:
 
 - any line of the run contains U+0009;
-- any line of the run contains a U+000D (§3.8.4 step 9, 1.10.0) — a lone one, since a terminator's
+- any line of the run contains a U+000D (§3.8.4's carriage-return region, 1.10.0) — a lone one, since a terminator's
   is not part of its line. The whole block goes, as for a tab, rather than the one line: the
   block's lines are one construct, and a carriage return in the middle of it is evidence that
   the author's line model is not the one this section reads;
@@ -1110,6 +1175,13 @@ and `spaces` refuses to touch a run bordering one (`spaces.md` §3.2 step 4). Th
 that line the value yields no spans, and its continuation lines are consumed by §3.8.4 step 7
 rather than rescanned. After the closing quote only U+0020 and an optional `#` comment may
 follow. The span is the content between the quotes, exclusive of both.
+
+**A quoted scalar whose value run holds a continuation line (§3.8.4 step 7) also yields no
+spans.** The scan does not decide what a more-indented non-blank line after a closed scalar is —
+a stray continuation, a comment, or the sibling key of a sequence item whose `indent` counts the
+spaces before its `- ` — and it claims only what it has proved. Blank lines alone are not a
+continuation, so `title: "x"` followed by a blank line is scanned like `title: "x"` alone (1.11.0;
+until then the blank line silenced it).
 
 The offset model of §3.1 requires that source characters and content characters be the same thing,
 and two constructs break that:
@@ -1154,8 +1226,9 @@ colon, and applying the plain-scalar test here is what made the first draft decl
 **Plain.** The scalar runs to the end of the line, minus a trailing comment — the first `#`
 preceded by U+0020, and that U+0020 with it — and minus any remaining trailing U+0020. Then:
 
-- **the continuation bail**: if the value run of §3.8.4 step 7 is not empty, the scalar is a
-  multi-line plain scalar and yields no spans. Its line folding is a construct this scan does not
+- **the continuation bail**: if the value run of §3.8.4 step 7 holds a continuation line, the
+  scalar is a multi-line plain scalar and yields no spans. Trailing blank lines are not one
+  (1.11.0). Its line folding is a construct this scan does not
   claim;
 - **compact nesting is not a value**: the scalar yields no spans if it begins with `-` followed by
   U+0020 or the line end (`key: - item` opens a sequence), or if it contains a colon followed by
@@ -1661,22 +1734,49 @@ rule-local.
       requires a processable scalar to be the value of a key, and a bare item has none for
       `keys` to match. `- key: value` is unaffected;
     - **a key containing `"`, `'`, `{`, `[`, `&`, `*`, `!` or `#` anywhere** — `"description"`,
-      but also `a!b` — declined at step 5 before the key is compared, so a document that quotes
-      its keys gets nothing from this mode;
+      but also `a!b` — is a declined key at step 5 and never compared, so a document that quotes
+      its keys gets nothing from this mode. Since 1.11.0 the lines under a declined key are still
+      scanned, unless its value can continue (step 7);
     - **a plain scalar whose type is resolved from its whole text** — a listed key's value can
       change tag without any syntactic character being touched (§5 item 2's note). `1 .` becomes
       `1.` and stops being a string. This one is not a miss but an accepted cost, and it is the
       only entry here that is not purely in the widening direction;
     - **a multi-line plain scalar**, and a quoted scalar or flow collection that does not close
       on its opening line: all three are consumed by step 7 and yield no spans;
+    - **a closed quoted scalar followed by a continuation line** (1.11.0) — also consumed by step
+      7. Two valid documents land here and are missed rather than damaged: a more-indented
+      comment line after the scalar, and a sequence item holding a mapping
+      (`- title: "x"` / `  slug: y`), whose second key counts as more indented than the first;
+    - **a node line, and what it absorbs** (1.11.0, polytypo/polytypo#64). A line that opens a
+      node without being a key's value — `- |`, `- "x`, `- [a,`, `? |`, a header on a line of its
+      own — yields no spans and absorbs its value run, so the lines under it are never read as
+      mappings. Misses, all valid documents: a line holding only an anchor or a tag, with or
+      without a comment, over a nested mapping (`- &x` / `  title: a -- b`); a line that starts
+      with an anchor, a tag or a flow collection and holds a key (`- &a k: v` / `  title: a -- b`,
+      `- {a: 1}: v` / `  title: a -- b`), which absorbs the sibling after it; a quoted key whose
+      value can continue (`- "a": |` / `  title: a -- b`), where YAML reads `title` as a sibling
+      and the run absorbs it; an explicit key inside an entry (`- ? a` / `  : b` / `  title: a --
+      b`); and a document marker followed by a node in column 0 (`--- !t` / `title: a -- b`),
+      which absorbs the document. Measured on 5,912 YAML files and Markdown frontmatter blocks
+      under the author's project directories (`en-US`, twelve prose keys), 1.10.0 and 1.11.0
+      change the same lines: none of these costs fires there;
+    - **an own-line node's region** (1.11.0). A flow collection, a quote or a block scalar header
+      on a line of its own absorbs up to the next line in column 0, since the scan does not track
+      the key above it, so `title` in a nested document after such a line (`info:` /
+      `  description:` / `    "x` / `    y"` / `  title: a -- b`) is missed; at indent 0 it absorbs
+      the rest of the document, which a flow-collection key (`{a: 1}: v` / `title: a -- b`) also
+      does. The fixtures pin the misses and the column-0 control;
+    - **a tab** (1.11.0): a line containing U+0009 absorbs what it opens and yields no spans for
+      it, where until 1.11.0 the lines under it were scanned;
     - **a flow collection** — `tags: [one, two]` and `{a: b}` — even on one line;
     - **a quoted scalar containing an escape** — `"say \"hi\""` — where the source spells the
       content with more characters than it has;
     - **a block scalar whose indentation is ambiguous**, per §3.8.5's bail conditions;
-    - **a line carrying a lone U+000D** (1.10.0), and a block scalar with one on any line. Measured
-      on the author's 367-file content directory: no file contains one. It is the price of keeping §3.8.4's line model
-      LF-only while not letting a carriage return into a span, and it falls on documents
-      written with Classic Mac line endings.
+    - **a line carrying a lone U+000D** (1.10.0), every line after it up to the next non-empty
+      line in column 0 that carries none (1.11.0), and a block scalar with one on any line.
+      Measured on the author's 367-file content directory: no file contains one. It is the price
+      of keeping §3.8.4's line model LF-only while not letting a carriage return into a span, and
+      it falls on documents written with Classic Mac line endings.
 
 12. **`keys` matches a bare name at any depth, and nothing narrower.** `description` is
     processable wherever it occurs, which is what makes the option portable — no paths, no
@@ -1715,12 +1815,13 @@ rule-local.
       The block is still skipped, so nothing machine-read is typeset either way. A lone-U+000D
       document is one line to §3.8.4 and therefore loses the whole block, which is the price of
       not widening that section here. Since 1.10.0 `yaml` mode makes the same decline for itself
-      (§3.8.4 step 9), per line and consuming the value run, so the two paths no longer differ on
-      a stray U+000D inside a line. One shape of the same character is still missed in both, and
-      is recorded rather than fixed: a U+000D at column 0 of a line inside an *unlisted* key's
-      block scalar ends that value run under §3.8.4's LF-only model, so a listed-looking line
-      after it is scanned as a mapping line of its own, which YAML would read as block content.
-      Closing it needs the line model widened, which this release declines to do.
+      (§3.8.4, 1.10.0), per line and consuming the value run, so the two paths no longer differ on
+      a stray U+000D inside a line. One shape of the same character was missed in both until
+      1.11.0: a U+000D at column 0 of a line inside an *unlisted* key's block scalar ended that
+      value run under §3.8.4's LF-only model, so a listed-looking line after it was scanned as a
+      mapping line of its own, which YAML would read as block content and which `yaml` mode then
+      converted (polytypo/polytypo#63). It is closed without widening the line model, by
+      §3.8.4's carriage-return region, at the cost recorded in §7.11.
     - **§3.8.6's treatment of `''` in a single-quoted scalar: the cost, before and after 1.9.0.**
       Until 1.9.0 a single-quoted scalar containing `''` yielded no spans. An apostrophe inside
       such a scalar is spelled `''`, and an apostrophe is exactly what `apostrophe` and `quotes`

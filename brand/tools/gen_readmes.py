@@ -369,7 +369,7 @@ def build():
     body = TEMPLATE.format(
         logo="brand/logo/polytypo-lockup-stacked.svg",
         spec_version=SPEC_VERSION,
-        n_locales=len(REGISTRY["locales"]),
+        n_locales=len([c for c in REGISTRY["locales"] if c in HERO]),
         n_rules=len(ORDER["rules"]),
         badges=package_badges_row(),
         implementations=implementations_table(),

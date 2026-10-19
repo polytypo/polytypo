@@ -1,5 +1,5 @@
 {
-  "spec": "1.10.0",
+  "spec": "1.11.0",
   "locale": "en-US",
   "cases": [
     {
@@ -3118,8 +3118,8 @@
         "slug"
       ],
       "in": "---\ntitle: a \"b\"\nslug: c \"d\"\n\r---\n\nBody \"q\" here.\n",
-      "out": "---\ntitle: a “b”\nslug: c \"d\"\n\r---\n\nBody “q” here.\n",
-      "note": "modes.md §3.7.4: the content's last line is a lone U+000D, and `title` converts while `slug` does not. What this case discriminates is an implementation that substitutes the U+000D for another declining character: that converts both keys. What it does NOT discriminate is the per-line filter itself — measured in three ports, `slug` is already silent before the filter runs, because the trailing line is blank and joins `slug`'s value run, which §3.8.6's continuation bail declines. The cases that exercise the filter are -keys-lone-cr-one-key and -keys-lone-cr-costs-one-line."
+      "out": "---\ntitle: a “b”\nslug: c “d”\n\r---\n\nBody “q” here.\n",
+      "note": "modes.md §3.7.4 and §3.8.4 step 7: the content's last line is a lone U+000D on a line of its own, and both `title` and `slug` convert. That line is blank to the value-run test, so it is not a continuation line of `slug` (1.11.0; until then it joined `slug`'s run and silenced it, which this note used to describe as the point of the case). What the case discriminates now is an implementation that substitutes the U+000D for another declining character such as U+0009: that makes the last line non-blank and silences `slug`. The per-line filter itself is exercised by -keys-lone-cr-one-key and -keys-lone-cr-costs-one-line."
     },
     {
       "id": "en-us-markdown-commonmark-frontmatter-keys-lone-cr-in-a-value-run",
@@ -3275,6 +3275,883 @@
       "in": "title: a\r#c -- d\n",
       "out": "title: a\r#c -- d\n",
       "note": "modes.md §3.8.4 step 9: YAML 1.2 reads `<CR>#c -- d` as a comment line, which step 2 declines when it starts a line. The LF-only model sees one line, so the decline has to be on the carriage return itself."
+    },
+    {
+      "id": "en-us-yaml-double-quoted-trailing-blank-line",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: \"a -- b\"\n\n",
+      "out": "title: \"a—b\"\n\n",
+      "note": "modes.md §3.8.4 step 7 and §3.8.6 (spec 1.11.0): blank lines after a closed quoted scalar are not a continuation line, so a file that ends in a blank line converts exactly as the same file without it. Until 1.11.0 the run being non-empty silenced the scalar in every runtime."
+    },
+    {
+      "id": "en-us-yaml-single-quoted-trailing-blank-line",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: 'a -- b'\n\n",
+      "out": "title: 'a—b'\n\n",
+      "note": "modes.md §3.8.6 (spec 1.11.0): the single-quoted form of the trailing blank line."
+    },
+    {
+      "id": "en-us-yaml-plain-trailing-blank-line",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "summary: the one -- here\n\n",
+      "out": "summary: the one—here\n\n",
+      "note": "modes.md §3.8.6 continuation bail (spec 1.11.0): trailing blank lines are not a continuation line, so a plain scalar followed by a blank line is not a multi-line plain scalar."
+    },
+    {
+      "id": "en-us-yaml-blank-line-between-mappings",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: \"a -- b\"\n\nslug: c -- d\n",
+      "out": "title: \"a—b\"\n\nslug: c—d\n",
+      "note": "modes.md §3.8.4 step 7 (spec 1.11.0): a blank line between two mappings belongs to the first value's run and is not a continuation line, so both values convert."
+    },
+    {
+      "id": "en-us-yaml-quoted-continuation-line-declined",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: \"a -- b\"\n  more -- c\n",
+      "out": "title: \"a -- b\"\n  more -- c\n",
+      "note": "modes.md §3.8.6 (spec 1.11.0): a non-blank, more-indented line after a closed quoted scalar is a continuation line and the scalar yields no spans. Pinned so that narrowing the bail for blank lines does not widen it for this."
+    },
+    {
+      "id": "en-us-yaml-plain-continuation-after-blank-declined",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "summary: a -- b\n\n  more -- c\n",
+      "out": "summary: a -- b\n\n  more -- c\n",
+      "note": "modes.md §3.8.6 continuation bail (spec 1.11.0): a blank line followed by a more-indented line is a genuine multi-line plain scalar, which YAML folds. The blank line does not hide the continuation line behind it."
+    },
+    {
+      "id": "en-us-yaml-tab-line-is-not-blank-after-quoted",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: \"a -- b\"\n \t\n",
+      "out": "title: \"a -- b\"\n \t\n",
+      "note": "modes.md §3.8.4 step 1 and step 7 (spec 1.11.0): a line holding U+0009 is not blank, so it is a continuation line and the quoted scalar yields no spans. A port that tests blankness with a trim converts this."
+    },
+    {
+      "id": "en-us-yaml-cr-line-is-not-blank-after-quoted",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: \"a -- b\"\n \r \n",
+      "out": "title: \"a -- b\"\n \r \n",
+      "note": "modes.md §3.8.4 step 1 and step 7 (spec 1.11.0): a lone U+000D makes a line non-blank, so it is a continuation line and the quoted scalar yields no spans."
+    },
+    {
+      "id": "en-us-yaml-crlf-blank-line-after-quoted",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: \"a -- b\"\r\n\r\n",
+      "out": "title: \"a—b\"\r\n\r\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0): a U+000D before U+000A is a terminator, so the second line is empty and blank, and the quoted scalar converts."
+    },
+    {
+      "id": "en-us-yaml-blank-then-less-indented-key",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "meta:\n  title: \"a -- b\"\n\nslug: c -- d\n",
+      "out": "meta:\n  title: \"a—b\"\n\nslug: c—d\n",
+      "note": "modes.md §3.8.4 step 7 (spec 1.11.0): the blank line is followed by a less-indented line, which ends the run; both values convert."
+    },
+    {
+      "id": "en-us-yaml-blank-then-column-zero-comment",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: \"a -- b\"\n\n# c\n",
+      "out": "title: \"a—b\"\n\n# c\n",
+      "note": "modes.md §3.8.4 step 7 (spec 1.11.0): the column-0 comment is not more indented, so it ends the run and the quoted scalar converts."
+    },
+    {
+      "id": "en-us-yaml-indented-comment-after-quoted-declined",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "title: \"a -- b\"\n  # c\n",
+      "out": "title: \"a -- b\"\n  # c\n",
+      "note": "modes.md §3.8.6 and §7.11 (spec 1.11.0): a more-indented comment line is a continuation line to this scan, so the quoted scalar yields no spans. A valid document, missed rather than damaged."
+    },
+    {
+      "id": "en-us-yaml-sequence-item-second-key-declined",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title",
+        "slug",
+        "summary"
+      ],
+      "in": "- title: \"a -- b\"\n  slug: c -- d\n",
+      "out": "- title: \"a -- b\"\n  slug: c -- d\n",
+      "note": "modes.md §7.11 (spec 1.11.0): in a sequence item the second key counts as more indented than the first, so `title`'s quoted scalar sees a continuation line and yields no spans; `slug` is consumed as part of that run. Pinned as the accepted miss it is."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-blank-lines",
+      "rule": "dashes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title",
+        "slug"
+      ],
+      "in": "---\ntitle: \"a -- b\"\n\nslug: c -- d\n\n---\n\nBody -- here.\n",
+      "out": "---\ntitle: \"a—b\"\n\nslug: c—d\n\n---\n\nBody—here.\n",
+      "note": "modes.md §3.7.4 and §3.8.4 step 7 (spec 1.11.0): blank lines between frontmatter entries and before the closing delimiter are not continuation lines, so both values convert. The block reuses the yaml scan, so this is the same change seen through markdown mode."
+    },
+    {
+      "id": "en-us-yaml-cr-region-block-scalar-payload",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "run: |\n  echo a\n\r  x\n  title: c -- d\n",
+      "out": "run: |\n  echo a\n\r  x\n  title: c -- d\n",
+      "note": "modes.md §3.8.4's carriage-return region (spec 1.11.0): the line `\\r  x` has indent 0 under the LF-only line model and ends the unlisted `run:` block's value run, so the next line used to be scanned as a mapping line of its own and converted. A line carrying a U+000D opens a region that runs to the first non-empty line in column 0 without one, and nothing in it yields a span. polytypo/polytypo#63."
+    },
+    {
+      "id": "en-us-yaml-cr-region-key-opens-inside-the-cr-line",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "k:\n  a\rrun: |\n  title: c -- d\n",
+      "out": "k:\n  a\rrun: |\n  title: c -- d\n",
+      "note": "modes.md §3.8.4's carriage-return region (spec 1.11.0): a key shape opens inside the line that carries the U+000D, deeper than the piece after it. A region floored at the line's own indent misses this; the floor is column 0."
+    },
+    {
+      "id": "en-us-yaml-cr-region-line-inside-another-run",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "a:\n  run: |\n    echo\n    x\rfoo: |\n  title: c -- d\n",
+      "out": "a:\n  run: |\n    echo\n    x\rfoo: |\n  title: c -- d\n",
+      "note": "modes.md §3.8.4's carriage-return region (spec 1.11.0): the line with the U+000D is consumed by another key's value run and never visited by the scan as a line of its own; the region is computed over all lines, not only visited ones."
+    },
+    {
+      "id": "en-us-yaml-cr-region-comment-line",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "# note\rrun: |\n  echo\n  title: c -- d\n",
+      "out": "# note\rrun: |\n  echo\n  title: c -- d\n",
+      "note": "modes.md §3.8.4's carriage-return region (spec 1.11.0): the U+000D sits on a comment line, where no key is found; the region does not depend on the line having a key shape."
+    },
+    {
+      "id": "en-us-yaml-cr-region-ends-at-column-zero",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "slug"
+      ],
+      "in": "run: |\n  echo a\n\r  x\nslug: c -- d\n",
+      "out": "run: |\n  echo a\n\r  x\nslug: c—d\n",
+      "note": "modes.md §3.8.4's carriage-return region (spec 1.11.0): control: the first non-empty line in column 0 without a U+000D ends the region, so `slug` converts."
+    },
+    {
+      "id": "en-us-yaml-cr-region-nested-cost",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "info:\n  a: x\r  b: y\n  title: c -- d\n",
+      "out": "info:\n  a: x\r  b: y\n  title: c -- d\n",
+      "note": "modes.md §3.8.4's carriage-return region (spec 1.11.0): the accepted cost: in a nested document the region reaches to the next column-0 line, so a real listed key after a U+000D is declined. A miss, never damage."
+    },
+    {
+      "id": "en-us-yaml-cr-region-document-marker-cost",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "---\rinfo:\n  title: a -- b\n",
+      "out": "---\rinfo:\n  title: a -- b\n",
+      "note": "modes.md §3.8.4's carriage-return region (spec 1.11.0): the accepted cost: a document marker whose line carries a U+000D opens a region too."
+    },
+    {
+      "id": "en-us-yaml-cr-region-crlf-is-a-terminator",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "info:\r\n  title: a -- b\r\n",
+      "out": "info:\r\n  title: a—b\r\n",
+      "note": "modes.md §3.8.4's carriage-return region (spec 1.11.0): control: a U+000D before U+000A is a terminator and belongs to no line, so it opens no region."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-cr-region",
+      "rule": "dashes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "---\nrun: |\n  echo a\n\r  x\n  title: c -- d\n---\n\nBody \"q\" here.\n",
+      "out": "---\nrun: |\n  echo a\n\r  x\n  title: c -- d\n---\n\nBody “q” here.\n",
+      "note": "modes.md §3.7.4 and §3.8.4's carriage-return region (spec 1.11.0): the frontmatter block reuses the yaml scan, so the unlisted block's payload is declined there too and only the body converts."
+    },
+    {
+      "id": "en-us-yaml-leak-seq-literal-block",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- |\n  title: c -- d\n",
+      "out": "- |\n  title: c -- d\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a literal block scalar opened on a sequence entry; YAML reads `title: c -- d` as its content. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-seq-folded-block",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- >\n  title: c -- d\n",
+      "out": "- >\n  title: c -- d\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): the folded form of the same. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-own-line-block-header",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "run:\n  |\n    title: c -- d\n",
+      "out": "run:\n  |\n    title: c -- d\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a block scalar header on a line of its own under an empty-valued key. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-seq-double-quoted",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- \"x\n  title: c -- d\"\n",
+      "out": "- \"x\n  title: c -- d\"\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a double-quoted scalar that continues onto the next line. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-seq-single-quoted",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- 'x\n  title: c -- d'\n",
+      "out": "- 'x\n  title: c -- d'\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): the single-quoted form; the closing quote used to be turned into U+2019. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-quoted-key-block",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "\"a\": |\n  title: c -- d\n",
+      "out": "\"a\": |\n  title: c -- d\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a quoted key whose value is a block scalar. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-special-char-key-block",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "a!b: |\n  title: c -- d\n",
+      "out": "a!b: |\n  title: c -- d\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a key holding a character step 5 declines, whose value is a block scalar. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-special-char-key-quoted",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "a!b: \"x\n  title: c -- d\"\n",
+      "out": "a!b: \"x\n  title: c -- d\"\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): the same key with a quoted value that continues. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-seq-flow-sequence",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- [a,\n  title: c -- d]\n",
+      "out": "- [a,\n  title: c -- d]\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a flow sequence opened on a sequence entry. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-seq-flow-mapping",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- {a: 1,\n  title: c -- d}\n",
+      "out": "- {a: 1,\n  title: c -- d}\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a flow mapping opened on a sequence entry. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-seq-anchored-block",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- &x |\n  title: c -- d\n",
+      "out": "- &x |\n  title: c -- d\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): an anchored block scalar. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-seq-tagged-block",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- !!str |\n  title: c -- d\n",
+      "out": "- !!str |\n  title: c -- d\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a tagged block scalar. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-own-line-anchored-block",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "run:\n  &x |\n    title: c -- d\n",
+      "out": "run:\n  &x |\n    title: c -- d\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): an anchored block scalar on a line of its own. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-nested-seq-block",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "run:\n  - |\n    title: c -- d\n",
+      "out": "run:\n  - |\n    title: c -- d\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a block scalar in a sequence entry nested under a key. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-explicit-key-block",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "? |\n  title: c -- d\n: v\n",
+      "out": "? |\n  title: c -- d\n: v\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a block scalar as an explicit key. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-explicit-value-block",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "? a\n: |\n  title: c -- d\n",
+      "out": "? a\n: |\n  title: c -- d\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a block scalar as the value of an explicit key. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-escaped-quote-not-a-key",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- \"a\\\": x\n  title: c -- d\"\n",
+      "out": "- \"a\\\": x\n  title: c -- d\"\n",
+      "note": "modes.md §3.8.4 step 5 (spec 1.11.0, polytypo#64): a U+005C and the code point after it never close a double quote, so the quote opened after `- ` has no close on the line, the line is a node line and absorbs the line under it. Until 1.11.0 `title` converted."
+    },
+    {
+      "id": "en-us-yaml-leak-escaped-quote-key-block",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "\"a\\\"b\": |\n  title: c -- d\n",
+      "out": "\"a\\\"b\": |\n  title: c -- d\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a quoted key holding an escape, whose value is a block scalar. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-doubled-quote-not-a-key",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- 'a'': x\n  title: c -- d'\n",
+      "out": "- 'a'': x\n  title: c -- d'\n",
+      "note": "modes.md §3.8.4 step 5 (spec 1.11.0, polytypo#64): `''` is one unit inside a single-quoted scalar, so the quote after `a'` does not close it, the line is a node line and absorbs the line under it. Until 1.11.0 `title` converted and the closing quote became U+2019."
+    },
+    {
+      "id": "en-us-yaml-leak-own-line-flow",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "run:\n  [a,\n  title: c -- d]\n",
+      "out": "run:\n  [a,\n  title: c -- d]\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a flow sequence on a line of its own, whose continuation sits at the opening line's indent. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-own-line-quote",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "run:\n  \"x\n  title: c -- d\"\n",
+      "out": "run:\n  \"x\n  title: c -- d\"\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a quote opened on a line of its own, continued at the same indent. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-own-line-quote-deeper",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "run:\n    \"x\n  title: c -- d\"\n",
+      "out": "run:\n    \"x\n  title: c -- d\"\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a quote opened deeper than its continuation. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-own-line-block-header-same-indent",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "run:\n  |\n  title: c -- d\n",
+      "out": "run:\n  |\n  title: c -- d\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a block scalar header whose content sits at the header's own indent. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-root-quote",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "\"x\ntitle: c -- d\"\n",
+      "out": "\"x\ntitle: c -- d\"\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): a quoted scalar at the root of the document. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-leak-tab-line",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "a: \"x\ty\n  title: c -- d\"\n",
+      "out": "a: \"x\ty\n  title: c -- d\"\n",
+      "note": "modes.md §3.8.4 step 1 (spec 1.11.0, polytypo#64): a line with a tab yields no spans, but steps 2 to 7 still decide what it absorbs, and the quoted scalar it opens owns the line under it. Until 1.11.0 that line was scanned as a mapping line and `title` converted."
+    },
+    {
+      "id": "en-us-yaml-leak-document-marker-block",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "--- |\n  title: c -- d\n",
+      "out": "--- |\n  title: c -- d\n",
+      "note": "modes.md §3.8.4 step 3 (spec 1.11.0, polytypo#64): a block scalar introduced on a document marker line in column 0. The marker absorbs the document, so `title` is not read as a key. Until 1.11.0 it converted."
+    },
+    {
+      "id": "en-us-yaml-leak-document-marker-block-column-zero",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "--- |\ntitle: c -- d\n",
+      "out": "--- |\ntitle: c -- d\n",
+      "note": "modes.md §3.8.4 steps 3 to 7 (spec 1.11.0, polytypo#64): the same with content in column 0. A line that opens a node and is not a listed key's value absorbs the lines under it, so `title` is not scanned as a key. Until 1.11.0 it was, and converted."
+    },
+    {
+      "id": "en-us-yaml-ok-empty-item-mapping",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "-\n  title: c -- d\n",
+      "out": "-\n  title: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: a sequence marker with nothing after it opens a nested mapping, whose lines are scanned."
+    },
+    {
+      "id": "en-us-yaml-ok-nested-empty-items",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- -\n    title: c -- d\n",
+      "out": "- -\n    title: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: nested empty sequence markers."
+    },
+    {
+      "id": "en-us-yaml-ok-quoted-key-sibling",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- \"a\": 1\n  title: c -- d\n",
+      "out": "- \"a\": 1\n  title: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: a quoted key closes on its line and is followed by a colon, so `title` is a sibling key and converts."
+    },
+    {
+      "id": "en-us-yaml-ok-single-quoted-key-sibling",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- 'a''b': 1\n  title: c -- d\n",
+      "out": "- 'a''b': 1\n  title: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: the single-quoted form with `''` in the key."
+    },
+    {
+      "id": "en-us-yaml-ok-quoted-key-nested",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "\"k\":\n  title: c -- d\n",
+      "out": "\"k\":\n  title: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: a quoted key with an empty value opens a nested mapping."
+    },
+    {
+      "id": "en-us-yaml-ok-quoted-item-then-item",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- \"x\"\n- title: c -- d\n",
+      "out": "- \"x\"\n- title: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: a closed quoted scalar followed by a sibling entry."
+    },
+    {
+      "id": "en-us-yaml-ok-block-item-then-item",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- |\n  a\n- title: c -- d\n",
+      "out": "- |\n  a\n- title: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: a block scalar ends at the next entry at its own indent."
+    },
+    {
+      "id": "en-us-yaml-ok-quoted-item-blank-then-key",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- \"x\"\n\ntitle: c -- d\n",
+      "out": "- \"x\"\n\ntitle: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: a blank line and a column-0 key after a closed quoted scalar."
+    },
+    {
+      "id": "en-us-yaml-ok-special-char-key-sibling",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- a!b: 1\n  title: c -- d\n",
+      "out": "- a!b: 1\n  title: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: a declined key with a plain value absorbs nothing."
+    },
+    {
+      "id": "en-us-yaml-ok-quoted-key-comment",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "\"a\": # note\n  title: c -- d\n",
+      "out": "\"a\": # note\n  title: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: a quoted key with only a comment after the colon absorbs nothing."
+    },
+    {
+      "id": "en-us-yaml-ok-quoted-key-quoted-value",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- \"a\": \"b\"\n  title: c -- d\n",
+      "out": "- \"a\": \"b\"\n  title: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: a quoted key whose quoted value closes cleanly absorbs nothing."
+    },
+    {
+      "id": "en-us-yaml-ok-comment-line-in-nest",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "info:\n# c\n  title: c -- d\n",
+      "out": "info:\n# c\n  title: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: a comment line absorbs nothing."
+    },
+    {
+      "id": "en-us-yaml-ok-comment-after-marker",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- # c\n  title: c -- d\n",
+      "out": "- # c\n  title: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: a sequence marker followed only by a comment opens a nested mapping."
+    },
+    {
+      "id": "en-us-yaml-ok-crlf-quoted-key-nested",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "\"k\":\r\n  title: c -- d\r\n",
+      "out": "\"k\":\r\n  title: c—d\r\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: CRLF terminators change nothing."
+    },
+    {
+      "id": "en-us-yaml-ok-openapi-path",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "summary"
+      ],
+      "in": "paths:\n  /users/{id}:\n    get:\n      summary: c -- d\n",
+      "out": "paths:\n  /users/{id}:\n    get:\n      summary: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: an OpenAPI path key with braces has an empty value and absorbs nothing, so the operations under it are scanned."
+    },
+    {
+      "id": "en-us-yaml-ok-explicit-value-mapping",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "? a\n: title: c -- d\n",
+      "out": "? a\n: title: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: a mapping as the value of an explicit key converts."
+    },
+    {
+      "id": "en-us-yaml-cost-anchor-only-line",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- &x\n  title: c -- d\n",
+      "out": "- &x\n  title: c -- d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): accepted miss (§7.11): a line holding only an anchor opens a nested node that YAML reads as a mapping, but the scan absorbs its lines."
+    },
+    {
+      "id": "en-us-yaml-cost-quoted-key-block-sibling",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- \"a\": |\n  title: c -- d\n",
+      "out": "- \"a\": |\n  title: c -- d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): accepted miss (§7.11): a declined key with a block scalar absorbs a sibling at the entry's indent that YAML reads as a key."
+    },
+    {
+      "id": "en-us-yaml-cost-own-line-region-sibling",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "info:\n  description:\n    \"x\n    y\"\n  title: c -- d\n",
+      "out": "info:\n  description:\n    \"x\n    y\"\n  title: c -- d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): accepted miss (§7.11): the own-line region ends only at column 0, so a sibling key at a deeper indent is absorbed."
+    },
+    {
+      "id": "en-us-yaml-ok-own-line-region-column-zero",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "info:\n  description:\n    \"x\n    y\"\ntitle: c -- d\n",
+      "out": "info:\n  description:\n    \"x\n    y\"\ntitle: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: the own-line region ends at the first line in column 0."
+    },
+    {
+      "id": "en-us-markdown-commonmark-frontmatter-keys-own-line-block",
+      "rule": "dashes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "frontmatterKeys": [
+        "title"
+      ],
+      "in": "---\nnotes:\n  |\n    title: c -- d\n---\n\nBody -- here.\n",
+      "out": "---\nnotes:\n  |\n    title: c -- d\n---\n\nBody—here.\n",
+      "note": "modes.md §3.7.4 and §3.8.4 (spec 1.11.0, polytypo#64): the frontmatter block reuses the yaml scan, so a block scalar header on a line of its own absorbs its content there too, and the body is unaffected."
+    },
+    {
+      "id": "en-us-yaml-ok-escaped-quote-key-sibling",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "\"a\\\"b\": 1\ntitle: c -- d\n",
+      "out": "\"a\\\"b\": 1\ntitle: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: step 5 skips a U+005C and the code point after it, so `\"a\\\"b\"` closes on its line and is a quoted key; `title` at column 0 is not under it and converts."
+    },
+    {
+      "id": "en-us-yaml-ok-anchored-key-column-zero",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "&a k: v\ntitle: c -- d\n",
+      "out": "&a k: v\ntitle: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: an anchored key in column 0 is a node line without a region, so a sibling at column 0 converts."
+    },
+    {
+      "id": "en-us-yaml-ok-indented-document-marker-text",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "a:\n  --- x: 1\ntitle: c -- d\n",
+      "out": "a:\n  --- x: 1\ntitle: c—d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): control: YAML reads a document marker only in column 0, so an indented `--- x: 1` absorbs nothing and `title` converts."
+    },
+    {
+      "id": "en-us-yaml-cost-explicit-key-in-entry",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "- ? a\n  : b\n  title: c -- d\n",
+      "out": "- ? a\n  : b\n  title: c -- d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): accepted miss (§7.11): an explicit key inside an entry is a node line that absorbs the lines under it, though YAML reads `title` as a sibling."
+    },
+    {
+      "id": "en-us-yaml-cost-flow-key-column-zero",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "{a: 1}: v\ntitle: c -- d\n",
+      "out": "{a: 1}: v\ntitle: c -- d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): accepted miss (§7.11): a flow collection at indent 0 absorbs the rest of the document, though YAML reads `title` as a root key."
+    },
+    {
+      "id": "en-us-yaml-cost-document-marker-tag",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "--- !t\ntitle: c -- d\n",
+      "out": "--- !t\ntitle: c -- d\n",
+      "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): accepted miss (§7.11): a document marker in column 0 followed by a tag absorbs the document."
     }
   ]
 }

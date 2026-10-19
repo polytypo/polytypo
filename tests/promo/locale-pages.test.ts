@@ -11,7 +11,7 @@ const PROMO_DIR = path.join(ROOT, "promo");
 type Source = { rule: string; cite: string; url?: string };
 type LocaleFile = { locale: string; name: string; sources: Source[] };
 
-const registry = JSON.parse(
+const registered = JSON.parse(
   readFileSync(path.join(ROOT, "spec/locales/registry.json"), "utf8"),
 ) as {
   locales: string[];
@@ -19,6 +19,8 @@ const registry = JSON.parse(
 const examples = JSON.parse(readFileSync(path.join(PROMO_DIR, "locale-examples.json"), "utf8")) as {
   locales: Record<string, { byRule: Record<string, unknown[]>; disagreed: number }>;
 };
+// A locale newer than the installed engine has no examples and no page until the engine knows it.
+const registry = { locales: registered.locales.filter((code) => code in examples.locales) };
 
 function page(code: string): string {
   const p = path.join(PROMO_DIR, "locales", code, "index.html");
@@ -27,10 +29,12 @@ function page(code: string): string {
 }
 
 describe("locale pages", () => {
-  it("every locale in the registry has a page", () => {
-    expect(registry.locales).toHaveLength(19);
+  it("every registry locale the installed engine can exemplify has a page, and no other has one", () => {
+    expect(registry.locales.length).toBeGreaterThanOrEqual(19);
     for (const code of registry.locales)
       expect(existsSync(path.join(PROMO_DIR, "locales", code, "index.html"))).toBe(true);
+    for (const code of registered.locales.filter((c) => !registry.locales.includes(c)))
+      expect(existsSync(path.join(PROMO_DIR, "locales", code, "index.html"))).toBe(false);
   });
 
   it("the locales index links every locale page", () => {

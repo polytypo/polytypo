@@ -1,0 +1,94 @@
+{
+  "locale": "sk",
+  "name": "Slovak",
+  "quotes": {
+    "primary": {
+      "open": "„",
+      "close": "“",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "‚",
+      "close": "‘",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": []
+    }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-spaced"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": ["t. j.", "a pod.", "a. s."],
+    "beforeUnits": ["%", "‰", "kg", "km", "km/s", "m/s", "min"],
+    "beforeNumber": ["č.", "ods.", "s."],
+    "beforeWord": [],
+    "afterSymbols": ["§"],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Jazykovedný ústav Ľudovíta Štúra SAV, Pravidlá slovenského pravopisu (3., upravené a doplnené vydanie, Veda 2000, tak ako je zverejnené na https://www.juls.savba.sk/ediela/psp2000/psp.pdf; JÚĽŠ na https://www.juls.savba.sk/psp_2013.html označuje vydanie z roku 2013 za nezmenené), kap. VIII.2.7: «Úvodzovky („“) sa píšu: 1. na začiatku a na konci priamej reči…»; 2.7 Poznámka 1: «Čiarka a obrátená čiarka sa namiesto úvodzoviek používa najmä na vyznačenie citátu vnútri iného citátu»; VIII.1 Poznámka: «Úvodzovky a zátvorky sa píšu bez medzery nielen za výrazom, ktorý sa kladie medzi tieto interpunkčné znamienka, ale aj pred ním.»",
+      "url": "https://www.juls.savba.sk/ediela/psp2000/psp.pdf",
+      "note": "Prvý stupeň: U+201E otváracia, U+201C zatváracia, bez vnútornej medzery. Tvar otváracej úvodzovky (dolná, „deväťka“) je v zdroji vidieť; zatváraciu U+201C (nie U+201D) pravidlá slovami nerozlišujú, vychádza z vytlačeného glyfu a zo slovného opisu druhého stupňa — OBMEDZENÁ ISTOTA, povedaná naplno. Druhý stupeň: «čiarka a obrátená čiarka umiestnená vyššie» je U+201A (čiarka) a U+2018 (obrátená čiarka, tvar šestky, nie U+2019); toto je pevnejšie než pri cs, lebo zdroj druhý stupeň opisuje slovami. Text vydania 2013 je podľa JÚĽŠ nezmenený text vydania z roku 2000, preto sa cituje PDF z roku 2000. Kódové body sú určené z opisov a vytlačených tvarov, nie z markdownového vykreslenia stránky. Q-W platí: U+201E a U+201C sú WIDE, U+201A a U+2018 NARROW. Apostrof zo 'zvyškových' použití (čos’, bols’, ’89) nemá tvar elisionClitics, preto sú elisionIdioms aj elisionClitics prázdne (PSP 2.11; VIII.1 bod 10 uvádza elíziu «najmä v starších básnických textoch»). Overené 19. 10. 2026."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Jazykovedný ústav Ľudovíta Štúra SAV, Pravidlá slovenského pravopisu (3., upravené a doplnené vydanie, Veda 2000, tak ako je zverejnené na https://www.juls.savba.sk/ediela/psp2000/psp.pdf; JÚĽŠ na https://www.juls.savba.sk/psp_2013.html označuje vydanie z roku 2013 za nezmenené), kap. VIII.1 Poznámka: «Pomlčka sa píše s medzerami, spojovník sa píše bez medzier.»; 2.8 bod 5: «pri oddeľovaní vsuviek… napr. Nemáme zatiaľ – prirodzene – študijné výsledky.»; 2.8 Poznámka 2 (za bodom 18): «Pomlčka je dlhšia ako spojovník a od slov alebo grafických znakov sa oddeľuje medzerou.»",
+      "url": "https://www.juls.savba.sk/ediela/psp2000/psp.pdf",
+      "note": "Odôvodňuje dash.parenthetical = «en-spaced»: vsuvka sa ohraničuje pomlčkou s medzerami z oboch strán. DĹŽKA je určená z definičného glyfu «Pomlčka (–)», teda U+2013; zdroj ju slovami nepomenúva a o dlhej pomlčke U+2014 nehovorí — STREDNÁ ISTOTA. Čeština je tu odlišná v rozsahu (pozri ranges). Overené 19. 10. 2026."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Jazykovedný ústav Ľudovíta Štúra SAV, Pravidlá slovenského pravopisu (3., upravené a doplnené vydanie, Veda 2000, tak ako je zverejnené na https://www.juls.savba.sk/ediela/psp2000/psp.pdf; JÚĽŠ na https://www.juls.savba.sk/psp_2013.html označuje vydanie z roku 2013 za nezmenené), kap. 2.8 bod 16a: «na naznačenie rozpätia… a) časového a miestneho rozpätia a rozpätia v počte, pričom nahrádza výraz až, napr. 1980 – 1990, január – február, strana 5 – 12»; 2.12 bod 3: «I. Newton (1643 – 1727)»; STN 01 6910 Pravidlá písania a úpravy písomností – výklad normy (STU Bratislava, 6. 8. 2010; výklad normy, nie jej text ani JÚĽŠ; https://www.stuba.sk/new/docs/stu/pracoviska/rektorat/odd_pravne_organizacne/STN_01_6910_Pravidla_pisania_a_upravy_pisomnosti.pdf), s. 7: medzi chybami uvádza chýbajúcu medzeru pred pomlčkou a za ňou («1995 – 2000… pomlčku nemožno písať bez medzier»)",
+      "url": "https://www.juls.savba.sk/ediela/psp2000/psp.pdf",
+      "note": "Odôvodňuje dash.range = «en-spaced», a to je presne bod, kde analógia s češtinou zlyháva: ÚJČ sadzí rozsah tesne («en-tight»), PSP s medzerami na oboch stranách. Druhý zdroj (výklad STN) len potvrdzuje, nie je normatívny. Pravidlo ranges je predvolene vypnuté (spec 0.5.0). Overené 19. 10. 2026."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Jazykovedný ústav Ľudovíta Štúra SAV, Pravidlá slovenského pravopisu (3., upravené a doplnené vydanie, Veda 2000, tak ako je zverejnené na https://www.juls.savba.sk/ediela/psp2000/psp.pdf; JÚĽŠ na https://www.juls.savba.sk/psp_2013.html označuje vydanie z roku 2013 za nezmenené), kap. 2.10: «Tri bodky (…)» — päť použití s poznámkami o medzerách",
+      "url": "https://www.juls.savba.sk/ediela/psp2000/psp.pdf",
+      "note": "abbreviatedAfterTerminal = false je BEZPEČNÁ hodnota, nie citácia: PSP definuje výpustku ako jeden znak, ale dvojbodkovú formu po «?» či «!» (ruské «?..») nikde neuvádza a žiadny konzultovaný slovenský zdroj ju nepredpokladá. Na rozdiel od češtiny tu niet výslovnej vety «nikdy sa nepripája ďalšia bodka»; stredne vysoká istota. Overené 19. 10. 2026."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Jazykovedný ústav Ľudovíta Štúra SAV, Pravidlá slovenského pravopisu (3., upravené a doplnené vydanie, Veda 2000, tak ako je zverejnené na https://www.juls.savba.sk/ediela/psp2000/psp.pdf; JÚĽŠ na https://www.juls.savba.sk/psp_2013.html označuje vydanie z roku 2013 za nezmenené), kap. 2.9 bod 12: «Ak sa slovo písané so spojovníkom rozdeľuje na mieste spojovníka, spojovník sa zopakuje na začiatku ďalšieho riadka, napr. Rakúsko-Uhorsko – Rakúsko- … -Uhorsko»; V.1 Poznámka 2 (to isté)",
+      "url": "https://www.juls.savba.sk/ediela/psp2000/psp.pdf",
+      "note": "Odôvodňuje tri prázdne zoznamy. Delenie na spojovníku je výslovne povolené (pozitívne dovolenie, nie mlčanie) a neexistuje uzavretý normatívny zoznam tvarov, ktorých spojovník sa nesmie lámať. Overené 19. 10. 2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Jazykovedný ústav Ľudovíta Štúra SAV, Pravidlá slovenského pravopisu (3., upravené a doplnené vydanie, Veda 2000, tak ako je zverejnené na https://www.juls.savba.sk/ediela/psp2000/psp.pdf; JÚĽŠ na https://www.juls.savba.sk/psp_2013.html označuje vydanie z roku 2013 za nezmenené), kap. VIII.1 Poznámka: «…bodka, výkričník, otáznik, čiarka, bodkočiarka, tri bodky, dvojbodka, píšu sa bezprostredne za slovom bez vynechania medzery»",
+      "url": "https://www.juls.savba.sk/ediela/psp2000/psp.pdf",
+      "note": "Odôvodňuje prázdne beforePunctuation aj narrowBeforePunctuation: slovenčina pred «:», «;», «!», «?» nestavia ani U+00A0, ani U+202F, a zdroj im odstup výslovne upiera — je to záporné tvrdenie, nie mlčanie. Overené 19. 10. 2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Jazykovedný ústav Ľudovíta Štúra SAV, Pravidlá slovenského pravopisu (3., upravené a doplnené vydanie, Veda 2000, tak ako je zverejnené na https://www.juls.savba.sk/ediela/psp2000/psp.pdf; JÚĽŠ na https://www.juls.savba.sk/psp_2013.html označuje vydanie z roku 2013 za nezmenené), kap. 2.1 bod 4: «…a pod. (a podobne), t. j. (to jest)…»; 2.1 «Bodka sa nepíše» bod 5: «v bode č. 2 (v bode číslo dva), uznesenie č. 5…, § 7 ods. 2 (paragraf sedem odsek dva)…, na s. 5 (na strane päť)»; 2.4.1 bod 7c: «Váhostav, a. s., Žilina patrí medzi najväčšie stavebné podniky u nás.»; STN 01 6910 Pravidlá písania a úpravy písomností – výklad normy (STU Bratislava, 6. 8. 2010; výklad normy, nie jej text ani JÚĽŠ; https://www.stuba.sk/new/docs/stu/pracoviska/rektorat/odd_pravne_organizacne/STN_01_6910_Pravidla_pisania_a_upravy_pisomnosti.pdf), 3.1.1: «Značka paragrafu sa píše len v spojení s číslom… s medzerou z ľavej i pravej strany.»",
+      "url": "https://www.juls.savba.sk/ediela/psp2000/psp.pdf",
+      "note": "(1) abbreviations: «t. j.», «a pod.», «a. s.» — tvar skratky s medzerou je v PSP doložený. «s. r. o.» je vynechané: opiera sa len o výklad STN, ktorý ho pripisuje Obchodnému zákonníku; text zákona sa nečítal. (2) beforeNumber: «č.», «ods.», «s.» — doložené tvary z PSP, rovnaký základ ako «Nr.» a «S.» v de-DE; «s.» je zároveň PSP skratka pre stredný rod, čo je neškodné, lebo N9 sa spúšťa len pred číslicou. (3) afterSymbols = [«§»]. (4) afterShortWords je PRÁZDNE: kapitola o delení riadkov (V) má uzavretý zoznam «Nerozdeľujeme» a pravidlo o jednopísmenných predložkách neobsahuje; či ho obsahuje platená norma STN 01 6910, nie je zistené. ROZHODNUTIE, nie citácia: pri nedoložení sa nepridáva nič (opak voči cs, kde zákaz ÚJČ doložil). (5) initialBinding = «none» a beforeWord prázdne: žiadny zdroj nehovorí, že iniciála a priezvisko či «tzv.» a slovo za ním sa nesmú rozdeliť (PSP 2.1 Poznámka uvádza len tvary skratiek mien («A. Bernolák», «J. M. Hurban», «M. K.»)); rozhodnutie, nie citácia. Overené 19. 10. 2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "STN 01 6910 Pravidlá písania a úpravy písomností – výklad normy (STU Bratislava, 6. 8. 2010; výklad normy, nie jej text ani JÚĽŠ; https://www.stuba.sk/new/docs/stu/pracoviska/rektorat/odd_pravne_organizacne/STN_01_6910_Pravidla_pisania_a_upravy_pisomnosti.pdf), 3.3: «Značky jednotiek sa píšu vždy v rovnakom riadku za číselnou hodnotou, od ktorej sa oddeľujú medzerou» (15 kg, 10 m/s, 45 min); 3.6.3: «Značky percenta (%), promile (‰) a priemeru (Ø) sa používajú len v spojení s číslom, od ktorého sa oddeľujú medzerou» (20 % z ceny); Jazykovedný ústav Ľudovíta Štúra SAV, Pravidlá slovenského pravopisu (3., upravené a doplnené vydanie, Veda 2000, tak ako je zverejnené na https://www.juls.savba.sk/ediela/psp2000/psp.pdf; JÚĽŠ na https://www.juls.savba.sk/psp_2013.html označuje vydanie z roku 2013 za nezmenené), kap. 2.13 bod 2: «spotreba 6 l/100 km», «120 000 km/s»; BIPM, The International System of Units (SI), 9th ed. (2019), concise summary (https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-concise-EN.pdf), «The language of science: using the SI to express the values of quantities»: «A single space is always left between the number and the unit»",
+      "url": "https://www.stuba.sk/new/docs/stu/pracoviska/rektorat/odd_pravne_organizacne/STN_01_6910_Pravidla_pisania_a_upravy_pisomnosti.pdf",
+      "note": "POZOR, nižšia vrstva: tu je normatívny len BIPM pre totožnosť značiek SI; slovenskú konvenciu dokladá výklad STN (univerzitný, nie JÚĽŠ) a príklady PSP. Rozdelenie rolí ako v cs, en-US, fi, sv. Jednopísmenové značky vynechané (s, m, h, l, W): «s», «v», «z», «k» sú predložky, rovnaká kolízia ako v cs. «°C» vynechané: výklad STN sám tlačí «-23˚C» bez medzery, proti vlastnej vete aj proti BIPM, takže hodnota je nepotvrdená. Overené 19. 10. 2026."
+    }
+  ]
+}

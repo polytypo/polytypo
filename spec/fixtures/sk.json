@@ -1,0 +1,278 @@
+{
+  "spec": "1.11.0",
+  "locale": "sk",
+  "cases": [
+    {
+      "id": "sk-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Povedal \"ahoj\".",
+      "out": "Povedal „ahoj“.",
+      "note": "quotes.primary = U+201E/U+201C podľa PSP VIII.2.7; zatváracia U+201C má obmedzenú istotu (pozri sources)."
+    },
+    {
+      "id": "sk-quotes-not-polish",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "„ahoj”",
+      "out": "„ahoj“",
+      "note": "ROZLIŠUJÚCI PRÍPAD: vstup je poľský pár so zatváracou U+201D; výstup ukazuje prestavbu na slovenský tvar U+201C. Rozdiel je v sádzbe takmer nepostrehnuteľný, preto má vlastnú fixture."
+    },
+    {
+      "id": "sk-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Toto je 'citát' v citáte\"",
+      "out": "„Toto je ‚citát‘ v citáte“",
+      "note": "Druhý stupeň U+201A/U+2018: PSP 2.7 Poznámka 1 opisuje «čiarku a obrátenú čiarku» pre citát vnútri citátu. afterShortWords je prázdne, preto «v» ostáva voľné."
+    },
+    {
+      "id": "sk-quotes-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "„ ahoj “",
+      "out": "„ahoj“",
+      "note": "innerSpace = none: PSP VIII.1 Poznámka, úvodzovky sa píšu bez medzery pred výrazom aj za ním."
+    },
+    {
+      "id": "sk-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Počkaj... čo?",
+      "out": "Počkaj… čo?",
+      "note": "Tri bodky sú jeden znak U+2026 (PSP 2.10)."
+    },
+    {
+      "id": "sk-ellipsis-not-abbreviated",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Naozaj?.. áno",
+      "out": "Naozaj?… áno",
+      "note": "abbreviatedAfterTerminal = false: dvojbodková forma po «?» nie je v PSP doložená, preto sa prepíše na jeden znak."
+    },
+    {
+      "id": "sk-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Nemáme zatiaľ - prirodzene - študijné výsledky.",
+      "out": "Nemáme zatiaľ – prirodzene – študijné výsledky.",
+      "note": "dash.parenthetical = en-spaced; veta je príkladom z PSP 2.8 bod 5."
+    },
+    {
+      "id": "sk-dashes-existing-em-dash",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Nemáme zatiaľ — prirodzene — výsledky.",
+      "out": "Nemáme zatiaľ – prirodzene – výsledky.",
+      "note": "Zdroj pozná pomlčku U+2013 a o dlhej pomlčke U+2014 nehovorí, preto sa vsuvka s U+2014 prepíše na U+2013."
+    },
+    {
+      "id": "sk-ranges-years",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "rok 1980-1990",
+      "out": "rok 1980 – 1990",
+      "note": "ranges.md §3: dash.range = en-spaced: PSP 2.8 bod 16a, «1980 – 1990». Rozdiel proti cs, kde je rozsah tesný.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "sk-ranges-pages",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "strana 5-12",
+      "out": "strana 5 – 12",
+      "note": "ranges.md §3: PSP 2.8 bod 16a, «strana 5 – 12».",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "sk-ranges-spaced-input",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "rok 1980 - 1990",
+      "out": "rok 1980 – 1990",
+      "note": "ranges.md §3: Rozsah napísaný so spojovníkom a medzerami sa zjednotí na pomlčku s medzerami.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "sk-ranges-authored-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "rok 1980 – 1990",
+      "out": "rok 1980 – 1990",
+      "note": "ranges.md §3: Už správne napísaný rozsah je pevný bod.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "sk-ranges-t1-left-side-declined",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "a - 5-10",
+      "out": "a – 5-10",
+      "note": "ranges.md §3.3 a dashes.md §3.2 krok 8 (T1): Pomlčka s medzerami vľavo od rozsahu: rozsah ostáva nepreložený, kým sa vsuvka prepíše. Prvá slovenčina s dash.range = en-spaced; vetva je pripnutá, aby sa nezmenila bez povšimnutia.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "sk-ranges-t1-after-authored-dash-declined",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "obdobie – 1980-1990",
+      "out": "obdobie – 1980-1990",
+      "note": "ranges.md §3.3 a dashes.md §3.2 krok 8 (T1): Rozsah za už napísanou pomlčkou s medzerou sa nemení.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "sk-ranges-t1-right-side-declined",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "1980-1990 - obdobie",
+      "out": "1980-1990 – obdobie",
+      "note": "ranges.md §3.3 a dashes.md §3.2 krok 8 (T1): Pomlčka s medzerami vpravo od rozsahu: rozsah ostáva nepreložený.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "sk-ranges-t1-mixed-line",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "rok 1980-1990 - a 5-12",
+      "out": "rok 1980-1990 – a 5 – 12",
+      "note": "ranges.md §3.3 a dashes.md §3.2 krok 8 (T1): Na jednom riadku: rozsah susediaci s vsuvkou ostáva, vzdialený rozsah sa prevedie.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "sk-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "rakúsko-uhorský",
+      "out": "rakúsko-uhorský",
+      "note": "Zoznamy hyphen sú prázdne; PSP 2.9 bod 12 delenie na spojovníku dovoľuje."
+    },
+    {
+      "id": "sk-nbsp-no-short-words",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "v Nitre a u babičky",
+      "out": "v Nitre a u babičky",
+      "note": "afterShortWords je PRÁZDNE (rozhodnutie, nie citácia): PSP pravidlo o jednopísmenných predložkách nemá. Pripnuté, aby sa neprenieslo z cs."
+    },
+    {
+      "id": "sk-nbsp-abbreviations",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "t. j. a a. s.",
+      "out": "t. j. a a. s.",
+      "note": "abbreviations: «t. j.» a «a. s.» podľa PSP 2.1 bod 4 a 2.4.1 bod 7c. Skratka je «t. j.», nie české «tj.»."
+    },
+    {
+      "id": "sk-nbsp-abbreviation-a-pod",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "knihy, časopisy a pod.",
+      "out": "knihy, časopisy a pod.",
+      "note": "«a pod.» (PSP 2.1 bod 4) je v zozname skratiek; pevná medzera je vnútri skratky, nie väzba na predchádzajúce slovo."
+    },
+    {
+      "id": "sk-nbsp-before-number",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "v bode č. 2, § 7 ods. 2, na s. 5",
+      "out": "v bode č. 2, § 7 ods. 2, na s. 5",
+      "note": "beforeNumber a afterSymbols podľa PSP 2.1 «Bodka sa nepíše» bod 5."
+    },
+    {
+      "id": "sk-nbsp-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "15 kg, 10 m/s, 45 min a 20 % z ceny",
+      "out": "15 kg, 10 m/s, 45 min a 20 % z ceny",
+      "note": "beforeUnits: výklad STN 3.3 a 3.6.3 (nižšia vrstva) spolu s BIPM."
+    },
+    {
+      "id": "sk-nbsp-permille",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "5 ‰",
+      "out": "5 ‰",
+      "note": "Promile podľa výkladu STN 3.6.3."
+    },
+    {
+      "id": "sk-nbsp-single-letter-unit-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Prišiel o 5 s bratom",
+      "out": "Prišiel o 5 s bratom",
+      "note": "Jednopísmenové značky sú vynechané: «s» je predložka, rovnaká kolízia ako v cs."
+    },
+    {
+      "id": "sk-nbsp-celsius-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "19 °C",
+      "out": "19 °C",
+      "note": "«°C» je vynechané: výklad STN sám tlačí «-23˚C» bez medzery, hodnota je nepotvrdená."
+    },
+    {
+      "id": "sk-nbsp-initial-none",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "A. Bernolák",
+      "out": "A. Bernolák",
+      "note": "initialBinding = none: žiadny zdroj nehovorí, že iniciála a priezvisko sa nesmú rozdeliť (rozhodnutie, nie citácia)."
+    },
+    {
+      "id": "sk-nbsp-before-word-none",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "tzv. odborník",
+      "out": "tzv. odborník",
+      "note": "beforeWord je prázdne: žiadny zdroj nepredpisuje väzbu skratky na nasledujúce slovo."
+    },
+    {
+      "id": "sk-nbsp-no-space-before-question",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Naozaj?",
+      "out": "Naozaj?",
+      "note": "Pred znakmi «? ! : ;» sa nevkladá žiadna pevná medzera (PSP VIII.1 Poznámka)."
+    },
+    {
+      "id": "sk-spaces-brackets-and-final-stop",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Text ( bežný ) sa nemení  .",
+      "out": "Text (bežný) sa nemení.",
+      "note": "Pravidlo spaces je od jazyka nezávislé."
+    },
+    {
+      "id": "sk-symbols-copyright-and-dimensions",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026, formát 40x60 cm",
+      "out": "Copyright © 2026, formát 40×60 cm",
+      "note": "Pravidlo symbols je od jazyka nezávislé."
+    },
+    {
+      "id": "sk-apostrophe-elision",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Išiel do McDonald's a späť",
+      "out": "Išiel do McDonald’s a späť",
+      "note": "Apostrof v cudzom mene sa píše ako U+2019."
+    }
+  ]
+}

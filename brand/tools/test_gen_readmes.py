@@ -43,22 +43,26 @@ class HeroBlockTest(unittest.TestCase):
         # The input string must appear exactly once — it is not repeated per locale row.
         self.assertEqual(block.count(gen_readmes.HERO["en-US"]["hero"]["in"]), 1)
 
-    def test_renders_one_table_row_per_registry_locale_in_site_order(self):
+    def test_renders_one_table_row_per_exemplified_registry_locale_in_site_order(self):
         block = gen_readmes.hero_block()
         lines = [l for l in block.splitlines() if l.startswith("| ") and "`" in l.split("|")[1]]
         codes = [l.split("|")[1].split("`")[1] for l in lines]
-        self.assertEqual(codes, gen_readmes.sorted_codes(gen_readmes.REGISTRY["locales"]))
+        # A registry locale the installed engine cannot run has no HERO entry and no row.
+        self.assertEqual(
+            codes,
+            [c for c in gen_readmes.sorted_codes(gen_readmes.REGISTRY["locales"]) if c in gen_readmes.HERO],
+        )
 
     def test_every_row_shows_that_locales_own_real_output(self):
         block = gen_readmes.hero_block()
-        for code in gen_readmes.REGISTRY["locales"]:
+        for code in [c for c in gen_readmes.REGISTRY["locales"] if c in gen_readmes.HERO]:
             self.assertIn(gen_readmes.HERO[code]["hero"]["out"], block)
 
 
 class LocaleTableTest(unittest.TestCase):
-    def test_has_one_row_per_registry_locale(self):
+    def test_has_one_row_per_exemplified_registry_locale(self):
         table = gen_readmes.locale_table()
-        for code in gen_readmes.REGISTRY["locales"]:
+        for code in [c for c in gen_readmes.REGISTRY["locales"] if c in gen_readmes.HERO]:
             self.assertIn(f"| `{code}` |", table)
 
     def test_states_alias_resolution(self):
@@ -95,7 +99,7 @@ class RootReadmeContentTest(unittest.TestCase):
         self.body = gen_readmes.TEMPLATE.format(
             logo="brand/logo/polytypo-lockup-stacked.svg",
             spec_version=gen_readmes.SPEC_VERSION,
-            n_locales=len(gen_readmes.REGISTRY["locales"]),
+            n_locales=len([c for c in gen_readmes.REGISTRY["locales"] if c in gen_readmes.HERO]),
             n_rules=len(gen_readmes.ORDER["rules"]),
             badges=gen_readmes.package_badges_row(),
             implementations=gen_readmes.implementations_table(),
@@ -120,7 +124,7 @@ class RootReadmeContentTest(unittest.TestCase):
 
     def test_states_the_real_spec_version_and_counts(self):
         self.assertIn(f"Spec version: **{gen_readmes.SPEC_VERSION}**", self.body)
-        self.assertIn(f"locales: **{len(gen_readmes.REGISTRY['locales'])}**", self.body)
+        self.assertIn(f"locales: **{len([c for c in gen_readmes.REGISTRY['locales'] if c in gen_readmes.HERO])}**", self.body)
         self.assertIn(f"rules: **{len(gen_readmes.ORDER['rules'])}**", self.body)
 
 

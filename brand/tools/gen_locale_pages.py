@@ -32,7 +32,11 @@ def _load(*parts):
 
 NATIVE = _load(HERE, "locale_native_names.json")
 REGISTRY = _load(SPEC, "locales", "registry.json")
-CODES = sorted_codes(REGISTRY["locales"])
+# A locale the installed engine rejects has no examples (gen_examples.ts drops it by design), and a
+# page is never written without them: it appears with the build that has an engine that knows it.
+CODES = sorted_codes(
+    [c for c in REGISTRY["locales"] if c in _load(LOCALE_EXAMPLES)["locales"]]
+)
 ALIASES = REGISTRY["aliases"]
 RULES = _load(SPEC, "rules", "order.json")["rules"]
 CODE_RUN = 'say("a -- b ...")'  # must match gen_examples.ts

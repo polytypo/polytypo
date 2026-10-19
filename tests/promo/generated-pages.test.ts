@@ -27,12 +27,14 @@ const PAGES = [
   "changelog/index.html",
 ];
 
-/** One page per registered locale, at /locales/<code>/. */
-const LOCALE_PAGE_COUNT = (
-  JSON.parse(readFileSync(path.join(ROOT, "spec/locales/registry.json"), "utf8")) as {
-    locales: string[];
-  }
-).locales.length;
+/** One page per registered locale the installed engine can exemplify, at /locales/<code>/. */
+const LOCALE_PAGE_COUNT = Object.keys(
+  (
+    JSON.parse(readFileSync(path.join(ROOT, "promo/locale-examples.json"), "utf8")) as {
+      locales: Record<string, unknown>;
+    }
+  ).locales,
+).length;
 
 /** Documentation pages, one per Markdown source under brand/tools/docs/ (slug = relative path). */
 function docPageSlugs(dir = path.join(ROOT, "brand/tools/docs")): string[] {
