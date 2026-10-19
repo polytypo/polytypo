@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.11.0** · locales: **19** · rules: **9**.
+Spec version: **1.11.0** · locales: **20** · rules: **9**.
 
 ## Implementations
 
@@ -60,6 +60,7 @@ Spec version: **1.11.0** · locales: **19** · rules: **9**.
 | Portuguese (Brazil) (`pt-BR`) | Perguntou: “Não é esta a loja que chamam de ‘a da esquina’?” … Caminhamos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm. |
 | Portuguese (Portugal) (`pt-PT`) | Perguntou: «Não é esta a loja a que chamam “a da esquina”?» … Caminhámos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm. |
 | Russian (`ru`) | Она спросила: «Это не тот магазинчик, который называют „за углом“?» … Мы прошли — почти 3 км — и нашли его закрытым, а что‑то достали из‑под прилавка. Copyright © 2026, формат 40×60 см. |
+| Slovak (`sk`) | Spýtal sa: „Nie je to ten obchod, ktorému hovoria ‚ten za rohom‘?“ … Išli sme – takmer 3 km – a bol zatvorený. Copyright © 2026, formát 40×60 cm. |
 | Spanish (`es`) | Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm. |
 | Swedish (`sv`) | Hon frågade: ”Är det inte affären i ’hörnet’?” … Vi gick – nästan 3 km – och hittade den stängd. Copyright © 2026; trycket mäter 40×60 cm och kostar 10,5 % mer. |
 | Turkish (`tr`) | Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright © 2026, baskı 40×60 cm. |
@@ -86,6 +87,7 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | `pt-BR` | Portuguese (Brazil) | “…” | ‘…’ | en dash, spaced | unchanged |
 | `pt-PT` | Portuguese (Portugal) | «…» | “…” | em dash, spaced | unchanged |
 | `ru` | Russian | «…» | „…“ | em dash, spaced | em dash, unspaced |
+| `sk` | Slovak | „…“ | ‚…‘ | en dash, spaced | en dash, spaced |
 | `es` | Spanish | «…» | “…” | unchanged | unchanged |
 | `sv` | Swedish | ”…” | ’…’ | en dash, spaced | en dash, unspaced |
 | `tr` | Turkish | “…” | ‘…’ | unchanged | unchanged |

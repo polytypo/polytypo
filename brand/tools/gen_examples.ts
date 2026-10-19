@@ -28,6 +28,7 @@ const LOCALES = [
   "uk",
   "cs",
   "tr",
+  "sk",
 ] as const;
 
 // Every hero line: nested quotes, an apostrophe or elision (except el — see its own note below),
@@ -84,6 +85,9 @@ const HERO: Record<(typeof LOCALES)[number], string> = {
   tr:
     `Sordu: "Bu, 'köşedeki' dedikleri dükkân değil mi?" ... Ankara'da neredeyse 3 km yürüdük -- ` +
     `ve kapalıydı. Copyright (c) 2026, baskı 40x60 cm.`,
+  sk:
+    `Spýtal sa: "Nie je to ten obchod, ktorému hovoria 'ten za rohom'?" ... Išli sme -- takmer 3 km ` +
+    `-- a bol zatvorený. Copyright (c) 2026, formát 40x60 cm.`,
   nl:
     `Hij vroeg: "Is dit niet de winkel die ze 'om de hoek' noemen?" ... We liepen -- bijna 3 km ` +
     `-- en hij was dicht. Copyright (c) 2026, formaat 40x60 cm.`,
@@ -182,6 +186,11 @@ const SHOWCASE: Record<
     { rule: "ellipsis", in: `Nasıl da akşam oldu?...` },
     { rule: "nbsp", in: `15 °C ve 20 kg` },
   ],
+  sk: [
+    { rule: "quotes", in: `Povedal "ahoj".` },
+    { rule: "nbsp", in: `v bode č. 2 a na s. 5` },
+    { rule: "dashes", in: `Táto kniha - vydaná pred vojnou - je skvelá.` },
+  ],
   nl: [
     { rule: "quotes", in: `Hij zei "dag" en vertrok.` },
     { rule: "dashes", in: `Het nieuws - volgens de kranten - is niet bekend.` },
@@ -255,6 +264,7 @@ const NAMES: Record<(typeof LOCALES)[number], string> = {
   uk: "Ukrainian",
   cs: "Czech",
   tr: "Turkish",
+  sk: "Slovak",
   "pt-PT": "Portuguese (Portugal)",
   "pt-BR": "Portuguese (Brazil)",
 };

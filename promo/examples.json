@@ -531,6 +531,35 @@
       ]
     },
     {
+      "locale": "sk",
+      "name": "Slovak",
+      "hero": {
+        "in": "Spýtal sa: \"Nie je to ten obchod, ktorému hovoria 'ten za rohom'?\" ... Išli sme -- takmer 3 km -- a bol zatvorený. Copyright (c) 2026, formát 40x60 cm.",
+        "out": "Spýtal sa: „Nie je to ten obchod, ktorému hovoria ‚ten za rohom‘?“ … Išli sme – takmer 3 km – a bol zatvorený. Copyright © 2026, formát 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, „Isn’t this the shop they call ‚round the corner‘?“ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Povedal \"ahoj\".",
+          "out": "Povedal „ahoj“."
+        },
+        {
+          "rule": "nbsp",
+          "in": "v bode č. 2 a na s. 5",
+          "out": "v bode č. 2 a na s. 5"
+        },
+        {
+          "rule": "dashes",
+          "in": "Táto kniha - vydaná pred vojnou - je skvelá.",
+          "out": "Táto kniha – vydaná pred vojnou – je skvelá."
+        }
+      ]
+    },
+    {
       "locale": "es",
       "name": "Spanish",
       "hero": {

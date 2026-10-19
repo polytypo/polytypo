@@ -1957,6 +1957,135 @@
       "resolution": ["ru", "ru-BY"],
       "disagreed": 0
     },
+    "sk": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "sk-quotes-primary",
+            "in": "Povedal \"ahoj\".",
+            "out": "Povedal „ahoj“."
+          },
+          {
+            "id": "sk-quotes-not-polish",
+            "in": "„ahoj”",
+            "out": "„ahoj“"
+          },
+          {
+            "id": "sk-quotes-nested",
+            "in": "\"Toto je 'citát' v citáte\"",
+            "out": "„Toto je ‚citát‘ v citáte“"
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "sk-ellipsis-three-dots",
+            "in": "Počkaj... čo?",
+            "out": "Počkaj… čo?"
+          },
+          {
+            "id": "sk-ellipsis-not-abbreviated",
+            "in": "Naozaj?.. áno",
+            "out": "Naozaj?… áno"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "sk-dashes-parenthetical",
+            "in": "Nemáme zatiaľ - prirodzene - študijné výsledky.",
+            "out": "Nemáme zatiaľ – prirodzene – študijné výsledky."
+          },
+          {
+            "id": "sk-dashes-existing-em-dash",
+            "in": "Nemáme zatiaľ — prirodzene — výsledky.",
+            "out": "Nemáme zatiaľ – prirodzene – výsledky."
+          }
+        ],
+        "ranges": [
+          {
+            "id": "sk-ranges-years",
+            "in": "rok 1980-1990",
+            "out": "rok 1980 – 1990",
+            "rules": {
+              "ranges": true
+            }
+          },
+          {
+            "id": "sk-ranges-pages",
+            "in": "strana 5-12",
+            "out": "strana 5 – 12",
+            "rules": {
+              "ranges": true
+            }
+          },
+          {
+            "id": "sk-ranges-spaced-input",
+            "in": "rok 1980 - 1990",
+            "out": "rok 1980 – 1990",
+            "rules": {
+              "ranges": true
+            }
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "sk-nbsp-abbreviations",
+            "in": "t. j. a a. s.",
+            "out": "t. j. a a. s."
+          },
+          {
+            "id": "sk-nbsp-abbreviation-a-pod",
+            "in": "knihy, časopisy a pod.",
+            "out": "knihy, časopisy a pod."
+          },
+          {
+            "id": "sk-nbsp-before-number",
+            "in": "v bode č. 2, § 7 ods. 2, na s. 5",
+            "out": "v bode č. 2, § 7 ods. 2, na s. 5"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "sk-spaces-brackets-and-final-stop",
+            "in": "Text ( bežný ) sa nemení  .",
+            "out": "Text (bežný) sa nemení."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "sk-symbols-copyright-and-dimensions",
+            "in": "Copyright (c) 2026, formát 40x60 cm",
+            "out": "Copyright © 2026, formát 40×60 cm"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "sk-apostrophe-elision",
+            "in": "Išiel do McDonald's a späť",
+            "out": "Išiel do McDonald’s a späť"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Spýtal sa: \"Nie je to ten obchod, ktorému hovoria 'ten za rohom'?\" ... Išli sme -- takmer 3 km -- a bol zatvorený. Copyright (c) 2026, formát 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Spýtal sa: „Nie je to ten obchod, ktorému hovoria ‚ten za rohom‘?“ … Išli sme – takmer 3 km – a bol zatvorený. Copyright © 2026, formát 40×60 cm.\nsay(„a – b …“)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Spýtal sa: \"Nie je to ten obchod, ktorému hovoria 'ten za rohom'?\" ... Išli sme -- takmer 3 km -- a bol zatvorený. Copyright (c) 2026, formát 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Spýtal sa: „Nie je to ten obchod, ktorému hovoria ‚ten za rohom‘?“ … Išli sme – takmer 3 km – a bol zatvorený. Copyright © 2026, formát 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Spýtal sa: \"Nie je to ten obchod, ktorému hovoria 'ten za rohom'?\" ... Išli sme -- takmer 3 km -- a bol zatvorený. Copyright (c) 2026, formát 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Spýtal sa: „Nie je to ten obchod, ktorému hovoria ‚ten za rohom‘?“ … Išli sme – takmer 3 km – a bol zatvorený. Copyright © 2026, formát 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": [],
+      "disagreed": 0
+    },
     "es": {
       "byRule": {
         "quotes": [

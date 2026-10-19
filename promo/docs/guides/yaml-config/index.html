@@ -106,7 +106,7 @@ description: [a -- b]</div></div></div></figure>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;yaml&quot;, keys: [&quot;description&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">a: &#x27;x&#x27;
 description: &#x27;It&#x27;&#x27;s &quot;fine&quot; -- really&#x27;
 other: x</div></div><div><p class="eyebrow">Output</p><div class="specimen">a: &#x27;x&#x27;
-description: &#x27;It&#x27;&#x27;s &quot;fine&quot; -- really&#x27;
+description: &#x27;It&#x27;&#x27;s <span class="chg">“</span>fine<span class="chg">”—</span>really&#x27;
 other: x</div></div></div></figure>
 <p>The value is untouched because the apostrophe is written <code>&#x27;&#x27;</code>. If your files use single quotes with apostrophes, switch those values to double quotes (without backslashes) or plain style to have them processed.</p>
 <h3 id="block-scalars">Block scalars <a class="anchor" href="#block-scalars" aria-label="Link to this section">#</a></h3>

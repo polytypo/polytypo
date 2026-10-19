@@ -76,6 +76,7 @@ PRIMARY_SOURCES = {
     "uk": "Український правопис (2019)",
     "cs": "Ústav pro jazyk český AV ČR, Internetová jazyková příručka",
     "tr": "Türk Dil Kurumu, Yazım Kuralları; Türk Dil Kurumu, Kısaltmalar Dizini",
+    "sk": "Jazykovedný ústav Ľudovíta Štúra SAV, Pravidlá slovenského pravopisu",
 }
 
 

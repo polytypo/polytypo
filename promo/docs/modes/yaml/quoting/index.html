@@ -57,7 +57,7 @@
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;yaml&quot;, keys: [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">a: &quot;She said -- \&quot;no\&quot;&quot;
 b: &#x27;It&#x27;&#x27;s a &quot;test&quot; -- really&#x27;
 c: &quot;plain &#x27;quotes&#x27; -- fine&quot;</div></div><div><p class="eyebrow">Output</p><div class="specimen">a: &quot;She said -- \&quot;no\&quot;&quot;
-b: &#x27;It&#x27;&#x27;s a &quot;test&quot; -- really&#x27;
+b: &#x27;It&#x27;&#x27;s a <span class="chg">“</span>test<span class="chg">”—</span>really&#x27;
 c: &quot;plain <span class="chg">“</span>quotes<span class="chg">”—</span>fine&quot;</div></div></div></figure>
 <p>Only <code>c</code> changes. The cost is real: an apostrophe inside a single-quoted scalar is written <code>&#x27;&#x27;</code>, so single-quoted prose that contains one is skipped. Switching such a value to double quotes makes it eligible.</p>
 <h2 id="block-scalars">Block scalars <a class="anchor" href="#block-scalars" aria-label="Link to this section">#</a></h2>

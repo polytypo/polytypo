@@ -132,7 +132,7 @@
     "out": "---\ntitle: He said \"hello\" -- twice\n---\n\nBody text—“quoted”…"
   },
   "2ea00cdd6c70f865": {
-    "out": "---\ntitle: 'It''s -- a \"test\"'\n---\n\nBody"
+    "out": "---\ntitle: 'It''s—a “test”'\n---\n\nBody"
   },
   "32f7412791dfd396": {
     "error": "POLYTYPO_MALFORMED_INPUT"
@@ -147,7 +147,7 @@
     "out": "description: Rates—all # note -- here\ndescription: key: value -- a\ndescription: first -- line\n  second -- line\ndescription: [a -- b]"
   },
   "5b75ef032ad1b36d": {
-    "out": "a: 'x'\ndescription: 'It''s \"fine\" -- really'\nother: x"
+    "out": "a: 'x'\ndescription: 'It''s “fine”—really'\nother: x"
   },
   "cd4ac2be2f15ba38": {
     "out": "title: Chapter 1: \"the beginning\"!\ntitle: \"Chapter 1 : the beginning !\"\ntitle: 'Chapter 1 : the beginning !'"
@@ -228,7 +228,7 @@
     "out": "k: a:--b"
   },
   "fc3ed623c2d7fd54": {
-    "out": "a: \"She said -- \\\"no\\\"\"\nb: 'It''s a \"test\" -- really'\nc: \"plain “quotes”—fine\""
+    "out": "a: \"She said -- \\\"no\\\"\"\nb: 'It''s a “test”—really'\nc: \"plain “quotes”—fine\""
   },
   "64a4beb9905b2958": {
     "out": "description: |-\n  First line “quoted”—done…\n  Second line\n\n  after a blank\nother: |\n  keep \"this\" -- as is"
