@@ -266,7 +266,7 @@ jobs:
           check rubygems "$(ask https://rubygems.org/api/v1/gems/polytypo.json \
             'import json,sys;print(json.load(sys.stdin)["version"])')"
           check packagist "$(ask https://repo.packagist.org/p2/polytypo/polytypo.json \
-            'import json,sys;d=json.load(sys.stdin);print(max(p["version"] for p in d["packages"]["polytypo/polytypo"]))')"
+            'import json,re,sys;d=json.load(sys.stdin);v=[p["version"] for p in d["packages"]["polytypo/polytypo"] if re.fullmatch(r"v?\d+\.\d+\.\d+",p["version"])];print(max(v,key=lambda x:tuple(int(n) for n in x.lstrip("v").split("."))))')"
           check go "$(ask https://proxy.golang.org/github.com/polytypo/polytypo-go/@latest \
             'import json,sys;print(json.load(sys.stdin)["Version"])')"
 
