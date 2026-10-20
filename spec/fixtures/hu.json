@@ -1,0 +1,264 @@
+{
+  "spec": "1.12.0",
+  "locale": "hu",
+  "cases": [
+    {
+      "id": "hu-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Azt mondta: \"szia\" és elment.",
+      "out": "Azt mondta: „szia” és elment.",
+      "note": "AkH12 §240 j: the base form is „…” (U+201E, U+201D)."
+    },
+    {
+      "id": "hu-quotes-not-german",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "„szia“",
+      "out": "„szia”",
+      "note": "U+201C as a closing mark is the German form; AkH12 §240 j closes with U+201D."
+    },
+    {
+      "id": "hu-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Ő azt mondta 'jó' volt\"",
+      "out": "„Ő azt mondta »jó« volt”",
+      "note": "AkH12 §257: a quote inside a quote takes the lúdlábidézőjel »…« (opens with U+00BB, the reverse of ro)."
+    },
+    {
+      "id": "hu-quotes-nested-guillemets-kept",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "„Ő azt mondta »jó« volt”",
+      "out": "„Ő azt mondta »jó« volt”",
+      "note": "Already typeset: both levels are left as they are."
+    },
+    {
+      "id": "hu-quotes-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "„ szia ”",
+      "out": "„szia”",
+      "note": "AkH12 §240 j: the marks attach to the words they enclose, no inner space."
+    },
+    {
+      "id": "hu-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Várj... mi?",
+      "out": "Várj… mi?",
+      "note": "AkH12 §240 b: three dots, attached to the preceding word."
+    },
+    {
+      "id": "hu-ellipsis-not-abbreviated",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Tényleg?.. igen",
+      "out": "Tényleg?… igen",
+      "note": "abbreviatedAfterTerminal is false: `?..` is a typing slip, not an abbreviated ellipsis."
+    },
+    {
+      "id": "hu-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Holnap - ha esik - elmegyünk.",
+      "out": "Holnap – ha esik – elmegyünk.",
+      "note": "AkH12 §240 g, §252: en dash with a space on both sides."
+    },
+    {
+      "id": "hu-dashes-existing-em-dash",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Holnap — ha esik — elmegyünk.",
+      "out": "Holnap – ha esik – elmegyünk.",
+      "note": "An authored em dash becomes the locale's en dash."
+    },
+    {
+      "id": "hu-dashes-tight-compound-kept",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Budapest–Bécs és Osztrák–Magyar",
+      "out": "Budapest–Bécs és Osztrák–Magyar",
+      "note": "AkH12 §264 c: the tight en dash is already correct, no spaces are added."
+    },
+    {
+      "id": "hu-ranges-years-and-pages",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "az 1983-1984. évi és az 1-4. osztályban",
+      "out": "az 1983⁠–⁠1984. évi és az 1⁠–⁠4. osztályban",
+      "note": "ranges.md §3: AkH12 §264 c attaches the en dash to its members (1983–1984. évi, az 1–4. osztályban); the word joiners are the spec's line-break guard.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "hu-ranges-spaced-input-tightened",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "1 - 4 oldal",
+      "out": "1⁠–⁠4 oldal",
+      "note": "ranges.md §3: en-tight takes the spaced form of a digit range to the tight one.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "hu-ranges-en-dash-kept",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "1914–1918 és Budapest–Bécs",
+      "out": "1914–1918 és Budapest–Bécs",
+      "note": "ranges.md §3: an authored tight en dash is the correct form and is kept.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "hu-ranges-complex-spaced-kept",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "2011. április 25. – 2012. május 13.",
+      "out": "2011. április 25. – 2012. május 13.",
+      "note": "ranges.md §3: AkH12 §264 c allows the spaced en dash for complex members; a '.' beside the space keeps it out of the range candidates.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "hu-ranges-ordinal-shape-declined",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "a 128-9. lapon",
+      "out": "a 128-9. lapon",
+      "note": "ranges.md §3.2: AkH12 §264 c prints «a 128–9. lapon», but the shape (3,1) is declined by G4, so a typed hyphen stays a hyphen. Accepted miss, as `2020-24` in en-US.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "hu-ranges-word-hyphen-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "Budapest-Bécs út",
+      "out": "Budapest-Bécs út",
+      "note": "ranges.md §3: words joined by a hyphen are not a digit range and are left alone.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "hu-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "A MÁV-ot és a tűzzel-vassal",
+      "out": "A MÁV-ot és a tűzzel-vassal",
+      "note": "AkH12 §270 permits breaking at a hyphen; no list ships, nothing changes."
+    },
+    {
+      "id": "hu-nbsp-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "100 km, 1 kg, 10 kWh és 120 km/h",
+      "out": "100 km, 1 kg, 10 kWh és 120 km/h",
+      "note": "AkH12 §279 c: a space separates the unit from its number."
+    },
+    {
+      "id": "hu-nbsp-celsius",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "23 °C",
+      "out": "23 °C",
+      "note": "AkH12 §275: «23 °C» with a space."
+    },
+    {
+      "id": "hu-nbsp-percent-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "48 % és 48%",
+      "out": "48 % és 48%",
+      "note": "AkH12 §275 prints 48% without a space, so % is not a unit here and nothing is bound."
+    },
+    {
+      "id": "hu-nbsp-single-letter-unit-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "220 W és 5 s",
+      "out": "220 W és 5 s",
+      "note": "Single-letter symbols are excluded by decision, not by citation (AkH12 §279 c writes «220 W» with a space): `s` is a Hungarian conjunction."
+    },
+    {
+      "id": "hu-nbsp-forint-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "2890 Ft",
+      "out": "2890 Ft",
+      "note": "Ft is attested only by example (§290) and ships unverified: nothing is bound."
+    },
+    {
+      "id": "hu-nbsp-abbreviations",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Kr. e. 44-ben, Kr. u. 2. században, i. sz. 3. század",
+      "out": "Kr. e. 44-ben, Kr. u. 2. században, i. sz. 3. század",
+      "note": "AkH12 §277 a, §284: abbreviations written with an internal space; N4 binds it."
+    },
+    {
+      "id": "hu-nbsp-abbreviations-short",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "a. m. annyi mint, s. k. aláírás",
+      "out": "a. m. annyi mint, s. k. aláírás",
+      "note": "AkH12 §277 a: a. m. and s. k."
+    },
+    {
+      "id": "hu-nbsp-initials-unbound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Kossuth L. és L. Kossuth",
+      "out": "Kossuth L. és L. Kossuth",
+      "note": "initialBinding is none: AkH12 has no rule on initials."
+    },
+    {
+      "id": "hu-nbsp-no-space-before-question",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Tényleg ? Igen !",
+      "out": "Tényleg? Igen!",
+      "note": "AkH12 §240 c: no space before ? and !, so nothing is put back."
+    },
+    {
+      "id": "hu-nbsp-paragraph-sign-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "a 4. § szerint",
+      "out": "a 4. § szerint",
+      "note": "AkH12 §275 writes '4. §' with the number first; afterSymbols ships empty."
+    },
+    {
+      "id": "hu-spaces-brackets",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Szöveg ( rendes ) marad  .",
+      "out": "Szöveg (rendes) marad.",
+      "note": "spaces.md: brackets tighten, no space before the final stop."
+    },
+    {
+      "id": "hu-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026",
+      "out": "Copyright © 2026",
+      "note": "symbols rule, locale-neutral."
+    },
+    {
+      "id": "hu-apostrophe-foreign-name",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Ez a McDonald's",
+      "out": "Ez a McDonald’s",
+      "note": "apostrophe rule, locale-neutral."
+    }
+  ]
+}

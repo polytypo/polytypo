@@ -1,0 +1,88 @@
+{
+  "locale": "hu",
+  "name": "Hungarian",
+  "quotes": {
+    "primary": {
+      "open": "„",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "»",
+      "close": "«",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": []
+    }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": ["a. m.", "i. sz.", "Kr. e.", "Kr. u.", "s. k.", "i. e."],
+    "beforeUnits": ["km", "kg", "kWh", "km/h", "°C"],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Magyar Tudományos Akadémia, A magyar helyesírás szabályai, 12. kiadás (AkH12), §240 j: «Az idézőjel lehet: „ ” (macskaköröm) vagy » « (lúdlábidézőjel).»; «Az első idézőjel az alapforma, a második általában idézeten belüli idézőjel»; §257: «Ha az idézőjelbe tett mondaton belül még egy idézőjelre van szükség, lúdlábidézőjelet használunk:» («Szemében »mesterségem« / Most is nagy szálka még.»); §275: «Hiányjel vagy aposztróf. Például: hál’ istennek!; ’95 (= 1995)»",
+      "url": "https://helyesiras.mta.hu/helyesiras/default/akh12",
+      "note": "Primary: U+201E open, U+201D close. AkH describes the marks by name and position only; U+201D (not U+201C) is read from the character in the online text, so the closing code point is MEDIUM-HIGH confidence. Secondary: U+00BB open, U+00AB close (»…«, the reverse of ro's «…»), for a quote inside a quote. innerSpace none is read from the printed examples (§257 «Szemében »mesterségem«», the marks attached to the enclosed words), not from a stated rule, so MEDIUM. AkH12 has no third level. Q-W: both pairs WIDE. elisionIdioms and elisionClitics are empty: the attested apostrophe uses (hál’, ’95) are neither a closed set nor the shape of elisionClitics. Verified 2026-10-21."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Magyar Tudományos Akadémia, A magyar helyesírás szabályai, 12. kiadás (AkH12), §240 g: «A gondolatjel mindig szóközzel kapcsolódik az előtte álló szó utolsó betűjéhez (vagy az előtte álló számjegyhez)», «a gondolatjel után is szóközt kell tenni»; §240 l: «A nagykötőjel középső helyzetű, és hosszúsága megegyezik a gondolatjel hosszúságával.»; §252: «Holnap – ha esik, ha fúj – elmegyünk kirándulni.»",
+      "url": "https://helyesiras.mta.hu/helyesiras/default/akh12",
+      "note": "Supports dash.parenthetical = en-spaced: a space on both sides is mandatory. The length (U+2013) is read from the printed glyph and from §240 l, which gives the gondolatjel the same length as the nagykötőjel; AkH never names the code point, so MEDIUM. Verified 2026-10-21."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Magyar Tudományos Akadémia, A magyar helyesírás szabályai, 12. kiadás (AkH12), §240 l: «A nagykötőjel tapad az előtte és az utána következő szóhoz vagy számjegyhez:»; §264 c: «Nagykötőjellel fűzzük egymáshoz az olyan szavakat, amelyek valamitől valameddig viszonyt érzékeltetnek, például: Budapest–Bécs, Rajna–Majna–Duna-csatorna; 1983–1984. évi, a 128–9. lapon, az 1–4. osztályban»; «Bonyolultabb esetekben a nagykötőjel nem tapadva is illeszkedhet a tagok közé, például: 2011. április 25. – 2012. május 13.»",
+      "url": "https://helyesiras.mta.hu/helyesiras/default/akh12",
+      "note": "Supports dash.range = en-tight: the tight en dash is the default and AkH ranks it; the spaced form is limited to complex members. Every spaced example has '.' or a letter on one side, so under ranges.md §3.2/§3.2a none is a range candidate and en-tight never respaces it. §240 l adds «Nem tapad a nagykötőjel, ha több szóból álló, bonyolultabb írásmódú szerkezeteket kapcsol össze» (mandatory spacing) where §264 c says the spaced form is optional; neither affects digit-flanked ranges. «a 128–9. lapon» (§264 c) has the shape (3,1) and is outside the candidates, so a typed `128-9.` keeps its hyphen. The ranges rule is off by default. Verified 2026-10-21."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Magyar Tudományos Akadémia, A magyar helyesírás szabályai, 12. kiadás (AkH12), §240 b: «A kihagyást, a gondolat félbeszakítását jelölő három pont szóköz nélkül kapcsolódik az előtte álló szóhoz.»; §251 example: «…imádott / Jankóm…?»",
+      "url": "https://helyesiras.mta.hu/helyesiras/default/akh12",
+      "note": "abbreviatedAfterTerminal = false is the safe value, not a citation: AkH never prints a two-dot form after '?' or '!', and the only attested combination is an ellipsis followed by '?'. AkH has no explicit sentence on this, so MEDIUM. Verified 2026-10-21."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Magyar Tudományos Akadémia, A magyar helyesírás szabályai, 12. kiadás (AkH12), §270: «Ha a szó már tartalmaz kötőjelet vagy nagykötőjelet, ezeknél az írásjeleknél is elválaszthatjuk a szót» («tűzzel- / vassal, Dumas- / nak, a MÁV- / ot.»)",
+      "url": "https://helyesiras.mta.hu/helyesiras/default/akh12",
+      "note": "All three lists are empty. Breaking at a hyphen or nagykötőjel is explicitly permitted, and AkH gives no closed list of unbreakable forms. Verified 2026-10-21."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Magyar Tudományos Akadémia, A magyar helyesírás szabályai, 12. kiadás (AkH12), §240 c: «A kérdőjel előtt nincs szóköz, tehát tapad az őt megelőző szó utolsó betűjéhez vagy más írásjelhez»; §277 a: «A különírt szavakból álló szókapcsolatok rövidítése általában annyi (ponttal elkülönített) tagot tartalmaz» — «a. m. (= annyi mint), i. sz. (= időszámításunk szerint), Kr. e. (= Krisztus előtt), s. k. (= saját kezűleg)»; §284 table: «Kr. u.», «i. e.»; §275: «A paragrafus jele. Például: 4. §»",
+      "url": "https://helyesiras.mta.hu/helyesiras/default/akh12",
+      "note": "(1) beforePunctuation and narrowBeforePunctuation are empty: §240 c states that no space precedes «?», and the same is stated for the period and the comma; «!», «:» and «;» are not separately verified, and the empty list changes nothing. (2) abbreviations: the six forms are attested with an internal space; AkH says nothing about line breaks, so this rests on form evidence alone, the same footing as sk's «t. j.». (3) afterSymbols is empty: AkH writes '4. §' with the number first. (4) afterShortWords, beforeNumber and beforeWord are empty and initialBinding = none: no source; AkH12 has no rule on personal-name initials (Hungarian puts them after the surname). Decision, not citation. Verified 2026-10-21."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Magyar Tudományos Akadémia, A magyar helyesírás szabályai, 12. kiadás (AkH12), §279 c: «A mértékegységnek a jelét szóköz választja el az előtte levő számtól, például: 100 km, 1 kg, 10 kWh, 120 km/h, 220 W.»; §275: «Fokjel. Például: 45°; 23 °C», «A százalék jele. Például: 48%»",
+      "url": "https://helyesiras.mta.hu/helyesiras/default/akh12",
+      "note": "beforeUnits = km, kg, kWh, km/h, °C, each attested with a space in §279 c or §275. '%' is deliberately absent: AkH prints 48% without a space; geometric 45° is likewise unspaced. Single-letter symbols are excluded by decision, not by citation: §279 c itself writes «220 W» with a space, but `s` is a Hungarian conjunction and a list of single letters would be a derivation (as in sk and ro). 'Ft' is omitted: it is a currency abbreviation attested only by example (§290), so it ships unverified-empty. Verified 2026-10-21."
+    }
+  ]
+}

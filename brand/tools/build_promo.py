@@ -78,6 +78,7 @@ PRIMARY_SOURCES = {
     "tr": "Türk Dil Kurumu, Yazım Kuralları; Türk Dil Kurumu, Kısaltmalar Dizini",
     "sk": "Jazykovedný ústav Ľudovíta Štúra SAV, Pravidlá slovenského pravopisu",
     "ro": "Academia Română, Îndreptar ortografic, ortoepic, morfologic și de punctuație (ÎOOP6); DOOM3",
+    "hu": "Magyar Tudományos Akadémia, A magyar helyesírás szabályai (AkH12)",
 }
 
 
@@ -1791,6 +1792,7 @@ BADGE_TEXT = {
     "fr": "Nettoyage typographique par <b>polytypo</b>",
     "de": "Typografische Bereinigung durch <b>polytypo</b>",
     "el": "Τυπογραφικός καθαρισμός από το <b>polytypo</b>",
+    "hu": "Tipográfiai rendezés: <b>polytypo</b>",
     "it": "Pulizia tipografica con <b>polytypo</b>",
     "pl": "Typograficzne porządki dzięki <b>polytypo</b>",
     "pt": "Limpeza tipográfica por <b>polytypo</b>",
@@ -1811,6 +1813,7 @@ BADGE_LANG_NAMES = {
     "fr": "French",
     "de": "German",
     "el": "Greek",
+    "hu": "Hungarian",
     "it": "Italian",
     "pl": "Polish",
     "pt": "Portuguese",
