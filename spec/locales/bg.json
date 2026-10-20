@@ -1,0 +1,82 @@
+{
+  "locale": "bg",
+  "name": "Bulgarian",
+  "quotes": {
+    "primary": {
+      "open": "„",
+      "close": "“",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "„",
+      "close": "“",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": []
+    }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-spaced"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": [],
+    "beforeUnits": ["км", "кг", "лв.", "г."],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Институт за български език (БАН), Езикови справки, «Други случаи», quoting Официален правописен речник на българския език (2012), т. 135.1.5: «Не се удвояват кавичките, когато ограденият в кавички текст завършва с друг текст, ограден в кавички: стихотворението „Кафене „Славия“.»; ИБЕ, Речник на българския език (онлайн), s.v. «кавички»: «Препинателен знак от две двойки запетайки („ .. “)»; ИБЕ, «За интервалите и препинателните знаци» (Н. Костова, Аз Буки бр. 3/2018): a space before the opening and after the closing quotation mark, none inside",
+      "url": "https://ibl.bas.bg/ezikovispravki/vaprosi/drugi-sluchai-2",
+      "note": "Primary: U+201E open, U+201C close (NOT U+201D as in ro/hu). The code points were read from the rendered IBL text, not from a code-point table, so MEDIUM-HIGH. Secondary equals primary: the т. 135.1.5 example nests with the same „ “ pair, and no ‚ ‘ or « » level is attested for nesting (single quotes appear only for glosses in scientific text, not cited). The ОПР itself (beron.mon.bg) answered HTTP 403 and is cited through the Institute that compiled it; the paragraph numbers come from the IBL answers, the paragraphs were not read. innerSpace none per the IBL spacing article. The ОПР rule against doubling the closing marks is an algorithm and is not expressed in data. ACCEPTED COST of the identical pair: a nest whose inner mark touches the outer one is declined by the quotes rule (the fixtures bg-quotes-nest-* and bg-quotes-decline-spreads pin it, quotes.md §6). Q-W: both pairs are WIDE. elisionIdioms and elisionClitics empty: no apostrophe elision in the standard. Verified 2026-10-21."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Институт за български език (БАН), Езикови справки №572 («При препинателни знаци»): «Пред и след голямо тире има шпация.»; ИБЕ, «За интервалите и препинателните знаци» (2018): spaced тире in «Технически университет – София»",
+      "url": "https://ibl.bas.bg/ezikovispravki/vaprosi/pri-prepinatelni-znatsi-9/572",
+      "note": "Supports dash.parenthetical = en-spaced: a space on both sides is stated. The width U+2013 is read from IBL's own rendered text, so MEDIUM. The European Commission DGT Bulgarian «Езиков наръчник» (2010, rev. 2011; house style, ranks below IBL) sets U+2014 in its own typesetting. DECISION recorded: U+2013, following the Institute. Verified 2026-10-21."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Институт за български език (БАН), Езикови справки, «За означаване на интервал», quoting ОПР (2012) т. 103.4, 117.1, 117.2: «Тирето може се използва за означаване на период от време, когато е налице пропускане на предлог: 2000 – 2010 г., I – II в.»; Езикови справки №1017, ОПР т. 109.4: «13.10. – 20.11.2018 г.»; ИБЕ, «Отново за тиретата» (Ц. Георгиева, Аз Буки бр. 11/2016): ОПР 2012 codifies the long dash with spaces between numbers, replacing the earlier unspaced norm",
+      "url": "https://ibl.bas.bg/ezikovispravki/vaprosi/za-oznachavane-na-interval-15-20-yanuari-8/1605",
+      "note": "Supports dash.range = en-spaced (U+0020 U+2013 U+0020), as in sk. The tight form is the pre-2012 norm. Width read from rendered text, so MEDIUM. The ranges rule is off by default. Verified 2026-10-21."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Институт за български език (БАН), Езикови справки №2158: after «2011 г.» «пишат се три, а не четири точки»; №2132: «Между многоточие и следваща го дума се оставя шпация.»",
+      "url": "https://ibl.bas.bg/ezikovispravki/vaprosi/schetavane-na-punktuatsionni-i-nepunktuatsionni-znatsi-v-teksta-3/2158",
+      "note": "abbreviatedAfterTerminal = false is a DECISION, not a citation: no source read states a two-dot form after '?' or '!'. ОПР т. 136.2 («Многоточие с други знаци») is the relevant paragraph but beron.mon.bg answered 403 and it was not read. Verified 2026-10-21."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Институт за български език (БАН), Езикови справки, «Пренасяне на думи на нов ред», citing ОПР (2012) т. 65.1–65.4, 66.1 (syllabic line-break rules)",
+      "url": "https://ibl.bas.bg/ezikovispravki/vaprosi/prenasyane-na-dumi-na-nov-red-7",
+      "note": "All three lists are empty: the cited rules govern syllable division and give no closed list of unbreakable hyphenated forms. Verified 2026-10-21."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Институт за български език (БАН), «За интервалите и препинателните знаци» (2018): «Пред точка, запетая, въпросителен знак, удивителен знак, точка и запетая, двоеточие не се оставя интервал.»; Езикови справки №1601: «Между последната цифра и съкращението се поставя шпация (интервал): 20 лв., също и 5 кг, 10 м, 100 км, 2020 г. и под.»; №626: «В записа 5% няма интервал (шпация) между цифрата и знака за процент.»",
+      "url": "https://ibl.bas.bg/ezikovispravki/vaprosi/pri-skrashcheniya-vkl-mezhdu-tsifra-i-skrashchenie-5-kg-2014-g-4/1601",
+      "note": "(1) beforePunctuation and narrowBeforePunctuation empty: no space before . , ? ! ; :. (2) beforeUnits = км, кг, лв., г.: each attested with a space after a number. This is form evidence only (IBL does not say non-breaking), the same footing as hu and sk, MEDIUM. The single-letter м is excluded by decision. (3) % is excluded: IBL writes 5% unspaced; the DGT house handbook's «4 %» with a non-breaking space ranks below it. (4) abbreviations, beforeNumber, beforeWord, afterSymbols and afterShortWords are empty and initialBinding = none: no source states a rule (IBL says proper names follow ordinary line-break rules). Decision, not citation. Verified 2026-10-21."
+    }
+  ]
+}

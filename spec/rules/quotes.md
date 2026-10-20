@@ -1456,6 +1456,15 @@ stream the way it does for `en-US`/`en-GB`/`fi`/`sv`. An exhaustive sweep over
 same-glyph vetoes plus the certification gate together protect already-curly interleaved text in
 this family, even without an independent width partition. Recorded as measured, not asserted.
 
+`bg` is the extreme case of this family: its secondary pair equals its primary pair (`„ “` for
+both), which the schema permits and which the cited source prescribes, since ОПР т. 135.1.5
+nests with the same pair. An exhaustive sweep over `{„, “, ", ', a, ␣}` to length 7 — 335,922
+inputs — found **zero** idempotency failures. The structural cost is a false negative, not an
+instability: a nest whose inner mark touches the outer one (`"a 'b'"`, `"'b' a"`) would render two
+like glyphs side by side, V1 rejects that on the re-scan and the gate declines the whole nest,
+the decline is not local to the nest, and `apostrophe` may then convert the inner opening mark.
+The `bg` fixtures pin those shapes as accepted misses.
+
 ---
 
 ## 7. Open questions, and what could not be closed

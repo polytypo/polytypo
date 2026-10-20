@@ -1,0 +1,253 @@
+{
+  "spec": "1.12.0",
+  "locale": "bg",
+  "cases": [
+    {
+      "id": "bg-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Той каза: \"не\" и си тръгна.",
+      "out": "Той каза: „не“ и си тръгна.",
+      "note": "ИБЕ, s.v. «кавички»: the base form is „…“ (U+201E, U+201C); the close is U+201C, not U+201D."
+    },
+    {
+      "id": "bg-quotes-nested-same-pair",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Той каза: \"стихотворението \"Кафене Славия\" е хубаво\" и спря.",
+      "out": "Той каза: „стихотворението „Кафене Славия“ е хубаво“ и спря.",
+      "note": "ОПР т. 135.1.5, via ИБЕ: a quote inside a quote takes the same „ “ pair, so the inner level is not a different glyph."
+    },
+    {
+      "id": "bg-quotes-nested-single-straight",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Той каза: \"стихотворението 'Кафене' е хубаво\".",
+      "out": "Той каза: „стихотворението „Кафене“ е хубаво“.",
+      "note": "A straight single mark inside a double quote becomes the secondary pair, which in bg equals the primary pair."
+    },
+    {
+      "id": "bg-quotes-already-typeset-kept",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Той каза: „стихотворението „Кафене Славия“ е хубаво“ и спря.",
+      "out": "Той каза: „стихотворението „Кафене Славия“ е хубаво“ и спря.",
+      "note": "Already typeset at both levels: left as it is."
+    },
+    {
+      "id": "bg-quotes-nest-at-end-declined",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Той каза: \"това е 'Славия'\".",
+      "out": "Той каза: \"това е ’Славия'\".",
+      "note": "Accepted miss: secondary equals primary, so a nest whose inner mark touches the outer one is declined by the quotes rule (quotes.md §3.2 V1, §3.5), and apostrophe then turns the inner opening mark into U+2019. Pinned as measured; the cost of the identical pair."
+    },
+    {
+      "id": "bg-quotes-nest-at-end-double-declined",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Кафене \"Славия\"\"",
+      "out": "\"Кафене \"Славия\"\"",
+      "note": "Accepted miss: the ОПР т. 135.1.5 shape typed with straight marks stays entirely straight; the identical pair would put two like glyphs side by side."
+    },
+    {
+      "id": "bg-quotes-nest-at-start-declined",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"'b' a\"",
+      "out": "\"'b’ a\"",
+      "note": "Accepted miss: the inner mark at the start of the outer quote; the decline leaves a half-typeset result."
+    },
+    {
+      "id": "bg-quotes-decline-spreads",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"x\" и \"a 'b'\"",
+      "out": "\"x\" и \"a ’b'\"",
+      "note": "Accepted miss: the decline is not local, the plain pair before the failing nest also stays straight."
+    },
+    {
+      "id": "bg-quotes-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "„ не “",
+      "out": "„не“",
+      "note": "ИБЕ spacing article: no space inside the marks."
+    },
+    {
+      "id": "bg-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Чакай... какво?",
+      "out": "Чакай… какво?",
+      "note": "ИБЕ №2158: three dots, not four; the mark attaches to the preceding word."
+    },
+    {
+      "id": "bg-ellipsis-not-abbreviated",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Наистина?.. да",
+      "out": "Наистина?… да",
+      "note": "abbreviatedAfterTerminal is false: `?..` is a typing slip, not an abbreviated ellipsis (decision, no source)."
+    },
+    {
+      "id": "bg-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Утре - ако вали - няма да дойда.",
+      "out": "Утре – ако вали – няма да дойда.",
+      "note": "ИБЕ №572: a space before and after the long dash; U+2013 by decision."
+    },
+    {
+      "id": "bg-dashes-existing-em-dash",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Утре — ако вали — няма да дойда.",
+      "out": "Утре – ако вали – няма да дойда.",
+      "note": "An authored em dash becomes the locale's en dash (the DGT handbook's U+2014 is house style)."
+    },
+    {
+      "id": "bg-ranges-years-hyphen",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "през 2000-2010 г. и I-II в.",
+      "out": "през 2000 – 2010 г. и I-II в.",
+      "note": "ranges.md §3: ОПР т. 103.4 prints «2000 – 2010 г.» with spaces; the Roman-numeral member is declined, so `I-II` stays.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "bg-ranges-en-dash-gets-spaces",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "2000–2010 г.",
+      "out": "2000 – 2010 г.",
+      "note": "ranges.md §3: a tight en dash is the pre-2012 form and takes the spaced form.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "bg-ranges-spaced-kept",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "2000 – 2010 г.",
+      "out": "2000 – 2010 г.",
+      "note": "ranges.md §3: the spaced en dash is already the correct form.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "bg-ranges-dates",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "13.10. - 20.11.2018 г.",
+      "out": "13.10. – 20.11.2018 г.",
+      "note": "ranges.md §3: ОПР т. 109.4 prints «13.10. – 20.11.2018 г.».",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "bg-ranges-word-hyphen-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "Българо-руски речник",
+      "out": "Българо-руски речник",
+      "note": "ranges.md §3: a hyphenated word is not a digit range and is left alone.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "bg-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "северо-западен и по-добър",
+      "out": "северо-западен и по-добър",
+      "note": "ОПР т. 65–66 govern syllable breaks only; no list ships, nothing changes."
+    },
+    {
+      "id": "bg-nbsp-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "100 км, 5 кг и 20 лв.",
+      "out": "100 км, 5 кг и 20 лв.",
+      "note": "ИБЕ №1601: a space separates the unit or abbreviation from its number."
+    },
+    {
+      "id": "bg-nbsp-year-abbreviation",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "през 2020 г. беше",
+      "out": "през 2020 г. беше",
+      "note": "ИБЕ №1601: «2020 г.» with a space."
+    },
+    {
+      "id": "bg-nbsp-percent-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "5% и 5 %",
+      "out": "5% и 5 %",
+      "note": "ИБЕ №626 writes 5% without a space, so % is not a unit here and nothing is bound."
+    },
+    {
+      "id": "bg-nbsp-single-letter-unit-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "10 м и 5 с",
+      "out": "10 м и 5 с",
+      "note": "Single-letter symbols are excluded by decision, not by citation (ИБЕ №1601 writes «10 м» with a space): `с` is a Bulgarian preposition."
+    },
+    {
+      "id": "bg-nbsp-short-words-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "в къщата и с приятел",
+      "out": "в къщата и с приятел",
+      "note": "afterShortWords ships empty: no source gives a rule for в, с, к, и."
+    },
+    {
+      "id": "bg-nbsp-initials-unbound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Иван Вазов и И. Вазов",
+      "out": "Иван Вазов и И. Вазов",
+      "note": "initialBinding is none: no source states a rule on initials."
+    },
+    {
+      "id": "bg-nbsp-no-space-before-question",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Наистина ? Да !",
+      "out": "Наистина? Да!",
+      "note": "ИБЕ spacing article: no space before ? and !, so nothing is put back."
+    },
+    {
+      "id": "bg-spaces-brackets",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Текст ( нормален ) остава  .",
+      "out": "Текст (нормален) остава.",
+      "note": "spaces.md: brackets tighten, no space before the final stop."
+    },
+    {
+      "id": "bg-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026",
+      "out": "Copyright © 2026",
+      "note": "symbols rule, locale-neutral."
+    },
+    {
+      "id": "bg-apostrophe-foreign-name",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Това е McDonald's",
+      "out": "Това е McDonald’s",
+      "note": "apostrophe rule, locale-neutral."
+    }
+  ]
+}

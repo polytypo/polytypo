@@ -260,9 +260,9 @@ is a breaking change.
 ## Scope discipline
 
 Locales are `en-US` `en-GB` `de-DE` `de-CH` `fr` `fr-CA` `ru` `fi` `sv` `el` `es` `it` `pt-PT`
-`pt-BR` `nl` `pl` `uk` `cs` `tr` `sk` `ro` `hu` — twenty-two (aliases `en`→`en-US`, `de`→`de-DE`, `pt`→`pt-PT`;
+`pt-BR` `nl` `pl` `uk` `cs` `tr` `sk` `ro` `hu` `bg` — twenty-three (aliases `en`→`en-US`, `de`→`de-DE`, `pt`→`pt-PT`;
 `tr-TR` needs none, since `locale-resolution.md` §3.4 strips the region and retries). Eight
-arrived in spec 1.3.0, `tr` in 1.6.0, `sk` in 1.11.0 and `ro` and `hu` in 1.12.0. The generated README and site show a locale once the installed
+arrived in spec 1.3.0, `tr` in 1.6.0, `sk` in 1.11.0 and `ro`, `hu` and `bg` in 1.12.0. The generated README and site show a locale once the installed
 engine can run it.
 **A new locale also gets its language in the embeddable badge**: a caption in `BADGE_TEXT` and a
 picker name in `BADGE_LANG_NAMES` (`brand/tools/build_promo.py`), keyed by language, so `pt-BR`
