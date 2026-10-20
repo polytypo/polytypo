@@ -264,6 +264,10 @@ Locales are `en-US` `en-GB` `de-DE` `de-CH` `fr` `fr-CA` `ru` `fi` `sv` `el` `es
 `tr-TR` needs none, since `locale-resolution.md` §3.4 strips the region and retries). Eight
 arrived in spec 1.3.0, `tr` in 1.6.0 and `sk` in 1.11.0. The generated README and site show a locale once the installed
 engine can run it.
+**A new locale also gets its language in the embeddable badge**: a caption in `BADGE_TEXT` and a
+picker name in `BADGE_LANG_NAMES` (`brand/tools/build_promo.py`), keyed by language, so `pt-BR`
+needs nothing when `pt-PT` is there. `badge_matrix()` fails the build and
+`tests/promo/badge-languages.test.ts` fails the suite if a registered language has none.
 `brand/tools/gen_examples.ts` still drops any locale the installed engine rejects, by design
 rather than failing the build — that is what kept the 1.3.0 locales out of the public copy while
 the engine on npm was still 1.2.0. **The six-locale cap was withdrawn 2026-08-15 by operator decision — coverage is a

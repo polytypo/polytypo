@@ -21,6 +21,9 @@
     const back = e.target.closest("[data-wb-back]");
     if (back) setTab(back.closest(".workbench"), "input");
 
+    const split = e.target.closest("#pg-split");
+    if (split) setSplit(split.closest(".workbench"), split.checked);
+
     const expand = e.target.closest(".wb-expand");
     if (expand) toggleExpand(expand.closest(".workbench"));
 
@@ -56,7 +59,38 @@
     panels[1].hidden = !out;
     wb.querySelector("[data-wb-back]").setAttribute("aria-selected", String(!out));
     wb.querySelector("[data-wb-go][role=tab]").setAttribute("aria-selected", String(out));
-    wb.querySelector("[data-copy-output]").hidden = !out;
+    wb.querySelector("[data-copy-output]").hidden = !out && !wb.hasAttribute("data-split");
+  }
+
+  // Split view shows both panels at once; the tabs stop being controls and become the two column
+  // headings. Turning it off returns to whichever tab was open before.
+  function setSplit(wb, on) {
+    const second = wb.querySelector("#pg-tab-out");
+    const before = second.getBoundingClientRect().left;
+    wb.toggleAttribute("data-split", on);
+    const tabs = wb.querySelectorAll(".wb-tab");
+    tabs.forEach((t) => {
+      t.disabled = on;
+    });
+    if (on) {
+      tabs.forEach((t) => t.setAttribute("aria-selected", "true"));
+      wb.querySelectorAll(".wb-body > div").forEach((p) => {
+        p.hidden = false;
+      });
+      wb.querySelector("[data-copy-output]").hidden = false;
+    } else {
+      setTab(wb, wb.getAttribute("data-tab"));
+    }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timing = { duration: 250, easing: "ease-out" };
+    second.animate(
+      [
+        { transform: `translateX(${before - second.getBoundingClientRect().left}px)` },
+        { transform: "none" },
+      ],
+      timing,
+    );
+    if (on) wb.querySelector(".wb-output").animate([{ opacity: 0 }, { opacity: 1 }], timing);
   }
 
   function toggleExpand(wb) {

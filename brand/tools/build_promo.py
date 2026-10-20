@@ -1775,27 +1775,49 @@ def write_llms_txt(out_dir, data):
 # "Текст оттипографен <b>polytypo</b>" reads as a natural short UI credit line in Russian, not a
 # literal translation of the English noun phrase.
 # Keyed by language, not locale: the badge's caption text is the same for every locale that
-# shares a language (en-US/en-GB, de-DE/de-CH, fr/fr-CA), so the picker offers exactly these seven
-# languages -- not ten locales where three pairs would produce byte-identical text under different
-# labels. See BADGE_LANG_NAMES for the picker's own display names, in this same order.
+# shares a language (en-US/en-GB, de-DE/de-CH, fr/fr-CA, pt-PT/pt-BR), so the picker offers one
+# entry per language -- not one per locale, where four pairs would produce byte-identical text
+# under different labels. Every language in spec/locales/registry.json must have an entry here
+# and in BADGE_LANG_NAMES: badge_matrix() fails the build otherwise. The Spanish to Slovak
+# captions follow the English structure and have not had the operator review the first seven
+# had. The picker names languages in English, as the playground does. Both tables run in the project's one order, alphabetical by the language's English name
+# (brand/tools/locale_order.py): Czech, Dutch, English, ... Ukrainian.
 BADGE_TEXT = {
+    "cs": "Typografická úprava pomocí <b>polytypo</b>",
+    "nl": "Typografische opschoning door <b>polytypo</b>",
     "en": "Typographic cleanup by <b>polytypo</b>",
     "fi": "Typografinen siistiminen <b>polytypon</b> avulla",
     "fr": "Nettoyage typographique par <b>polytypo</b>",
     "de": "Typografische Bereinigung durch <b>polytypo</b>",
     "el": "Τυπογραφικός καθαρισμός από το <b>polytypo</b>",
+    "it": "Pulizia tipografica con <b>polytypo</b>",
+    "pl": "Typograficzne porządki dzięki <b>polytypo</b>",
+    "pt": "Limpeza tipográfica por <b>polytypo</b>",
     "ru": "Текст оттипографен <b>polytypo</b>",
+    "sk": "Typografická úprava pomocou <b>polytypo</b>",
+    "es": "Limpieza tipográfica con <b>polytypo</b>",
     "sv": "Typografisk uppstädning av <b>polytypo</b>",
+    "tr": "Tipografik düzenleme: <b>polytypo</b>",
+    "uk": "Типографічне впорядкування за допомогою <b>polytypo</b>",
 }
 
 BADGE_LANG_NAMES = {
+    "cs": "Czech",
+    "nl": "Dutch",
     "en": "English",
-    "fi": "Suomi",
-    "fr": "Français",
-    "de": "Deutsch",
-    "el": "Ελληνικά",
-    "ru": "Русский",
-    "sv": "Svenska",
+    "fi": "Finnish",
+    "fr": "French",
+    "de": "German",
+    "el": "Greek",
+    "it": "Italian",
+    "pl": "Polish",
+    "pt": "Portuguese",
+    "ru": "Russian",
+    "sk": "Slovak",
+    "es": "Spanish",
+    "sv": "Swedish",
+    "tr": "Turkish",
+    "uk": "Ukrainian",
 }
 
 _BADGE_THEME_COLORS = {
@@ -1831,12 +1853,23 @@ def badge_html(lang, theme):
 
 
 def badge_matrix():
-    """{lang: {"light": html, "dark": html}} for exactly the seven languages BADGE_TEXT covers --
+    """{lang: {"light": html, "dark": html}} for exactly the languages BADGE_TEXT covers --
     embedded directly into promo/badge.js (write_badge_js()), the single source of truth both this
     site's own live preview and every external embed render from. Deliberately not keyed by the
-    ten locales spec/rules/locale-resolution.md accepts: three language pairs (en-US/en-GB,
-    de-DE/de-CH, fr/fr-CA) would otherwise ship two byte-identical entries each, for no benefit.
+    locales spec/rules/locale-resolution.md accepts: four language pairs (en-US/en-GB,
+    de-DE/de-CH, fr/fr-CA, pt-PT/pt-BR) would otherwise ship two byte-identical entries each, for
+    no benefit. Every registered locale's language must be covered, so adding a locale to
+    spec/locales/registry.json without a badge caption fails here.
     """
+    registry = json.load(open(os.path.join(REPO, "spec", "locales", "registry.json"), encoding="utf-8"))
+    languages = {code.split("-")[0] for code in registry["locales"]}
+    if languages != set(BADGE_TEXT) or set(BADGE_LANG_NAMES) != set(BADGE_TEXT):
+        raise SystemExit(
+            "badge languages out of step with spec/locales/registry.json: "
+            f"missing caption {sorted(languages - set(BADGE_TEXT))}, "
+            f"missing picker name {sorted(set(BADGE_TEXT) - set(BADGE_LANG_NAMES))}, "
+            f"caption for an unregistered language {sorted(set(BADGE_TEXT) - languages)}"
+        )
     return {
         lang: {theme: badge_html(lang, theme) for theme in ("light", "dark")} for lang in BADGE_TEXT
     }
