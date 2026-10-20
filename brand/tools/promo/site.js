@@ -253,6 +253,23 @@ window.Polytypo = (function () {
     });
   }
 
+  // A sidebar taller than the viewport scrolls with the page, then pins by its bottom edge;
+  // a shorter one pins by its top. Pure CSS cannot know the height, so it is measured here.
+  const docNav =
+    typeof document === "undefined" ? null : document.querySelector?.(".doc-layout > .doc-nav");
+  if (docNav) {
+    const fitDocNav = () => {
+      docNav.style.removeProperty("--doc-nav-top");
+      const topOffset = parseFloat(getComputedStyle(docNav).top);
+      if (getComputedStyle(docNav).position !== "sticky" || Number.isNaN(topOffset)) return;
+      const overflow = docNav.offsetHeight + topOffset + 24 - window.innerHeight;
+      if (overflow > 0) docNav.style.setProperty("--doc-nav-top", `${topOffset - overflow}px`);
+    };
+    fitDocNav();
+    window.addEventListener("load", fitDocNav);
+    window.addEventListener("resize", fitDocNav);
+  }
+
   return {
     esc,
     mark,

@@ -1162,9 +1162,7 @@ footer .wrap {
 
 .doc-nav {
   position: sticky;
-  top: calc(var(--nav-h) + var(--space-5));
-  max-height: calc(100vh - var(--nav-h) - var(--space-6));
-  overflow-y: auto;
+  top: var(--doc-nav-top, calc(var(--nav-h) + var(--space-5)));
   padding-right: var(--space-2);
   font-size: var(--fs-sm);
   line-height: var(--lh-ui);
@@ -1449,7 +1447,6 @@ footer .wrap {
 
   .doc-nav {
     position: static;
-    max-height: none;
     padding: 0;
     border: 1px solid var(--line);
     border-radius: var(--radius-lg);

@@ -12,6 +12,7 @@ live there (reveal, specimen, diff_html) are passed in so the two modules do not
 import html as H
 import json
 import os
+import re
 import sys
 import unicodedata
 from urllib.parse import urlparse
@@ -360,6 +361,30 @@ def _modes_section(ex, h, n):
     return _h2("modes", f"How does {n} text behave in text, HTML and Markdown modes?") + sentence + f'<div class="card-grid">{"".join(rows)}</div>'
 
 
+_URL_RE = re.compile(r"https?://[^\s)»]+")
+_SPACED_DATE_RE = re.compile(r"\b(\d{1,2})\. (\d{1,2})\. (\d{4})\b")
+_SHORT_URL = 40
+
+
+def _linkify(text):
+    """Escape `text` and turn each URL in it into a link; a long URL shows only its host."""
+    out, last = [], 0
+    for m in _URL_RE.finditer(text):
+        url = m.group(0).rstrip(".,;:")
+        end = m.start() + len(url)
+        out.append(H.escape(text[last : m.start()]))
+        shown = url if len(url) <= _SHORT_URL else urlparse(url).netloc
+        out.append(f'<a href="{H.escape(url, quote=True)}" rel="noopener">{H.escape(shown)}</a>')
+        last = end
+    out.append(H.escape(text[last:]))
+    return "".join(out)
+
+
+def _tight_dates(text):
+    """'19. 10. 2026' -> '19.10.2026': the shown date format never has spaces after the dots."""
+    return _SPACED_DATE_RE.sub(r"\1.\2.\3", text)
+
+
 def _sources_section(d, code):
     order = [r["id"] for r in RULES]
     by_rule = {}
@@ -376,8 +401,8 @@ def _sources_section(d, code):
                     f' <a href="{H.escape(url, quote=True)}" rel="noopener">'
                     f"{H.escape(urlparse(url).netloc)}</a>"
                 )
-            note = f'<p class="small muted">{H.escape(s["note"])}</p>' if s.get("note") else ""
-            items.append(f'<li><span lang="{_lang(code)}">{H.escape(s["cite"])}</span>{link}{note}</li>')
+            note = f'<p class="small muted">{H.escape(_tight_dates(s["note"]))}</p>' if s.get("note") else ""
+            items.append(f'<li><span lang="{_lang(code)}">{_linkify(s["cite"])}</span>{link}{note}</li>')
         parts.append(f'<h3><code>{rid}</code></h3><ul class="sources">{"".join(items)}</ul>')
     n = len(d["sources"])
     return (
@@ -424,7 +449,7 @@ def _sidebar(code, prefix, all_pages):
     return (
         '<details class="doc-nav"><summary>Locales</summary><nav aria-label="Locales">'
         f'<a class="nav-top" href="{prefix}locales/">All locales</a><ul class="nav-flat">{"".join(parts)}</ul>'
-        f'<a class="nav-cta" href="{prefix}contribute/"><strong>Are you a developer?</strong>'
+        f'<a class="nav-cta" href="{prefix}contribute/"><strong>Are you a developer?</strong> '
         "<span>Add your locale and contribute to polytypo ⇨</span></a></nav></details>"
     )
 
