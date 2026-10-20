@@ -11,6 +11,8 @@ export default tseslint.config(
       "promo/vendor/**",
       "promo/assets/**",
       "promo/badge.js",
+      // pagefind search index, generated and gitignored
+      "promo/pagefind/**",
       // private promo video (gitignored); flat config does not read .gitignore
       "video/**",
     ],
