@@ -53,8 +53,9 @@ a documented tradeoff, not a claim of reliable label detection — see §5.
   citations support it. No new locale claim is made by this document (operator decision, spec
   0.5.0): every `dash.range` value in `spec/locales/*.json` is unchanged from spec 0.4.1.
 
-`"none"` means the locale has no verified range convention, and this rule must emit nothing at
-all for a range token in that locale — not a fallback to `dash.parenthetical`, nothing.
+`"none"` means the rule substitutes nothing for a range token in that locale: either no range
+convention is verified, or the cited sources attest more than one form and rank none of them
+(`ro`). This rule must emit nothing at all for a range token in that locale — not a fallback to `dash.parenthetical`, nothing.
 
 ---
 
@@ -254,14 +255,14 @@ next to a closed-up range member no longer converts: `Anstieg--50%--war` is left
 `Anstieg--50--war` has always been left alone, so the two agree; and a locale with a tight
 parenthetical form never reaches the guard, so `price--$50--drop` still becomes `price—$50—drop`
 in `en-US`. **The remedy is unconditional on `dash.range`, while the defect was not**: the
-conversion loss therefore also lands in `fr`, `fr-CA`, `it`, `nl`, `pt-BR` and `pt-PT`, whose
+conversion loss therefore also lands in `fr`, `fr-CA`, `it`, `nl`, `pt-BR`, `pt-PT` and `ro`, whose
 `dash.range` is `"none"` and which never had a range verdict to disturb. Making T1 consult
 `dash.range` would make a `dashes` verdict depend on a field `dashes` does not read, which is a
-worse trade than a conversion nobody has asked for in six locales.
+worse trade than a conversion nobody has asked for in seven locales.
 
 **The accepted cost, stated plainly.** Widening candidacy moves tokens **out of** `dashes`, and
 `ranges` is off by default, so text that `dashes` used to change now changes only when a caller
-turns `ranges` on — and in the eight locales whose `dash.range` is `"none"`, not even then:
+turns `ranges` on — and in the ten locales whose `dash.range` is `"none"`, not even then:
 `$15 - $20` gave `$15 — $20` in `fr` through spec 1.2.0 and is a permanent no-op from 1.3.0. The affected shapes are the **spaced and multi-hyphen** ones, because a lone
 tight hyphen between two non-spaces was never converted by `dashes` either: `$15 - $20` gave
 `$15—$20` in `en-US` before this section and is a no-op with default options after it, while

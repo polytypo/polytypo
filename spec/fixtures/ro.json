@@ -1,0 +1,234 @@
+{
+  "spec": "1.12.0",
+  "locale": "ro",
+  "cases": [
+    {
+      "id": "ro-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "A spus \"salut\".",
+      "out": "A spus „salut”.",
+      "note": "quotes.primary = U+201E/U+201D (forma «99…99»): ÎOOP6 §III.1.2, «ghilimele românești „ ”»."
+    },
+    {
+      "id": "ro-quotes-not-german",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "„salut“",
+      "out": "„salut”",
+      "note": "DISTINCTIVE CASE: input is the German/Czech pair with closing U+201C; output is the Romanian closing U+201D. The two differ by one glyph in print, hence a fixture of their own."
+    },
+    {
+      "id": "ro-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Ea a zis 'bine' acolo\"",
+      "out": "„Ea a zis «bine» acolo”",
+      "note": "quotes.secondary = U+00AB/U+00BB, pointing inwards: ÎOOP6 gives guillemets the role of a quote inside a quote."
+    },
+    {
+      "id": "ro-quotes-nested-guillemets-kept",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "„Ea a zis «bine» acolo”",
+      "out": "„Ea a zis «bine» acolo”",
+      "note": "An already typeset nested pair is a fixed point."
+    },
+    {
+      "id": "ro-quotes-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "„ salut ”",
+      "out": "„salut”",
+      "note": "innerSpace = none: ÎOOP6 «Între ghilimele și elementul pe care îl încadrează nu se lasă blanc.»"
+    },
+    {
+      "id": "ro-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Stai... ce?",
+      "out": "Stai… ce?",
+      "note": "Three dots become the single character U+2026."
+    },
+    {
+      "id": "ro-ellipsis-not-abbreviated",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Serios?.. da",
+      "out": "Serios?… da",
+      "note": "abbreviatedAfterTerminal = false: no source attests the two-dot form after a terminal mark; medium confidence, see sources."
+    },
+    {
+      "id": "ro-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Nu avem încă - firește - rezultate.",
+      "out": "Nu avem încă – firește – rezultate.",
+      "note": "dash.parenthetical = en-spaced: ÎOOP6 «Înainte și după linia de pauză, blancul este obligatoriu»."
+    },
+    {
+      "id": "ro-dashes-existing-em-dash",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Nu avem încă — firește — rezultate.",
+      "out": "Nu avem încă – firește – rezultate.",
+      "note": "The sources name U+2013 (the Order's annex, En-Dash) and never U+2014, so an em dash is rewritten."
+    },
+    {
+      "id": "ro-ranges-hyphen-kept",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "anii 2020-2021, perioada 1-13 mai",
+      "out": "anii 2020-2021, perioada 1-13 mai",
+      "note": "ranges.md §3: dash.range = none. ÎOOP6 and DOOM3 prefer the unspaced hyphen for ranges, which is the input form, so nothing is substituted.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "ro-ranges-spaced-kept",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "noaptea de 30 – 31 decembrie",
+      "out": "noaptea de 30 – 31 decembrie",
+      "note": "ranges.md §3: dash.range = none. The spaced en dash is the second form ÎOOP6 attests for dates (30 – 31 decembrie); none preserves it.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "ro-ranges-en-dash-tight-kept",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "perioada 1–31 ianuarie",
+      "out": "perioada 1–31 ianuarie",
+      "note": "ranges.md §3: dash.range = none. DOOM3 «Bara oblică» II.3 b attests the unspaced en dash as a third range form; none preserves it.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "ro-ranges-spaced-hyphen-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "paginile 1 - 22",
+      "out": "paginile 1 - 22",
+      "note": "ranges.md §3: dash.range = none. With range = none a spaced hyphen is left as authored.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "ro-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "s-a dus și l-am văzut",
+      "out": "s-a dus și l-am văzut",
+      "note": "The hyphen lists are empty: DOOM3 5.1.5 gives a general recommendation, not a closed list of forms."
+    },
+    {
+      "id": "ro-nbsp-no-short-words",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "și la ea, o dată",
+      "out": "și la ea, o dată",
+      "note": "afterShortWords is empty: no source states a short-word rule."
+    },
+    {
+      "id": "ro-nbsp-before-number",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "conform art. 3 și nr. 5",
+      "out": "conform art. 3 și nr. 5",
+      "note": "beforeNumber: DOOM3 5.2 «nu art. // 3»; nr. is the same class."
+    },
+    {
+      "id": "ro-nbsp-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "10 km, 5 kg, 20 cm, 3 mm și 90 km/h",
+      "out": "10 km, 5 kg, 20 cm, 3 mm și 90 km/h",
+      "note": "beforeUnits: DOOM3 5.2 «nu 10 // km»; the other symbols follow BIPM."
+    },
+    {
+      "id": "ro-nbsp-celsius",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "19 °C",
+      "out": "19 °C",
+      "note": "°C: same class as the other unit symbols; BIPM leaves a single space before the unit."
+    },
+    {
+      "id": "ro-nbsp-percent-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "50 % din preț",
+      "out": "50 % din preț",
+      "note": "% is not listed: it rests only on a non-normative guide, so it is not bound."
+    },
+    {
+      "id": "ro-nbsp-initial-single",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "I. Popescu",
+      "out": "I. Popescu",
+      "note": "initialBinding = single: DOOM3 5.2 «nu Ion // Popescu, I. // Popescu»."
+    },
+    {
+      "id": "ro-nbsp-initials-compact-unbound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "I.L. Caragiale",
+      "out": "I.L. Caragiale",
+      "note": "ACCEPTED MISS: DOOM3 1.2.6 writes compound initials closed up (I.L.), and N7 (nbsp.md §3.9) does not treat the L. after a full stop as an initial, so the space before the surname stays breakable. A false negative, never a damaged text."
+    },
+    {
+      "id": "ro-nbsp-initial-sentence-boundary",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "în anul A. Apoi",
+      "out": "în anul A. Apoi",
+      "note": "ACCEPTED COST of initialBinding = single: a lone capital before a full stop is read as an initial even at a sentence boundary (nbsp.md §3.9), the price of binding «I. // Popescu»."
+    },
+    {
+      "id": "ro-nbsp-no-space-before-question",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Serios?",
+      "out": "Serios?",
+      "note": "No no-break space before ? ! : ;."
+    },
+    {
+      "id": "ro-nbsp-abbreviation-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "nr. crt. 4",
+      "out": "nr. crt. 4",
+      "note": "abbreviations is empty: no source forbids splitting a spaced abbreviation such as nr. crt."
+    },
+    {
+      "id": "ro-spaces-brackets-and-final-stop",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Text ( obișnuit ) rămâne  .",
+      "out": "Text (obișnuit) rămâne.",
+      "note": "The spaces rule is language-independent."
+    },
+    {
+      "id": "ro-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026",
+      "out": "Copyright © 2026",
+      "note": "The symbols rule is language-independent."
+    },
+    {
+      "id": "ro-apostrophe-foreign-name",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "A mers la McDonald's și înapoi",
+      "out": "A mers la McDonald’s și înapoi",
+      "note": "An apostrophe in a foreign name is written U+2019."
+    }
+  ]
+}

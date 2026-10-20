@@ -39,11 +39,11 @@
       "properties": {
         "parenthetical": {
           "enum": ["em-tight", "em-spaced", "en-tight", "en-spaced", "none"],
-          "description": "Dash used for a parenthetical break. `-tight` means no surrounding spaces, `-spaced` means a regular space on each side (the leading one may later be made non-breaking by the nbsp rule). `none` means the locale has no verified convention and the rule must not substitute anything."
+          "description": "Dash used for a parenthetical break. `-tight` means no surrounding spaces, `-spaced` means a regular space on each side (the leading one may later be made non-breaking by the nbsp rule). `none` means the rule must not substitute anything: either the locale has no verified convention, or the cited sources attest more than one form and rank none."
         },
         "range": {
           "enum": ["em-tight", "em-spaced", "en-tight", "en-spaced", "none"],
-          "description": "Dash used between numbers and dates. Russian sets an em dash here. `none` means the locale has no verified convention and the rule must not substitute anything — a missing citation is never a licence to guess."
+          "description": "Dash used between numbers and dates. Russian sets an em dash here. `none` means the rule must not substitute anything: either the locale has no verified convention, or the cited sources attest more than one form and rank none — a missing citation is never a licence to guess."
         }
       }
     },

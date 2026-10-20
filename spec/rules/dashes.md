@@ -57,7 +57,8 @@ supports it (operator decision: no new locale claim was made by the split).
 list — and this rule owns the **mechanism** it applies to them. A `sources` citation is not
 required to name a code point or a binding the locale file has no way to vary. The principle is
 stated once, normatively, in [nbsp.md](nbsp.md) §2.1 and governs every list-valued field in
-`locale.schema.json`. **`"none"` means the locale has no verified convention for that use, and
+`locale.schema.json`. **`"none"` means the rule substitutes nothing for that use — either the locale has no verified
+convention for it, or the cited sources attest more than one form and rank none — and
 the rule must emit nothing at all for a token of that kind** — not a fallback, not a "sensible
 default", nothing. A missing citation is never a licence to guess (PLAN.md §6.1), and a locale
 that has not been researched must round-trip its input untouched rather than acquire a

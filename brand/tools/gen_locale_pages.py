@@ -148,7 +148,7 @@ def quick_answer(d):
     rng = (
         f"number and date ranges take {DASHES[dash['range']]}"
         if dash["range"] != "none"
-        else "no range convention is verified, so none is substituted"
+        else "no single range convention is verified, so none is substituted"
     )
     out.append(f"{par}; {rng}.")
     parts = []

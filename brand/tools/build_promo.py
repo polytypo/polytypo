@@ -77,6 +77,7 @@ PRIMARY_SOURCES = {
     "cs": "Ústav pro jazyk český AV ČR, Internetová jazyková příručka",
     "tr": "Türk Dil Kurumu, Yazım Kuralları; Türk Dil Kurumu, Kısaltmalar Dizini",
     "sk": "Jazykovedný ústav Ľudovíta Štúra SAV, Pravidlá slovenského pravopisu",
+    "ro": "Academia Română, Îndreptar ortografic, ortoepic, morfologic și de punctuație (ÎOOP6); DOOM3",
 }
 
 
@@ -1778,7 +1779,7 @@ def write_llms_txt(out_dir, data):
 # shares a language (en-US/en-GB, de-DE/de-CH, fr/fr-CA, pt-PT/pt-BR), so the picker offers one
 # entry per language -- not one per locale, where four pairs would produce byte-identical text
 # under different labels. Every language in spec/locales/registry.json must have an entry here
-# and in BADGE_LANG_NAMES: badge_matrix() fails the build otherwise. The Spanish to Slovak
+# and in BADGE_LANG_NAMES: badge_matrix() fails the build otherwise. The Spanish to Romanian
 # captions follow the English structure and have not had the operator review the first seven
 # had. The picker names languages in English, as the playground does. Both tables run in the project's one order, alphabetical by the language's English name
 # (brand/tools/locale_order.py): Czech, Dutch, English, ... Ukrainian.
@@ -1793,6 +1794,7 @@ BADGE_TEXT = {
     "it": "Pulizia tipografica con <b>polytypo</b>",
     "pl": "Typograficzne porządki dzięki <b>polytypo</b>",
     "pt": "Limpeza tipográfica por <b>polytypo</b>",
+    "ro": "Curățare tipografică cu <b>polytypo</b>",
     "ru": "Текст оттипографен <b>polytypo</b>",
     "sk": "Typografická úprava pomocou <b>polytypo</b>",
     "es": "Limpieza tipográfica con <b>polytypo</b>",
@@ -1812,6 +1814,7 @@ BADGE_LANG_NAMES = {
     "it": "Italian",
     "pl": "Polish",
     "pt": "Portuguese",
+    "ro": "Romanian",
     "ru": "Russian",
     "sk": "Slovak",
     "es": "Spanish",

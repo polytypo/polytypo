@@ -1,0 +1,82 @@
+{
+  "locale": "ro",
+  "name": "Romanian",
+  "quotes": {
+    "primary": {
+      "open": "„",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "«",
+      "close": "»",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": []
+    }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "none"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": [],
+    "beforeUnits": ["km", "kg", "cm", "mm", "km/h", "°C"],
+    "beforeNumber": ["art.", "nr."],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "initialBinding": "single"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Academia Română, Îndreptar ortografic, ortoepic, morfologic și de punctuație (ÎOOP6, 2024), §III.1.2 «Semne ortografice și de punctuație», pp. 43–44, «Ghilimelele»: «Există mai multe tipuri de ghilimele, folosite numai în pereche: românești „ ” (cele mai frecvent folosite și care au forma apostrofului sau a cifrei 9); franțuzești « », numite și ghilimele ascuțite/unghiulare, cu rolul de a marca un citat inclus în alt citat (situația de „ghilimele în ghilimele”)»; «În textele scrise în limba română, citatele, ca și vorbirea directă, se recomandă să fie încadrate în ghilimele românești»; «Între ghilimele și elementul pe care îl încadrează nu se lasă blanc.»; Ordinul MCTI nr. 414/25.09.2006 (M.Of. I nr. 842/12.10.2006), anexă: «ghilimele stânga jos (dublu 9 jos) 201E», «ghilimele dreapta sus (dublu 9 sus) 201D», «ghilimele ascuțite stânga 00AB», «ghilimele ascuțite dreapta 00BB»",
+      "url": "https://doom.lingv.ro/ioop?page=43",
+      "note": "Nivelul întâi: U+201E deschidere, U+201D închidere (forma «99…99», ca în pl; NU U+201C ca în cs/sk/de). Nivelul al doilea: U+00AB deschidere, U+00BB închidere, în direcția «…», nu »…« ca în pl; ÎOOP6 le atribuie rolul citatului inclus în alt citat, iar ‚…’ nu apare în nicio sursă (ghilimelele unice ʼ ʼ sunt rezervate glosării în stilul științific). Codurile provin din anexa Ordinului 414/2006 (copie neoficială: https://www.secarica.ro/std/ordin_codare_caractere_2006.09.25.pdf; textul oficial și vigoarea nu au fost verificate), nu din glifele randate; ÎOOP6 dă doar glifele, iar anexa le leagă de coduri. ÎOOP6 a fost citit din PDF-ul publicat la doom.lingv.ro (vizualizatorul paginii; adresa directă a fișierului răspunde 403), pagina tipărită corespunde paginii PDF. innerSpace = «none»: ÎOOP6 interzice blancul între ghilimele și elementul încadrat. Cele trei niveluri (nivelul al treilea, «„…”», în ghidul Cancelariei de Stat a R. Moldova 9.8.3, nenormativ) depășesc ce poate exprima schema. Q-W: ambele perechi sunt WIDE. elisionIdioms și elisionClitics sunt goale: cliticele se leagă cu cratima U+002D (s-a, l-am, într-un), nu cu apostrof, deci niciun apostrof nu e ghilimea de închidere; apostroful din ÎOOP6 §1.2.1 e rar și colocvial, mulțime deschisă. Verificat 20.10.2026."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Academia Română, ÎOOP6 (2024), §III.1.2, pp. 45–46, «Linia de pauză [–]»: «Linia de pauză izolează cuvinte, construcții și propoziții intercalate într-un enunț»; «Înainte și după linia de pauză, blancul este obligatoriu, cu excepția cazului când, după a doua linie de pauză, urmează o virgulă.»; exemplu: «Materialele – pensule, acuarele, pânze – erau toate pe bănci.»; Institutul de Lingvistică «Iorgu Iordan – Al. Rosetti», DOOM3 (Univers Enciclopedic, 2021), Studiu introductiv, 1.2.5: «Este mai lungă decât cratima»; Ordinul MCTI nr. 414/2006, anexă: «linia de dialog și/sau pauză (En-Dash) 2013»",
+      "url": "https://doom.lingv.ro/studiu_introductiv/semne_grafice",
+      "note": "Justifică dash.parenthetical = «en-spaced»: blancul de ambele părți e obligatoriu în ÎOOP6. Lungimea (U+2013) e dată de anexa Ordinului 414/2006 (En-Dash), nu dedusă din glif. Excepția «urmează o virgulă» privește blancul de după a doua linie și nu schimbă forma. Verificat 20.10.2026."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Academia Română, ÎOOP6 (2024), §III.1.2, «Cratima»: «perioada 1-13 mai = de la… până la…; distanța Sibiu-Brașov = dintre… și…»; «sunt greșite exprimările hibride: între 1-5 ianuarie, o persoană între 22-25 de ani, distanța dintre Sibiu-Brașov»; «Linia de pauză [–]», funcția (iv): se folosește «între cifre care exprimă un raport…, date calendaristice (noaptea de 30 – 31 decembrie)»; DOOM3 (2021), Studiu introductiv, 1.2.4: «Ca semn de punctuație, cratima se folosește, facultativ, între: … cuvinte sau numere care indică limite ale unor distanțe în spațiu sau ale unor intervale de timp» (anii 2020-2021, orele 8-16); DOOM3, «Bara oblică», II.3 b: linia de pauză «nu este încadrată de blancuri» (perioada 1–31 ianuarie, intervalul orar 9–18); «Cratima trebuie preferată liniei de pauză, deoarece oferă economie de spațiu»; cratima «nu este precedată, nici urmată de blanc»",
+      "url": "https://doom.lingv.ro/studiu_introductiv/semne_grafice",
+      "note": "dash.range = «none» NU înseamnă lipsă de convenție: ambele surse admit două forme, cratima U+002D fără blanc (preferată, 1-13 mai) și linia de pauză cu blancuri (30 – 31 decembrie, funcția (iv) din ÎOOP6; paginile 1 – 22 în DOOM3 1.2.5). Un text scris în oricare dintre ele e corect, deci nu e nimic de substituit, iar «none» le păstrează pe toate. DOOM3 mai atestă o a treia formă, linia de pauză fără blancuri (secțiunea «Bara oblică», II.3 b: «perioada 1–31 ianuarie», «intervalul orar 9–18»), adică exact «en-tight»; formele sunt trei și nicio sursă nu le ierarhizează fără rest, iar «none» nu alege între ele. Pe ranges, valoarea nu poate exprima «preferat»: alegerea e decizie înregistrată, nu citare. Regula ranges e implicit dezactivată. Verificat 20.10.2026."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Academia Română, ÎOOP6 (2024), §III.1.2, pp. 49–50, «Punctele de suspensie [...]»: «Nu sunt precedate, dar sunt urmate obligatoriu de blanc.»; «După punctele de suspensie plasate la sfârșitul unui enunț nu se pune punct final.»; exemple cu punctele de suspensie între cuvinte și la sfârșit de enunț («Ai putea să citești cărți de aventuri sau polițiste, de călătorie sau de istorie, jurnale...»); Îndreptar ortografic, ortoepic și de punctuație, ed. a V-a (1995), §298 (transcriere dexonline wiki): «Continental!...»",
+      "url": "https://doom.lingv.ro/ioop?page=49",
+      "note": "abbreviatedAfterTerminal = false: după «!» stau trei puncte, iar forma cu două puncte nu apare în nicio sursă; nu există o frază explicită despre punctul final după «?» sau «!», deci ÎNCREDERE MEDIE. ÎOOP6 tipărește punctele de suspensie și ca trei puncte, și ca «…» (U+2026) în exemple, fără a distinge funcțional; un singur caracter e forma de stocare a spec-ului. Verificat 20.10.2026."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Institutul de Lingvistică «Iorgu Iordan – Al. Rosetti», DOOM3 (Univers Enciclopedic, 2021), Studiu introductiv, 5.1.5: «se recomandă evitarea despărțirii la capăt de rând atunci când locul acesteia ar coincide cu poziția semnelor respective»; «dacă nu poate fi evitată (de ex. în texte dispuse pe coloane), despărțirea se admite totuși»; despărțirea «nu se face când la sfârșitul primului rând sau/și la începutul rândului următor ar rezulta o singură literă»",
+      "url": "https://doom.lingv.ro/studiu_introductiv/despartire_capat_rand",
+      "note": "Cele trei liste rămân goale: regula e generală (o recomandare, cu admitere în caz de necesitate) și nu dă o listă închisă de forme. Regula literei izolate ar acoperi s-a, l-am, n-am, luat-o, dar o listă ar fi o derivare, nu o citare; mulțimea e deschisă și foarte frecventă. DECIZIE înregistrată: nu se adaugă nimic nedocumentat. Verificat 20.10.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "DOOM3 (2021), Studiu introductiv, 5.2: «nu Ion // Popescu, I. // Popescu;» «nu 10 // km, art. // 3.»; «Se tolerează plasarea pe rânduri diferite a abrevierilor pentru denumiri generice»; 1.2.6: abrevierile complexe se scriu cu punct interior fără blanc (I.L. Caragiale, ș.a.m.d.); Preambul: «Nu face obiectul unor norme propriu-zis ortografice scrierea unor termeni și mai ales a unor abrevieri și simboluri»; BIPM, The International System of Units (SI), 9th ed. (2019), concise summary (https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-concise-EN.pdf): «A single space is always left between the number and the unit»; Cancelariei de Stat a R. Moldova, Ghid de redactare lingvistică și tehnoredactare a actelor normative (2026; «nu are caracter normativ»), 9.15.1.6 și 9.16.3: «Legea●nr.●100/2017»",
+      "url": "https://doom.lingv.ro/studiu_introductiv/despartire_capat_rand",
+      "note": "(1) initialBinding = «single»: DOOM3 5.2 interzice «I. // Popescu» (o inițială izolată urmată de nume). (2) beforeNumber = [«art.», «nr.»]: «art.» citat direct; «nr.» din aceeași clasă «notațiile cifrice care includ abrevieri» (5.2) și ghidul moldovean (nenormativ); «alin.» și «pct.» au doar ghidul moldovean și sunt omise. (3) beforeUnits: «km» citat direct din 5.2; kg, cm, mm, km/h, °C aparțin aceleiași clase, iar identitatea simbolurilor SI vine de la BIPM (DOOM3 deleagă simbolurile standardelor), strat inferior ca în cs/sk. «%» e omis: se sprijină numai pe ghidul moldovean (stil de casă). Simbolurile dintr-o literă (s, m, h, l, W) sunt excluse. (4) abbreviations goală: DOOM3 scrie abrevierile compuse fără blanc interior, iar pentru cele cu blanc (nr. crt.) nicio sursă nu interzice despărțirea. (5) beforePunctuation și narrowBeforePunctuation goale: nu se pune blanc înaintea lui : ; ! ? (doar ghidul moldovean, 9.14, nenormativ; ÎOOP6 spune «nu este precedat de blanc» numai despre punct și despre punctele de suspensie); lista goală e un no-op oricum. (6) afterShortWords, beforeWord, afterSymbols goale: nicio sursă; § nu e menționat. Verificat 20.10.2026."
+    }
+  ]
+}
