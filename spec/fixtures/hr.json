@@ -1,0 +1,253 @@
+{
+  "spec": "1.12.0",
+  "locale": "hr",
+  "cases": [
+    {
+      "id": "hr-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Rekao je: \"da\" i otišao.",
+      "out": "Rekao je: „da” i otišao.",
+      "note": "Hrvatski pravopis 8.16: the base form is „…” (U+201E, U+201D); the close is U+201D, not U+201C."
+    },
+    {
+      "id": "hr-quotes-nested-secondary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Rekao je: \"pjesma 'Lijepa naša' je himna\" i otišao.",
+      "out": "Rekao je: „pjesma ‘Lijepa naša’ je himna” i otišao.",
+      "note": "Hrvatski pravopis 8.17: a quotation inside a quotation takes the single upper pair ‘…’ (U+2018, U+2019), not the low U+201A."
+    },
+    {
+      "id": "hr-quotes-nested-at-end",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Rekao je: \"pjesma 'Lijepa naša'\".",
+      "out": "Rekao je: „pjesma ‘Lijepa naša’”.",
+      "note": "Hrvatski pravopis 8.17: the inner level may end where the outer one does; the secondary pair differs from the primary, so nothing is declined."
+    },
+    {
+      "id": "hr-quotes-two-pairs",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "x \"a\" y \"b 'c'\"",
+      "out": "x „a” y „b ‘c’”",
+      "note": "Two sibling pairs, the second with a nest: both are typeset."
+    },
+    {
+      "id": "hr-quotes-already-typeset-kept",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Rekao je: „pjesma ‘Lijepa naša’ je himna” i otišao.",
+      "out": "Rekao je: „pjesma ‘Lijepa naša’ je himna” i otišao.",
+      "note": "Already typeset at both levels: left as it is."
+    },
+    {
+      "id": "hr-quotes-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "„ da ”",
+      "out": "„da”",
+      "note": "Hrvatski pravopis 8.16: no space after the opening or before the closing mark."
+    },
+    {
+      "id": "hr-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Čekaj... što?",
+      "out": "Čekaj… što?",
+      "note": "Hrvatski pravopis 8.10: three dots become the single ellipsis character."
+    },
+    {
+      "id": "hr-ellipsis-not-abbreviated",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Što?.. da",
+      "out": "Što?… da",
+      "note": "abbreviatedAfterTerminal is false: `?..` is an ordinary ellipsis after the question mark, not a two-dot abbreviated one (decision; neither 8.10 nor 8.3 states a two-dot form)."
+    },
+    {
+      "id": "hr-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Idemo - ako pada - kasnije.",
+      "out": "Idemo – ako pada – kasnije.",
+      "note": "Hrvatski pravopis 8.14: the dash is written with a space on each side; U+2013 read from rendered text."
+    },
+    {
+      "id": "hr-dashes-existing-em-dash",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Idemo — ako pada — kasnije.",
+      "out": "Idemo – ako pada – kasnije.",
+      "note": "An authored em dash becomes the locale's en dash: 8.14 does not mention U+2014."
+    },
+    {
+      "id": "hr-ranges-year-tight-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "2010.-2012.",
+      "out": "2010.-2012.",
+      "note": "ranges.md §3.2: the left flank of the hyphen is the ordinal period U+002E, not a digit, so this attested year form is not a range candidate and stays as typed.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "hr-ranges-year-spaced-gets-en-dash",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "2010. - 2012.",
+      "out": "2010. – 2012.",
+      "note": "ranges.md §3: a spaced hyphen between years is taken by the dashes rule and becomes the spaced en dash that 8.14 prints («2010. – 2012.»).",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "hr-ranges-digits",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "Posjeti: 15-17 i 30-45",
+      "out": "Posjeti: 15 – 17 i 30 – 45",
+      "note": "ranges.md §3: 8.1 prints «Posjeti: 15 – 17»; digit-to-digit hyphens take the spaced en dash.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "hr-ranges-page-range-spaced",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "str. 145-162",
+      "out": "str. 145 – 162",
+      "note": "ranges.md §3: ACCEPTED COST. 8.14 writes bibliographic page ranges tight («str. 145–162»), but locale data cannot select by context, so the rule spaces them (the ranges rule is off by default).",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "hr-ranges-word-hyphen-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "Zagreb-Split i hrvatsko-engleski",
+      "out": "Zagreb-Split i hrvatsko-engleski",
+      "note": "ranges.md §3: a hyphenated word is not a digit range and is left alone.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "hr-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "hrvatsko-engleski rječnik i bez-",
+      "out": "hrvatsko-engleski rječnik i bez-",
+      "note": "Hrvatski pravopis 8.13: breaking at a hyphen is provided for and no closed list ships, so nothing changes."
+    },
+    {
+      "id": "hr-nbsp-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "3 kg, 50 %, 0,5 ‰, 99,90 € i 5 °C",
+      "out": "3 kg, 50 %, 0,5 ‰, 99,90 € i 5 °C",
+      "note": "Hrvatski pravopis 8.1 and 8.19.11: a space separates the number from the unit, percent, per-mille, currency sign and degree Celsius."
+    },
+    {
+      "id": "hr-nbsp-single-letter-unit-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "2 m, 220 V i 60 W",
+      "out": "2 m, 220 V i 60 W",
+      "note": "Single-letter symbols are excluded by decision (8.1 writes «2 m» with a space), as in sk and bg."
+    },
+    {
+      "id": "hr-nbsp-defunct-currency-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "34 kn",
+      "out": "34 kn",
+      "note": "kn is excluded as defunct (decision, not citation); 8.1 still prints «34 kn»."
+    },
+    {
+      "id": "hr-nbsp-article-sign",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "§ 25. i § 3",
+      "out": "§ 25. i § 3",
+      "note": "Hrvatski pravopis 8.1 and 8.19.8: the section sign is separated from its number by a space."
+    },
+    {
+      "id": "hr-nbsp-page-abbreviation",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "str. 12",
+      "out": "str. 12",
+      "note": "beforeNumber lists str., from «str. 145–162» in 8.14 (form evidence; a decision, MEDIUM)."
+    },
+    {
+      "id": "hr-nbsp-complex-abbreviations",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "tvrtka d. o. o. i dipl. ing. Ivo",
+      "out": "tvrtka d. o. o. i dipl. ing. Ivo",
+      "note": "Hrvatski pravopis 8.13 rule 6: complex abbreviations such as dipl. ing. and d. o. o. should not be split at a line end."
+    },
+    {
+      "id": "hr-nbsp-other-abbreviations-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "d. d. i dr. sc. Ana",
+      "out": "d. d. i dr. sc. Ana",
+      "note": "The other spaced abbreviations of 7.1 are not listed: extending 8.13's line-break intent to them would be a derivation, not a citation."
+    },
+    {
+      "id": "hr-nbsp-short-words-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "u kući i s prijateljem",
+      "out": "u kući i s prijateljem",
+      "note": "afterShortWords ships empty: no online section of the pravopis states a rule for one-letter prepositions or conjunctions at a line end."
+    },
+    {
+      "id": "hr-nbsp-initials-unbound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "A. G. Matoš",
+      "out": "A. G. Matoš",
+      "note": "initialBinding is none: 7.3 and 8.1 give the spaced form of initials and say nothing about line breaks."
+    },
+    {
+      "id": "hr-nbsp-no-space-before-question",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Što ? Da !",
+      "out": "Što? Da!",
+      "note": "Hrvatski pravopis 8.1: no space before ? and !, so nothing is put back."
+    },
+    {
+      "id": "hr-spaces-brackets",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Tekst ( normalan ) ostaje  .",
+      "out": "Tekst (normalan) ostaje.",
+      "note": "spaces.md: brackets tighten, no space before the final stop."
+    },
+    {
+      "id": "hr-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026",
+      "out": "Copyright © 2026",
+      "note": "symbols rule, locale-neutral."
+    },
+    {
+      "id": "hr-apostrophe-foreign-name",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "To je McDonald's",
+      "out": "To je McDonald’s",
+      "note": "apostrophe rule, locale-neutral; 8.18 uses U+2019 for the elision mark as well."
+    }
+  ]
+}

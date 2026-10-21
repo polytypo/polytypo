@@ -1,0 +1,82 @@
+{
+  "locale": "hr",
+  "name": "Croatian",
+  "quotes": {
+    "primary": {
+      "open": "„",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "‘",
+      "close": "’",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": []
+    }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-spaced"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": ["dipl. ing.", "d. o. o."],
+    "beforeUnits": ["%", "‰", "€", "°C", "kg"],
+    "beforeNumber": ["str."],
+    "beforeWord": [],
+    "afterSymbols": ["§"],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Institut za hrvatski jezik i jezikoslovlje, Hrvatski pravopis (online edition), 8.16 Navodnici: «Navodnici su pravopisni znakovi koji se pojavljuju u paru.» «Imaju dva oblika: „...” i »...«.» «Iza prvoga i ispred drugoga navodnika ne piše se bjelina.»; 8.17 Polunavodnici: «Polunavodnici su pravopisni znakovi koji se pojavljuju u paru (‘...’).» — „Himna je Republike Hrvatske ‘Lijepa naša domovino’.”; 8.18 Izostavnik: «Drž’te ga!», «Je l’ došao?»",
+      "url": "https://pravopis.hr/pravilo/navodnici/71/",
+      "note": "Primary: U+201E open, U+201D close (as in ro/hu, NOT U+201C as in cs/sk/de/bg). 8.16 gives two forms unranked: „…” and »…« (U+00BB open, U+00AB close). U+201E/U+201D is a DECISION, supported by every example on the site (8.16, 8.16.1, 8.17, 8.1). Secondary: U+2018 open, U+2019 close, stated in 8.17 for a quotation inside a quotation; it differs from the primary and is not the low U+201A. innerSpace none for both, per 8.16 and 8.17. Q-W: primary WIDE, secondary NARROW. Code points were read from rendered pravopis.hr text, consistently across four pages, so MEDIUM-HIGH. elisionIdioms and elisionClitics are empty: 8.18 lists both U+2019 and U+0027 and gives no closed set of forward-attaching fragments (l’, al’ stand before a space). Verified 2026-10-21. Not cross-checked against Matica hrvatska (Babić–Moguš) or the EU DGT Croatian guide."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Institut za hrvatski jezik i jezikoslovlje, Hrvatski pravopis (online edition), 8.14 Crtica: «Crtica ( – ) pravopisni je znak koji se piše s bjelinama slijeva i zdesna.»",
+      "url": "https://pravopis.hr/pravilo/crtica/69/",
+      "note": "Supports dash.parenthetical = en-spaced (U+0020 U+2013 U+0020). The width U+2013 was read from rendered text; 8.14 does not mention U+2014. MEDIUM-HIGH. Verified 2026-10-21."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Institut za hrvatski jezik i jezikoslovlje, Hrvatski pravopis (online edition), 8.14 Crtica: «pri izražavanju raspona ili u značenju ‘od – do’: 2010. – 2012., autocesta Split – Zagreb»; «Pri bilježenju stranica u bibliografskim podatcima crtica se piše bez bjelina: str. 145–162.»; 8.1 Bjelina: «ispred i iza crtice: Posjeti: 15 – 17»",
+      "url": "https://pravopis.hr/pravilo/crtica/69/",
+      "note": "Supports dash.range = en-spaced. ACCEPTED COST: bibliographic page ranges are tight per the same paragraph, and locale data cannot select by context, so the rule will space them. The ranges rule is off by default. Year ranges carry an ordinal period (2010.), so the flank is U+002E rather than a digit; see the fixtures hr-ranges-* for the measured behaviour. Verified 2026-10-21."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Institut za hrvatski jezik i jezikoslovlje, Hrvatski pravopis (online edition), 8.10 Trotočka (uses a–d, e.g. «Popio bih… kavu.»); 8.3 Upitnik",
+      "url": "https://pravopis.hr/pravilo/trotocka/64/",
+      "note": "abbreviatedAfterTerminal = false is a DECISION, not a citation: neither 8.10 nor 8.3 states a two-dot form after '?' or '!'. Verified 2026-10-21."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Institut za hrvatski jezik i jezikoslovlje, Hrvatski pravopis (online edition), 8.13 Spojnica, rule 6: «Ako se riječi koje se pišu sa spojnicom ipak prenose u novi redak, spojnica se zapisuje i na početku novoga retka: hrvatsko- / -engleski rječnik.»",
+      "url": "https://pravopis.hr/pravilo/spojnica/68/",
+      "note": "All three lists are empty. Breaking at a hyphen is explicitly provided for, and no closed list of unbreakable hyphenated forms exists. Verified 2026-10-21."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Institut za hrvatski jezik i jezikoslovlje, Hrvatski pravopis (online edition), 8.1 Bjelina: no space before . ? ! , … ; : ?! !? («U koliko je sati ručak?»); «između broja i znaka za mjernu jedinicu: 3 kg, 2 m, 220 V, 60 W, 5 °C»; «između broja i znaka za postotak i promil: 50 %, 62,5 %, 0,5 ‰»; «između broja i oznake novčane jedinice: 99,90 €, 34 kn»; «između oznake za članak i broja: § 25.»; no space «između broja i oznake za kutni stupanj, minutu i sekundu»; 8.19.11: «Znak za postotak bjelinom se odvaja od broja: 63 %.»; 8.19.8: «Znak za članak bjelinom se odvaja od broja.»; 8.13 Spojnica, rule 6: «Treba izbjegavati rastavljanje stranih riječi i imena, složenih kratica (dipl. ing., d. o. o.), složenih pokrata (CD-RW), mrežnih adresa i riječi koje se pišu sa spojnicom.»",
+      "url": "https://pravopis.hr/pravilo/bjelina/54/",
+      "note": "(1) beforePunctuation and narrowBeforePunctuation are empty: a stated negative, not silence. (2) beforeUnits = %, ‰, €, °C, kg: each is attested with a space after the number; form evidence, sufficient per nbsp.md §2. DECISIONS: single-letter m, V and W are excluded (as in sk and bg); kn is excluded as defunct; bare ° is never listed, since angular degrees are closed up; km, cm and mm are not attested on pravopis.hr and are not added. (3) afterSymbols = §. (4) abbreviations = dipl. ing., d. o. o.: 8.13 states a line-break intent for exactly these two complex abbreviations (MEDIUM-HIGH). The other spaced forms of 7.1 (d. d., dr. sc., i dr. and so on) are not listed: extending the intent to them would be a derivation, not a citation. (5) beforeNumber = str., form only, from «str. 145–162» in 8.14; a decision, MEDIUM. (6) afterShortWords is empty: no online section states a rule for one-letter prepositions or conjunctions at line end (8.13 rule 2 concerns syllable division only); the print chapter on end-of-line division was not read. (7) beforeWord is empty and initialBinding = none: 7.3 and 8.1 give only the spaced form of initials and say nothing about line breaks. Decisions, not citations. Verified 2026-10-21."
+    }
+  ]
+}

@@ -80,6 +80,7 @@ PRIMARY_SOURCES = {
     "ro": "Academia Română, Îndreptar ortografic, ortoepic, morfologic și de punctuație (ÎOOP6); DOOM3",
     "hu": "Magyar Tudományos Akadémia, A magyar helyesírás szabályai (AkH12)",
     "bg": "Институт за български език (БАН), Официален правописен речник на българския език (ОПР 2012)",
+    "hr": "Institut za hrvatski jezik i jezikoslovlje, Hrvatski pravopis",
 }
 
 
@@ -1795,6 +1796,7 @@ BADGE_TEXT = {
     "el": "Τυπογραφικός καθαρισμός από το <b>polytypo</b>",
     "hu": "Tipográfiai rendezés: <b>polytypo</b>",
     "bg": "Типографско оформление: <b>polytypo</b>",
+    "hr": "Tipografsko uređenje: <b>polytypo</b>",
     "it": "Pulizia tipografica con <b>polytypo</b>",
     "pl": "Typograficzne porządki dzięki <b>polytypo</b>",
     "pt": "Limpeza tipográfica por <b>polytypo</b>",
@@ -1817,6 +1819,7 @@ BADGE_LANG_NAMES = {
     "el": "Greek",
     "hu": "Hungarian",
     "bg": "Bulgarian",
+    "hr": "Croatian",
     "it": "Italian",
     "pl": "Polish",
     "pt": "Portuguese",
