@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.11.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.11.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.12.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.12.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,18 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.12.0 — 21 October 2026
+
+Romanian, Hungarian, Bulgarian and Croatian join, taking polytypo to twenty-four languages, each cited to its national orthography.
+
+- Romanian ships as `ro`, cited to the Academia Română's Îndreptar (ÎOOP6) and DOOM3. Until now Romanian text had to be skipped or run through a foreign locale, and the second has a cost. Measured: `Ea a spus: "Citește 'Luceafărul' acum" - sigur - și a plecat.` came back from `en-GB` as `Ea a spus: ‘Citește “Luceafărul” acum’ – sigur – și a plecat.`, the nesting inverted and the native marks gone. `ro` gives `Ea a spus: „Citește «Luceafărul» acum” – sigur – și a plecat.`: `„…”` for the first level, the guillemets `«…»` for the second, no space inside, and an en dash with spaces. `km`, `kg`, `cm`, `mm`, `km/h` and `°C` after a number, `art.` and `nr.` before one, and a single initial before a surname get a no-break space.
+- Hungarian ships as `hu`, cited to A magyar helyesírás szabályai (AkH12). Measured: `Azt mondta: "olvasd az 'Egri csillagok'-at" - biztosan - és elment.` came back from `en-GB` as `Azt mondta: ‘olvasd az “Egri csillagok”-at’ – biztosan – és elment.`; `hu` gives `Azt mondta: „olvasd az »Egri csillagok«-at” – biztosan – és elment.`, the Hungarian marks `„…”` and `»…«`.
+- Bulgarian ships as `bg`, cited to the Institute for Bulgarian Language (BAS) and the Официален правописен речник (ОПР 2012). Measured: `Той каза: "не" - сигурно - и си тръгна.` came back from `en-GB` as `Той каза: ‘не’ – сигурно – и си тръгна.`; `bg` gives `Той каза: „не“ – сигурно – и си тръгна.`. The closing mark is U+201C, not U+201D as in Romanian and Hungarian, and a quotation inside a quotation takes the same `„…“` pair, as in ОПР. A numeric range, when the `ranges` rule is on, is spaced: `2000 – 2010 г.`.
+- The accepted cost of Bulgarian's identical pair: a nested quotation whose inner mark touches the outer one, such as `"това е 'Славия'"` with the inner quotation at the very end, is left as typed rather than half-converted, and a plain pair next to it stays straight too. The same text typed with the typographic marks is left alone. Nothing is rewritten wrongly; the case is only not converted.
+- Croatian ships as `hr`, cited to the Hrvatski pravopis of the Institut za hrvatski jezik i jezikoslovlje. Measured: `Rekao je: "pjesma 'Lijepa naša' je himna" - sigurno - i otišao.` came back from `en-GB` as `Rekao je: ‘pjesma “Lijepa naša” je himna’ – sigurno – i otišao.`; `hr` gives `Rekao je: „pjesma ‘Lijepa naša’ je himna” – sigurno – i otišao.`: `„…”` for the first level and `‘…’` for the second, no space inside, and an en dash with spaces. `%`, `‰`, `€`, `°C` and `kg` after a number, the section sign before one, and the abbreviations `dipl. ing.` and `d. o. o.` get a no-break space.
+- The accepted cost of Croatian: the pravopis writes page ranges in bibliographies closed up, `str. 145–162`, and prints other ranges spaced. Locale data cannot tell the two apart, so with the `ranges` rule on, `str. 145-162` becomes `str. 145 – 162`. The rule is off by default. A year range typed `2010.-2012.` is left as typed, because the period after the year is not a digit.
+- What the four do not do, because the sources say nothing: short words such as `u`, `s`, `k` and `i` are not bound to the word after them, and no hyphenated-word list ships. Where a source gives two unranked forms, the choice is recorded in the locale file and is not presented as a citation.
 
 ## 1.11.0 — 19 October 2026
 
