@@ -1,6 +1,264 @@
 {
   "spec": "1.12.0",
   "locales": {
+    "bg": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "bg-quotes-primary",
+            "in": "Той каза: \"не\" и си тръгна.",
+            "out": "Той каза: „не“ и си тръгна."
+          },
+          {
+            "id": "bg-quotes-nested-same-pair",
+            "in": "Той каза: \"стихотворението \"Кафене Славия\" е хубаво\" и спря.",
+            "out": "Той каза: „стихотворението „Кафене Славия“ е хубаво“ и спря."
+          },
+          {
+            "id": "bg-quotes-nested-single-straight",
+            "in": "Той каза: \"стихотворението 'Кафене' е хубаво\".",
+            "out": "Той каза: „стихотворението „Кафене“ е хубаво“."
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "bg-ellipsis-three-dots",
+            "in": "Чакай... какво?",
+            "out": "Чакай… какво?"
+          },
+          {
+            "id": "bg-ellipsis-not-abbreviated",
+            "in": "Наистина?.. да",
+            "out": "Наистина?… да"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "bg-dashes-parenthetical",
+            "in": "Утре - ако вали - няма да дойда.",
+            "out": "Утре – ако вали – няма да дойда."
+          },
+          {
+            "id": "bg-dashes-existing-em-dash",
+            "in": "Утре — ако вали — няма да дойда.",
+            "out": "Утре – ако вали – няма да дойда."
+          }
+        ],
+        "ranges": [
+          {
+            "id": "bg-ranges-years-hyphen",
+            "in": "през 2000-2010 г. и I-II в.",
+            "out": "през 2000 – 2010 г. и I-II в.",
+            "rules": {
+              "ranges": true
+            }
+          },
+          {
+            "id": "bg-ranges-en-dash-gets-spaces",
+            "in": "2000–2010 г.",
+            "out": "2000 – 2010 г.",
+            "rules": {
+              "ranges": true
+            }
+          },
+          {
+            "id": "bg-ranges-spaced-kept",
+            "in": "2000 – 2010 г.",
+            "out": "2000 – 2010 г.",
+            "rules": {
+              "ranges": true
+            }
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "bg-nbsp-units",
+            "in": "100 км, 5 кг и 20 лв.",
+            "out": "100 км, 5 кг и 20 лв."
+          },
+          {
+            "id": "bg-nbsp-year-abbreviation",
+            "in": "през 2020 г. беше",
+            "out": "през 2020 г. беше"
+          },
+          {
+            "id": "bg-nbsp-no-space-before-question",
+            "in": "Наистина ? Да !",
+            "out": "Наистина? Да!"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "bg-spaces-brackets",
+            "in": "Текст ( нормален ) остава  .",
+            "out": "Текст (нормален) остава."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "bg-symbols-copyright",
+            "in": "Copyright (c) 2026",
+            "out": "Copyright © 2026"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "bg-apostrophe-foreign-name",
+            "in": "Това е McDonald's",
+            "out": "Това е McDonald’s"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Тя попита: \"Не е ли това магазинът, който наричат 'на ъгъла'?\" ... Вървяхме - почти 3 км - и беше затворен. Copyright (c) 2026, формат 40x60 см.\nsay(\"a -- b ...\")",
+          "out": "Тя попита: „Не е ли това магазинът, който наричат „на ъгъла“?“ … Вървяхме – почти 3 км – и беше затворен. Copyright © 2026, формат 40×60 см.\nsay(„a – b …“)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Тя попита: \"Не е ли това магазинът, който наричат 'на ъгъла'?\" ... Вървяхме - почти 3 км - и беше затворен. Copyright (c) 2026, формат 40x60 см.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Тя попита: „Не е ли това магазинът, който наричат „на ъгъла“?“ … Вървяхме – почти 3 км – и беше затворен. Copyright © 2026, формат 40×60 см.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Тя попита: \"Не е ли това магазинът, който наричат 'на ъгъла'?\" ... Вървяхме - почти 3 км - и беше затворен. Copyright (c) 2026, формат 40x60 см.\n\n`say(\"a -- b ...\")`",
+          "out": "Тя попита: „Не е ли това магазинът, който наричат „на ъгъла“?“ … Вървяхме – почти 3 км – и беше затворен. Copyright © 2026, формат 40×60 см.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": [],
+      "disagreed": 0
+    },
+    "hr": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "hr-quotes-primary",
+            "in": "Rekao je: \"da\" i otišao.",
+            "out": "Rekao je: „da” i otišao."
+          },
+          {
+            "id": "hr-quotes-nested-secondary",
+            "in": "Rekao je: \"pjesma 'Lijepa naša' je himna\" i otišao.",
+            "out": "Rekao je: „pjesma ‘Lijepa naša’ je himna” i otišao."
+          },
+          {
+            "id": "hr-quotes-nested-at-end",
+            "in": "Rekao je: \"pjesma 'Lijepa naša'\".",
+            "out": "Rekao je: „pjesma ‘Lijepa naša’”."
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "hr-ellipsis-three-dots",
+            "in": "Čekaj... što?",
+            "out": "Čekaj… što?"
+          },
+          {
+            "id": "hr-ellipsis-not-abbreviated",
+            "in": "Što?.. da",
+            "out": "Što?… da"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "hr-dashes-parenthetical",
+            "in": "Idemo - ako pada - kasnije.",
+            "out": "Idemo – ako pada – kasnije."
+          },
+          {
+            "id": "hr-dashes-existing-em-dash",
+            "in": "Idemo — ako pada — kasnije.",
+            "out": "Idemo – ako pada – kasnije."
+          }
+        ],
+        "ranges": [
+          {
+            "id": "hr-ranges-year-spaced-gets-en-dash",
+            "in": "2010. - 2012.",
+            "out": "2010. – 2012.",
+            "rules": {
+              "ranges": true
+            }
+          },
+          {
+            "id": "hr-ranges-digits",
+            "in": "Posjeti: 15-17 i 30-45",
+            "out": "Posjeti: 15 – 17 i 30 – 45",
+            "rules": {
+              "ranges": true
+            }
+          },
+          {
+            "id": "hr-ranges-page-range-spaced",
+            "in": "str. 145-162",
+            "out": "str. 145 – 162",
+            "rules": {
+              "ranges": true
+            }
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "hr-nbsp-units",
+            "in": "3 kg, 50 %, 0,5 ‰, 99,90 € i 5 °C",
+            "out": "3 kg, 50 %, 0,5 ‰, 99,90 € i 5 °C"
+          },
+          {
+            "id": "hr-nbsp-article-sign",
+            "in": "§ 25. i § 3",
+            "out": "§ 25. i § 3"
+          },
+          {
+            "id": "hr-nbsp-page-abbreviation",
+            "in": "str. 12",
+            "out": "str. 12"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "hr-spaces-brackets",
+            "in": "Tekst ( normalan ) ostaje  .",
+            "out": "Tekst (normalan) ostaje."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "hr-symbols-copyright",
+            "in": "Copyright (c) 2026",
+            "out": "Copyright © 2026"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "hr-apostrophe-foreign-name",
+            "in": "To je McDonald's",
+            "out": "To je McDonald’s"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Pitala je: \"Nije li to dućan koji zovu 'onaj na uglu'?\" ... Hodali smo -- gotovo 3 km -- i bio je zatvoren. Copyright (c) 2026, format 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Pitala je: „Nije li to dućan koji zovu ‘onaj na uglu’?” … Hodali smo – gotovo 3 km – i bio je zatvoren. Copyright © 2026, format 40×60 cm.\nsay(„a – b …”)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Pitala je: \"Nije li to dućan koji zovu 'onaj na uglu'?\" ... Hodali smo -- gotovo 3 km -- i bio je zatvoren. Copyright (c) 2026, format 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Pitala je: „Nije li to dućan koji zovu ‘onaj na uglu’?” … Hodali smo – gotovo 3 km – i bio je zatvoren. Copyright © 2026, format 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Pitala je: \"Nije li to dućan koji zovu 'onaj na uglu'?\" ... Hodali smo -- gotovo 3 km -- i bio je zatvoren. Copyright (c) 2026, format 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Pitala je: „Nije li to dućan koji zovu ‘onaj na uglu’?” … Hodali smo – gotovo 3 km – i bio je zatvoren. Copyright © 2026, format 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": [],
+      "disagreed": 0
+    },
     "cs": {
       "byRule": {
         "quotes": [
@@ -1387,6 +1645,127 @@
       "resolution": ["el", "el-GR"],
       "disagreed": 0
     },
+    "hu": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "hu-quotes-primary",
+            "in": "Azt mondta: \"szia\" és elment.",
+            "out": "Azt mondta: „szia” és elment."
+          },
+          {
+            "id": "hu-quotes-not-german",
+            "in": "„szia“",
+            "out": "„szia”"
+          },
+          {
+            "id": "hu-quotes-nested",
+            "in": "\"Ő azt mondta 'jó' volt\"",
+            "out": "„Ő azt mondta »jó« volt”"
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "hu-ellipsis-three-dots",
+            "in": "Várj... mi?",
+            "out": "Várj… mi?"
+          },
+          {
+            "id": "hu-ellipsis-not-abbreviated",
+            "in": "Tényleg?.. igen",
+            "out": "Tényleg?… igen"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "hu-dashes-parenthetical",
+            "in": "Holnap - ha esik - elmegyünk.",
+            "out": "Holnap – ha esik – elmegyünk."
+          },
+          {
+            "id": "hu-dashes-existing-em-dash",
+            "in": "Holnap — ha esik — elmegyünk.",
+            "out": "Holnap – ha esik – elmegyünk."
+          }
+        ],
+        "ranges": [
+          {
+            "id": "hu-ranges-years-and-pages",
+            "in": "az 1983-1984. évi és az 1-4. osztályban",
+            "out": "az 1983⁠–⁠1984. évi és az 1⁠–⁠4. osztályban",
+            "rules": {
+              "ranges": true
+            }
+          },
+          {
+            "id": "hu-ranges-spaced-input-tightened",
+            "in": "1 - 4 oldal",
+            "out": "1⁠–⁠4 oldal",
+            "rules": {
+              "ranges": true
+            }
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "hu-nbsp-units",
+            "in": "100 km, 1 kg, 10 kWh és 120 km/h",
+            "out": "100 km, 1 kg, 10 kWh és 120 km/h"
+          },
+          {
+            "id": "hu-nbsp-celsius",
+            "in": "23 °C",
+            "out": "23 °C"
+          },
+          {
+            "id": "hu-nbsp-abbreviations",
+            "in": "Kr. e. 44-ben, Kr. u. 2. században, i. sz. 3. század",
+            "out": "Kr. e. 44-ben, Kr. u. 2. században, i. sz. 3. század"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "hu-spaces-brackets",
+            "in": "Szöveg ( rendes ) marad  .",
+            "out": "Szöveg (rendes) marad."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "hu-symbols-copyright",
+            "in": "Copyright (c) 2026",
+            "out": "Copyright © 2026"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "hu-apostrophe-foreign-name",
+            "in": "Ez a McDonald's",
+            "out": "Ez a McDonald’s"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Megkérdezte: \"Nem ez az a bolt, amit 'a sarki'-nak hívnak?\" ... Mentünk -- majdnem 3 km-t -- és zárva volt. Copyright (c) 2026, 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Megkérdezte: „Nem ez az a bolt, amit »a sarki«-nak hívnak?” … Mentünk – majdnem 3 km-t – és zárva volt. Copyright © 2026, 40×60 cm.\nsay(„a – b …”)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Megkérdezte: \"Nem ez az a bolt, amit 'a sarki'-nak hívnak?\" ... Mentünk -- majdnem 3 km-t -- és zárva volt. Copyright (c) 2026, 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Megkérdezte: „Nem ez az a bolt, amit »a sarki«-nak hívnak?” … Mentünk – majdnem 3 km-t – és zárva volt. Copyright © 2026, 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Megkérdezte: \"Nem ez az a bolt, amit 'a sarki'-nak hívnak?\" ... Mentünk -- majdnem 3 km-t -- és zárva volt. Copyright (c) 2026, 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Megkérdezte: „Nem ez az a bolt, amit »a sarki«-nak hívnak?” … Mentünk – majdnem 3 km-t – és zárva volt. Copyright © 2026, 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": [],
+      "disagreed": 0
+    },
     "it": {
       "byRule": {
         "quotes": [
@@ -1782,6 +2161,109 @@
         "neighbourOut": "Perguntou: “Não é esta a loja a que chamam ‘a da esquina’?” … Caminhámos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm."
       },
       "resolution": ["pt-PT", "pt", "pt-AO"],
+      "disagreed": 0
+    },
+    "ro": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "ro-quotes-primary",
+            "in": "A spus \"salut\".",
+            "out": "A spus „salut”."
+          },
+          {
+            "id": "ro-quotes-not-german",
+            "in": "„salut“",
+            "out": "„salut”"
+          },
+          {
+            "id": "ro-quotes-nested",
+            "in": "\"Ea a zis 'bine' acolo\"",
+            "out": "„Ea a zis «bine» acolo”"
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "ro-ellipsis-three-dots",
+            "in": "Stai... ce?",
+            "out": "Stai… ce?"
+          },
+          {
+            "id": "ro-ellipsis-not-abbreviated",
+            "in": "Serios?.. da",
+            "out": "Serios?… da"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "ro-dashes-parenthetical",
+            "in": "Nu avem încă - firește - rezultate.",
+            "out": "Nu avem încă – firește – rezultate."
+          },
+          {
+            "id": "ro-dashes-existing-em-dash",
+            "in": "Nu avem încă — firește — rezultate.",
+            "out": "Nu avem încă – firește – rezultate."
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "ro-nbsp-before-number",
+            "in": "conform art. 3 și nr. 5",
+            "out": "conform art. 3 și nr. 5"
+          },
+          {
+            "id": "ro-nbsp-units",
+            "in": "10 km, 5 kg, 20 cm, 3 mm și 90 km/h",
+            "out": "10 km, 5 kg, 20 cm, 3 mm și 90 km/h"
+          },
+          {
+            "id": "ro-nbsp-celsius",
+            "in": "19 °C",
+            "out": "19 °C"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "ro-spaces-brackets-and-final-stop",
+            "in": "Text ( obișnuit ) rămâne  .",
+            "out": "Text (obișnuit) rămâne."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "ro-symbols-copyright",
+            "in": "Copyright (c) 2026",
+            "out": "Copyright © 2026"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "ro-apostrophe-foreign-name",
+            "in": "A mers la McDonald's și înapoi",
+            "out": "A mers la McDonald’s și înapoi"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Ea a întrebat: \"Nu e acesta magazinul pe care îl numesc 'de la colț'?\" ... Am mers -- aproape 3 km -- și era închis. Copyright (c) 2026, format 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Ea a întrebat: „Nu e acesta magazinul pe care îl numesc «de la colț»?” … Am mers – aproape 3 km – și era închis. Copyright © 2026, format 40×60 cm.\nsay(„a – b …”)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Ea a întrebat: \"Nu e acesta magazinul pe care îl numesc 'de la colț'?\" ... Am mers -- aproape 3 km -- și era închis. Copyright (c) 2026, format 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Ea a întrebat: „Nu e acesta magazinul pe care îl numesc «de la colț»?” … Am mers – aproape 3 km – și era închis. Copyright © 2026, format 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Ea a întrebat: \"Nu e acesta magazinul pe care îl numesc 'de la colț'?\" ... Am mers -- aproape 3 km -- și era închis. Copyright (c) 2026, format 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Ea a întrebat: „Nu e acesta magazinul pe care îl numesc «de la colț»?” … Am mers – aproape 3 km – și era închis. Copyright © 2026, format 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": [],
       "disagreed": 0
     },
     "ru": {

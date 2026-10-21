@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.12.0** · locales: **20** · rules: **9**.
+Spec version: **1.12.0** · locales: **24** · rules: **9**.
 
 ## Implementations
 
@@ -45,6 +45,8 @@ Spec version: **1.12.0** · locales: **20** · rules: **9**.
 
 | Locale | Output |
 | --- | --- |
+| Bulgarian (`bg`) | Тя попита: „Не е ли това магазинът, който наричат „на ъгъла“?“ … Вървяхме – почти 3 км – и беше затворен. Copyright © 2026, формат 40×60 см. |
+| Croatian (`hr`) | Pitala je: „Nije li to dućan koji zovu ‘onaj na uglu’?” … Hodali smo – gotovo 3 km – i bio je zatvoren. Copyright © 2026, format 40×60 cm. |
 | Czech (`cs`) | Zeptal se: „Není to ten obchod, kterému říkají ‚ten za rohem‘?“ … Šli jsme – skoro 3 km – a byl zavřený. Copyright © 2026, formát 40×60 cm. |
 | Dutch (`nl`) | Hij vroeg: “Is dit niet de winkel die ze ‘om de hoek’ noemen?” … We liepen – bijna 3 km – en hij was dicht. Copyright © 2026, formaat 40×60 cm. |
 | English (United Kingdom) (`en-GB`) | She asked, ‘Isn’t this the shop they call “round the corner”?’ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm. |
@@ -55,10 +57,12 @@ Spec version: **1.12.0** · locales: **20** · rules: **9**.
 | German (Germany) (`de-DE`) | Sie fragte: „Ist das nicht der Laden namens ‚an der Ecke‘?“ … Wir liefen – fast 3 km – und fanden ihn leider geschlossen. Copyright © 2026, Format 40×60 cm, z. B. für Poster. |
 | German (Switzerland) (`de-CH`) | Sie fragte: «Ist das nicht der Laden namens ‹an der Ecke›?» … Wir liefen – fast 3 km – und fanden ihn leider geschlossen. Copyright © 2026, Format 40×60 cm, z. B. für Poster. |
 | Greek (`el`) | Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm. |
+| Hungarian (`hu`) | Megkérdezte: „Nem ez az a bolt, amit »a sarki«-nak hívnak?” … Mentünk – majdnem 3 km-t – és zárva volt. Copyright © 2026, 40×60 cm. |
 | Italian (`it`) | Ha chiesto: «Non è questo il negozio che chiamano “quello all’angolo”?» … Abbiamo camminato — quasi 3 km — ed era chiuso. Copyright © 2026, formato 40×60 cm. |
 | Polish (`pl`) | Zapytał: „Czy to nie ten sklep, który nazywają »tym za rogiem«?” … Szliśmy – prawie 3 km – a był zamknięty. Copyright © 2026, format 40×60 cm. |
 | Portuguese (Brazil) (`pt-BR`) | Perguntou: “Não é esta a loja que chamam de ‘a da esquina’?” … Caminhamos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm. |
 | Portuguese (Portugal) (`pt-PT`) | Perguntou: «Não é esta a loja a que chamam “a da esquina”?» … Caminhámos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm. |
+| Romanian (`ro`) | Ea a întrebat: „Nu e acesta magazinul pe care îl numesc «de la colț»?” … Am mers – aproape 3 km – și era închis. Copyright © 2026, format 40×60 cm. |
 | Russian (`ru`) | Она спросила: «Это не тот магазинчик, который называют „за углом“?» … Мы прошли — почти 3 км — и нашли его закрытым, а что‑то достали из‑под прилавка. Copyright © 2026, формат 40×60 см. |
 | Slovak (`sk`) | Spýtal sa: „Nie je to ten obchod, ktorému hovoria ‚ten za rohom‘?“ … Išli sme – takmer 3 km – a bol zatvorený. Copyright © 2026, formát 40×60 cm. |
 | Spanish (`es`) | Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm. |
@@ -72,6 +76,8 @@ Every string above is real engine output, generated from `promo/examples.json` �
 
 | Locale | Language | Primary quotes | Secondary | Parenthetical dash | Range |
 | --- | --- | --- | --- | --- | --- |
+| `bg` | Bulgarian | „…“ | „…“ | en dash, spaced | en dash, spaced |
+| `hr` | Croatian | „…” | ‘…’ | en dash, spaced | en dash, spaced |
 | `cs` | Czech | „…“ | ‚…‘ | en dash, spaced | en dash, unspaced |
 | `nl` | Dutch | “…” | ‘…’ | en dash, spaced | unchanged |
 | `en-GB` | English (United Kingdom) | ‘…’ | “…” | en dash, spaced | en dash, unspaced |
@@ -82,10 +88,12 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | `de-DE` | German (Germany) | „…“ | ‚…‘ | en dash, spaced | en dash, unspaced |
 | `de-CH` | German (Switzerland) | «…» | ‹…› | en dash, spaced | en dash, unspaced |
 | `el` | Greek | «…» | “…” | unchanged | unchanged |
+| `hu` | Hungarian | „…” | »…« | en dash, spaced | en dash, unspaced |
 | `it` | Italian | «…» | “…” | em dash, spaced | unchanged |
 | `pl` | Polish | „…” | »…« | en dash, spaced | en dash, unspaced |
 | `pt-BR` | Portuguese (Brazil) | “…” | ‘…’ | en dash, spaced | unchanged |
 | `pt-PT` | Portuguese (Portugal) | «…» | “…” | em dash, spaced | unchanged |
+| `ro` | Romanian | „…” | «…» | en dash, spaced | unchanged |
 | `ru` | Russian | «…» | „…“ | em dash, spaced | em dash, unspaced |
 | `sk` | Slovak | „…“ | ‚…‘ | en dash, spaced | en dash, spaced |
 | `es` | Spanish | «…» | “…” | unchanged | unchanged |

@@ -3,6 +3,64 @@
   "proofLocales": ["en-GB", "en-US", "fr", "de-DE", "de-CH", "ru"],
   "locales": [
     {
+      "locale": "bg",
+      "name": "Bulgarian",
+      "hero": {
+        "in": "Тя попита: \"Не е ли това магазинът, който наричат 'на ъгъла'?\" ... Вървяхме - почти 3 км - и беше затворен. Copyright (c) 2026, формат 40x60 см.",
+        "out": "Тя попита: „Не е ли това магазинът, който наричат „на ъгъла“?“ … Вървяхме – почти 3 км – и беше затворен. Copyright © 2026, формат 40×60 см."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, „Isn’t this the shop they call „round the corner“?“ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Той каза \"здравей\".",
+          "out": "Той каза „здравей“."
+        },
+        {
+          "rule": "dashes",
+          "in": "Книгата - издадена преди войната - е чудесна.",
+          "out": "Книгата – издадена преди войната – е чудесна."
+        },
+        {
+          "rule": "nbsp",
+          "in": "100 км и 5 кг",
+          "out": "100 км и 5 кг"
+        }
+      ]
+    },
+    {
+      "locale": "hr",
+      "name": "Croatian",
+      "hero": {
+        "in": "Pitala je: \"Nije li to dućan koji zovu 'onaj na uglu'?\" ... Hodali smo -- gotovo 3 km -- i bio je zatvoren. Copyright (c) 2026, format 40x60 cm.",
+        "out": "Pitala je: „Nije li to dućan koji zovu ‘onaj na uglu’?” … Hodali smo – gotovo 3 km – i bio je zatvoren. Copyright © 2026, format 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, „Isn’t this the shop they call ‘round the corner’?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Rekao je \"bok\".",
+          "out": "Rekao je „bok”."
+        },
+        {
+          "rule": "dashes",
+          "in": "Knjiga - objavljena prije rata - je izvrsna.",
+          "out": "Knjiga – objavljena prije rata – je izvrsna."
+        },
+        {
+          "rule": "nbsp",
+          "in": "3 kg i 50 %",
+          "out": "3 kg i 50 %"
+        }
+      ]
+    },
+    {
       "locale": "cs",
       "name": "Czech",
       "hero": {
@@ -366,6 +424,35 @@
       ]
     },
     {
+      "locale": "hu",
+      "name": "Hungarian",
+      "hero": {
+        "in": "Megkérdezte: \"Nem ez az a bolt, amit 'a sarki'-nak hívnak?\" ... Mentünk -- majdnem 3 km-t -- és zárva volt. Copyright (c) 2026, 40x60 cm.",
+        "out": "Megkérdezte: „Nem ez az a bolt, amit »a sarki«-nak hívnak?” … Mentünk – majdnem 3 km-t – és zárva volt. Copyright © 2026, 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, „Isn’t this the shop they call »round the corner«?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Azt mondta \"szia\".",
+          "out": "Azt mondta „szia”."
+        },
+        {
+          "rule": "dashes",
+          "in": "A könyv - amely a háború előtt jelent meg - kiváló.",
+          "out": "A könyv – amely a háború előtt jelent meg – kiváló."
+        },
+        {
+          "rule": "nbsp",
+          "in": "5 kg és 20 °C",
+          "out": "5 kg és 20 °C"
+        }
+      ]
+    },
+    {
       "locale": "it",
       "name": "Italian",
       "hero": {
@@ -483,6 +570,35 @@
           "rule": "nbsp",
           "in": "7 % do volume de negócios",
           "out": "7 % do volume de negócios"
+        }
+      ]
+    },
+    {
+      "locale": "ro",
+      "name": "Romanian",
+      "hero": {
+        "in": "Ea a întrebat: \"Nu e acesta magazinul pe care îl numesc 'de la colț'?\" ... Am mers -- aproape 3 km -- și era închis. Copyright (c) 2026, format 40x60 cm.",
+        "out": "Ea a întrebat: „Nu e acesta magazinul pe care îl numesc «de la colț»?” … Am mers – aproape 3 km – și era închis. Copyright © 2026, format 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, „Isn’t this the shop they call «round the corner»?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Ea a spus \"da\".",
+          "out": "Ea a spus „da”."
+        },
+        {
+          "rule": "dashes",
+          "in": "Cartea - apărută înainte de război - e excelentă.",
+          "out": "Cartea – apărută înainte de război – e excelentă."
+        },
+        {
+          "rule": "nbsp",
+          "in": "la art. 5 și 3 kg",
+          "out": "la art. 5 și 3 kg"
         }
       ]
     },

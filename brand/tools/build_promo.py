@@ -77,9 +77,9 @@ PRIMARY_SOURCES = {
     "cs": "Ústav pro jazyk český AV ČR, Internetová jazyková příručka",
     "tr": "Türk Dil Kurumu, Yazım Kuralları; Türk Dil Kurumu, Kısaltmalar Dizini",
     "sk": "Jazykovedný ústav Ľudovíta Štúra SAV, Pravidlá slovenského pravopisu",
-    "ro": "Academia Română, Îndreptar ortografic, ortoepic, morfologic și de punctuație (ÎOOP6); DOOM3",
-    "hu": "Magyar Tudományos Akadémia, A magyar helyesírás szabályai (AkH12)",
-    "bg": "Институт за български език (БАН), Официален правописен речник на българския език (ОПР 2012)",
+    "ro": "Academia Română; Îndreptar ortografic, ortoepic, morfologic și de punctuație (ÎOOP6, 2024); DOOM3",
+    "hu": "Magyar Tudományos Akadémia; A magyar helyesírás szabályai, 12. kiadás (AkH12)",
+    "bg": "Институт за български език (БАН); Официален правописен речник на българския език (2012)",
     "hr": "Institut za hrvatski jezik i jezikoslovlje, Hrvatski pravopis",
 }
 

@@ -29,6 +29,10 @@ const LOCALES = [
   "cs",
   "tr",
   "sk",
+  "ro",
+  "hu",
+  "bg",
+  "hr",
 ] as const;
 
 // Every hero line: nested quotes, an apostrophe or elision (except el — see its own note below),
@@ -88,6 +92,18 @@ const HERO: Record<(typeof LOCALES)[number], string> = {
   sk:
     `Spýtal sa: "Nie je to ten obchod, ktorému hovoria 'ten za rohom'?" ... Išli sme -- takmer 3 km ` +
     `-- a bol zatvorený. Copyright (c) 2026, formát 40x60 cm.`,
+  ro:
+    `Ea a întrebat: "Nu e acesta magazinul pe care îl numesc 'de la colț'?" ... Am mers -- aproape 3 km ` +
+    `-- și era închis. Copyright (c) 2026, format 40x60 cm.`,
+  hu:
+    `Megkérdezte: "Nem ez az a bolt, amit 'a sarki'-nak hívnak?" ... Mentünk -- majdnem 3 km-t -- ` +
+    `és zárva volt. Copyright (c) 2026, 40x60 cm.`,
+  bg:
+    `Тя попита: "Не е ли това магазинът, който наричат 'на ъгъла'?" ... Вървяхме - почти 3 км - и беше ` +
+    `затворен. Copyright (c) 2026, формат 40x60 см.`,
+  hr:
+    `Pitala je: "Nije li to dućan koji zovu 'onaj na uglu'?" ... Hodali smo -- gotovo 3 km -- i bio je ` +
+    `zatvoren. Copyright (c) 2026, format 40x60 cm.`,
   nl:
     `Hij vroeg: "Is dit niet de winkel die ze 'om de hoek' noemen?" ... We liepen -- bijna 3 km ` +
     `-- en hij was dicht. Copyright (c) 2026, formaat 40x60 cm.`,
@@ -191,6 +207,26 @@ const SHOWCASE: Record<
     { rule: "nbsp", in: `v bode č. 2 a na s. 5` },
     { rule: "dashes", in: `Táto kniha - vydaná pred vojnou - je skvelá.` },
   ],
+  ro: [
+    { rule: "quotes", in: `Ea a spus "da".` },
+    { rule: "dashes", in: `Cartea - apărută înainte de război - e excelentă.` },
+    { rule: "nbsp", in: `la art. 5 și 3 kg` },
+  ],
+  hu: [
+    { rule: "quotes", in: `Azt mondta "szia".` },
+    { rule: "dashes", in: `A könyv - amely a háború előtt jelent meg - kiváló.` },
+    { rule: "nbsp", in: `5 kg és 20 °C` },
+  ],
+  bg: [
+    { rule: "quotes", in: `Той каза "здравей".` },
+    { rule: "dashes", in: `Книгата - издадена преди войната - е чудесна.` },
+    { rule: "nbsp", in: `100 км и 5 кг` },
+  ],
+  hr: [
+    { rule: "quotes", in: `Rekao je "bok".` },
+    { rule: "dashes", in: `Knjiga - objavljena prije rata - je izvrsna.` },
+    { rule: "nbsp", in: `3 kg i 50 %` },
+  ],
   nl: [
     { rule: "quotes", in: `Hij zei "dag" en vertrok.` },
     { rule: "dashes", in: `Het nieuws - volgens de kranten - is niet bekend.` },
@@ -265,6 +301,10 @@ const NAMES: Record<(typeof LOCALES)[number], string> = {
   cs: "Czech",
   tr: "Turkish",
   sk: "Slovak",
+  ro: "Romanian",
+  hu: "Hungarian",
+  bg: "Bulgarian",
+  hr: "Croatian",
   "pt-PT": "Portuguese (Portugal)",
   "pt-BR": "Portuguese (Brazil)",
 };
