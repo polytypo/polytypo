@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.12.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.12.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.13.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.13.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,17 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.13.0 — 22 October 2026
+
+`protect` names the parts of a string polytypo must not touch, so template literals and ICU messages keep their context.
+
+- `transform` and `analyze` in `text` mode take a `protect` option: a list of `{ start, end }` ranges of the input, in code points, `[start, end)`, that are never edited and that the rules read as content. Until now a string with interpolation had to be split at every hole and each fragment run alone, which loses the neighbour on the far side. Measured: the fragment ` - Rules` after `${x}` came back unchanged in `en-US` and `en-GB`; the whole literal `${x} - Rules` with `protect: [{ start: 0, end: 4 }]` comes back `${x}—Rules` in `en-US` and `${x} – Rules` in `en-GB`, as the unsplit string does.
+- It covers ICU MessageFormat, where an apostrophe next to a brace is an escape. `a '{b}' c` in `en-GB` came back `a ‘{b}’ c`, which is a placeholder between curly quotes and not the literal text `{b}`. With `protect: [{ start: 2, end: 7 }]` over `'{b}'` it comes back unchanged, and the text around it is still typeset. There is no `icu` mode; you mark the ranges and polytypo reads no host syntax.
+- Offsets are Unicode code points, not UTF-16 units and not bytes, so an emoji before a hole does not shift them. The list must be ascending and non-overlapping, an empty range or one past the end of the input is refused, and so is a non-empty `protect` in `html`, `markdown` or `yaml` mode, all with `POLYTYPO_INVALID_OPTION`. An empty list is the same as no option. The protected text is returned exactly as written.
+- The accepted cost: text next to a hole converts less than the same text would unsplit, never more. A character polytypo would insert beside the hole is not written, so `Bonjour ${name}!` in `fr` stays as typed where the unprotected string gets a narrow no-break space before the `!`, and `${a}--${b}` in `de-DE` stays `--` where the unprotected string becomes `${a} – ${b}`. A hole that contains a line break counts as a line break to the rules, so a dash after `x ${\n y\n}` is left alone.
+- Running the output through again is a fixed point only if you move the ranges to where the edits left them: `...` becoming `…` shortens the text before a hole. `transform` does not return the moved ranges.
+- `analyze` reported the end of a change beside a skipped element too far on. In `html` mode `<p>x--<code>cc</code>y</p>` in `en-US` reported the `--` as offsets 4 to 21, running across the `<code>` element; it now reports 4 to 6. The same applies in `markdown` and `yaml` mode, and to a change beside a protected range. `transform` output is unchanged.
 
 ## 1.12.0 — 21 October 2026
 
