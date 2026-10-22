@@ -1,5 +1,5 @@
 {
-  "spec": "1.12.0",
+  "spec": "1.13.0",
   "locale": "de-DE",
   "cases": [
     {
@@ -787,6 +787,82 @@
       "in": "description: 'a''--''b'\n",
       "out": "description: 'a''--''b'\n",
       "note": "modes.md §3.8.6 and §3.4: de-DE is a `-spaced` locale, so the dash would grow against a unit and the edge-growth rule discards it, as in fr. A second locale so that an implementation that does not split cannot pass on one cell alone."
+    },
+    {
+      "id": "de-de-protect-two-holes-dash",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "${a} - ${b}",
+      "protect": [
+        {
+          "start": 0,
+          "end": 4
+        },
+        {
+          "start": 7,
+          "end": 11
+        }
+      ],
+      "out": "${a} – ${b}",
+      "protectOut": [
+        {
+          "start": 0,
+          "end": 4
+        },
+        {
+          "start": 7,
+          "end": 11
+        }
+      ],
+      "note": "modes.md §3.9.3: a token between two holes sees opaque content on both sides."
+    },
+    {
+      "id": "de-de-protect-dash-adjacent-growth-declined",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "${a}--${b}",
+      "protect": [
+        {
+          "start": 0,
+          "end": 4
+        },
+        {
+          "start": 6,
+          "end": 10
+        }
+      ],
+      "out": "${a}--${b}",
+      "protectOut": [
+        {
+          "start": 0,
+          "end": 4
+        },
+        {
+          "start": 6,
+          "end": 10
+        }
+      ],
+      "note": "modes.md §3.9.4, accepted cost: '--' → ' – ' grows by one code point at both edges of its span, so the edge-growth rule (§3.4) discards it. The same string with no protect converts (§7.9)."
+    },
+    {
+      "id": "de-de-protect-quotes-around-hole",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Er sagte \"${name}\" zweimal.",
+      "protect": [
+        {
+          "start": 10,
+          "end": 17
+        }
+      ],
+      "out": "Er sagte „${name}“ zweimal.",
+      "protectOut": [
+        {
+          "start": 10,
+          "end": 17
+        }
+      ],
+      "note": "modes.md §3.9.3: the same pairing in a locale whose glyphs differ in shape."
     }
   ]
 }

@@ -48,6 +48,13 @@ export interface ConformanceCase {
    * before 1.7.0.
    */
   readonly frontmatterKeys?: readonly string[] | undefined;
+  /**
+   * Optional (modes.md 3.9, spec 1.13.0): the `protect` option, as ranges of `in` in code points.
+   * Kept as read, not narrowed — a `throws` case carries the malformed values 3.9.2 refuses.
+   */
+  readonly protect?: unknown;
+  /** `protect` located in `out`; present exactly when `protect` and `out` both are. */
+  readonly protectOut?: readonly { readonly start: number; readonly end: number }[] | undefined;
   readonly in: string;
   readonly out?: string | undefined;
   readonly throws?: PolytypoErrorCode | undefined;
@@ -162,6 +169,20 @@ function parseFrontmatterKeys(
   return value.map((key, index) => requireString(key, `${where} "frontmatterKeys"[${index}]`));
 }
 
+function parseProtectOut(
+  value: unknown,
+  where: string,
+): readonly { readonly start: number; readonly end: number }[] | undefined {
+  if (value === undefined) return undefined;
+  if (!Array.isArray(value)) throw new Error(`${where}: "protectOut" must be a list of ranges`);
+  return value.map((range, index) => {
+    if (!isRecord(range) || typeof range.start !== "number" || typeof range.end !== "number") {
+      throw new Error(`${where}: "protectOut"[${index}] must be { start, end }`);
+    }
+    return { start: range.start, end: range.end };
+  });
+}
+
 function parseCase(raw: unknown, where: string): ConformanceCase {
   if (!isRecord(raw)) throw new Error(`${where}: expected an object`);
   const id = requireString(raw.id, `${where} "id"`);
@@ -182,6 +203,8 @@ function parseCase(raw: unknown, where: string): ConformanceCase {
     dialect,
     keys,
     frontmatterKeys,
+    protect: raw.protect,
+    protectOut: parseProtectOut(raw.protectOut, where),
     in: requireString(raw.in, `${where} "in"`),
     out,
     throws: throws as PolytypoErrorCode | undefined,

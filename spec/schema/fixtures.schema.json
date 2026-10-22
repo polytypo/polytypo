@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://polytypo.org/schema/fixtures.schema.json",
   "title": "polytypo conformance fixtures",
-  "description": "Executable form of the rule semantics. Every case is also an idempotency case: a runner must additionally assert transform(out) == out, passing the case's own options (mode, dialect, keys, frontmatterKeys, rules, narrowNbsp) on that second call exactly as on the first — a case is a fixed point under its own options, not under the defaults.",
+  "description": "Executable form of the rule semantics. Every case is also an idempotency case: a runner must additionally assert transform(out) == out, passing the case's own options (mode, dialect, keys, frontmatterKeys, rules, narrowNbsp, and, for `protect`, its `protectOut` counterpart, since the ranges move with the edits) on that second call exactly as on the first — a case is a fixed point under its own options, not under the defaults.",
   "type": "object",
   "additionalProperties": false,
   "required": ["spec", "locale", "cases"],
@@ -11,7 +11,10 @@
       "type": "string",
       "description": "The current global spec contract version. Must equal spec/VERSION exactly — not an authoring-time stamp and not a per-case introduction version. scripts/validate-spec.mjs enforces this for every fixture root."
     },
-    "locale": { "type": "string", "pattern": "^[a-z]{2}(-[A-Z]{2})?$" },
+    "locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+    },
     "cases": {
       "type": "array",
       "minItems": 1,
@@ -21,22 +24,124 @@
         "required": ["id", "rule", "mode", "in"],
         "allOf": [
           {
-            "if": { "properties": { "mode": { "const": "markdown" } }, "required": ["mode"] },
-            "then": { "required": ["dialect"] },
-            "else": { "not": { "required": ["dialect"] } }
+            "if": {
+              "properties": {
+                "mode": {
+                  "const": "markdown"
+                }
+              },
+              "required": ["mode"]
+            },
+            "then": {
+              "required": ["dialect"]
+            },
+            "else": {
+              "not": {
+                "required": ["dialect"]
+              }
+            }
           },
           {
-            "if": { "properties": { "mode": { "const": "yaml" } }, "required": ["mode"] },
-            "then": { "required": ["keys"] },
-            "else": { "not": { "required": ["keys"] } }
+            "if": {
+              "properties": {
+                "mode": {
+                  "const": "yaml"
+                }
+              },
+              "required": ["mode"]
+            },
+            "then": {
+              "required": ["keys"]
+            },
+            "else": {
+              "not": {
+                "required": ["keys"]
+              }
+            }
           },
           {
-            "if": { "properties": { "mode": { "const": "markdown" } }, "required": ["mode"] },
+            "if": {
+              "properties": {
+                "mode": {
+                  "const": "markdown"
+                }
+              },
+              "required": ["mode"]
+            },
             "then": true,
-            "else": { "not": { "required": ["frontmatterKeys"] } }
+            "else": {
+              "not": {
+                "required": ["frontmatterKeys"]
+              }
+            }
+          },
+          {
+            "if": {
+              "required": ["protect", "out"]
+            },
+            "then": {
+              "properties": {
+                "protect": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["start", "end"],
+                    "properties": {
+                      "start": {
+                        "type": "integer"
+                      },
+                      "end": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              },
+              "required": ["protectOut"]
+            }
+          },
+          {
+            "if": {
+              "required": ["throws"]
+            },
+            "then": {
+              "not": {
+                "required": ["protectOut"]
+              }
+            }
+          },
+          {
+            "if": {
+              "required": ["protect"],
+              "properties": {
+                "protect": {
+                  "type": "array",
+                  "minItems": 1
+                }
+              },
+              "not": {
+                "required": ["mode"],
+                "properties": {
+                  "mode": {
+                    "const": "text"
+                  }
+                }
+              }
+            },
+            "then": {
+              "required": ["throws"]
+            }
           }
         ],
-        "oneOf": [{ "required": ["out"] }, { "required": ["throws"] }],
+        "oneOf": [
+          {
+            "required": ["out"]
+          },
+          {
+            "required": ["throws"]
+          }
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -57,24 +162,34 @@
             ],
             "description": "The rule under test. Required so a runtime can report partial conformance honestly."
           },
-          "mode": { "enum": ["text", "html", "markdown", "yaml"] },
+          "mode": {
+            "enum": ["text", "html", "markdown", "yaml"]
+          },
           "dialect": {
             "enum": ["commonmark", "mdx"],
             "description": "Required when mode is \"markdown\" — spec/rules/modes.md §3.7.1 forbids detection, so a fixture must name the dialect exactly as a caller would. Meaningless for the other modes."
           },
           "keys": {
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "description": "Required when mode is \"yaml\" — spec/rules/modes.md §3.8.2 gives the option no default, so a fixture must name the processable keys exactly as a caller would. An empty array is legal and processes nothing. Meaningless for the other modes."
           },
           "frontmatterKeys": {
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "description": "Optional, spec 1.7.0, and only meaningful when mode is \"markdown\" — spec/rules/modes.md §3.7.4's opt-out from the frontmatter skip. Absent means the block is skipped whole, exactly as before 1.7.0; an empty array is legal and yields no spans. A runner passes it through to transform() as it passes dialect.",
             "$comment": "The block is its own text unit (§3.7.4), so this option cannot change a byte of the body — every case released before 1.7.0 keeps its recorded output whatever it is set to."
           },
-          "in": { "type": "string" },
-          "out": { "type": "string" },
+          "in": {
+            "type": "string"
+          },
+          "out": {
+            "type": "string"
+          },
           "throws": {
             "enum": [
               "POLYTYPO_UNKNOWN_LOCALE",
@@ -88,16 +203,43 @@
             ],
             "description": "Expected error code instead of an output string. Messages are not part of the contract; codes are."
           },
-          "note": { "type": "string" },
+          "note": {
+            "type": "string"
+          },
           "rules": {
             "type": "object",
-            "additionalProperties": { "type": "boolean" },
+            "additionalProperties": {
+              "type": "boolean"
+            },
             "description": "Optional rule overrides for this case, same shape as the public `rules` option."
           },
           "narrowNbsp": {
             "enum": ["narrow", "nbsp"],
             "description": "Optional, spec 1.3.0. Same shape as the public `narrowNbsp` option (spec/rules/nbsp.md §3.1a): \"nbsp\" makes the engine emit U+00A0 wherever it would emit U+202F. Omitted means \"narrow\", the default, so every pre-1.3.0 case keeps its meaning. A runner passes this through to transform() exactly as it passes `rules`."
+          },
+          "protect": {
+            "description": "Optional, spec 1.13.0. The public `protect` option (spec/rules/modes.md §3.9): ranges of `in`, in Unicode code points, [start, end), that the engine never edits and reads as opaque content. A runner passes it to transform() as it passes `rules`. Unconstrained here because a `throws` case carries the malformed values §3.9.2 refuses; a case with `out` must carry a list of ranges, and a non-empty list with a mode other than \"text\" is only legal in a `throws` case."
+          },
+          "protectOut": {
+            "description": "Required when `protect` and `out` are both present, forbidden otherwise. The same protected runs located in `out`, in code points. Edits before a hole move it, so the idempotency call transform(out) must pass THESE ranges, not `protect`. scripts/validate-spec.mjs checks that the code points they select are exactly the ones `protect` selects in `in`. Measured from the engine, never written by hand.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["start", "end"],
+              "properties": {
+                "start": {
+                  "type": "integer"
+                },
+                "end": {
+                  "type": "integer"
+                }
+              }
+            }
           }
+        },
+        "dependentRequired": {
+          "protectOut": ["protect"]
         }
       }
     }

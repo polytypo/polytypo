@@ -196,6 +196,17 @@ of the body, and an unbalanced quote in `title` cannot pair with one in the firs
 `+++` stays skipped whole either way. The option's name was ratified rather than widening `keys`,
 which 1.6.3 accepts and ignores in `markdown` mode.
 
+`text` mode gained an **optional `protect`** list in spec 1.13.0 (`modes.md` §3.9,
+polytypo/polytypo#14): ranges of the input, in **code points**, `[start, end)`, that the engine
+never edits and reads as opaque content, for a caller whose text has holes no mode knows about
+(template-literal interpolation, ICU arguments). It reuses Model C: each protected run is a
+boundary marker, **including at the very start or end of the input**, the one place it differs
+from the mode adapters. Malformed ranges and a non-empty `protect` outside `text` throw
+`POLYTYPO_INVALID_OPTION`. Idempotency holds only when the second call is given the ranges where
+the first call left them, so a fixture carries `protectOut` beside `protect` and
+`scripts/validate-spec.mjs` checks the two select the same code points. It is not an `icu` mode and
+specifies no host grammar.
+
 ## Portability constraints every runtime's implementation must satisfy (ARCHITECTURE.md §4, §7)
 
 Nothing in this repository enforces these directly (there is no engine here), but spec prose must

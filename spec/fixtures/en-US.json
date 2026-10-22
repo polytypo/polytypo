@@ -1,5 +1,5 @@
 {
-  "spec": "1.12.0",
+  "spec": "1.13.0",
   "locale": "en-US",
   "cases": [
     {
@@ -4152,6 +4152,455 @@
       "in": "--- !t\ntitle: c -- d\n",
       "out": "--- !t\ntitle: c -- d\n",
       "note": "modes.md §3.8.4 (spec 1.11.0, polytypo#64): accepted miss (§7.11): a document marker in column 0 followed by a tag absorbs the document."
+    },
+    {
+      "id": "en-us-protect-leading-hole-dash",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "${x} - Rules",
+      "protect": [
+        {
+          "start": 0,
+          "end": 4
+        }
+      ],
+      "out": "${x}—Rules",
+      "protectOut": [
+        {
+          "start": 0,
+          "end": 4
+        }
+      ],
+      "note": "modes.md §3.9.3: a protected run at the very start of the input is still a marker, so the dash has a word on its left and converts exactly as it does in the whole string."
+    },
+    {
+      "id": "en-us-protect-dash-adjacent-contraction",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "${a}--${b}",
+      "protect": [
+        {
+          "start": 0,
+          "end": 4
+        },
+        {
+          "start": 6,
+          "end": 10
+        }
+      ],
+      "out": "${a}—${b}",
+      "protectOut": [
+        {
+          "start": 0,
+          "end": 4
+        },
+        {
+          "start": 5,
+          "end": 9
+        }
+      ],
+      "note": "modes.md §3.9.4: '--' → U+2014 is a contraction, which the edge-growth rule admits at a span edge (§7.9)."
+    },
+    {
+      "id": "en-us-protect-quotes-around-hole",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "He said \"${name}\" twice.",
+      "protect": [
+        {
+          "start": 9,
+          "end": 16
+        }
+      ],
+      "out": "He said “${name}” twice.",
+      "protectOut": [
+        {
+          "start": 9,
+          "end": 16
+        }
+      ],
+      "note": "modes.md §3.9.3: the marker is OPENISH and CLOSEISH, so a quotation whose content is only a hole still pairs (§3.3)."
+    },
+    {
+      "id": "en-us-protect-quotes-nested-hole",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Say 'hi' to ${name}\" he said.",
+      "protect": [
+        {
+          "start": 13,
+          "end": 20
+        }
+      ],
+      "out": "“Say ‘hi’ to ${name}” he said.",
+      "protectOut": [
+        {
+          "start": 13,
+          "end": 20
+        }
+      ],
+      "note": "modes.md §3.9.3: a hole inside a quotation does not stop the inner pair from taking the secondary glyphs."
+    },
+    {
+      "id": "en-us-protect-apostrophe-after-hole",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "${name}'s book",
+      "protect": [
+        {
+          "start": 0,
+          "end": 7
+        }
+      ],
+      "out": "${name}’s book",
+      "protectOut": [
+        {
+          "start": 0,
+          "end": 7
+        }
+      ],
+      "note": "modes.md §3.9.3: a possessive apostrophe flush against a hole is read by the span-boundary veto of quotes.md §3.2 and is converted, as it is after an inline element."
+    },
+    {
+      "id": "en-us-protect-ellipsis-around-hole",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "wait...${x}...done",
+      "protect": [
+        {
+          "start": 7,
+          "end": 11
+        }
+      ],
+      "out": "wait…${x}…done",
+      "protectOut": [
+        {
+          "start": 5,
+          "end": 9
+        }
+      ],
+      "note": "modes.md §3.9.4: replacements that shrink are applied right up to the hole."
+    },
+    {
+      "id": "en-us-protect-all-input",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "${x}  --  ${y}",
+      "protect": [
+        {
+          "start": 0,
+          "end": 14
+        }
+      ],
+      "out": "${x}  --  ${y}",
+      "protectOut": [
+        {
+          "start": 0,
+          "end": 14
+        }
+      ],
+      "note": "modes.md §3.9.3: when the whole input is protected the array is a single marker and nothing changes."
+    },
+    {
+      "id": "en-us-protect-astral-offsets",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "😀 -- 😀${x} -- 😀",
+      "protect": [
+        {
+          "start": 5,
+          "end": 10
+        }
+      ],
+      "out": "😀—😀${x}—😀",
+      "protectOut": [
+        {
+          "start": 2,
+          "end": 7
+        }
+      ],
+      "note": "modes.md §3.9.2: offsets are Unicode code points. An astral character before and inside the hole shifts every UTF-16 index by one but no code-point offset."
+    },
+    {
+      "id": "en-us-protect-hole-with-line-terminator",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "x ${\n y\n} -- z",
+      "protect": [
+        {
+          "start": 2,
+          "end": 9
+        }
+      ],
+      "out": "x ${\n y\n} -- z",
+      "protectOut": [
+        {
+          "start": 2,
+          "end": 9
+        }
+      ],
+      "note": "modes.md §3.9.1, accepted cost: a protected run containing a line terminator is a line marker (BREAK), so the dash to its right is declined. The caller sees one line of rendered text; the specification looks at the source of the hole."
+    },
+    {
+      "id": "en-us-protect-spaces-bordering-hole",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Hello  ${n}  and  you",
+      "protect": [
+        {
+          "start": 7,
+          "end": 11
+        }
+      ],
+      "out": "Hello  ${n}  and you",
+      "protectOut": [
+        {
+          "start": 7,
+          "end": 11
+        }
+      ],
+      "note": "modes.md §3.3 edge test: a run of spaces bordering the marker is left alone; the run in the interior collapses."
+    },
+    {
+      "id": "en-us-protect-empty-list",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a -- b",
+      "protect": [],
+      "out": "a—b",
+      "protectOut": [],
+      "note": "modes.md §3.9.2: an empty list is the same as no option."
+    },
+    {
+      "id": "en-us-protect-throws-overlap",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a -- b -- c",
+      "protect": [
+        {
+          "start": 0,
+          "end": 4
+        },
+        {
+          "start": 3,
+          "end": 6
+        }
+      ],
+      "throws": "POLYTYPO_INVALID_OPTION",
+      "note": "modes.md §3.9.2: ranges overlap."
+    },
+    {
+      "id": "en-us-protect-throws-descending",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a -- b -- c",
+      "protect": [
+        {
+          "start": 5,
+          "end": 7
+        },
+        {
+          "start": 0,
+          "end": 2
+        }
+      ],
+      "throws": "POLYTYPO_INVALID_OPTION",
+      "note": "modes.md §3.9.2: ranges are not in ascending order."
+    },
+    {
+      "id": "en-us-protect-throws-empty-range",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a -- b",
+      "protect": [
+        {
+          "start": 2,
+          "end": 2
+        }
+      ],
+      "throws": "POLYTYPO_INVALID_OPTION",
+      "note": "modes.md §3.9.2: start must be less than end."
+    },
+    {
+      "id": "en-us-protect-throws-past-end",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a -- b",
+      "protect": [
+        {
+          "start": 4,
+          "end": 7
+        }
+      ],
+      "throws": "POLYTYPO_INVALID_OPTION",
+      "note": "modes.md §3.9.2: the input has six code points."
+    },
+    {
+      "id": "en-us-protect-throws-code-point-bound",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "😀",
+      "protect": [
+        {
+          "start": 0,
+          "end": 2
+        }
+      ],
+      "throws": "POLYTYPO_INVALID_OPTION",
+      "note": "modes.md §3.9.2: the bound is in code points. This input has one code point and two UTF-16 units; end = 2 is past the end."
+    },
+    {
+      "id": "en-us-protect-throws-negative-start",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a -- b",
+      "protect": [
+        {
+          "start": -1,
+          "end": 2
+        }
+      ],
+      "throws": "POLYTYPO_INVALID_OPTION",
+      "note": "modes.md §3.9.2: start is not negative."
+    },
+    {
+      "id": "en-us-protect-throws-non-integer",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a -- b",
+      "protect": [
+        {
+          "start": 0,
+          "end": 1.5
+        }
+      ],
+      "throws": "POLYTYPO_INVALID_OPTION",
+      "note": "modes.md §3.9.2: offsets are integers."
+    },
+    {
+      "id": "en-us-protect-throws-not-a-list",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a -- b",
+      "protect": {
+        "start": 0,
+        "end": 1
+      },
+      "throws": "POLYTYPO_INVALID_OPTION",
+      "note": "modes.md §3.9.2: the option is a list."
+    },
+    {
+      "id": "en-us-protect-throws-html",
+      "rule": "dashes",
+      "mode": "html",
+      "in": "<p>a -- b</p>",
+      "protect": [
+        {
+          "start": 3,
+          "end": 4
+        }
+      ],
+      "throws": "POLYTYPO_INVALID_OPTION",
+      "note": "modes.md §3.9.2: a non-empty protect is refused outside text mode instead of being ignored, because ignoring it would typeset text the caller marked."
+    },
+    {
+      "id": "en-us-protect-throws-yaml",
+      "rule": "dashes",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "title: a -- b\n",
+      "protect": [
+        {
+          "start": 7,
+          "end": 8
+        }
+      ],
+      "throws": "POLYTYPO_INVALID_OPTION",
+      "note": "modes.md §3.9.2: the same refusal in yaml mode."
+    },
+    {
+      "id": "en-us-protect-hole-with-line-separator",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "x ${  y} -- z",
+      "protect": [
+        {
+          "start": 2,
+          "end": 8
+        }
+      ],
+      "out": "x ${  y} -- z",
+      "protectOut": [
+        {
+          "start": 2,
+          "end": 8
+        }
+      ],
+      "note": "modes.md §3.9.1: U+2028 is a line terminator, so a hole containing it is a line marker and the dash to its right is declined, exactly as for U+000A."
+    },
+    {
+      "id": "en-us-protect-hole-with-next-line",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "x ${ y} -- z",
+      "protect": [
+        {
+          "start": 2,
+          "end": 8
+        }
+      ],
+      "out": "x ${ y} -- z",
+      "protectOut": [
+        {
+          "start": 2,
+          "end": 8
+        }
+      ],
+      "note": "modes.md §3.9.1: U+0085 is one of the seven code points that make a protected run a line marker; a port that tests only U+000A and U+000D fails here."
+    },
+    {
+      "id": "en-us-protect-empty-list-html",
+      "rule": "dashes",
+      "mode": "html",
+      "in": "<p>a -- b</p>",
+      "protect": [],
+      "out": "<p>a—b</p>",
+      "protectOut": [],
+      "note": "modes.md §3.9.2: an empty list is accepted in every mode, being the same call as no option."
+    },
+    {
+      "id": "en-us-protect-throws-markdown",
+      "rule": "dashes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "a -- b\n",
+      "protect": [
+        {
+          "start": 0,
+          "end": 1
+        }
+      ],
+      "throws": "POLYTYPO_INVALID_OPTION",
+      "note": "modes.md §3.9.2: the same refusal in markdown mode."
+    },
+    {
+      "id": "en-us-protect-throws-after-rules",
+      "rule": "dashes",
+      "mode": "text",
+      "rules": {
+        "nosuchrule": true
+      },
+      "in": "a -- b",
+      "protect": [
+        {
+          "start": 3,
+          "end": 2
+        }
+      ],
+      "throws": "POLYTYPO_UNKNOWN_RULE",
+      "note": "modes.md §3.9.2, validation order: an unknown rule id is reported before a malformed protect."
     }
   ]
 }

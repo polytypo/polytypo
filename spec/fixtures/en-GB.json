@@ -1,5 +1,5 @@
 {
-  "spec": "1.12.0",
+  "spec": "1.13.0",
   "locale": "en-GB",
   "cases": [
     {
@@ -1388,6 +1388,94 @@
       "in": "(aside)'quoted' here",
       "out": "(aside)’quoted’ here",
       "note": "apostrophe.md §6 row 25 and §7 item 9 — case 2a's accepted cost, pinned so no port can narrow or widen it silently. The author meant a quotation and both marks now read as closing glyphs. It was mismatched before spec 1.5.0 too, in the other direction: 1.4.0 gave (aside)'quoted’ here, case 3 having curled the trailing mark while the leading one matched no case. `quotes` declines the leading mark because canOpen's right-test rejects a CLOSEISH left neighbour, so a quotation opening flush after a closing delimiter is exactly the shape it cannot pair, and two neighbours cannot separate that from a possessive."
+    },
+    {
+      "id": "en-gb-protect-leading-hole-dash",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "${x} - Rules",
+      "protect": [
+        {
+          "start": 0,
+          "end": 4
+        }
+      ],
+      "out": "${x} – Rules",
+      "protectOut": [
+        {
+          "start": 0,
+          "end": 4
+        }
+      ],
+      "note": "modes.md §3.9.3: the same hole in a spaced-dash locale; the three-code-point token ' - ' becomes ' – ' without touching the hole."
+    },
+    {
+      "id": "en-gb-protect-trailing-hole-dash",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Rules - ${x}",
+      "protect": [
+        {
+          "start": 8,
+          "end": 12
+        }
+      ],
+      "out": "Rules – ${x}",
+      "protectOut": [
+        {
+          "start": 8,
+          "end": 12
+        }
+      ],
+      "note": "modes.md §3.9.3: a protected run at the end of the input is a marker too."
+    },
+    {
+      "id": "en-gb-protect-icu-quoted-brace",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Call it '{b}' now.",
+      "protect": [
+        {
+          "start": 8,
+          "end": 13
+        }
+      ],
+      "out": "Call it '{b}' now.",
+      "protectOut": [
+        {
+          "start": 8,
+          "end": 13
+        }
+      ],
+      "note": "polytypo/polytypo#14: in ICU MessageFormat an apostrophe before a brace is an escape. The caller protects the quoted brace including both apostrophes and they stay straight; without protect they become U+2018/U+2019."
+    },
+    {
+      "id": "en-gb-protect-touching-ranges",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "a ${x}${y} - b",
+      "protect": [
+        {
+          "start": 2,
+          "end": 6
+        },
+        {
+          "start": 6,
+          "end": 10
+        }
+      ],
+      "out": "a ${x}${y} – b",
+      "protectOut": [
+        {
+          "start": 2,
+          "end": 6
+        },
+        {
+          "start": 6,
+          "end": 10
+        }
+      ],
+      "note": "modes.md §3.9.2: touching ranges are one protected run and give one marker."
     }
   ]
 }

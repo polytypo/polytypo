@@ -70,6 +70,19 @@ describe("mode-fixture representative-coverage minimum (spec/rules/modes.md §8)
     ).toBeGreaterThanOrEqual(2);
   });
 
+  it("carries protect fixtures in at least two locales, one with an astral character (modes.md §3.9, §8 item 3b)", () => {
+    const withProtect = files.flatMap((file) =>
+      file.cases
+        .filter((c) => Array.isArray(c.protect) && c.protect.length > 0 && c.out !== undefined)
+        .map((c) => ({ locale: file.locale, c })),
+    );
+    expect(new Set(withProtect.map((x) => x.locale)).size).toBeGreaterThanOrEqual(2);
+    expect(
+      withProtect.some(({ c }) => [...c.in].some((ch) => (ch.codePointAt(0) ?? 0) > 0xffff)),
+      "an astral character before or inside a hole: the only way code-point offsets are told from UTF-16 ones",
+    ).toBe(true);
+  });
+
   it("carries yaml fixtures in at least two distinct locales", () => {
     const locales = localesWith("yaml");
     expect(

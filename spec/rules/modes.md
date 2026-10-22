@@ -7,7 +7,7 @@ for all five runtimes and is parser-agnostic by construction: `parse5`, `nokogir
 `golang.org/x/net/html` and PHP's DOM disagree about almost everything this document does not
 forbid them from doing. `yaml` mode is parser-**free** rather than parser-agnostic, for the
 reason §3.8.1 measures.
-**Spec version:** 1.11.0 (0.1.0 for everything except §3.3's class-membership table rows for
+**Spec version:** 1.13.0 (0.1.0 for everything except §3.3's class-membership table rows for
 `nbsp` and `apostrophe`, split in 1.2.0, §3.8, added in 1.3.0, §3.3's note on `quotes`'
 span-boundary elision veto reading the marker as a trigger, added in 1.4.0 — which changes no
 row of the table it follows — §3.3's `CLOSEDELIM` entry, added in 1.5.0, and §3.7.4 with the
@@ -18,7 +18,8 @@ until 1.9.0, with the matching amendments to §3.7.4.1, §3.8.7, §5, §7.13 and
 step 9 with §3.8.5's content-line condition, added in 1.10.0, §3.8.4's carriage-return region, which replaces step 9's decline of a line carrying a U+000D, added in 1.11.0, §3.8.4 step 7's definition of a
 continuation line with the bails of §3.8.6 that use it, added in 1.11.0, and §3.8.4's node lines,
 declined keys, node markers and own-line region, with the changes to steps 1, 3, 4, 5, 6, 7 and 8
-that go with them, added in 1.11.0).
+that go with them, added in 1.11.0, and §3.9 with the amendments it carries to §3.1, §3.5 step 2,
+§4, §5, §7 item 7 and §8, added in 1.13.0).
 
 ---
 
@@ -62,7 +63,8 @@ sees; the pipeline decides what to do with them.
   frontmatter block's spans form a second unit and the pipeline runs once per unit. The term is
   defined here because §4 and §6 already used it informally for "the concatenation".
 - `text` mode is the degenerate case: one span covering the whole input, no skipped regions.
-  Every statement below holds for it trivially.
+  Every statement below holds for it trivially. **Since 1.13.0 the `protect` option (§3.9) gives
+  `text` mode skipped regions of the caller's choosing**; without it the statement is unchanged.
 
 ### 3.2 The span model — the decision everything follows from
 
@@ -379,6 +381,8 @@ reaches the edge-growth rule. `--` is the live carrier.)
    gives flow collections no spans — see `quotes.md` §3.2, which depends on the answer for
    nothing but states the obligation it creates: a rule must key off the marker, never off the
    mode.
+   **With `protect` (§3.9, 1.13.0) the array also carries a marker at the start or the end when the
+   input begins or ends with a protected run**, and may be nothing but one marker.
 3. Run the pipeline **once**, in `order.json` order, over that array. A document with a second
    text unit — `markdown` with `frontmatterKeys`, and only that (§3.1, §3.7.4) — repeats steps 1
    to 4 for it. The two edit sets are disjoint, because no span of one unit lies inside the other.
@@ -1355,9 +1359,237 @@ The third row is the mode working as specified, and the first is why the option 
 
 ---
 
+### 3.9 `protect` — the caller's own skipped regions, `text` mode only (spec 1.13.0)
+
+`html`, `markdown` and `yaml` find their skipped regions themselves. A caller whose text has holes
+that no mode knows about — a JS template literal with `${…}`, an ICU MessageFormat string, a
+Django or Handlebars template, a Python f-string — has the same problem and no mode to name. Until
+1.13.0 the only course was to split the string at every hole and call `transform` on each
+fragment, which is safe and loses every rule's lookaround at every seam:
+
+| Input, `text` mode | `en-US` | `en-GB` |
+| ------------------ | ------- | ------- |
+| `" - Rules"` (the fragment after the hole) | unchanged | unchanged |
+| `"${x} - Rules"` (the whole literal, no `protect`) | `${x}—Rules` | `${x} – Rules` |
+| `"${x} - Rules"` with `protect: [{ start: 0, end: 4 }]` | `${x}—Rules` | `${x} – Rules` |
+
+and in ICU, where the ASCII apostrophe is the escape character, a conversion can change what a
+message means and not only how it looks: `a '{b}' c` is the literal text `{b}`, and `a ‘{b}’ c`
+(what `en-GB` produces without `protect`) is an argument placeholder between two curly quotes.
+Both are the same request, and polytypo/polytypo#14 asked for the mechanism this section
+specifies. **It is an option and not a fourth-or-fifth mode** (the issue's `mode: "icu"` was
+declined): a mode would specify one host format's grammar, and the format list has no end. The
+option specifies none. The caller says which code points are not text and the library reads them
+as what a skipped element already is between two spans in `html` mode — opaque content.
+
+#### 3.9.1 The mechanism is Model C, unchanged
+
+A protected run is a **skipped region** (§3.1) whose position the caller supplied instead of a
+parser. Everything in §3.2 to §3.5 applies to it: the processable spans are the complement of the
+protected runs, they are concatenated with a boundary marker where a run was, the pipeline runs
+**once**, and each edit is mapped back to the input by offset. §3.3's table gives the marker its
+memberships, §3.4's edge-growth rule governs what may be written beside it, and §4's round-trip
+guarantee extends to the protected runs, which are returned exactly as written.
+
+Two things differ from the mode adapters, and they are the only two.
+
+1. **A marker is written at the very start or end of the array when the input begins or ends
+   with a protected run.** In `html` and `markdown` a skipped region before the first span or
+   after the last yields no marker (§3.5 step 2: the array is `S₁ ⌢ [m₁] ⌢ … ⌢ Sₘ`). Here it does,
+   because the example above has its hole at the start and must behave as the whole literal
+   does: without the marker the dash has `NONE` on its left, which declines the token, and the
+   option would be useless for the case it exists for. The array is therefore
+   `[S₀] ⌢ m₁ ⌢ S₁ ⌢ m₂ ⌢ … ⌢ mₖ ⌢ [Sₖ]` with every `Sᵢ` possibly empty, and an input that is
+   protected from end to end is the one-element array `[m₁]`. An empty piece between two
+   markers cannot occur, because touching ranges are one run (§3.9.2).
+2. **There is no parser, so there is no parse error.** Nothing here raises
+   `POLYTYPO_MALFORMED_INPUT`. The only new throws are the option's own (§3.9.2).
+
+**Which marker.** The marker is **−2** if the protected run contains a line terminator, **−1**
+otherwise, by §3.2's test applied to the run's code points, and for the same reasons (decidable
+without asking anything, identical in five runtimes). A line terminator here is one of the seven code points of `BREAK` (`spaces.md` §3.1): U+000A, U+000D, U+000B,
+U+000C, U+0085, U+2028, U+2029. A port that tests only U+000A and U+000D disagrees with the
+others on the first hole that contains a U+2028, and a caller puts arbitrary text inside a hole.
+The test reads the run **as written in the
+input, not as it will render**: `${\n x\n}` is −2, and a `"` that touches it sees `BREAK` on that
+side whatever the template engine later puts there. This is an accepted cost, pinned by a fixture,
+and the alternative (the caller declaring the class per range) was rejected because it adds a
+second field to every range to avoid a rare multi-line hole.
+
+#### 3.9.2 The option
+
+```
+protect: Range[]        Range = { start, end }
+```
+
+- **Offsets are Unicode code points** into the input exactly as passed, 0-based, and the range is
+  half-open: it protects the code points at `start … end − 1`. They are never UTF-16 units and
+  never bytes (ARCHITECTURE.md §4.2). This is stated because the obvious implementation in two of
+  the five runtimes gets it wrong silently: a JS caller holding `String.prototype.indexOf`
+  results holds UTF-16 indices, and a Go or PHP caller holding the offsets a template parser
+  reports holds byte offsets. Both agree with code points on ASCII, and the difference appears on
+  the first emoji. The conformance fixtures therefore carry an astral character before a hole and
+  inside one (§3.9.7).
+- **Each element is a mapping with integer `start` and `end`.** A runtime written for a language
+  with no such mapping type (Go, Ruby, PHP, Python) takes its idiomatic pair or struct; the shape
+  is not the contract, the two integers are.
+- **`start` is not negative, `start < end`, `end` is at most the input's length in code points,
+  and the list is ascending and non-overlapping.** Touching ranges (`end` of one equal to `start`
+  of the next) are allowed and are **one protected run**. The empty range is refused rather than
+  ignored: a caller that emits one has computed an offset wrongly, and a zero-width hole has no
+  code point to protect. An unsorted list is refused rather than sorted, for the same reason the
+  rule contract (analyze.md; ARCHITECTURE.md §7.1) refuses unsorted edits instead of repairing
+  them.
+- **An absent option and `[]` are the same call**, and so is the value the language uses for
+  "absent" (`undefined` or `null`, `None`, `nil`). Every pre-1.13.0 caller is unaffected. Other
+  members of a range mapping are ignored.
+- **Every violation of the above, and a value that is not a list of such mappings, throws
+  `POLYTYPO_INVALID_OPTION`** (spec 1.3.0: an option value outside its permitted set, for an
+  option with no more specific code).
+- **In `html`, `markdown` and `yaml` mode a non-empty `protect` throws
+  `POLYTYPO_INVALID_OPTION`.** This is not the treatment `dialect` and `keys` receive (ignored
+  outside their mode, §3.7.1 and §3.8.2), and the difference is deliberate: those options ask
+  for something and cost nothing to ignore, whereas ignoring `protect` silently typesets text the
+  caller marked as not theirs to touch. In the modes a parser already chooses the spans, so the
+  combination has no meaning to refuse gracefully. `[]` is accepted everywhere, being absent.
+- **Validation order.** `protect` is checked after every option that precedes it in that mode's
+  chain (`mode`, `narrowNbsp`, `rules`, `locale`, then the mode's own `dialect` and `keys` or
+  `frontmatterKeys`) and before the input is read, so a call with two bad options reports the
+  earlier one. The bound check needs the input's length in code points and nothing else.
+- **Input that is not a valid sequence of Unicode scalar values is outside this contract.** A
+  lone surrogate is one code point in JS, an invalid byte is a replacement character in Go, and
+  PHP sees bytes; `end <= length` would be answered differently by three runtimes, and making
+  `text` mode reject such input to settle it would make it partial for every caller, protected or
+  not. No fixture covers it and none may.
+
+#### 3.9.3 What a protected run does to its neighbours
+
+It is opaque content with §3.3's memberships and nothing special on top. Read with the table of
+§3.3 and the fixtures of §3.9.7:
+
+- `dashes`, `ellipsis`, `ranges`, `symbols`: the marker is in none of their classes, so a token
+  stops at it and a neighbour on the far side counts as content. `${x} - Rules` converts because
+  the space-hyphen-space token has the marker (content) on its left.
+- `quotes`: the marker is both `OPENISH` and `CLOSEISH`, so `"${name}"` pairs, `"Say 'hi' to
+  ${name}"` nests, and the elision veto of `quotes.md` §3.2 reads a marker next to a `NARROW` mark
+  as it reads one in `html`: `${name}'s` keeps its possessive apostrophe.
+- `spaces`: a run of spaces that borders the marker is left alone (§3.3's edge test), so
+  `Hello··${n}` keeps both spaces. This is a miss and not damage.
+- `nbsp`: a space the author typed next to a hole is converted in place when the rule calls for
+  it (`Bonjour ${name} !` in `fr` takes U+202F). A code point the rule would **insert** next to
+  the hole is not written; see §3.9.4.
+
+#### 3.9.4 Accepted costs
+
+**The edge-growth rule (§3.4) applies at a hole exactly as at an element boundary.** An edit that
+would place new code points at the extremity of the span next to a hole is discarded, so the
+conversions that a *contraction* allows survive and the ones that grow do not (§7.9 lists the
+locales). Measured on the released 1.12.0 engine with this option's prototype:
+
+| Input | Locale | With `protect` | Without |
+| ----- | ------ | -------------- | ------- |
+| `${a}--${b}`, both holes protected | `en-US` | `${a}—${b}` | `${a}—${b}` |
+| `${a}--${b}`, both holes protected | `de-DE` | `${a}--${b}` | `${a} – ${b}` |
+| `Bonjour ${name}!` | `fr` | `Bonjour ${name}!` | `Bonjour ${name}` U+202F `!` (inserted) |
+| `Bonjour ${name} !` | `fr` | `Bonjour ${name}` U+202F `!` | the same |
+
+So a text with `protect` converts **less than the same characters would without it**, never more
+and never differently. §7.4 calls a mode that diverges from `text` on identical characters
+indefensible, and this is the same divergence accepted for the same reason, with one difference
+worth stating: for an element boundary the reason is that the library must not put a character
+inside an element it did not come from. A template hole has no such reason, and the rule is kept
+here for a different one — the `analyze` origin map attributes an insertion to the next real
+character (`analyze.md` §2), which across a hole would be a code point on the **far** side of it.
+Removing the rule for holes later is additive (more conversions, no fewer), and keeping it now
+is the conservative direction §7.1 argues for.
+
+**A multi-line hole is a line marker**, §3.9.1.
+
+**Nothing protects what the caller did not mark.** The library cannot know that `{`, `#` or `|`
+means something in the host format. In ICU the caller marks `'{b}'` including both apostrophes,
+and the argument syntax `{n, plural, …}` the same way; the literal branches between them keep
+their lookaround. The exact `en-GB` result of `a '{b}' c`: without `protect`, `a ‘{b}’ c`; with
+`protect: [{ start: 2, end: 7 }]`, `a '{b}' c`.
+
+#### 3.9.5 Idempotency is conditional on the caller moving the ranges
+
+`M(M(x)) = M(x)` (§5) needs the span partition to be stable, and here the partition is the
+caller's. An edit before a hole changes its offset (`...` → `…` shortens), so `transform(out)`
+with the **original** `protect` protects different code points than the first call did and is not
+the same call. The property that holds is
+
+> `transform(out, protect′) = out`, where `protect′` locates in `out` the same protected code
+> points `protect` located in `in`.
+
+The three obligations of §5 are unchanged: the markers are inert, no edit contains one, and the
+edge-growth rule's verdict depends only on the array. What changes is that item 2 is no longer
+something `M` can discharge by itself.
+
+`transform` does **not** return `protect′`. A second return value would make the return type
+depend on an argument, which `analyze.md` §1 rules out for the reason it gives, and a caller who
+needs `protect′` needs it only to cut the output back into the pieces it came from: that is a
+caller-side mapping the caller can compute from the two lengths in each gap, because **a protected
+run is returned byte for byte and its neighbours change length independently**. A caller that
+cannot do that cannot use the option for a template literal, and the specification records this
+rather than hiding it.
+
+**Fixtures carry `protectOut`** (`fixtures.schema.json`), the ranges as they sit in `out`. A runner
+passes it on the idempotency call, and `scripts/validate-spec.mjs` checks that the code points
+`protectOut` selects in `out` are exactly the ones `protect` selects in `in`. Every runtime's own
+property test builds `protect′` from the edits of the first call, which is where the sweep of
+§3.9.7 gets it.
+
+#### 3.9.6 `analyze`
+
+`analyze` accepts `protect` with the same validation and throws the same errors (analyze.md A1).
+Its offsets are into the input as passed (A5). One consequence is not obvious and was measured:
+a change's `end` is one past the input offset of the last code point it replaced that has an
+origin (analyze.md §2), not what a scan forward from the end index to the next code point with
+an origin finds. The marker has none, so a
+change ending beside a hole is carried past it, and the reported range then contains the hole. In
+the prototype's first sweep **2 968 reported ranges** over 54 000 inputs contained a hole, one of
+them a `before` of three code points with `end − start` forty-seven. The same fault is in the
+released 1.12.0 `analyze` for `html`: `<p>x--<code>cc</code>y</p>` in `en-US` reports the `--` as
+`start` 4, `end` 21, which runs across the skipped element. A5 does not catch it, because the
+offsets are in bounds. The obligation added to analyze.md §6 is that no reported range overlaps a protected run
+or a skipped region. (It is not that `end − start` equals the length of `before`: `before` is
+what the later rule saw, after an earlier one deleted code points, `analyze.md` §5, and four
+released `spaces`/`ellipsis` fixtures report a longer range than their `before` for that reason.)
+
+#### 3.9.7 What this was tested against
+
+The prototype was built on `polytypo-js` 1.12.0, rules unchanged; the fixtures were generated from
+it and not typed (`protectOut` included), and each was run a second time over its own output with
+`protectOut`.
+
+- **Fixtures:** 35 cases in `en-US`, `en-GB`, `de-DE` and `fr`: a hole at the start, at the end,
+  between two, around a quotation, inside a nested quotation, after a possessive apostrophe,
+  between ellipses, over the whole input, with an astral character before and inside it, with a
+  line terminator inside it, touching another, beside spaces and beside the `fr` space before `!`,
+  the two growth costs of §3.9.4, the ICU `'{b}'` case, the empty list in `text` and in `html`, holes containing U+2028 and U+0085, and twelve
+  refusals — overlap, descending, empty, past the end, past the end **only in code points**,
+  negative, non-integer, not a list, a non-empty list in `html`, `markdown` and `yaml`, and an
+  unknown rule id reported ahead of a malformed list (§3.9.2's order). The order between `protect`
+  and `dialect` or `keys` cannot be expressed in a fixture (the schema fixes `dialect` to its
+  valid values) and is each runtime's own test.
+- **Sweep:** 54 000 inputs, 3 000 in each of 18 locales (`en-US`, `en-GB`, `de-DE`, `fr`, `ru`,
+  `fi`, `pl`, `tr`, `es`, `it`, `nl`, `cs`, `sv`, `el`, `uk`, `hu`, `bg`, `hr`). Each input is 3 to 10 tokens from an alphabet of
+  letters, digits, spaces, `-` `--` `---` `...` `.` `,` `!` `?` `:` `;`, U+2013, U+2014, both quote characters and
+  the typographic ones, `(` `)`, a line feed, `'s`, `n't`, `km`, `%`, an emoji, `é`, `«` `»` `„` `“` `”`, with each
+  token replaced by a hole with probability 0.2 from `${x}`, `{n}`, `<b>`, `{a, plural, one {#}}`
+  and `'{b}'`. Holes touch freely. Result: **0 idempotency failures** under `protect′`, **0**
+  violations of A3 and A5, and **0** reported ranges overlapping a hole (after the §3.9.6 fix).
+- **Not measured, deliberately:** how often a text with holes converts less than the same text
+  without. On this alphabet it is a property of the alphabet; the two rows of §3.9.4 are the
+  claim, and they are single measured inputs.
+- **Not covered:** input that is not well-formed (§3.9.2), and any host grammar. Whether `{`
+  begins an argument is the caller's knowledge.
+
+---
+
 ## 4. The round-trip guarantee
 
-> **`transform` in `html`, `markdown` and `yaml` mode returns the input source with a set of
+> **`transform` in `html`, `markdown` and `yaml` mode, and in `text` mode with `protect`, returns the input source with a set of
 > disjoint substring replacements applied at recorded offsets. No other byte of the input
 > changes, ever.**
 
@@ -1380,6 +1612,8 @@ it. It is stated as a prohibition because that is the only form five parsers can
 - **[P] Malformed input is not repaired.** Unclosed tags, stray `<`, mismatched nesting: the
   parser's error recovery affects only where spans are found, never what is emitted.
 
+- **[P] A protected run (`protect`, §3.9) is returned exactly as written.** The caller said it is
+  not text, and the output contains its code points unchanged and in place.
 - **[P] YAML quoting style, indentation, anchors, tag handles and chomping indicators are
   preserved** — `yaml` mode uses no parser and no emitter, so none of them is ever decoded and
   rewritten (§3.8.1). A block scalar's trailing line terminators lie outside every span and are
@@ -1412,6 +1646,12 @@ they do not carry it over for free either. Write `M` for the whole mode transfor
    one a mode adapter can break on its own: if applying edits changed how the document parses,
    the second run would see different spans, the concatenation would differ, and the rules would
    legitimately reach different conclusions.
+
+   **With `protect` (§3.9) the partition is the caller's, and `M` cannot discharge this item
+   alone.** An edit before a hole moves it, so the second call must be given the ranges where the
+   first call left them (§3.9.5). The property then holds on the argument of the next paragraph
+   (the hole's own code points are never edited, so the partition is exactly the first call's),
+   and it is a property of the call, not of the input.
 
    An earlier revision discharged this by claiming that **every code point the rules emit is
    syntactically inert in `html` and `markdown`**. That claim is **false**, and the
@@ -1544,7 +1784,7 @@ means the claim holds in those modes only.
 
 - **"Anything inside a skipped region"**, asserted in every rule's §4, is
   **[P: html, markdown, yaml]** and is now _defined_ rather than assumed — §3.6, §3.7 and §3.8
-  are what those bullets refer to. In `text` mode there are no skipped regions and the bullet is
+  are what those bullets refer to. In `text` mode there are no skipped regions, unless `protect` is given (§3.9), and the bullet is
   vacuous. In `yaml` the definition runs the other way round (§3.8.2): the skipped region is
   everything the scan did not claim. Since 1.7.0 one region in `markdown` is skipped
   **conditionally** — the frontmatter block, whenever `frontmatterKeys` names a key in it
@@ -1660,9 +1900,15 @@ rule-local.
    have them inside a span and could let a rule edit next to them. The tree-walking approach is
    assumed throughout; it is not stated as a requirement because it names an implementation
    strategy, and it probably should be.
-7. **No mode covers plain-text email or reStructuredText**, and the `rules` option cannot
-   express "skip this region" for a caller with their own format. That is out of scope for v1
-   (PLAN.md §4) and is recorded so the span model is not mistaken for an extension point. _(YAML
+7. _(Settled in 1.13.0 — an option, not an extension point.)_ **No mode covers plain-text email
+   or reStructuredText**, and until 1.13.0 the `rules` option could not express "skip this
+   region" for a caller with their own format; this item said so, and said the span model was
+   not to be mistaken for an extension point. The first report of it costing real work
+   (polytypo/polytypo#14, a template literal with interpolation, then ICU MessageFormat in
+   #26) was an argument to revisit it, and §3.9 does: the caller names the regions with
+   `protect`, in `text` mode only, and the span model is reused as it stands. What was not
+   reopened is the format list. No mode was added for email, reStructuredText, ICU, Django or
+   Handlebars, and the option specifies none of their grammars. _(YAML
    was in this item until 1.3.0 and is now §3.8; the two formats named here are not, and the
    argument that moved YAML does not carry over — it turned on a measured corpus and a
    corruption report, neither of which exists for these.)_
@@ -1884,6 +2130,12 @@ changes.
    scanners and five different answers. The bounded sweep of §3.8.7 is part of this item, not an
    extra — and so is the end-to-end corpus run, for the reason §3.8.7 gives: a sweep that
    compares structure cannot see a string being damaged without being destroyed.
+3b. **`protect`** (since 1.13.0) — the offsets as code points with an astral character before and
+   inside a hole, a hole at each end and over the whole input, a line terminator inside a hole,
+   touching ranges, the two growth costs of §3.9.4, each refusal of §3.9.2 including the one
+   that is a refusal only in code points, and the moved-range idempotency call (§3.9.5). The
+   sweep of §3.9.7 is part of this item. Each runtime proves it with its own tests; the
+   fixtures cover `en-US`, `en-GB`, `de-DE` and `fr`.
 4. **At least two materially different locale outputs per mode/dialect**, so a fixture is not
    merely "the same English output with a different `locale` field": `spec/fixtures/fr.json` and
    `fr-CA.json` carry `html`/`markdown`/`mdx` cases whose guillemets-plus-U+00A0 output is
@@ -1917,7 +2169,8 @@ covers all eight:
   respectively), the parser-boundary half of item 5 (an astral-character/surrogate-pair
   preservation case in HTML mode), and item 6 (the round-trip guarantee — "returns a
   document/article that needs no changes byte for byte" — asserted directly for HTML, CommonMark,
-  MDX and YAML). Those files are not in this repository, which has no engine to run them through,
+  MDX and YAML). Item 3b is each runtime's own `protect` tests, which also run the moved-range
+  idempotency call of §3.9.5 over the fixtures. Those files are not in this repository, which has no engine to run them through,
   so this bullet is an obligation on every runtime: one that ships `yaml` without them is not
   conformant for the mode however green its fixtures are.
 

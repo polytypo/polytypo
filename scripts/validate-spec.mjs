@@ -385,6 +385,79 @@ function checkNonNfcCases(file, data) {
   }
 }
 
+// modes.md 3.9.5. A case with `protect` is run twice by a conformance runner, the second time over
+// its own output, and the ranges have moved. This checks the one thing a runner cannot: that
+// `protectOut` selects exactly the code points `protect` selected, so a hole that was edited, or
+// moved to the wrong place, cannot be recorded as a fixture. It also checks the ranges themselves
+// are valid for the text they sit in, except in a `throws` case, whose job is to be invalid.
+function mergeTouching(ranges) {
+  const out = [];
+  for (const r of ranges) {
+    const last = out[out.length - 1];
+    if (last !== undefined && last.end === r.start) last.end = r.end;
+    else out.push({ start: r.start, end: r.end });
+  }
+  return out;
+}
+
+// One string per protected run, touching ranges merged: the run is the unit that survives, and a
+// `protectOut` that splits the same code points differently or selects them elsewhere must fail.
+function protectedRuns(text, ranges) {
+  const points = [...text];
+  return mergeTouching(ranges).map((r) => points.slice(r.start, r.end).join(""));
+}
+
+function rangesAreValid(text, ranges) {
+  if (!Array.isArray(ranges)) return false;
+  const length = [...text].length;
+  let previousEnd = 0;
+  for (const r of ranges) {
+    if (!Number.isInteger(r?.start) || !Number.isInteger(r?.end)) return false;
+    if (r.start < 0 || r.end <= r.start || r.start < previousEnd || r.end > length) return false;
+    previousEnd = r.end;
+  }
+  return true;
+}
+
+function checkProtectCases(file, data) {
+  for (const c of data.cases ?? []) {
+    if (c.protect === undefined) continue;
+    if (c.throws !== undefined) {
+      // A refusal for the option's own sake must actually be one: a valid list mislabelled as
+      // POLYTYPO_INVALID_OPTION would pass every runtime that implements the check wrongly.
+      if (c.throws === "POLYTYPO_INVALID_OPTION") {
+        const refusedHere =
+          c.mode === "text"
+            ? !rangesAreValid(c.in, c.protect)
+            : Array.isArray(c.protect) && c.protect.length > 0;
+        if (!refusedHere) {
+          fail(
+            file,
+            `case "${c.id}": throws POLYTYPO_INVALID_OPTION but its "protect" is acceptable (modes.md 3.9.2)`,
+          );
+        }
+      }
+      continue;
+    }
+    if (!rangesAreValid(c.in, c.protect)) {
+      fail(file, `case "${c.id}": "protect" is not valid for "in" (modes.md 3.9.2)`);
+      continue;
+    }
+    if (!rangesAreValid(c.out, c.protectOut)) {
+      fail(file, `case "${c.id}": "protectOut" is not valid for "out" (modes.md 3.9.2)`);
+      continue;
+    }
+    const before = protectedRuns(c.in, c.protect);
+    const after = protectedRuns(c.out, c.protectOut);
+    if (before.length !== after.length || before.some((run, i) => run !== after[i])) {
+      fail(
+        file,
+        `case "${c.id}": "protectOut" does not select the protected runs "protect" selects, one for one — a protected run was edited, or the ranges were not moved with the edits (modes.md 3.9.5)`,
+      );
+    }
+  }
+}
+
 // Reads spec/locales/registry.json specifically to determine which locale codes have a canonical
 // fixture obligation — never a second, independent list of locale names hard-coded here. Returns
 // the "locales" array on success, or null on any read/parse/shape failure (missing file,
@@ -783,6 +856,7 @@ async function main() {
       }
 
       checkNonNfcCases(file, data);
+      checkProtectCases(file, data);
 
       escaped.push({ locale: data.locale ?? stem, data });
     }

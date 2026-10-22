@@ -3,7 +3,8 @@
 **Not a rule.** No entry in `spec/rules/order.json`, no locale data of its own, no edits. This
 document specifies a **second public entry point** beside `transform`, which runs the identical
 pipeline and reports what it would do instead of doing it.
-**Spec version:** 1.3.0 (new in 1.3.0).
+**Spec version:** 1.13.0 (new in 1.3.0; `end` of a non-insertion defined in §2, and the matching
+obligation in §6, in 1.13.0).
 
 ---
 
@@ -23,7 +24,7 @@ transform(input, options) -> string
 analyze(input, options)   -> Change[]
 ```
 
-Same `options`, same validation, same errors, same purity (`ARCHITECTURE.md` §7: no I/O, no
+Same `options` (`protect` included, modes.md §3.9), same validation, same errors, same purity (`ARCHITECTURE.md` §7: no I/O, no
 clock, no globals, reentrant). Everything §2 of every rule document says about what the pipeline
 does applies unchanged — `analyze` **is** the pipeline; it merely keeps the edits instead of
 discarding them after applying.
@@ -49,8 +50,10 @@ Change {
   whose strings are UTF-16 must convert; a runtime whose strings are bytes must convert.
 - **Offsets are into `input` exactly as the caller passed it.** In `html`, `markdown` and
   `yaml` mode that means offsets into the **document**, not into the span the rules actually ran
-  over. This
-  is not a new obligation: [modes.md](modes.md) §4 already defines the output as "the input
+  over. A non-insertion's `end` is one past the offset of the last code point it replaced that
+  came from the input, so it can never run across a skipped region or a protected run that
+  follows (since 1.13.0; 1.12.0 scanned forward to the next code point with an origin). The
+  document-offset rule is not a new obligation: [modes.md](modes.md) §4 already defines the output as "the input
   source with a set of disjoint substring replacements applied **at recorded offsets**", and
   those are the offsets meant.
 - `start == end` is a pure insertion; `before` is then empty. `after` empty with `end > start`
@@ -137,6 +140,15 @@ naming:
 
 - **A3 against the whole fixture corpus.** For every canonical fixture case, `analyze` returns
   an empty list exactly when `in == out`. That is a strong test and it costs one loop.
+- **A range that crosses nothing it did not change (since 1.13.0).** A change's `start` and `end`
+  come from the code points it replaced, and `end` is not found by scanning forward from the
+  edit's end index to the next code point that has an origin: the boundary marker has none, so a
+  change ending beside a skipped element or a protected run (modes.md §3.9) would be carried
+  across it. Test a change whose last code point is a span's last, followed by a skipped region
+  longer than the change: no reported range may overlap a skipped region or a protected run, and
+  a non-insertion's `end` is one past the input offset of the last replaced code point that has
+  one. (`end - start` need not equal the length of `before`: `before` is what a later rule saw,
+  §5.) 1.12.0 reported `<p>x--<code>cc</code>y</p>` as `start` 4, `end` 21.
 - **A5 under the mode adapters.** A runtime that reports span-local offsets in `html`,
   `markdown` or `yaml` mode passes every text-mode test and is still wrong. Test a document
   whose first span does not start at offset 0. `yaml` is the cheapest of the three to get wrong

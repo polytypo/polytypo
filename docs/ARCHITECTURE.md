@@ -224,7 +224,7 @@ The taxonomy is **eight codes**, and this list is the contract every runtime imp
 | `POLYTYPO_MALFORMED_LOCALE_DATA` | Embedded locale data failed schema validation.                                                    |
 | `POLYTYPO_RULE_CONTRACT`         | A rule produced an edit violating the pipeline contract (§7.1).                                   |
 | `POLYTYPO_MALFORMED_INPUT`       | The input does not parse in the requested language. Reachable only for `mdx`, which embeds JS.    |
-| `POLYTYPO_INVALID_OPTION`        | An option's value is outside its permitted set, or a mode-required option is missing, for an option with no more specific code (§7). Spec 1.3.0; the options are `narrowNbsp` and `keys`. |
+| `POLYTYPO_INVALID_OPTION`        | An option's value is outside its permitted set, or a mode-required option is missing, for an option with no more specific code (§7). Spec 1.3.0; the options are `narrowNbsp`, `keys` and, since 1.13.0, `protect`. |
 
 > **`POLYTYPO_INVALID_OPTION` is deliberately general, spec 1.3.0.** `mode` and `dialect` keep
 > their own codes — they are public contract and renaming or merging them would break callers that
@@ -437,9 +437,10 @@ transform(input: string, options) -> string
 | `narrowNbsp` | no                             | `narrow` | `narrow` \| `nbsp`. `nbsp` makes the engine emit U+00A0 wherever it would emit U+202F (spec 1.3.0, `nbsp.md` §3.1a). |
 | `keys`    | **yes when `mode` is `yaml`**     | none    | The mapping keys whose scalar values are processable (spec 1.3.0, `modes.md` §3.8.2). A list of strings; an empty list is legal and processes nothing. Ignored in the other three modes. |
 | `frontmatterKeys` | no                        | none    | Only meaningful when `mode` is `markdown` (spec 1.7.0, `modes.md` §3.7.4): the keys in the document's YAML frontmatter block whose scalar values are processable, scanned by §3.8's own scan. Absent means the block is skipped whole, as before 1.7.0; an empty list is legal and yields no spans. Ignored in the other three modes. |
+| `protect` | no                                | none    | `text` mode only (spec 1.13.0, `modes.md` §3.9): ranges `{ start, end }` of the input in code points, `[start, end)`, never edited and read as opaque content. Ascending, non-overlapping; anything else, and a non-empty list in another mode, is `POLYTYPO_INVALID_OPTION`. |
 
 **Validation order is contract** (spec 1.3.0, stated here because a conformance fixture cannot
-express it): `mode` → `narrowNbsp` → `rules` → `locale` → `dialect` → `keys` / `frontmatterKeys`. The two checks that
+express it): `mode` → `narrowNbsp` → `rules` → `locale` → `dialect` → `keys` / `frontmatterKeys` → `protect`. The two checks that
 read nothing but the call itself come first, then rule ids, then locale data, then the
 mode-dependent options and the parse. So an invalid `mode` beats an invalid `narrowNbsp`, which
 beats an unknown rule id, which beats an unknown locale — the last of those pairs was already

@@ -1,5 +1,5 @@
 {
-  "spec": "1.12.0",
+  "spec": "1.13.0",
   "locale": "fr",
   "cases": [
     {
@@ -1038,6 +1038,46 @@
       "in": "title: a \"b\"\nslug: c\rd \"e\"\n",
       "out": "title: a « b »\nslug: c\rd \"e\"\n",
       "note": "modes.md §3.8.4 step 9 in a locale whose quotation marks carry their own spacing: the line with the lone U+000D is declined and the line before it converts, so the cost is one line and not the document."
+    },
+    {
+      "id": "fr-protect-nbsp-before-hole",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Bonjour ${name} !",
+      "protect": [
+        {
+          "start": 8,
+          "end": 15
+        }
+      ],
+      "out": "Bonjour ${name} !",
+      "protectOut": [
+        {
+          "start": 8,
+          "end": 15
+        }
+      ],
+      "note": "modes.md §3.9.3: the space before '!' is already in the text, so nbsp converts it in place (1 → 1)."
+    },
+    {
+      "id": "fr-protect-nbsp-insertion-at-hole-declined",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Bonjour ${name}!",
+      "protect": [
+        {
+          "start": 8,
+          "end": 15
+        }
+      ],
+      "out": "Bonjour ${name}!",
+      "protectOut": [
+        {
+          "start": 8,
+          "end": 15
+        }
+      ],
+      "note": "modes.md §3.9.4, accepted cost: the narrow space would be inserted at a span edge next to the hole, which the edge-growth rule (§3.4) discards. Without protect it is inserted."
     }
   ]
 }
