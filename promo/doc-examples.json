@@ -5,6 +5,9 @@
   "3319a1c0eda9bdfc": {
     "out": "Vraiment ? Oui !"
   },
+  "180cc3d45b5c6542": {
+    "out": "${x} – Rules"
+  },
   "b0987b2047c732a7": {
     "error": "POLYTYPO_UNKNOWN_LOCALE"
   },
@@ -208,6 +211,12 @@
   },
   "e3521feb6238af8d": {
     "out": "if (a!= b) {return “x”—“y”;} // ©"
+  },
+  "595b5e150561a40e": {
+    "out": "${x}—Rules"
+  },
+  "47f50b316215c355": {
+    "out": "a '{b}' c"
   },
   "a6d70f11fa0a5d42": {
     "out": "openapi: 3.1.0\ninfo:\n  title: Pets -- \"API\"\n  description: A service for “pets”—all of them…\npaths:\n  /pets:\n    get:\n      summary: List pets—paginated\n      operationId: \"list -- pets\""

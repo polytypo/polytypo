@@ -8,7 +8,7 @@
  *
  * Block format: `key: value` header lines, a line holding only `---`, then the input verbatim.
  * Keys: locale (required), mode, dialect, keys, frontmatterKeys, rules (comma list; `name` turns a
- * rule on, `-name` off), narrowNbsp. With `expect: error` the block records the thrown code.
+ * rule on, `-name` off), narrowNbsp, protect (comma list of `start-end` code-point ranges). With `expect: error` the block records the thrown code.
  */
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -72,6 +72,7 @@ export function toOptions(header: Record<string, string>): Options {
     "frontmatterKeys",
     "rules",
     "narrowNbsp",
+    "protect",
     "expect",
   ]);
   for (const k of Object.keys(header)) if (!known.has(k)) throw new Error(`unknown key ${k}`);
@@ -81,6 +82,12 @@ export function toOptions(header: Record<string, string>): Options {
   if ("keys" in header) o.keys = list(header.keys!);
   if ("frontmatterKeys" in header) o.frontmatterKeys = list(header.frontmatterKeys!);
   if (header.narrowNbsp) o.narrowNbsp = header.narrowNbsp;
+  if (header.protect) {
+    o.protect = list(header.protect).map((r) => {
+      const [start, end] = r.split("-").map(Number);
+      return { start, end };
+    });
+  }
   if (header.rules) {
     o.rules = Object.fromEntries(
       list(header.rules).map((r) => (r.startsWith("-") ? [r.slice(1), false] : [r, true])),

@@ -1,6 +1,6 @@
 ---
 title: Options
-seo_title: polytypo options: locale, mode, dialect, keys, rules and narrowNbsp
+seo_title: polytypo options: locale, mode, dialect, keys, rules, narrowNbsp and protect
 description: Every polytypo option, its type and default, what it requires, and which error an invalid value raises.
 section: api
 order: 20
@@ -17,6 +17,7 @@ Options are the second argument of [`transform`](/docs/api/transform/) and [`ana
 | [`frontmatterKeys`](#frontmatterkeys) | list of strings | none | no |
 | [`rules`](#rules) | map of rule id to boolean | all on except `ranges` | no |
 | [`narrowNbsp`](#narrownbsp) | `"narrow"` \| `"nbsp"` | `"narrow"` | no |
+| [`protect`](#protect) | list of `{ start, end }` | none | no |
 
 ## locale
 
@@ -66,9 +67,24 @@ Vraiment ? Oui !
 
 See [Invisible characters](/docs/concepts/invisible-characters/).
 
+## protect
+
+Optional, and available in `text` mode only (version 1.13.0). A list of `{ start, end }` ranges of the input, in Unicode code points, `[start, end)`: the characters in them are never edited, and the rules read each one as content that is not text, in the way they read an inline element in `html` mode. It is for a string that has holes no mode knows about, such as a template literal with `${…}` or an ICU message with arguments. See [Text mode](/docs/modes/text/#protecting-parts-of-the-string).
+
+The list must be ascending and must not overlap; ranges that touch are one range. An empty range, a negative offset, an offset past the end of the input, a value that is not a list of such ranges, and a non-empty list in any mode but `text` throw `POLYTYPO_INVALID_OPTION`. An empty list is the same as no option. Offsets count code points, not UTF-16 units and not bytes, so an emoji before a range does not move it.
+
+```example
+locale: en-GB
+protect: 0-4
+---
+${x} - Rules
+```
+
+Running the output through `transform` again gives the same text only if the ranges are moved to where the edits left them; `transform` does not return them.
+
 ## Validation order
 
-Options are checked before anything is parsed, in this order: `mode`, `narrowNbsp`, `rules`, `locale`, `dialect`, then `frontmatterKeys`. A call with several invalid options reports the first in that order. Mode-specific options are validated only in their own mode, apart from `locale`, `mode`, `rules` and `narrowNbsp`.
+Options are checked before anything is parsed, in this order: `mode`, `narrowNbsp`, `rules`, `locale`, `dialect`, then `frontmatterKeys`, then `protect`. A call with several invalid options reports the first in that order. Mode-specific options are validated only in their own mode, apart from `locale`, `mode`, `rules` and `narrowNbsp`. `protect` is the exception in the other direction: a non-empty list is refused outside `text` mode instead of being ignored, because ignoring it would typeset text you marked.
 
 ## Related
 

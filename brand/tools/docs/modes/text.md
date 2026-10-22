@@ -42,6 +42,28 @@ The straight quotes, the double hyphen, `(c)` and even the spacing around `!=` a
 
 `transform` sees only the string it is given. Rules read the characters on either side of what they change, and that reading stops at the ends of the string. If you split a document into text nodes and transform each one separately, every node boundary becomes an end of text. `Design` and ` - the rest` sent as two calls leave the hyphen alone, while `<strong>Design</strong> - the rest` sent to `html` mode as one fragment is set correctly, because `html` mode reads prose across inline elements.
 
+## Protecting parts of the string
+
+Splitting is the cost of a string with holes in it; `protect` removes the need. Pass the ranges that are not prose and send the whole string:
+
+```example
+locale: en-US
+protect: 0-4
+---
+${x} - Rules
+```
+
+```example
+locale: en-GB
+protect: 2-7
+---
+a '{b}' c
+```
+
+The first is a template literal: the hole is left exactly as written and the dash still sees a word on its left. The second is ICU MessageFormat, where an apostrophe before a brace is an escape; marking `'{b}'` with both apostrophes keeps it a literal `{b}`. Without the range, `en-GB` writes `‘{b}’`, which is a placeholder between two curly quotes.
+
+What it costs: a character that would be inserted next to a protected range is not written (`Bonjour ${name}!` in `fr` keeps its `!` as typed), and a protected range that contains a line break counts as a line break to the rules. Offsets are code points. The option is available in `text` mode only; see [`protect`](/docs/api/options/#protect).
+
 ## Related
 
 - [HTML mode](/docs/modes/html/), [Markdown mode](/docs/modes/markdown/), [YAML mode](/docs/modes/yaml/)
