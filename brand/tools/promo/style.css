@@ -34,6 +34,9 @@
   --code-gutter: #7d848e;
   --tok-string: #8fc79a;
   --tok-comment: #8b939d;
+  --tok-kw: #e59a7e;
+  --tok-fn: #9cc2e8;
+  --tok-num: #e3c07a;
 
   /* ── Type ────────────────────────────────────────────────────────────────────────────── */
   --font-sans: "Inter Brand", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -83,10 +86,35 @@
   --section-y: 80px; /* the one vertical rhythm between sections */
   --nav-h: 64px;
   --control-h: 44px;
+
+  /* Radius: five steps, each with one job. Nothing is rounded by a literal; a circle is a
+     square element with --radius-pill.
+       xs    inline highlights inside running text
+       sm    small controls and keycaps: kbd, icon buttons, the Esc key, list-row links
+       md    fields, the search trigger and dialog, hints, the top corners of tabs
+       lg    surfaces: cards, panels, code blocks, the workbench
+       pill  buttons, one-line fields, chips, segmented groups, circles */
+  --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-pill: 999px;
+
+  /* Elevation: one raised surface (the search dialog) and its scrim. Everything else is flat and
+     separated by --line. */
+  --shadow-overlay: 0 24px 64px rgb(0 0 0 / 28%);
+  --scrim: rgb(15 17 20 / 45%);
+
+  /* Layers: the sticky header, and anything that covers it. */
+  --z-nav: 10;
+  --z-overlay: 50;
+
+  /* Weights: 400 text; 500 table heads, tabs, card names and the copy button; 600 buttons, headings
+     and emphasis. */
+
+  /* Marked difference in a specimen: the accent as a wash and a ring, same in both themes. */
+  --accent-wash: rgb(214 64 39 / 16%);
+  --accent-ring: rgb(214 64 39 / 22%);
 }
 
 @media (max-width: 640px) {
@@ -457,7 +485,7 @@ section > .section-intro {
 .site-nav {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: var(--z-nav);
   border-bottom: 1px solid var(--line);
   background: color-mix(in srgb, var(--bg) 92%, transparent);
   backdrop-filter: blur(8px);
@@ -699,9 +727,9 @@ section > .section-intro {
 }
 
 .chg {
-  border-radius: 3px;
-  background: rgb(214 64 39 / 16%);
-  box-shadow: 0 0 0 1px rgb(214 64 39 / 22%);
+  border-radius: var(--radius-xs);
+  background: var(--accent-wash);
+  box-shadow: 0 0 0 1px var(--accent-ring);
 }
 
 .nb {
@@ -829,7 +857,7 @@ table.kv th {
   place-items: center;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
+  border-radius: var(--radius-pill);
   color: var(--muted);
   background: var(--surface-strong);
   font-family: var(--font-mono);
@@ -893,7 +921,7 @@ textarea {
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   background: var(--bg);
-  font-size: 16px; /* never below 16px: iOS zooms smaller fields */
+  font-size: var(--fs-md); /* 16px on phones, never below: iOS zooms smaller fields */
 }
 
 select {
@@ -1719,23 +1747,23 @@ select {
 }
 
 .tok-kw {
-  color: #e59a7e;
+  color: var(--tok-kw);
 }
 
 .tok-fn {
-  color: #9cc2e8;
+  color: var(--tok-fn);
 }
 
 .tok-num {
-  color: #e3c07a;
+  color: var(--tok-num);
 }
 
 .tok-tag {
-  color: #e59a7e;
+  color: var(--tok-kw);
 }
 
 .tok-attr {
-  color: #9cc2e8;
+  color: var(--tok-fn);
 }
 
 /* One copy button everywhere: same size, face and weight on a page and on a code panel. */
@@ -1866,7 +1894,7 @@ select {
 .workbench.is-expanded {
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: var(--z-overlay);
   margin: 0;
   border: 0;
   border-radius: 0;
@@ -2096,7 +2124,7 @@ h3:hover > .anchor,
   border-radius: var(--radius-md);
   color: var(--fg);
   background: var(--bg);
-  box-shadow: 0 24px 64px rgb(0 0 0 / 28%);
+  box-shadow: var(--shadow-overlay);
 }
 
 .search-dialog[open] {
@@ -2105,7 +2133,7 @@ h3:hover > .anchor,
 }
 
 .search-dialog::backdrop {
-  background: rgb(15 17 20 / 45%);
+  background: var(--scrim);
   backdrop-filter: blur(2px);
 }
 
@@ -2116,6 +2144,11 @@ h3:hover > .anchor,
   padding: 0 var(--space-5);
   border-bottom: 1px solid var(--line);
   color: var(--muted);
+}
+
+.search-head:focus-within {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
 }
 
 .search-head input {
@@ -2134,7 +2167,7 @@ h3:hover > .anchor,
 .search-close {
   padding: var(--space-1) var(--space-2);
   border: 1px solid var(--line);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   color: var(--muted);
   background: transparent;
   font-family: var(--font-mono);
@@ -2195,7 +2228,7 @@ h3:hover > .anchor,
 .search-results mark {
   color: var(--fg);
   background: transparent;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .search-foot {

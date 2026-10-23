@@ -39,3 +39,38 @@ describe("brand/tools/promo/style.css — prose inline <code> wraps, <pre><code>
     expect(css).not.toMatch(/pre\s*>\s*code\s*\{[^}]*overflow-wrap/);
   });
 });
+
+describe("brand/tools/promo/style.css — closed visual scales", () => {
+  // Everything below the token block must take radius, shadow, z-index and weight from the scale.
+  const rules = css.slice(css.indexOf("\n}\n") + 3);
+
+  it("sets no literal border-radius", () => {
+    const literals = rules.match(/border-radius:[^;]*;/g) ?? [];
+    const bad = literals.filter(
+      (d) => !/^border-radius:\s+((0|var\(--radius-(xs|sm|md|lg|pill)\))\s*)+;$/.test(d),
+    );
+    expect(bad).toEqual([]);
+  });
+
+  it("sets no literal box-shadow or z-index", () => {
+    expect(
+      rules.match(/box-shadow:\s+(?!var\(--shadow-|0 0 0 1px var\(--accent-ring\)|none)[^;]*;/g) ??
+        [],
+    ).toEqual([]);
+    expect(rules.match(/z-index:\s+(?!var\(--z-)[^;]*;/g) ?? []).toEqual([]);
+  });
+
+  it("uses only the weights 400, 500 and 600", () => {
+    const weights = new Set(
+      (rules.match(/font-weight:\s*(\d+)/g) ?? []).map((d) => d.replace(/\D/g, "")),
+    );
+    expect([...weights].sort()).toEqual(["400", "500", "600"]);
+  });
+
+  it("sets no literal font-size outside the type scale", () => {
+    const bad = (rules.match(/font-size:\s+(?!var\(--fs-|inherit)[^;]*;/g) ?? []).filter(
+      (d) => d !== "font-size: 0.88em;",
+    );
+    expect(bad).toEqual([]);
+  });
+});
