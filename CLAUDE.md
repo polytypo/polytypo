@@ -94,8 +94,8 @@ CI now verifies the result**: `check-vendored-spec.sh` there clones this reposit
 `spec-v<the vendored VERSION>` and fails on any difference in the files that runtime holds, in CI
 on every push and again in the release job before anything is built. A `locales/*.json` file is
 compared in full when it carries its `sources` array and against canonical minus that array when
-it does not — the shipped form Go, Ruby and PHP vendor, since they embed those exact files — and
-which case applies is read off the file, not configured. Completeness is checked from this
+it does not — a form for a runtime that trims the array before embedding, which none of the five
+does today — and which case applies is read off the file, not configured. Completeness is checked from this
 repository's side rather than the tree's own: every file `spec/` has at that tag must be vendored
 unless that tree's `.not-vendored` names it — `CONFORMANCE.md` in all five, plus `schema/` in JS
 and the twelve rule documents Python omits — so a deleted vendored file, or a canonical file
