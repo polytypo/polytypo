@@ -271,9 +271,9 @@ is a breaking change.
 ## Scope discipline
 
 Locales are `en-US` `en-GB` `de-DE` `de-CH` `fr` `fr-CA` `ru` `fi` `sv` `el` `es` `it` `pt-PT`
-`pt-BR` `nl` `pl` `uk` `cs` `tr` `sk` `ro` `hu` `bg` `hr` — twenty-four (aliases `en`→`en-US`, `de`→`de-DE`, `pt`→`pt-PT`;
+`pt-BR` `nl` `pl` `uk` `cs` `tr` `sk` `ro` `hu` `bg` `hr` `sr` — twenty-five (aliases `en`→`en-US`, `de`→`de-DE`, `pt`→`pt-PT`;
 `tr-TR` needs none, since `locale-resolution.md` §3.4 strips the region and retries). Eight
-arrived in spec 1.3.0, `tr` in 1.6.0, `sk` in 1.11.0 and `ro`, `hu`, `bg` and `hr` in 1.12.0. The generated README and site show a locale once the installed
+arrived in spec 1.3.0, `tr` in 1.6.0, `sk` in 1.11.0 and `ro`, `hu`, `bg` and `hr` in 1.12.0 and `sr` in 1.14.0. The generated README and site show a locale once the installed
 engine can run it.
 **A new locale also gets its language in the embeddable badge**: a caption in `BADGE_TEXT` and a
 picker name in `BADGE_LANG_NAMES` (`brand/tools/build_promo.py`), keyed by language, so `pt-BR`
@@ -313,6 +313,15 @@ not itself resolve that remaining gap, and neither does the per-runtime CI check
 (verified via `gh repo list polytypo`, 2026-09-09); ROADMAP.md's own "Open decisions" list does not
 mark this ~~resolved~~ explicitly, so treat it as an observed fact, not confirmed settled policy,
 until the operator says otherwise.
+
+## Tasks
+
+polytypo is open source: follow-up tasks live in GitHub issues (`polytypo/polytypo`), not in Todoist.
+The list is public and anyone, the operator or any contributor, can pick an issue up, so word each one
+self-sufficiently and carefully: paths, observed facts, acceptance criteria, no internal
+tooling names, credentials, private data or speculation. Work that must not be written in a public
+issue but still has to be done is not planned: start a chip (`start_session`) that executes it
+immediately.
 
 ## Agent infrastructure
 
