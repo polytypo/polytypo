@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.13.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.13.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.14.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.14.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,15 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.14.0 — 24 October 2026
+
+Serbian joins as the twenty-fifth language, cited to the Pravopis of Matica srpska as analysed in a University of Belgrade monograph.
+
+- Serbian ships as `sr`. Until now Serbian text had to be skipped or run through a foreign locale, and the second has a cost. Measured: `Рекао је: "Ово је 'цитат' из књиге" - наравно - и отишао.` came back from `en-GB` as `Рекао је: ‘Ово је “цитат” из књиге’ – наравно – и отишао.`, the nesting inverted and the native marks gone. `sr` gives `Рекао је: „Ово је ’цитат’ из књиге” – наравно – и отишао.`: `„…”` for the first level, the single mark `’…’` for the second, no space inside, and an en dash with spaces. The Latin spelling gets the same marks, because no rule found depends on the script.
+- With the `ranges` rule on, a numeric range is closed up with an en dash and no-break joiners either side, `рат 1941–1945`. The accepted cost: a range whose members have several words is spaced in the Pravopis (`рат 6. IV 1941 – 9. V 1945`), and locale data cannot tell the two apart.
+- What Serbian does not do, because no source consulted says it: no no-break space is put between a number and a unit or percent sign, after one-letter words, or inside initials, and no hyphenated form is protected. The Pravopis itself is a paid text and was read through a University of Belgrade monograph on Serbian punctuation, so the quotation marks and dashes rest on that analysis. The Pravopis prescribes `„…”`; the dictionaries of Matica srpska and of the Serbian Academy use `„…“`, and `sr` follows the Pravopis.
+- Pass `sr` (or a region form such as `sr-RS`). `sr-Latn` and `sr-Cyrl` are refused with `POLYTYPO_UNKNOWN_LOCALE`, as every script-tagged identifier already is.
 
 ## 1.13.0 — 22 October 2026
 

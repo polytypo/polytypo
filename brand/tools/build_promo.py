@@ -81,6 +81,7 @@ PRIMARY_SOURCES = {
     "hu": "Magyar Tudományos Akadémia; A magyar helyesírás szabályai, 12. kiadás (AkH12)",
     "bg": "Институт за български език (БАН); Официален правописен речник на българския език (2012)",
     "hr": "Institut za hrvatski jezik i jezikoslovlje, Hrvatski pravopis",
+    "sr": "Матица српска, Правопис српскога језика (2010), по анализи Д. Кликовац, Српска интерпункција",
 }
 
 
@@ -1797,6 +1798,7 @@ BADGE_TEXT = {
     "hu": "Tipográfiai rendezés: <b>polytypo</b>",
     "bg": "Типографско оформление: <b>polytypo</b>",
     "hr": "Tipografsko uređenje: <b>polytypo</b>",
+    "sr": "Типографско уређивање: <b>polytypo</b>",
     "it": "Pulizia tipografica con <b>polytypo</b>",
     "pl": "Typograficzne porządki dzięki <b>polytypo</b>",
     "pt": "Limpeza tipográfica por <b>polytypo</b>",
@@ -1820,6 +1822,7 @@ BADGE_LANG_NAMES = {
     "hu": "Hungarian",
     "bg": "Bulgarian",
     "hr": "Croatian",
+    "sr": "Serbian",
     "it": "Italian",
     "pl": "Polish",
     "pt": "Portuguese",

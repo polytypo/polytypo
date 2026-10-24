@@ -1,0 +1,183 @@
+{
+  "spec": "1.14.0",
+  "locale": "sr",
+  "cases": [
+    {
+      "id": "sr-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Рекао је: \"да\" и отишао.",
+      "out": "Рекао је: „да” и отишао.",
+      "note": "Klikovac 2024 on Pravopis 2010, pp. 343–344: the base form is „…” (U+201E, U+201D); the close is U+201D, not U+201C."
+    },
+    {
+      "id": "sr-quotes-primary-latin",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Rekao je: \"da\" i otišao.",
+      "out": "Rekao je: „da” i otišao.",
+      "note": "No rule depends on the script: the Latin spelling gets the same pair."
+    },
+    {
+      "id": "sr-quotes-nested-secondary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Рекао је: \"песма 'Лепа' је\" и отишао.",
+      "out": "Рекао је: „песма ’Лепа’ је” и отишао.",
+      "note": "Klikovac 2024 on Pravopis 2010, p. 361: a quotation inside a quotation takes the single pair, written with U+2019 on both sides."
+    },
+    {
+      "id": "sr-quotes-nested-roundtrip",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Рекао је: „песма ’Лепа’ је” и отишао.",
+      "out": "Рекао је: „песма ’Лепа’ је” и отишао.",
+      "note": "The same-glyph secondary pair is a fixed point."
+    },
+    {
+      "id": "sr-quotes-apostrophe-inside-secondary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Рекао је: \"песма 'McDonald's' је\" и отишао.",
+      "out": "Рекао је: „песма ’McDonald’s’ је” и отишао.",
+      "note": "An apostrophe inside the same-glyph secondary pair is kept and the pair still closes; the result is a fixed point."
+    },
+    {
+      "id": "sr-quotes-already-typeset-kept",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "„да” и „не”",
+      "out": "„да” и „не”",
+      "note": "Already typeset: left as it is."
+    },
+    {
+      "id": "sr-quotes-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "„ да ”",
+      "out": "„да”",
+      "note": "No space after the opening or before the closing mark."
+    },
+    {
+      "id": "sr-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Чекај... шта?",
+      "out": "Чекај… шта?",
+      "note": "Pravopis 2010 (via Klikovac, p. 136): three dots, here the single ellipsis character."
+    },
+    {
+      "id": "sr-ellipsis-not-abbreviated",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Шта?.. да",
+      "out": "Шта?… да",
+      "note": "abbreviatedAfterTerminal is false (decision): `?..` is an ordinary ellipsis."
+    },
+    {
+      "id": "sr-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Идемо - ако пада - касније.",
+      "out": "Идемо – ако пада – касније.",
+      "note": "Klikovac p. 328: the separating dash is spaced; U+2013 is a decision."
+    },
+    {
+      "id": "sr-dashes-existing-em-dash",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Идемо — ако пада — касније.",
+      "out": "Идемо – ако пада – касније.",
+      "note": "An authored em dash becomes the locale's en dash."
+    },
+    {
+      "id": "sr-ranges-digits-tight",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "рат 1941-1945 и стр. 145-162",
+      "out": "рат 1941⁠–⁠1945 и стр. 145⁠–⁠162",
+      "note": "ranges.md §3, Klikovac pp. 330–331: a dash between numbers is closed up («рат 1941–1945»). en-tight inserts U+2060 on both sides of the dash so a line cannot break there (ranges.md).",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "sr-ranges-already-tight",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "рат 1941–1945",
+      "out": "рат 1941–1945",
+      "note": "ranges.md §3: already an en dash between numbers: left as it is.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "sr-ranges-word-hyphen-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "Нови Сад-Београд и српско-хрватски",
+      "out": "Нови Сад-Београд и српско-хрватски",
+      "note": "ranges.md §3: a hyphenated word is not a digit range.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "sr-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "српско-хрватски речник и без-",
+      "out": "српско-хрватски речник и без-",
+      "note": "No closed list ships, so nothing changes."
+    },
+    {
+      "id": "sr-nbsp-units-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "3 kg, 50 % и 99,90 €",
+      "out": "3 kg, 50 % и 99,90 €",
+      "note": "No verified rule: every nbsp list ships empty, so the plain spaces stay."
+    },
+    {
+      "id": "sr-nbsp-short-words-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "у кући и с пријатељем",
+      "out": "у кући и с пријатељем",
+      "note": "afterShortWords ships empty."
+    },
+    {
+      "id": "sr-nbsp-initials-unbound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Б. Ћопић",
+      "out": "Б. Ћопић",
+      "note": "initialBinding is none."
+    },
+    {
+      "id": "sr-spaces-brackets",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Текст ( нормалан ) остаје  .",
+      "out": "Текст (нормалан) остаје.",
+      "note": "spaces.md: brackets tighten, no space before the final stop."
+    },
+    {
+      "id": "sr-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026",
+      "out": "Copyright © 2026",
+      "note": "symbols rule, locale-neutral."
+    },
+    {
+      "id": "sr-apostrophe-foreign-name",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "То је McDonald's",
+      "out": "То је McDonald’s",
+      "note": "apostrophe rule, locale-neutral."
+    }
+  ]
+}

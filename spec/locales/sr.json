@@ -1,0 +1,82 @@
+{
+  "locale": "sr",
+  "name": "Serbian",
+  "quotes": {
+    "primary": {
+      "open": "„",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "’",
+      "close": "’",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": []
+    }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": [],
+    "beforeUnits": [],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Д. Кликовац, Српска интерпункција, Филолошки факултет Универзитета у Београду, 2024 (серија «Монографије – језик»), ISBN 978-86-6153-752-3, analysing Пешикан/Јерковић/Пижурица, Правопис српскога језика, Матица српска, Нови Сад, 2010, pp. 343–345 (table 5) and 360–363 (table 11)",
+      "url": "https://www.fil.bg.ac.rs/uploads/files/Strane/Biblioteke/Izdavacka%20delatnost/Monografije%20-%20Jezik/SRSKA%20INTERPUNKCIJA%20elek%20izd.pdf",
+      "note": "Primary: U+201E open, U+201D close. p. 343, table 5: «Пижурица и др. 2010: „ ” (То је једини облик који је наведен у наслову.)»; p. 344: the 2010 Pravopis prescribes and uses only this form. Secondary: U+2019 on both sides (the same-glyph pair of fi and sv), p. 361, table 11: «Полунаводницима се издваја ужи навод у оквиру ширег навода» (2010:135); p. 363 fn. 30 notes the form ‘ ’ at 2010:135 as «вероватно грешком». innerSpace none for both. CONFLICT, recorded not resolved: Пешикан и др. 1993:286 also allowed „ “ and » «; the dictionaries РМС, РСАНУ and РСЈ use „ “ (p. 345); Klikovac and Milanović 2019 argue for „ “ or free choice. U+201D follows the current Pravopis, as hr does. Q-W: primary WIDE, secondary NARROW. The secondary U+2019/U+2019 is a DECISION (MEDIUM): table 11 attributes ’ ’ to 2010, but fn. 30 reports ‘ ’ (U+2018/U+2019) printed at 2010:135 and calls it probably a mistake without the note stating which form Klikovac holds correct; pinned as U+2019 both sides, the form table 11 gives. The issue text «„…“ / „…”» was an observation, not a norm. elisionIdioms and elisionClitics are empty: no rule found. Confidence MEDIUM-HIGH: the glyph form is named in words by Klikovac, not read from a text layer. The Pravopis 2010 itself was not read (paid); every statement is the edition of 2010 as Klikovac reports it. The PDF has no text layer and was read as page images. Retrieved 2026-10-24."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Д. Кликовац, Српска интерпункција, Филолошки факултет Универзитета у Београду, 2024 (серија «Монографије – језик»), ISBN 978-86-6153-752-3, analysing Пешикан/Јерковић/Пижурица, Правопис српскога језика, Матица српска, Нови Сад, 2010, pp. 302, 320 (table 8), 328",
+      "url": "https://www.fil.bg.ac.rs/uploads/files/Strane/Biblioteke/Izdavacka%20delatnost/Monografije%20-%20Jezik/SRSKA%20INTERPUNKCIJA%20elek%20izd.pdf",
+      "note": "dash.parenthetical = en-spaced. The spaces are normative: the separating dash is set as a spaced mark (Пешикан и др. 1993, p. 328; 2010:122 confirms the function and every example is set spaced). The WIDTH is a DECISION: p. 302 says the dash should be about twice as long as the hyphen or more, which does not choose between U+2013 and U+2014; the monograph sets U+2013. MEDIUM, as hr and bg. Klikovac's p. 328 cites «Пижурица и др. (1993: 126)», probably a misprint for 2010; noted, not corrected. The Pravopis 2010 itself was not read (paid); every statement is the edition of 2010 as Klikovac reports it. The PDF has no text layer and was read as page images. Retrieved 2026-10-24."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Д. Кликовац, Српска интерпункција, Филолошки факултет Универзитета у Београду, 2024 (серија «Монографије – језик»), ISBN 978-86-6153-752-3, analysing Пешикан/Јерковић/Пижурица, Правопис српскога језика, Матица српска, Нови Сад, 2010, pp. 330–331",
+      "url": "https://www.fil.bg.ac.rs/uploads/files/Strane/Biblioteke/Izdavacka%20delatnost/Monografije%20-%20Jezik/SRSKA%20INTERPUNKCIJA%20elek%20izd.pdf",
+      "note": "dash.range = en-tight. A dash between numbers is written closed up (Пешикан 1993:278, Пижурица 2010:126, Дешић 2015): «рат 1941–1945», «у XV–XVIII веку». ACCEPTED COSTS: a multi-word range member takes spaces in 2010:126–127 («рат 6. IV 1941 – 9. V 1945»), and the rule «од … до» (no dash after «од») is an algorithm, not data; locale data can express neither. The ranges rule is off by default. The Pravopis 2010 itself was not read (paid); every statement is the edition of 2010 as Klikovac reports it. The PDF has no text layer and was read as page images. Retrieved 2026-10-24."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Д. Кликовац, Српска интерпункција, Филолошки факултет Универзитета у Београду, 2024 (серија «Монографије – језик»), ISBN 978-86-6153-752-3, analysing Пешикан/Јерковић/Пижурица, Правопис српскога језика, Матица српска, Нови Сад, 2010, p. 136 (table 1, fn. 5) and p. 164 (§12.1)",
+      "url": "https://www.fil.bg.ac.rs/uploads/files/Strane/Biblioteke/Izdavacka%20delatnost/Monografije%20-%20Jezik/SRSKA%20INTERPUNKCIJA%20elek%20izd.pdf",
+      "note": "abbreviatedAfterTerminal = false is a DECISION, not a citation. 2010 gives three dots closed up (p. 136) and allows them after ? and ! (p. 164); the two-dot form after a terminal appears only as older practice (Мирко Николић 1973, p. 136 fn. 5) and is never prescribed. MEDIUM. The Pravopis 2010 itself was not read (paid); every statement is the edition of 2010 as Klikovac reports it. The PDF has no text layer and was read as page images. Retrieved 2026-10-24."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Д. Кликовац, Српска интерпункција, Филолошки факултет Универзитета у Београду, 2024 (серија «Монографије – језик»), ISBN 978-86-6153-752-3, analysing Пешикан/Јерковић/Пижурица, Правопис српскога језика, Матица српска, Нови Сад, 2010, (not consulted)",
+      "url": "https://www.fil.bg.ac.rs/uploads/files/Strane/Biblioteke/Izdavacka%20delatnost/Monografije%20-%20Jezik/SRSKA%20INTERPUNKCIJA%20elek%20izd.pdf",
+      "note": "All three lists are empty: no source consulted gives a closed list of unbreakable hyphenated forms. The 2010 Pravopis chapters on word division were not consulted. Operator decision (no paid sources, pick and pin): ship empty. The Pravopis 2010 itself was not read (paid); every statement is the edition of 2010 as Klikovac reports it. The PDF has no text layer and was read as page images. Retrieved 2026-10-24."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Д. Кликовац, Српска интерпункција, Филолошки факултет Универзитета у Београду, 2024 (серија «Монографије – језик»), ISBN 978-86-6153-752-3, analysing Пешикан/Јерковић/Пижурица, Правопис српскога језика, Матица српска, Нови Сад, 2010, (not consulted)",
+      "url": "https://www.fil.bg.ac.rs/uploads/files/Strane/Biblioteke/Izdavacka%20delatnost/Monografije%20-%20Jezik/SRSKA%20INTERPUNKCIJA%20elek%20izd.pdf",
+      "note": "Every list is empty and initialBinding is none: no source consulted gives a rule for a space between a number and a unit or percent sign, for one-letter words or initials at a line end. Nothing is derived from another language. The 2010 Pravopis chapters on numbers and word division were not consulted. Operator decision (no paid sources, pick and pin): ship empty. The Pravopis 2010 itself was not read (paid); every statement is the edition of 2010 as Klikovac reports it. The PDF has no text layer and was read as page images. Retrieved 2026-10-24."
+    }
+  ]
+}

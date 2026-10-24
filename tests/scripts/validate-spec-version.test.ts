@@ -296,11 +296,11 @@ describe("scripts/validate-spec.mjs — global spec-version drift, fixture roots
     expect(aaIndex).toBeLessThan(zzIndex);
   });
 
-  it("passes on this repository's real, current spec/ with exactly 27 verified claimants", () => {
+  it("passes on this repository's real, current spec/ with exactly 28 verified claimants", () => {
     const output = execFileSync(process.execPath, [CLI], { encoding: "utf8", cwd: ROOT });
-    // 2 static (order.json, registry.json) + 24 registry-listed locale fixtures +
-    // locale-resolution.json = 27. The number moves with the registry, which is the point.
-    expect(output).toContain("global spec version: 27 claimant(s) match spec/VERSION");
+    // 2 static (order.json, registry.json) + 25 registry-listed locale fixtures +
+    // locale-resolution.json = 28. The number moves with the registry, which is the point.
+    expect(output).toContain("global spec version: 28 claimant(s) match spec/VERSION");
     expect(output).toContain("spec validation passed");
   });
 
