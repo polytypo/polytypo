@@ -82,6 +82,7 @@ PRIMARY_SOURCES = {
     "bg": "Институт за български език (БАН); Официален правописен речник на българския език (2012)",
     "hr": "Institut za hrvatski jezik i jezikoslovlje, Hrvatski pravopis",
     "sr": "Матица српска, Правопис српскога језика (2010), по анализи Д. Кликовац, Српска интерпункција",
+    "sl": "SAZU / ZRC SAZU, Slovenski pravopis (2001)",
 }
 
 
@@ -1799,6 +1800,7 @@ BADGE_TEXT = {
     "bg": "Типографско оформление: <b>polytypo</b>",
     "hr": "Tipografsko uređenje: <b>polytypo</b>",
     "sr": "Типографско уређивање: <b>polytypo</b>",
+    "sl": "Tipografsko urejanje: <b>polytypo</b>",
     "it": "Pulizia tipografica con <b>polytypo</b>",
     "pl": "Typograficzne porządki dzięki <b>polytypo</b>",
     "pt": "Limpeza tipográfica por <b>polytypo</b>",
@@ -1823,6 +1825,7 @@ BADGE_LANG_NAMES = {
     "bg": "Bulgarian",
     "hr": "Croatian",
     "sr": "Serbian",
+    "sl": "Slovenian",
     "it": "Italian",
     "pl": "Polish",
     "pt": "Portuguese",

@@ -1,0 +1,247 @@
+{
+  "spec": "1.15.0",
+  "locale": "sl",
+  "cases": [
+    {
+      "id": "sl-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Rekel je: \"da\" in odšel.",
+      "out": "Rekel je: »da« in odšel.",
+      "note": "Slovenski pravopis 2001 §461 lists the double middle pair » « (U+00BB open, U+00AB close) first and every example uses it; chosen by decision. The low-high pair is handwriting (§465)."
+    },
+    {
+      "id": "sl-quotes-nested-secondary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Rekel je: \"pesem 'Zdravljica' je himna\" in odšel.",
+      "out": "Rekel je: »pesem ›Zdravljica‹ je himna« in odšel.",
+      "note": "Slovenski pravopis 2001 §461: a quotation inside a quotation takes the single middle pair › ‹ (U+203A, U+2039), by decision (§463's own example nests „…“ and ‚…‘)."
+    },
+    {
+      "id": "sl-quotes-nested-at-end",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Rekel je: \"pesem 'Zdravljica'\".",
+      "out": "Rekel je: »pesem ›Zdravljica‹«.",
+      "note": "Slovenski pravopis 2001 §463: the inner level may end where the outer one does."
+    },
+    {
+      "id": "sl-quotes-before-question-mark",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ali res? \"Da!\" je rekel.",
+      "out": "Ali res? »Da!« je rekel.",
+      "note": "Slovenski pravopis 2001 §461: the close U+00AB follows the sentence mark flush; innerSpace is none."
+    },
+    {
+      "id": "sl-quotes-question-inside",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Kaj?\" je vprašal.",
+      "out": "»Kaj?« je vprašal.",
+      "note": "Slovenski pravopis 2001 §461: a quote that opens a sentence takes U+00BB, flush against the text."
+    },
+    {
+      "id": "sl-quotes-reversed-guillemets",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Rekel je «da» in odšel.",
+      "out": "Rekel je »da« in odšel.",
+      "note": "Slovenski pravopis 2001 §461: input with the guillemets the French way round is normalised to » « (U+00BB open, U+00AB close)."
+    },
+    {
+      "id": "sl-quotes-low-high-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Rekel je „da“ in odšel.",
+      "out": "Rekel je »da« in odšel.",
+      "note": "Slovenski pravopis 2001 §465: the low-high pair is the handwriting form; typeset text takes » «."
+    },
+    {
+      "id": "sl-quotes-already-typeset-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "»pesem ›Zdravljica‹ je himna«",
+      "out": "»pesem ›Zdravljica‹ je himna«",
+      "note": "Slovenski pravopis 2001 §461: an already-typeset nested pair » › ‹ « is a fixed point."
+    },
+    {
+      "id": "sl-quotes-already-typeset-question",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "»Ali prideš?« je vprašal.",
+      "out": "»Ali prideš?« je vprašal.",
+      "note": "Slovenski pravopis 2001 §461: a question mark inside already-typeset » « stays flush before the close."
+    },
+    {
+      "id": "sl-quotes-already-typeset",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Rekel je »da« in odšel.",
+      "out": "Rekel je »da« in odšel.",
+      "note": "Slovenski pravopis 2001 §461: text that already carries » « is a fixed point; a primary opener of U+00BB is not read as a closer."
+    },
+    {
+      "id": "sl-quotes-already-typeset-comma",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "»Dobro,« je dejal.",
+      "out": "»Dobro,« je dejal.",
+      "note": "Slovenski pravopis 2001 §461: a comma inside the quote before the close stays; already-typeset input is unchanged."
+    },
+    {
+      "id": "sl-quotes-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Rekel je: \" da \" in odšel.",
+      "out": "Rekel je: »da« in odšel.",
+      "note": "Slovenski pravopis 2001 §461: no space after the opener or before the closer (innerSpace none); the stray spaces inside the straight quotes are dropped."
+    },
+    {
+      "id": "sl-quotes-stray-period-after",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Vprašal je: \"Kaj?\".",
+      "out": "Vprašal je: »Kaj?«.",
+      "note": "Slovenski pravopis 2001 §461: the closing quote sits flush before the final period."
+    },
+    {
+      "id": "sl-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Počakaj... in potem.",
+      "out": "Počakaj… in potem.",
+      "note": "Slovenski pravopis 2001 §399 Tri pike: three dots become one U+2026."
+    },
+    {
+      "id": "sl-ellipsis-not-abbreviated",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Kaj...?",
+      "out": "Kaj…?",
+      "note": "Slovenski pravopis 2001 §§399–410: no two-dot form after a terminal is prescribed (abbreviatedAfterTerminal false); the ellipsis stays whole before the mark."
+    },
+    {
+      "id": "sl-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Rekel je - seveda - da pride.",
+      "out": "Rekel je – seveda – da pride.",
+      "note": "Slovenski pravopis 2001 §228: the dash is set with a space on both sides; navadni pomišljaj is U+2013."
+    },
+    {
+      "id": "sl-dashes-existing-en",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Sin – hči sta prišla.",
+      "out": "Sin – hči sta prišla.",
+      "note": "Slovenski pravopis 2001 §228, §378: an en dash already spaced is left alone."
+    },
+    {
+      "id": "sl-ranges-digits-tight",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "vojna 1941-1945 in str. 125-132",
+      "out": "vojna 1941⁠–⁠1945 in str. 125⁠–⁠132",
+      "note": "Slovenski pravopis 2001 §394: the dash for od … do is written closed up: v letih 1941–1945, str. 125–132. ranges.md §3: the en-tight form carries U+2060 on both sides.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "sl-ranges-already-tight",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "v letih 1941–1945",
+      "out": "v letih 1941–1945",
+      "note": "Slovenski pravopis 2001 §394, ranges.md §3: an en dash between digits gets the same en-tight treatment and the result is a fixed point.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "sl-ranges-word-hyphen-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "proga Ljubljana-Trst",
+      "out": "proga Ljubljana-Trst",
+      "note": "Slovenski pravopis 2001 §394, ranges.md §2: a hyphen between words is not a range; only digit flanks qualify.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "sl-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "slovensko-angleški slovar",
+      "out": "slovensko-angleški slovar",
+      "note": "Slovenski pravopis 2001 §608: breaking at the hyphen is provided for, so the hyphen lists are empty and the text is unchanged."
+    },
+    {
+      "id": "sl-nbsp-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "10 % in 5 € in 38 °C in 10 kg in 3 km in 16 ‰",
+      "out": "10 % in 5 € in 38 °C in 10 kg in 3 km in 16 ‰",
+      "note": "Slovenski pravopis 2001 §610: units follow the number without a break (5 m, 10 kg); § 259 «38 °C»; the draft lists % ‰ €. beforeUnits binds each with U+00A0."
+    },
+    {
+      "id": "sl-nbsp-single-letter-unit-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "5 m in 3 a",
+      "out": "5 m in 3 a",
+      "note": "Slovenski pravopis 2001 §610 names m, but single-letter units are excluded by decision (m, a are common words or initials); nothing is bound."
+    },
+    {
+      "id": "sl-nbsp-abbreviation-ti",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "glej t. i. pojem",
+      "out": "glej t. i. pojem",
+      "note": "Slovenski pravopis 2001 §595: t. i. is written with a space; the draft states the no-break intent. abbreviations binds it with U+00A0."
+    },
+    {
+      "id": "sl-nbsp-section-sign",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "glej § 10",
+      "out": "glej § 10",
+      "note": "Slovenski pravopis 2001 §235 shows § followed by a space and the number; the binding itself is from the Pravopis 8.0 draft (secondary). afterSymbols binds them with U+00A0."
+    },
+    {
+      "id": "sl-nbsp-short-words-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "v hiši in k mizi",
+      "out": "v hiši in k mizi",
+      "note": "Slovenski pravopis 2001 §612 concerns word division, not one-letter prepositions; afterShortWords is empty, so nothing is bound."
+    },
+    {
+      "id": "sl-spaces-brackets",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Rekel ( tiho ) in odšel .",
+      "out": "Rekel (tiho) in odšel.",
+      "note": "Spaces: no space inside brackets or before a closing mark (spaces.md)."
+    },
+    {
+      "id": "sl-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "(c) 2026",
+      "out": "© 2026",
+      "note": "symbols.md: (c) becomes ©, independent of the locale."
+    },
+    {
+      "id": "sl-apostrophe-foreign-name",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "O'Brien je prišel.",
+      "out": "O’Brien je prišel.",
+      "note": "apostrophe.md: a straight apostrophe inside a foreign name becomes U+2019."
+    }
+  ]
+}

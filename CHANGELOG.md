@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.14.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.14.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.15.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.15.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,16 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.15.0 — 24 October 2026
+
+Slovenian joins as the twenty-sixth language, cited to the Slovenski pravopis of the Slovenian Academy of Sciences and Arts.
+
+- Slovenian ships as `sl`. Until now Slovenian text had to be skipped or run through a foreign locale, and the second has a cost. Measured: `Rekel je: "To je 'citat' iz knjige" - seveda - in odšel.` came back from `en-GB` as `Rekel je: ‘To je “citat” iz knjige’ – seveda – in odšel.`, the English marks and the nesting inverted. `sl` gives `Rekel je: »To je ›citat‹ iz knjige« – seveda – in odšel.`: `»…«` for the first level, the single mark `›…‹` for the second, no space inside, and an en dash with spaces. Text that already carries `»…«`, or the guillemets the other way round, or the low-high pair `„…“`, comes out in the same form.
+- With the `ranges` rule on, a numeric range is closed up with an en dash and no-break joiners either side, `vojna 1941–1945`, as the Pravopis writes it.
+- No-break spaces are put between a number and `%`, `‰`, `€`, `°C`, `kg` or `km`, inside `t. i.`, and after `§`. The `‰`, `€` and `§` bindings come from the draft of the next Pravopis, not from the edition in force, which shows only the spaced form. Single-letter units such as `m` are left alone, because they are also common words and initials. One-letter prepositions are not bound, and no hyphenated form is protected: the Pravopis gives no rule for either.
+- The Pravopis prescribes `»…«` for print and assigns the low-high pair `„…“` to handwriting; the choice of `›…‹` for the second level is a pick among forms the Pravopis lists, since its own example nests other marks. An ellipsis stays breakable after an author's space; the draft's advice to bind it is not adopted, because it would break an ellipsis inside a word.
+- Pass `sl` (or a region form such as `sl-SI`). Script-tagged identifiers are refused with `POLYTYPO_UNKNOWN_LOCALE`, as before.
 
 ## 1.14.0 — 24 October 2026
 

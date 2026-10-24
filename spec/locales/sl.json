@@ -1,0 +1,82 @@
+{
+  "locale": "sl",
+  "name": "Slovenian",
+  "quotes": {
+    "primary": {
+      "open": "»",
+      "close": "«",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "›",
+      "close": "‹",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": []
+    }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": ["t. i."],
+    "beforeUnits": ["%", "‰", "€", "°C", "kg", "km"],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": ["§"],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "SAZU / ZRC SAZU Inštitut za slovenski jezik Frana Ramovša, Slovenski pravopis 2001, I Pravila, §461 (p. 51; forms » «, › ‹, „ “, ‚ ‘, \" \"), §463 (nested quotes), §465 «Pri pisanju z roko uporabljamo dvojni narekovaj spodaj-zgoraj.», §467 (p. 52); dictionary entry narekovaj: «ločilo ‹“ ”›, ‹» «›»",
+      "url": "https://fran.si/134/slovenski-pravopis/datoteke/Pravopis_Pravila.pdf",
+      "note": "Primary: U+00BB open, U+00AB close. DECISION: §461 lists the double middle pair first, every example in §§461–466 and §473 uses it, and §465 assigns the low-high pair „ “ to handwriting. The list is introduced with «npr.» and is not explicitly ranked. Permitted variant, not adopted: U+201C/U+201D (dictionary entry; Pravopis 8.0 draft names it as equally common in computer typesetting). The issue's lead «„…“ / „…”» was an observation, not a norm; if the low-high pair were ever pinned its close is U+201C, not U+201D. Secondary: U+203A open, U+2039 close. DECISION and CONFLICT: §461 names the single middle pair (the counterpart of the primary), §463's own example nests „…“ and ‚…‘ inside »…«, and the Pravopis 8.0 draft example uses ‘…’; the single middle pair is listed in both editions. innerSpace none for both. Q-W: primary WIDE, secondary NARROW. elisionIdioms and elisionClitics are empty: §468 (Opuščaj) gives no closed set. Confidence: MEDIUM-HIGH that »…« is the print norm of the edition in force; MEDIUM on the secondary. The PDF has no text layer and was read as page images, so code points are identified from glyph shape (MEDIUM-HIGH). Pravopis 8.0 (predlog, 2026) is a draft not in force and is cited only as a secondary check. Retrieved 2026-10-24."
+    },
+    {
+      "rule": "dashes",
+      "cite": "SAZU / ZRC SAZU Inštitut za slovenski jezik Frana Ramovša, Slovenski pravopis 2001, I Pravila, §228 (p. 30): «pomišljaj načeloma pišemo na obe strani s presledkom (je nestičen)»; §378, §381, §398 (pp. 44–45)",
+      "url": "https://fran.si/134/slovenski-pravopis/datoteke/Pravopis_Pravila.pdf",
+      "note": "dash.parenthetical = en-spaced (U+0020 U+2013 U+0020). The spaces are normative (HIGH). The width is a DECISION, MEDIUM-HIGH: §378 distinguishes the ordinary dash (navadni) from the long one (dolgi), which appears only between sentences or listed units; the ordinary one is U+2013 by glyph shape and in the Pravopis 8.0 draft. The PDF has no text layer and was read as page images, so code points are identified from glyph shape (MEDIUM-HIGH). Pravopis 8.0 (predlog, 2026) is a draft not in force and is cited only as a secondary check. Retrieved 2026-10-24."
+    },
+    {
+      "rule": "ranges",
+      "cite": "SAZU / ZRC SAZU Inštitut za slovenski jezik Frana Ramovša, Slovenski pravopis 2001, I Pravila, §228; §394 (p. 45): «namesto predlogov od … do … piše se stično na obeh straneh: proga Ljubljana–Trst, … 80–100 SIT, str. 125–132, v letih 1941–1945»; §614 (p. 68)",
+      "url": "https://fran.si/134/slovenski-pravopis/datoteke/Pravopis_Pravila.pdf",
+      "note": "dash.range = en-tight. HIGH. The draft keeps ranges tight even between full dates («1. 1. 2024–30. 6. 2024»), so unlike sr no spaced exception for multi-word range members is needed. The ranges rule is off by default. The PDF has no text layer and was read as page images, so code points are identified from glyph shape (MEDIUM-HIGH). Pravopis 8.0 (predlog, 2026) is a draft not in force and is cited only as a secondary check. Retrieved 2026-10-24."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "SAZU / ZRC SAZU Inštitut za slovenski jezik Frana Ramovša, Slovenski pravopis 2001, I Pravila, §§399–410 (pp. 46–47), Tri pike",
+      "url": "https://fran.si/134/slovenski-pravopis/datoteke/Pravopis_Pravila.pdf",
+      "note": "abbreviatedAfterTerminal = false is a DECISION, not a citation: no two-dot form after ? or ! is given. ACCEPTED COST: the edition sets the ellipsis spaced (nestično) and the draft recommends a no-break space before it; not adopted, because inserting one would break the word-internal ellipsis of §410 («prepr…!»). An author's own space stays, breakable. MEDIUM-HIGH. The PDF has no text layer and was read as page images, so code points are identified from glyph shape (MEDIUM-HIGH). Pravopis 8.0 (predlog, 2026) is a draft not in force and is cited only as a secondary check. Retrieved 2026-10-24."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "SAZU / ZRC SAZU Inštitut za slovenski jezik Frana Ramovša, Slovenski pravopis 2001, I Pravila, §437 (p. 48), §471 (p. 52), §608 (p. 68): «Če besedo, ki se piše z vezajem, delimo ravno tam, kjer je v njej vezaj, ga lahko prenesemo na začetek druge vrstice»",
+      "url": "https://fran.si/134/slovenski-pravopis/datoteke/Pravopis_Pravila.pdf",
+      "note": "All three lists are empty. Breaking at a hyphen is provided for, and no closed list of unbreakable hyphenated forms exists. HIGH. The PDF has no text layer and was read as page images, so code points are identified from glyph shape (MEDIUM-HIGH). Pravopis 8.0 (predlog, 2026) is a draft not in force and is cited only as a secondary check. Retrieved 2026-10-24."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "SAZU / ZRC SAZU Inštitut za slovenski jezik Frana Ramovša, Slovenski pravopis 2001, I Pravila, §610 (p. 68): «V naslednjo vrstico ne prenašamo posameznih simbolov za mere, uteži ipd. za številkami: 5 m, 10 kg.»; §250, §259 («38 °C»), §397, §595 («t. i.»), §612; dictionary entry odstotek «5 %»; Pravopis 8.0 (predlog), Nedeljivi presledek and Presledek («10 %», «16 ‰», «5 €», «10 °C», «§ 10», «t. i.»)",
+      "url": "https://fran.si/134/slovenski-pravopis/datoteke/Pravopis_Pravila.pdf",
+      "note": "(1) beforeUnits = %, ‰, €, °C, kg, km. %, °C, kg, km are in the edition in force; ‰ and € are from the draft only (SECONDARY). DECISIONS: single-letter units (m, g, V, a) are excluded although §610 names m, because they are common words or initials (as in hr, sk, bg); $ and £ are out; bare ° is never listed. (2) afterSymbols = §: draft, SECONDARY; the edition shows only the spaced form («§ 49», §235). (3) abbreviations = t. i.: the edition gives the spaced form and the draft states the no-break intent; the other spaced abbreviations (t. l., n. m., d. d., d. o. o.) are not listed, since extending the intent to them would be a derivation. DECISION, MEDIUM. (4) afterShortWords is empty: §612 concerns word division, not one-letter prepositions; nothing is imported from cs or sk. (5) beforePunctuation and narrowBeforePunctuation are empty: §228 puts punctuation closed up. (6) beforeNumber, beforeWord are empty and initialBinding = none: only the spaced form of « dr. F. Prešeren » is shown. Decisions, not citations. The PDF has no text layer and was read as page images, so code points are identified from glyph shape (MEDIUM-HIGH). Pravopis 8.0 (predlog, 2026) is a draft not in force and is cited only as a secondary check. Retrieved 2026-10-24."
+    }
+  ]
+}
