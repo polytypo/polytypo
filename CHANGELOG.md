@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.15.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.15.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.16.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.16.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,17 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.16.0 — 25 October 2026
+
+Lithuanian joins as the twenty-seventh locale, cited to the Lithuanian punctuation rules published with the approval of the State Commission of the Lithuanian Language.
+
+- Lithuanian ships as `lt`. Until now Lithuanian text had to be skipped or run through a foreign locale, and the second has a cost. Measured: `Jis pasakė: "Tai 'citata' iš knygos" - žinoma - ir išėjo.` came back from `en-GB` as `Jis pasakė: ‘Tai “citata” iš knygos’ – žinoma – ir išėjo.`, the English marks and the nesting inverted. `lt` gives `Jis pasakė: „Tai „citata“ iš knygos“ – žinoma – ir išėjo.`: the low-high pair `„…“` for both levels, as Lithuanian prints it, no space inside, and an en dash with spaces.
+- Both quotation levels use the same pair, so when the inner mark touches the outer one, as in `"Tai 'citata'"`, the engine declines the pair: the text is left as typed or converted only in part. Lithuanian writes the colliding closing marks once, which locale data cannot express.
+- After `?` or `!` an ellipsis is written with two dots, as in `Ką pasakysiu?..`. Two inputs the norm treats differently come out the same way: `?!...` becomes `?!..` where the norm gives `?!.`, and `!!!...` becomes `!!!..` where the norm keeps three dots.
+- With the `ranges` rule on, a numeric range is closed up with an en dash and no-break joiners either side, `1999–2000 m.`. A range whose members are already joined by a dash, `2010–2011 – 2012–2013`, is left as it is.
+- No-break spaces are put between a number and `%`, `proc.`, `°C`, `kg`, `km`, `cm`, `mm`, `EUR`, `Eur`, `€`, `mln.`, `val.`, `min.`, `m.` and `d.`, inside `t. y.`, `t. t.` and `š. m.`, and after `§`. These come from the style guides of the European Commission and of Vilnius University, which state the intent; the rules consulted give no no-break rule. Single-letter units such as `m` are left alone, because they are also common words. Initials, which the same guides bind, are left alone as a house-style rule only; one-letter prepositions and hyphenated forms are not bound, since no source gives a rule for them.
+- Pass `lt` (or a region form such as `lt-LT`). Script-tagged identifiers are refused with `POLYTYPO_UNKNOWN_LOCALE`, as before.
 
 ## 1.15.0 — 24 October 2026
 

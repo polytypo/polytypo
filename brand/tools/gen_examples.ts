@@ -35,6 +35,7 @@ const LOCALES = [
   "hr",
   "sr",
   "sl",
+  "lt",
 ] as const;
 
 // Every hero line: nested quotes, an apostrophe or elision (except el — see its own note below),
@@ -112,6 +113,9 @@ const HERO: Record<(typeof LOCALES)[number], string> = {
   sl:
     `Vprašala je: "Ali ni to trgovina, ki ji pravijo 'tista za vogalom'?" ... Hodili smo - skoraj 3 km - in ` +
     `bila je zaprta. Copyright (c) 2026, format 40x60 cm.`,
+  lt:
+    `Ji paklausė: "Ar ne tai parduotuvė, kurią vadina 'ta už kampo'?" ... Ėjome - beveik 3 km - o ji buvo ` +
+    `uždaryta. Copyright (c) 2026, formatas 40x60 cm.`,
   nl:
     `Hij vroeg: "Is dit niet de winkel die ze 'om de hoek' noemen?" ... We liepen -- bijna 3 km ` +
     `-- en hij was dicht. Copyright (c) 2026, formaat 40x60 cm.`,
@@ -245,6 +249,11 @@ const SHOWCASE: Record<
     { rule: "dashes", in: `Knjiga - izdana pred vojno - je odlična.` },
     { rule: "nbsp", in: `3 kg in 50 %` },
   ],
+  lt: [
+    { rule: "quotes", in: `Jis pasakė "labas".` },
+    { rule: "ellipsis", in: `Ką pasakysiu?...` },
+    { rule: "ranges", in: `karas 1939-1945`, rules: { ranges: true } },
+  ],
   nl: [
     { rule: "quotes", in: `Hij zei "dag" en vertrok.` },
     { rule: "dashes", in: `Het nieuws - volgens de kranten - is niet bekend.` },
@@ -325,6 +334,7 @@ const NAMES: Record<(typeof LOCALES)[number], string> = {
   hr: "Croatian",
   sr: "Serbian",
   sl: "Slovenian",
+  lt: "Lithuanian",
   "pt-PT": "Portuguese (Portugal)",
   "pt-BR": "Portuguese (Brazil)",
 };

@@ -1,0 +1,104 @@
+{
+  "locale": "lt",
+  "name": "Lithuanian",
+  "quotes": {
+    "primary": {
+      "open": "„",
+      "close": "“",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "„",
+      "close": "“",
+      "innerSpace": "none"
+    },
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": []
+    }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": true
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": ["t. y.", "t. t.", "š. m."],
+    "beforeUnits": [
+      "%",
+      "proc.",
+      "°C",
+      "kg",
+      "km",
+      "cm",
+      "mm",
+      "EUR",
+      "Eur",
+      "€",
+      "mln.",
+      "val.",
+      "min.",
+      "m.",
+      "d."
+    ],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": ["§"],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "A. Drukteinis (ed.), Lietuvių kalbos skyryba. Taisyklės, komentarai, patarimai, Mokslo ir enciklopedijų leidybos centras, Vilnius 2020 (ISBN 978-5-420-01828-6; «Valstybinė lietuvių kalbos komisija pritaria»; rules match VLKK nutarimas «Dėl Lietuvių kalbos skyrybos taisyklių», 2019), Įvadas p. 8 (table «Kabutės „ “»); Prv. 4-2, 5-1 (pp. 149–158); Prv. 5-1 p. 154 «„Manau, kad po kokių dešimties metų „Karmen“ bus populiariausia pasaulyje opera.“»; 5-1 Komentarai 2 (p. 160)",
+      "url": "https://emokykla.lt/upload/files/2024/07/08/liet-k-skyryba.pdf",
+      "note": "Primary: U+201E open, U+201C close (NOT U+201D). Secondary equals primary, as in bg: Prv. 5-1 nests with the same pair, and no single-mark nesting level is attested (LKRS 1992's single marks for cultivar names are a special use, not nesting). Not doubling colliding closing marks (p. 160, compensation) is an algorithm, not data. ACCEPTED COST of the identical pair: a nest whose inner mark touches the outer one is declined, left as typed or converted only in part (quotes.md §6, §3.2 V1), and pinned by fixtures. innerSpace none for both. Q-W: both WIDE. elisionIdioms and elisionClitics empty: no closed set in any source. VLKK-endorsed; the Prv. boxes are the 2019 nutarimas rules, and the nutarimas itself (vlkk.lt, HTTP 403) was not read. The PDF was read as page images, so code points are identified from glyph shape (MEDIUM-HIGH) and corroborated by the Alt codes in the DGT entry. Retrieved 2026-10-25."
+    },
+    {
+      "rule": "quotes",
+      "cite": "European Commission, Europos Sąjungos institucijų vertimo į lietuvių kalbą vadovas (2014), A.8: «Lietuviškų kabučių grafinė raiška yra „abc“ (apačioje devynetukai, viršuje – šešetukai) … (Alt+0132 ir Alt+0147)»; A.8.13: «Dvigubos kabutės nerekomenduojamos (plg. www.vlkk.lt/lit/7696)», recommended «„kilo ginčų dėl bendrovės „Microsoft“.»; A.9.8 (no space inside quotation marks)",
+      "url": "http://www.laraneda.lt/failai/interinstitutional_translation_guide_lt.pdf",
+      "note": "SECONDARY (EU house style, predates the 2019 rules). Alt 0132/0147 = cp1252 0x84/0x93 = U+201E/U+201C, the code-point corroboration of the primary entry. A.8.13's «dvigubos kabutės» are doubled closing marks, not single inner quotes. The URL is an unofficial mirror; no official europa.eu location was found. Retrieved 2026-10-25."
+    },
+    {
+      "rule": "dashes",
+      "cite": "A. Drukteinis (ed.), Lietuvių kalbos skyryba (2020), Įvadas p. 8 (table «Brūkšnys –»), p. 9: «Brūkšnys ir viengubas bei dvigubas pasvirasis dešininis brūkšnys rašomi su tarpeliais iš abiejų pusių»; European Commission, ES institucijų vertimo į lietuvių kalbą vadovas (2014), A.4: «ilgasis brūkšnys (—) vartojamas tik įtraukoms žymėti (Alt+0151), o tekstuose rašomas pusilgis brūkšnys (–) (… Alt+0150)»; «Kai brūkšnys vartojamas kaip skyrybos ženklas, abipus paliekami tarpai»",
+      "url": "https://emokykla.lt/upload/files/2024/07/08/liet-k-skyryba.pdf",
+      "note": "dash.parenthetical = en-spaced (U+0020 U+2013 U+0020). The spaces are normative (HIGH). The width comes from DGT's Alt 0150 (HIGH); DGT reserves U+2014 for indentation only. VDU's «ilgas brūkšnys» names the same Alt 0150 mark, so the naming difference is not a conflict. Retrieved 2026-10-25."
+    },
+    {
+      "rule": "ranges",
+      "cite": "European Commission, ES institucijų vertimo į lietuvių kalbą vadovas (2014), A.4.2.1 («2006–2009 m.; 15–22 d.»), A.9.11: «Tarpų nepaliekama tarp žodžių ar skaitmenų, kuriais nurodomos tam tikros ribos, ir brūkšnio … 2001–2006 m.»; Vilniaus universitetas ChGF, Kalbos patarimai (2021): «Brūkšnys riboms žymėti rašomas be tarpų, ypač tarpai nepaliekami tarp ribas žyminčių skaitmenų. 2017–2020 m.»",
+      "url": "http://www.laraneda.lt/failai/interinstitutional_translation_guide_lt.pdf",
+      "note": "dash.range = en-tight. HIGH across two house-style sources (DGT, VU) and LKŽin 1998:376 (read via O. L. Gudzinevičiūtė, Kalbos kultūra 85). DGT A.4.2.1 requires spaces when the members are already dash-joined («2010–2011 – 2012–2013»); that case is pinned by a fixture. Spaced multi-word dates are not range candidates. The VLKK 2022 rašybos taisyklės §11.2 is reported to agree but was not read. The ranges rule is off by default. Retrieved 2026-10-25."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "A. Drukteinis (ed.), Lietuvių kalbos skyryba (2020), Įvadas p. 8: «po šauktuko ar klaustuko rašomi du, o ne trys taškai (!.., ?..); šauktuko, klaustuko ir daugtaškio derinyje – tik vienas papildomas taškas (!?., ?!.)»; Prv. 3-1 (p. 141): «pasakysiu?..», «neskubėk!..», «kur!!!...»; p. 140 («!!?...»)",
+      "url": "https://emokykla.lt/upload/files/2024/07/08/liet-k-skyryba.pdf",
+      "note": "abbreviatedAfterTerminal = true, normative (HIGH). Agrees with LKŽin 1998:349 and LKRS 1992:135 (read via Gudzinevičiūtė). ACCEPTED COSTS, pinned by fixtures: «?!...» becomes «?!..», whereas the norm is «?!.»; «!!?...» and «!!!...», which are norm-correct, become «!!?..» and «!!!..». Retrieved 2026-10-25."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "O. L. Gudzinevičiūtė, «Keli probleminiai rašybos ir skyrybos ženklų vartojimo atvejai», Kalbos kultūra 85, pp. 131–132, citing LKRS (1992) p. 73: «lopšelis- /-darželis»",
+      "url": "https://journals.lki.lt/bendrinekalba/article/download/237/303/",
+      "note": "All three lists are empty. Breaking at a hyphen is provided for, with the hyphen repeated, and no source gives a closed list of unbreakable hyphenated forms. SECONDARY route to LKRS. Retrieved 2026-10-25."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "European Commission, ES institucijų vertimo į lietuvių kalbą vadovas (2014), A.9: jungiamasis tarpas «renkamas tada, kai norima, kad tekstas (pvz., skaičius ir mato simbolis) išliktų vienoje eilutėje»; A.9.4 «t. y., t. t., š. m.; E. Petraitis, R. Jutkonytė, J. M. Barroso»; A.9.5 «40 mln., 2007 m. liepos 16 d., 17 val. 20 min., § 19, 100 %, 100 proc., 23 °C, 5 000 EUR, 1 000 kg»; A.9.8 (no space before . ! ? : … , ;); A.9.9 (angular degrees closed up); Vilniaus universitetas ChGF, Kalbos patarimai (2021): nepertraukiamas tarpas for initials, units, currency and %; «53 €», «53 Eur»; A. Drukteinis (2020) p. 142 «33,00 mm»",
+      "url": "http://www.laraneda.lt/failai/interinstitutional_translation_guide_lt.pdf",
+      "note": "SECONDARY throughout (house styles; no norm of VLKK states a no-break rule). (1) beforePunctuation and narrowBeforePunctuation are empty: a stated negative (A.9.8; Drukteinis p. 9), not silence. (2) beforeUnits = %, proc., °C, kg, km, cm, mm, EUR, Eur, €, mln., val., min., m., d.: the no-break intent is stated (DGT A.9, VU), and km and cm are spaced in A.4.2.2; m. and d. are the year and day abbreviations of A.9.5 («2007 m. liepos 16 d.»), the same footing as bg «г.». DECISIONS: single-letter m (metre) and g are excluded, as in hr, sk, bg and sl; bare ° is not listed, since angular degrees are closed up; ‰ is not attested; vnt. and t. p. are not listed (form evidence only). (3) afterSymbols = §. (4) abbreviations = t. y., t. t., š. m., as named in A.9.4. (5) initialBinding = none: DGT A.9.4 and VU bind a single initial, but that is house style only and a rule on single initials collides at sentence boundaries; DECISION, MEDIUM. (6) afterShortWords is empty: no source binds į, ir, o, ar, su or iš, and DGT A.9.2–A.9.7 enumerates the no-break cases without them. beforeNumber and beforeWord are empty: decisions, not citations. Retrieved 2026-10-25."
+    }
+  ]
+}

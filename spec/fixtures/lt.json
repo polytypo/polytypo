@@ -1,0 +1,314 @@
+{
+  "spec": "1.16.0",
+  "locale": "lt",
+  "cases": [
+    {
+      "id": "lt-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Jis pasakė: \"taip\" ir išėjo.",
+      "out": "Jis pasakė: „taip“ ir išėjo.",
+      "note": "Drukteinis, Lietuvių kalbos skyryba (2020), table «Kabutės „ “»: primary U+201E open, U+201C close (not U+201D), no inner space."
+    },
+    {
+      "id": "lt-quotes-nested-same-pair",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Jis pasakė: \"Manau, kad \"Karmen\" bus populiariausia.\"",
+      "out": "Jis pasakė: „Manau, kad „Karmen“ bus populiariausia.“",
+      "note": "Drukteinis, Lietuvių kalbos skyryba (2020) Prv. 5-1, p. 154: the nested quotation uses the same pair „ “; secondary equals primary."
+    },
+    {
+      "id": "lt-quotes-nested-with-words",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Jis pasakė: \"Tai 'citata' iš knygos\" ir išėjo.",
+      "out": "Jis pasakė: „Tai „citata“ iš knygos“ ir išėjo.",
+      "note": "Drukteinis, Lietuvių kalbos skyryba (2020) Prv. 5-1: single straight inner quotes become the same U+201E/U+201C pair."
+    },
+    {
+      "id": "lt-quotes-before-question-mark",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ar tikrai? \"Taip!\" pasakė jis.",
+      "out": "Ar tikrai? „Taip!“ pasakė jis.",
+      "note": "Drukteinis, Lietuvių kalbos skyryba (2020): the close U+201C follows the sentence mark flush; innerSpace is none."
+    },
+    {
+      "id": "lt-quotes-already-typeset",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Jis pasakė „taip“ ir išėjo.",
+      "out": "Jis pasakė „taip“ ir išėjo.",
+      "note": "Drukteinis, Lietuvių kalbos skyryba (2020): text already carrying „ “ is a fixed point."
+    },
+    {
+      "id": "lt-quotes-high-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Jis pasakė “taip” ir išėjo.",
+      "out": "Jis pasakė „taip“ ir išėjo.",
+      "note": "Drukteinis, Lietuvių kalbos skyryba (2020): English-style high pair input is normalised to „ “ (close U+201C, not U+201D)."
+    },
+    {
+      "id": "lt-quotes-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Jis pasakė: \" taip \" ir išėjo.",
+      "out": "Jis pasakė: „taip“ ir išėjo.",
+      "note": "EU Lithuanian translation style guide (2014) A.9.8: no space after the opener or before the closer; stray inner spaces are dropped."
+    },
+    {
+      "id": "lt-quotes-already-typeset-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Jis pasakė: „Tai „citata“ iš knygos“ ir išėjo.",
+      "out": "Jis pasakė: „Tai „citata“ iš knygos“ ir išėjo.",
+      "note": "Drukteinis, Lietuvių kalbos skyryba (2020) Prv. 5-1: an already-typeset nested pair of the same marks is a fixed point."
+    },
+    {
+      "id": "lt-quotes-wrong-closer-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Jis pasakė „taip” ir išėjo.",
+      "out": "Jis pasakė „taip“ ir išėjo.",
+      "note": "Drukteinis, Lietuvių kalbos skyryba (2020): the closer is U+201C, not U+201D; input closed with U+201D is normalised."
+    },
+    {
+      "id": "lt-quotes-nest-at-end-declined",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Jis pasakė: \"Tai 'citata'\" ir išėjo.",
+      "out": "Jis pasakė: \"Tai ’citata'\" ir išėjo.",
+      "note": "ACCEPTED COST: with the identical pair the inner mark touches the outer one, which the engine declines (quotes.md §6, §3.2 V1); Drukteinis, Lietuvių kalbos skyryba (2020) p. 160 prescribes writing the colliding closing marks once. Pinned so the cost is visible."
+    },
+    {
+      "id": "lt-quotes-nest-at-end-double-declined",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Jis pasakė: \"Manau, kad \"Karmen\"\" ir išėjo.",
+      "out": "Jis pasakė: \"Manau, kad \"Karmen\"\" ir išėjo.",
+      "note": "ACCEPTED COST: both straight marks at the end collide and are left as typed (quotes.md §6, §3.2 V1). Pinned so the cost is visible."
+    },
+    {
+      "id": "lt-quotes-nest-at-start-declined",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Jis pasakė: \"'Karmen' bus\" ir išėjo.",
+      "out": "Jis pasakė: \"'Karmen’ bus\" ir išėjo.",
+      "note": "ACCEPTED COST: the inner mark touching the outer opener is declined (quotes.md §6, §3.2 V1). Pinned so the cost is visible."
+    },
+    {
+      "id": "lt-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Palauk... ir tada.",
+      "out": "Palauk… ir tada.",
+      "note": "Three dots become one U+2026."
+    },
+    {
+      "id": "lt-ellipsis-after-question",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Ką pasakysiu?...",
+      "out": "Ką pasakysiu?..",
+      "note": "Drukteinis, Lietuvių kalbos skyryba (2020) Prv. 3-1, p. 141 «pasakysiu?..»: after ? or ! two dots, not three (abbreviatedAfterTerminal true)."
+    },
+    {
+      "id": "lt-ellipsis-after-exclamation",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Neskubėk!...",
+      "out": "Neskubėk!..",
+      "note": "Drukteinis, Lietuvių kalbos skyryba (2020) Prv. 3-1, p. 141 «neskubėk!..»: after ! two dots."
+    },
+    {
+      "id": "lt-ellipsis-question-exclamation-accepted-cost",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Kas?!...",
+      "out": "Kas?!..",
+      "note": "ACCEPTED COST: the norm gives «?!.» (Drukteinis, Lietuvių kalbos skyryba (2020), p. 8); the engine reduces three dots after a terminal run to two (ellipsis.md §3.4). Pinned so the cost is visible."
+    },
+    {
+      "id": "lt-ellipsis-double-terminal-question-accepted-cost",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Kas!!?...",
+      "out": "Kas!!?..",
+      "note": "ACCEPTED COST: the norm keeps three dots after three marks (Drukteinis, Lietuvių kalbos skyryba (2020), p. 140 «!!?...»); the engine gives two (ellipsis.md §3.4). Pinned so the cost is visible."
+    },
+    {
+      "id": "lt-ellipsis-triple-terminal-accepted-cost",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Kur!!!...",
+      "out": "Kur!!!..",
+      "note": "ACCEPTED COST: the norm keeps three dots after three marks (Drukteinis, Lietuvių kalbos skyryba (2020), Prv. 3-1 «kur!!!...»); the engine gives two. Pinned so the cost is visible."
+    },
+    {
+      "id": "lt-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Jis pasakė - žinoma - kad ateis.",
+      "out": "Jis pasakė – žinoma – kad ateis.",
+      "note": "Drukteinis, Lietuvių kalbos skyryba (2020) p. 9, EU Lithuanian translation style guide (2014) A.4: a dash between words takes a space on both sides; the width is U+2013 (U+2014 is for indents only)."
+    },
+    {
+      "id": "lt-dashes-em-input",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Tai — žinoma — gerai.",
+      "out": "Tai – žinoma – gerai.",
+      "note": "EU Lithuanian translation style guide (2014) A.4: U+2014 is reserved for indents, so an em dash between words is set as the spaced en dash."
+    },
+    {
+      "id": "lt-dashes-existing-en",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Sūnus – dukra atėjo.",
+      "out": "Sūnus – dukra atėjo.",
+      "note": "An en dash already spaced is left alone."
+    },
+    {
+      "id": "lt-ranges-digits-tight",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "1999-2000 m. ir 15-22 d.",
+      "out": "1999⁠–⁠2000 m. ir 15⁠–⁠22 d.",
+      "note": "EU Lithuanian translation style guide (2014) A.4.2.1, A.9.11: «2006–2009 m.; 15–22 d.», no spaces around the dash; the en-tight form carries U+2060 either side (ranges.md §3).",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "lt-ranges-already-tight",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "2001–2006 m.",
+      "out": "2001–2006 m.",
+      "note": "EU Lithuanian translation style guide (2014) A.9.11: an en dash between digits gets the same en-tight treatment and the result is a fixed point (ranges.md §3).",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "lt-ranges-already-dash-joined-members",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "2010–2011 – 2012–2013",
+      "out": "2010–2011 – 2012–2013",
+      "note": "EU Lithuanian translation style guide (2014) A.4.2.1: members that are already dash-joined take spaced dashes; the middle token is left as it is (ranges.md G2).",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "lt-ranges-word-hyphen-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "birželis-rugpjūtis",
+      "out": "birželis-rugpjūtis",
+      "note": "ranges.md §2: only digit flanks qualify; a hyphen between words is untouched.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "lt-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "lopšelis-darželis",
+      "out": "lopšelis-darželis",
+      "note": "LKRS 1992 p. 73 (via Gudzinevičiūtė): breaking at the hyphen is provided for; the hyphen lists are empty and the text is unchanged."
+    },
+    {
+      "id": "lt-nbsp-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "10 % ir 5 € ir 23 °C ir 1 000 kg ir 3 km ir 5 cm ir 33 mm",
+      "out": "10 % ir 5 € ir 23 °C ir 1 000 kg ir 3 km ir 5 cm ir 33 mm",
+      "note": "EU Lithuanian translation style guide (2014) A.9.5: units and symbols follow the number without a break; beforeUnits binds each with U+00A0."
+    },
+    {
+      "id": "lt-nbsp-unit-words",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "40 mln. ir 17 val. 20 min. ir 100 proc. ir 5 EUR",
+      "out": "40 mln. ir 17 val. 20 min. ir 100 proc. ir 5 EUR",
+      "note": "EU Lithuanian translation style guide (2014) A.9.5: «40 mln., 17 val. 20 min., 100 proc.»; beforeUnits binds each with U+00A0."
+    },
+    {
+      "id": "lt-nbsp-year-day",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "2007 m. liepos 16 d.",
+      "out": "2007 m. liepos 16 d.",
+      "note": "EU Lithuanian translation style guide (2014) A.9.5: «2007 m. liepos 16 d.»; m. and d. after a number are bound."
+    },
+    {
+      "id": "lt-nbsp-single-letter-unit-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "5 m ir 3 g",
+      "out": "5 m ir 3 g",
+      "note": "Single-letter units are excluded by decision (m and g are also common words or initials); nothing is bound."
+    },
+    {
+      "id": "lt-nbsp-abbreviations",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "taip, t. y. šitaip, t. t. ir š. m. rugsėjį",
+      "out": "taip, t. y. šitaip, t. t. ir š. m. rugsėjį",
+      "note": "EU Lithuanian translation style guide (2014) A.9.4: «t. y., t. t., š. m.»; abbreviations binds each with U+00A0."
+    },
+    {
+      "id": "lt-nbsp-section-sign",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "žr. § 19",
+      "out": "žr. § 19",
+      "note": "EU Lithuanian translation style guide (2014) A.9.5: «§ 19»; afterSymbols binds § with U+00A0."
+    },
+    {
+      "id": "lt-nbsp-initials-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "E. Petraitis ir J. M. Barroso",
+      "out": "E. Petraitis ir J. M. Barroso",
+      "note": "initialBinding is none by decision (house style only): initials are not bound."
+    },
+    {
+      "id": "lt-nbsp-short-words-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "į namus ir su draugu",
+      "out": "į namus ir su draugu",
+      "note": "EU Lithuanian translation style guide (2014) A.9.2–A.9.7 enumerate the no-break cases without prepositions or conjunctions; afterShortWords is empty, so nothing is bound."
+    },
+    {
+      "id": "lt-spaces-brackets",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Jis ( tyliai ) išėjo .",
+      "out": "Jis (tyliai) išėjo.",
+      "note": "Spaces: no space inside brackets or before a closing mark (spaces.md)."
+    },
+    {
+      "id": "lt-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "(c) 2026",
+      "out": "© 2026",
+      "note": "symbols.md: (c) becomes ©, independent of the locale."
+    },
+    {
+      "id": "lt-apostrophe-foreign-name",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "O'Brien atėjo.",
+      "out": "O’Brien atėjo.",
+      "note": "apostrophe.md: a straight apostrophe inside a foreign name becomes U+2019."
+    }
+  ]
+}

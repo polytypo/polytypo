@@ -83,6 +83,7 @@ PRIMARY_SOURCES = {
     "hr": "Institut za hrvatski jezik i jezikoslovlje, Hrvatski pravopis",
     "sr": "Д. Кликовац, Српска интерпункција, Филолошки факултет Универзитета у Београду, 2024",
     "sl": "SAZU / ZRC SAZU Inštitut za slovenski jezik Frana Ramovša, Slovenski pravopis 2001",
+    "lt": "A. Drukteinis (ed.), Lietuvių kalbos skyryba",
 }
 
 
@@ -1801,6 +1802,7 @@ BADGE_TEXT = {
     "hr": "Tipografsko uređenje: <b>polytypo</b>",
     "sr": "Типографско уређивање: <b>polytypo</b>",
     "sl": "Tipografsko urejanje: <b>polytypo</b>",
+    "lt": "Tipografinis tvarkymas: <b>polytypo</b>",
     "it": "Pulizia tipografica con <b>polytypo</b>",
     "pl": "Typograficzne porządki dzięki <b>polytypo</b>",
     "pt": "Limpeza tipográfica por <b>polytypo</b>",
@@ -1826,6 +1828,7 @@ BADGE_LANG_NAMES = {
     "hr": "Croatian",
     "sr": "Serbian",
     "sl": "Slovenian",
+    "lt": "Lithuanian",
     "it": "Italian",
     "pl": "Polish",
     "pt": "Portuguese",
