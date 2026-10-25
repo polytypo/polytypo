@@ -1730,7 +1730,7 @@ def write_llms_txt(out_dir, data):
             f"- [{p['title']}]({SITE_ORIGIN}/{p['slug']}/): {p['description']}"
             for p in DOC_PAGES
         ],
-        f"- [Locales]({SITE_ORIGIN}/locales/): typography rules by language, each backed by a "
+        f"- [Locales]({SITE_ORIGIN}/locales/): typography rules by locale, each backed by a "
         "citation and a conformance fixture set.",
         *[
             f"- [{p['title']}]({SITE_ORIGIN}/{p['slug']}/): {p['description']}"

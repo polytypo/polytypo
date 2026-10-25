@@ -234,6 +234,16 @@ exists:
   `spec/rules/analyze.md` (spec 1.3.0), so a runtime implementing it follows that document
   rather than inventing a second entry point of its own.
 
+## Terminology
+
+Two words, never swapped, in code, docs, the site and issues:
+
+- **language** means a programming language polytypo is implemented in: JavaScript/TypeScript,
+  Python, Go, Ruby, PHP ("five languages", "per-language repos").
+- **locale** means a typographic convention set identified by a locale id (`en-GB`, `de-CH`, `sr`):
+  "twenty-six locales", "add a locale", "locale data". A human language such as Slovenian is
+  described through its locale `sl`; counts of what polytypo covers are counts of locales.
+
 ## Locale data vs. code
 
 Declarative facts (quote glyphs, dash conventions, nbsp lists, `sources`) live in

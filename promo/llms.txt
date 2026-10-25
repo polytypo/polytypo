@@ -49,7 +49,7 @@ Modes (4): text, html, markdown, yaml. `text` has no parser and no skip list —
 - [Go](https://polytypo.dev/docs/runtimes/go/): Install polytypo for Go, call Transform and Analyze with an Options struct, check *polytypo.Error codes, and see which modes and dialects the module covers.
 - [Ruby](https://polytypo.dev/docs/runtimes/ruby/): Install the polytypo gem, call Polytypo.transform and Polytypo.analyze with keyword arguments, rescue Polytypo::Error codes, and see which modes the gem covers.
 - [PHP](https://polytypo.dev/docs/runtimes/php/): Install polytypo with Composer, call Polytypo::transform and Polytypo::analyze with named arguments, catch PolytypoException codes, and see which modes PHP covers.
-- [Locales](https://polytypo.dev/locales/): typography rules by language, each backed by a citation and a conformance fixture set.
+- [Locales](https://polytypo.dev/locales/): typography rules by locale, each backed by a citation and a conformance fixture set.
 - [Bulgarian (bg)](https://polytypo.dev/locales/bg/): Bulgarian (bg): quotation marks „…“ and „…“, spaced en dash for breaks; 6 cited sources, 29 tested examples.
 - [Croatian (hr)](https://polytypo.dev/locales/hr/): Croatian (hr): quotation marks „…” and ‘…’, spaced en dash for breaks; 6 cited sources, 29 tested examples.
 - [Czech (cs)](https://polytypo.dev/locales/cs/): Czech (cs): quotation marks „…“ and ‚…‘, spaced en dash for breaks; 8 cited sources, 19 tested examples.
