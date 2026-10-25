@@ -1869,6 +1869,132 @@
       "resolution": ["it"],
       "disagreed": 0
     },
+    "lt": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "lt-quotes-primary",
+            "in": "Jis pasakė: \"taip\" ir išėjo.",
+            "out": "Jis pasakė: „taip“ ir išėjo."
+          },
+          {
+            "id": "lt-quotes-nested-same-pair",
+            "in": "Jis pasakė: \"Manau, kad \"Karmen\" bus populiariausia.\"",
+            "out": "Jis pasakė: „Manau, kad „Karmen“ bus populiariausia.“"
+          },
+          {
+            "id": "lt-quotes-nested-with-words",
+            "in": "Jis pasakė: \"Tai 'citata' iš knygos\" ir išėjo.",
+            "out": "Jis pasakė: „Tai „citata“ iš knygos“ ir išėjo."
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "lt-ellipsis-three-dots",
+            "in": "Palauk... ir tada.",
+            "out": "Palauk… ir tada."
+          },
+          {
+            "id": "lt-ellipsis-after-question",
+            "in": "Ką pasakysiu?...",
+            "out": "Ką pasakysiu?.."
+          },
+          {
+            "id": "lt-ellipsis-after-exclamation",
+            "in": "Neskubėk!...",
+            "out": "Neskubėk!.."
+          }
+        ],
+        "dashes": [
+          {
+            "id": "lt-dashes-parenthetical",
+            "in": "Jis pasakė - žinoma - kad ateis.",
+            "out": "Jis pasakė – žinoma – kad ateis."
+          },
+          {
+            "id": "lt-dashes-em-input",
+            "in": "Tai — žinoma — gerai.",
+            "out": "Tai – žinoma – gerai."
+          }
+        ],
+        "ranges": [
+          {
+            "id": "lt-ranges-digits-tight",
+            "in": "1999-2000 m. ir 15-22 d.",
+            "out": "1999⁠–⁠2000 m. ir 15⁠–⁠22 d.",
+            "rules": {
+              "ranges": true
+            }
+          },
+          {
+            "id": "lt-ranges-already-tight",
+            "in": "2001–2006 m.",
+            "out": "2001–2006 m.",
+            "rules": {
+              "ranges": true
+            }
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "lt-nbsp-units",
+            "in": "10 % ir 5 € ir 23 °C ir 1 000 kg ir 3 km ir 5 cm ir 33 mm",
+            "out": "10 % ir 5 € ir 23 °C ir 1 000 kg ir 3 km ir 5 cm ir 33 mm"
+          },
+          {
+            "id": "lt-nbsp-unit-words",
+            "in": "40 mln. ir 17 val. 20 min. ir 100 proc. ir 5 EUR",
+            "out": "40 mln. ir 17 val. 20 min. ir 100 proc. ir 5 EUR"
+          },
+          {
+            "id": "lt-nbsp-year-day",
+            "in": "2007 m. liepos 16 d.",
+            "out": "2007 m. liepos 16 d."
+          }
+        ],
+        "spaces": [
+          {
+            "id": "lt-spaces-brackets",
+            "in": "Jis ( tyliai ) išėjo .",
+            "out": "Jis (tyliai) išėjo."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "lt-symbols-copyright",
+            "in": "(c) 2026",
+            "out": "© 2026"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "lt-apostrophe-foreign-name",
+            "in": "O'Brien atėjo.",
+            "out": "O’Brien atėjo."
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Ji paklausė: \"Ar ne tai parduotuvė, kurią vadina 'ta už kampo'?\" ... Ėjome - beveik 3 km - o ji buvo uždaryta. Copyright (c) 2026, formatas 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Ji paklausė: „Ar ne tai parduotuvė, kurią vadina „ta už kampo“?“ … Ėjome – beveik 3 km – o ji buvo uždaryta. Copyright © 2026, formatas 40×60 cm.\nsay(„a – b …“)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Ji paklausė: \"Ar ne tai parduotuvė, kurią vadina 'ta už kampo'?\" ... Ėjome - beveik 3 km - o ji buvo uždaryta. Copyright (c) 2026, formatas 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Ji paklausė: „Ar ne tai parduotuvė, kurią vadina „ta už kampo“?“ … Ėjome – beveik 3 km – o ji buvo uždaryta. Copyright © 2026, formatas 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Ji paklausė: \"Ar ne tai parduotuvė, kurią vadina 'ta už kampo'?\" ... Ėjome - beveik 3 km - o ji buvo uždaryta. Copyright (c) 2026, formatas 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Ji paklausė: „Ar ne tai parduotuvė, kurią vadina „ta už kampo“?“ … Ėjome – beveik 3 km – o ji buvo uždaryta. Copyright © 2026, formatas 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": [],
+      "disagreed": 0
+    },
     "pl": {
       "byRule": {
         "quotes": [

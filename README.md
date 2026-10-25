@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.16.0** · locales: **26** · rules: **9**.
+Spec version: **1.16.0** · locales: **27** · rules: **9**.
 
 ## Implementations
 
@@ -59,6 +59,7 @@ Spec version: **1.16.0** · locales: **26** · rules: **9**.
 | Greek (`el`) | Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm. |
 | Hungarian (`hu`) | Megkérdezte: „Nem ez az a bolt, amit »a sarki«-nak hívnak?” … Mentünk – majdnem 3 km-t – és zárva volt. Copyright © 2026, 40×60 cm. |
 | Italian (`it`) | Ha chiesto: «Non è questo il negozio che chiamano “quello all’angolo”?» … Abbiamo camminato — quasi 3 km — ed era chiuso. Copyright © 2026, formato 40×60 cm. |
+| Lithuanian (`lt`) | Ji paklausė: „Ar ne tai parduotuvė, kurią vadina „ta už kampo“?“ … Ėjome – beveik 3 km – o ji buvo uždaryta. Copyright © 2026, formatas 40×60 cm. |
 | Polish (`pl`) | Zapytał: „Czy to nie ten sklep, który nazywają »tym za rogiem«?” … Szliśmy – prawie 3 km – a był zamknięty. Copyright © 2026, format 40×60 cm. |
 | Portuguese (Brazil) (`pt-BR`) | Perguntou: “Não é esta a loja que chamam de ‘a da esquina’?” … Caminhamos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm. |
 | Portuguese (Portugal) (`pt-PT`) | Perguntou: «Não é esta a loja a que chamam “a da esquina”?» … Caminhámos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm. |
@@ -92,6 +93,7 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | `el` | Greek | «…» | “…” | unchanged | unchanged |
 | `hu` | Hungarian | „…” | »…« | en dash, spaced | en dash, unspaced |
 | `it` | Italian | «…» | “…” | em dash, spaced | unchanged |
+| `lt` | Lithuanian | „…“ | „…“ | en dash, spaced | en dash, unspaced |
 | `pl` | Polish | „…” | »…« | en dash, spaced | en dash, unspaced |
 | `pt-BR` | Portuguese (Brazil) | “…” | ‘…’ | en dash, spaced | unchanged |
 | `pt-PT` | Portuguese (Portugal) | «…» | “…” | em dash, spaced | unchanged |

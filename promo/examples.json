@@ -487,6 +487,38 @@
       ]
     },
     {
+      "locale": "lt",
+      "name": "Lithuanian",
+      "hero": {
+        "in": "Ji paklausė: \"Ar ne tai parduotuvė, kurią vadina 'ta už kampo'?\" ... Ėjome - beveik 3 km - o ji buvo uždaryta. Copyright (c) 2026, formatas 40x60 cm.",
+        "out": "Ji paklausė: „Ar ne tai parduotuvė, kurią vadina „ta už kampo“?“ … Ėjome – beveik 3 km – o ji buvo uždaryta. Copyright © 2026, formatas 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, „Isn’t this the shop they call „round the corner“?“ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Jis pasakė \"labas\".",
+          "out": "Jis pasakė „labas“."
+        },
+        {
+          "rule": "ellipsis",
+          "in": "Ką pasakysiu?...",
+          "out": "Ką pasakysiu?.."
+        },
+        {
+          "rule": "ranges",
+          "rules": {
+            "ranges": true
+          },
+          "in": "karas 1939-1945",
+          "out": "karas 1939⁠–⁠1945"
+        }
+      ]
+    },
+    {
       "locale": "pl",
       "name": "Polish",
       "hero": {
