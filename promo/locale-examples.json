@@ -2439,6 +2439,102 @@
       "resolution": ["ru", "ru-BY"],
       "disagreed": 0
     },
+    "sr": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "sr-quotes-primary",
+            "in": "Рекао је: \"да\" и отишао.",
+            "out": "Рекао је: „да” и отишао."
+          },
+          {
+            "id": "sr-quotes-primary-latin",
+            "in": "Rekao je: \"da\" i otišao.",
+            "out": "Rekao je: „da” i otišao."
+          },
+          {
+            "id": "sr-quotes-nested-secondary",
+            "in": "Рекао је: \"песма 'Лепа' је\" и отишао.",
+            "out": "Рекао је: „песма ’Лепа’ је” и отишао."
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "sr-ellipsis-three-dots",
+            "in": "Чекај... шта?",
+            "out": "Чекај… шта?"
+          },
+          {
+            "id": "sr-ellipsis-not-abbreviated",
+            "in": "Шта?.. да",
+            "out": "Шта?… да"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "sr-dashes-parenthetical",
+            "in": "Идемо - ако пада - касније.",
+            "out": "Идемо – ако пада – касније."
+          },
+          {
+            "id": "sr-dashes-existing-em-dash",
+            "in": "Идемо — ако пада — касније.",
+            "out": "Идемо – ако пада – касније."
+          }
+        ],
+        "ranges": [
+          {
+            "id": "sr-ranges-digits-tight",
+            "in": "рат 1941-1945 и стр. 145-162",
+            "out": "рат 1941⁠–⁠1945 и стр. 145⁠–⁠162",
+            "rules": {
+              "ranges": true
+            }
+          }
+        ],
+        "spaces": [
+          {
+            "id": "sr-spaces-brackets",
+            "in": "Текст ( нормалан ) остаје  .",
+            "out": "Текст (нормалан) остаје."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "sr-symbols-copyright",
+            "in": "Copyright (c) 2026",
+            "out": "Copyright © 2026"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "sr-apostrophe-foreign-name",
+            "in": "То је McDonald's",
+            "out": "То је McDonald’s"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Питала је: \"Није ли то продавница коју зову 'она на углу'?\" ... Ходали смо - скоро 3 км - и била је затворена. Copyright (c) 2026, формат 40x60 цм.\nsay(\"a -- b ...\")",
+          "out": "Питала је: „Није ли то продавница коју зову ’она на углу’?” … Ходали смо – скоро 3 км – и била је затворена. Copyright © 2026, формат 40×60 цм.\nsay(„a – b …”)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Питала је: \"Није ли то продавница коју зову 'она на углу'?\" ... Ходали смо - скоро 3 км - и била је затворена. Copyright (c) 2026, формат 40x60 цм.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Питала је: „Није ли то продавница коју зову ’она на углу’?” … Ходали смо – скоро 3 км – и била је затворена. Copyright © 2026, формат 40×60 цм.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Питала је: \"Није ли то продавница коју зову 'она на углу'?\" ... Ходали смо - скоро 3 км - и била је затворена. Copyright (c) 2026, формат 40x60 цм.\n\n`say(\"a -- b ...\")`",
+          "out": "Питала је: „Није ли то продавница коју зову ’она на углу’?” … Ходали смо – скоро 3 км – и била је затворена. Copyright © 2026, формат 40×60 цм.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": [],
+      "disagreed": 0
+    },
     "sk": {
       "byRule": {
         "quotes": [
@@ -2562,6 +2658,114 @@
           "mode": "markdown",
           "in": "Spýtal sa: \"Nie je to ten obchod, ktorému hovoria 'ten za rohom'?\" ... Išli sme -- takmer 3 km -- a bol zatvorený. Copyright (c) 2026, formát 40x60 cm.\n\n`say(\"a -- b ...\")`",
           "out": "Spýtal sa: „Nie je to ten obchod, ktorému hovoria ‚ten za rohom‘?“ … Išli sme – takmer 3 km – a bol zatvorený. Copyright © 2026, formát 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": [],
+      "disagreed": 0
+    },
+    "sl": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "sl-quotes-primary",
+            "in": "Rekel je: \"da\" in odšel.",
+            "out": "Rekel je: »da« in odšel."
+          },
+          {
+            "id": "sl-quotes-nested-secondary",
+            "in": "Rekel je: \"pesem 'Zdravljica' je himna\" in odšel.",
+            "out": "Rekel je: »pesem ›Zdravljica‹ je himna« in odšel."
+          },
+          {
+            "id": "sl-quotes-nested-at-end",
+            "in": "Rekel je: \"pesem 'Zdravljica'\".",
+            "out": "Rekel je: »pesem ›Zdravljica‹«."
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "sl-ellipsis-three-dots",
+            "in": "Počakaj... in potem.",
+            "out": "Počakaj… in potem."
+          },
+          {
+            "id": "sl-ellipsis-not-abbreviated",
+            "in": "Kaj...?",
+            "out": "Kaj…?"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "sl-dashes-parenthetical",
+            "in": "Rekel je - seveda - da pride.",
+            "out": "Rekel je – seveda – da pride."
+          }
+        ],
+        "ranges": [
+          {
+            "id": "sl-ranges-digits-tight",
+            "in": "vojna 1941-1945 in str. 125-132",
+            "out": "vojna 1941⁠–⁠1945 in str. 125⁠–⁠132",
+            "rules": {
+              "ranges": true
+            }
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "sl-nbsp-units",
+            "in": "10 % in 5 € in 38 °C in 10 kg in 3 km in 16 ‰",
+            "out": "10 % in 5 € in 38 °C in 10 kg in 3 km in 16 ‰"
+          },
+          {
+            "id": "sl-nbsp-abbreviation-ti",
+            "in": "glej t. i. pojem",
+            "out": "glej t. i. pojem"
+          },
+          {
+            "id": "sl-nbsp-section-sign",
+            "in": "glej § 10",
+            "out": "glej § 10"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "sl-spaces-brackets",
+            "in": "Rekel ( tiho ) in odšel .",
+            "out": "Rekel (tiho) in odšel."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "sl-symbols-copyright",
+            "in": "(c) 2026",
+            "out": "© 2026"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "sl-apostrophe-foreign-name",
+            "in": "O'Brien je prišel.",
+            "out": "O’Brien je prišel."
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Vprašala je: \"Ali ni to trgovina, ki ji pravijo 'tista za vogalom'?\" ... Hodili smo - skoraj 3 km - in bila je zaprta. Copyright (c) 2026, format 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Vprašala je: »Ali ni to trgovina, ki ji pravijo ›tista za vogalom‹?« … Hodili smo – skoraj 3 km – in bila je zaprta. Copyright © 2026, format 40×60 cm.\nsay(»a – b …«)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Vprašala je: \"Ali ni to trgovina, ki ji pravijo 'tista za vogalom'?\" ... Hodili smo - skoraj 3 km - in bila je zaprta. Copyright (c) 2026, format 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Vprašala je: »Ali ni to trgovina, ki ji pravijo ›tista za vogalom‹?« … Hodili smo – skoraj 3 km – in bila je zaprta. Copyright © 2026, format 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Vprašala je: \"Ali ni to trgovina, ki ji pravijo 'tista za vogalom'?\" ... Hodili smo - skoraj 3 km - in bila je zaprta. Copyright (c) 2026, format 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Vprašala je: »Ali ni to trgovina, ki ji pravijo ›tista za vogalom‹?« … Hodili smo – skoraj 3 km – in bila je zaprta. Copyright © 2026, format 40×60 cm.\n\n`say(\"a -- b ...\")`"
         }
       ],
       "compare": null,

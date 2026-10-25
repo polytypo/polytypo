@@ -81,8 +81,8 @@ PRIMARY_SOURCES = {
     "hu": "Magyar Tudományos Akadémia; A magyar helyesírás szabályai, 12. kiadás (AkH12)",
     "bg": "Институт за български език (БАН); Официален правописен речник на българския език (2012)",
     "hr": "Institut za hrvatski jezik i jezikoslovlje, Hrvatski pravopis",
-    "sr": "Матица српска, Правопис српскога језика (2010), по анализи Д. Кликовац, Српска интерпункција",
-    "sl": "SAZU / ZRC SAZU, Slovenski pravopis (2001)",
+    "sr": "Д. Кликовац, Српска интерпункција, Филолошки факултет Универзитета у Београду, 2024",
+    "sl": "SAZU / ZRC SAZU Inštitut za slovenski jezik Frana Ramovša, Slovenski pravopis 2001",
 }
 
 
@@ -240,7 +240,7 @@ PAGES += [(p["slug"], p["title"], None) for p in LOCALE_PAGES]
 PAGE_DESCRIPTIONS = {
     "": (
         "Fix typography in any text: locale-correct quotes, dashes, ellipses and no-break spaces "
-        "for {n} languages. Five runtimes, one portable spec, byte-identical output."
+        "for {n} locales. Five runtimes, one portable spec, byte-identical output."
     ),
     "docs": (
         "polytypo reference: transform(input, options) is pure and locale-required. Code examples "

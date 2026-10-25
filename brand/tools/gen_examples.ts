@@ -33,6 +33,8 @@ const LOCALES = [
   "hu",
   "bg",
   "hr",
+  "sr",
+  "sl",
 ] as const;
 
 // Every hero line: nested quotes, an apostrophe or elision (except el — see its own note below),
@@ -104,6 +106,12 @@ const HERO: Record<(typeof LOCALES)[number], string> = {
   hr:
     `Pitala je: "Nije li to dućan koji zovu 'onaj na uglu'?" ... Hodali smo -- gotovo 3 km -- i bio je ` +
     `zatvoren. Copyright (c) 2026, format 40x60 cm.`,
+  sr:
+    `Питала је: "Није ли то продавница коју зову 'она на углу'?" ... Ходали смо - скоро 3 км - и била је ` +
+    `затворена. Copyright (c) 2026, формат 40x60 цм.`,
+  sl:
+    `Vprašala je: "Ali ni to trgovina, ki ji pravijo 'tista za vogalom'?" ... Hodili smo - skoraj 3 km - in ` +
+    `bila je zaprta. Copyright (c) 2026, format 40x60 cm.`,
   nl:
     `Hij vroeg: "Is dit niet de winkel die ze 'om de hoek' noemen?" ... We liepen -- bijna 3 km ` +
     `-- en hij was dicht. Copyright (c) 2026, formaat 40x60 cm.`,
@@ -227,6 +235,16 @@ const SHOWCASE: Record<
     { rule: "dashes", in: `Knjiga - objavljena prije rata - je izvrsna.` },
     { rule: "nbsp", in: `3 kg i 50 %` },
   ],
+  sr: [
+    { rule: "quotes", in: `Рекао је "здраво".` },
+    { rule: "dashes", in: `Књига - објављена пре рата - је одлична.` },
+    { rule: "ranges", in: `рат 1941-1945`, rules: { ranges: true } },
+  ],
+  sl: [
+    { rule: "quotes", in: `Rekel je "zdravo".` },
+    { rule: "dashes", in: `Knjiga - izdana pred vojno - je odlična.` },
+    { rule: "nbsp", in: `3 kg in 50 %` },
+  ],
   nl: [
     { rule: "quotes", in: `Hij zei "dag" en vertrok.` },
     { rule: "dashes", in: `Het nieuws - volgens de kranten - is niet bekend.` },
@@ -305,6 +323,8 @@ const NAMES: Record<(typeof LOCALES)[number], string> = {
   hu: "Hungarian",
   bg: "Bulgarian",
   hr: "Croatian",
+  sr: "Serbian",
+  sl: "Slovenian",
   "pt-PT": "Portuguese (Portugal)",
   "pt-BR": "Portuguese (Brazil)",
 };

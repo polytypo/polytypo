@@ -2,7 +2,7 @@
 
 > Locale-correct quotes, dashes, ellipses, hyphens and no-break spaces. One portable spec, five runtime implementations, byte-identical output — transform(input, { locale }) is pure, with no I/O, network access or global state.
 
-polytypo is a typography rules engine, not a grammar or spell checker: it normalizes punctuation and spacing to the convention of a specific locale, and every rule cites its normative source (Chicago/Oxford, Duden, Imprimerie nationale, Kotus, Språkrådet, Мильчин). Spec 1.15.0, 24 locales (bg, hr, cs, nl, en-GB, en-US, fi, fr-CA, fr, de-DE, de-CH, el, hu, it, pl, pt-BR, pt-PT, ro, ru, sk, es, sv, tr, uk), rules run in this fixed order: spaces, ellipsis, ranges, dashes, hyphen, quotes, apostrophe, symbols, nbsp.
+polytypo is a typography rules engine, not a grammar or spell checker: it normalizes punctuation and spacing to the convention of a specific locale, and every rule cites its normative source (Chicago/Oxford, Duden, Imprimerie nationale, Kotus, Språkrådet, Мильчин). Spec 1.15.0, 26 locales (bg, hr, cs, nl, en-GB, en-US, fi, fr-CA, fr, de-DE, de-CH, el, hu, it, pl, pt-BR, pt-PT, ro, ru, sr, sk, sl, es, sv, tr, uk), rules run in this fixed order: spaces, ellipsis, ranges, dashes, hyphen, quotes, apostrophe, symbols, nbsp.
 
 Modes (4): text, html, markdown, yaml. `text` has no parser and no skip list — the whole string is prose to it. `html` and `markdown` parse the document and run the rules only on prose text nodes, never inside tags, attributes, character references, code spans or code blocks; `markdown` additionally requires an explicit `dialect` ("commonmark" or "mdx"), which is never detected, because one autolink is valid CommonMark and a parse error in MDX. `yaml` uses no parser either and is the one mode that skips by default: it processes only the values of the mapping keys named in its required `keys` option, which has no default, because nothing in YAML's syntax separates a prose `description:` from a shell command in `run:`. Whatever a mode does not process comes back byte for byte.
 
@@ -69,7 +69,9 @@ Modes (4): text, html, markdown, yaml. `text` has no parser and no skip list —
 - [Portuguese (Portugal) (pt-PT)](https://polytypo.dev/locales/pt-PT/): Portuguese (Portugal) (pt-PT): quotation marks «…» and “…”, spaced em dash for breaks; 8 cited sources, 19 tested examples.
 - [Romanian (ro)](https://polytypo.dev/locales/ro/): Romanian (ro): quotation marks „…” and «…», spaced en dash for breaks; 6 cited sources, 27 tested examples.
 - [Russian (ru)](https://polytypo.dev/locales/ru/): Russian (ru): quotation marks «…» and „…“, spaced em dash for breaks; 6 cited sources, 89 tested examples.
+- [Serbian (sr)](https://polytypo.dev/locales/sr/): Serbian (sr): quotation marks „…” and ’…’, spaced en dash for breaks; 5 cited sources, 21 tested examples.
 - [Slovak (sk)](https://polytypo.dev/locales/sk/): Slovak (sk): quotation marks „…“ and ‚…‘, spaced en dash for breaks; 8 cited sources, 31 tested examples.
+- [Slovenian (sl)](https://polytypo.dev/locales/sl/): Slovenian (sl): quotation marks »…« and ›…‹, spaced en dash for breaks; 6 cited sources, 29 tested examples.
 - [Spanish (es)](https://polytypo.dev/locales/es/): Spanish (es): quotation marks «…» and “…”, no dash substitution for breaks; 10 cited sources, 23 tested examples.
 - [Swedish (sv)](https://polytypo.dev/locales/sv/): Swedish (sv): quotation marks ”…” and ’…’, spaced en dash for breaks; 10 cited sources, 154 tested examples.
 - [Turkish (tr)](https://polytypo.dev/locales/tr/): Turkish (tr): quotation marks “…” and ‘…’, no dash substitution for breaks; 11 cited sources, 30 tested examples.

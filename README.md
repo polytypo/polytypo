@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.15.0** · locales: **24** · rules: **9**.
+Spec version: **1.15.0** · locales: **26** · rules: **9**.
 
 ## Implementations
 
@@ -64,7 +64,9 @@ Spec version: **1.15.0** · locales: **24** · rules: **9**.
 | Portuguese (Portugal) (`pt-PT`) | Perguntou: «Não é esta a loja a que chamam “a da esquina”?» … Caminhámos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm. |
 | Romanian (`ro`) | Ea a întrebat: „Nu e acesta magazinul pe care îl numesc «de la colț»?” … Am mers – aproape 3 km – și era închis. Copyright © 2026, format 40×60 cm. |
 | Russian (`ru`) | Она спросила: «Это не тот магазинчик, который называют „за углом“?» … Мы прошли — почти 3 км — и нашли его закрытым, а что‑то достали из‑под прилавка. Copyright © 2026, формат 40×60 см. |
+| Serbian (`sr`) | Питала је: „Није ли то продавница коју зову ’она на углу’?” … Ходали смо – скоро 3 км – и била је затворена. Copyright © 2026, формат 40×60 цм. |
 | Slovak (`sk`) | Spýtal sa: „Nie je to ten obchod, ktorému hovoria ‚ten za rohom‘?“ … Išli sme – takmer 3 km – a bol zatvorený. Copyright © 2026, formát 40×60 cm. |
+| Slovenian (`sl`) | Vprašala je: »Ali ni to trgovina, ki ji pravijo ›tista za vogalom‹?« … Hodili smo – skoraj 3 km – in bila je zaprta. Copyright © 2026, format 40×60 cm. |
 | Spanish (`es`) | Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm. |
 | Swedish (`sv`) | Hon frågade: ”Är det inte affären i ’hörnet’?” … Vi gick – nästan 3 km – och hittade den stängd. Copyright © 2026; trycket mäter 40×60 cm och kostar 10,5 % mer. |
 | Turkish (`tr`) | Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright © 2026, baskı 40×60 cm. |
@@ -95,7 +97,9 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | `pt-PT` | Portuguese (Portugal) | «…» | “…” | em dash, spaced | unchanged |
 | `ro` | Romanian | „…” | «…» | en dash, spaced | unchanged |
 | `ru` | Russian | «…» | „…“ | em dash, spaced | em dash, unspaced |
+| `sr` | Serbian | „…” | ’…’ | en dash, spaced | en dash, unspaced |
 | `sk` | Slovak | „…“ | ‚…‘ | en dash, spaced | en dash, spaced |
+| `sl` | Slovenian | »…« | ›…‹ | en dash, spaced | en dash, unspaced |
 | `es` | Spanish | «…» | “…” | unchanged | unchanged |
 | `sv` | Swedish | ”…” | ’…’ | en dash, spaced | en dash, unspaced |
 | `tr` | Turkish | “…” | ‘…’ | unchanged | unchanged |

@@ -647,6 +647,38 @@
       ]
     },
     {
+      "locale": "sr",
+      "name": "Serbian",
+      "hero": {
+        "in": "Питала је: \"Није ли то продавница коју зову 'она на углу'?\" ... Ходали смо - скоро 3 км - и била је затворена. Copyright (c) 2026, формат 40x60 цм.",
+        "out": "Питала је: „Није ли то продавница коју зову ’она на углу’?” … Ходали смо – скоро 3 км – и била је затворена. Copyright © 2026, формат 40×60 цм."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, „Isn’t this the shop they call ’round the corner’?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Рекао је \"здраво\".",
+          "out": "Рекао је „здраво”."
+        },
+        {
+          "rule": "dashes",
+          "in": "Књига - објављена пре рата - је одлична.",
+          "out": "Књига – објављена пре рата – је одлична."
+        },
+        {
+          "rule": "ranges",
+          "rules": {
+            "ranges": true
+          },
+          "in": "рат 1941-1945",
+          "out": "рат 1941⁠–⁠1945"
+        }
+      ]
+    },
+    {
       "locale": "sk",
       "name": "Slovak",
       "hero": {
@@ -672,6 +704,35 @@
           "rule": "dashes",
           "in": "Táto kniha - vydaná pred vojnou - je skvelá.",
           "out": "Táto kniha – vydaná pred vojnou – je skvelá."
+        }
+      ]
+    },
+    {
+      "locale": "sl",
+      "name": "Slovenian",
+      "hero": {
+        "in": "Vprašala je: \"Ali ni to trgovina, ki ji pravijo 'tista za vogalom'?\" ... Hodili smo - skoraj 3 km - in bila je zaprta. Copyright (c) 2026, format 40x60 cm.",
+        "out": "Vprašala je: »Ali ni to trgovina, ki ji pravijo ›tista za vogalom‹?« … Hodili smo – skoraj 3 km – in bila je zaprta. Copyright © 2026, format 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, »Isn’t this the shop they call ›round the corner‹?« … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Rekel je \"zdravo\".",
+          "out": "Rekel je »zdravo«."
+        },
+        {
+          "rule": "dashes",
+          "in": "Knjiga - izdana pred vojno - je odlična.",
+          "out": "Knjiga – izdana pred vojno – je odlična."
+        },
+        {
+          "rule": "nbsp",
+          "in": "3 kg in 50 %",
+          "out": "3 kg in 50 %"
         }
       ]
     },
