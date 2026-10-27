@@ -1036,8 +1036,15 @@ def footer_html(data, prefix):
         "Ruby": "Ruby",
         "PHP": "PHP",
     }
+    _footer_slugs = {
+        "JavaScript/TypeScript": "javascript",
+        "Python": "python",
+        "Go": "go",
+        "Ruby": "ruby",
+        "PHP": "php",
+    }
     package_links = "".join(
-        f'<li><a href="{H.escape(rt["package"])}">{_language_icon_svg(rt["name"])}'
+        f'<li><a href="{page_href(prefix, "docs/runtimes/" + _footer_slugs[rt["name"]])}">{_language_icon_svg(rt["name"])}'
         f'{H.escape(_footer_labels.get(rt["name"], rt["name"]))}</a></li>'
         for rt in _runtime_status().values()
     )
