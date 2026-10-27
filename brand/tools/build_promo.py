@@ -1860,7 +1860,8 @@ def badge_html(lang, theme):
     CSP changes. The mark is the same guillemets-around-an-em-dash brand mark used everywhere else
     on this site (brand/logo/polytypo-mark.svg), inlined and recolored per theme rather than
     linked, for the same zero-dependency reason. `?utm_source=badge` on the link lets analytics
-    tell embed-driven visits apart from every other referral source.
+    tell embed-driven visits apart from every other referral source; badge.js appends
+    `utm_content=<hostname of the embedding page>` at render time, the one value only the browser knows.
     """
     caption = BADGE_TEXT[lang]
     c = _BADGE_THEME_COLORS[theme]
@@ -1946,6 +1947,12 @@ def write_badge_js(out_dir):
       html = byLang[DEFAULT_THEME];
     }}
     el.innerHTML = html;
+    var link = el.querySelector("a");
+    if (link && location.hostname && location.hostname !== "polytypo.dev") {{
+      var url = new URL(link.href);
+      url.searchParams.set("utm_content", location.hostname);
+      link.href = url.toString();
+    }}
   }}
 
   function init() {{

@@ -196,6 +196,12 @@
     styles leaves it unstyled.
   </p>
   <p>
+    The badge links to polytypo.dev with <code>utm_source=badge</code> and
+    <code>utm_content=</code> set to the hostname of the page it is embedded on (for example
+    <code>blog.example.com</code>, without path or query), so visits from embeds can be told apart
+    by site. The link is the only place that value appears: the script sends nothing by itself.
+  </p>
+  <p>
     <code>async</code> in the snippet is about your own page's load order and nothing else: once the
     file is evaluated, rendering is a synchronous read from that table. An unknown
     <code>data-polytypo-lang</code> or <code>data-polytypo-theme</code> renders English and the

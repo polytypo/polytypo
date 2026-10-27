@@ -23,6 +23,12 @@
       html = byLang[DEFAULT_THEME];
     }
     el.innerHTML = html;
+    var link = el.querySelector("a");
+    if (link && location.hostname && location.hostname !== "polytypo.dev") {
+      var url = new URL(link.href);
+      url.searchParams.set("utm_content", location.hostname);
+      link.href = url.toString();
+    }
   }
 
   function init() {
