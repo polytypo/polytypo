@@ -773,11 +773,11 @@
       "name": "Spanish",
       "hero": {
         "in": "Preguntó: \"¿No es esta la tienda que llaman 'la de la esquina'?\" ... Caminamos -- casi 3 km -- y estaba cerrada. Copyright (c) 2026, tamaño 40x60 cm.",
-        "out": "Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm."
+        "out": "Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos — casi 3 km — y estaba cerrada. Copyright © 2026, tamaño 40×60 cm."
       },
       "proof": {
         "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
-        "out": "She asked, «Isn’t this the shop they call “round the corner”?» … We’d walked - nearly 3 km - just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+        "out": "She asked, «Isn’t this the shop they call “round the corner”?» … We’d walked — nearly 3 km — just to find it closed. Copyright © 2026; the print measures 40×60 cm."
       },
       "cases": [
         {

@@ -68,7 +68,7 @@ Spec version: **1.17.1** · locales: **27** · rules: **9**.
 | Serbian (`sr`) | Питала је: „Није ли то продавница коју зову ’она на углу’?” … Ходали смо – скоро 3 км – и била је затворена. Copyright © 2026, формат 40×60 цм. |
 | Slovak (`sk`) | Spýtal sa: „Nie je to ten obchod, ktorému hovoria ‚ten za rohom‘?“ … Išli sme – takmer 3 km – a bol zatvorený. Copyright © 2026, formát 40×60 cm. |
 | Slovenian (`sl`) | Vprašala je: »Ali ni to trgovina, ki ji pravijo ›tista za vogalom‹?« … Hodili smo – skoraj 3 km – in bila je zaprta. Copyright © 2026, format 40×60 cm. |
-| Spanish (`es`) | Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm. |
+| Spanish (`es`) | Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos — casi 3 km — y estaba cerrada. Copyright © 2026, tamaño 40×60 cm. |
 | Swedish (`sv`) | Hon frågade: ”Är det inte affären i ’hörnet’?” … Vi gick – nästan 3 km – och hittade den stängd. Copyright © 2026; trycket mäter 40×60 cm och kostar 10,5 % mer. |
 | Turkish (`tr`) | Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük, ama kapalıydı. Copyright © 2026, baskı 40×60 cm. |
 | Ukrainian (`uk`) | Він запитав: «Хіба це не та крамниця, яку називають “тією за рогом”?» … Ми йшли — майже 3 км — а вона була зачинена. Copyright © 2026, формат 40×60 см. |

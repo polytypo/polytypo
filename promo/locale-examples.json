@@ -2929,7 +2929,18 @@
             "out": "¿De verdad?…"
           }
         ],
-        "dashes": [],
+        "dashes": [
+          {
+            "id": "es-dashes-parenthetical-em-spaced-known-deviation",
+            "in": "El plan - si existe - fracasa.",
+            "out": "El plan — si existe — fracasa."
+          },
+          {
+            "id": "es-dashes-double-hyphen-em-spaced-known-deviation",
+            "in": "Caminamos -- casi 3 km -- y estaba cerrada.",
+            "out": "Caminamos — casi 3 km — y estaba cerrada."
+          }
+        ],
         "nbsp": [
           {
             "id": "es-nbsp-percent",
@@ -2973,22 +2984,22 @@
         {
           "mode": "text",
           "in": "Preguntó: \"¿No es esta la tienda que llaman 'la de la esquina'?\" ... Caminamos -- casi 3 km -- y estaba cerrada. Copyright (c) 2026, tamaño 40x60 cm.\nsay(\"a -- b ...\")",
-          "out": "Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm.\nsay(«a -- b …»)"
+          "out": "Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos — casi 3 km — y estaba cerrada. Copyright © 2026, tamaño 40×60 cm.\nsay(«a — b …»)"
         },
         {
           "mode": "html",
           "in": "<p>Preguntó: \"¿No es esta la tienda que llaman 'la de la esquina'?\" ... Caminamos -- casi 3 km -- y estaba cerrada. Copyright (c) 2026, tamaño 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
-          "out": "<p>Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+          "out": "<p>Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos — casi 3 km — y estaba cerrada. Copyright © 2026, tamaño 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
         },
         {
           "mode": "markdown",
           "in": "Preguntó: \"¿No es esta la tienda que llaman 'la de la esquina'?\" ... Caminamos -- casi 3 km -- y estaba cerrada. Copyright (c) 2026, tamaño 40x60 cm.\n\n`say(\"a -- b ...\")`",
-          "out": "Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm.\n\n`say(\"a -- b ...\")`"
+          "out": "Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos — casi 3 km — y estaba cerrada. Copyright © 2026, tamaño 40×60 cm.\n\n`say(\"a -- b ...\")`"
         }
       ],
       "compare": null,
       "resolution": ["es", "es-MX"],
-      "disagreed": 2
+      "disagreed": 0
     },
     "sv": {
       "byRule": {
