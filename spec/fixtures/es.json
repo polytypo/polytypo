@@ -1,5 +1,5 @@
 {
-  "spec": "1.17.0",
+  "spec": "1.17.1",
   "locale": "es",
   "cases": [
     {
@@ -48,14 +48,14 @@
       "mode": "text",
       "in": "El plan - si existe - fracasa.",
       "out": "El plan — si existe — fracasa.",
-      "note": "dash.parenthetical = \"em-spaced\", una aproximación fijada por decisión del operador (spec 1.17.0). El DPD prescribe raya con espacios FUERA del par y ninguno dentro («El plan —si existe— fracasa.»); el enum no expresa esa asimetría, así que la salida lleva dos espacios interiores que la norma no admite. Se prefiere a dejar el guion U+002D del autor. Véase la voz dashes de es.json."
+      "note": "dash.parenthetical = \"em-spaced\", una aproximación fijada por decisión del operador (spec 1.17.1). El DPD prescribe raya con espacios FUERA del par y ninguno dentro («El plan —si existe— fracasa.»); el enum no expresa esa asimetría, así que la salida lleva dos espacios interiores que la norma no admite. Se prefiere a dejar el guion U+002D del autor. Véase la voz dashes de es.json."
     },
     {
       "id": "es-dashes-double-hyphen-em-spaced-known-deviation",
       "rule": "dashes",
       "mode": "text",
       "in": "Caminamos -- casi 3 km -- y estaba cerrada.",
-      "out": "Caminamos — casi 3 km — y estaba cerrada.",
+      "out": "Caminamos — casi 3 km — y estaba cerrada.",
       "note": "Misma aproximación que es-dashes-parenthetical-em-spaced-known-deviation, con la forma «--» que se teclea a menudo; los espacios interiores no son los del DPD."
     },
     {
