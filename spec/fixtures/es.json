@@ -1,5 +1,5 @@
 {
-  "spec": "1.16.0",
+  "spec": "1.17.0",
   "locale": "es",
   "cases": [
     {
@@ -43,12 +43,28 @@
       "note": "abbreviatedAfterTerminal = false: la forma de dos puntos tras «?» que usa el ruso no existe en español, así que los dos puntos se completan a U+2026 en vez de conservarse."
     },
     {
-      "id": "es-dashes-parenthetical-none",
+      "id": "es-dashes-parenthetical-em-spaced-known-deviation",
       "rule": "dashes",
       "mode": "text",
       "in": "El plan - si existe - fracasa.",
-      "out": "El plan - si existe - fracasa.",
-      "note": "dash.parenthetical = \"none\": el DPD prescribe raya con espacios FUERA del par y ninguno dentro, asimetría que el enum no expresa; mientras tanto la regla no toca nada. Véase la voz dashes de es.json."
+      "out": "El plan — si existe — fracasa.",
+      "note": "dash.parenthetical = \"em-spaced\", una aproximación fijada por decisión del operador (spec 1.17.0). El DPD prescribe raya con espacios FUERA del par y ninguno dentro («El plan —si existe— fracasa.»); el enum no expresa esa asimetría, así que la salida lleva dos espacios interiores que la norma no admite. Se prefiere a dejar el guion U+002D del autor. Véase la voz dashes de es.json."
+    },
+    {
+      "id": "es-dashes-double-hyphen-em-spaced-known-deviation",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Caminamos -- casi 3 km -- y estaba cerrada.",
+      "out": "Caminamos — casi 3 km — y estaba cerrada.",
+      "note": "Misma aproximación que es-dashes-parenthetical-em-spaced-known-deviation, con la forma «--» que se teclea a menudo; los espacios interiores no son los del DPD."
+    },
+    {
+      "id": "es-dashes-compound-hyphen",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "un texto hispano-árabe",
+      "out": "un texto hispano-árabe",
+      "note": "Guardia P1 de dashes.md §3.2: un guion desnudo y sin espacios es una palabra compuesta y no se toca."
     },
     {
       "id": "es-ranges-guion-none",

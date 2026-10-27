@@ -90,8 +90,8 @@ const HERO: Record<(typeof LOCALES)[number], string> = {
     `Zeptal se: "Není to ten obchod, kterému říkají 'ten za rohem'?" ... Šli jsme -- skoro 3 km ` +
     `-- a byl zavřený. Copyright (c) 2026, formát 40x60 cm.`,
   tr:
-    `Sordu: "Bu, 'köşedeki' dedikleri dükkân değil mi?" ... Ankara'da neredeyse 3 km yürüdük -- ` +
-    `ve kapalıydı. Copyright (c) 2026, baskı 40x60 cm.`,
+    `Sordu: "Bu, 'köşedeki' dedikleri dükkân değil mi?" ... Ankara'da neredeyse 3 km yürüdük, ` +
+    `ama kapalıydı. Copyright (c) 2026, baskı 40x60 cm.`,
   sk:
     `Spýtal sa: "Nie je to ten obchod, ktorému hovoria 'ten za rohom'?" ... Išli sme -- takmer 3 km ` +
     `-- a bol zatvorený. Copyright (c) 2026, formát 40x60 cm.`,

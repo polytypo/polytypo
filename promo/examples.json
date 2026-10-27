@@ -1,5 +1,5 @@
 {
-  "spec": "1.16.0",
+  "spec": "1.17.0",
   "proofLocales": ["en-GB", "en-US", "fr", "de-DE", "de-CH", "ru"],
   "locales": [
     {
@@ -835,8 +835,8 @@
       "locale": "tr",
       "name": "Turkish",
       "hero": {
-        "in": "Sordu: \"Bu, 'köşedeki' dedikleri dükkân değil mi?\" ... Ankara'da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright (c) 2026, baskı 40x60 cm.",
-        "out": "Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright © 2026, baskı 40×60 cm."
+        "in": "Sordu: \"Bu, 'köşedeki' dedikleri dükkân değil mi?\" ... Ankara'da neredeyse 3 km yürüdük, ama kapalıydı. Copyright (c) 2026, baskı 40x60 cm.",
+        "out": "Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük, ama kapalıydı. Copyright © 2026, baskı 40×60 cm."
       },
       "proof": {
         "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",

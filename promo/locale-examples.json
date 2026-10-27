@@ -1,5 +1,5 @@
 {
-  "spec": "1.16.0",
+  "spec": "1.17.0",
   "locales": {
     "bg": {
       "byRule": {
@@ -2929,6 +2929,7 @@
             "out": "¿De verdad?…"
           }
         ],
+        "dashes": [],
         "nbsp": [
           {
             "id": "es-nbsp-percent",
@@ -2987,7 +2988,7 @@
       ],
       "compare": null,
       "resolution": ["es", "es-MX"],
-      "disagreed": 0
+      "disagreed": 2
     },
     "sv": {
       "byRule": {
@@ -3236,18 +3237,18 @@
       "modes": [
         {
           "mode": "text",
-          "in": "Sordu: \"Bu, 'köşedeki' dedikleri dükkân değil mi?\" ... Ankara'da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright (c) 2026, baskı 40x60 cm.\nsay(\"a -- b ...\")",
-          "out": "Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright © 2026, baskı 40×60 cm.\nsay(“a -- b …”)"
+          "in": "Sordu: \"Bu, 'köşedeki' dedikleri dükkân değil mi?\" ... Ankara'da neredeyse 3 km yürüdük, ama kapalıydı. Copyright (c) 2026, baskı 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük, ama kapalıydı. Copyright © 2026, baskı 40×60 cm.\nsay(“a -- b …”)"
         },
         {
           "mode": "html",
-          "in": "<p>Sordu: \"Bu, 'köşedeki' dedikleri dükkân değil mi?\" ... Ankara'da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright (c) 2026, baskı 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
-          "out": "<p>Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright © 2026, baskı 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+          "in": "<p>Sordu: \"Bu, 'köşedeki' dedikleri dükkân değil mi?\" ... Ankara'da neredeyse 3 km yürüdük, ama kapalıydı. Copyright (c) 2026, baskı 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük, ama kapalıydı. Copyright © 2026, baskı 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
         },
         {
           "mode": "markdown",
-          "in": "Sordu: \"Bu, 'köşedeki' dedikleri dükkân değil mi?\" ... Ankara'da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright (c) 2026, baskı 40x60 cm.\n\n`say(\"a -- b ...\")`",
-          "out": "Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright © 2026, baskı 40×60 cm.\n\n`say(\"a -- b ...\")`"
+          "in": "Sordu: \"Bu, 'köşedeki' dedikleri dükkân değil mi?\" ... Ankara'da neredeyse 3 km yürüdük, ama kapalıydı. Copyright (c) 2026, baskı 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük, ama kapalıydı. Copyright © 2026, baskı 40×60 cm.\n\n`say(\"a -- b ...\")`"
         }
       ],
       "compare": null,

@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.16.0** · locales: **27** · rules: **9**.
+Spec version: **1.17.0** · locales: **27** · rules: **9**.
 
 ## Implementations
 
@@ -70,7 +70,7 @@ Spec version: **1.16.0** · locales: **27** · rules: **9**.
 | Slovenian (`sl`) | Vprašala je: »Ali ni to trgovina, ki ji pravijo ›tista za vogalom‹?« … Hodili smo – skoraj 3 km – in bila je zaprta. Copyright © 2026, format 40×60 cm. |
 | Spanish (`es`) | Preguntó: «¿No es esta la tienda que llaman “la de la esquina”?» … Caminamos -- casi 3 km -- y estaba cerrada. Copyright © 2026, tamaño 40×60 cm. |
 | Swedish (`sv`) | Hon frågade: ”Är det inte affären i ’hörnet’?” … Vi gick – nästan 3 km – och hittade den stängd. Copyright © 2026; trycket mäter 40×60 cm och kostar 10,5 % mer. |
-| Turkish (`tr`) | Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük -- ve kapalıydı. Copyright © 2026, baskı 40×60 cm. |
+| Turkish (`tr`) | Sordu: “Bu, ‘köşedeki’ dedikleri dükkân değil mi?” … Ankara’da neredeyse 3 km yürüdük, ama kapalıydı. Copyright © 2026, baskı 40×60 cm. |
 | Ukrainian (`uk`) | Він запитав: «Хіба це не та крамниця, яку називають “тією за рогом”?» … Ми йшли — майже 3 км — а вона була зачинена. Copyright © 2026, формат 40×60 см. |
 
 Every string above is real engine output, generated from `promo/examples.json` — not typed by hand.
@@ -102,7 +102,7 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | `sr` | Serbian | „…” | ’…’ | en dash, spaced | en dash, unspaced |
 | `sk` | Slovak | „…“ | ‚…‘ | en dash, spaced | en dash, spaced |
 | `sl` | Slovenian | »…« | ›…‹ | en dash, spaced | en dash, unspaced |
-| `es` | Spanish | «…» | “…” | unchanged | unchanged |
+| `es` | Spanish | «…» | “…” | em dash, spaced | unchanged |
 | `sv` | Swedish | ”…” | ’…’ | en dash, spaced | en dash, unspaced |
 | `tr` | Turkish | “…” | ‘…’ | unchanged | unchanged |
 | `uk` | Ukrainian | «…» | “…” | em dash, spaced | em dash, unspaced |

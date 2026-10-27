@@ -902,8 +902,9 @@ never reaches a digit-flanked token at all.
 
 The first locale with `"none"` on **both** fields, so the rule is a **total no-op** for it in the
 same provable sense `hyphen` is a no-op for a locale with empty lists. It is no longer the only
-one: `es` (spec 1.3.0) and `tr` (spec 1.6.0) are both-`none` too, each for its own reason and each
-recorded in its own locale file. This section stays written about `el` because its two fields are
+one: `tr` (spec 1.6.0) is both-`none` too, and `es` was from spec 1.3.0 until 1.17.0, each for its
+own reason and each recorded in its own locale file. (`es` now sets `parenthetical` to `"em-spaced"`
+as a known approximation — see its locale file — and keeps `range` at `"none"`.) This section stays written about `el` because its two fields are
 `"none"` for two *different* reasons, which is what makes it worth reading. Tokens are still
 classified — §3.3's "a range token is never reconsidered as a parenthetical" still holds — but no
 classification has an emission to make. The rows below are therefore all "no change" rows by

@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.16.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.16.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.17.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.17.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,15 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.17.0 — 27 October 2026
+
+Spanish text gets its parenthetical dashes: a hyphen or double hyphen between spaces becomes an em dash.
+
+- Until now `es` left a typed `-` or `--` between spaces exactly as it was. Measured on 1.16.0: `El plan - si existe - fracasa.` and `Caminamos -- casi 3 km -- y estaba cerrada.` came back unchanged. `es` now gives `El plan — si existe — fracasa.` and `Caminamos — casi 3 km — y estaba cerrada.`, with an em dash (U+2014) as the DPD of the RAE and ASALE describes the raya.
+- The spacing is an approximation, and this is the accepted cost. The DPD writes the pair closed up on the inside and spaced on the outside, `Llegó —por fin— a casa`. Locale data can only say "a space on both sides of every dash" or "on neither", so the output carries spaces inside the pair that the DPD does not allow. Text already written in the DPD form, `Llegó —por fin— a casa.`, and dialogue lines such as `—Hola —dijo—. ¿Qué tal?` are left as typed.
+- Two more inputs change that the norm would write differently. A tight pair, `El plan—si existe—fracasa.`, becomes `El plan — si existe — fracasa.`. A single spaced hyphen, `Madrid - la capital de España.`, becomes `Madrid — la capital de España.`, although the DPD does not use the raya between subject and predicate.
+- Numeric ranges and compounds are not touched: `las páginas 23-45` and `hispano-árabe` stay as typed, because the DPD writes both with the hyphen. Greek is the other locale the spacing limit affects, and its dashes are unchanged.
 
 ## 1.16.0 — 25 October 2026
 
