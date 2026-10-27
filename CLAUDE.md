@@ -21,7 +21,13 @@ npm run generate:all  # regenerate README.md, promo/ site, brand/BRANDBOOK.html 
 npm run lint          # eslint
 npm run format        # prettier --write .
 npx tsc --noEmit      # type-check the remaining .ts tooling and tests
+npx vitest run tests/promo/badge-languages.test.ts   # one test file (add -t "<name>" for one case)
+npm run test:readme-gen    # python tests for brand/tools/gen_readmes.py
+npm run test:font-acquisition  # python tests for brand/tools/gen_svg.py
+npm run check:actions-pinned && npm run check:workflow-shell-safety  # workflow hygiene (also in CI)
 ```
+
+`generate:all` is `gen:docs` → `gen:promo-bundle` → `gen:brandbook` → `gen:conformance`; each can be run alone.
 
 Run `npm run generate:all` after any edit to `spec/locales/` or `spec/fixtures/` — it regenerates
 the worked examples shown in `README.md` and the promo site from the real engine (via the
@@ -296,7 +302,7 @@ goal, and the constraint is evidentiary rather than numeric: a locale ships only
 triple (data + fixtures + citation).** Also four modes (`yaml` added by operator decision, spec 1.3.0). PLAN.md §4 lists non-goals that **must be
 refused without an explicit operator decision**: language auto-detection, hyphenation, optical
 alignment, spellcheck, hosted API, plugin/extension API, CMS integrations, demo page, more locales,
-framework wrappers. ARCHITECTURE.md §9 adds: no code generation or WASM core shared across
+framework wrappers (one exception, operator decision 2026-10-26: `remark-polytypo`, its own repository; a Prettier plugin and every other wrapper stay refused). ARCHITECTURE.md §9 adds: no code generation or WASM core shared across
 runtimes, no RPC between runtimes, no port started before the M4 dogfooding gate passes.
 
 If a decision comes down to "add a language" vs "make an existing language provably correct" —
