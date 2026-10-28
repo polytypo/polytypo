@@ -1060,7 +1060,8 @@ def footer_html(data, prefix):
         f'<li><a href="{H.escape(SKILL_URL)}">Agent SKILL.md</a></li>'
         f'<li><a href="{H.escape(REPO_URL)}">GitHub</a></li>'
         "</ul></div>"
-        f"<div><h2>Packages</h2><ul>{package_links}</ul></div>"
+        f"<div><h2>Packages</h2><ul>{package_links}"
+        f'<li><a href="{page_href(prefix, "docs/guides/remark-plugin")}">remark plugin</a></li></ul></div>'
         "</div>"
         f'<p class="footer-legal small">polytypo · spec {data["spec"]} · MIT for the code, separate '
         "terms for the brand assets · Created by "
