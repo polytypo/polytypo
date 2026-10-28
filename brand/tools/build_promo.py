@@ -981,6 +981,17 @@ _LANGUAGE_ICON_PATHS = {
 }
 
 
+# A plug, drawn for this site (no brand mark exists for the plugin): two prongs, a body and a cord.
+_PLUGIN_ICON_PATH = "M8 2h2v5H8zM14 2h2v5h-2zM6 8h12v3.5a6 6 0 0 1-4.5 5.81V22h-3v-4.69A6 6 0 0 1 6 11.5z"
+
+
+def _plugin_icon_svg():
+    return (
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" '
+        f'aria-hidden="true"><path d="{_PLUGIN_ICON_PATH}"/></svg>'
+    )
+
+
 def _language_icon_svg(name):
     d = _LANGUAGE_ICON_PATHS.get(name)
     if d is None:
@@ -1061,7 +1072,7 @@ def footer_html(data, prefix):
         f'<li><a href="{H.escape(REPO_URL)}">GitHub</a></li>'
         "</ul></div>"
         f"<div><h2>Packages</h2><ul>{package_links}"
-        f'<li><a href="{page_href(prefix, "docs/guides/remark-plugin")}">remark plugin</a></li></ul></div>'
+        f'<li><a href="{page_href(prefix, "docs/guides/remark-plugin")}">{_plugin_icon_svg()}remark plugin</a></li></ul></div>'
         "</div>"
         f'<p class="footer-legal small">polytypo · spec {data["spec"]} · MIT for the code, separate '
         "terms for the brand assets · Created by "
