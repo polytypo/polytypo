@@ -128,6 +128,10 @@ const ALLOWED_EXTERNAL_URLS = new Set([
   "https://img.shields.io/packagist/v/polytypo/polytypo.svg",
   // Per-runtime extras on /docs/runtimes/<language>/ — see RUNTIME_BADGES in build_promo.py.
   "https://img.shields.io/node/v/polytypo.svg",
+  "https://img.shields.io/npm/v/remark-polytypo.svg",
+  "https://img.shields.io/node/v/remark-polytypo.svg",
+  "https://img.shields.io/npm/types/remark-polytypo.svg",
+  "https://img.shields.io/npm/l/remark-polytypo.svg",
   "https://img.shields.io/npm/types/polytypo.svg",
   "https://img.shields.io/npm/dm/polytypo.svg",
   "https://img.shields.io/npm/l/polytypo.svg",

@@ -6,7 +6,7 @@ section: guides
 order: 25
 ---
 
-`remark-polytypo` is a [remark](https://github.com/remarkjs/remark) plugin for the JavaScript package. It applies `markdown` mode to the document a unified pipeline is processing and carries the result into the tree, so the pipeline you already have typesets its prose without a separate script.
+`remark-polytypo` is a [remark](https://github.com/remarkjs/remark) plugin for the JavaScript package. It is published on npm as [`remark-polytypo`](https://www.npmjs.com/package/remark-polytypo); the source is in [polytypo/remark-polytypo](https://github.com/polytypo/remark-polytypo). It applies `markdown` mode to the document a unified pipeline is processing and carries the result into the tree, so the pipeline you already have typesets its prose without a separate script.
 
 The goal of this guide: a working pipeline, the one ordering rule that matters, and what the plugin tells you when it leaves something alone.
 

@@ -699,6 +699,12 @@ RUNTIME_BADGES = {
         ("npm downloads per month", _SHIELDS + "npm/dm/polytypo.svg", "https://www.npmjs.com/package/polytypo"),
         ("License", _SHIELDS + "npm/l/polytypo.svg", None),
     ],
+    "remark-plugin": [
+        ("npm version", _SHIELDS + "npm/v/remark-polytypo.svg", "https://www.npmjs.com/package/remark-polytypo"),
+        ("Node.js versions", _SHIELDS + "node/v/remark-polytypo.svg", None),
+        ("TypeScript types", _SHIELDS + "npm/types/remark-polytypo.svg", None),
+        ("License", _SHIELDS + "npm/l/remark-polytypo.svg", None),
+    ],
     "python": [
         ("PyPI version", _SHIELDS + "pypi/v/polytypo.svg", "https://pypi.org/project/polytypo/"),
         ("Python versions", _SHIELDS + "pypi/pyversions/polytypo.svg", None),
@@ -728,7 +734,8 @@ RUNTIME_BADGES = {
 
 
 def runtime_badges_row(slug):
-    badges = RUNTIME_BADGES.get(slug.rsplit("/", 1)[-1]) if slug.startswith("docs/runtimes/") else None
+    is_badged = slug.startswith("docs/runtimes/") or slug == "docs/guides/remark-plugin"
+    badges = RUNTIME_BADGES.get(slug.rsplit("/", 1)[-1]) if is_badged else None
     if not badges:
         return ""
     parts = []
