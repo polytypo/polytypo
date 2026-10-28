@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.17.2`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.17.2 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.17.3`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.17.3 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,12 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.17.3 — 28 October 2026
+
+No change in output: the test files for `en-US`, `de-DE` and `fr` were tidied.
+
+- Housekeeping release. The conformance fixtures for `en-US`, `de-DE` and `fr` were reformatted with the project's code formatter: short lists now sit on one line and long ones are wrapped. Every case, every input and every expected output is the same, and so is each rule and each mode. Text you run through polytypo comes out exactly as it did on 1.17.2.
 
 ## 1.17.2 — 28 October 2026
 

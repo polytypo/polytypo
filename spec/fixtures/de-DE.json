@@ -1,5 +1,5 @@
 {
-  "spec": "1.17.2",
+  "spec": "1.17.3",
   "locale": "de-DE",
   "cases": [
     {
@@ -677,9 +677,7 @@
       "id": "de-de-yaml-colon-split-declines-growth",
       "rule": "dashes",
       "mode": "yaml",
-      "keys": [
-        "description"
-      ],
+      "keys": ["description"],
       "in": "description: a:--b\n",
       "out": "description: a:--b\n",
       "note": "modes.md §3.8.6: `:` is an opaque unit inside a plain scalar, so the dash token sits at a span extremity and the `-spaced` replacement (2 → 3) is discarded by the edge-growth rule of §3.4. Without the split this becomes `a: – b`, which no longer parses as one scalar."
@@ -688,9 +686,7 @@
       "id": "de-de-yaml-hash-split-declines-growth",
       "rule": "dashes",
       "mode": "yaml",
-      "keys": [
-        "description"
-      ],
+      "keys": ["description"],
       "in": "description: a--#b\n",
       "out": "description: a--#b\n",
       "note": "modes.md §3.8.6: `#` is an opaque unit inside a plain scalar for the same reason. Without the split this becomes `a – #b`, and everything from the hash becomes a comment."
@@ -699,9 +695,7 @@
       "id": "de-de-yaml-block-prose",
       "rule": "quotes",
       "mode": "yaml",
-      "keys": [
-        "description"
-      ],
+      "keys": ["description"],
       "in": "description: |\n  Er sagte \"hallo\" und ging\n",
       "out": "description: |\n  Er sagte „hallo“ und ging\n",
       "note": "modes.md §8 item 4: the same construct in a locale whose quote glyphs are structurally different from en-US, so a fixture is not the same English output with a different locale field."
@@ -710,9 +704,7 @@
       "id": "de-de-yaml-unlisted-key-untouched",
       "rule": "dashes",
       "mode": "yaml",
-      "keys": [
-        "description"
-      ],
+      "keys": ["description"],
       "in": "run: git diff -- a--b\n",
       "out": "run: git diff -- a--b\n",
       "note": "modes.md §3.8.2: the measured case. A keyless draft rewrote shell inside `run:`; `keys` is what makes it unreachable."
@@ -746,9 +738,7 @@
       "id": "de-de-yaml-three-dash-against-colon",
       "rule": "dashes",
       "mode": "yaml",
-      "keys": [
-        "description"
-      ],
+      "keys": ["description"],
       "in": "description: a:---b\n",
       "out": "description: a:---b\n",
       "note": "modes.md §3.8.6 with §3.4's character clause: without it this became `description: a: – b`, which no longer parses — `: ` is a mapping indicator. The two-dash companion de-de-yaml-colon-split-declines-growth is caught by the length clause; only this one needs the character clause."
@@ -757,9 +747,7 @@
       "id": "de-de-yaml-three-dash-against-hash",
       "rule": "dashes",
       "mode": "yaml",
-      "keys": [
-        "description"
-      ],
+      "keys": ["description"],
       "in": "description: a---#b\n",
       "out": "description: a---#b\n",
       "note": "modes.md §3.8.6 with §3.4's character clause: without it this became `description: a – #b`, and everything from the hash became a comment — the value silently truncated to `a –`."
@@ -769,10 +757,7 @@
       "rule": "quotes",
       "mode": "markdown",
       "dialect": "commonmark",
-      "frontmatterKeys": [
-        "title",
-        "summary"
-      ],
+      "frontmatterKeys": ["title", "summary"],
       "in": "---\ntitle: Er sagte \"hallo\" laut\nsummary: Noch \"eins\" hier\nslug: \"er-sagte-hallo\"\n---\n\nIm Text \"so\" hier.\n",
       "out": "---\ntitle: Er sagte „hallo“ laut\nsummary: Noch „eins“ hier\nslug: \"er-sagte-hallo\"\n---\n\nIm Text „so“ hier.\n",
       "note": "modes.md §3.7.4: two listed plain scalars in a locale whose quote glyphs differ from English, with an unlisted slug between the block and the body. Each listed scalar is its own span and the marks pair inside it, so the German pair appears three times and the slug keeps its straight quotes."
@@ -781,9 +766,7 @@
       "id": "de-de-yaml-single-quoted-escape-growth-declined",
       "rule": "dashes",
       "mode": "yaml",
-      "keys": [
-        "description"
-      ],
+      "keys": ["description"],
       "in": "description: 'a''--''b'\n",
       "out": "description: 'a''--''b'\n",
       "note": "modes.md §3.8.6 and §3.4: de-DE is a `-spaced` locale, so the dash would grow against a unit and the edge-growth rule discards it, as in fr. A second locale so that an implementation that does not split cannot pass on one cell alone."

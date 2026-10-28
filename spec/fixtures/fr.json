@@ -1,5 +1,5 @@
 {
-  "spec": "1.17.2",
+  "spec": "1.17.3",
   "locale": "fr",
   "cases": [
     {
@@ -752,9 +752,7 @@
       "rule": "nbsp",
       "mode": "markdown",
       "dialect": "commonmark",
-      "frontmatterKeys": [
-        "title"
-      ],
+      "frontmatterKeys": ["title"],
       "in": "---\ntitle: \"Chapitre 1: le début\"\ndate: \"2026-09-25\"\n---\n\nVoici: le corps.\n",
       "out": "---\ntitle: \"Chapitre 1 : le début\"\ndate: \"2026-09-25\"\n---\n\nVoici : le corps.\n",
       "note": "modes.md §3.7.4 with the locale that made §3.7.3 skip the block in the first place: inside a listed quoted scalar a colon is content, so fr inserts its narrow no-break space, while the unlisted date field and the key itself keep every byte. That contrast is the whole argument for a caller-named list."
@@ -863,9 +861,7 @@
       "id": "fr-yaml-narrow-space-in-quoted",
       "rule": "nbsp",
       "mode": "yaml",
-      "keys": [
-        "description"
-      ],
+      "keys": ["description"],
       "in": "description: \"Une note !\"\n",
       "out": "description: \"Une note !\"\n",
       "note": "modes.md §3.8.6: a quoted scalar's content is one span, and French spacing applies inside it exactly as in text mode."
@@ -874,9 +870,7 @@
       "id": "fr-yaml-no-space-across-colon-split",
       "rule": "nbsp",
       "mode": "yaml",
-      "keys": [
-        "description"
-      ],
+      "keys": ["description"],
       "in": "description: prose:more prose\n",
       "out": "description: prose:more prose\n",
       "note": "modes.md §3.8.6: the `:` is outside every span, so the insertion `nbsp` would make before it lands on a span edge and is discarded by §3.4. This is the accepted cost of the split, and it is what keeps the scalar parseable."
@@ -885,9 +879,7 @@
       "id": "fr-yaml-guillemets-across-block-lines",
       "rule": "quotes",
       "mode": "yaml",
-      "keys": [
-        "description"
-      ],
+      "keys": ["description"],
       "in": "description: |\n  Il a dit \"bonjour\n  monsieur\" et il est parti\n",
       "out": "description: |\n  Il a dit « bonjour\n  monsieur » et il est parti\n",
       "note": "modes.md §3.2 model C in a locale whose quotation output is guillemets plus U+00A0 rather than curly quotes — structurally different from the en-US case of the same shape."
@@ -953,9 +945,7 @@
       "id": "fr-yaml-plain-elision",
       "rule": "apostrophe",
       "mode": "yaml",
-      "keys": [
-        "description"
-      ],
+      "keys": ["description"],
       "in": "description: l'idee et l'autre\n",
       "out": "description: l’idee et l’autre\n",
       "note": "modes.md §3.8.6 in a locale where the apostrophe is elision rather than possession: the same cell as en-us-yaml-plain-apostrophe, and §8 item 4's requirement that a construct be pinned in more than one locale rather than the same English output with the locale field changed."
@@ -964,9 +954,7 @@
       "id": "fr-yaml-single-quoted-escape-elision-stays",
       "rule": "apostrophe",
       "mode": "yaml",
-      "keys": [
-        "description"
-      ],
+      "keys": ["description"],
       "in": "description: 'l''idee et l''autre'\n",
       "out": "description: 'l''idee et l''autre'\n",
       "note": "modes.md §3.8.6: in a locale where the apostrophe is elision, the unit is the elision, and it is outside every span. The scalar has nothing else to convert and comes back unchanged — the cost §7.13 measures, pinned so that it is a documented property and not a surprise."
@@ -975,9 +963,7 @@
       "id": "fr-yaml-single-quoted-escape-split",
       "rule": "dashes",
       "mode": "yaml",
-      "keys": [
-        "description"
-      ],
+      "keys": ["description"],
       "in": "description: 'l''idee -- et ''l''autre...'\n",
       "out": "description: 'l''idee — et ''l''autre…'\n",
       "note": "modes.md §3.8.6: a spaced dash and an ellipsis interior to a span convert, either side of units; the elisions stay straight."
@@ -986,9 +972,7 @@
       "id": "fr-yaml-single-quoted-escape-growth-declined",
       "rule": "dashes",
       "mode": "yaml",
-      "keys": [
-        "description"
-      ],
+      "keys": ["description"],
       "in": "description: 'a''--''b'\n",
       "out": "description: 'a''--''b'\n",
       "note": "modes.md §3.8.6 and §3.4: `fr` is a `-spaced` locale, so the dash would grow from 2 to 3 code points against a unit. The edge-growth rule discards it, as it does against `:` and `#`. The en-US case with the same input is applied, which is what makes this one discriminate."
@@ -997,9 +981,7 @@
       "id": "fr-yaml-single-quoted-no-escape",
       "rule": "dashes",
       "mode": "yaml",
-      "keys": [
-        "description"
-      ],
+      "keys": ["description"],
       "in": "description: 'deux -- trois'\n",
       "out": "description: 'deux — trois'\n",
       "note": "modes.md §3.8.6: a single-quoted scalar with nothing doubled inside it is claimed like any other. The style itself never disables the mode — only the doubling does, which is what the neighbouring case pins."
@@ -1018,10 +1000,7 @@
       "rule": "quotes",
       "mode": "markdown",
       "dialect": "commonmark",
-      "frontmatterKeys": [
-        "title",
-        "slug"
-      ],
+      "frontmatterKeys": ["title", "slug"],
       "in": "---\ntitle: \"a\rb\"\nslug: c \"d\"\n---\n\nBody \"q\" here.\n",
       "out": "---\ntitle: \"a\rb\"\nslug: c « d »\n---\n\nBody « q » here.\n",
       "note": "modes.md §3.7.4 per-line U+000D bail in a locale whose quotation marks carry their own spacing, so the declined line and the converted one are visibly different constructions rather than the same English output relabelled (§8 item 4)."
@@ -1030,11 +1009,7 @@
       "id": "fr-yaml-lone-cr-costs-one-line",
       "rule": "quotes",
       "mode": "yaml",
-      "keys": [
-        "title",
-        "slug",
-        "summary"
-      ],
+      "keys": ["title", "slug", "summary"],
       "in": "title: a \"b\"\nslug: c\rd \"e\"\n",
       "out": "title: a « b »\nslug: c\rd \"e\"\n",
       "note": "modes.md §3.8.4 step 9 in a locale whose quotation marks carry their own spacing: the line with the lone U+000D is declined and the line before it converts, so the cost is one line and not the document."
