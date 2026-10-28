@@ -45,7 +45,8 @@
     var ex = e.target.closest(".wb-expand");
     if (ex) toggleExpand(ex.closest(".workbench"));
     var co = e.target.closest("[data-copy-output]");
-    if (co) copyText(co, co.closest(".workbench").querySelector(".wb-output").textContent, "Copy output");
+    if (co)
+      copyText(co, co.closest(".workbench").querySelector(".wb-output").textContent, "Copy output");
     var seg = e.target.closest(".seg");
     if (seg) {
       seg.parentElement.querySelectorAll(".seg").forEach(function (b) {
@@ -60,20 +61,32 @@
     expand: '<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
     close: '<path d="M6 6l12 12M18 6 6 18"/>',
     right: '<path d="M5 12h14M13 6l6 6-6 6"/>',
-    left: '<path d="M19 12H5M11 6l-6 6 6 6"/>'
+    left: '<path d="M19 12H5M11 6l-6 6 6 6"/>',
   };
   function icon(name) {
-    return '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + "</svg>";
+    return (
+      '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      ICONS[name] +
+      "</svg>"
+    );
   }
   function setBtn(b, label, name, after) {
-    b.innerHTML = after ? "<span>" + label + "</span>" + icon(name) : icon(name) + "<span>" + label + "</span>";
+    b.innerHTML = after
+      ? "<span>" + label + "</span>" + icon(name)
+      : icon(name) + "<span>" + label + "</span>";
   }
   function copyText(b, text, label) {
     var done = function () {
       setBtn(b, "Copied", "check");
-      setTimeout(function () { setBtn(b, label, "copy"); }, 1500);
+      setTimeout(function () {
+        setBtn(b, label, "copy");
+      }, 1500);
     };
-    try { navigator.clipboard.writeText(text).then(done, done); } catch { done(); }
+    try {
+      navigator.clipboard.writeText(text).then(done, done);
+    } catch {
+      done();
+    }
   }
 
   function setTab(wb, which) {
@@ -119,19 +132,26 @@
   syncDocNav();
   mq.addEventListener("change", syncDocNav);
   /* ── Code blocks: syntax colours and a copy button ───────────────────────────────────── */
-  var KW = /^(?:import|from|as|const|let|var|function|return|if|else|try|catch|throw|new|use|require|def|end|class|package|func|type|struct|true|false|null|nil|None|True|False|await|async|export|default|npm|pip|go|gem|composer|install|get)$/;
+  var KW =
+    /^(?:import|from|as|const|let|var|function|return|if|else|try|catch|throw|new|use|require|def|end|class|package|func|type|struct|true|false|null|nil|None|True|False|await|async|export|default|npm|pip|go|gem|composer|install|get)$/;
   function esc(s) {
     return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
   function highlight(src) {
     if (/^\s*</.test(src)) {
       return esc(src).replace(/(&lt;\/?)([\w-]+)([^]*?)(&gt;)/g, function (m, o, tag, rest, c) {
-        rest = rest.replace(/([\w-]+)=(&quot;|")(.*?)\2/g, '<span class="tok-attr">$1</span>=<span class="tok-str">$2$3$2</span>');
+        rest = rest.replace(
+          /([\w-]+)=(&quot;|")(.*?)\2/g,
+          '<span class="tok-attr">$1</span>=<span class="tok-str">$2$3$2</span>',
+        );
         return o + '<span class="tok-tag">' + tag + "</span>" + rest + c;
       });
     }
-    var re = /(\/\/[^\n]*|#[^\n]*)|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)(\()?/g;
-    var out = "", last = 0, m;
+    var re =
+      /(\/\/[^\n]*|#[^\n]*)|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)(\()?/g;
+    var out = "",
+      last = 0,
+      m;
     while ((m = re.exec(src))) {
       out += esc(src.slice(last, m.index));
       if (m[1]) out += '<span class="tok-com">' + esc(m[1]) + "</span>";
@@ -168,13 +188,20 @@
     var code = document.querySelector("#badge-code code");
     code.innerHTML = highlight(
       '<script async src="https://polytypo.dev/badge.js"></script>\n<span data-polytypo-lang="' +
-        bsel.value + '" data-polytypo-theme="' + el.getAttribute("data-polytypo-theme") + '"></span>'
+        bsel.value +
+        '" data-polytypo-theme="' +
+        el.getAttribute("data-polytypo-theme") +
+        '"></span>',
     );
   }
   if (bsel) {
-    bsel.addEventListener("change", function () { syncBadge(); });
+    bsel.addEventListener("change", function () {
+      syncBadge();
+    });
     document.querySelectorAll("[data-badge-theme]").forEach(function (b) {
-      b.addEventListener("click", function () { syncBadge(b.getAttribute("data-badge-theme")); });
+      b.addEventListener("click", function () {
+        syncBadge(b.getAttribute("data-badge-theme"));
+      });
     });
   }
 

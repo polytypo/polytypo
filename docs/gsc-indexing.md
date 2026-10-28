@@ -16,7 +16,7 @@ Legacy `yes` / `yes (assumed)` rows were requested manually.
 | https://polytypo.dev/docs/getting-started/installation/ | target | 2026-10-18 | yes (assumed) | URL is unknown to Google | 2026-10-23 | Submitted and indexed | 2026-10-23 | 1 |
 | https://polytypo.dev/docs/getting-started/ | target | 2026-10-18 | yes (assumed) | URL is unknown to Google | 2026-10-23 | Submitted and indexed | 2026-10-23 | 1 |
 | https://polytypo.dev/showcase/ | target | 2026-10-18 | yes (assumed) | URL is unknown to Google | 2026-10-23 | Submitted and indexed | 2026-10-23 | 1 |
-| https://polytypo.dev/docs/modes/ | hub | 2026-10-18 | yes (assumed) | URL is unknown to Google | 2026-10-27 | Crawled – currently not indexed |  | 1 |
+| https://polytypo.dev/docs/modes/ | hub | 2026-10-18 | yes (assumed) | URL is unknown to Google | 2026-10-28 | Crawled – currently not indexed |  | 1 |
 | https://polytypo.dev/docs/rules/ | hub | 2026-10-18 | yes (assumed) | URL is unknown to Google | 2026-10-23 | Submitted and indexed | 2026-10-23 | 1 |
 | https://polytypo.dev/docs/api/ | hub | 2026-10-18 | yes (assumed) | URL is unknown to Google | 2026-10-23 | Submitted and indexed | 2026-10-23 | 1 |
 | https://polytypo.dev/docs/runtimes/ | hub | 2026-10-18 | yes (assumed) | URL is unknown to Google | 2026-10-23 | Submitted and indexed | 2026-10-23 | 1 |
@@ -63,16 +63,17 @@ Legacy `yes` / `yes (assumed)` rows were requested manually.
 | https://polytypo.dev/locales/el/ | other | 2026-10-26 | yes 2026-10-26 | URL is unknown to Google | 2026-10-27 | Submitted and indexed | 2026-10-26 | 1 |
 | https://polytypo.dev/locales/fi/ | other | 2026-10-26 | yes 2026-10-26 | URL is unknown to Google | 2026-10-27 | Submitted and indexed | 2026-10-26 | 1 |
 | https://polytypo.dev/locales/hr/ | other | 2026-10-26 | yes 2026-10-26 | URL is unknown to Google | 2026-10-27 | Submitted and indexed | 2026-10-26 | 1 |
-| https://polytypo.dev/locales/bg/ | other | 2026-10-27 | pending | URL is unknown to Google | 2026-10-27 | URL is unknown to Google | | 1 |
-| https://polytypo.dev/locales/hu/ | other | 2026-10-27 | pending | URL is unknown to Google | 2026-10-27 | URL is unknown to Google | | 1 |
-| https://polytypo.dev/locales/lt/ | other | 2026-10-27 | pending | URL is unknown to Google | 2026-10-27 | URL is unknown to Google | | 1 |
-| https://polytypo.dev/locales/pt-PT/ | other | 2026-10-27 | pending | URL is unknown to Google | 2026-10-27 | URL is unknown to Google | | 1 |
-| https://polytypo.dev/locales/ro/ | other | 2026-10-27 | pending | URL is unknown to Google | 2026-10-27 | URL is unknown to Google | | 1 |
-| https://polytypo.dev/locales/sl/ | other | 2026-10-27 | pending | URL is unknown to Google | 2026-10-27 | URL is unknown to Google | | 1 |
-| https://polytypo.dev/locales/sr/ | other | 2026-10-27 | pending | URL is unknown to Google | 2026-10-27 | URL is unknown to Google | | 1 |
-| https://polytypo.dev/locales/sk/ | other | 2026-10-27 | pending | URL is unknown to Google | 2026-10-27 | URL is unknown to Google | | 1 |
-| https://polytypo.dev/locales/tr/ | other | 2026-10-27 | pending | URL is unknown to Google | 2026-10-27 | URL is unknown to Google | | 1 |
-| https://polytypo.dev/locales/uk/ | other | 2026-10-27 | pending | URL is unknown to Google | 2026-10-27 | URL is unknown to Google | | 1 |
+| https://polytypo.dev/locales/bg/ | other | 2026-10-27 | yes 2026-10-28 | URL is unknown to Google | 2026-10-28 | Submitted and indexed | 2026-10-28 | 1 |
+| https://polytypo.dev/locales/hu/ | other | 2026-10-27 | yes 2026-10-28 | URL is unknown to Google | 2026-10-28 | Submitted and indexed | 2026-10-28 | 1 |
+| https://polytypo.dev/locales/lt/ | other | 2026-10-27 | yes 2026-10-28 | URL is unknown to Google | 2026-10-28 | Submitted and indexed | 2026-10-28 | 1 |
+| https://polytypo.dev/locales/pt-PT/ | other | 2026-10-27 | yes 2026-10-28 | URL is unknown to Google | 2026-10-28 | Submitted and indexed | 2026-10-28 | 1 |
+| https://polytypo.dev/locales/ro/ | other | 2026-10-27 | yes 2026-10-28 | URL is unknown to Google | 2026-10-28 | Submitted and indexed | 2026-10-28 | 1 |
+| https://polytypo.dev/locales/sl/ | other | 2026-10-27 | yes 2026-10-28 | URL is unknown to Google | 2026-10-28 | Submitted and indexed | 2026-10-28 | 1 |
+| https://polytypo.dev/locales/sr/ | other | 2026-10-27 | yes 2026-10-28 | URL is unknown to Google | 2026-10-28 | Submitted and indexed | 2026-10-28 | 1 |
+| https://polytypo.dev/locales/sk/ | other | 2026-10-27 | yes 2026-10-28 | URL is unknown to Google | 2026-10-28 | Submitted and indexed | 2026-10-28 | 1 |
+| https://polytypo.dev/locales/tr/ | other | 2026-10-27 | yes 2026-10-28 | URL is unknown to Google | 2026-10-28 | Submitted and indexed | 2026-10-28 | 1 |
+| https://polytypo.dev/locales/uk/ | other | 2026-10-27 | yes 2026-10-28 | URL is unknown to Google | 2026-10-28 | Submitted and indexed | 2026-10-28 | 1 |
+| https://polytypo.dev/docs/guides/remark-plugin/ | new | 2026-10-28 | pending | URL is unknown to Google | 2026-10-28 | URL is unknown to Google | | 1 |
 
 Operator decision 2026-10-18: `/locales/` was substantially reworked on 2026-10-17 after its last crawl; re-requested 2026-10-23 despite being indexed, picked first with 3 locale pages `de-DE`, `fr`, `ru` (demand pulled from GSC: none of them has impressions).
 
@@ -102,8 +103,9 @@ Operator decision 2026-10-18: `/locales/` was substantially reworked on 2026-10-
 | https://polytypo.dev/docs/guides/ | Submitted and indexed | 2026-10-23 | 2026-10-24 |
 | https://polytypo.dev/docs/guides/build-step/ | Submitted and indexed | 2026-10-23 | 2026-10-23 |
 | https://polytypo.dev/docs/guides/mdx-content/ | Submitted and indexed | 2026-10-17 | 2026-10-23 |
+| https://polytypo.dev/docs/guides/remark-plugin/ | URL is unknown to Google | Never | 2026-10-28 |
 | https://polytypo.dev/docs/guides/yaml-config/ | Submitted and indexed | 2026-10-17 | 2026-10-23 |
-| https://polytypo.dev/docs/modes/ | Crawled – currently not indexed | 2026-10-18 | 2026-10-27 |
+| https://polytypo.dev/docs/modes/ | Crawled – currently not indexed | 2026-10-18 | 2026-10-28 |
 | https://polytypo.dev/docs/modes/html/ | Submitted and indexed | 2026-10-17 | 2026-10-25 |
 | https://polytypo.dev/docs/modes/markdown/ | Submitted and indexed | 2026-10-23 | 2026-10-25 |
 | https://polytypo.dev/docs/modes/markdown/dialects/ | Submitted and indexed | 2026-10-25 | 2026-10-26 |
@@ -132,7 +134,7 @@ Operator decision 2026-10-18: `/locales/` was substantially reworked on 2026-10-
 | https://polytypo.dev/docs/runtimes/python/ | Submitted and indexed | 2026-10-21 | 2026-10-23 |
 | https://polytypo.dev/docs/runtimes/ruby/ | Submitted and indexed | 2026-10-25 | 2026-10-25 |
 | https://polytypo.dev/locales/ | Submitted and indexed | 2026-10-23 | 2026-10-24 |
-| https://polytypo.dev/locales/bg/ | URL is unknown to Google | Never | 2026-10-27 |
+| https://polytypo.dev/locales/bg/ | Submitted and indexed | 2026-10-28 | 2026-10-28 |
 | https://polytypo.dev/locales/cs/ | Submitted and indexed | 2026-10-23 | 2026-10-25 |
 | https://polytypo.dev/locales/de-CH/ | Submitted and indexed | 2026-10-26 | 2026-10-27 |
 | https://polytypo.dev/locales/de-DE/ | Submitted and indexed | 2026-10-23 | 2026-10-25 |
@@ -144,21 +146,21 @@ Operator decision 2026-10-18: `/locales/` was substantially reworked on 2026-10-
 | https://polytypo.dev/locales/fr-CA/ | Submitted and indexed | 2026-10-20 | 2026-10-25 |
 | https://polytypo.dev/locales/fr/ | Submitted and indexed | 2026-10-23 | 2026-10-25 |
 | https://polytypo.dev/locales/hr/ | Submitted and indexed | 2026-10-26 | 2026-10-27 |
-| https://polytypo.dev/locales/hu/ | URL is unknown to Google | Never | 2026-10-27 |
+| https://polytypo.dev/locales/hu/ | Submitted and indexed | 2026-10-28 | 2026-10-28 |
 | https://polytypo.dev/locales/it/ | Submitted and indexed | 2026-10-26 | 2026-10-27 |
-| https://polytypo.dev/locales/lt/ | URL is unknown to Google | Never | 2026-10-27 |
+| https://polytypo.dev/locales/lt/ | Submitted and indexed | 2026-10-28 | 2026-10-28 |
 | https://polytypo.dev/locales/nl/ | Submitted and indexed | 2026-10-26 | 2026-10-27 |
 | https://polytypo.dev/locales/pl/ | Submitted and indexed | 2026-10-23 | 2026-10-25 |
 | https://polytypo.dev/locales/pt-BR/ | Submitted and indexed | 2026-10-26 | 2026-10-27 |
-| https://polytypo.dev/locales/pt-PT/ | URL is unknown to Google | Never | 2026-10-27 |
-| https://polytypo.dev/locales/ro/ | URL is unknown to Google | Never | 2026-10-27 |
+| https://polytypo.dev/locales/pt-PT/ | Submitted and indexed | 2026-10-28 | 2026-10-28 |
+| https://polytypo.dev/locales/ro/ | Submitted and indexed | 2026-10-28 | 2026-10-28 |
 | https://polytypo.dev/locales/ru/ | Submitted and indexed | 2026-10-23 | 2026-10-25 |
-| https://polytypo.dev/locales/sl/ | URL is unknown to Google | Never | 2026-10-27 |
-| https://polytypo.dev/locales/sr/ | URL is unknown to Google | Never | 2026-10-27 |
-| https://polytypo.dev/locales/sk/ | URL is unknown to Google | Never | 2026-10-27 |
+| https://polytypo.dev/locales/sl/ | Submitted and indexed | 2026-10-28 | 2026-10-28 |
+| https://polytypo.dev/locales/sr/ | Submitted and indexed | 2026-10-28 | 2026-10-28 |
+| https://polytypo.dev/locales/sk/ | Submitted and indexed | 2026-10-28 | 2026-10-28 |
 | https://polytypo.dev/locales/sv/ | Submitted and indexed | 2026-10-25 | 2026-10-25 |
-| https://polytypo.dev/locales/tr/ | URL is unknown to Google | Never | 2026-10-27 |
-| https://polytypo.dev/locales/uk/ | URL is unknown to Google | Never | 2026-10-27 |
+| https://polytypo.dev/locales/tr/ | Submitted and indexed | 2026-10-28 | 2026-10-28 |
+| https://polytypo.dev/locales/uk/ | Submitted and indexed | 2026-10-28 | 2026-10-28 |
 | https://polytypo.dev/manifesto/ | Submitted and indexed | 2026-10-07 | 2026-10-23 |
 | https://polytypo.dev/playground/ | Submitted and indexed | 2026-10-18 | 2026-10-23 |
 | https://polytypo.dev/showcase/ | Submitted and indexed | 2026-10-18 | 2026-10-23 |
@@ -182,3 +184,4 @@ Weak pages ("Crawled – currently not indexed") with their Todoist strengthenin
 | 2026-10-25 (2nd run) | 31 | 58/79 | 9 | 10 of 10 requested earlier on 2026-10-25 (seen indexed the same day, crawl 2026-10-25) | 2026-10-25 | Sitemap 79 live = 79 in GSC, not stale. Re-planned 0 pending rows. Re-inspected the 10 earlier picks and the 20 other non-indexed URLs. No demand data (impressions ≤7 per page); 9 eligible under the 3-per-template cap, not picked because of the cap: 11 locales (bg de-CH el fi hr hu pt-PT ro sk tr uk). Picks: markdown mdx, dialects, skip-list; yaml keys, quoting; rules/ranges; locales it, nl, pt-BR (largest language communities first). Live pre-check: 200, no noindex, self canonical. /docs/modes/ still Crawled – currently not indexed (crawl 2026-10-18), no new evidence. |
 | 2026-10-26 | 25 | 60/82 | 15 | 2 of 2 submitted 2026-10-25 (dialects, mdx; seen indexed, crawl 2026-10-25) | 2026-10-25 | Sitemap grew to 82 URLs (new locales lt sl sr) vs 79 in GSC, read 1 day ago, not stale. Re-planned 7 pending rows. Re-inspected the 21 non-indexed URLs and the 3 new ones, plus skip-list moved to Discovered. No demand data; 15 is a hard rule: rules and 3-per-template cap gave 7 (docs skip-list, yaml keys, yaml quoting, rules/ranges; locales it, nl, pt-BR), 8 random filler locales without the cap: de-CH el fi hr lt sr tr uk. Not picked: bg hu pt-PT ro sk sl. Live pre-check: 200, no noindex, self canonical. /docs/modes/ still Crawled – currently not indexed (crawl 2026-10-18), no new evidence. |
 | 2026-10-27 | 22 | 71/82 | 10 | 11 of 11 requested 2026-10-26 (seen indexed within 1 day, crawl 2026-10-26) | 2026-10-25 | Sitemap 82 live vs 79 in GSC, read 2 days ago, not stale. Re-planned 4 pending rows (lt sr tr uk). Re-inspected the 22 non-indexed URLs. Only 10 eligible URLs remain, so all 10 are picked (fewer than 15): locales bg hu lt pt-PT ro sl sr sk tr uk. No demand data; same template, cap not applied as the pool is exhausted. Live pre-check: 200, no noindex, self canonical. /docs/modes/ still Crawled – currently not indexed (crawl 2026-10-18), no new evidence. |
+| 2026-10-28 | 12 | 81/83 | 1 | 10 of 10 submitted 2026-10-28 (locales bg hu lt pt-PT ro sl sr sk tr uk; seen indexed, crawl 2026-10-28) | 2026-10-25 | Sitemap 83 live vs 79 in GSC, read 3 days ago; new URL docs/guides/remark-plugin/ (guide published 2026-10-28), not stale. Re-planned 0 pending rows. Re-inspected the 10 locales, /docs/modes/ and the new URL. Only 1 eligible URL, so only it is picked (class new, no demand data). Live pre-check: 200, no noindex, self canonical. /docs/modes/ still Crawled – currently not indexed (crawl 2026-10-18, referrers html and markdown/mdx), no new evidence; polytypo/polytypo#67 not yet deployed (Edited on empty). |
