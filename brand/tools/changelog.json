@@ -3,7 +3,7 @@
   "releases": [
     {
       "version": "1.17.3",
-      "date": "2026-10-28",
+      "date": "2026-10-29",
       "headline": "No change in output: the test files for `en-US`, `de-DE` and `fr` were tidied.",
       "items": [
         {

@@ -12,7 +12,7 @@ not want, and the fixtures pin both sides.
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
 
-## 1.17.3 — 28 October 2026
+## 1.17.3 — 29 October 2026
 
 No change in output: the test files for `en-US`, `de-DE` and `fr` were tidied.
 
