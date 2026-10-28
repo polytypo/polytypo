@@ -19,7 +19,7 @@ step 9 with §3.8.5's content-line condition, added in 1.10.0, §3.8.4's carriag
 continuation line with the bails of §3.8.6 that use it, added in 1.11.0, and §3.8.4's node lines,
 declined keys, node markers and own-line region, with the changes to steps 1, 3, 4, 5, 6, 7 and 8
 that go with them, added in 1.11.0, and §3.9 with the amendments it carries to §3.1, §3.5 step 2,
-§4, §5, §7 item 7 and §8, added in 1.13.0).
+§4, §5, §7 item 7 and §8, added in 1.13.0, and §3.4's delimiter-neighbour rule with §3.7.3's autolink-literal tail, terminator guard and reference labels, and the amendments they carry to §3.4's deletion paragraph, §5 items 2 and 3, its fifth-part note and testing obligation, and §6, added in 1.17.2).
 
 ---
 
@@ -356,9 +356,13 @@ Together they distinguish exactly the cases that matter:
 | U+0020 → U+00A0 (`nbsp`)               | yes         | 1 → 1     | **applied** — U+00A0 is not U+0020                          |
 | insertion of U+202F (`nbsp` N1/N2)     | yes         | 0 → 1     | **discarded**, as before                                    |
 
-**Deletion at an edge is not restricted**, and does not need to be. A rule can only delete
-U+0020 (`spaces`), and a deletion cannot bring into existence a structural token that was not
-already there — it can only remove a character from inside a span. The whitespace that _is_
+**Deletion at an edge is not restricted by the edge-growth rule**, and does not need to be. A rule
+can only delete U+0020 (`spaces`), and a deletion cannot bring into existence a structural token
+that was not already there — it can only remove a character from inside a span. **That sentence
+was true of every token the parser had already recognised, and false of one the parser had
+declined to recognise.** An unpaired `_`, `*` or `~` is literal text inside a span, and whether it
+is a delimiter depends on what stands beside it; deleting a space is enough to change that, and so
+is inserting or replacing one. The delimiter-neighbour rule below closes it. The whitespace that _is_
 structural in Markdown — a line prefix, a list marker's indentation, the two spaces of a hard
 break — is protected by the −2 line marker (§3.2): it sits beside a `BREAK`, and `spaces`
 refuses to touch a run bordering one, in every mode.
@@ -370,6 +374,43 @@ and `a<em>--</em>b` is now left alone as well in every `-spaced` locale (§7.9).
 fixed point, but it no longer demonstrates anything: `dashes` §3.2 step 2a declines every token
 containing an authored U+2013 or U+2014, so that input is now refused a step earlier and never
 reaches the edge-growth rule. `--` is the live carrier.)
+
+**The delimiter-neighbour rule (`markdown` only, spec 1.17.2).** In `markdown` mode the three
+code points `DELIM` = U+002A, U+005F, U+007E are literal content wherever the parser found no
+delimiter pair, and CommonMark decides whether a run of them can open or close emphasis from the
+code points on either side of it: whitespace or not. Measured, with the pre-1.17.2 behaviour:
+
+| Mode       | Input                                | Locale  | Output before 1.17.2          | What changed                                                                       |
+| ---------- | ------------------------------------ | ------- | ----------------------------- | ---------------------------------------------------------------------------------- |
+| `markdown` | `see booking._ , emails.booking_ here` | `en-GB` | `see booking._, emails.booking_ here` | `spaces` deleted the space; the two underscores now pair as emphasis       |
+| `markdown` | `x _ -- y_`                          | `en-US` | `x _—y_`                      | `dashes` collapsed `␣--␣`, removing the space beside the underscore; same result  |
+| `markdown` | `*a.**!`                             | `fr`    | `*a.**` U+202F `!`            | `nbsp` inserted a narrow no-break space before the `!`; the double asterisk now closes and pairs |
+
+Write `W` for the set of Unicode whitespace in the CommonMark sense (U+0009, U+000A, U+000C,
+U+000D, U+0020, U+00A0, U+1680, U+2000–U+200A, U+202F, U+205F, U+3000). For an edit replacing
+`cp[p … q]` with `w` of length `r` (an insertion has `q = p − 1`), evaluated on the array the rule
+read:
+
+- if `cp[p−1]` is in `DELIM`, let `old = cp[p]` and `new = w[0]` when `r > 0`, otherwise `cp[q+1]`;
+- if `cp[q+1]` is in `DELIM`, let `old = cp[q]` and `new = w[r−1]` when `r > 0`, otherwise `cp[p−1]`.
+
+> **The edit is discarded if, on either side, exactly one of `old` and `new` is in `W`.** A marker
+> belongs to neither class, a position outside the array is neither, and the test reads no other
+> code point and no parser state.
+
+It applies to `markdown` and to no other mode: `text` has no emphasis, and `html` has no
+delimiters in that sense. It is a function of the array alone, so it fires identically on every
+run (§5 item 3). It is deliberately a test of **adjacency to whitespace**, not a reimplementation
+of CommonMark's flanking rules, and it is therefore stricter than flanking requires: in `fr`,
+`«~25` (U+00AB U+007E …) keeps its tight form although the tilde would flank the same way after a
+no-break space. That is accepted: a delimiter beside a space that a rule would change is rare in
+prose.
+
+**Its premise is that no rule swaps punctuation for non-punctuation beside a delimiter.** CommonMark
+0.31 counts symbols as punctuation, so `(c)` → `©` and `+/-` → `±` keep a delimiter's class, and
+the rule tests whitespace alone. A parser that implements an older definition (punctuation only)
+would classify them differently, and two fixtures (`en-us-markdown-commonmark-delimiter-neighbour-symbols-kept`)
+make such a port fail rather than drift. No rule emits a member of `DELIM`.
 
 ### 3.5 Applying the result
 
@@ -515,6 +556,44 @@ Skipped, exhaustively:
   unless tables are recognised at all, and §6's `[P: html, markdown]` marking on `dashes`' URL
   bullet holds **only** because GFM autolink literals make a bare `https://…` a link — in pure
   CommonMark a bare URL is ordinary text and would be typeset;
+- **the tail of a bare web address (spec 1.17.2).** Wherever the source text of a **maximal span**
+  contains `http://`, `https://` or `www.` (ASCII letters in either case, **with no test on the
+  character before it**: a parser may read a link directly after a digit), everything from there up to — and **not** including — the first U+0020,
+  U+0009, U+000A, U+000D or `<`, or the end of the span, is skipped. The same holds from the
+  position where a parser-recognised GFM autolink literal that begins with one of those prefixes
+  ends, up to the same point.
+  This is a scan of the source and not a question put to a parser, because parsers disagree about
+  where such an address may start (`"www.example.com"`: GFM's own tokenizer reads no link there,
+  mdast's autolink transform reads one) and where it ends. The rules would otherwise change what
+  ends it: a closing `"` that becomes U+201D, an apostrophe that becomes U+2019, or `...` that
+  becomes U+2026 is not ASCII punctuation, and the parser reading the _output_ takes it into the
+  link destination. That is damage to the link, not to the typography. A quotation mark that cannot
+  convert leaves its partner unpaired, so the pair is left as typed rather than half-converted.
+  **An e-mail address is not covered**: it ends where the parser says, and no rule changes that.
+  A **maximal span** is the run of processable text with no source between its pieces: the pieces a
+  parser reports separately (an unpaired `_` or `*` is one) are **merged before this scan and before
+  §3.4's delimiter-neighbour rule reads its neighbours**. §7 item 5's 'should' is a 'must' in
+  `markdown`, since both depend on it;
+- **the terminator of a bare web address (spec 1.17.2).** A span that begins at the U+0020 or
+  U+0009 that ends such an address discards every edit that starts at its first code point, unless
+  the replacement begins with U+0020. Collapsing `␣--␣` to a closed-up dash would delete the space
+  and let the address run on into the dash and the next word, and a no-break space is not
+  guaranteed to end an address in every GFM parser. Edits that keep a U+0020 there are applied:
+  `Read https://example.com/a - b` still becomes `Read https://example.com/a – b` in `en-GB`;
+- **the label of a reference (spec 1.17.2).** In `[Smith's book]` and `[Smith's book][]` the link
+  text is also the label matched against `[Smith's book]: …`, and that label is skipped (above).
+  Converting the text makes it match nothing and the link disappears, so the text of a **shortcut**
+  or **collapsed** reference is skipped as well, and so is the alt text of such an image. A reference
+  is a bracketed run that the parser formed from a definition: **shortcut** when its source ends at
+  the `]` of the text, **collapsed** when `[]` follows it directly, **full** when a label in `[…]`
+  follows. Labels match as CommonMark §4.7 matches them, with no locale-dependent case mapping.
+  Square brackets that match no definition are not a reference and their text converts; the text of a full
+  reference, `[text][ref]`, is prose and converts. The label of a **footnote call** `[^x]` and of a
+  **footnote definition** `[^x]:` is skipped for the same reason; the 1.17.1 text above already said
+  so for the definition, and the JavaScript engine did not do it (measured on 1.17.1). **Accepted:** text that matched no
+  definition in the input and matches one after conversion (`[it's]` with `[it’s]: …` elsewhere)
+  becomes a link; closing that direction needs the definitions compared, and it creates a link
+  rather than destroying one;
 - HTML blocks and inline raw HTML, which are handed to the `html` skip list of §3.6 rather than
   processed as markdown. **Inline HTML arrives as isolated tags with Markdown between them**,
   not as a tree, so §3.6's subtree rule must be implemented as a **stack of open skipped
@@ -1661,7 +1740,7 @@ they do not carry it over for free either. Write `M` for the whole mode transfor
    indented code. `dashes` emits U+0020 in every `-spaced` locale. The claim was wrong when it
    was written, and it is what hid the defect now repaired in §3.4.
 
-   The honest discharge has four parts, and the third is **positional rather than alphabetic** —
+   The honest discharge has four parts (a fifth, for what the parser decides, was added in 1.17.2 and follows them), and the third is **positional rather than alphabetic** —
    the same move as CO-S in `pipeline-idempotency.md` §5.1a, applied to _where_ a character may
    be placed rather than to _which_ characters exist:
 
@@ -1675,11 +1754,22 @@ they do not carry it over for free either. Write `M` for the whole mode transfor
    - **U+0020 is made safe by position, not by inertness.** The edge-growth rule (§3.4) means a
      rule can introduce a code point only at a position **strictly interior** to a span. An
      interior position has span content on both sides, so an emitted U+0020 can never become
-     adjacent to a delimiter — delimiters are structural tokens, outside every span — and can
+     adjacent to a **recognised** delimiter — those are structural tokens, outside every span — and can
      never begin a line, because a line terminator is always a −2 marker and a line start is
      therefore a span edge or outside spans entirely. **The characters that decide Markdown
      structure and the positions a rule may write to are disjoint sets.** That is what makes the
      partition stable; no property of U+0020 itself is relied upon.
+   - **A delimiter the parser did not recognise is the exception, and it is closed by §3.4's
+     delimiter-neighbour rule (spec 1.17.2).** The sentence above holds for tokens outside every
+     span. An unpaired `*`, `_` or `~` is _inside_ a span as literal text, and a rule that changes
+     whether whitespace stands beside it can make it a delimiter: this was a false statement until
+     1.17.2, and §3.4's delimiter-neighbour rule is the repair. The same is true of the end of a bare URL, which only
+     the parser decides, and of a reference label, which only a definition elsewhere decides — §3.7.3
+     skips the tail of an autolink literal and the text of a shortcut or collapsed reference for the
+     same reason. **This list is not claimed to be complete.** A deletion
+     can also create a backslash escape or a character reference from literal text (`foo\ ,`
+     becomes `foo\,` and `AT&amp ;T` becomes `AT&amp;T`): the parse tree keeps its shape and its
+     text changes, which a shape comparison does not see. That class is not closed by 1.17.2.
    - **Deletion** is only ever of a U+0020, and structural whitespace borders a `BREAK` — a real
      one in `text` mode, a −2 marker in the others — where `spaces` refuses to act
      (`spaces.md` §3.2 step 4). A deletion therefore cannot turn `- item` into `-item`, collapse
@@ -1720,7 +1810,9 @@ they do not carry it over for free either. Write `M` for the whole mode transfor
 
    > **The fifth part, normative and binding on future modes: the predicate that decides whether
    > a span exists must not read anything a rule can change.** In `html` and `markdown` the
-   > question never arises, because span selection reads only the document's structure. `yaml`'s
+   > question does not arise for the span _predicate_, because span selection reads only the
+   > document's structure. It arose for the span's _neighbourhood_, which a parser also reads: see
+   > the delimiter-neighbour rule and §3.7.3's autolink tail. `yaml`'s
    > first draft decided a plain scalar's processability from **its own text** — it had to contain
    > a space and a letter — and `spaces` can delete that space. One line was enough to falsify the
    > obligation: `ref: ${{ steps.pin.outputs.sha }}` yields one span, comes back as
@@ -1748,8 +1840,10 @@ they do not carry it over for free either. Write `M` for the whole mode transfor
 3. **Redistribution is deterministic.** Guaranteed by §3.4: no edit spans a marker, and any edit
    that would place code points at a span extremity which were not there before — an insertion at
    a boundary, or a replacement longer than what it replaced — is discarded rather than assigned
-   to a side. The discard is a pure function of `(p, q, r, s₀, s₁)`, so it happens identically on
-   every run: a rule that was declined at an edge once is declined there always, and the output
+   to a side. The discard is a pure function of the array and its span table (since 1.17.2: of
+   `(p, q, r, s₀, s₁)`, of the code points beside the edit for §3.4's delimiter-neighbour rule, and
+   of whether the span begins at the end of a web address for §3.7.3's terminator guard), so it
+   happens identically on every run: a rule that was declined at an edge once is declined there always, and the output
    contains nothing for the next run to reconsider.
 
 Given 1–3, `M(M(x)) = M(x)`.
@@ -1773,6 +1867,21 @@ between two letters. Since 1.7.0 the `markdown` run must also carry a template w
 the single-unit templates cannot reach. §3.8.7 records what each run did and did not establish — including that a sweep comparing
 structure and types is blind to a string whose content is damaged, and that an alphabet without
 `---` reported clean twice while §3.4's `r = d` hole was open.
+
+Since 1.17.2 the `markdown` run must compare, between the input and the output, **the parse
+tree including link destinations and reference identifiers**, not only the span partition: the
+defect behind the delimiter-neighbour rule changed the tree while the partition looked the same,
+and a sweep that compares spans alone cannot see it. Its alphabet must include `*`, `_`, `~`, a
+space, U+002D, U+0022, U+0027, `.`, `!` and `:`, and its templates must include a **bare URL
+followed by each of those**, and a reference link with its definition. Run it in locales whose
+`dashes` collapses a spaced dash (`en-US`), whose `nbsp` inserts before `!` (`fr`), and whose
+quotes are curly, because each reaches a different rule. The tree to compare is **mdast's, as `remark-parse` with `remark-gfm` produces it** (and, where a
+runtime has another parser, that parser's as well), not only the tokenizer's own: the tokenizer reads
+no link in `"www.example.com"`, mdast does, and that is the class §3.7.3's scan closes. Templates
+must include an address with `_`, `*` and `~` inside it after `"`, `'` and `(`, and an address
+directly after a digit. **Two classes are carved out because they are accepted, not because
+they are untested**: a text that matched no definition in the input and matches one in the output
+(§3.7.3's accepted case), and an e-mail address, whose end only the parser decides.
 
 ---
 
@@ -1826,6 +1935,12 @@ means the claim holds in those modes only.
 
 No rule's §4 becomes _false_ in a mode. Two become narrower ([P: html, markdown]); none becomes
 rule-local.
+
+**Since 1.17.2 every rule's reach in `markdown` is narrower in three further places**, none of which
+makes a §4 statement false: beside an unpaired `*`, `_` or `~` where an edit would change whether
+whitespace stands next to it (§3.4); in the tail of a bare web address and at the space that ends it
+(§3.7.3); and in the text of a shortcut or collapsed reference and in footnote labels (§3.7.3). In
+each, the rule is given fewer chances to fire and the text is left as typed.
 
 ---
 

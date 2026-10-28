@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.17.1`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.17.1 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.17.2`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.17.2 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,15 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.17.2 — 28 October 2026
+
+Markdown mode no longer changes how a document parses: unpaired `*`, `_` and `~`, bare web addresses and reference links are left alone where a fix would alter them.
+
+- In `markdown` mode three kinds of edit could make the output parse differently from the input. Measured on 1.17.1: `see booking._ , emails.booking_ here` (`en-GB`) came back as `see booking._, emails.booking_ here`, and the two underscores now formed emphasis that the text never had. `x _ -- y_` in `en-US` and a double asterisk before `!` in `fr` did the same. These edits are now left unmade when they would change whether a space stands beside an unpaired `*`, `_` or `~`. The same edit beside ordinary text is still made.
+- A quotation mark, an apostrophe or `...` directly after a bare web address (`http://`, `https://`, `www.`) was converted to a character that the parser then read as part of the link. Measured on 1.17.1: `Visit "https://example.com/a" now` became `Visit ‘https://example.com/a’ now`, and the link address ended in ’. The address and everything attached to it, up to the next space, is now left as typed, and so is a pair of quotation marks around it. A spaced hyphen after the address still becomes the locale's dash; a dash that would remove the space after the address, and the no-break space before `:`, `;`, `!` or `?` in `fr`, are left as typed.
+- The text of a shortcut or collapsed reference link, `[Smith's book]` or `[Smith's book][]` with its definition `[Smith's book]: …`, is the label that is matched against the definition. Converting its apostrophe made it match nothing, and the link disappeared. The text, the alt text of such an image, and the labels of footnote references and definitions are now left as typed. Brackets that match no definition, and the text of a full reference `[text][ref]`, are processed as before.
+- The accepted costs: the check looks at whether a space is beside the character, not at the full rules for emphasis, so it also leaves alone an edit that would have been harmless (`«~25` in `fr` keeps its tight form); text that matched no definition and matches one after conversion (`[it's]` with `[it’s]: …` elsewhere) becomes a link. `text` and `html` modes are unchanged.
 
 ## 1.17.1 — 27 October 2026
 

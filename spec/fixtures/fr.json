@@ -1,5 +1,5 @@
 {
-  "spec": "1.17.1",
+  "spec": "1.17.2",
   "locale": "fr",
   "cases": [
     {
@@ -1078,6 +1078,42 @@
         }
       ],
       "note": "modes.md §3.9.4, accepted cost: the narrow space would be inserted at a span edge next to the hole, which the edge-growth rule (§3.4) discards. Without protect it is inserted."
+    },
+    {
+      "id": "fr-markdown-commonmark-delimiter-space-insertion",
+      "rule": "nbsp",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "*a.**! et mot !\n",
+      "out": "*a.**! et mot !\n",
+      "note": "modes.md §3.4 delimiter-neighbour rule: a space inserted before the exclamation mark would make the double asterisk a closing delimiter that pairs with the first asterisk; that edit is discarded. The same insertion after a word (mot !) is applied."
+    },
+    {
+      "id": "fr-markdown-commonmark-delimiter-tilde-insertion",
+      "rule": "nbsp",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Voir ~25 et « ~25 et «~25 enfin\n",
+      "out": "Voir ~25 et « ~25 et «~25 enfin\n",
+      "note": "modes.md §3.4 delimiter-neighbour rule, tilde as a delimiter: inserting a no-break space between the opening guillemet and a tilde is declined, because the tilde could then open strikethrough; the spaced form (« ~25) is already correct. An accepted cost: the rule tests adjacency to whitespace, not CommonMark's full flanking rules."
+    },
+    {
+      "id": "fr-markdown-commonmark-autolink-literal-terminator-nbsp",
+      "rule": "nbsp",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Voir https://example.com/a : oui, et voilà : non\n",
+      "out": "Voir https://example.com/a : oui, et voilà : non\n",
+      "note": "modes.md §3.7.3 terminator guard, accepted cost: a no-break space is not U+0020 and GFM parsers differ on whether it ends a URL, so the space after the URL is left as typed; the one after a word converts."
+    },
+    {
+      "id": "fr-markdown-commonmark-autolink-literal-email-terminator-converts",
+      "rule": "nbsp",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Écrire à foo@example.com ; oui\n",
+      "out": "Écrire à foo@example.com ; oui\n",
+      "note": "modes.md §3.7.3 terminator guard: it applies to http, https and www addresses only, so the space after an e-mail address converts as before."
     }
   ]
 }

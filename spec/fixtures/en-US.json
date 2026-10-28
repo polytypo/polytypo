@@ -1,5 +1,5 @@
 {
-  "spec": "1.17.1",
+  "spec": "1.17.2",
   "locale": "en-US",
   "cases": [
     {
@@ -4601,6 +4601,33 @@
       ],
       "throws": "POLYTYPO_UNKNOWN_RULE",
       "note": "modes.md §3.9.2, validation order: an unknown rule id is reported before a malformed protect."
+    },
+    {
+      "id": "en-us-markdown-commonmark-delimiter-dash-collapse",
+      "rule": "dashes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "x _ -- y_ and a -- b\n",
+      "out": "x _ -- y_ and a—b\n",
+      "note": "modes.md §3.4 delimiter-neighbour rule: collapsing the spaced dash to a closed-up dash would remove the space beside the underscore and let it open emphasis; that edit is discarded. The same collapse beside ordinary text (a -- b) is applied."
+    },
+    {
+      "id": "en-us-markdown-commonmark-delimiter-neighbour-symbols-kept",
+      "rule": "symbols",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "x*(c) y* and a*+/-5 b*\n",
+      "out": "x*© y* and a*±5 b*\n",
+      "note": "modes.md §3.4 delimiter-neighbour rule, premise: a replacement of punctuation or a symbol by another symbol beside a delimiter keeps the delimiter's class under CommonMark 0.31, so (c) and +/- still convert there. A parser that classifies symbols differently would read these two lines differently, and this fixture is what makes it fail."
+    },
+    {
+      "id": "en-us-markdown-commonmark-autolink-literal-terminator-collapse",
+      "rule": "dashes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Read https://example.com/a -- fine and b -- c\n",
+      "out": "Read https://example.com/a -- fine and b—c\n",
+      "note": "modes.md §3.7.3 terminator guard: collapsing the spaced dash would delete the space that ends the URL, and the parser would read the dash and the next word as part of it; that edit is discarded. The same collapse away from a URL (b -- c) is applied."
     }
   ]
 }

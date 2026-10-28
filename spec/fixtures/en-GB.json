@@ -1,5 +1,5 @@
 {
-  "spec": "1.17.1",
+  "spec": "1.17.2",
   "locale": "en-GB",
   "cases": [
     {
@@ -1476,6 +1476,177 @@
         }
       ],
       "note": "modes.md §3.9.2: touching ranges are one protected run and give one marker."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-delimiter-space-deletion",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "see booking._ , emails.booking_ here, and a , b.\n",
+      "out": "see booking._ , emails.booking_ here, and a, b.\n",
+      "note": "modes.md §3.4 delimiter-neighbour rule: deleting the space before the comma would turn the two underscores into emphasis delimiters that the input does not have; that edit is discarded. The same deletion beside ordinary text (a , b) is applied."
+    },
+    {
+      "id": "en-gb-markdown-mdx-delimiter-space-deletion",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "see booking._ , emails.booking_ here, and a , b.\n",
+      "out": "see booking._ , emails.booking_ here, and a, b.\n",
+      "note": "modes.md §3.4: the delimiter-neighbour rule holds in both dialects."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-autolink-literal-closing-quote",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Visit \"https://example.com/a\" now, and \"this\" converts.\n",
+      "out": "Visit \"https://example.com/a\" now, and ‘this’ converts.\n",
+      "note": "modes.md §3.7.3 autolink-literal tail: the closing mark sits inside the tail, which is skipped, so the pair is left as typed rather than half-converted. A converted closing mark is not ASCII punctuation and would become part of the link destination."
+    },
+    {
+      "id": "en-gb-markdown-mdx-autolink-literal-closing-quote",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "Visit \"https://example.com/a\" now, and \"this\" converts.\n",
+      "out": "Visit \"https://example.com/a\" now, and ‘this’ converts.\n",
+      "note": "modes.md §3.7.3: the autolink-literal tail is skipped in both dialects."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-autolink-literal-single-quotes",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "See 'https://example.com/a' now and 'this' too.\n",
+      "out": "See 'https://example.com/a' now and ‘this’ too.\n",
+      "note": "modes.md §3.7.3 autolink-literal tail: the same for a single-quoted URL; the pair is left as typed and the pair around an ordinary word converts."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-autolink-literal-ellipsis",
+      "rule": "ellipsis",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Read https://example.com/a... then wait...\n",
+      "out": "Read https://example.com/a... then wait…\n",
+      "note": "modes.md §3.7.3 autolink-literal tail: dots directly after a bare URL belong to the tail and stay; the dots after a word convert."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-autolink-literal-after-punctuation",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "He said \"www.example.com/a\" today and \"this\" too.\n",
+      "out": "He said \"www.example.com/a\" today and ‘this’ too.\n",
+      "note": "modes.md §3.7.3 autolink-literal tail: a www. address is found in the source wherever it starts, not only where a parser recognises a link, because parsers disagree about what may precede it. The pair around it is left as typed."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-autolink-literal-delimiter-inside",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "He said \"www.example.com/a_b\" today and \"this\" too.\n",
+      "out": "He said \"www.example.com/a_b\" today and ‘this’ too.\n",
+      "note": "modes.md §3.7.3 autolink-literal tail: the scan runs over the merged span, so an underscore inside the address, which the parser reports as a separate token, does not hide the tail from it."
+    },
+    {
+      "id": "en-gb-markdown-mdx-autolink-literal-delimiter-inside",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "He said \"www.example.com/a_b\" today and \"this\" too.\n",
+      "out": "He said \"www.example.com/a_b\" today and ‘this’ too.\n",
+      "note": "modes.md §3.7.3: the same in the mdx dialect."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-autolink-literal-after-digit",
+      "rule": "ellipsis",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "See 1https://example.com/a... more and wait...\n",
+      "out": "See 1https://example.com/a... more and wait…\n",
+      "note": "modes.md §3.7.3 autolink-literal tail: the address is found wherever the scheme or www. appears, with no test on the preceding character, because a parser may read a link directly after a digit."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-autolink-literal-email-converts",
+      "rule": "ellipsis",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Mail foo@example.com... then wait...\n",
+      "out": "Mail foo@example.com… then wait…\n",
+      "note": "modes.md §3.7.3 autolink-literal tail: the tail rule covers http, https and www addresses only. An e-mail address ends where the parser says and the dots after it convert, as before."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-autolink-literal-terminator-kept",
+      "rule": "dashes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Read https://example.com/a - fine and b - c\n",
+      "out": "Read https://example.com/a – fine and b – c\n",
+      "note": "modes.md §3.7.3 terminator guard: an edit that keeps U+0020 at the terminator is applied; a spaced hyphen after a bare URL still becomes an en dash when a word precedes the URL. The address alone at the start of the text is left as typed."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-shortcut-reference-label",
+      "rule": "apostrophe",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "See [Smith's book] and [Smith's book][] and [it's][ref].\n\n[Smith's book]: https://example.com\n[ref]: https://example.com\n",
+      "out": "See [Smith's book] and [Smith's book][] and [it’s][ref].\n\n[Smith's book]: https://example.com\n[ref]: https://example.com\n",
+      "note": "modes.md §3.7.3 reference label: the text of a shortcut or collapsed reference link is also the label matched against its definition, so it is skipped; the text of a full reference link is free prose and converts."
+    },
+    {
+      "id": "en-gb-markdown-mdx-shortcut-reference-label",
+      "rule": "apostrophe",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "See [Smith's book] and [Smith's book][] and [it's][ref].\n\n[Smith's book]: https://example.com\n[ref]: https://example.com\n",
+      "out": "See [Smith's book] and [Smith's book][] and [it’s][ref].\n\n[Smith's book]: https://example.com\n[ref]: https://example.com\n",
+      "note": "modes.md §3.7.3: the reference-label rule holds in both dialects."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-image-shortcut-reference-label",
+      "rule": "apostrophe",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "See ![it's] and ![it's][] and ![it's][ref].\n\n[it's]: https://example.com/i.png\n[ref]: https://example.com/i.png\n",
+      "out": "See ![it's] and ![it's][] and ![it’s][ref].\n\n[it's]: https://example.com/i.png\n[ref]: https://example.com/i.png\n",
+      "note": "modes.md §3.7.3 reference label: the alt text of a shortcut or collapsed image reference is its label and is skipped; a full reference's alt text converts."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-bracketed-text-without-definition",
+      "rule": "apostrophe",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "See [it's] and it's.\n",
+      "out": "See [it’s] and it’s.\n",
+      "note": "modes.md §3.7.3 reference label: square brackets that match no definition are not a link, so the text converts. A port that skips every bracketed run fails here."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-reference-label-defined-later-accepted-cost",
+      "rule": "apostrophe",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "See [it's] and it's.\n\n[it’s]: https://example.com\n",
+      "out": "See [it’s] and it’s.\n\n[it’s]: https://example.com\n",
+      "note": "modes.md §3.7.3 reference label, accepted cost: text that matched no definition in the input converts to the spelling a definition uses and becomes a link. This direction cannot be closed without comparing definitions, and it creates a link rather than destroying one."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-footnote-labels",
+      "rule": "apostrophe",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Note[^a's] and it's.\n\n[^a's]: it's text\n",
+      "out": "Note[^a's] and it’s.\n\n[^a's]: it’s text\n",
+      "note": "modes.md §3.7.3: the label of a footnote call and of a footnote definition is skipped, so the two keep matching; the prose around and inside the footnote converts."
+    },
+    {
+      "id": "en-gb-markdown-mdx-footnote-labels",
+      "rule": "apostrophe",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "Note[^a's] and it's.\n\n[^a's]: it's text\n",
+      "out": "Note[^a's] and it’s.\n\n[^a's]: it’s text\n",
+      "note": "modes.md §3.7.3: footnote labels are skipped in both dialects."
     }
   ]
 }
