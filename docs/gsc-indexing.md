@@ -80,7 +80,7 @@ Operator decision 2026-10-18: `/locales/` was substantially reworked on 2026-10-
 
 | URL | Status | Last crawl | Checked |
 | --- | ------ | ---------- | ------- |
-| https://polytypo.dev/ | Submitted and indexed | 2026-10-19 | 2026-10-23 |
+| https://polytypo.dev/ | Submitted and indexed | 2026-10-30 | 2026-10-31 |
 | https://polytypo.dev/changelog/ | Submitted and indexed | 2026-10-19 | 2026-10-23 |
 | https://polytypo.dev/contribute/ | Submitted and indexed | 2026-10-23 | 2026-10-24 |
 | https://polytypo.dev/docs/ | Submitted and indexed | 2026-10-18 | 2026-10-23 |
@@ -102,16 +102,16 @@ Operator decision 2026-10-18: `/locales/` was substantially reworked on 2026-10-
 | https://polytypo.dev/docs/guides/ | Submitted and indexed | 2026-10-23 | 2026-10-24 |
 | https://polytypo.dev/docs/guides/build-step/ | Submitted and indexed | 2026-10-23 | 2026-10-23 |
 | https://polytypo.dev/docs/guides/mdx-content/ | Submitted and indexed | 2026-10-17 | 2026-10-23 |
-| https://polytypo.dev/docs/guides/remark-plugin/ | Submitted and indexed | 2026-10-29 | 2026-10-29 |
+| https://polytypo.dev/docs/guides/remark-plugin/ | Submitted and indexed | 2026-10-29 | 2026-10-31 |
 | https://polytypo.dev/docs/guides/yaml-config/ | Submitted and indexed | 2026-10-17 | 2026-10-23 |
-| https://polytypo.dev/docs/modes/ | Submitted and indexed | 2026-10-18 | 2026-10-30 |
+| https://polytypo.dev/docs/modes/ | Submitted and indexed | 2026-10-18 | 2026-10-31 |
 | https://polytypo.dev/docs/modes/html/ | Submitted and indexed | 2026-10-17 | 2026-10-25 |
 | https://polytypo.dev/docs/modes/markdown/ | Submitted and indexed | 2026-10-23 | 2026-10-25 |
 | https://polytypo.dev/docs/modes/markdown/dialects/ | Submitted and indexed | 2026-10-25 | 2026-10-26 |
 | https://polytypo.dev/docs/modes/markdown/frontmatter/ | Submitted and indexed | 2026-10-25 | 2026-10-25 |
 | https://polytypo.dev/docs/modes/markdown/mdx/ | Submitted and indexed | 2026-10-25 | 2026-10-26 |
 | https://polytypo.dev/docs/modes/markdown/skip-list/ | Submitted and indexed | 2026-10-26 | 2026-10-27 |
-| https://polytypo.dev/docs/modes/overview/ | Submitted and indexed | 2026-10-18 | 2026-10-25 |
+| https://polytypo.dev/docs/modes/overview/ | Submitted and indexed | 2026-10-18 | 2026-10-31 |
 | https://polytypo.dev/docs/modes/text/ | Submitted and indexed | 2026-10-23 | 2026-10-25 |
 | https://polytypo.dev/docs/modes/yaml/ | Submitted and indexed | 2026-10-23 | 2026-10-25 |
 | https://polytypo.dev/docs/modes/yaml/keys/ | Submitted and indexed | 2026-10-26 | 2026-10-27 |
@@ -196,3 +196,4 @@ One row per GSC "Why pages aren't indexed" reason. `Validation` = state shown by
 | 2026-10-28 | 12 | 81/83 | 1 | 10 of 10 submitted 2026-10-28 (locales bg hu lt pt-PT ro sl sr sk tr uk; seen indexed, crawl 2026-10-28) | 2026-10-25 | Sitemap 83 live vs 79 in GSC, read 3 days ago; new URL docs/guides/remark-plugin/ (guide published 2026-10-28), not stale. Re-planned 0 pending rows. Re-inspected the 10 locales, /docs/modes/ and the new URL. Only 1 eligible URL, so only it is picked (class new, no demand data). Live pre-check: 200, no noindex, self canonical. /docs/modes/ still Crawled – currently not indexed (crawl 2026-10-18, referrers html and markdown/mdx), no new evidence; polytypo/polytypo#67 not yet deployed (Edited on empty). |
 | 2026-10-29 | 2 | 82/83 | 0 | 0 requested (the 1 pending row, remark-plugin, was re-planned: indexed on its own, crawl 2026-10-29, never submitted) | 2026-10-25 | Sitemap 83 live vs 79 in GSC, read 4 days ago, not stale. Nothing eligible: only /docs/modes/ is not indexed (Crawled – currently not indexed, crawl 2026-10-18, no new evidence); polytypo/polytypo#67 still open, Edited on empty. |
 | 2026-10-30 | 50 | 83/83 | 0 | 0 requested (nothing pending) | 2026-10-25 | Sitemap 83 live vs 79 in GSC, read 5 days ago, not stale. GSC Page indexing report (last update 2026-10-23): 36 indexed, 41 not indexed in 3 reasons; Validate fix started for all three (see Validation). Re-inspected all 41 reported URLs plus /docs/modes/: every one is indexed today, /docs/modes/ included (status flipped from Crawled with no recrawl, crawl 2026-10-18). Nothing eligible for the queue; no weak pages left. |
+| 2026-10-31 | 4 | 83/83 | 0 | 0 requested (nothing pending) | 2026-10-25 | Sitemap 83 live vs 79 in GSC, read 6 days ago, no new or removed URLs, not stale. Page indexing report unchanged (last update 2026-10-23, 36 indexed / 41 not indexed, all three validations still Started since 2026-10-30). Re-inspected /, /docs/modes/, /docs/modes/overview/, remark-plugin: all indexed. Nothing eligible; no weak pages. |
