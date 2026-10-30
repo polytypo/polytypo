@@ -684,7 +684,13 @@ def package_badges_row():
     parts.append(
         f'<img src="{_SHIELDS}npm/l/polytypo.svg" alt="License" height="20">'
     )
-    return f'<p class="pkg-badges">{"".join(parts)}</p>'
+    # The committed figure is a floor of the all-time download count, which only grows, so it stays
+    # true; scripts/inject-downloads.mjs replaces it with a fresh one at deploy time, after the
+    # zero-drift gate (the live number changes daily and cannot be part of the generated output).
+    return (
+        f'<p class="pkg-badges">{"".join(parts)}</p>'
+        '<p class="pkg-downloads">More than <span data-downloads>20,000</span> downloads since September 8, 2026.</p>'
+    )
 
 
 # Extra live badges per runtime page, in the order that ecosystem expects: version, what it runs on,

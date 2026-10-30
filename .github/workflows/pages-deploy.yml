@@ -349,6 +349,12 @@ jobs:
             promo/vendor/polytypo.browser.js \
             brand/BRANDBOOK.html
 
+      # The download count changes daily, so it is measured here, after the drift check,
+      # and written into the already-verified page. If a registry is unreachable the line stays
+      # as committed (see scripts/inject-downloads.mjs); the deploy never fails over it.
+      - name: Fill in the download count
+        run: node scripts/inject-downloads.mjs promo/index.html
+
       # The search index is built from the verified output and published beside it; it is not
       # committed, so it is not part of the drift check above.
       - name: Build the search index

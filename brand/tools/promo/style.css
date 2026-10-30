@@ -2264,13 +2264,36 @@ h3:hover > .anchor,
   height: 20px;
 }
 
-/* Home rhythm: four steps only. 12 label to heading, 16 between related text, 32 between blocks,
-   80 between sections (the hero included). */
+/* Home rhythm: the hero stacks its elements at one step (24) measured box to box, 80 between
+   sections (the hero included). Text boxes carry empty leading above the capitals and below the
+   baseline that badges, buttons and cards do not, so the step is corrected per pair until the
+   visible gap (cap height to baseline) is a uniform 32. Re-measure after changing a font size or
+   line height here. */
 .page-head--home {
   padding-bottom: var(--section-y);
 }
 
-.page-head--home .pkg-badges {
+.page-head--home.page-head > * {
+  margin: 0;
+}
+
+.page-head--home.page-head > * + * {
+  margin-top: var(--space-5);
+}
+
+.page-head--home.page-head > .display {
+  margin-top: 22px;
+}
+
+.page-head--home.page-head > .lead {
+  margin-top: 17px;
+}
+
+.page-head--home.page-head > .lead + p {
+  margin-top: 18px;
+}
+
+.page-head--home.page-head > .pkg-badges {
   margin-top: var(--space-6);
 }
 
