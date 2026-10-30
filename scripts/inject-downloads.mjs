@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// Fills the home page's download line at deploy time. The figure is the all-time downloads
-// summed over the registries (npm, RubyGems, Packagist), plus PyPI's last 180 days, which is all
-// PyPI's public statistics keep, so it is a lower bound and "more than" holds; it is rounded down
-// to whole thousands. pkg.go.dev has no counter. If any registry cannot be read, or the sum is
+// Fills the home page's download line at deploy time. The figure is the exact sum of downloads
+// since the first release (2026-09-08) reported by npm, RubyGems, Packagist and PyPI; PyPI's
+// public statistics keep 180 days, which covers that whole span, and exclude mirror traffic.
+// pkg.go.dev has no counter, so "more than" holds. If any registry cannot be read, or the sum is
 // under one thousand, the committed figure stays.
 import { readFile, writeFile } from "node:fs/promises";
 
@@ -42,8 +42,7 @@ try {
   process.exit(0);
 }
 
-const thousands = Math.floor(total / 1000) * 1000;
-if (thousands < 1000) {
+if (total < 1000) {
   console.warn(`downloads figure left as committed: ${total} is under 1,000`);
   process.exit(0);
 }
@@ -54,8 +53,6 @@ if (!pattern.test(html)) {
   console.error(`${PAGE} has no downloads line to fill`);
   process.exit(1);
 }
-const filled = html.replace(pattern, `$1${thousands.toLocaleString("en-US")}$2`);
+const filled = html.replace(pattern, `$1${total.toLocaleString("en-US")}$2`);
 await writeFile(PAGE, filled);
-console.log(
-  `downloads line set to More than ${thousands.toLocaleString("en-US")} (measured ${total})`,
-);
+console.log(`downloads line set to More than ${total.toLocaleString("en-US")}`);

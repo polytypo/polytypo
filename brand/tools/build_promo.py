@@ -689,7 +689,7 @@ def package_badges_row():
     # zero-drift gate (the live number changes daily and cannot be part of the generated output).
     return (
         f'<p class="pkg-badges">{"".join(parts)}</p>'
-        '<p class="pkg-downloads">More than <span data-downloads>20,000</span> downloads since September 8, 2026.</p>'
+        '<p class="pkg-downloads">More than <span data-downloads>20,165</span> downloads since September 8, 2026.</p>'
     )
 
 
