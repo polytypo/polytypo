@@ -19,7 +19,7 @@ step 9 with §3.8.5's content-line condition, added in 1.10.0, §3.8.4's carriag
 continuation line with the bails of §3.8.6 that use it, added in 1.11.0, and §3.8.4's node lines,
 declined keys, node markers and own-line region, with the changes to steps 1, 3, 4, 5, 6, 7 and 8
 that go with them, added in 1.11.0, and §3.9 with the amendments it carries to §3.1, §3.5 step 2,
-§4, §5, §7 item 7 and §8, added in 1.13.0, and §3.4's delimiter-neighbour rule with §3.7.3's autolink-literal tail, terminator guard and reference labels, and the amendments they carry to §3.4's deletion paragraph, §5 items 2 and 3, its fifth-part note and testing obligation, and §6, added in 1.17.2).
+§4, §5, §7 item 7 and §8, added in 1.13.0, and §3.4's delimiter-neighbour rule with §3.7.3's autolink-literal tail, terminator guard and reference labels, and the amendments they carry to §3.4's deletion paragraph, §5 items 2 and 3, its fifth-part note and testing obligation, and §6, added in 1.17.2, and §3.4's escape-and-reference rule with the amendments it carries to §3.6, §3.7.3, §5 item 2's fifth-part note, §5 item 3 and the testing obligation, added in 1.17.4).
 
 ---
 
@@ -412,6 +412,54 @@ the rule tests whitespace alone. A parser that implements an older definition (p
 would classify them differently, and two fixtures (`en-us-markdown-commonmark-delimiter-neighbour-symbols-kept`)
 make such a port fail rather than drift. No rule emits a member of `DELIM`.
 
+**The escape-and-reference rule (`markdown` and `html`, spec 1.17.4).** The delimiter-neighbour rule
+guards a change in how a parser _classifies_ a token. A second class changes the _text_ a parser
+produces while the parse tree keeps its shape, which a comparison of shapes cannot see. A U+005C
+that stands in a span as literal text has no escape in it, because the character after it is a
+space; a `&` followed by letters and a space is no character reference (§3.6 keeps a `&` that
+begins no well-formed reference inside its span). Deleting the space joins the two to what comes
+next:
+
+| Mode       | Input        | Locale  | Output before 1.17.4 | What changed                                                      |
+| ---------- | ------------ | ------- | -------------------- | ----------------------------------------------------------------- |
+| `markdown` | `foo\ , bar` | `en-GB` | `foo\, bar`          | the backslash now escapes the comma; it renders as `foo, bar`     |
+| `markdown` | `AT&amp ;T`  | `en-GB` | `AT&amp;T`           | a character reference now exists; it renders as `AT&T`           |
+| `html`     | `<p>a &hellip ;b</p>` | `en-GB` | `<p>a &hellip;b</p>` | a character reference now exists; it renders as `a …b`  |
+
+A backslash escape or a well-formed reference that the parser already read lies outside every span
+(§3.6, §3.7.3), so only a **literal** U+005C or `&` inside a span can be affected, and no parity
+of backslashes needs counting. The rule applies to every span of a document, those that come from
+inline HTML or an HTML block in a Markdown document included. With `ASCIIPUNCT` = U+0021–U+002F, U+003A–U+0040, U+005B–U+0060 and
+U+007B–U+007E, and `p`, `q`, `w`, `r`, `old` and `new` as in the delimiter-neighbour rule:
+
+> **The edit is discarded if either of these holds, evaluated on the array the rule read. Item 1
+> applies to `markdown` only, since a backslash is literal in HTML; item 2 applies to `markdown`
+> and `html`.**
+>
+> 1. `cp[p−1]` is U+005C, `old = cp[p]`, `new = w[0]` when `r > 0` and otherwise `cp[q+1]`, and
+>    exactly one of `old` and `new` is in `ASCIIPUNCT`.
+> 2. The edit is a deletion (`r = 0`) and, with `a = cp[p−1]` and `b = cp[q+1]` made adjacent, the
+>    array then holds a **reference shape** that contains both: U+0026, an optional U+0023, one or
+>    more ASCII letters or digits, and U+003B (`a` may be the U+0026 and `b` the U+0023). A shape is read as a left-to-right scan over those
+>    classes; it asks whether the _name_ is a known one no more than the delimiter-neighbour rule
+>    asks whether a flank is a valid one.
+
+A marker belongs to no class, a position outside the array is none, and the test reads no other
+code point and no parser state, so it is a function of the array alone and fires identically on
+every run (§5 item 3). It applies to `markdown` and `html` and to no other mode: `text` has neither
+escapes nor references, and `yaml` selects spans by a scan that reads none (§3.8).
+
+**Its premise is that no rule emits an ASCII letter, a digit, U+0023, U+0026, U+003B or
+U+005C** (`ellipsis` emits U+002E, which is none of these), so item 2 has nothing to read in a
+replacement and tests deletions only, and, outside raw HTML, a literal U+005C is never followed by ASCII
+punctuation in the input, since that pair would be an escape. Inside raw HTML a backslash is literal
+and item 1 still applies to it: that is **accepted** conservatism (a quotation mark after a backslash
+in an HTML block is left as typed), deterministic and identical in every runtime. `spaces` is the only rule that deletes. The rule is deliberately a test of _shape_, not a
+lookup of the reference names an HTML5 parser knows, because a name table would be a data file
+in five runtimes; it is therefore stricter than a parser: `AT&T ;x` (en-US) keeps its space,
+though `&T;` is no reference. **That is the accepted cost**, together with a literal backslash
+before a space and punctuation, which is rare in prose.
+
 ### 3.5 Applying the result
 
 1. Extract the span sequence from the source. Record each span's **source offsets**.
@@ -444,7 +492,8 @@ Skipped, exhaustively and exactly:
   unit. A text node containing one is split into spans around it, so the reference's spelling is
   preserved exactly, which is the only way `&nbsp;` does not become a literal U+00A0 and back.
   **A bare `&` that begins no well-formed reference stays inside its span.** No rule emits or
-  deletes `&`, so it is in no danger; lifting it out would create a boundary that suppresses
+  deletes `&`, so it is in no danger itself (a space deleted beside it can complete a reference,
+  which §3.4's escape-and-reference rule, 1.17.4, closes); lifting it out would create a boundary that suppresses
   conversions on both sides of it for nothing — `Tom & Jerry's "book"` would lose the pairing of
   its quotation marks. Well-formedness, not the presence of an ampersand, is what makes a
   skipped region;
@@ -547,6 +596,17 @@ Skipped, exhaustively:
 - fenced code blocks, including the info string and the fences;
 - indented code blocks — **`commonmark` only**; MDX has none;
 - inline code spans, including the backticks;
+- **every backslash escape and every character reference the parser recognises (spec 1.17.4)**, as
+  an opaque unit, exactly as `html` treats a well-formed reference (§3.6): the span is split
+  around it and the unit lies outside every span. A port that took spans from text-node positions
+  would put `\,` and `&amp;` inside a span and disagree with the others about every deletion
+  beside them (`x &amp; , y` keeps its space). **"Recognises" is CommonMark 0.31's definition
+  (§2.5, with GFM), and it differs from §3.6's:** `&` followed by a name from the HTML5 named
+  character reference list, **case-sensitively** (`&AMP;` and `&Abreve;` are references; `&Amp;`
+  and `&foo;` are not), or by `#` and 1 to 7 decimal digits, or by `#x` or `#X` and 1 to 6
+  hexadecimal digits, then `;`. A value out of Unicode's range (`&#0;`, `&#x110000;`) is still a
+  reference. `html` mode tests the _shape_ of a reference (§3.6), not its name, so `&foo;` is
+  opaque there and a span's content here;
 - autolinks `<https://…>` — **`commonmark` only**;
 - **link and image destinations and titles** — the `(…)` of `[text](url "title")`, and the
   definition line of a reference link. The **link text** is processable;
@@ -1769,7 +1829,8 @@ they do not carry it over for free either. Write `M` for the whole mode transfor
      same reason. **This list is not claimed to be complete.** A deletion
      can also create a backslash escape or a character reference from literal text (`foo\ ,`
      becomes `foo\,` and `AT&amp ;T` becomes `AT&amp;T`): the parse tree keeps its shape and its
-     text changes, which a shape comparison does not see. That class is not closed by 1.17.2.
+     text changes, which a shape comparison does not see. That class was not closed by 1.17.2 and
+     is closed by §3.4's escape-and-reference rule (spec 1.17.4).
    - **Deletion** is only ever of a U+0020, and structural whitespace borders a `BREAK` — a real
      one in `text` mode, a −2 marker in the others — where `spaces` refuses to act
      (`spaces.md` §3.2 step 4). A deletion therefore cannot turn `- item` into `-item`, collapse
@@ -1841,8 +1902,9 @@ they do not carry it over for free either. Write `M` for the whole mode transfor
    that would place code points at a span extremity which were not there before — an insertion at
    a boundary, or a replacement longer than what it replaced — is discarded rather than assigned
    to a side. The discard is a pure function of the array and its span table (since 1.17.2: of
-   `(p, q, r, s₀, s₁)`, of the code points beside the edit for §3.4's delimiter-neighbour rule, and
-   of whether the span begins at the end of a web address for §3.7.3's terminator guard), so it
+   `(p, q, r, s₀, s₁)`, of the code points beside the edit for §3.4's delimiter-neighbour rule, of
+   the same code points and the run of letters and digits around the join for §3.4's
+   escape-and-reference rule (since 1.17.4), and of whether the span begins at the end of a web address for §3.7.3's terminator guard), so it
    happens identically on every run: a rule that was declined at an edge once is declined there always, and the output
    contains nothing for the next run to reconsider.
 
@@ -1879,7 +1941,10 @@ quotes are curly, because each reaches a different rule. The tree to compare is 
 runtime has another parser, that parser's as well), not only the tokenizer's own: the tokenizer reads
 no link in `"www.example.com"`, mdast does, and that is the class §3.7.3's scan closes. Templates
 must include an address with `_`, `*` and `~` inside it after `"`, `'` and `(`, and an address
-directly after a digit. **Two classes are carved out because they are accepted, not because
+directly after a digit. **Since 1.17.4 the comparison also covers the text values of the tree**, not only its shape: the
+defect behind the escape-and-reference rule left the shape unchanged. The alphabet must then include
+U+005C, `&`, `#`, `;`, `,` and a letter, and the templates a literal backslash and a literal
+`&name` each followed by a space and by each punctuation mark. **Two classes are carved out because they are accepted, not because
 they are untested**: a text that matched no definition in the input and matches one in the output
 (§3.7.3's accepted case), and an e-mail address, whose end only the parser decides.
 

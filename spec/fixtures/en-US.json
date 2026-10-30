@@ -1,5 +1,5 @@
 {
-  "spec": "1.17.3",
+  "spec": "1.17.4",
   "locale": "en-US",
   "cases": [
     {
@@ -4257,6 +4257,24 @@
       "in": "x*(c) y* and a*+/-5 b*\n",
       "out": "x*© y* and a*±5 b*\n",
       "note": "modes.md §3.4 delimiter-neighbour rule, premise: a replacement of punctuation or a symbol by another symbol beside a delimiter keeps the delimiter's class under CommonMark 0.31, so (c) and +/- still convert there. A parser that classifies symbols differently would read these two lines differently, and this fixture is what makes it fail."
+    },
+    {
+      "id": "en-us-markdown-commonmark-reference-shape-is-not-a-name-lookup",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "AT&T ;x and a ; b.\n",
+      "out": "AT&T ;x and a; b.\n",
+      "note": "modes.md §3.4 escape-and-reference rule, accepted cost: the test is of shape, not of the names an HTML5 parser knows, so &T; is treated like &amp; and the space before the semicolon is kept although no reference would form. The same deletion after ordinary text is applied."
+    },
+    {
+      "id": "en-us-markdown-mdx-reference-shape-is-not-a-name-lookup",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "AT&T ;x and a ; b.\n",
+      "out": "AT&T ;x and a; b.\n",
+      "note": "modes.md §3.4 escape-and-reference rule, accepted cost, in the MDX dialect: see the CommonMark case."
     },
     {
       "id": "en-us-markdown-commonmark-autolink-literal-terminator-collapse",

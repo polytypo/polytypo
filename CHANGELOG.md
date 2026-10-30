@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.17.3`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.17.3 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.17.4`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.17.4 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,14 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.17.4 — 30 October 2026
+
+Deleting a space no longer creates a backslash escape or a character reference in `markdown` and `html` modes.
+
+- A space before punctuation is deleted, and when the character before it was a backslash or the start of a character reference, the text that came back read differently. Measured on 1.17.3 (`en-GB`, `markdown`): `foo\ , bar` came back as `foo\, bar`, where the backslash now escapes the comma and the text renders without it; `AT&amp ;T` came back as `AT&amp;T`, which renders as `AT&T`. In `html`, `<p>a &hellip ;b</p>` came back as `<p>a &hellip;b</p>`, which renders as `a …b`. These deletions are now left unmade; the same deletion beside ordinary text still happens. `text` and `yaml` modes are unchanged.
+- The Go and Ruby packages also read a backslash escape as ordinary text, so a rule could act on the escaped character. Measured on 1.17.3: in Ruby `it\'s fine` came back as `it\’s fine` and `"x \" y"` (`en-GB`) as `‘x \’ y"`; in Go `x\--y` came back as `x\ – y`. An escaped character, and a character reference the parser recognises, is now left as typed in `markdown` mode in both.
+- The accepted costs: the check looks at the shape of a reference (`&`, letters or digits, `;`), not at the list of names, so `AT&T ;x` keeps its space in `en-US` although `&T;` is no reference; a space after a literal backslash and before punctuation is kept, also inside an HTML block in a Markdown document, where the backslash is not an escape.
 
 ## 1.17.3 — 29 October 2026
 

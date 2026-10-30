@@ -1,5 +1,5 @@
 {
-  "spec": "1.17.3",
+  "spec": "1.17.4",
   "locale": "en-GB",
   "cases": [
     {
@@ -1494,6 +1494,230 @@
       "in": "see booking._ , emails.booking_ here, and a , b.\n",
       "out": "see booking._ , emails.booking_ here, and a, b.\n",
       "note": "modes.md §3.4: the delimiter-neighbour rule holds in both dialects."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-backslash-space-deletion",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "foo\\ , bar and a , b.\n",
+      "out": "foo\\ , bar and a, b.\n",
+      "note": "modes.md §3.4 escape-and-reference rule: deleting the space between a literal backslash and the comma would make the backslash escape the comma, and the text would render without the backslash; that edit is discarded. The same deletion beside ordinary text (a , b) is applied."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-reference-shape-space-deletion",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "AT&amp ;T and &#82 ;x and a ; b.\n",
+      "out": "AT&amp ;T and &#82 ;x and a; b.\n",
+      "note": "modes.md §3.4 escape-and-reference rule: deleting the space before the semicolon would complete a character reference (&amp; and &#82;) that the input does not have, and the text would render as AT&T and R; those edits are discarded. A semicolon after ordinary text (a ; b) is still tightened."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-space-after-ampersand-deleted-elsewhere",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "AT & T , x &amp; y .\n",
+      "out": "AT & T, x &amp; y.\n",
+      "note": "modes.md §3.4 escape-and-reference rule: an ampersand followed by a space is no reference shape, and an escaped or well-formed reference is outside every span; the spaces before the comma and the full stop are deleted as usual."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-hex-reference-shape-space-deletion",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "&#x52 ;x and a ; b.\n",
+      "out": "&#x52 ;x and a; b.\n",
+      "note": "modes.md §3.4 escape-and-reference rule, item 2: the x of a hexadecimal reference counts as a letter, so deleting the space before the semicolon would complete a reference (&#x52;, which renders as R); that edit is discarded."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-parsed-reference-outside-span",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "x &amp; , y and a , b.\n",
+      "out": "x &amp; , y and a, b.\n",
+      "note": "modes.md §3.7.3: a character reference the parser recognises lies outside every span, and a span edge is the end of the text for a rule that deletes, so the space after it is kept; the space in a , b is deleted."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-inline-html-reference-shape",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "<span>AT&amp ;T</span> and a , b.\n",
+      "out": "<span>AT&amp ;T</span> and a, b.\n",
+      "note": "modes.md §3.4: the escape-and-reference rule applies to every span of a Markdown document, including the text of inline HTML."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-escaped-punctuation-space-kept",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "x \\* , y and a , b.\n",
+      "out": "x \\* , y and a, b.\n",
+      "note": "modes.md §3.7.3: a backslash escape lies outside every span, so the space after \\* is at a span edge and is kept; the space in a , b is deleted."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-escaped-quote-not-converted",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "\"x \\\" y\"\n",
+      "out": "‘x \\\" y’\n",
+      "note": "modes.md §3.7.3: the escaped quotation mark lies outside every span and stays as typed; the outer pair is converted around it."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-escaped-apostrophe-kept",
+      "rule": "apostrophe",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "it\\'s fine\n",
+      "out": "it\\'s fine\n",
+      "note": "modes.md §3.7.3: an escaped apostrophe is outside every span and stays U+0027; converting it would leave a backslash before U+2019."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-escaped-hyphens-kept",
+      "rule": "dashes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "x\\--y\n",
+      "out": "x\\--y\n",
+      "note": "modes.md §3.7.3: the escaped hyphen is outside every span, so the two hyphens are not a dash."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-unrecognised-reference-space-deleted",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "x &foo; , y.\n\nx &Amp; , y.\n\nx &#12345678; , y.\n\nx &#x1234567; , y.\n",
+      "out": "x &foo;, y.\n\nx &Amp;, y.\n\nx &#12345678;, y.\n\nx &#x1234567;, y.\n",
+      "note": "modes.md §3.7.3: a name outside the HTML5 list (case-sensitive) and a numeric reference with more than 7 decimal or 6 hexadecimal digits are no character reference, so they stay in their span and the space after them is deleted."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-recognised-reference-space-kept",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "x &AMP; , y.\n\nx &#0; , y.\n\nx &#x110000; , y.\n\nx &Abreve; , y.\n",
+      "out": "x &AMP; , y.\n\nx &#0; , y.\n\nx &#x110000; , y.\n\nx &Abreve; , y.\n",
+      "note": "modes.md §3.7.3: &AMP; and &Abreve; are in the HTML5 list, and &#0; and &#x110000; are within the digit limits, so each is a reference the parser recognises; it lies outside every span and the space after it is kept."
+    },
+    {
+      "id": "en-gb-markdown-mdx-backslash-space-deletion",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "foo\\ , bar and a , b.\n",
+      "out": "foo\\ , bar and a, b.\n",
+      "note": "modes.md §3.4 escape-and-reference rule: deleting the space between a literal backslash and the comma would make the backslash escape the comma, and the text would render without the backslash; that edit is discarded. The same deletion beside ordinary text (a , b) is applied."
+    },
+    {
+      "id": "en-gb-markdown-mdx-reference-shape-space-deletion",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "AT&amp ;T and &#82 ;x and a ; b.\n",
+      "out": "AT&amp ;T and &#82 ;x and a; b.\n",
+      "note": "modes.md §3.4 escape-and-reference rule: deleting the space before the semicolon would complete a character reference (&amp; and &#82;) that the input does not have, and the text would render as AT&T and R; those edits are discarded. A semicolon after ordinary text (a ; b) is still tightened."
+    },
+    {
+      "id": "en-gb-markdown-mdx-space-after-ampersand-deleted-elsewhere",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "AT & T , x &amp; y .\n",
+      "out": "AT & T, x &amp; y.\n",
+      "note": "modes.md §3.4 escape-and-reference rule: an ampersand followed by a space is no reference shape, and an escaped or well-formed reference is outside every span; the spaces before the comma and the full stop are deleted as usual."
+    },
+    {
+      "id": "en-gb-markdown-mdx-hex-reference-shape-space-deletion",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "&#x52 ;x and a ; b.\n",
+      "out": "&#x52 ;x and a; b.\n",
+      "note": "modes.md §3.4 escape-and-reference rule, item 2: the x of a hexadecimal reference counts as a letter, so deleting the space before the semicolon would complete a reference (&#x52;, which renders as R); that edit is discarded."
+    },
+    {
+      "id": "en-gb-markdown-mdx-parsed-reference-outside-span",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "x &amp; , y and a , b.\n",
+      "out": "x &amp; , y and a, b.\n",
+      "note": "modes.md §3.7.3: a character reference the parser recognises lies outside every span, and a span edge is the end of the text for a rule that deletes, so the space after it is kept; the space in a , b is deleted."
+    },
+    {
+      "id": "en-gb-markdown-mdx-inline-html-reference-shape",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "<span>AT&amp ;T</span> and a , b.\n",
+      "out": "<span>AT&amp ;T</span> and a, b.\n",
+      "note": "modes.md §3.4: the escape-and-reference rule applies to every span of a Markdown document, including the text of inline HTML."
+    },
+    {
+      "id": "en-gb-markdown-mdx-escaped-punctuation-space-kept",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "x \\* , y and a , b.\n",
+      "out": "x \\* , y and a, b.\n",
+      "note": "modes.md §3.7.3: a backslash escape lies outside every span, so the space after \\* is at a span edge and is kept; the space in a , b is deleted."
+    },
+    {
+      "id": "en-gb-markdown-mdx-escaped-quote-not-converted",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "\"x \\\" y\"\n",
+      "out": "‘x \\\" y’\n",
+      "note": "modes.md §3.7.3: the escaped quotation mark lies outside every span and stays as typed; the outer pair is converted around it."
+    },
+    {
+      "id": "en-gb-markdown-mdx-escaped-apostrophe-kept",
+      "rule": "apostrophe",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "it\\'s fine\n",
+      "out": "it\\'s fine\n",
+      "note": "modes.md §3.7.3: an escaped apostrophe is outside every span and stays U+0027; converting it would leave a backslash before U+2019."
+    },
+    {
+      "id": "en-gb-markdown-mdx-escaped-hyphens-kept",
+      "rule": "dashes",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "x\\--y\n",
+      "out": "x\\--y\n",
+      "note": "modes.md §3.7.3: the escaped hyphen is outside every span, so the two hyphens are not a dash."
+    },
+    {
+      "id": "en-gb-markdown-mdx-unrecognised-reference-space-deleted",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "x &foo; , y.\n\nx &Amp; , y.\n\nx &#12345678; , y.\n\nx &#x1234567; , y.\n",
+      "out": "x &foo;, y.\n\nx &Amp;, y.\n\nx &#12345678;, y.\n\nx &#x1234567;, y.\n",
+      "note": "modes.md §3.7.3: a name outside the HTML5 list (case-sensitive) and a numeric reference with more than 7 decimal or 6 hexadecimal digits are no character reference, so they stay in their span and the space after them is deleted."
+    },
+    {
+      "id": "en-gb-markdown-mdx-recognised-reference-space-kept",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "mdx",
+      "in": "x &AMP; , y.\n\nx &#0; , y.\n\nx &#x110000; , y.\n\nx &Abreve; , y.\n",
+      "out": "x &AMP; , y.\n\nx &#0; , y.\n\nx &#x110000; , y.\n\nx &Abreve; , y.\n",
+      "note": "modes.md §3.7.3: &AMP; and &Abreve; are in the HTML5 list, and &#0; and &#x110000; are within the digit limits, so each is a reference the parser recognises; it lies outside every span and the space after it is kept."
+    },
+    {
+      "id": "en-gb-html-reference-shape-space-deletion",
+      "rule": "spaces",
+      "mode": "html",
+      "in": "<p>a &hellip ;b and c ; d.</p>\n",
+      "out": "<p>a &hellip ;b and c; d.</p>\n",
+      "note": "modes.md §3.4 escape-and-reference rule, item 2: &hellip followed by a space is no well-formed reference, so it stays in its span; deleting the space before the semicolon would complete one and the text would render as an ellipsis; that edit is discarded. The same deletion after ordinary text (c ; d) is applied."
     },
     {
       "id": "en-gb-markdown-commonmark-autolink-literal-closing-quote",
