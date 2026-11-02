@@ -10,6 +10,9 @@
           "text": "A space inside square brackets is deleted, and when what was left read as `[x]` or `[^label]`, a Markdown parser with the GFM extensions read it as structure. Measured on 1.17.4 (`en-GB`, `markdown`): `- [ x] item` came back as `- [x] item`, a checked task-list item; `- [x ] item` did the same from the other side; `- [  ] item` came back as `- [ ] item`, an unchecked one; `a [ ^1] b` came back as `a [^1] b`, a footnote reference when a definition `[^1]: …` exists. These deletions are now left unmade. The same deletion in `[ word ]` or `( x )` still happens. `text`, `html` and `yaml` modes are unchanged."
         },
         {
+          "text": "`polytypo-python` read an unmatched `[…]` as two boundaries instead of text, so spaces inside brackets that match no definition were never tightened. Measured on 1.17.4 (`en-GB`, `markdown`): `a [ word ] b` came back as `a [ word ] b`. It now comes back as `a [word] b`, as it already did in the other packages."
+        },
+        {
           "text": "The accepted cost: the check looks at the shape, not at the document, so `a [ x] b` in the middle of a sentence keeps its space although no list item is there, and so do `[ x ]`, `[ ^1]` and `[  ]` in prose. A footnote label that holds an inline element, such as `[^*a*b ]`, is not recognised and is still tightened."
         }
       ],
