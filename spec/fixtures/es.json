@@ -1,5 +1,5 @@
 {
-  "spec": "1.17.5",
+  "spec": "1.18.0",
   "locale": "es",
   "cases": [
     {
@@ -43,20 +43,285 @@
       "note": "abbreviatedAfterTerminal = false: la forma de dos puntos tras «?» que usa el ruso no existe en español, así que los dos puntos se completan a U+2026 en vez de conservarse."
     },
     {
-      "id": "es-dashes-parenthetical-em-spaced-known-deviation",
+      "id": "es-dashes-paired-spaced-hyphens",
       "rule": "dashes",
       "mode": "text",
       "in": "El plan - si existe - fracasa.",
-      "out": "El plan — si existe — fracasa.",
-      "note": "dash.parenthetical = \"em-spaced\", una aproximación fijada por decisión del operador (spec 1.17.1). El DPD prescribe raya con espacios FUERA del par y ninguno dentro («El plan —si existe— fracasa.»); el enum no expresa esa asimetría, así que la salida lleva dos espacios interiores que la norma no admite. Se prefiere a dejar el guion U+002D del autor. Véase la voz dashes de es.json."
+      "out": "El plan —si existe— fracasa.",
+      "note": "Guiones espaciados a ambos lados: el par se escribe «—si existe—», con espacio fuera del par y ninguno dentro (DPD «raya», 2)."
     },
     {
-      "id": "es-dashes-double-hyphen-em-spaced-known-deviation",
+      "id": "es-dashes-paired-double-hyphen",
       "rule": "dashes",
       "mode": "text",
       "in": "Caminamos -- casi 3 km -- y estaba cerrada.",
-      "out": "Caminamos — casi 3 km — y estaba cerrada.",
-      "note": "Misma aproximación que es-dashes-parenthetical-em-spaced-known-deviation, con la forma «--» que se teclea a menudo; los espacios interiores no son los del DPD."
+      "out": "Caminamos —casi 3 km— y estaba cerrada.",
+      "note": "La forma «--» que se teclea a menudo converge a la misma forma del DPD."
+    },
+    {
+      "id": "es-dashes-paired-tight-em",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "El plan—si existe—fracasa.",
+      "out": "El plan —si existe— fracasa.",
+      "note": "Rayas pegadas por ambos lados: se añade el espacio exterior y no se toca el interior."
+    },
+    {
+      "id": "es-dashes-paired-already-correct",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó —por fin— a casa.",
+      "out": "Llegó —por fin— a casa.",
+      "note": "Forma del DPD ya correcta: punto fijo."
+    },
+    {
+      "id": "es-dashes-paired-spaced-em",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó — por fin — a casa.",
+      "out": "Llegó —por fin— a casa.",
+      "note": "Salida de las versiones 1.17.x (espacios interiores): se cierran los interiores."
+    },
+    {
+      "id": "es-dashes-paired-half-correct",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó —por fin — a casa.",
+      "out": "Llegó —por fin— a casa.",
+      "note": "Raya de cierre con espacio interior: se cierra."
+    },
+    {
+      "id": "es-dashes-paired-before-full-stop",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó a casa--por fin--.",
+      "out": "Llegó a casa —por fin—.",
+      "note": "El cierre queda pegado al punto: no se inserta espacio donde `spaces` lo borraría."
+    },
+    {
+      "id": "es-dashes-paired-guillemets",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "«Llegó - por fin - a casa»",
+      "out": "«Llegó —por fin— a casa»",
+      "note": "Las comillas angulares no cambian el reparto del par."
+    },
+    {
+      "id": "es-dashes-paired-compound-inside",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó - por fin - a la zona hispano-árabe.",
+      "out": "Llegó —por fin— a la zona hispano-árabe.",
+      "note": "Un guion de palabra compuesta dentro del par no cuenta como raya."
+    },
+    {
+      "id": "es-dashes-paired-digit-inside",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó - tras 3 - a casa.",
+      "out": "Llegó —tras 3— a casa.",
+      "note": "Un número dentro del par no impide la conversión."
+    },
+    {
+      "id": "es-dashes-paired-range-inside",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó - tras 3-5 - a casa.",
+      "out": "Llegó —tras 3-5— a casa.",
+      "note": "Un rango con guion dentro del par queda como está (lo gestiona `ranges`)."
+    },
+    {
+      "id": "es-dashes-dialogue-untouched",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "—Hola —dijo—. ¿Vienes? —preguntó María.",
+      "out": "—Hola —dijo—. ¿Vienes? —preguntó María.",
+      "note": "Las rayas de diálogo no se tocan: la primera abre la línea y el segmento tiene más de dos rayas."
+    },
+    {
+      "id": "es-dashes-dialogue-open",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "—Hola —dijo.",
+      "out": "—Hola —dijo.",
+      "note": "Diálogo con una sola raya de incisa: se deja como está."
+    },
+    {
+      "id": "es-dashes-dialogue-hyphens",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "—Hola - dijo - y se fue.",
+      "out": "—Hola - dijo - y se fue.",
+      "note": "Una raya de diálogo al inicio hace que el segmento tenga tres rayas: ninguna se convierte."
+    },
+    {
+      "id": "es-dashes-single-hyphen-untouched",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Madrid - la capital de España.",
+      "out": "Madrid - la capital de España.",
+      "note": "Un solo guion espaciado no forma par: se deja tal como está (el DPD no describe este uso)."
+    },
+    {
+      "id": "es-dashes-two-sentences-untouched",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Madrid - la capital. Sevilla - la bella.",
+      "out": "Madrid - la capital. Sevilla - la bella.",
+      "note": "Cada frase tiene una sola raya: no hay par y no se toca ninguna."
+    },
+    {
+      "id": "es-dashes-three-untouched",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Juan - mi primo - llegó y - según dicen - durmió.",
+      "out": "Juan - mi primo - llegó y - según dicen - durmió.",
+      "note": "Cuatro rayas en una frase: no se empareja ninguna."
+    },
+    {
+      "id": "es-dashes-across-line-untouched",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó - por\nfin - a casa.",
+      "out": "Llegó - por\nfin - a casa.",
+      "note": "El par no cruza un salto de línea."
+    },
+    {
+      "id": "es-dashes-affix-hyphens-untouched",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "el sufijo -mente y el prefijo pre- son",
+      "out": "el sufijo -mente y el prefijo pre- son",
+      "note": "Guiones de afijo, pegados por un solo lado, no son rayas."
+    },
+    {
+      "id": "es-dashes-option-flag-untouched",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "usa --force y -v",
+      "out": "usa --force y -v",
+      "note": "Opciones de línea de comandos: no son rayas."
+    },
+    {
+      "id": "es-dashes-misplaced-spacing-untouched",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó— por fin —a casa.",
+      "out": "Llegó— por fin —a casa.",
+      "note": "Espacios invertidos respecto a la forma del DPD: no se reinterpretan."
+    },
+    {
+      "id": "es-dashes-question-inside-paired",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó —¿quién lo diría?— a casa.",
+      "out": "Llegó —¿quién lo diría?— a casa.",
+      "note": "El signo de interrogación dentro del par no corta la frase."
+    },
+    {
+      "id": "es-dashes-abbreviation-splits-pair",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó - p. ej. ayer - a casa.",
+      "out": "Llegó - p. ej. ayer - a casa.",
+      "note": "El punto de la abreviatura cierra la frase: cada mitad tiene una sola raya, no hay par y no se toca ninguna (el espacio duro U+00A0 tras «p.» lo pone nbsp)."
+    },
+    {
+      "id": "es-dashes-lone-en-dash-untouched",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó – por fin – a casa.",
+      "out": "Llegó – por fin – a casa.",
+      "note": "P5 de dashes.md: una semirraya sola escrita por el autor no se reinterpreta."
+    },
+    {
+      "id": "es-dashes-digit-far-dash-untouched",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Vimos 3 - 4--por fin--bien.",
+      "out": "Vimos 3 - 4--por fin--bien.",
+      "note": "T1 de dashes.md: no se inserta un espacio junto a una cifra que tiene otra raya al otro lado."
+    },
+    {
+      "id": "es-dashes-roman-range-before-pair",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "En los siglos XV—XVII - según dicen - hubo guerras.",
+      "out": "En los siglos XV—XVII - según dicen - hubo guerras.",
+      "note": "Un rango en cifras romanas cuenta como raya del segmento: tres rayas, no se toca ninguna."
+    },
+    {
+      "id": "es-dashes-abbreviation-title-splits-pair",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó - dijo el Sr. Pérez - a casa.",
+      "out": "Llegó - dijo el Sr. Pérez - a casa.",
+      "note": "El punto de «Sr.» cierra la frase aunque `nbsp` ponga después un espacio duro: cada mitad tiene una sola raya y no se toca ninguna. Debe dar lo mismo en la segunda pasada."
+    },
+    {
+      "id": "es-dashes-plus-minus-outside-pair",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó - con +/- 5 kg - a casa.",
+      "out": "Llegó —con ± 5 kg— a casa.",
+      "note": "El guion de «+/-» no es una raya: `symbols` lo convierte en «±» después, de modo que no debe contar para el par."
+    },
+    {
+      "id": "es-dashes-roman-range-beside-single",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Era XV—XVII - dicen.",
+      "out": "Era XV—XVII - dicen.",
+      "note": "P4: la raya pegada entre dos números romanos es un rango ya correcto y cuenta como raya del segmento; con la otra son dos y no se convierte ninguna."
+    },
+    {
+      "id": "es-dashes-digit-inside-pair-cluster",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Salió - 5 - de casa.",
+      "out": "Salió —5— de casa.",
+      "note": "El número solo dentro del par convierte; en la segunda pasada las dos rayas forman un grupo con la cifra y se rechazan, de modo que el resultado no cambia."
+    },
+    {
+      "id": "es-dashes-nbsp-beside-stroke-untouched",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó - por fin - a casa.",
+      "out": "Llegó - por fin - a casa.",
+      "note": "Un espacio duro junto a una raya la deja fuera: el segmento queda como está."
+    },
+    {
+      "id": "es-dashes-asymmetric-range-inside-pair",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó - a 5 -10 km - a casa.",
+      "out": "Llegó —a 5 -10 km— a casa.",
+      "note": "Un rango de cifras escrito con espacio solo a un lado es un candidato de `ranges`, sea simétrico o no, y no cuenta como raya."
+    },
+    {
+      "id": "es-dashes-question-space-splits-pair",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Llegó - ¿cómo? ya - a casa.",
+      "out": "Llegó - ¿cómo? ya - a casa.",
+      "note": "Un «?» seguido de espacio cierra la frase: cada mitad tiene una sola raya."
+    },
+    {
+      "id": "es-dashes-marker-splits-pair-html",
+      "rule": "dashes",
+      "mode": "html",
+      "in": "<p>Llegó - ayer.<em>Hoy</em> - a casa.</p>",
+      "out": "<p>Llegó - ayer.<em>Hoy</em> - a casa.</p>",
+      "note": "Un punto antes de un límite de marcado cierra la frase: cada mitad tiene una sola raya."
+    },
+    {
+      "id": "es-dashes-marker-splits-pair-markdown",
+      "rule": "dashes",
+      "mode": "markdown",
+      "in": "Llegó - ayer.*Hoy* - a casa.",
+      "out": "Llegó - ayer.*Hoy* - a casa.",
+      "note": "Un punto antes de un límite de marcado cierra la frase: cada mitad tiene una sola raya.",
+      "dialect": "commonmark"
     },
     {
       "id": "es-dashes-compound-hyphen",

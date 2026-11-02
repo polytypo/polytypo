@@ -19,7 +19,7 @@
     }
   },
   "dash": {
-    "parenthetical": "em-spaced",
+    "parenthetical": "em-paired",
     "range": "none"
   },
   "ellipsis": {
@@ -67,7 +67,7 @@
       "rule": "dashes",
       "cite": "RAE y ASALE, Diccionario panhispánico de dudas, entrada «raya», apartado 2: «Como el resto de los signos dobles, se escriben pegadas a la primera y a la última palabra del periodo que enmarcan, y separadas por un espacio de la palabra o signo que las precede o las sigue»",
       "url": "https://www.rae.es/dpd/raya",
-      "note": "parenthetical = \"em-spaced\" ES UNA APROXIMACIÓN CONSCIENTE, no la norma, y se fijó por decisión del operador (27.10.2026). La fuente es explícita y prescribe espacios ORDINARIOS FUERA del par y ninguno en los bordes interiores («Llegó —por fin— a casa»). El enum no expresa esa asimetría: \"em-spaced\" pone un espacio a cada lado de CADA raya, de modo que el texto resultante lleva dos espacios interiores que el DPD no admite («Llegó — por fin — a casa»); \"em-tight\" suprimiría los exteriores que la frase exige y pegaría la raya a la palabra anterior, que es peor. Se eligió \"em-spaced\" porque conserva la longitud correcta del signo (U+2014, no el guion U+002D que el autor escribió) y los espacios exteriores, y solo falla en los interiores. Mientras el esquema no pueda expresar la asimetría, este valor sigue siendo una aproximación y no indica que el DPD prescriba espacios interiores. Hasta spec 1.16.0 el valor era \"none\" (la regla no tocaba nada). Consultado el 18.09.2026."
+      "note": "parenthetical = \"em-paired\": la raya en U+2014 escrita como par, con un espacio ORDINARIO fuera del par y ninguno en los bordes interiores («Llegó —por fin— a casa»), que es lo que prescribe la fuente. La regla solo convierte una frase que contiene exactamente dos rayas candidatas; un guion suelto («Madrid - la capital») o una frase con más de dos rayas se deja como está, porque el DPD no describe el uso de la raya en esas posiciones y nada permite decidir cuál abre y cuál cierra. Las rayas de diálogo («—Hola —dijo—.») no se tocan. Hasta spec 1.17.5 el valor era \"em-spaced\", una aproximación que dejaba dos espacios interiores que el DPD no admite; hasta spec 1.16.0 era \"none\". Consultado el 18.09.2026."
     },
     {
       "rule": "ranges",

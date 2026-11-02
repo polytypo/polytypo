@@ -4,7 +4,7 @@
 **Spec version:** 0.6.0 (0.2.0 for everything except the 0.5.0/0.6.0 changes noted inline and in
 §8 History), amended in **1.3.0**: §1 and §3.4's statement of what belongs to `ranges`, §3.2a's
 re-entry condition, and §3.2 steps 7 and 8, all for [ranges.md](ranges.md) §3.2a's closed-up
-symbols.
+symbols, and again in **1.18.0**: the value `"em-paired"` and its own algorithm, §3.4a.
 
 ---
 
@@ -39,14 +39,17 @@ in every prior spec version, since the two branches were always mutually exclusi
 0.5.0 split makes that exclusivity a boundary between two rules instead of two branches of one.
 
 The parenthetical form is governed by one enum in the locale file: a dash _length_ (`em` or `en`)
-and a _spacing_ (`tight` or `spaced`), or the opt-out value `none`.
+and a _spacing_ (`tight` or `spaced`), the opt-out value `none`, or — since spec 1.18.0 — the one
+value that is neither symmetric nor decided token by token, `em-paired` (§3.4a).
 
 ---
 
 ## 2. Locale data consumed
 
-- `dash.parenthetical` — one of `"em-tight"`, `"em-spaced"`, `"en-tight"`, `"en-spaced"`,
-  `"none"`.
+- `dash.parenthetical` — one of `"em-tight"`, `"em-spaced"`, `"em-paired"`, `"en-tight"`,
+  `"en-spaced"`, `"none"`. `"em-paired"` (spec 1.18.0) writes the pair as an em dash with a space
+  **outside** the pair and none inside it (`a —b— c`); it is specified in §3.4a, because it is the
+  one value whose result depends on which stroke opens the pair and which closes it.
 
 **As of spec 0.5.0, `dashes` no longer reads `dash.range`** — that field is now read exclusively
 by `ranges` ([ranges.md](ranges.md) §2), under the same key, with the same values and the same
@@ -164,7 +167,9 @@ U+2011 they meant it.
    then "counts on the left only") each fixed the witness in front of them and left the next
    one reachable; §8.2 defect (d) records how.
 
-4. **Symmetry guard.** If `lsp ≠ rsp`, emit nothing and continue. A stroke that is spaced on
+4. **Symmetry guard.** If `lsp ≠ rsp`, emit nothing and continue. (`"em-paired"` is the one
+   exception: §3.4a counts such a stroke and, when it is a single U+2014, reads it as half of a
+   pair.) A stroke that is spaced on
    one side and tight on the other is not a dash: it is `--force`, `-5 °C`, a Markdown bullet
    `- item`, a signature `-- Iurii`, or an arrow `->`. This single guard removes the large
    majority of false positives and it applies to both the range and the parenthetical
@@ -500,12 +505,62 @@ Emit one edit replacing `cp[s - lsp … e - 1 + rsp]` with:
 | -------------------- | ------------------------------------------------------- |
 | `"em-tight"`         | U+2014                                                  |
 | `"em-spaced"`        | U+0020 U+2014 U+0020                                    |
+| `"em-paired"`        | _(not a per-token replacement — see §3.4a)_             |
 | `"en-tight"`         | U+2013                                                  |
 | `"en-spaced"`        | U+0020 U+2013 U+0020                                    |
 | `"none"`             | _(emit nothing — the token is left exactly as written)_ |
 
 **Subject to guards T1 and T2 (§3.2 steps 8 and 9), evaluated now that the form is known.** If the replacement is identical to the span it replaces, emit
 nothing.
+
+### 3.4a `"em-paired"` — the pair as a unit (spec 1.18.0)
+
+When `dash.parenthetical` is `"em-paired"`, §3.4 is replaced by this section and the token loop
+of §3.2 is replaced by a loop over **segments**. Everything else a stroke must satisfy — steps 2,
+5, 6 and 7 of §3.2, §3.2a, P1, P4 and P5 — still applies, because those guards decide whether a
+stroke is a dash at all.
+
+**Segment.** A segment is a stretch of the text unit bounded by the unit's start and end and by
+a *terminal*: U+002E, U+003F, U+0021 or U+2026 that is followed by U+0020, a `NOBREAK-SPACE`, a
+`BREAK`, a marker, or the end of the unit. A `NOBREAK-SPACE` counts because `nbsp` (order 70) puts
+one after a terminal (`Sr. Pérez`, `p. ej.`); if only U+0020 closed a segment, that edit would
+move the boundary and a second pass would pair strokes the first had kept apart. A terminal followed by anything else (`3.5`, `—¿quién?—`) does not end a
+segment. A `BREAK` is **not** a segment boundary.
+
+**Counted strokes.** Every maximal `DASH` run of §3.2 step 1 in a segment is classified:
+
+- *Not a stroke*, and not counted: a run with `k > 3`; a range candidate (§3.3, ranges.md §3.2),
+  decided by its flanks alone, **whether or not the run is symmetric** (`5 -10` is a candidate);
+  a single hyphen-shaped run (U+002D, U+2010, U+2212) with `lsp = rsp = 0`, which is a compound;
+  and the U+002D of the literal sequence `+/-`, which `symbols` (order 80) turns into `±`.
+- *Counted and eligible:* every other run that passes steps 5, 6 and 7, §3.2a, P4 and P5 and is
+  either symmetric (`lsp = rsp`) or a **single U+2014** spaced on one side only.
+- *Counted and ineligible:* every other run — including a stroke at the start or end of a line
+  (the dialogue dash), one next to a `NOBREAK-SPACE`, `-mente`, `pre-`, `--force`, a Markdown
+  bullet and a lone U+2013.
+
+**Decision.** A segment is converted if and only if **all** of the following hold; otherwise the
+whole segment is left exactly as typed:
+
+1. it has **exactly two** counted strokes, and both are eligible;
+2. no `BREAK` lies between them;
+3. the first is not shaped like a closer (`lsp = 0`, `rsp = 1`) and the second is not shaped like
+   an opener (`lsp = 1`, `rsp = 0`);
+4. T1 (§3.2 step 8) does not block a side on which a space is inserted (step 5 below).
+
+**Emission.** For the first stroke (the opener) and the second (the closer), the glyph is U+2014
+and the **inner** side — to the right of the opener, to the left of the closer — is made tight,
+removing a U+0020 if there was one. The **outer** side keeps a U+0020 if it had one; if it had
+none, a U+0020 is inserted when the neighbouring code point `cp[L]` (opener) or `cp[R]` (closer)
+is in `LETTER` or `DIGIT`, and otherwise the side stays tight, so `(—`, `«—`, `—»` and
+`—por fin—.` are produced without a space the `spaces` rule would remove. T2 (§3.2 step 9) is
+therefore vacuous: a space is only ever inserted beside a letter or a digit. A replacement
+identical to the span it replaces is not emitted.
+
+**What is left alone, by construction.** A lone stroke (`Madrid - la capital`); three or more
+strokes in a segment; a pair split by a terminal (`p. ej.`) or by a line break; the dialogue dash
+and any segment holding it (`—Hola —dijo—.`); affix hyphens; a pair whose strokes are separated by
+a `NOBREAK-SPACE`. These are the accepted cost of not guessing which stroke opens which (§7.8).
 
 ### 3.5 Continue, and the non-overlap guarantee
 
@@ -688,6 +743,33 @@ reads. None of these can be changed by an edit `T` itself makes elsewhere in the
 Every input to a declined token's verdict is therefore unaffected by any edit `T` makes, on every
 pass: `T(T(x))` declines exactly where `T(x)` declined. The historical counterexamples that led to
 this guard set — before it closed every gap — are summarised in §8.2.
+
+### 5.2a `"em-paired"` — the segment verdict is stable (spec 1.18.0)
+
+Under `"em-paired"` the verdict is made per segment (§3.4a), not per token, so §5.1's table does
+not apply and the argument is rebuilt on the three facts a segment verdict reads.
+
+- **Fixed points.** The output form has two U+2014 strokes, each spaced on its outer side only (or
+  tight beside a non-letter), which is eligible and correctly shaped, and the replacement of each
+  is byte-identical to its span: nothing is emitted.
+- **The segment boundaries do not move.** Edits touch only a dash run and the U+0020 beside it.
+  A U+0020 is inserted only after a letter, a digit or a dash, never after a terminal, and the
+  first stroke after a terminal is an opener whose outer U+0020 is kept, so a terminal followed by
+  a space stays followed by one. No edit creates or removes a terminal.
+- **The counted set does not change in the dangerous direction.** A converted segment can become
+  declined on the next pass (`a - 5 - b` gives `a —5— b`, whose two strokes then share a
+  cluster with the digit, §3.2 step 7), and that is harmless: a declined segment emits nothing, so
+  the text is already a fixed point. What would break idempotency is "declined → converted" on a
+  later pass, which needs a counted stroke to disappear, or the segment to change. A stroke that
+  was declined stays declined for the reasons of §5.2.
+- **Composition obligation on later rules.** Every rule after `dashes` must leave the count of
+  counted strokes in a segment alone. `hyphen` (order 35) emits only `INERT-DASH`, which is not a
+  `DASH`; `symbols` rewrites `+/-` into `±`, which is why that hyphen is *not a stroke* above;
+  `nbsp` changes only U+0020 into `NOBREAK-SPACE`, which can make a stroke ineligible but moves
+  no segment boundary, because a terminal closes a segment before either.
+
+The one direction that would break idempotency is "declined → converted" on the second pass. It
+needs a counted stroke to disappear or a segment boundary to move; neither can happen.
 
 ### 5.3 Interaction with `ranges` is stable
 
@@ -903,8 +985,8 @@ never reaches a digit-flanked token at all.
 The first locale with `"none"` on **both** fields, so the rule is a **total no-op** for it in the
 same provable sense `hyphen` is a no-op for a locale with empty lists. It is no longer the only
 one: `tr` (spec 1.6.0) is both-`none` too, and `es` was from spec 1.3.0 until 1.17.1, each for its
-own reason and each recorded in its own locale file. (`es` now sets `parenthetical` to `"em-spaced"`
-as a known approximation — see its locale file — and keeps `range` at `"none"`.) This section stays written about `el` because its two fields are
+own reason and each recorded in its own locale file. (`es` sets `parenthetical` to `"em-paired"` since spec 1.18.0 — it was
+`"em-spaced"`, an approximation, from 1.17.0 — and keeps `range` at `"none"`.) This section stays written about `el` because its two fields are
 `"none"` for two *different* reasons, which is what makes it worth reading. Tokens are still
 classified — §3.3's "a range token is never reconsidered as a parenthetical" still holds — but no
 classification has an emission to make. The rows below are therefore all "no change" rows by
@@ -922,18 +1004,18 @@ the guide is explicit.
   that names both forms in both places is not being vague; it is declining to rank them.
   Emitting either would express a preference the citation does not carry, so the rule emits
   nothing.
-- **`parenthetical: "none"` — a schema limit, not ambivalence.** The guide prescribes a U+2014
+- **`parenthetical: "none"` — a source conflict, no longer a schema limit.** The guide prescribes a U+2014
   pair (its own header gives «Alt 0151») and states the spacing exactly: «Όπως η παρένθεση, η
   διπλή παύλα δεν χωρίζεται με κενά διαστήματα από τη λέξη, φράση ή πρόταση που περικλείει·
   αντίθετα, μπαίνουν διαστήματα πριν από την πρώτη και μετά τη δεύτερη παύλα.» — ordinary spaces
-  **outside** the pair, none on the **inner** edges. `dash.parenthetical`'s enum has no value for
-  that asymmetry: `"em-spaced"` puts a space on each side of _each_ dash, which is precisely what
-  the sentence forbids, and `"em-tight"` drops the outer spaces the sentence requires. So the
-  source is clear and the schema cannot record it. `"none"` is what the file must say until the
-  enum grows; the gap is with the operator and is **not** a licence to approximate.
+  **outside** the pair, none on the **inner** edges. Until spec 1.18.0 the enum had no value for
+  that asymmetry; `"em-paired"` (§3.4a) is that value. `el` stays `"none"` all the same, because
+  `"em-paired"` is an em dash and the state school grammar appears to set an en dash in the same
+  role: choosing between them needs a source that ranks the two, and is not a licence to
+  approximate.
 
-In both cases `"none"` is the honest encoding, not a placeholder awaiting a default (§2) — but
-only one of them is waiting on a _source_. `spec/locales/el.json`'s `dashes.note` carries the
+In both cases `"none"` is the honest encoding, not a placeholder awaiting a default (§2) — and
+both are now waiting on a _source_. `spec/locales/el.json`'s `dashes.note` carries the
 detail, including a **source conflict** this document does not try to settle: the EU guide sets
 U+2014 parenthetically while the state school grammar appears to set U+2013.
 
@@ -1037,6 +1119,16 @@ development, the compound-label widening's original acceptance) moved to §8.
    positive row per `-spaced` locale asserting that the input is returned unchanged. Until it
    exists, a port could transcribe either set and stay green. (T2 is shared with `ranges`, §3.3
    there — the same gap applies to a `-spaced` range replacement before U+2026.)
+
+8. **`"em-paired"` converts only a segment with exactly two strokes (spec 1.18.0).** The rule has
+   no syntax to read, so which stroke opens and which closes can only be inferred from there being
+   two. The price, measured on fixtures and not yet on a corpus, is that these stay as typed:
+   a lone spaced hyphen (`Madrid - la capital`), a sentence with two incisos (four strokes), an
+   inciso holding an abbreviation or a `?`/`!` followed by a space, an inciso split by a line break,
+   and any sentence that also holds a dialogue dash. The converse risk is a list written with
+   spaced hyphens: `Madrid - Barcelona - Sevilla` becomes `Madrid —Barcelona— Sevilla`. The DPD
+   names neither case, so both are recorded here and pinned by fixtures in `fixtures/es.json`
+   rather than decided by a heuristic.
 
 ---
 

@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.17.5`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.17.5 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.18.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.18.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,23 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.18.0 — 2 November 2026
+
+Spanish parenthetical dashes are written the way the DPD describes them: a space outside the pair, none inside.
+
+- Since 1.17.1 `es` gave a spaced hyphen or double hyphen an em dash with a space on each side of every dash, which left spaces inside the pair that the DPD of the RAE and ASALE does not allow. Measured on 1.17.5: `El plan - si existe - fracasa.` came back as `El plan — si existe — fracasa.`. It now comes back as `El plan —si existe— fracasa.`, and `Caminamos -- casi 3 km -- y estaba cerrada.` as `Caminamos —casi 3 km— y estaba cerrada.`. A pair typed closed up, `El plan—si existe—fracasa.`, or with spaces inside, `Llegó — por fin — a casa.`, is brought to the same form, and a pair already written `Llegó —por fin— a casa.` is left as typed.
+- The rule can only tell which dash opens and which closes by counting, so it converts a sentence only when that sentence holds exactly two dashes. Anything else is left as typed: a lone spaced hyphen such as `Madrid - la capital de España.` (1.17.5 turned it into `Madrid — la capital de España.`, which the DPD does not describe), a sentence with two or more pairs, a pair split by a full stop followed by a space such as `p. ej.`, a pair split by a line break, and any sentence that also holds a dialogue dash such as `—Hola —dijo—.`. A sentence ends at `.`, `?`, `!` or `…` followed by a space.
+- The accepted cost, measured on 24,945 sentences from 50 long articles of the Spanish Wikipedia. The 202 sentences that carried a typed pair were not changed in their dashes. With the pair retyped as spaced hyphens, the form it was written in was restored in 94 of the 95 sentences the sample could settle. Against that, 18 of the 194 sentences with a spaced hyphen and no em dash were converted, and most of those are lists, not asides: `vía Echternach - Larochelle - Mersch` became `vía Echternach —Larochelle— Mersch`, and 12 of the 18 came from the itineraries of one article. A list of exactly three items joined by spaced hyphens is read as a pair.
+- Greek is unchanged. Its source asks for the same spacing, but the sources disagree on whether the dash is an em or an en dash, and that is not settled. Numeric ranges and compounds are not touched, as before.
+
+| Locale | Mode | In | Before | After |
+| --- | --- | --- | --- | --- |
+| `es` | `text` | `El plan - si existe - fracasa.` | `El plan — si existe — fracasa.` | `El plan —si existe— fracasa.` |
+| `es` | `text` | `Caminamos -- casi 3 km -- y estaba cerrada.` | `Caminamos — casi 3⍽km — y estaba cerrada.` | `Caminamos —casi 3⍽km— y estaba cerrada.` |
+| `es` | `text` | `Madrid - la capital de España.` | `Madrid — la capital de España.` | `Madrid - la capital de España.` |
+| `es` | `text` | `Madrid - Barcelona - Sevilla` | `Madrid — Barcelona — Sevilla` | `Madrid —Barcelona— Sevilla` |
+| `es` | `text` | `Juan - mi primo - llegó y - según dicen - durmió.` | `Juan — mi primo — llegó y — según dicen — durmió.` | `Juan - mi primo - llegó y - según dicen - durmió.` |
 
 ## 1.17.5 — 2 November 2026
 

@@ -190,6 +190,13 @@ or G3.
 violates `I₃` when it changes the **spacing** around a U+002D/U+2013/U+2014, because spacing
 is what `dashes` reads to decide whether a stroke is a parenthetical dash at all.
 
+Under `dash.parenthetical = "em-paired"` (spec 1.18.0) the verdict is no longer local to a token:
+`dashes` decides per segment, from the count and eligibility of the strokes in it (`dashes.md`
+§3.4a, §5.2a). A later rule violates `I₃` there only by changing the count of counted strokes
+or moving a segment boundary. `nbsp` changes U+0020 into a `NOBREAK-SPACE`, which dashes.md §3.4a
+treats as closing a segment exactly as U+0020 does; `symbols` consumes the hyphen of `+/-`, which
+§3.4a already excludes; `hyphen` emits only an `INERT-DASH`.
+
 **Who can violate it.** Nobody, since spec 0.1.0 — and it is worth recording that this line
 previously read _"`nbsp`, which inserts and converts space-like code points"_, which was true
 and was the source of two defects. `dashes` now treats both U+00A0 and U+202F as making an

@@ -2,6 +2,62 @@
   "_comment": "Single source for CHANGELOG.md (brand/tools/gen_readmes.py) and the site's /changelog page (brand/tools/build_promo.py). Released versions only. Example strings are real engine output captured from the published packages of each version, never typed by hand; an entry whose release changes no output carries examples: [].",
   "releases": [
     {
+      "version": "1.18.0",
+      "date": "2026-11-02",
+      "headline": "Spanish parenthetical dashes are written the way the DPD describes them: a space outside the pair, none inside.",
+      "items": [
+        {
+          "text": "Since 1.17.1 `es` gave a spaced hyphen or double hyphen an em dash with a space on each side of every dash, which left spaces inside the pair that the DPD of the RAE and ASALE does not allow. Measured on 1.17.5: `El plan - si existe - fracasa.` came back as `El plan — si existe — fracasa.`. It now comes back as `El plan —si existe— fracasa.`, and `Caminamos -- casi 3 km -- y estaba cerrada.` as `Caminamos —casi 3 km— y estaba cerrada.`. A pair typed closed up, `El plan—si existe—fracasa.`, or with spaces inside, `Llegó — por fin — a casa.`, is brought to the same form, and a pair already written `Llegó —por fin— a casa.` is left as typed."
+        },
+        {
+          "text": "The rule can only tell which dash opens and which closes by counting, so it converts a sentence only when that sentence holds exactly two dashes. Anything else is left as typed: a lone spaced hyphen such as `Madrid - la capital de España.` (1.17.5 turned it into `Madrid — la capital de España.`, which the DPD does not describe), a sentence with two or more pairs, a pair split by a full stop followed by a space such as `p. ej.`, a pair split by a line break, and any sentence that also holds a dialogue dash such as `—Hola —dijo—.`. A sentence ends at `.`, `?`, `!` or `…` followed by a space."
+        },
+        {
+          "text": "The accepted cost, measured on 24,945 sentences from 50 long articles of the Spanish Wikipedia. The 202 sentences that carried a typed pair were not changed in their dashes. With the pair retyped as spaced hyphens, the form it was written in was restored in 94 of the 95 sentences the sample could settle. Against that, 18 of the 194 sentences with a spaced hyphen and no em dash were converted, and most of those are lists, not asides: `vía Echternach - Larochelle - Mersch` became `vía Echternach —Larochelle— Mersch`, and 12 of the 18 came from the itineraries of one article. A list of exactly three items joined by spaced hyphens is read as a pair."
+        },
+        {
+          "text": "Greek is unchanged. Its source asks for the same spacing, but the sources disagree on whether the dash is an em or an en dash, and that is not settled. Numeric ranges and compounds are not touched, as before."
+        }
+      ],
+      "examples": [
+        {
+          "locale": "es",
+          "mode": "text",
+          "in": "El plan - si existe - fracasa.",
+          "before": "El plan — si existe — fracasa.",
+          "after": "El plan —si existe— fracasa."
+        },
+        {
+          "locale": "es",
+          "mode": "text",
+          "in": "Caminamos -- casi 3 km -- y estaba cerrada.",
+          "before": "Caminamos — casi 3 km — y estaba cerrada.",
+          "after": "Caminamos —casi 3 km— y estaba cerrada."
+        },
+        {
+          "locale": "es",
+          "mode": "text",
+          "in": "Madrid - la capital de España.",
+          "before": "Madrid — la capital de España.",
+          "after": "Madrid - la capital de España."
+        },
+        {
+          "locale": "es",
+          "mode": "text",
+          "in": "Madrid - Barcelona - Sevilla",
+          "before": "Madrid — Barcelona — Sevilla",
+          "after": "Madrid —Barcelona— Sevilla"
+        },
+        {
+          "locale": "es",
+          "mode": "text",
+          "in": "Juan - mi primo - llegó y - según dicen - durmió.",
+          "before": "Juan — mi primo — llegó y — según dicen — durmió.",
+          "after": "Juan - mi primo - llegó y - según dicen - durmió."
+        }
+      ]
+    },
+    {
       "version": "1.17.5",
       "date": "2026-11-02",
       "headline": "Deleting a space no longer creates a task-list marker or a footnote reference in `markdown` mode.",

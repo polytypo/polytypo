@@ -38,8 +38,8 @@
       "required": ["parenthetical", "range"],
       "properties": {
         "parenthetical": {
-          "enum": ["em-tight", "em-spaced", "en-tight", "en-spaced", "none"],
-          "description": "Dash used for a parenthetical break. `-tight` means no surrounding spaces, `-spaced` means a regular space on each side (the leading one may later be made non-breaking by the nbsp rule). `none` means the rule must not substitute anything: either the locale has no verified convention, or the cited sources attest more than one form and rank none."
+          "enum": ["em-tight", "em-spaced", "em-paired", "en-tight", "en-spaced", "none"],
+          "description": "Dash used for a parenthetical break. `-tight` means no surrounding spaces, `-spaced` means a regular space on each side (the leading one may later be made non-breaking by the nbsp rule). `em-paired` is the em dash written as a pair, with a space outside the pair and none inside it (`a —b— c`). `none` means the rule must not substitute anything: either the locale has no verified convention, or the cited sources attest more than one form and rank none."
         },
         "range": {
           "enum": ["em-tight", "em-spaced", "en-tight", "en-spaced", "none"],

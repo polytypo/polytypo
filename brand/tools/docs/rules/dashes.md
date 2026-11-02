@@ -30,14 +30,17 @@ A token that passes everything is replaced according to the locale’s `dash.par
 
 ## Locale data
 
-The rule reads one field, `dash.parenthetical`, which has five possible values: a length (`em` or `en`) and a spacing (`tight` or `spaced`), or `none`.
+The rule reads one field, `dash.parenthetical`, which has six possible values: a length (`em` or `en`) and a spacing (`tight` or `spaced`), the paired form `em-paired`, or `none`.
 
 | Value | Result | Locales |
 | --- | --- | --- |
 | `em-tight` | `word—word` | en-US |
 | `en-spaced` | `word – word` | cs, nl, en-GB, fi, de-DE, de-CH, pl, pt-BR, sv |
 | `em-spaced` | `word — word` | fr, fr-CA, it, pt-PT, ru, uk |
-| `none` | left as written | el, es, tr |
+| `em-paired` | `word —word— word` | es |
+| `none` | left as written | el, tr |
+
+`em-paired` is the Spanish form: a space outside the pair and none inside it. Because the rule has to know which dash opens and which closes, it converts a sentence only when it holds exactly two dashes. A lone spaced hyphen, a sentence with more than two dashes and dialogue dashes at the start of a line stay as typed.
 
 `none` means the locale has no verified convention for the parenthetical dash. The rule emits nothing for it, not even a fallback. The range dash is a separate field read by [ranges](/docs/rules/ranges/); the two can differ within one locale. Russian, for example, sets a spaced em dash in a sentence and a tight em dash in a range.
 

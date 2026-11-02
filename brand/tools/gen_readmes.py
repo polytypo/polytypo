@@ -41,6 +41,7 @@ HERO = {loc["locale"]: loc for loc in EXAMPLES["locales"]}
 DASH_WORDS = {
     "em-tight": "em dash, unspaced",
     "em-spaced": "em dash, spaced",
+    "em-paired": "em dash, spaced outside the pair",
     "en-tight": "en dash, unspaced",
     "en-spaced": "en dash, spaced",
     "none": "unchanged",

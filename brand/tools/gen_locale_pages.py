@@ -45,6 +45,7 @@ CODE_RUN = 'say("a -- b ...")'  # must match gen_examples.ts
 DASHES = {
     "em-tight": "an em dash (U+2014) with no surrounding spaces",
     "em-spaced": "an em dash (U+2014) with a space on each side",
+    "em-paired": "an em dash (U+2014) written as a pair, with a space outside the pair and none inside it",
     "en-tight": "an en dash (U+2013) with no surrounding spaces",
     "en-spaced": "an en dash (U+2013) with a space on each side",
     "none": "no substitution: the locale has no verified convention, so the rule writes nothing",
@@ -52,6 +53,7 @@ DASHES = {
 DASH_SHORT = {
     "em-tight": "unspaced em dash",
     "em-spaced": "spaced em dash",
+    "em-paired": "paired em dash",
     "en-tight": "unspaced en dash",
     "en-spaced": "spaced en dash",
     "none": "no dash substitution",
