@@ -205,17 +205,20 @@ PAGES += [(p["slug"], p["title"], None) for p in DOC_PAGES]
 SECTION_DESCRIPTIONS = {
     "getting-started": "Install polytypo for JavaScript, Python, Go, Ruby or PHP, then pick the mode that fits your input.",
     "api": "The transform and analyze functions, every option with its default, and the eight stable error codes.",
-    "modes": "The four ways polytypo reads a document: text, html, markdown and yaml, and what each treats as prose.",
+    "modes": "One page for each of polytypo's four modes (text, html, markdown and yaml), with their options, skip lists and edge cases.",
     "rules": "The nine typography rules, in the order they run, with what each changes per locale.",
     "concepts": "The guarantees behind polytypo: idempotency, rule order, locale resolution, the span model and round trip.",
     "guides": "Complete recipes: typeset Markdown, MDX and HTML at build time, and prose in YAML config.",
     "runtimes": "Install and call polytypo from JavaScript and TypeScript, Python, Go, Ruby and PHP.",
 }
+SECTION_SEO_TITLES = {
+    "modes": "polytypo modes reference: text, html, markdown and yaml",
+}
 SECTION_PAGES = [
     {
         "slug": f"docs/{sid}",
         "title": label,
-        "seo_title": f"polytypo documentation: {label}",
+        "seo_title": SECTION_SEO_TITLES.get(sid, f"polytypo documentation: {label}"),
         "description": SECTION_DESCRIPTIONS[sid],
         "section": sid,
         "is_section_index": True,

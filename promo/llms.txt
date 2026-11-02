@@ -15,7 +15,7 @@ Modes (4): text, html, markdown, yaml. `text` has no parser and no skip list —
 - [Options](https://polytypo.dev/docs/api/options/): Every polytypo option, its type and default, what it requires, and which error an invalid value raises.
 - [analyze](https://polytypo.dev/docs/api/analyze/): The same pipeline as transform, reporting what it would change instead of changing it, with code-point offsets into your input.
 - [Error codes](https://polytypo.dev/docs/api/errors/): The eight stable polytypo error codes, when each is thrown, and why the code, not the message, is the contract.
-- [Modes](https://polytypo.dev/docs/modes/overview/): The four ways polytypo reads a document, what each one treats as prose, and how to choose between them.
+- [How modes work](https://polytypo.dev/docs/modes/overview/): Why polytypo has modes, what the rules are allowed to see in each, and the three guarantees all four share.
 - [Text mode](https://polytypo.dev/docs/modes/text/): The default mode. The whole string is prose, there is no parser and no skip list, so everything in it is typeset.
 - [HTML mode](https://polytypo.dev/docs/modes/html/): Typeset the prose in an HTML document or fragment while tags, attributes, code, scripts and character references come back byte for byte.
 - [Markdown mode](https://polytypo.dev/docs/modes/markdown/): Typeset the prose of a CommonMark or MDX document, leaving code, links, HTML and frontmatter exactly as written.
