@@ -611,7 +611,7 @@ _CODE_LABEL_TO_STATUS_NAME = {
 
 # Registry-specific version-badge shield, keyed the same way brand/tools/gen_readmes.py's own
 # PACKAGE_BADGES is (that module isn't imported here to keep these two generators independent, per
-# this file's own module docstring on build isolation). Maintainer decision 2026-09-08: these five
+# this file's own module docstring on build isolation). These five
 # exact URLs are the one deliberate exception to this site's zero-external-request policy — see
 # tests/promo/no-external-requests.test.ts's ALLOWED_EXTERNAL_URLS, which must be updated in
 # lockstep with any change here.
@@ -1808,7 +1808,7 @@ def write_llms_txt(out_dir, data):
 # Attribution caption per language, "polytypo" marked with <b> at its actual position in each
 # (never derived by string-replacing "polytypo": Finnish inflects the brand name itself --
 # "polytypon", the genitive form -- so a substring replace would bold only part of the word).
-# Maintainer-reviewed 2026-09-08, not machine-translated: German prefers "durch" (performed-by) over
+# Hand-chosen rather than machine-translated: German prefers "durch" (performed-by) over
 # "von", Finnish "polytypon avulla" ("with the help of polytypo") over the ambiguous adessive
 # alone, and Russian deliberately breaks from the other six languages' "cleanup by X" structure --
 # "Текст оттипографен <b>polytypo</b>" reads as a natural short UI credit line in Russian, not a

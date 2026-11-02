@@ -13,8 +13,8 @@ export default tseslint.config(
       "promo/badge.js",
       // pagefind search index, generated and gitignored
       "promo/pagefind/**",
-      // private promo video (gitignored); flat config does not read .gitignore
-      "video/**",
+      // private working directory (gitignored); flat config does not read .gitignore
+      ".internal/**",
     ],
   },
   eslint.configs.recommended,

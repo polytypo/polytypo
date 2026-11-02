@@ -111,7 +111,7 @@ function carriedRules(locale) {
   if (locale.quotes) carried.push("quotes");
   // `dash` feeds both `dashes` (dash.parenthetical) and `ranges` (dash.range) as of spec 0.5.0,
   // but the citation obligation stays tagged "dashes" only — the split moved which rule reads
-  // the field, not the field itself or what supports it (maintainer decision: no new locale claim
+  // the field, not the field itself or what supports it (no new locale claim
   // was made). A citation already covering dash.range under "dashes" (e.g. a single source
   // documenting both the parenthetical and range convention together) still satisfies this.
   if (locale.dash) carried.push("dashes");

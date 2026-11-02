@@ -60,15 +60,11 @@ about HTML or Markdown. L3 does not exist yet and is not designed for.
 Per runtime, the nine rules of `spec/rules/order.json` over a plain string. No I/O, no env, no
 clock, no locale-dependent library calls (see §4.6). Pure function in, pure string out.
 
-> **Corrected 2026-08-15.** This read "~7 rules". The count was eight and it was not approximate —
-> `order.json` is the source of truth and `hyphen` was added at order 35. Rule count is not a
-> rounding matter: a port that implements seven of eight failed conformance.
->
-> **Corrected spec 0.5.0.** The count is now nine: `ranges` (order 25, off by default) was split
-> out of `dashes`, which retains only parenthetical-dash processing. A port implementing eight of
-> nine — omitting `ranges` — is non-conforming even though `ranges` defaults off, exactly as
-> omitting any other default-off behaviour would be; "off by default" is a runtime option, not
-> licence to skip implementing the rule.
+> The count is exact, not approximate: `order.json` is the source of truth, and a port that
+> implements eight of the nine rules fails conformance. `ranges` (order 25) is off by default, and
+> `dashes` retains only parenthetical-dash processing. Omitting `ranges` is non-conforming even
+> though it defaults off, exactly as omitting any other default-off behaviour would be: "off by
+> default" is a runtime option, not licence to skip implementing the rule.
 
 ### L2 — modes
 
@@ -210,11 +206,9 @@ The taxonomy is **eight codes**, and this list is the contract every runtime imp
 > wrong reads the message, which is where a human-readable detail belongs (messages are not
 > contract; codes are).
 >
-> **Corrected 2026-08-15.** This section previously named three codes as though they were the whole
-> taxonomy. Being wrong here is worse than elsewhere: this is the section the review gate enforces
-> from, and a port built from the old text would ship an error contract missing four codes. The two
-> newest — `POLYTYPO_INVALID_DIALECT` and `POLYTYPO_MALFORMED_INPUT` — are ratified public contract
-> by maintainer decision, not provisional.
+> The error taxonomy is the full set of codes in the table above, not a subset: a port that ships
+> fewer has an error contract with missing codes. The newest two — `POLYTYPO_INVALID_DIALECT` and
+> `POLYTYPO_MALFORMED_INPUT` — are public contract, not provisional.
 
 **A parser's own error type must never escape**, in any runtime. A `VFileMessage`, a
 `Nokogiri::SyntaxError` or a Python exception on the public surface puts a dependency's type into a
@@ -247,15 +241,12 @@ fixtures      tagged with the rule id
 Rule ids are **public API** — they appear in the `rules` option, in future plugin config, in
 CMS settings UI. Renaming one is a breaking change. Choose names once.
 
-> **Corrected 2026-08-15.** The example above read `"quotes", "nbsp-abbreviations"` and described
-> ids as "kebab-case". No `nbsp-abbreviations` rule exists, and the invented shape contradicted the
-> eight real ids, every one of which is a **single lowercase word**: `spaces` `ellipsis` `dashes`
-> `hyphen` `quotes` `apostrophe` `symbols` `nbsp`. `abbreviations` is a *field of the locale file*
-> that the `nbsp` rule reads — not a rule. Since ids are public API, an illustrative id that does
-> not exist is a naming precedent nobody agreed to; `order.json` is the only list.
+> Every rule id is a **single lowercase word**, not kebab-case: `spaces` `ellipsis` `ranges`
+> `dashes` `hyphen` `quotes` `apostrophe` `symbols` `nbsp`. `abbreviations` is a *field of the
+> locale file* that the `nbsp` rule reads, not a rule. Since ids are public API, an illustrative id
+> that does not exist is a naming precedent; `order.json` is the only list.
 >
-> **Corrected spec 0.5.0.** Nine real ids now: `spaces` `ellipsis` `ranges` `dashes` `hyphen`
-> `quotes` `apostrophe` `symbols` `nbsp`. `ranges` (order 25) is the first rule id whose
+> `ranges` (order 25) is the one rule id whose
 > `RULE_DEFAULTS` entry is off — a caller opts in explicitly (`{ rules: { ranges: true } }`); it
 > is still a full rule id subject to the same public-API stability as the other eight.
 
@@ -335,12 +326,12 @@ Rules for fixtures:
 hand-written. A runtime may ship with gaps; it may not misreport them. This is the honest
 substitute for pretending five ports stay in lockstep.
 
-> **Status, 2026-09-07: generated, but coarse.** `spec/CONFORMANCE.md` exists now
+> **Status: generated, but coarse.** `spec/CONFORMANCE.md` exists
 > (`scripts/gen-conformance.mjs`, run via `npm run gen:conformance`), reading spec-derived case
 > counts from `spec/fixtures/*.json` and per-runtime status from the hand-maintained
 > `scripts/conformance-status.json`. It is a runtime-level table (conformant or not, for the spec
 > version each runtime claims) — not yet the runtime × locale × rule granularity this section
-> describes, and "last verified" is a maintainer's manual observation of that runtime's own CI, not
+> describes, and "last verified" is a manual observation of that runtime's own CI, not
 > an automated or independently-attested signal. Both gaps are section 5's deferred design
 > (machine-readable per-runtime reports, cross-repo dispatch, sigstore transparency log).
 >
@@ -439,10 +430,9 @@ the option's code rather than `POLYTYPO_MALFORMED_INPUT`.
 > `keys` raises `POLYTYPO_INVALID_OPTION` (§4.6), the general code, rather than a ninth code of
 > its own; that is what the general code was added for.
 
-> **Corrected 2026-08-15.** This listed only `locale`, `mode` and `rules`. A port built from the old
-> text would ship a `markdown` mode it cannot implement: **`dialect` has no default and must not
-> acquire one.** CommonMark and MDX disagree about ordinary documents, so the caller supplies the
-> fact — it is the file extension, which the library cannot observe. Detection is **forbidden, not
+> The options are `locale`, `mode`, `rules` and the mode-specific ones. A `markdown` mode needs
+> one that is easy to miss: **`dialect` has no default and must not acquire one.** CommonMark and
+> MDX disagree about ordinary documents, so the caller supplies the fact — it is the file extension, which the library cannot observe. Detection is **forbidden, not
 > merely unimplemented**: one `<https://…>` autolink makes a file invalid MDX, and a heuristic would
 > then silently reclassify an ESM statement as prose. Omitting it raises
 > `POLYTYPO_INVALID_DIALECT` (§4.6), which is the fail-fast rule applied to a second required fact.

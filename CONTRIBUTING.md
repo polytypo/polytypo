@@ -42,6 +42,21 @@ generator or the spec data and rerun `npm run generate:all`.
 A released `spec-v*` tag freezes `spec/` under that version: a correction needs a version bump and
 a changelog entry in `brand/tools/changelog.json`.
 
+## Code style
+
+Node.js 20 or newer; install with `npm ci`. Prettier defaults apply (two-space indentation, double
+quotes, semicolons, trailing commas). TypeScript is strict: use `import type` for type-only
+imports, and avoid `any` and non-strict equality. Tests are `*.test.ts`. Before opening a pull
+request run `npm run validate:spec`, `npm run lint`, `npm test` and `npx tsc --noEmit`.
+
+## Commits and pull requests
+
+Commit subjects follow the Conventional Commits style (`feat:`, `fix:`, `test:`, `spec:`, `docs:`,
+`build:`, `chore:`), imperative and focused. A pull request explains the behaviour and rationale,
+names the affected rules, locales and modes, links issues or sources, and shows before/after
+examples for any change in output. Screenshots are only for visual changes in `brand/` or `promo/`.
+Do not commit regenerated `promo/vendor/` or `brand/BRANDBOOK.html` drift.
+
 ## License
 
 By contributing you agree that your contribution is licensed under the [MIT license](LICENSE).

@@ -5,7 +5,7 @@
 // each refusal fires on text people actually wrote — a fixture asserts behaviour on one input, and
 // a rate is a property of a corpus. That gap is how spec 1.7.0 shipped with a number nobody had:
 // a single-quoted scalar containing '' yields no spans, which is how an apostrophe is written
-// inside single quotes, and on the author's own site that class alone would have cost 130 of 247
+// inside single quotes, and on a real site that class alone would have cost 130 of 247
 // convertible values. The behaviour was specified, fixture-covered and correct; the cost was
 // discovered by accident while measuring something else.
 //
@@ -146,7 +146,7 @@ if (missed === 0) {
   }
 }
 // The second half, and the one that earns the tool: a rate over found text answers "what did this
-// corpus lose", and the author's quoting style is not a property of the language — it is a free
+// corpus lose", and a writer's quoting style is not a property of the language — it is a free
 // choice, the same value written several legal ways. A bail keyed on quoting is invisible until the
 // style is varied, which is why 1.7.0's single-quote cost was a surprise: this corpus is entirely
 // double-quoted, so its own rate is zero.

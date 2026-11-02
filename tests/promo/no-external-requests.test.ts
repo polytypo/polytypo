@@ -32,8 +32,8 @@
 // dependencies and are deliberately not checked — only elements/URLs the browser actually fetches
 // as part of rendering the page are.
 //
-// One explicit exception: `https://u.rogulia.fi/script.js`, the maintainer's own self-hosted Umami
-// analytics instance (added to every promo page 2026-09-07). It is maintainer-controlled
+// One explicit exception: `https://u.rogulia.fi/script.js`, the project's own self-hosted Umami
+// analytics instance (added to every promo page). It is project-controlled
 // infrastructure, not a third-party dependency in the sense this test guards against — see
 // ALLOWED_EXTERNAL_URLS.
 import {
@@ -110,13 +110,11 @@ function isExternalResourceUrl(url: string | undefined): boolean {
   return /^https?:\/\//i.test(trimmed) || trimmed.startsWith("//");
 }
 
-// u.rogulia.fi is the maintainer's own self-hosted Umami analytics instance, not a third-party
+// u.rogulia.fi is the project's own self-hosted Umami analytics instance, not a third-party
 // dependency in the sense this test guards against (no CDN, no font host, no tracker operated by
-// someone else) — explicitly allowed by maintainer decision (2026-09-07). Everything else external
-// is still rejected.
-// The maintainer's own self-hosted Umami instance, plus one version-badge image per published
-// runtime package (maintainer decision 2026-09-08, once all five target runtimes shipped: these
-// are real, live registry badges — not the single-runtime-era third-party dependency this test
+// someone else). Everything else external is still rejected.
+// The project's own self-hosted Umami instance, plus one version-badge image per published
+// runtime package (real, live registry badges — not the single-runtime-era third-party dependency this test
 // otherwise guards against). Exact URLs, not a hostname allowlist, so a new accidental
 // shields.io/pkg.go.dev reference elsewhere on the site still fails closed.
 const ALLOWED_EXTERNAL_URLS = new Set([
