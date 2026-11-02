@@ -301,7 +301,7 @@ describe("promo — a code panel contains code, and nothing else", () => {
   });
 
   it("passes the text as a variable — no transform() call takes a string literal", () => {
-    // The operator's rule, verbatim: a snippet shows the call and its settings, with the text
+    // The maintainer's rule, verbatim: a snippet shows the call and its settings, with the text
     // referred to as a variable. `transform(\`Is this "polytypo"? - No…\`, …)` is what this
     // catches, in every one of the five languages and in either quote style.
     const offenders: string[] = [];

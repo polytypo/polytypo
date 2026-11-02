@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Generates spec/CONFORMANCE.md (docs/ARCHITECTURE.md section 6.2) — never hand-written, so it
 // can't drift from spec/fixtures/*.json (the case counts, computed here) or
-// scripts/conformance-status.json (per-runtime status, hand-maintained by an operator who has
+// scripts/conformance-status.json (per-runtime status, hand-maintained by an maintainer who has
 // observed that runtime's own CI green against the spec version it claims). This is the minimal
 // version of the conformance matrix: docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md section 5's full
 // design (machine-readable per-runtime reports, cross-repo dispatch, sigstore transparency log)

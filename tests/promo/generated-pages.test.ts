@@ -121,7 +121,7 @@ describe("promo pages — Sites using polytypo", () => {
 describe("promo pages — honest runtime and claim wording", () => {
   // All five target runtimes (JS/TS, Python, Go, Ruby, PHP) are now actually published, so
   // registry names, package links, and version badges are real facts, not premature promises —
-  // the operator lifted the single-runtime-era ban on mentioning them (2026-09-08). What remains
+  // the maintainer lifted the single-runtime-era ban on mentioning them (2026-09-08). What remains
   // permanently forbidden, regardless of how many runtimes ship, is promise/announcement language
   // about a FUTURE state: this project ships what exists and never says "coming soon" about what
   // doesn't.
@@ -145,9 +145,9 @@ describe("promo pages — honest runtime and claim wording", () => {
 });
 
 describe("promo pages — no third-party analytics, trackers, cookies, or remote sharing SDKs", () => {
-  // One explicit exception: the operator's own self-hosted Umami instance
+  // One explicit exception: the maintainer's own self-hosted Umami instance
   // (https://u.rogulia.fi/script.js, added 2026-09-07 — see no-external-requests.test.ts's
-  // ALLOWED_EXTERNAL_URLS for the fuller rationale). It is operator-controlled infrastructure,
+  // ALLOWED_EXTERNAL_URLS for the fuller rationale). It is maintainer-controlled infrastructure,
   // not a third-party SDK in the sense this list guards against, so its presence is asserted
   // explicitly below rather than left to silently not match "umami" because the custom domain
   // doesn't contain that literal word.
@@ -171,7 +171,7 @@ describe("promo pages — no third-party analytics, trackers, cookies, or remote
   ];
 
   for (const page of PAGES) {
-    it(`${page} contains no third-party analytics/tracker/remote-sharing markers, and carries exactly the operator's own`, () => {
+    it(`${page} contains no third-party analytics/tracker/remote-sharing markers, and carries exactly the maintainer's own`, () => {
       const html = readPromoPage(page);
       for (const marker of ANALYTICS_MARKERS) {
         expect(html.toLowerCase()).not.toContain(marker.toLowerCase());

@@ -13,6 +13,10 @@ spec/fixtures/.escaped/
 
 # Claude Code local/agent configuration -- not part of the published project, never public.
 .claude/
+CLAUDE.md
+
+# Internal indexing log, managed by local tooling.
+docs/gsc-indexing.md
 
 # Internal planning/process documents, not contributor-facing engineering documentation.
 # Contributor-facing architecture docs (ARCHITECTURE.md, MULTILINGUAL_ARCHITECTURE.md) stay

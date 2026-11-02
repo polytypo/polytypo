@@ -97,7 +97,7 @@ describe("mode-fixture representative-coverage minimum (spec/rules/modes.md §8)
     // without a `-spaced` locale passes with the split removed. The set is READ from the locale
     // data rather than named here: a hardcoded list silently rots as locales are added, and it
     // also admitted `el`, whose `dash.parenthetical` is "none" and which therefore emits nothing
-    // at all. Reading one declarative field is not an engine (CLAUDE.md).
+    // at all. Reading one declarative field is not an engine.
     const isSpaced = (locale: string): boolean => {
       const data: { dash?: { parenthetical?: string } } = JSON.parse(
         readFileSync(path.join(SPEC_DIR, "locales", `${locale}.json`), "utf8"),

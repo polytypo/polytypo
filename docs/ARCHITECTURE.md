@@ -237,7 +237,7 @@ The taxonomy is **eight codes**, and this list is the contract every runtime imp
 > taxonomy. Being wrong here is worse than elsewhere: this is the section the review gate enforces
 > from, and a port built from the old text would ship an error contract missing four codes. The two
 > newest — `POLYTYPO_INVALID_DIALECT` and `POLYTYPO_MALFORMED_INPUT` — are ratified public contract
-> by operator decision, not provisional.
+> by maintainer decision, not provisional.
 
 **A parser's own error type must never escape**, in any runtime. A `VFileMessage`, a
 `Nokogiri::SyntaxError` or a Python exception on the public surface puts a dependency's type into a
@@ -363,7 +363,7 @@ substitute for pretending five ports stay in lockstep.
 > counts from `spec/fixtures/*.json` and per-runtime status from the hand-maintained
 > `scripts/conformance-status.json`. It is a runtime-level table (conformant or not, for the spec
 > version each runtime claims) — not yet the runtime × locale × rule granularity this section
-> describes, and "last verified" is an operator's manual observation of that runtime's own CI, not
+> describes, and "last verified" is an maintainer's manual observation of that runtime's own CI, not
 > an automated or independently-attested signal. Both gaps are section 5's deferred design
 > (machine-readable per-runtime reports, cross-repo dispatch, sigstore transparency log).
 >
