@@ -1,6 +1,6 @@
 name: Deploy to GitHub Pages
 
-# Prepared per docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md §7.3. Two ways this runs, both gated the
+# Two ways this runs, both gated the
 # same way: (1) automatically, once the canonical CI workflow finishes on a push to main —
 # `on.workflow_run` below, filtered to `event == 'push'` and `conclusion == 'success'` so a failed
 # run or a pull_request's own CI run can never trigger a deploy; or (2) a human choosing "Run
@@ -112,7 +112,7 @@ jobs:
       # principle race ahead of it); or, a manual dispatch with the SHA field left empty,
       # `github.sha` (the tip of main the dispatch itself resolved against) as the final fallback.
       # Every one of these is attacker-influenced the same way a git tag name is
-      # (docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md §4.4's precedent), so it goes through a step-level
+      # so it goes through a step-level
       # `env` var and is referenced as a quoted shell variable, never interpolated with `${{ }}`
       # directly into `run:` text. See scripts/lib/workflow-shell-safety.mjs.
       #

@@ -16,10 +16,8 @@ files, plus **50** locale-resolution cases.
 | [Ruby](https://github.com/polytypo/polytypo-ruby) | [package](https://rubygems.org/gems/polytypo) | 1.15.0 | ✅ conformant | 2026-10-24 |
 | [PHP](https://github.com/polytypo/polytypo-php) | [package](https://packagist.org/packages/polytypo/polytypo) | 1.15.0 | ✅ conformant | 2026-10-24 |
 
-"Last verified" is the date an operator last observed that runtime's own CI green against the
-spec version it claims — not a live, automated signal. See
-docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md section 5 for the deferred design that would make this
-automated and independently attested.
+"Last verified" is the date a maintainer last observed that runtime's own CI green against the
+spec version it claims — not a live, automated signal.
 
 "Conformant" is scoped to what a runtime actually claims to support (modes, dialects) — a runtime
 that honestly declines an unsupported dialect with a stable error code is conformant for what it

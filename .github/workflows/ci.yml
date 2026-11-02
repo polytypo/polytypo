@@ -31,7 +31,7 @@ jobs:
           cache: npm
 
       # Pulls the "polytypo" devDependency from polytypo/polytypo-js#main (a git dependency, not
-      # the npm registry — see docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md). That repo's own "prepare"
+      # the npm registry). That repo's own "prepare"
       # script builds it during this step, so its dist/ is ready for gen:promo-bundle below.
       - run: npm ci
 

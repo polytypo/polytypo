@@ -1,15 +1,12 @@
 # polytypo — Architecture
 
-**Status:** authoritative. Supersedes [PLAN.md](PLAN.md) §5 and §8.
-**Date:** 2026-08-15
+**Status:** authoritative.
 **Applies to:** every runtime implementation.
 
 This document exists for one reason: **polytypo will exist in five runtimes (JS/TS, Ruby,
 Go, PHP, Python), and every decision that is hard to reverse later is made here, once.**
 If a choice below looks over-specified for a one-week JS package, that is deliberate — it
 is specified so that port #4 does not force a rewrite of port #1.
-
-Read [PLAN.md](PLAN.md) §4 first. Nothing here authorizes building anything listed there.
 
 ---
 
@@ -47,13 +44,13 @@ about HTML or Markdown. L3 does not exist yet and is not designed for.
 
 ### L0 — spec
 
-* `spec/locales/<code>.json` — declarative locale data (shape per PLAN.md §6)
+* `spec/locales/<code>.json` — declarative locale data (shape per §5.1)
 * `spec/rules/<rule-id>.md` — semantics of one rule, prose + examples
 * `spec/fixtures/<code>.json` — input/expected pairs
 * `spec/schema/locale.schema.json` — **JSON Schema**, not zod
 * `spec/VERSION` — spec version (semver)
 
-> **JSON Schema, not zod.** PLAN.md §6 said "zod schema". Overridden: zod is a JS library
+> **JSON Schema, not zod.** zod is a JS library
 > and cannot validate the spec in a Go or PHP CI job. The canonical schema is JSON Schema;
 > each runtime validates against it with whatever local library it likes. A JS-side zod
 > type may be *generated* from it for ergonomics, never hand-maintained alongside it.
@@ -106,27 +103,17 @@ it can consume directly (`go get` on a subdirectory is friction; Packagist and R
 assume a repo). A polyglot monorepo also means every runtime's CI runs on every locale-data
 typo. Multi-repo costs one thing — spec distribution — and §3.1 solves that.
 
-**Until the multi-repo split happens**, "each implementation repo" describes an intended end
-state, not the present layout. This section's repo table is a plan, not a description. The
-implementation-ready design — inventory, migration runbook, and acceptance checklist — is
-`docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md`; it is authoritative on execution detail and supersedes
-this section wherever the two might read as disagreeing.
+Each runtime lives in its own repository under the `polytypo` GitHub organisation; this
+repository holds the spec and the promo site.
 
 ### 3.1 How each runtime gets the spec
 
-**Vendored, pinned, content-hash-verified, and never fetched at runtime — decided, not open.**
+**Vendored, pinned, and never fetched at runtime.**
 
-> **Corrected 2026-08-27.** This section previously left the submodule-vs-package transport
-> question open (ROADMAP.md "Open decisions" #2). It is resolved: `docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md`
-> §3 specifies an automated, vendored, content-hashed snapshot (`vendor/polytypo-spec/`) as the
-> transport, dispatched from the canonical repository on every `spec-vX.Y.Z` tag and verified by
-> each runtime before it is applied — neither a git submodule nor a consumer-time git dependency.
-> That document is the authoritative source for the manifest format, the hash algorithm, and the
-> dispatch/verification flow; this section states the decision and its consequences only.
-
-* The spec is **vendored, pinned, and hash-verified** into each implementation repo — a fixed spec
-  version, chosen deliberately by merging a reviewed update PR, never resolved at build time and
-  never fetched over the network during ordinary use.
+* The spec is **vendored and pinned** into each implementation repo as a committed copy — a fixed
+  spec version, chosen deliberately by a reviewed update, never resolved at build time and never
+  fetched over the network during ordinary use. Each runtime's CI clones this repository at the
+  `spec-v<version>` tag it vendors and fails on any difference.
 * A build step copies the vendored locale data into the runtime's package payload, so the published
   artifact is self-contained and does not require the vendored spec directory at install time.
 * Locale data is **embedded** in the shipped artifact (`import` in JS, `embed.FS` in Go, package
@@ -137,16 +124,6 @@ this section wherever the two might read as disagreeing.
   name (`polytypo`), the repository name (`polytypo-js`), and the spec's own tag syntax
   (`spec-vX.Y.Z`, never a name a registry would publish) are three distinct identifiers and are not
   interchangeable.
-* Until the multi-repo split executes, `scripts/gen-locales.mjs` reads `spec/locales/*.json` from
-  the working tree directly, which remains correct in the single-repo state and requires no change
-  ahead of the split.
-
-### 3.2 Order of construction
-
-JS first, and **only** JS through v1 (PLAN.md §1: this is slack-time work). The spec is
-extracted from day one, not retrofitted — retrofitting a spec out of a finished
-implementation is precisely the rework this document exists to prevent. Ports start only
-after the JS implementation has passed the dogfooding gate.
 
 ---
 
@@ -243,7 +220,7 @@ The taxonomy is **eight codes**, and this list is the contract every runtime imp
 `Nokogiri::SyntaxError` or a Python exception on the public surface puts a dependency's type into a
 contract the other four runtimes cannot reproduce. Wrap it; keep the code, discard the type.
 
-Fail-fast per PLAN.md §5.1: unknown locale throws, always, in every runtime.
+Fail-fast: an unknown locale throws, always, in every runtime.
 
 ### 4.7 Locale resolution is specified, not per-runtime
 
@@ -296,14 +273,14 @@ a JS implementation are acceptable and expected.
 
 ### 5.1 Locale vs. rule, restated
 
-PLAN.md §6 draws the line: declarative facts go in locale JSON, algorithms go in code. The
+The line is: declarative facts go in locale JSON, algorithms go in code. The
 multi-runtime setting sharpens it — **anything expressed as configuration must be
 implementable identically in five languages.** In practice this bans, from locale files:
 
 * regex patterns of any kind (§4.1);
 * ordering or priority numbers (that is `order.json`'s job);
-* conditionals, expressions, or anything resembling a DSL — the failure mode PLAN.md §6
-  already warned about, now with five interpreters to keep in sync.
+* conditionals, expressions, or anything resembling a DSL — the failure mode that gets worse
+  with five interpreters to keep in sync.
 
 Locale files contain literal strings, literal code points, string lists, and enum values.
 Nothing else.
@@ -363,7 +340,7 @@ substitute for pretending five ports stay in lockstep.
 > counts from `spec/fixtures/*.json` and per-runtime status from the hand-maintained
 > `scripts/conformance-status.json`. It is a runtime-level table (conformant or not, for the spec
 > version each runtime claims) — not yet the runtime × locale × rule granularity this section
-> describes, and "last verified" is an maintainer's manual observation of that runtime's own CI, not
+> describes, and "last verified" is a maintainer's manual observation of that runtime's own CI, not
 > an automated or independently-attested signal. Both gaps are section 5's deferred design
 > (machine-readable per-runtime reports, cross-repo dispatch, sigstore transparency log).
 >
@@ -397,8 +374,8 @@ Every implementation repo runs, on every PR:
 
 1. locale files validate against the JSON Schema;
 2. full conformance suite for the pinned spec version;
-3. idempotency property test (`transform∘transform == transform`) over generated input, per
-   PLAN.md §3.4 — property-based, not just fixture-based, in every runtime that has a usable
+3. idempotency property test (`transform∘transform == transform`) over generated input, —
+   property-based, not just fixture-based, in every runtime that has a usable
    property-testing library (`fast-check`, `hypothesis`, `gopter`, `rantly`, `eris/php`);
    **plus a bounded exhaustive sweep** — every string up to a small length over a small
    alphabet, across every locale. Sampling is not enough: a uniform random generator ran
@@ -410,7 +387,7 @@ Every implementation repo runs, on every PR:
    point on its own output does not imply the composition is one — a rule can emit a space
    that an earlier-ordered rule deletes on the next run. Each rule's output invariants and
    the composition argument live in `spec/rules/pipeline-idempotency.md`; a rule-local proof
-   alone does not satisfy PLAN.md §3.4, which binds the public function;
+   alone does not satisfy the property, which binds the public function;
 4. round-trip test: input requiring no changes comes out byte-identical.
 
 A red conformance run blocks release. Always.
@@ -484,7 +461,7 @@ Constraints, binding in every runtime:
 This section reserved the shape of a second entry point so a v1 API could not foreclose it:
 
 * `analyze(input, options) -> Change[]` — same pipeline, reporting `{ruleId, start, end,
-  before, after}` instead of applying. Every bulk-rewrite integration (PLAN.md §9) needs a
+  before, after}` instead of applying. Every bulk-rewrite integration needs a
   dry-run diff, and retrofitting one onto a pipeline that only knows how to concatenate
   strings is a rewrite. The engine must therefore be written so each rule reports *edits*,
   and the pipeline applies them — even though v1 only ever exposes the applied string.
@@ -503,7 +480,7 @@ module per runtime instead of a rewrite.
 
 ## 8. Governance of locale data
 
-PLAN.md §6.1 and §6.2 stand and are strengthened by the multi-runtime setting:
+These rules apply, strengthened by the multi-runtime setting:
 
 * A locale is accepted as a triple: locale JSON + fixtures + normative citation. No fixtures,
   no merge.
@@ -517,7 +494,7 @@ PLAN.md §6.1 and §6.2 stand and are strengthened by the multi-runtime setting:
 
 ## 9. Explicitly out of scope, restated for the multi-runtime context
 
-In addition to everything in PLAN.md §4:
+The following are out of scope:
 
 * **No shared code generation across runtimes.** No transpiling the JS engine to Go, no
   WASM core. Each port is hand-written against the spec. A WASM core sounds like it saves
@@ -526,5 +503,3 @@ In addition to everything in PLAN.md §4:
 * **No RPC or service boundary between runtimes.** They share data, not processes.
 * **No plugin/extension API in v1**, in any runtime. Stable rule ids (§5) are the affordance;
   third-party rule loading is not.
-* **No port started before the JS dogfooding gate passes.** Porting a design that has not
-  yet met real content is porting bugs five times.

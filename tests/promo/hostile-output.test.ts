@@ -1,6 +1,5 @@
-// Regression coverage for the promo playground's escaping boundary (docs/AUDIT_REMEDIATION_AND_
-// RELEASE_PLAN.md 6.1: "keep output escaping and the current protection against executing pasted
-// HTML"). brand/tools/promo/site.js is a plain browser script (assigns `window.Polytypo`); loaded
+// Regression coverage for the promo playground's escaping boundary (output escaping and no
+// execution of pasted HTML). brand/tools/promo/site.js is a plain browser script (assigns `window.Polytypo`); loaded
 // here via Node's `vm` module with a bare `{ window: {} }` sandbox — no real DOM needed, since
 // none of the functions under test touch `document` (only `bootTabs` does, and it is never
 // called). This tests the actual shipped escaping code, not a reimplementation of it: any future

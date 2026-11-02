@@ -28,8 +28,7 @@ const ORDER_FILE = path.join(SPEC, "rules", "order.json");
 const REGISTRY_FILE = path.join(LOCALES_DIR, "registry.json");
 
 // spec/VERSION is the single, authoritative source of truth for the global spec version
-// (docs/ARCHITECTURE.md section 2, "L0 — spec": "spec/VERSION — spec version (semver)"; see also
-// docs/AUDIT_REMEDIATION_AND_RELEASE_PLAN.md section 4.1). It is never itself validated against
+// (docs/ARCHITECTURE.md section 2, "L0 — spec": "spec/VERSION — spec version (semver)"). It is never itself validated against
 // anything else — everything below validates against it.
 //
 // order.json, registry.json, and every spec/fixtures/*.json root (including
@@ -106,7 +105,7 @@ function formatAjvErrors(ajvErrors) {
 
 // A locale file must cite a source for every rule it actually carries data for.
 // "Carries data" is judged per field, because the schema requires all of them to
-// be present even when a locale has nothing to say (docs/PLAN.md section 6.1).
+// be present even when a locale has nothing to say.
 function carriedRules(locale) {
   const carried = [];
   if (locale.quotes) carried.push("quotes");

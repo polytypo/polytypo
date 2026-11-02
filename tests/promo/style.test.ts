@@ -1,5 +1,4 @@
-// Source-level regression coverage for the narrow-viewport overflow fix (docs/AUDIT_REMEDIATION_
-// AND_RELEASE_PLAN.md 6.1): a prose inline <code> element (e.g. `promo/vendor/polytypo.browser.js`
+// Source-level regression coverage for the narrow-viewport overflow fix: a prose inline <code> element (e.g. `promo/vendor/polytypo.browser.js`
 // inside a <p>) has no horizontal-scroll affordance of its own, unlike a <pre><code> block, so at
 // narrow viewports a long identifier could push the whole document wider than the viewport. This
 // asserts the CSS rule that fixes it is present and correctly scoped — it does not (and cannot,

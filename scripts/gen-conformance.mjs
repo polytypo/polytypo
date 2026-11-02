@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 // Generates spec/CONFORMANCE.md (docs/ARCHITECTURE.md section 6.2) — never hand-written, so it
 // can't drift from spec/fixtures/*.json (the case counts, computed here) or
-// scripts/conformance-status.json (per-runtime status, hand-maintained by an maintainer who has
+// scripts/conformance-status.json (per-runtime status, hand-maintained by a maintainer who has
 // observed that runtime's own CI green against the spec version it claims). This is the minimal
-// version of the conformance matrix: docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md section 5's full
-// design (machine-readable per-runtime reports, cross-repo dispatch, sigstore transparency log)
-// remains deferred — there is no automated ingestion here, only this generator reading a
+// version of the conformance matrix: there is no automated ingestion here, only this generator reading a
 // hand-maintained status file.
 import { readFile, readdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
@@ -62,10 +60,8 @@ files, plus **${resolutionCases}** locale-resolution cases.
 | --- | --- | --- | --- | --- |
 ${rows}
 
-"Last verified" is the date an operator last observed that runtime's own CI green against the
-spec version it claims — not a live, automated signal. See
-docs/REPOSITORY_SPLIT_AND_SPEC_SYNC.md section 5 for the deferred design that would make this
-automated and independently attested.
+"Last verified" is the date a maintainer last observed that runtime's own CI green against the
+spec version it claims — not a live, automated signal.
 
 "Conformant" is scoped to what a runtime actually claims to support (modes, dialects) — a runtime
 that honestly declines an unsupported dialect with a stable error code is conformant for what it

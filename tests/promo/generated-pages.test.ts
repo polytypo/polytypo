@@ -1,5 +1,4 @@
-// Source-level regression coverage for docs/AUDIT_REMEDIATION_AND_RELEASE_PLAN.md 6.2 (viral
-// positioning): the required thesis wording, honest runtime status, and the absence of any
+// Source-level regression coverage for the site's positioning: the required thesis wording, honest runtime status, and the absence of any
 // analytics/tracking/remote-sharing dependency, checked against the actual generated promo pages
 // (not the .body.html templates) so a broken generator-side replacement key would be caught here
 // too. Requires `promo/` to already be built — this repo's own documented order is

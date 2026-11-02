@@ -251,7 +251,7 @@ def app_browser():
 
 def app_cli():
     # "v1.0.0" and "spec 1.0" are the same illustrative future-release mockup as app_readme()'s
-    # badges — this CLI does not exist yet (PLAN.md §4: no CLI in v1). "42 edits" and "0
+    # badges — this CLI does not exist yet. "42 edits" and "0
     # warnings" are arbitrary flavour for a plausible-looking run and have no canonical source
     # to check against. The rule count is not hypothetical, so it is read live.
     return (

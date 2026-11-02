@@ -1,5 +1,4 @@
-// Regression coverage for #pg-foot's status text (docs/AUDIT_REMEDIATION_AND_RELEASE_PLAN.md
-// 6.1): summarizeChange/summarizeError are pure helpers factored out of brand/tools/promo/site.js
+// Regression coverage for #pg-foot's status text: summarizeChange/summarizeError are pure helpers factored out of brand/tools/promo/site.js
 // specifically so this behaviour is testable without parsing generated page source.
 import { describe, expect, it } from "vitest";
 import { loadPolytypoSiteJs } from "./load-site-js.js";
