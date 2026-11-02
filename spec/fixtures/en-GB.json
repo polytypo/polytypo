@@ -1,5 +1,5 @@
 {
-  "spec": "1.17.4",
+  "spec": "1.17.5",
   "locale": "en-GB",
   "cases": [
     {
@@ -1871,6 +1871,69 @@
       "in": "Note[^a's] and it's.\n\n[^a's]: it's text\n",
       "out": "Note[^a's] and it’s.\n\n[^a's]: it’s text\n",
       "note": "modes.md §3.7.3: footnote labels are skipped in both dialects."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-bracket-task-marker-space-after-open",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "- [ x] item and a , b.\n",
+      "out": "- [ x] item and a, b.\n",
+      "note": "modes.md §3.4 bracket-shape rule: deleting the space after the opening bracket would make a task-list marker for a parser with GFM extensions; that edit is discarded. The space in a , b is deleted as usual."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-bracket-task-marker-space-before-close",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "- [x ] item and a , b.\n",
+      "out": "- [x ] item and a, b.\n",
+      "note": "modes.md §3.4 bracket-shape rule: the same marker from the other side: deleting the space before the closing bracket is discarded."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-bracket-task-marker-both-spaces",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "- [ X ] item , y\n",
+      "out": "- [ X ] item, y\n",
+      "note": "modes.md §3.4 bracket-shape rule: the skip over spaces keeps both deletions from being evaluated as safe on their own; the two are discarded together, and the space before the comma is deleted."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-bracket-footnote-space-after-open",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "a [ ^1] b , c\n\n[^1]: n\n",
+      "out": "a [ ^1] b, c\n\n[^1]: n\n",
+      "note": "modes.md §3.4 bracket-shape rule: deleting the space after the opening bracket would make a footnote reference; that edit is discarded."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-bracket-footnote-space-before-close",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "a [^1 ] b , c\n\n[^1]: n\n",
+      "out": "a [^1 ] b, c\n\n[^1]: n\n",
+      "note": "modes.md §3.4 bracket-shape rule: deleting the space before the closing bracket would make a footnote reference; that edit is discarded."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-bracket-ordinary-text-still-tightened",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "a [ word ] b and ( x ) c.\n",
+      "out": "a [word] b and (x) c.\n",
+      "note": "modes.md §3.4 bracket-shape rule: the rule tests a shape, not a bracket: a bracket around an ordinary word, and a parenthesis around a single letter, are tightened as before."
+    },
+    {
+      "id": "en-gb-markdown-commonmark-bracket-task-marker-two-spaces",
+      "rule": "spaces",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "- [  ] item and a , b.\n",
+      "out": "- [  ] item and a, b.\n",
+      "note": "modes.md §3.4 bracket-shape rule: collapsing two spaces between the brackets to one would make an unchecked task-list marker out of literal text; that edit is discarded."
     }
   ]
 }

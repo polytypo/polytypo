@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.17.4`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.17.4 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.17.5`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.17.5 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,13 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.17.5 — 2 November 2026
+
+Deleting a space no longer creates a task-list marker or a footnote reference in `markdown` mode.
+
+- A space inside square brackets is deleted, and when what was left read as `[x]` or `[^label]`, a Markdown parser with the GFM extensions read it as structure. Measured on 1.17.4 (`en-GB`, `markdown`): `- [ x] item` came back as `- [x] item`, a checked task-list item; `- [x ] item` did the same from the other side; `- [  ] item` came back as `- [ ] item`, an unchecked one; `a [ ^1] b` came back as `a [^1] b`, a footnote reference when a definition `[^1]: …` exists. These deletions are now left unmade. The same deletion in `[ word ]` or `( x )` still happens. `text`, `html` and `yaml` modes are unchanged.
+- The accepted cost: the check looks at the shape, not at the document, so `a [ x] b` in the middle of a sentence keeps its space although no list item is there, and so do `[ x ]`, `[ ^1]` and `[  ]` in prose. A footnote label that holds an inline element, such as `[^*a*b ]`, is not recognised and is still tightened.
 
 ## 1.17.4 — 30 October 2026
 

@@ -19,7 +19,7 @@ step 9 with §3.8.5's content-line condition, added in 1.10.0, §3.8.4's carriag
 continuation line with the bails of §3.8.6 that use it, added in 1.11.0, and §3.8.4's node lines,
 declined keys, node markers and own-line region, with the changes to steps 1, 3, 4, 5, 6, 7 and 8
 that go with them, added in 1.11.0, and §3.9 with the amendments it carries to §3.1, §3.5 step 2,
-§4, §5, §7 item 7 and §8, added in 1.13.0, and §3.4's delimiter-neighbour rule with §3.7.3's autolink-literal tail, terminator guard and reference labels, and the amendments they carry to §3.4's deletion paragraph, §5 items 2 and 3, its fifth-part note and testing obligation, and §6, added in 1.17.2, and §3.4's escape-and-reference rule with the amendments it carries to §3.6, §3.7.3, §5 item 2's fifth-part note, §5 item 3 and the testing obligation, added in 1.17.4).
+§4, §5, §7 item 7 and §8, added in 1.13.0, and §3.4's delimiter-neighbour rule with §3.7.3's autolink-literal tail, terminator guard and reference labels, and the amendments they carry to §3.4's deletion paragraph, §5 items 2 and 3, its fifth-part note and testing obligation, and §6, added in 1.17.2, and §3.4's escape-and-reference rule with the amendments it carries to §3.6, §3.7.3, §5 item 2's fifth-part note, §5 item 3 and the testing obligation, added in 1.17.4, and §3.4's bracket-shape rule, added in 1.17.5).
 
 ---
 
@@ -459,6 +459,48 @@ lookup of the reference names an HTML5 parser knows, because a name table would 
 in five runtimes; it is therefore stricter than a parser: `AT&T ;x` (en-US) keeps its space,
 though `&T;` is no reference. **That is the accepted cost**, together with a literal backslash
 before a space and punctuation, which is rare in prose.
+
+**The bracket-shape rule (`markdown` only, spec 1.17.5).** Three more shapes are made by joining
+what a deleted space kept apart, and both dialects, which enable GFM (§3.7), read the joined form
+as structure where the spaced form is literal text: a task-list marker, `[x]`, `[X]` or `[ ]` at the
+start of a list item, and a footnote reference or definition, `[^label]`. Measured, with the
+pre-1.17.5 behaviour:
+
+| Mode       | Input         | Locale  | Output before 1.17.5 | What changed                                                    |
+| ---------- | ------------- | ------- | -------------------- | --------------------------------------------------------------- |
+| `markdown` | `- [ x] item` | `en-GB` | `- [x] item`         | the text of a literal bracket becomes a checked task-list item  |
+| `markdown` | `- [x ] item` | `en-GB` | `- [x] item`         | the same item, from the other side                              |
+| `markdown` | `- [  ] item` | `en-GB` | `- [ ] item`         | two spaces become one, and the text becomes an unchecked item   |
+| `markdown` | `a [ ^1] b`   | `en-GB` | `a [^1] b`           | a footnote reference, if a definition `[^1]: …` exists          |
+
+Write `SKIP(i, +1)` for the smallest index greater than `i` whose code point is not U+0020, and
+`SKIP(i, −1)` for the largest index smaller than `i` whose code point is not U+0020; a marker, or a
+position outside the array, belongs to no class below. With `p`, `q` and `r` as before, and
+`a = SKIP(p, −1)` and `b = SKIP(q, +1)` (so that `a` and `b` are the nearest code points that are
+not U+0020 on either side of the deleted run):
+
+> **A deletion (`r = 0`) is discarded if either of these holds, evaluated on the array the rule read.**
+>
+> 1. `cp[a]` is U+005B, and either `cp[b]` is U+005E or U+005D, or `cp[b]` is U+0078 or U+0058 and
+>    `cp[SKIP(b, +1)]` is U+005D.
+> 2. `cp[b]` is U+005D, and either `cp[a]` is U+0078 or U+0058 and `cp[SKIP(a, −1)]` is U+005B, or
+>    the **label run** is at least two code points long, its leftmost code point is U+005E, and
+>    the nearest code point left of the run that is not U+0020 is U+005B. The label run is the
+>    longest run ending at `a` of code points that are none of U+0020, U+005B, U+005D, and not a
+>    marker.
+>
+> **An edit whose replacement is the single code point U+0020 is discarded** when `cp[a]` is U+005B
+> and `cp[b]` is U+005D: `spaces` collapses a run of spaces to one rather than deleting it, and
+> `[  ]` becoming `[ ]` is the unchecked marker.
+
+The skip over U+0020 is what keeps `[ x ]` whole: the two deletions are evaluated on the same
+array, and each sees the other space as absent. The rule reads no parser state and no dialect, so it
+fires identically on every run (§5 item 3), and it tests deletions only because `spaces` is the
+only rule that deletes. It is a test of _shape_, not of whether a footnote definition or a list item
+exists. **The accepted costs:** `a [ x] b` in the middle of a sentence keeps its space although no
+list item is there, as do `[ x ]`, `[ ^1]` and `[  ]` in prose; `a [ ^ ] b` loses its second space only,
+because a label run needs two code points; and a footnote label that contains an inline element
+(`[^*a*b ]`) is missed, because a marker ends the label run.
 
 ### 3.5 Applying the result
 
@@ -1830,7 +1872,8 @@ they do not carry it over for free either. Write `M` for the whole mode transfor
      can also create a backslash escape or a character reference from literal text (`foo\ ,`
      becomes `foo\,` and `AT&amp ;T` becomes `AT&amp;T`): the parse tree keeps its shape and its
      text changes, which a shape comparison does not see. That class was not closed by 1.17.2 and
-     is closed by §3.4's escape-and-reference rule (spec 1.17.4).
+     is closed by §3.4's escape-and-reference rule (spec 1.17.4). A deletion can also join
+     `[` and `x` or `^` into a shape a GFM parser reads as structure, and §3.4's bracket-shape rule (spec 1.17.5) closes that.
    - **Deletion** is only ever of a U+0020, and structural whitespace borders a `BREAK` — a real
      one in `text` mode, a −2 marker in the others — where `spaces` refuses to act
      (`spaces.md` §3.2 step 4). A deletion therefore cannot turn `- item` into `-item`, collapse
@@ -1904,7 +1947,7 @@ they do not carry it over for free either. Write `M` for the whole mode transfor
    to a side. The discard is a pure function of the array and its span table (since 1.17.2: of
    `(p, q, r, s₀, s₁)`, of the code points beside the edit for §3.4's delimiter-neighbour rule, of
    the same code points and the run of letters and digits around the join for §3.4's
-   escape-and-reference rule (since 1.17.4), and of whether the span begins at the end of a web address for §3.7.3's terminator guard), so it
+   escape-and-reference rule (since 1.17.4), of the code points around the join for §3.4's bracket-shape rule (since 1.17.5), and of whether the span begins at the end of a web address for §3.7.3's terminator guard), so it
    happens identically on every run: a rule that was declined at an edge once is declined there always, and the output
    contains nothing for the next run to reconsider.
 
@@ -1944,7 +1987,9 @@ must include an address with `_`, `*` and `~` inside it after `"`, `'` and `(`, 
 directly after a digit. **Since 1.17.4 the comparison also covers the text values of the tree**, not only its shape: the
 defect behind the escape-and-reference rule left the shape unchanged. The alphabet must then include
 U+005C, `&`, `#`, `;`, `,` and a letter, and the templates a literal backslash and a literal
-`&name` each followed by a space and by each punctuation mark. **Two classes are carved out because they are accepted, not because
+`&name` each followed by a space and by each punctuation mark. **Since 1.17.5 the alphabet also includes** U+005B, U+005D, U+005E,
+`x` and `X`, and the templates a list item and a footnote definition each holding every
+combination of those with zero, one or two spaces inside the brackets. **Two classes are carved out because they are accepted, not because
 they are untested**: a text that matched no definition in the input and matches one in the output
 (§3.7.3's accepted case), and an e-mail address, whose end only the parser decides.
 
