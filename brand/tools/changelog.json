@@ -2,6 +2,52 @@
   "_comment": "Single source for CHANGELOG.md (brand/tools/gen_readmes.py) and the site's /changelog page (brand/tools/build_promo.py). Released versions only. Example strings are real engine output captured from the published packages of each version, never typed by hand; an entry whose release changes no output carries examples: [].",
   "releases": [
     {
+      "version": "1.19.0",
+      "date": "2026-11-03",
+      "headline": "Greek parenthetical dashes are converted: an em dash with a space outside the pair, none inside.",
+      "items": [
+        {
+          "text": "Until now `el` left a spaced hyphen or a double hyphen alone, so `Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό.` came back unchanged. It now comes back as `Περπατήσαμε —σχεδόν 3 χλμ— και το βρήκαμε κλειστό.`, and `Το σχέδιο - αν υπάρχει - αποτυγχάνει.` as `Το σχέδιο —αν υπάρχει— αποτυγχάνει.`. This is the form the Greek edition of the EU Interinstitutional Style Guide describes: an em dash, a space before the first and after the second, none inside. A pair typed closed up or with spaces inside is brought to the same form, and a pair already written that way is left as typed."
+        },
+        {
+          "text": "The em dash follows that guide. The state school grammar appears to use an en dash in the same role; the two sources disagree and none of them ranks the other, so the cited one was chosen."
+        },
+        {
+          "text": "The rule works as it does for Spanish since 1.18.0: it converts a sentence only when that sentence holds exactly two dashes, and leaves the rest as typed. A lone spaced hyphen such as `Αθήνα - η πρωτεύουσα της Ελλάδας.` is not touched. The accepted cost, not measured on a Greek corpus: a list of exactly three items joined by spaced hyphens is read as a pair, so `Αθήνα - Θεσσαλονίκη - Πάτρα` becomes `Αθήνα —Θεσσαλονίκη— Πάτρα`. Numeric ranges are still not touched in Greek."
+        }
+      ],
+      "examples": [
+        {
+          "locale": "el",
+          "mode": "text",
+          "in": "Το σχέδιο - αν υπάρχει - αποτυγχάνει.",
+          "before": "Το σχέδιο - αν υπάρχει - αποτυγχάνει.",
+          "after": "Το σχέδιο —αν υπάρχει— αποτυγχάνει."
+        },
+        {
+          "locale": "el",
+          "mode": "text",
+          "in": "Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό.",
+          "before": "Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό.",
+          "after": "Περπατήσαμε —σχεδόν 3 χλμ— και το βρήκαμε κλειστό."
+        },
+        {
+          "locale": "el",
+          "mode": "text",
+          "in": "Αθήνα - η πρωτεύουσα της Ελλάδας.",
+          "before": "Αθήνα - η πρωτεύουσα της Ελλάδας.",
+          "after": "Αθήνα - η πρωτεύουσα της Ελλάδας."
+        },
+        {
+          "locale": "el",
+          "mode": "text",
+          "in": "Αθήνα - Θεσσαλονίκη - Πάτρα",
+          "before": "Αθήνα - Θεσσαλονίκη - Πάτρα",
+          "after": "Αθήνα —Θεσσαλονίκη— Πάτρα"
+        }
+      ]
+    },
+    {
       "version": "1.18.0",
       "date": "2026-11-02",
       "headline": "Spanish parenthetical dashes are written the way the DPD describes them: a space outside the pair, none inside.",

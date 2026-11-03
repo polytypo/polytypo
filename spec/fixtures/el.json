@@ -1,5 +1,5 @@
 {
-  "spec": "1.18.0",
+  "spec": "1.19.0",
   "locale": "el",
   "cases": [
     {
@@ -94,12 +94,54 @@
       }
     },
     {
-      "id": "el-dashes-parenthetical-noop",
+      "id": "el-dashes-paired-spaced-hyphens",
       "rule": "dashes",
       "mode": "text",
       "in": "Το σχέδιο - αν υπάρχει - αποτυγχάνει.",
-      "out": "Το σχέδιο - αν υπάρχει - αποτυγχάνει.",
-      "note": "dashes.md §6 case 34. dash.parenthetical is \"none\": the source prescribes spaces outside the dash pair and none inside, which no value of the enum expresses."
+      "out": "Το σχέδιο —αν υπάρχει— αποτυγχάνει.",
+      "note": "dashes.md §6 case 34. dash.parenthetical is \"em-paired\" since spec 1.19.0: U+2014 with a space outside the pair and none inside, as the EU guide §10.1.8 prescribes."
+    },
+    {
+      "id": "el-dashes-paired-double-hyphen",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό.",
+      "out": "Περπατήσαμε —σχεδόν 3 χλμ— και το βρήκαμε κλειστό."
+    },
+    {
+      "id": "el-dashes-paired-tight-em",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Το σχέδιο—αν υπάρχει—αποτυγχάνει.",
+      "out": "Το σχέδιο —αν υπάρχει— αποτυγχάνει."
+    },
+    {
+      "id": "el-dashes-paired-already-correct",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Έφτασε —επιτέλους— σπίτι.",
+      "out": "Έφτασε —επιτέλους— σπίτι."
+    },
+    {
+      "id": "el-dashes-paired-spaced-em",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Έφτασε — επιτέλους — σπίτι.",
+      "out": "Έφτασε —επιτέλους— σπίτι."
+    },
+    {
+      "id": "el-dashes-single-hyphen-untouched",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Αθήνα - η πρωτεύουσα της Ελλάδας.",
+      "out": "Αθήνα - η πρωτεύουσα της Ελλάδας."
+    },
+    {
+      "id": "el-dashes-lone-en-dash-untouched",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Έφτασε – επιτέλους – σπίτι.",
+      "out": "Έφτασε – επιτέλους – σπίτι."
     },
     {
       "id": "el-ranges-existing-en-dash-noop",

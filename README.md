@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.18.0** · locales: **27** · rules: **9**.
+Spec version: **1.19.0** · locales: **27** · rules: **9**.
 
 ## Implementations
 
@@ -90,7 +90,7 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | `fr` | French (France) | «…» + U+00A0 | “…” | em dash, spaced | unchanged |
 | `de-DE` | German (Germany) | „…“ | ‚…‘ | en dash, spaced | en dash, unspaced |
 | `de-CH` | German (Switzerland) | «…» | ‹…› | en dash, spaced | en dash, unspaced |
-| `el` | Greek | «…» | “…” | unchanged | unchanged |
+| `el` | Greek | «…» | “…” | em dash, spaced outside the pair | unchanged |
 | `hu` | Hungarian | „…” | »…« | en dash, spaced | en dash, unspaced |
 | `it` | Italian | «…» | “…” | em dash, spaced | unchanged |
 | `lt` | Lithuanian | „…“ | „…“ | en dash, spaced | en dash, unspaced |

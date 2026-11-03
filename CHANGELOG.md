@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.18.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.18.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.19.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.19.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,21 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.19.0 — 3 November 2026
+
+Greek parenthetical dashes are converted: an em dash with a space outside the pair, none inside.
+
+- Until now `el` left a spaced hyphen or a double hyphen alone, so `Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό.` came back unchanged. It now comes back as `Περπατήσαμε —σχεδόν 3 χλμ— και το βρήκαμε κλειστό.`, and `Το σχέδιο - αν υπάρχει - αποτυγχάνει.` as `Το σχέδιο —αν υπάρχει— αποτυγχάνει.`. This is the form the Greek edition of the EU Interinstitutional Style Guide describes: an em dash, a space before the first and after the second, none inside. A pair typed closed up or with spaces inside is brought to the same form, and a pair already written that way is left as typed.
+- The em dash follows that guide. The state school grammar appears to use an en dash in the same role; the two sources disagree and none of them ranks the other, so the cited one was chosen.
+- The rule works as it does for Spanish since 1.18.0: it converts a sentence only when that sentence holds exactly two dashes, and leaves the rest as typed. A lone spaced hyphen such as `Αθήνα - η πρωτεύουσα της Ελλάδας.` is not touched. The accepted cost, not measured on a Greek corpus: a list of exactly three items joined by spaced hyphens is read as a pair, so `Αθήνα - Θεσσαλονίκη - Πάτρα` becomes `Αθήνα —Θεσσαλονίκη— Πάτρα`. Numeric ranges are still not touched in Greek.
+
+| Locale | Mode | In | Before | After |
+| --- | --- | --- | --- | --- |
+| `el` | `text` | `Το σχέδιο - αν υπάρχει - αποτυγχάνει.` | `Το σχέδιο - αν υπάρχει - αποτυγχάνει.` | `Το σχέδιο —αν υπάρχει— αποτυγχάνει.` |
+| `el` | `text` | `Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό.` | `Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό.` | `Περπατήσαμε —σχεδόν 3 χλμ— και το βρήκαμε κλειστό.` |
+| `el` | `text` | `Αθήνα - η πρωτεύουσα της Ελλάδας.` | `Αθήνα - η πρωτεύουσα της Ελλάδας.` | `Αθήνα - η πρωτεύουσα της Ελλάδας.` |
+| `el` | `text` | `Αθήνα - Θεσσαλονίκη - Πάτρα` | `Αθήνα - Θεσσαλονίκη - Πάτρα` | `Αθήνα —Θεσσαλονίκη— Πάτρα` |
 
 ## 1.18.0 — 2 November 2026
 

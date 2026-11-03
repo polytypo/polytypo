@@ -4,7 +4,7 @@
 **Spec version:** 0.6.0 (0.2.0 for everything except the 0.5.0/0.6.0 changes noted inline and in
 §8 History), amended in **1.3.0**: §1 and §3.4's statement of what belongs to `ranges`, §3.2a's
 re-entry condition, and §3.2 steps 7 and 8, all for [ranges.md](ranges.md) §3.2a's closed-up
-symbols, and again in **1.18.0**: the value `"em-paired"` and its own algorithm, §3.4a.
+symbols, and again in **1.18.0**: the value `"em-paired"` and its own algorithm, §3.4a; `el` adopts it in **1.19.0** (§6).
 
 ---
 
@@ -980,49 +980,28 @@ never reaches a digit-flanked token at all.
 | 46  | `de-DE` | `1–1␣-␣1`   | ⟶      | digit-flanked — never reaches `dashes`; see [ranges.md](ranges.md) §6 row 46 (the control for row 45)  |
 | 47  | `ru`    | `1-1␣-␣1`   | ⟶      | digit-flanked — never reaches `dashes`; see [ranges.md](ranges.md) §6 row 47                           |
 
-### `el` — `parenthetical: "none"` (`range` is now [ranges.md](ranges.md)'s field, also `"none"`, not this rule's)
+### `el` — `parenthetical: "em-paired"`, `range: "none"` (`range` is now [ranges.md](ranges.md)'s field)
 
-The first locale with `"none"` on **both** fields, so the rule is a **total no-op** for it in the
-same provable sense `hyphen` is a no-op for a locale with empty lists. It is no longer the only
-one: `tr` (spec 1.6.0) is both-`none` too, and `es` was from spec 1.3.0 until 1.17.1, each for its
-own reason and each recorded in its own locale file. (`es` sets `parenthetical` to `"em-paired"` since spec 1.18.0 — it was
-`"em-spaced"`, an approximation, from 1.17.0 — and keeps `range` at `"none"`.) This section stays written about `el` because its two fields are
-`"none"` for two *different* reasons, which is what makes it worth reading. Tokens are still
-classified — §3.3's "a range token is never reconsidered as a parenthetical" still holds — but no
-classification has an emission to make. The rows below are therefore all "no change" rows by
-construction, and they are worth pinning precisely because nothing else in the suite exercises
-the both-`none` combination.
+`el` has been `parenthetical: "em-paired"` since spec 1.19.0 (it was `"none"` before, because the
+enum had no value for the asymmetric spacing until 1.18.0 and the em/en choice was unsettled). The
+EU Interinstitutional Style Guide (Greek edition) §10.1.8 prescribes a U+2014 pair (its own header
+gives «Alt 0151») and states the spacing exactly: «Όπως η παρένθεση, η διπλή παύλα δεν χωρίζεται με
+κενά διαστήματα από τη λέξη, φράση ή πρόταση που περικλείει· αντίθετα, μπαίνουν διαστήματα πριν από
+την πρώτη και μετά τη δεύτερη παύλα.» — ordinary spaces **outside** the pair, none on the **inner**
+edges, which is what §3.4a writes. The state school grammar (ΥΠΕΠΘ/ΙΤΥΕ §3.3) appears to set an en
+dash in the same role; that conflict is recorded in `spec/locales/el.json`'s `dashes.note` and
+settled by operator decision for the cited source, not by a source that ranks the two. The
+conditions and the accepted cost of §3.4a and §7 item 8 apply to `el` unchanged.
 
-**The two fields are `"none"` for two different reasons, and collapsing them into one sentence
-misrepresents the source.** An earlier revision of this section said the Greek source "is not
-silent here, it is _ambivalent_". That is true of `range` and **false of `parenthetical`**, where
-the guide is explicit.
-
-- **`range: "none"` — genuine ambivalence.** The rule appears **twice** in §10.1.8 of the EU
-  Interinstitutional Style Guide (Greek edition), once under «Ενωτικό (-)» and once under «Παύλα
-  μεσαίου μεγέθους (–)», and **each occurrence explicitly concedes the other mark**. A source
-  that names both forms in both places is not being vague; it is declining to rank them.
-  Emitting either would express a preference the citation does not carry, so the rule emits
-  nothing.
-- **`parenthetical: "none"` — a source conflict, no longer a schema limit.** The guide prescribes a U+2014
-  pair (its own header gives «Alt 0151») and states the spacing exactly: «Όπως η παρένθεση, η
-  διπλή παύλα δεν χωρίζεται με κενά διαστήματα από τη λέξη, φράση ή πρόταση που περικλείει·
-  αντίθετα, μπαίνουν διαστήματα πριν από την πρώτη και μετά τη δεύτερη παύλα.» — ordinary spaces
-  **outside** the pair, none on the **inner** edges. Until spec 1.18.0 the enum had no value for
-  that asymmetry; `"em-paired"` (§3.4a) is that value. `el` stays `"none"` all the same, because
-  `"em-paired"` is an em dash and the state school grammar appears to set an en dash in the same
-  role: choosing between them needs a source that ranks the two, and is not a licence to
-  approximate.
-
-In both cases `"none"` is the honest encoding, not a placeholder awaiting a default (§2) — and
-both are now waiting on a _source_. `spec/locales/el.json`'s `dashes.note` carries the
-detail, including a **source conflict** this document does not try to settle: the EU guide sets
-U+2014 parenthetically while the state school grammar appears to set U+2013.
+`range` stays `"none"` for a different reason: genuine ambivalence. The rule appears **twice** in
+§10.1.8, once under «Ενωτικό (-)» and once under «Παύλα μεσαίου μεγέθους (–)», and **each
+occurrence explicitly concedes the other mark**. Emitting either would express a preference the
+citation does not carry, so `ranges` emits nothing.
 
 | #   | Input                                  | Output | Why                                                                                                              |
 | --- | -------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------- |
 | 48  | `άτομα ηλικίας 25-45 ετών`             | ⟶      | digit-flanked — never reaches `dashes` (§1, §3.3); see [ranges.md](ranges.md) §6 row 48 for `ranges`' own no-op here (`range: "none"` — nothing to emit even when explicitly enabled) |
-| 49  | `Το σχέδιο␣-␣αν υπάρχει␣-␣αποτυγχάνει` | ⟶      | classified as a parenthetical, `parenthetical: "none"` → nothing emitted                                         |
+| 49  | `Το σχέδιο␣-␣αν υπάρχει␣-␣αποτυγχάνει` | `Το σχέδιο␣—αν υπάρχει—␣αποτυγχάνει` | two strokes in one segment, `parenthetical: "em-paired"` → §3.4a              |
 | 50  | `την περίοδο 1989–1991`                | ⟶      | digit-flanked — never reaches `dashes` (§1, §3.3); already an en dash in the form the source prints, so [ranges.md](ranges.md) is inert here too even when explicitly enabled |
 
 ### A locale with no verified convention — `parenthetical: "none"` (`range` is now [ranges.md](ranges.md)'s field, also `"none"`, not this rule's)

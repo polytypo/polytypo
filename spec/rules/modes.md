@@ -2170,7 +2170,6 @@ each, the rule is given fewer chances to fire and the text is left as typed.
    | `en-US` | `em-tight` | **converts** — `a<em>—</em>b`, since 2 → 1 is a contraction | converts |
    | `de-CH`, `de-DE`, `en-GB`, `fi`, `sv` | `en-spaced` | unchanged — 2 → 3 grows both edges | converts, `a<em>x – y</em>b` |
    | `fr`, `ru` | `em-spaced` | unchanged — same reason | converts |
-   | `el` | `none` | unchanged — emits nothing anywhere | unchanged |
 
    `en-US` is the only locale whose parenthetical form is shorter than the `--` that triggers it,
    and it is therefore the only one that converts at an edge. The asymmetry is real — the same
