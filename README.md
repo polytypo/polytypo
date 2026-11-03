@@ -56,7 +56,7 @@ Spec version: **1.19.0** · locales: **27** · rules: **9**.
 | French (France) (`fr`) | Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm. |
 | German (Germany) (`de-DE`) | Sie fragte: „Ist das nicht der Laden namens ‚an der Ecke‘?“ … Wir liefen – fast 3 km – und fanden ihn leider geschlossen. Copyright © 2026, Format 40×60 cm, z. B. für Poster. |
 | German (Switzerland) (`de-CH`) | Sie fragte: «Ist das nicht der Laden namens ‹an der Ecke›?» … Wir liefen – fast 3 km – und fanden ihn leider geschlossen. Copyright © 2026, Format 40×60 cm, z. B. für Poster. |
-| Greek (`el`) | Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm. |
+| Greek (`el`) | Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε —σχεδόν 3 χλμ— και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm. |
 | Hungarian (`hu`) | Megkérdezte: „Nem ez az a bolt, amit »a sarki«-nak hívnak?” … Mentünk – majdnem 3 km-t – és zárva volt. Copyright © 2026, 40×60 cm. |
 | Italian (`it`) | Ha chiesto: «Non è questo il negozio che chiamano “quello all’angolo”?» … Abbiamo camminato — quasi 3 km — ed era chiuso. Copyright © 2026, formato 40×60 cm. |
 | Lithuanian (`lt`) | Ji paklausė: „Ar ne tai parduotuvė, kurią vadina „ta už kampo“?“ … Ėjome – beveik 3 km – o ji buvo uždaryta. Copyright © 2026, formatas 40×60 cm. |

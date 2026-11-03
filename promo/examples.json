@@ -1,5 +1,5 @@
 {
-  "spec": "1.18.0",
+  "spec": "1.19.0",
   "proofLocales": ["en-GB", "en-US", "fr", "de-DE", "de-CH", "ru"],
   "locales": [
     {
@@ -384,11 +384,11 @@
       "name": "Greek",
       "hero": {
         "in": "Ρώτησε: \"Δεν είναι αυτό το μαγαζί 'στη γωνία';\" ... Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright (c) 2026, μέγεθος 40x60 cm.",
-        "out": "Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε -- σχεδόν 3 χλμ -- και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm."
+        "out": "Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε —σχεδόν 3 χλμ— και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm."
       },
       "proof": {
         "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
-        "out": "She asked, «Isn’t this the shop they call “round the corner”?» … We’d walked - nearly 3 km - just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+        "out": "She asked, «Isn’t this the shop they call “round the corner”?» … We’d walked —nearly 3 km— just to find it closed. Copyright © 2026; the print measures 40×60 cm."
       },
       "cases": [
         {
