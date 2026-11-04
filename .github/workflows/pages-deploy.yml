@@ -326,10 +326,9 @@ jobs:
           echo "$PWD/.venv-brand/bin" >> "$GITHUB_PATH"
           .venv-brand/bin/pip install -r brand/tools/requirements.txt
 
-      # Belt-and-suspenders, not a substitute for CI's own drift check: ci.yml already proved
-      # zero drift at this exact commit (that's part of why `verify` above requires CI to have
-      # passed for it) — regenerating here and re-diffing proves it again, against this runner's
-      # own toolchain, immediately before the bytes it produces are what actually gets published.
+      # The only drift check: ci.yml regenerates but does not diff. Regenerating here and diffing
+      # proves the committed site is what this runner's toolchain produces, immediately before
+      # those bytes are published.
       - name: Regenerate the site and require zero generated-artifact drift
         run: |
           npm run generate:all

@@ -89,37 +89,9 @@ jobs:
       - name: Test
         run: npm test
 
-      # One deterministic entry point (npm run generate:all: READMEs, promo pages/assets, browser
-      # bundle, brandbook — gen:docs + gen:promo-bundle + gen:brandbook, in that order), then a
-      # hard, scoped git diff — no continue-on-error, and no second, competing generation path.
-      # spec/VERSION is the single global spec-version source (docs/ARCHITECTURE.md section 2,
-      # "L0 — spec"); scripts/validate-spec.mjs separately asserts order.json/registry.json never
-      # drift from it.
-      #
-      # Every promo page (all five — index plus the docs/playground/locales/manifesto directory
-      # indexes, served at the directory URLs /, /docs, /playground, /locales, /manifesto),
-      # promo/robots.txt, promo/sitemap.xml, promo/llms.txt, promo/badge.js and
-      # brand/BRANDBOOK.html are tracked, generated files and belong in this list.
-      #
-      # spec/fixtures/.escaped/ is gitignored by design (never committed), so it cannot be
-      # drift-checked via git diff here; its generation is exercised deterministically by the
-      # Validate-spec step above instead.
-      - name: Check generated artifacts are up to date
-        run: |
-          npm run generate:all
-          git diff --exit-code -- \
-            README.md \
-            promo/examples.json \
-            promo/index.html \
-            promo/docs/index.html \
-            promo/locales/index.html \
-            promo/playground/index.html \
-            promo/manifesto/index.html \
-            promo/robots.txt \
-            promo/sitemap.xml \
-            promo/llms.txt \
-            promo/badge.js \
-            promo/assets \
-            promo/vendor/polytypo.browser.js \
-            brand/BRANDBOOK.html \
-            spec/CONFORMANCE.md
+      # The generators must run clean on every push. The generated files are not diffed here:
+      # they depend on the published polytypo package, so between a spec release and that
+      # package's publication the diff is red for a reason no commit can fix. pages-deploy.yml
+      # regenerates and requires zero drift before anything is published.
+      - name: Generate artifacts
+        run: npm run generate:all
