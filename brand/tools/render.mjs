@@ -66,12 +66,23 @@ const vb = lock
   .split(" ")
   .map(Number);
 const scale = (1200 * 0.62) / vb[2];
+const lockupY = 255;
 const og = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
 <rect width="1200" height="630" fill="#FBFAF7"/>
-<g transform="translate(${(1200 - vb[2] * scale) / 2 - vb[0] * scale} ${315 - (vb[1] + vb[3] / 2) * scale}) scale(${scale})">${inner}</g>
+<g transform="translate(${(1200 - vb[2] * scale) / 2 - vb[0] * scale} ${lockupY - (vb[1] + vb[3] / 2) * scale}) scale(${scale})">${inner}</g>
+<text x="600" y="410" text-anchor="middle" font-family="Inter" font-size="60" font-weight="400" letter-spacing="-0.6" fill="#14161A">Smart typography for any website</text>
 </svg>`;
 writeFileSync(
   join(OUT, "png/polytypo-og-1200x630.png"),
-  new Resvg(og, { fitTo: { mode: "width", value: 1200 } }).render().asPng(),
+  new Resvg(og, {
+    fitTo: { mode: "width", value: 1200 },
+    font: {
+      fontFiles: [new URL("Inter.ttf", import.meta.url).pathname],
+      loadSystemFonts: false,
+      defaultFontFamily: "Inter",
+    },
+  })
+    .render()
+    .asPng(),
 );
 console.log("   png/polytypo-og-1200x630.png");
