@@ -1,5 +1,5 @@
 {
-  "spec": "1.19.0",
+  "spec": "1.20.0",
   "proofLocales": ["en-GB", "en-US", "fr", "de-DE", "de-CH", "ru"],
   "locales": [
     {
@@ -687,7 +687,7 @@
       },
       "proof": {
         "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
-        "out": "She asked, „Isn’t this the shop they call ’round the corner’?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+        "out": "She asked, „Isn’t this the shop they call ’round the corner’?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
       },
       "cases": [
         {

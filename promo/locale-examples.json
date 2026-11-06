@@ -1,5 +1,5 @@
 {
-  "spec": "1.19.0",
+  "spec": "1.20.0",
   "locales": {
     "bg": {
       "byRule": {
@@ -2633,6 +2633,18 @@
             "rules": {
               "ranges": true
             }
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "sr-nbsp-units",
+            "in": "Тежи 3 kg, 20 cm и 5 mm.",
+            "out": "Тежи 3 kg, 20 cm и 5 mm."
+          },
+          {
+            "id": "sr-nbsp-celsius",
+            "in": "Било је 25 °C у хладу.",
+            "out": "Било је 25 °C у хладу."
           }
         ],
         "spaces": [
