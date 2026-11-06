@@ -1,5 +1,5 @@
 {
-  "spec": "1.19.0",
+  "spec": "1.20.0",
   "locale": "sr",
   "cases": [
     {
@@ -132,12 +132,36 @@
       "note": "No closed list ships, so nothing changes."
     },
     {
-      "id": "sr-nbsp-units-inert",
+      "id": "sr-nbsp-units",
       "rule": "nbsp",
       "mode": "text",
-      "in": "3 kg, 50 % и 99,90 €",
-      "out": "3 kg, 50 % и 99,90 €",
-      "note": "No verified rule: every nbsp list ships empty, so the plain spaces stay."
+      "in": "Тежи 3 kg, 20 cm и 5 mm.",
+      "out": "Тежи 3 kg, 20 cm и 5 mm.",
+      "note": "DMDM, Pravila upotrebe mernih jedinica: a space separates the unit symbol from its number and the symbol is never carried alone to a new line."
+    },
+    {
+      "id": "sr-nbsp-celsius",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Било је 25 °C у хладу.",
+      "out": "Било је 25 °C у хладу.",
+      "note": "DMDM: «25 °C» is written with a space."
+    },
+    {
+      "id": "sr-nbsp-unattested-units-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Прешао је 5 km за 40 min.",
+      "out": "Прешао је 5 km за 40 min.",
+      "note": "km and min are not attested with a space in the source read, so they are not in beforeUnits."
+    },
+    {
+      "id": "sr-nbsp-percent-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Остало је 50 % и 99,90 €.",
+      "out": "Остало је 50 % и 99,90 €.",
+      "note": "'%' is deliberately absent from beforeUnits: BIPM spaces it, Serbian print closes it up, and no Serbian norm was read. A typed space is left as typed."
     },
     {
       "id": "sr-nbsp-short-words-inert",

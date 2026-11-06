@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.19.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.19.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.20.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.20.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,20 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.20.0 — 6 November 2026
+
+Serbian text keeps a number and its unit on one line.
+
+- Until now `sr` left every space alone, so `Тежи 3 kg, 20 cm и 5 mm.` could break between `3` and `kg`. A space between a number and `kg`, `cm`, `mm` or `°C` is now a no-break space, and `Било је 25 °C у хладу.` keeps `25 °C` together. The source is the national metrology authority's rules for writing units (DMDM), which put a space between the number and the symbol and forbid carrying the symbol alone to a new line.
+- The authority is not a language body, so this is the same kind of evidence as for Croatian and Bulgarian. Single-letter units are left out, as there. `km` and `min` are not in the source's examples and are not changed; `%` is not changed either, because the international SI brochure puts a space before it while Serbian print closes it up, and no Serbian norm was read. A space is only made non-breaking, never added: `5km` stays `5km`.
+
+| Locale | Mode | In | Before | After |
+| --- | --- | --- | --- | --- |
+| `sr` | `text` | `Тежи 3 kg, 20 cm и 5 mm.` | `Тежи 3 kg, 20 cm и 5 mm.` | `Тежи 3⍽kg, 20⍽cm и 5⍽mm.` |
+| `sr` | `text` | `Било је 25 °C у хладу.` | `Било је 25 °C у хладу.` | `Било је 25⍽°C у хладу.` |
+| `sr` | `text` | `Прешао је 5 km за 40 min.` | `Прешао је 5 km за 40 min.` | `Прешао је 5 km за 40 min.` |
+| `sr` | `text` | `Остало је 50 % и 99,90 €.` | `Остало је 50 % и 99,90 €.` | `Остало је 50 % и 99,90 €.` |
 
 ## 1.19.0 — 3 November 2026
 
