@@ -2,6 +2,17 @@
   "_comment": "Single source for CHANGELOG.md (brand/tools/gen_readmes.py) and the site's /changelog page (brand/tools/build_promo.py). Released versions only. Example strings are real engine output captured from the published packages of each version, never typed by hand; an entry whose release changes no output carries examples: [].",
   "releases": [
     {
+      "version": "1.20.1",
+      "date": "2026-11-07",
+      "headline": "No change to output: the Serbian locale's citation now states what it does with the percent sign.",
+      "items": [
+        {
+          "text": "The `sr` data note for 1.20.0 said that neither a closed nor a spaced percent sign was pinned. It now says what happens: Serbian print closes it up, so `96%` stays `96%`, and a space typed before `%` is left as typed. Output of every locale is byte-identical to 1.20.0. The release exists only because a spec version cannot be edited after it is tagged."
+        }
+      ],
+      "examples": []
+    },
+    {
       "version": "1.20.0",
       "date": "2026-11-06",
       "headline": "Serbian text keeps a number and its unit on one line.",

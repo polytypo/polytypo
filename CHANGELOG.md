@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.20.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.20.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.20.1`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.20.1 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,12 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.20.1 — 7 November 2026
+
+No change to output: the Serbian locale's citation now states what it does with the percent sign.
+
+- The `sr` data note for 1.20.0 said that neither a closed nor a spaced percent sign was pinned. It now says what happens: Serbian print closes it up, so `96%` stays `96%`, and a space typed before `%` is left as typed. Output of every locale is byte-identical to 1.20.0. The release exists only because a spec version cannot be edited after it is tagged.
 
 ## 1.20.0 — 6 November 2026
 
