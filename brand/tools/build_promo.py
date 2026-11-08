@@ -712,6 +712,7 @@ RUNTIME_BADGES = {
         ("npm version", _SHIELDS + "npm/v/remark-polytypo.svg", "https://www.npmjs.com/package/remark-polytypo"),
         ("Node.js versions", _SHIELDS + "node/v/remark-polytypo.svg", None),
         ("TypeScript types", _SHIELDS + "npm/types/remark-polytypo.svg", None),
+        ("npm downloads per month", _SHIELDS + "npm/dm/remark-polytypo.svg", "https://www.npmjs.com/package/remark-polytypo"),
         ("License", _SHIELDS + "npm/l/remark-polytypo.svg", None),
     ],
     "python": [
