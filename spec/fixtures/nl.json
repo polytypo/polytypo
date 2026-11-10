@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "nl",
   "cases": [
     {
@@ -132,6 +132,17 @@
       "in": "Hij zegt 'ik kom <em>vroeg </em>'t is laat.' Klaar.",
       "out": "Hij zegt “ik kom <em>vroeg </em>’t is laat.” Klaar.",
       "note": "The same mechanism on the entry t ('t was), attested by the same Taalunie pair of pages."
+    },
+    {
+      "id": "nl-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha “beta”, gamma",
+      "out": "alpha “beta”, gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for nl, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

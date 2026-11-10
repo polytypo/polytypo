@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "pl",
   "cases": [
     {
@@ -132,6 +132,17 @@
       "in": "d'Artagnan",
       "out": "d’Artagnan",
       "note": "U+0027 staje się U+2019. Reguła nie czyta danych locale; przypadek ją dla polskiego poświadcza."
+    },
+    {
+      "id": "pl-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha „beta”, gamma",
+      "out": "alpha „beta”, gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for pl, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

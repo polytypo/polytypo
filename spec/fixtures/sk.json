@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "sk",
   "cases": [
     {
@@ -273,6 +273,17 @@
       "in": "Išiel do McDonald's a späť",
       "out": "Išiel do McDonald’s a späť",
       "note": "Apostrof v cudzom mene sa píše ako U+2019."
+    },
+    {
+      "id": "sk-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha „beta“, gamma",
+      "out": "alpha „beta“, gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for sk, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

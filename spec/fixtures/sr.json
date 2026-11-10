@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "sr",
   "cases": [
     {
@@ -202,6 +202,17 @@
       "in": "То је McDonald's",
       "out": "То је McDonald’s",
       "note": "apostrophe rule, locale-neutral."
+    },
+    {
+      "id": "sr-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha „beta”, gamma",
+      "out": "alpha „beta”, gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for sr, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

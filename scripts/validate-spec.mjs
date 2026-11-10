@@ -299,6 +299,43 @@ function checkLocaleInvariants(file, locale) {
     }
   }
 
+  // QP-1..QP-3 (quote-punctuation.md 2): "inside" is only declarable where the rule's
+  // composition argument holds, and JSON Schema cannot state a constraint across fields.
+  if (locale.quotes?.punctuationPlacement === "inside") {
+    const primary = locale.quotes.primary;
+    const closeCp = primary ? firstCodePoint(primary.close) : undefined;
+    // QP-1: the scan keys on the primary close. A NARROW glyph (U+2019 is the apostrophe
+    // glyph) would turn `the dogs’, bowls` into an edit; a symmetric pair cannot tell an
+    // opening mark from a closing one.
+    if (
+      primary &&
+      (closeCp === undefined || quoteWidthOf(closeCp) !== "wide" || primary.open === primary.close)
+    ) {
+      fail(
+        file,
+        `quotes.punctuationPlacement: "inside" needs a WIDE primary close that differs from the primary open, got "${escapeNonAscii(primary.open)}"/"${escapeNonAscii(primary.close)}" — QP-1 (spec/rules/quote-punctuation.md 2)`,
+      );
+    }
+    // QP-2: dashes.md 3.4a ends a segment at a full stop followed by a space; moving the stop
+    // across the quotation mark removes that boundary.
+    if (locale.dash?.parenthetical === "em-paired") {
+      fail(
+        file,
+        `quotes.punctuationPlacement: "inside" with dash.parenthetical "em-paired" — QP-2 (spec/rules/quote-punctuation.md 2)`,
+      );
+    }
+    // QP-3: a spaced pair makes the mark's left neighbour a space, so the rule could never
+    // fire, and quotes.md's gapInsertable would no longer be vacuous in the argument.
+    for (const kind of ["primary", "secondary"]) {
+      if (locale.quotes[kind]?.innerSpace !== "none") {
+        fail(
+          file,
+          `quotes.punctuationPlacement: "inside" with quotes.${kind}.innerSpace ${JSON.stringify(locale.quotes[kind]?.innerSpace)} — QP-3 requires "none" (spec/rules/quote-punctuation.md 2)`,
+        );
+      }
+    }
+  }
+
   // A list entry touching a quote glyph at either edge would let an nbsp sub-rule claim an
   // index adjacent to that glyph, reopening the cross-target conflict N1/N2's guard closes.
   // The glyphs are per-locale, so no JSON Schema can state this.

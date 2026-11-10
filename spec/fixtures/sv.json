@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "sv",
   "cases": [
     {
@@ -1293,6 +1293,17 @@
       "in": "tidningen l'\"Humanité\"",
       "out": "tidningen l’”Humanité”",
       "note": "apostrophe.md §3.3 cases 3 and 3a (spec 1.2.0): same as fi; U+201D is in CLOSEISH and the output is unchanged from spec 1.1.0."
+    },
+    {
+      "id": "sv-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha ”beta”, gamma",
+      "out": "alpha ”beta”, gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for sv, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

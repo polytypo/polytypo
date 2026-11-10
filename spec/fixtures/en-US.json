@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "en-US",
   "cases": [
     {
@@ -4347,6 +4347,419 @@
       "in": "- [  ] item and a , b.\n",
       "out": "- [  ] item and a, b.\n",
       "note": "modes.md §3.4 bracket-shape rule: collapsing two spaces between the brackets to one would make an unchecked task-list marker out of literal text; that edit is discarded."
+    },
+    {
+      "id": "en-us-quote-punctuation-comma-then-space",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "She said \"hello\", then left.",
+      "out": "She said “hello,” then left.",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.2, §6 row 1: C1-C4 hold, so the comma moves inside the mark `quotes` produced."
+    },
+    {
+      "id": "en-us-quote-punctuation-full-stop-then-space",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "He called it \"done\". Then he left.",
+      "out": "He called it “done.” Then he left.",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.2, §6 row 2: a full stop followed by a space moves inside; the space stays where it was."
+    },
+    {
+      "id": "en-us-quote-punctuation-full-stop-end-of-text",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "Call it \"ready\".",
+      "out": "Call it “ready.”",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.2 C4, §6 row 3: the end of the text is NONE, which satisfies C4."
+    },
+    {
+      "id": "en-us-quote-punctuation-full-stop-before-newline",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "Call it \"ready\".\nNext",
+      "out": "Call it “ready.”\nNext",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.2 C4, §6 row 4: a line break is SPACELIKE."
+    },
+    {
+      "id": "en-us-quote-punctuation-two-quotations",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "The \"first\", the \"second\".",
+      "out": "The “first,” the “second.”",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.2, §6 row 5: two independent edits in one text."
+    },
+    {
+      "id": "en-us-quote-punctuation-complete-sentence",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "\"Go home\".",
+      "out": "“Go home.”",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §1, §6 row 6: a quotation that is a complete sentence is not treated differently — the rule is positional and never asks what the punctuation belongs to."
+    },
+    {
+      "id": "en-us-quote-punctuation-comma-end-of-text",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "He said \"no\",",
+      "out": "He said “no,”",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.2 C4: the comma is the last code point of the text."
+    },
+    {
+      "id": "en-us-quote-punctuation-list-of-quotations",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "Both \"a\", \"b\" and \"c\".",
+      "out": "Both “a,” “b” and “c.”",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §6 row 7: the middle quotation has no punctuation to move and is left alone."
+    },
+    {
+      "id": "en-us-quote-punctuation-dialogue-tag",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "\"Hello\", he said.",
+      "out": "“Hello,” he said.",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §6: the usual dialogue shape, comma before the speech tag."
+    },
+    {
+      "id": "en-us-quote-punctuation-already-inside",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "She said “hello,” then left.",
+      "out": "She said “hello,” then left.",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §6 row 8: input already in the target form; cp[i+1] is a space, so nothing is a candidate."
+    },
+    {
+      "id": "en-us-quote-punctuation-unpaired-closing-mark",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "Broken pair”, then",
+      "out": "Broken pair,” then",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §6 row 9, accepted cost: the rule trusts the glyph, not the pairing, so a stray curly closing mark moves its comma too."
+    },
+    {
+      "id": "en-us-quote-punctuation-after-terminal",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "\"Stop!\".",
+      "out": "“Stop!”.",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.2 C3, §6 row 10: the code point left of the mark is `!`, not a letter; the duplicate stop is not removed."
+    },
+    {
+      "id": "en-us-quote-punctuation-after-ellipsis-glyph",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "It said \"wait…\".",
+      "out": "It said “wait…”.",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.2 C3, §6 row 11: the code point left of the mark is U+2026."
+    },
+    {
+      "id": "en-us-quote-punctuation-after-abbreviation-stop",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "Use \"e.g.\", then",
+      "out": "Use “e.g.”, then",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.2 C3, §6 row 12: whether the stop belongs to the abbreviation cannot be decided here, so a stop on the left declines."
+    },
+    {
+      "id": "en-us-quote-punctuation-after-digit",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "\"Route 66\".",
+      "out": "“Route 66”.",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.2 C3, §6 row 13: a digit on the left declines (the shape of an inch mark and of a quoted number)."
+    },
+    {
+      "id": "en-us-quote-punctuation-nested-quotation",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "\"He said 'hi'\".",
+      "out": "“He said ‘hi’”.",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.2 C3, §6 row 14: the code point left of the primary close is the secondary close U+2019; accepted miss."
+    },
+    {
+      "id": "en-us-quote-punctuation-other-punctuation",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "Say \"a\"; say \"b\": say \"c\"?",
+      "out": "Say “a”; say “b”: say “c”?",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.2 C2, §6 row 15: only the comma and the full stop are ever moved."
+    },
+    {
+      "id": "en-us-quote-punctuation-letter-follows",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "\"file\".txt",
+      "out": "“file”.txt",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.2 C4, §6 row 16: a letter after the stop declines."
+    },
+    {
+      "id": "en-us-quote-punctuation-bracket-follows",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "He said (\"hi\".)",
+      "out": "He said (“hi”.)",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.2 C4, §6 row 17: a bracket after the stop declines."
+    },
+    {
+      "id": "en-us-quote-punctuation-three-dots-follow",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "He said \"wait\"...",
+      "out": "He said “wait”…",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.2 C2, §6 row 18: `ellipsis` runs first and turns the three dots into U+2026, which is not a comma or a full stop."
+    },
+    {
+      "id": "en-us-quote-punctuation-secondary-close-apostrophe",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "Check the dogs’, bowls and cats.",
+      "out": "Check the dogs’, bowls and cats.",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2 QP-1, §6 row 19: U+2019 is the secondary close and the apostrophe glyph; the scan keys on the primary close only."
+    },
+    {
+      "id": "en-us-quote-punctuation-default-off",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "She said \"hello\", then left.",
+      "out": "She said “hello”, then left.",
+      "note": "quote-punctuation.md §4, §6 row 20: no `rules` override, so the rule is off and the comma stays where the author typed it."
+    },
+    {
+      "id": "en-us-quote-punctuation-html-one-text-node",
+      "rule": "quote-punctuation",
+      "mode": "html",
+      "in": "<p>She said \"hello\", then left.</p>",
+      "out": "<p>She said “hello,” then left.</p>",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.3, §6 row H1: mark, comma and the text around them are in one span."
+    },
+    {
+      "id": "en-us-quote-punctuation-html-boundary-right",
+      "rule": "quote-punctuation",
+      "mode": "html",
+      "in": "<p>She said <em>\"hello\"</em>, then left.</p>",
+      "out": "<p>She said <em>“hello”</em>, then left.</p>",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.3, §6 row H2: a marker sits at cp[i+1], so C2 fails; the comma stays outside."
+    },
+    {
+      "id": "en-us-quote-punctuation-html-boundary-left",
+      "rule": "quote-punctuation",
+      "mode": "html",
+      "in": "<p>She said \"<em>hello</em>\", then left.</p>",
+      "out": "<p>She said “<em>hello</em>”, then left.</p>",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.3, §6 row H3: a marker sits at cp[i-1], so C3 fails."
+    },
+    {
+      "id": "en-us-quote-punctuation-html-line-boundary",
+      "rule": "quote-punctuation",
+      "mode": "html",
+      "in": "<p>She said \"hello\".</p>\n<p>Next.</p>",
+      "out": "<p>She said “hello.”</p>\n<p>Next.</p>",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.3, §6 row H4: the gap between the paragraphs holds a line terminator, so it is the -2 marker, a member of BREAK, and C4 holds (modes.md §3.2)."
+    },
+    {
+      "id": "en-us-quote-punctuation-html-inline-boundary",
+      "rule": "quote-punctuation",
+      "mode": "html",
+      "in": "<p>She said \"hello\".</p><p>Next.</p>",
+      "out": "<p>She said “hello”.</p><p>Next.</p>",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.3, §6 row H5, accepted cost: the gap holds no line terminator, so it is the -1 marker at cp[i+2] and C4 fails."
+    },
+    {
+      "id": "en-us-quote-punctuation-markdown-commonmark-one-span",
+      "rule": "quote-punctuation",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "She said \"hello\", then left.\n",
+      "out": "She said “hello,” then left.\n",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.3, §6 row M1: mark, comma and the text around them are in one span."
+    },
+    {
+      "id": "en-us-quote-punctuation-markdown-commonmark-emphasis-boundary",
+      "rule": "quote-punctuation",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "*She said \"hello\"*, then left.\n",
+      "out": "*She said “hello”*, then left.\n",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.3, §6 row M2: the closing emphasis delimiter is a boundary between the mark and the comma, so C2 fails."
+    },
+    {
+      "id": "en-us-quote-punctuation-markdown-commonmark-boundary-after-stop",
+      "rule": "quote-punctuation",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "*He said \"hi\".* Next\n",
+      "out": "*He said “hi”.* Next\n",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.3, §6 row M3, accepted cost: a boundary at cp[i+2] fails C4."
+    },
+    {
+      "id": "en-us-quote-punctuation-yaml-plain-scalar",
+      "rule": "quote-punctuation",
+      "mode": "yaml",
+      "keys": [
+        "title"
+      ],
+      "in": "title: She said \"hello\", then left.\n",
+      "out": "title: She said “hello,” then left.\n",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.3, §6 row Y1: a processable plain scalar is one span."
+    },
+    {
+      "id": "en-us-quote-punctuation-protect-after",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "Set \"file\".${ext} now",
+      "protect": [
+        {
+          "start": 11,
+          "end": 17
+        }
+      ],
+      "out": "Set “file”.${ext} now",
+      "protectOut": [
+        {
+          "start": 11,
+          "end": 17
+        }
+      ],
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.3, §6 row P1: the protected run is a boundary marker at cp[i+2], so C4 fails (modes.md §3.9.3)."
+    },
+    {
+      "id": "en-us-quote-punctuation-protect-before",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "Use \"${name}\", then stop.",
+      "protect": [
+        {
+          "start": 5,
+          "end": 12
+        }
+      ],
+      "out": "Use “${name}”, then stop.",
+      "protectOut": [
+        {
+          "start": 5,
+          "end": 12
+        }
+      ],
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.3, §6 row P2: the protected run is a boundary marker at cp[i-1], so C3 fails."
+    },
+    {
+      "id": "en-us-quote-punctuation-protect-elsewhere",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "Say \"hi\", then ${x}.",
+      "protect": [
+        {
+          "start": 15,
+          "end": 19
+        }
+      ],
+      "out": "Say “hi,” then ${x}.",
+      "protectOut": [
+        {
+          "start": 15,
+          "end": 19
+        }
+      ],
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.3, §6 row P3: the hole is clear of the pair; the edit is length-preserving, so protectOut equals protect."
     }
   ]
 }

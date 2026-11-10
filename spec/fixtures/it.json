@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "it",
   "cases": [
     {
@@ -172,6 +172,17 @@
       "in": "Lui dice 'un'<em>idea</em> è buona.' Fine.",
       "out": "Lui dice «un’<em>idea</em> è buona.» Fine.",
       "note": "The entry un covers the feminine indefinite un' only; Crusca is categorical that the masculine un takes no apostrophe. The mechanism cannot tell the two apart, which is harmless here because it only ever declines a pairing."
+    },
+    {
+      "id": "it-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha «beta», gamma",
+      "out": "alpha «beta», gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for it, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

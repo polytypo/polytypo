@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "tr",
   "cases": [
     {
@@ -245,6 +245,17 @@
       "in": "Dedi: '<b>2</b>'nci kat.' Bitti.",
       "out": "Dedi: “<b>2</b>’nci kat.” Bitti.",
       "note": "Sayılara gelen sıra eki, TDK «Kesme İşareti» 4'ün kendi örneğinden («2'nci kat»). Aynı maddeden gelen «7,65'lik» ve «Atatürk'üm» de listededir; üçü de basılı örnekte kesme işaretinden sonraki dizinin TAMAMI olduğu ve çıplak bir sözcükle çakışmadığı için alınmıştır."
+    },
+    {
+      "id": "tr-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha “beta”, gamma",
+      "out": "alpha “beta”, gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for tr, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

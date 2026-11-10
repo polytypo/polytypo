@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "en-GB",
   "cases": [
     {
@@ -1934,6 +1934,17 @@
       "in": "- [  ] item and a , b.\n",
       "out": "- [  ] item and a, b.\n",
       "note": "modes.md §3.4 bracket-shape rule: collapsing two spaces between the brackets to one would make an unchecked task-list marker out of literal text; that edit is discarded."
+    },
+    {
+      "id": "en-gb-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "She said \"hello\", then left.",
+      "out": "She said ‘hello’, then left.",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for en-GB (Oxford places the mark by whether it belongs to the quotation, which a scan cannot decide), so enabling the rule changes nothing; `quotes` alone converts the glyphs and the comma stays outside."
     }
   ]
 }

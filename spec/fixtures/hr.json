@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "hr",
   "cases": [
     {
@@ -248,6 +248,17 @@
       "in": "To je McDonald's",
       "out": "To je McDonald’s",
       "note": "apostrophe rule, locale-neutral; 8.18 uses U+2019 for the elision mark as well."
+    },
+    {
+      "id": "hr-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha „beta”, gamma",
+      "out": "alpha „beta”, gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for hr, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "uk",
   "cases": [
     {
@@ -148,6 +148,17 @@
       "in": "п'ять об'єктів",
       "out": "п’ять об’єктів",
       "note": "ВАЖЛИВИЙ ВИПАДОК для української, і перевірений на рушії, а не припущений: апостроф у «п'ять», «об'єкт» — частина орфографії слова, а не пунктуація, і правило apostrophe перетворює прямий U+0027 на U+2019 саме там, де він і має бути в друкованому тексті. Спершу цей випадок був написаний як no-op — рушій показав протилежне, і показав правильно."
+    },
+    {
+      "id": "uk-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha «beta», gamma",
+      "out": "alpha «beta», gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for uk, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

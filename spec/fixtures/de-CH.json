@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "de-CH",
   "cases": [
     {
@@ -504,6 +504,17 @@
       "in": "die Zeitung l'\"Express\"",
       "out": "die Zeitung l’«Express»",
       "note": "apostrophe.md §3.3 case 3a (spec 1.2.0): `quotes` gives de-CH's « », and the elision before « converts."
+    },
+    {
+      "id": "de-ch-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha «beta», gamma",
+      "out": "alpha «beta», gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for de-CH, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

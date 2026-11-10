@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "pt-BR",
   "cases": [
     {
@@ -159,6 +159,17 @@
       "in": "Ele diz 'd'<em>Os Lusíadas</em> é bom.' Fim.",
       "out": "Ele diz “d’<em>Os Lusíadas</em> é bom.” Fim.",
       "note": "Same input and same Base XVIII citation as pt-PT, different primary pair — pt-BR opens with U+201C where pt-PT opens with a guillemet. Pinned in both files so a runtime cannot pass one and fail the other."
+    },
+    {
+      "id": "pt-br-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha “beta”, gamma",
+      "out": "alpha “beta”, gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for pt-BR, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

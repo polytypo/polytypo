@@ -12,6 +12,7 @@
       "close": "‘",
       "innerSpace": "none"
     },
+    "punctuationPlacement": "none",
     "elisionIdioms": [],
     "elisionClitics": {
       "before": [],
@@ -80,6 +81,12 @@
       "rule": "nbsp",
       "cite": "Keine frei prüfbare Normquelle für „Nr.“ + Zahl: DIN 5008:2020-03 ist kostenpflichtig und wurde nicht gelesen; Duden und das Amtliche Regelwerk 2024 sprechen keine Abstandsregel aus. Vereinheitlicht nach vorherrschendem Gebrauch (Operatorentscheid, 18.09.2026)",
       "note": "Diese Zeile ist ausdrücklich kein Beleg, sondern eine Festlegung, und wird als solche geführt. Geprüft und ergebnislos: Duden, Rechtschreibregeln „Abkürzungen“ (D 1–D 4, nur der Abkürzungspunkt); Duden, Sprachratgeber „Worttrennung am Zeilenende“; Amtliches Regelwerk 2024, Kapitel F (§§ 84–90, nur Worttrennung) und der Kasten „Sonderzeichen“ auf S. 153, der Typografie ausdrücklich den Konventionen bzw. den DIN-, ÖNORM- und SNV-Normen zuweist, also ausserhalb des Regelwerks. Entscheiden könnte nur DIN 5008:2020-03. Der Projektentscheid dazu: liegt eine Regel hinter einer Bezahlschranke, formuliert polytypo sie nach dem verbreitetsten Gebrauch und hält sie in allen Runtimes gleich — Einheitlichkeit geht hier vor Kanontreue, und die Festlegung wird offen als solche gekennzeichnet statt als Zitat ausgegeben. Der verbreitetste Gebrauch bindet „Nr.“ an die folgende Zahl; die Sekundärquellen, die DIN 5008 referieren, sagen dasselbe. Fällt die Schranke, tritt der Wortlaut der Norm an die Stelle dieser Zeile — auch wenn er ihr widerspricht."
+    },
+    {
+      "rule": "quote-punctuation",
+      "cite": "Rat für deutsche Rechtschreibung, Amtliches Regelwerk der deutschen Rechtschreibung (2024), §79 E1",
+      "url": "https://www.rechtschreibrat.com/DOX/RfdR_Amtliches-Regelwerk_2024.pdf",
+      "note": "Supports quotes.punctuationPlacement = \"none\". Verbatim: “Satzzeichen, die zu einer angeführten Einheit gehören, stehen vor dem schließenden Anführungszeichen; Satzzeichen, die zum Trägersatz gehören, stehen nach dem schließenden Anführungszeichen.” E1(2) puts a comma after the closing mark when a carrier sentence follows the quotation, but the placement of a full stop and of the other marks depends on whether they belong to the quotation, so the rule does nothing here. Consulted 2026-11-09."
     }
   ]
 }

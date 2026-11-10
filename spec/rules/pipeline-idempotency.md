@@ -36,6 +36,7 @@ Write the pipeline as `T = R₈ ∘ R₇ ∘ … ∘ R₂ₐ ∘ R₂ ∘ R₁`,
 | R₃  | `dashes`     | 30    |
 | R₄  | `hyphen`     | 35    |
 | R₅  | `quotes`     | 40    |
+| R₅ₐ | `quote-punctuation` | 45 |
 | R₆  | `apostrophe` | 50    |
 | R₇  | `symbols`    | 60    |
 | R₈  | `nbsp`       | 70    |
@@ -47,9 +48,16 @@ below holds for any subset, in the same relative order.)
 subscripts in this document had been cited by name from eight other rule documents. Renumbering
 `R₃ … R₈` to make the sequence contiguous would rewrite every one of those references for no
 gain in meaning, so the rule takes the letter and the composition `T = R₈ ∘ R₇ ∘ … ∘ R₂ₐ ∘ … ∘ R₁`
-reads with it in place at order 25. `ranges` is also the one rule that is **off by default**, so
-for most callers the sequence is literally the eight numbered ones; every proof below is stated
-over "the rules that run", which is the subset the caller's `rules` option selected.
+reads with it in place at order 25. `ranges` is also one of the two rules that are **off by
+default** (the other is `quote-punctuation`, below), so for most callers the sequence is literally
+the eight numbered ones; every proof below is stated over "the rules that run", which is the
+subset the caller's `rules` option selected.
+
+**Why `quote-punctuation` is `R₅ₐ`.** Same reason as `ranges`: it arrived in spec 1.21.0 between
+two rules whose subscripts are cited by name from other documents. It is the second rule that is
+**off by default**, so with both off the sequence is the eight numbered rules; every proof below
+is stated over the rules that run. When it does run, `I₅` must also survive it (§3, `I₅ₐ`), and `quote-punctuation.md`
+§5 carries its obligation against `I₁ … I₅`.
 
 For each rule define the predicate
 
@@ -220,6 +228,18 @@ deletes only `(`…`)` spans; `quotes` (0.3.0) deletes only a run whose landing 
 `ALNUM ∪ QUOTEMARK`, but the deletion always removes an `INLINE-SPACE` run that is *not itself*
 inside a word — `hyphen`'s `WORDISH = ALNUM ∪ HYPHENISH` excludes both a U+0020 and a quote
 glyph, so the deletion never lands inside a listed form (`quotes.md` 5). `I₄` is preserved.
+
+### I₅ₐ — `quote-punctuation`
+
+`I₅ₐ(y)` requires that no pair `cp[i], cp[i+1]` in `y` satisfies `quote-punctuation.md` §3.2's
+C1-C4: a primary close preceded by a letter, followed by a comma or full stop, followed by a
+space-like code point or the end. It is vacuous for a locale whose
+`quotes.punctuationPlacement` is `"none"`, and for every call that does not enable the rule.
+
+**Who can violate it.** `apostrophe`, `symbols` and `nbsp`, by changing the class of `cp[i-1]` or
+`cp[i+2]` or by putting a punctuation mark next to a primary close. The argument is in
+`quote-punctuation.md` §5: none of them emits the primary close (QP-1), a letter or a
+comma or full stop next to it, or anything that is not `SPACELIKE` where a space stood.
 
 ### I₅ … I₈
 

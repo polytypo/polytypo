@@ -93,6 +93,7 @@ describe("promo pages — Sites using polytypo", () => {
       ),
     ].map((m) => m[1]);
     expect(hosts).toEqual([
+      "tsstboxes.com",
       "kri.rocks",
       "htpbe.tech",
       "pi-pi.ee",

@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.20.1** · locales: **27** · rules: **9**.
+Spec version: **1.21.0** · locales: **27** · rules: **10**.
 
 ## Implementations
 
@@ -119,6 +119,7 @@ Aliases resolve in the spec, never in a platform locale library: `en` → `en-US
 | 30 | `dashes` | on | Parenthetical dash per locale convention (dash.parenthetical). |
 | 35 | `hyphen` | on | Bind morphological hyphen forms with U+2011 (non-breaking hyphen) so they cannot be broken across lines. |
 | 40 | `quotes` | on | Straight quotes to locale primary/secondary pairs with nesting resolution. |
+| 45 | `quote-punctuation` | off | Moves a comma or full stop from after a closing primary quotation mark to before it, for a locale whose cited convention puts them inside (quotes.punctuationPlacement = "inside"; en-US). |
 | 50 | `apostrophe` | on | Remaining straight apostrophes to U+2019 without corrupting contractions. |
 | 60 | `symbols` | on | (c)/(r)/(tm) to the corresponding signs; multiplication sign between numerals. |
 | 70 | `nbsp` | on | Insert no-break and narrow no-break spaces per locale. |

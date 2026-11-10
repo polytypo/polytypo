@@ -19,10 +19,20 @@
     "quotes": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["primary", "secondary", "elisionIdioms", "elisionClitics"],
+      "required": [
+        "primary",
+        "secondary",
+        "punctuationPlacement",
+        "elisionIdioms",
+        "elisionClitics"
+      ],
       "properties": {
         "primary": { "$ref": "#/$defs/quotePair" },
         "secondary": { "$ref": "#/$defs/quotePair" },
+        "punctuationPlacement": {
+          "enum": ["inside", "none"],
+          "description": "Where a comma or full stop goes relative to the closing PRIMARY quotation mark, read only by the opt-in `quote-punctuation` rule (spec 1.21.0). `inside`: the locale's cited convention puts them before the mark, and the rule moves one that was typed after it. `none`: the rule does nothing, either because the locale places them by meaning (a mark that belongs to the quoted material goes inside, one that belongs to the surrounding sentence goes outside, which no scan of code points can decide) or because no convention has been verified; a missing citation is never a licence to guess. `inside` is constrained by scripts/validate-spec.mjs (quote-punctuation.md section 2): the primary close must be a WIDE glyph other than the primary open, `dash.parenthetical` must not be `em-paired`, and neither pair may carry an inner space."
+        },
         "elisionIdioms": {
           "type": "array",
           "items": { "$ref": "#/$defs/elisionIdiom" },
@@ -154,6 +164,7 @@
           "rule": {
             "enum": [
               "quotes",
+              "quote-punctuation",
               "dashes",
               "ranges",
               "ellipsis",

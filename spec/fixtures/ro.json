@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "ro",
   "cases": [
     {
@@ -229,6 +229,17 @@
       "in": "A mers la McDonald's și înapoi",
       "out": "A mers la McDonald’s și înapoi",
       "note": "An apostrophe in a foreign name is written U+2019."
+    },
+    {
+      "id": "ro-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha „beta”, gamma",
+      "out": "alpha „beta”, gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for ro, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

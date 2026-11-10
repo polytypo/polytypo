@@ -2,7 +2,7 @@
 
 > Locale-correct quotes, dashes, ellipses, hyphens and no-break spaces. One portable spec, five runtime implementations, byte-identical output — transform(input, { locale }) is pure, with no I/O, network access or global state.
 
-polytypo is a typography rules engine, not a grammar or spell checker: it normalizes punctuation and spacing to the convention of a specific locale, and every rule cites its normative source (Chicago/Oxford, Duden, Imprimerie nationale, Kotus, Språkrådet, Мильчин). Spec 1.20.1, 27 locales (bg, hr, cs, nl, en-GB, en-US, fi, fr-CA, fr, de-DE, de-CH, el, hu, it, lt, pl, pt-BR, pt-PT, ro, ru, sr, sk, sl, es, sv, tr, uk), rules run in this fixed order: spaces, ellipsis, ranges, dashes, hyphen, quotes, apostrophe, symbols, nbsp.
+polytypo is a typography rules engine, not a grammar or spell checker: it normalizes punctuation and spacing to the convention of a specific locale, and every rule cites its normative source (Chicago/Oxford, Duden, Imprimerie nationale, Kotus, Språkrådet, Мильчин). Spec 1.21.0, 27 locales (bg, hr, cs, nl, en-GB, en-US, fi, fr-CA, fr, de-DE, de-CH, el, hu, it, lt, pl, pt-BR, pt-PT, ro, ru, sr, sk, sl, es, sv, tr, uk), rules run in this fixed order: spaces, ellipsis, ranges, dashes, hyphen, quotes, quote-punctuation, apostrophe, symbols, nbsp.
 
 Modes (4): text, html, markdown, yaml. `text` has no parser and no skip list — the whole string is prose to it. `html` and `markdown` parse the document and run the rules only on prose text nodes, never inside tags, attributes, character references, code spans or code blocks; `markdown` additionally requires an explicit `dialect` ("commonmark" or "mdx"), which is never detected, because one autolink is valid CommonMark and a parse error in MDX. `yaml` uses no parser either and is the one mode that skips by default: it processes only the values of the mapping keys named in its required `keys` option, which has no default, because nothing in YAML's syntax separates a prose `description:` from a shell command in `run:`. Whatever a mode does not process comes back byte for byte.
 
@@ -32,13 +32,14 @@ Modes (4): text, html, markdown, yaml. `text` has no parser and no skip list —
 - [Dashes](https://polytypo.dev/docs/rules/dashes/): The dashes rule sets the parenthetical dash in the form each locale prescribes, and leaves compound hyphens, numbers, ranges and arrows alone.
 - [Hyphen](https://polytypo.dev/docs/rules/hyphen/): The hyphen rule binds the hyphen in listed Russian and Ukrainian forms with a non-breaking hyphen so a line break cannot split the word.
 - [Quotes](https://polytypo.dev/docs/rules/quotes/): How the quotes rule turns straight and foreign quotation marks into each locale's primary and secondary pairs, resolves nesting, and leaves unmatched marks alone.
+- [quote-punctuation](https://polytypo.dev/docs/rules/quote-punctuation/): The opt-in quote-punctuation rule moves a comma or full stop from after a closing quotation mark to before it, for the locale whose convention puts it there, and declines wherever the placement depends on meaning.
 - [Apostrophe](https://polytypo.dev/docs/rules/apostrophe/): The apostrophe rule turns the straight apostrophe into U+2019 in contractions, elisions, possessives and decade abbreviations, and leaves foot marks and primes alone.
 - [symbols](https://polytypo.dev/docs/rules/symbols/): The symbols rule converts (c), (r) and (tm) to the copyright, registered and trademark signs, between-number x to the multiplication sign, and +/- before a digit to a plus-minus sign.
 - [No-break spaces](https://polytypo.dev/docs/rules/nbsp/): How the nbsp rule converts and inserts U+00A0 and U+202F per locale, with the ten lists it reads, the narrowNbsp option and what it leaves alone.
 - [The span model](https://polytypo.dev/docs/concepts/span-model/): How html, markdown and yaml modes show the rules only the prose of a document, and why spans are joined with boundary markers instead of processed alone.
 - [Round trip](https://polytypo.dev/docs/concepts/round-trip/): In html, markdown and yaml modes the output is your input with a few substring replacements applied, and nothing is re-serialised.
 - [Idempotency](https://polytypo.dev/docs/concepts/idempotency/): Why transform(transform(x)) equals transform(x) is a contract in every runtime, and what it means for text that is already typeset.
-- [Rule order](https://polytypo.dev/docs/concepts/rule-order/): The fixed order in which the nine polytypo rules run, why each sits where it does, why ranges is off by default, and how options never reorder them.
+- [Rule order](https://polytypo.dev/docs/concepts/rule-order/): The fixed order in which the ten polytypo rules run, why each sits where it does, why ranges and quote-punctuation are off by default, and how options never reorder them.
 - [Locale resolution](https://polytypo.dev/docs/concepts/locale-resolution/): How the locale option becomes exactly one locale: exact match, alias, one region strip, and an error otherwise, never a fallback to English.
 - [Invisible characters](https://polytypo.dev/docs/concepts/invisible-characters/): The four characters polytypo inserts that you cannot see, U+00A0, U+202F, U+2011 and U+2060, what inserts each, how to spot them, and the narrowNbsp option.
 - [Running polytypo in a build step](https://polytypo.dev/docs/guides/build-step/): Typeset Markdown, MDX and HTML files at build time with a complete Node script, choosing locale, mode and dialect per file, with a check mode for CI.
@@ -51,33 +52,33 @@ Modes (4): text, html, markdown, yaml. `text` has no parser and no skip list —
 - [Ruby](https://polytypo.dev/docs/runtimes/ruby/): Install the polytypo gem, call Polytypo.transform and Polytypo.analyze with keyword arguments, rescue Polytypo::Error codes, and see which modes the gem covers.
 - [PHP](https://polytypo.dev/docs/runtimes/php/): Install polytypo with Composer, call Polytypo::transform and Polytypo::analyze with named arguments, catch PolytypoException codes, and see which modes PHP covers.
 - [Locales](https://polytypo.dev/locales/): typography rules by locale, each backed by a citation and a conformance fixture set.
-- [Bulgarian (bg)](https://polytypo.dev/locales/bg/): Bulgarian (bg): quotation marks „…“ and „…“, spaced en dash for breaks; 6 cited sources, 29 tested examples.
-- [Croatian (hr)](https://polytypo.dev/locales/hr/): Croatian (hr): quotation marks „…” and ‘…’, spaced en dash for breaks; 6 cited sources, 29 tested examples.
-- [Czech (cs)](https://polytypo.dev/locales/cs/): Czech (cs): quotation marks „…“ and ‚…‘, spaced en dash for breaks; 8 cited sources, 19 tested examples.
-- [Dutch (nl)](https://polytypo.dev/locales/nl/): Dutch (nl): quotation marks “…” and ‘…’, spaced en dash for breaks; 9 cited sources, 16 tested examples.
-- [English (United Kingdom) (en-GB)](https://polytypo.dev/locales/en-GB/): English (United Kingdom) (en-GB): quotation marks ‘…’ and “…”, spaced en dash for breaks; 9 cited sources, 220 tested examples.
-- [English (United States) (en-US)](https://polytypo.dev/locales/en-US/): English (United States) (en-US): quotation marks “…” and ‘…’, unspaced em dash for breaks; 11 cited sources, 470 tested examples.
-- [Finnish (fi)](https://polytypo.dev/locales/fi/): Finnish (fi): quotation marks ”…” and ’…’, spaced en dash for breaks; 12 cited sources, 157 tested examples.
-- [French (Canada) (fr-CA)](https://polytypo.dev/locales/fr-CA/): French (Canada) (fr-CA): quotation marks «…» and “…”, spaced em dash for breaks; 9 cited sources, 40 tested examples.
-- [French (France) (fr)](https://polytypo.dev/locales/fr/): French (France) (fr): quotation marks «…» and “…”, spaced em dash for breaks; 10 cited sources, 127 tested examples.
-- [German (Germany) (de-DE)](https://polytypo.dev/locales/de-DE/): German (Germany) (de-DE): quotation marks „…“ and ‚…‘, spaced en dash for breaks; 7 cited sources, 93 tested examples.
-- [German (Switzerland) (de-CH)](https://polytypo.dev/locales/de-CH/): German (Switzerland) (de-CH): quotation marks «…» and ‹…›, spaced en dash for breaks; 6 cited sources, 61 tested examples.
-- [Greek (el)](https://polytypo.dev/locales/el/): Greek (el): quotation marks «…» and “…”, paired em dash for breaks; 8 cited sources, 35 tested examples.
-- [Hungarian (hu)](https://polytypo.dev/locales/hu/): Hungarian (hu): quotation marks „…” and »…«, spaced en dash for breaks; 7 cited sources, 30 tested examples.
-- [Italian (it)](https://polytypo.dev/locales/it/): Italian (it): quotation marks «…» and “…”, spaced em dash for breaks; 10 cited sources, 21 tested examples.
-- [Lithuanian (lt)](https://polytypo.dev/locales/lt/): Lithuanian (lt): quotation marks „…“ and „…“, spaced en dash for breaks; 7 cited sources, 37 tested examples.
-- [Polish (pl)](https://polytypo.dev/locales/pl/): Polish (pl): quotation marks „…” and »…«, spaced en dash for breaks; 9 cited sources, 16 tested examples.
-- [Portuguese (Brazil) (pt-BR)](https://polytypo.dev/locales/pt-BR/): Portuguese (Brazil) (pt-BR): quotation marks “…” and ‘…’, spaced en dash for breaks; 8 cited sources, 19 tested examples.
-- [Portuguese (Portugal) (pt-PT)](https://polytypo.dev/locales/pt-PT/): Portuguese (Portugal) (pt-PT): quotation marks «…» and “…”, spaced em dash for breaks; 8 cited sources, 19 tested examples.
-- [Romanian (ro)](https://polytypo.dev/locales/ro/): Romanian (ro): quotation marks „…” and «…», spaced en dash for breaks; 6 cited sources, 27 tested examples.
-- [Russian (ru)](https://polytypo.dev/locales/ru/): Russian (ru): quotation marks «…» and „…“, spaced em dash for breaks; 6 cited sources, 89 tested examples.
-- [Serbian (sr)](https://polytypo.dev/locales/sr/): Serbian (sr): quotation marks „…” and ’…’, spaced en dash for breaks; 6 cited sources, 24 tested examples.
-- [Slovak (sk)](https://polytypo.dev/locales/sk/): Slovak (sk): quotation marks „…“ and ‚…‘, spaced en dash for breaks; 8 cited sources, 31 tested examples.
-- [Slovenian (sl)](https://polytypo.dev/locales/sl/): Slovenian (sl): quotation marks »…« and ›…‹, spaced en dash for breaks; 6 cited sources, 29 tested examples.
-- [Spanish (es)](https://polytypo.dev/locales/es/): Spanish (es): quotation marks «…» and “…”, paired em dash for breaks; 10 cited sources, 58 tested examples.
-- [Swedish (sv)](https://polytypo.dev/locales/sv/): Swedish (sv): quotation marks ”…” and ’…’, spaced en dash for breaks; 10 cited sources, 154 tested examples.
-- [Turkish (tr)](https://polytypo.dev/locales/tr/): Turkish (tr): quotation marks “…” and ‘…’, no dash substitution for breaks; 11 cited sources, 30 tested examples.
-- [Ukrainian (uk)](https://polytypo.dev/locales/uk/): Ukrainian (uk): quotation marks «…» and “…”, spaced em dash for breaks; 8 cited sources, 18 tested examples.
+- [Bulgarian (bg)](https://polytypo.dev/locales/bg/): Bulgarian (bg): quotation marks „…“ and „…“, spaced en dash for breaks; 6 cited sources, 30 tested examples.
+- [Croatian (hr)](https://polytypo.dev/locales/hr/): Croatian (hr): quotation marks „…” and ‘…’, spaced en dash for breaks; 6 cited sources, 30 tested examples.
+- [Czech (cs)](https://polytypo.dev/locales/cs/): Czech (cs): quotation marks „…“ and ‚…‘, spaced en dash for breaks; 8 cited sources, 20 tested examples.
+- [Dutch (nl)](https://polytypo.dev/locales/nl/): Dutch (nl): quotation marks “…” and ‘…’, spaced en dash for breaks; 9 cited sources, 17 tested examples.
+- [English (United Kingdom) (en-GB)](https://polytypo.dev/locales/en-GB/): English (United Kingdom) (en-GB): quotation marks ‘…’ and “…”, spaced en dash for breaks; 10 cited sources, 221 tested examples.
+- [English (United States) (en-US)](https://polytypo.dev/locales/en-US/): English (United States) (en-US): quotation marks “…” and ‘…’, unspaced em dash for breaks; 12 cited sources, 504 tested examples.
+- [Finnish (fi)](https://polytypo.dev/locales/fi/): Finnish (fi): quotation marks ”…” and ’…’, spaced en dash for breaks; 12 cited sources, 158 tested examples.
+- [French (Canada) (fr-CA)](https://polytypo.dev/locales/fr-CA/): French (Canada) (fr-CA): quotation marks «…» and “…”, spaced em dash for breaks; 9 cited sources, 41 tested examples.
+- [French (France) (fr)](https://polytypo.dev/locales/fr/): French (France) (fr): quotation marks «…» and “…”, spaced em dash for breaks; 10 cited sources, 128 tested examples.
+- [German (Germany) (de-DE)](https://polytypo.dev/locales/de-DE/): German (Germany) (de-DE): quotation marks „…“ and ‚…‘, spaced en dash for breaks; 8 cited sources, 94 tested examples.
+- [German (Switzerland) (de-CH)](https://polytypo.dev/locales/de-CH/): German (Switzerland) (de-CH): quotation marks «…» and ‹…›, spaced en dash for breaks; 7 cited sources, 62 tested examples.
+- [Greek (el)](https://polytypo.dev/locales/el/): Greek (el): quotation marks «…» and “…”, paired em dash for breaks; 8 cited sources, 36 tested examples.
+- [Hungarian (hu)](https://polytypo.dev/locales/hu/): Hungarian (hu): quotation marks „…” and »…«, spaced en dash for breaks; 7 cited sources, 31 tested examples.
+- [Italian (it)](https://polytypo.dev/locales/it/): Italian (it): quotation marks «…» and “…”, spaced em dash for breaks; 10 cited sources, 22 tested examples.
+- [Lithuanian (lt)](https://polytypo.dev/locales/lt/): Lithuanian (lt): quotation marks „…“ and „…“, spaced en dash for breaks; 7 cited sources, 38 tested examples.
+- [Polish (pl)](https://polytypo.dev/locales/pl/): Polish (pl): quotation marks „…” and »…«, spaced en dash for breaks; 9 cited sources, 17 tested examples.
+- [Portuguese (Brazil) (pt-BR)](https://polytypo.dev/locales/pt-BR/): Portuguese (Brazil) (pt-BR): quotation marks “…” and ‘…’, spaced en dash for breaks; 8 cited sources, 20 tested examples.
+- [Portuguese (Portugal) (pt-PT)](https://polytypo.dev/locales/pt-PT/): Portuguese (Portugal) (pt-PT): quotation marks «…» and “…”, spaced em dash for breaks; 8 cited sources, 20 tested examples.
+- [Romanian (ro)](https://polytypo.dev/locales/ro/): Romanian (ro): quotation marks „…” and «…», spaced en dash for breaks; 6 cited sources, 28 tested examples.
+- [Russian (ru)](https://polytypo.dev/locales/ru/): Russian (ru): quotation marks «…» and „…“, spaced em dash for breaks; 6 cited sources, 90 tested examples.
+- [Serbian (sr)](https://polytypo.dev/locales/sr/): Serbian (sr): quotation marks „…” and ’…’, spaced en dash for breaks; 6 cited sources, 25 tested examples.
+- [Slovak (sk)](https://polytypo.dev/locales/sk/): Slovak (sk): quotation marks „…“ and ‚…‘, spaced en dash for breaks; 8 cited sources, 32 tested examples.
+- [Slovenian (sl)](https://polytypo.dev/locales/sl/): Slovenian (sl): quotation marks »…« and ›…‹, spaced en dash for breaks; 6 cited sources, 30 tested examples.
+- [Spanish (es)](https://polytypo.dev/locales/es/): Spanish (es): quotation marks «…» and “…”, paired em dash for breaks; 10 cited sources, 59 tested examples.
+- [Swedish (sv)](https://polytypo.dev/locales/sv/): Swedish (sv): quotation marks ”…” and ’…’, spaced en dash for breaks; 10 cited sources, 155 tested examples.
+- [Turkish (tr)](https://polytypo.dev/locales/tr/): Turkish (tr): quotation marks “…” and ‘…’, no dash substitution for breaks; 11 cited sources, 31 tested examples.
+- [Ukrainian (uk)](https://polytypo.dev/locales/uk/): Ukrainian (uk): quotation marks «…» and “…”, spaced em dash for breaks; 8 cited sources, 19 tested examples.
 - [Contribute](https://polytypo.dev/contribute/): add a locale or change a rule.
 - [Playground](https://polytypo.dev/playground/): run the real engine on your own text in the browser.
 

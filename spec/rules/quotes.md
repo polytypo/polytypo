@@ -1271,6 +1271,15 @@ still holds without re-verification.
   *sites* rather than its emission alphabet alone — the alphabet by itself is not enough, because
   a `SPACELIKE` insertion is *not* inert at an arbitrary position; it is inert at exactly the
   positions `nbsp` can reach).
+- **`I₅` against `quote-punctuation` (R₅ₐ), spec 1.21.0, when enabled.** The rule swaps a primary
+  close with a comma or full stop that follows it. The verdict inputs this rule reads at the mark
+  move only within classes it tests identically (`Lskip`: `ALNUM` → `,`/`.`, neither `NONE` nor
+  `SPACELIKE`; `closeRight`: `,`/`.` → `NONE` or `SPACELIKE`, both accepted by `canClose`;
+  `openLeft`: a letter → `,`/`.`, neither `OPENISH`), the vetoes read `NARROW` marks and `ALNUM`
+  neighbours that the swap does not touch, and `gapInsertable` is vacuous because the locale
+  constraint QP-3 forbids a spaced pair wherever the rule is enabled
+  (`quote-punctuation.md` §2, §5). A case analysis, not CO-S; the runtimes' idempotency sweeps
+  with the rule on are the control.
 - **`I₅` against `symbols` (R₇).** **Known-weak: a case analysis, not CO-S.** `symbols`
   collapses `(c)`/`(r)`/`(tm)` to a single sign, deleting code points, and converts `x` to `×`
   between numerals. A quote mark adjacent to a collapsed span sees `(` on its right (moving to

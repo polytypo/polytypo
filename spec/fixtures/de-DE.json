@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "de-DE",
   "cases": [
     {
@@ -846,6 +846,17 @@
         }
       ],
       "note": "modes.md §3.9.3: the same pairing in a locale whose glyphs differ in shape."
+    },
+    {
+      "id": "de-de-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha „beta“, gamma",
+      "out": "alpha „beta“, gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for de-DE, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

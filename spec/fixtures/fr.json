@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "fr",
   "cases": [
     {
@@ -1089,6 +1089,17 @@
       "in": "Écrire à foo@example.com ; oui\n",
       "out": "Écrire à foo@example.com ; oui\n",
       "note": "modes.md §3.7.3 terminator guard: it applies to http, https and www addresses only, so the space after an e-mail address converts as before."
+    },
+    {
+      "id": "fr-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha « beta », gamma",
+      "out": "alpha « beta », gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for fr, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

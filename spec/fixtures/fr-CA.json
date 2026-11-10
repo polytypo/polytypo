@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "fr-CA",
   "cases": [
     {
@@ -320,6 +320,17 @@
       "in": "Il dit 'l'<em>idée</em> est bonne.' Fin.",
       "out": "Il dit « l’<em>idée</em> est bonne. » Fin.",
       "note": "quotes.md §3.2's span-boundary elision veto (spec 1.4.0), on the identical OQLF citation fr carries — the OQLF is Quebec's own authority, so for fr-CA the evidence is direct rather than a substitute. No retrieved source states any France/Quebec divergence on elision, so the two lists are identical."
+    },
+    {
+      "id": "fr-ca-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha « beta », gamma",
+      "out": "alpha « beta », gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for fr-CA, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

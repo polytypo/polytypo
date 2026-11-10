@@ -1,12 +1,12 @@
 ---
 title: Rule order
-seo_title: Typography rule order: the nine polytypo rules and why they run in this order
-description: The fixed order in which the nine polytypo rules run, why each sits where it does, why ranges is off by default, and how options never reorder them.
+seo_title: Typography rule order: the ten polytypo rules and why they run in this order
+description: The fixed order in which the ten polytypo rules run, why each sits where it does, why ranges and quote-punctuation are off by default, and how options never reorder them.
 section: concepts
 order: 40
 ---
 
-`transform` runs nine rules in one fixed order. The order is part of the specification, not an implementation detail, and it is identical in all five runtimes.
+`transform` runs ten rules in one fixed order. The order is part of the specification, not an implementation detail, and it is identical in all five runtimes.
 
 ## The order
 
@@ -18,6 +18,7 @@ order: 40
 | 30 | [`dashes`](/docs/rules/dashes/) | on | parenthetical dash |
 | 35 | [`hyphen`](/docs/rules/hyphen/) | on | non-breaking hyphen in listed forms |
 | 40 | [`quotes`](/docs/rules/quotes/) | on | straight quotes to the locale's pairs |
+| 45 | [`quote-punctuation`](/docs/rules/quote-punctuation/) | **off** | comma or full stop moved inside a closing quotation mark, where the locale's convention puts it there |
 | 50 | [`apostrophe`](/docs/rules/apostrophe/) | on | remaining straight apostrophes |
 | 60 | [`symbols`](/docs/rules/symbols/) | on | `(c)`, `(r)`, `(tm)` and the multiplication sign |
 | 70 | [`nbsp`](/docs/rules/nbsp/) | on | no-break and narrow no-break spaces |
@@ -29,6 +30,7 @@ Each rule reads the output of the ones before it, so some orderings are required
 - **`spaces` is first** so every later rule sees clean spacing.
 - **`ranges` runs before `dashes`.** A digit-hyphen-digit shape belongs to `ranges` alone, whether or not `ranges` is enabled; `dashes` never reinterprets it as a parenthetical dash.
 - **`dashes` runs before `hyphen`.** By the time `hyphen` runs, `dashes` has already declined every hyphen that sits between letters.
+- **`quote-punctuation` runs after `quotes`.** It moves a comma or full stop next to a quotation mark that `quotes` has already settled, and it runs before `apostrophe` so that a straight apostrophe is still available as evidence for `quotes`.
 - **`quotes` runs before `apostrophe`.** A straight apostrophe can be evidence that a single quote is part of a quotation. `quotes` uses that evidence first; `apostrophe` then converts whatever is left.
 - **`nbsp` is last** so every other rule has settled the characters around the spaces it binds.
 
@@ -55,7 +57,7 @@ rules: ranges
 
 ## Options and order
 
-`ranges` is the only rule that is off by default. A range and a compound label such as `Figure 5-10` have the same shape, and telling them apart would need the preceding word, which the rules never read. It is an explicit opt-in.
+`ranges` and `quote-punctuation` are the two rules that are off by default, and each is an explicit opt-in. A range and a compound label such as `Figure 5-10` have the same shape, and telling them apart would need the preceding word, which the rules never read. `quote-punctuation` moves a character the author typed, so it is not applied unless you ask for it (see [quote-punctuation](/docs/rules/quote-punctuation/)).
 
 The `rules` option switches rules on or off by id. It never reorders them. A disabled rule is removed from the sequence and the rest keep their positions, and the order in which you list ids does not matter. Here `dashes` is off, so the spaced `--` stays while `ranges` still runs:
 
@@ -77,6 +79,7 @@ rules: ranges, -dashes
 - [Idempotency](/docs/concepts/idempotency/)
 - [The span model](/docs/concepts/span-model/)
 - [Ranges](/docs/rules/ranges/)
+- [quote-punctuation](/docs/rules/quote-punctuation/)
 - [Error codes](/docs/api/errors/)
 
 Normative text: [spec/rules/order.json](https://github.com/polytypo/polytypo/blob/main/spec/rules/order.json).

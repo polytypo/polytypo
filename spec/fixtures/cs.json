@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "cs",
   "cases": [
     {
@@ -156,6 +156,17 @@
       "in": "Šel do McDonald's a zpět",
       "out": "Šel do McDonald’s a zpět",
       "note": "Pravidlo apostrophe nečte data locale: U+0027 mezi písmeny se stane U+2019. V téže větě je vidět N3, které váže spojku «a» k následujícímu slovu — dvě nezávislá pravidla na jednom řádku."
+    },
+    {
+      "id": "cs-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha „beta“, gamma",
+      "out": "alpha „beta“, gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for cs, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "sl",
   "cases": [
     {
@@ -242,6 +242,17 @@
       "in": "O'Brien je prišel.",
       "out": "O’Brien je prišel.",
       "note": "apostrophe.md: a straight apostrophe inside a foreign name becomes U+2019."
+    },
+    {
+      "id": "sl-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha »beta«, gamma",
+      "out": "alpha »beta«, gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for sl, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

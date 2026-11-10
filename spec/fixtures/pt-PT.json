@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "pt-PT",
   "cases": [
     {
@@ -159,6 +159,17 @@
       "in": "Ele diz 'd'<em>Os Lusíadas</em> é bom.' Fim.",
       "out": "Ele diz «d’<em>Os Lusíadas</em> é bom.» Fim.",
       "note": "quotes.md §3.2's span-boundary elision veto (spec 1.4.0), on Acordo Ortográfico Base XVIII 1.º a) — whose own examples are book titles, which is what makes this list load-bearing: a title set in emphasis rather than italics puts the span boundary immediately after the mark."
+    },
+    {
+      "id": "pt-pt-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha «beta», gamma",
+      "out": "alpha «beta», gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for pt-PT, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

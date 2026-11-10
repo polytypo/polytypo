@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "es",
   "cases": [
     {
@@ -469,6 +469,17 @@
       "in": "Copyright (c) 2026, tamaño 40x60 cm",
       "out": "Copyright © 2026, tamaño 40×60 cm",
       "note": "symbols.md: «(c)» pasa a U+00A9 y la «x» entre cifras a U+00D7. El U+00A0 ante «cm» lo pone nbsp N5, no symbols; se deja en el mismo caso porque así se ve que las dos reglas componen."
+    },
+    {
+      "id": "es-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha «beta», gamma",
+      "out": "alpha «beta», gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for es, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

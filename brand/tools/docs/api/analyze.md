@@ -44,7 +44,7 @@ Polytypo::analyze('Wait... "really"?', 'en-US');
 
 | Field | Meaning |
 | --- | --- |
-| `ruleId` | the rule that made the change, one of the nine rule ids |
+| `ruleId` | the rule that made the change, one of the ten rule ids |
 | `start` | offset into `input`, inclusive, in code points |
 | `end` | offset into `input`, exclusive, in code points |
 | `before` | the text the rule replaced; empty for a pure insertion |

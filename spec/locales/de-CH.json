@@ -12,6 +12,7 @@
       "close": "›",
       "innerSpace": "none"
     },
+    "punctuationPlacement": "none",
     "elisionIdioms": [],
     "elisionClitics": {
       "before": [],
@@ -76,6 +77,11 @@
       "cite": "Schweizerische Bundeskanzlei, Schreibweisungen, Rz. 223 und 224: der Bindestrich wird als Ergänzungsstrich für einen eingesparten Wortteil verwendet („Papierproduktion und -handel“); mit dem geschützten Ergänzungsstrich wird verhindert, dass der Ergänzungsstrich am Zeilenende auf der oberen Zeile bleibt, während der zugehörige zweite Wortbestandteil auf die nächste Zeile rutscht",
       "url": "https://www.bk.admin.ch/dam/de/sd-web/YVHazXZRkqKn/schreibweisungen.pdf",
       "note": "Beleg dafür, dass die drei Listen leer bleiben. Das Deutsche kennt keine geschlossene Liste von Morphemen mit unteilbarem Bindestrich; die Trennung am Bindestrich ist zulässig (Rz. 269–271 behandeln nur sinnentstellende Trennungen). Der einzige belegte Fall eines geschützten Bindestrichs ist der Ergänzungsstrich (Rz. 224), und der ist offen: er betrifft jedes beliebige Zweitglied nach „und -“ und lässt sich als literale Wortliste nicht abbilden."
+    },
+    {
+      "rule": "quote-punctuation",
+      "cite": "No Swiss source for the placement of punctuation relative to the closing quotation mark was consulted; value left at the default",
+      "note": "quotes.punctuationPlacement is \"none\" because no convention has been verified for de-CH. That is the default and means the rule does nothing, not that a convention was found to depend on meaning. The German Amtliches Regelwerk (2024) is the source cited for de-DE; whether it is the right authority for Swiss usage was not established."
     }
   ]
 }

@@ -67,7 +67,7 @@ Input alone can make `transform` throw in exactly one place: an MDX document tha
 
 - **One locale.** A call applies a single locale. Language is never detected, so split a document that mixes languages and call `transform` on each part with its own locale.
 - **One string.** `transform` sees only the string it is given. Rules read the characters on either side of what they change, and that reading stops at the ends of the string. Text nodes transformed one at a time lose each other as context; give the call whole prose where you can. See [Choosing a mode](/docs/getting-started/choosing-a-mode/).
-- **A fixed pipeline.** Nine rules run in a fixed order, identical in every runtime. `rules` can switch any of them on or off and never reorders the rest. See [Rule order](/docs/concepts/rule-order/).
+- **A fixed pipeline.** Ten rules run in a fixed order, identical in every runtime. `rules` can switch any of them on or off and never reorders the rest. See [Rule order](/docs/concepts/rule-order/).
 
 ## Related
 

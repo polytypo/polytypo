@@ -1,5 +1,5 @@
 {
-  "spec": "1.20.1",
+  "spec": "1.21.0",
   "locale": "ru",
   "cases": [
     {
@@ -737,6 +737,17 @@
         "ranges": true
       },
       "note": "ranges.md §3.2a, via dashes.md §3.2 step 8 (spec 1.3.0): the same witness in the suffix direction and in an em-dash locale — the disturbed guard is the range's `after` rather than its `before`. Pinned separately because the two directions are separate code paths in every port. To be precise about \"before the amendment\": the drift is a property of the INTERMEDIATE state — ranges.md §3.2a's widened candidacy without T1's transparency — which never shipped. Under spec 1.2.0 this input was stable, because the token was not a range candidate at all."
+    },
+    {
+      "id": "ru-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alpha «beta», gamma",
+      "out": "alpha «beta», gamma",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for ru, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
     }
   ]
 }

@@ -206,7 +206,7 @@ SECTION_DESCRIPTIONS = {
     "getting-started": "Install polytypo for JavaScript, Python, Go, Ruby or PHP, then pick the mode that fits your input.",
     "api": "The transform and analyze functions, every option with its default, and the eight stable error codes.",
     "modes": "One page for each of polytypo's four modes (text, html, markdown and yaml), with their options, skip lists and edge cases.",
-    "rules": "The nine typography rules, in the order they run, with what each changes per locale.",
+    "rules": "The ten typography rules, in the order they run, with what each changes per locale.",
     "concepts": "The guarantees behind polytypo: idempotency, rule order, locale resolution, the span model and round trip.",
     "guides": "Complete recipes: typeset Markdown, MDX and HTML at build time, and prose in YAML config.",
     "runtimes": "Install and call polytypo from JavaScript and TypeScript, Python, Go, Ruby and PHP.",
@@ -1028,6 +1028,7 @@ SHOWCASE_SITES = [
     ("iurii.rogulia.fi", "Software Engineer Iurii Rogulia"),
     ("kri.rocks", "Online Booking and Website for Beauty Professionals"),
     ("pi-pi.ee", "Plastic Sanitary Ware Manufacturer"),
+    ("tsstboxes.com", "Cargo Boxes for ATVs and UTVs"),
     ("vatnode.dev", "VIES API for EU VAT Validation"),
 ]
 

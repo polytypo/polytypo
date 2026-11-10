@@ -382,6 +382,27 @@ const supported = [...LOCALES].sort(byLocaleOrder).filter((locale) => {
   }
 });
 
+// Same principle for a rule: one the spec lists but the installed engine does not run yet is
+// skipped, never a build failure. Only that one error code is tolerated, and only for ids that
+// order.json names, so a mistyped rule id in a fixture still fails the build.
+const orderRuleIds = (
+  JSON.parse(readFileSync(new URL("../../spec/rules/order.json", import.meta.url), "utf8")) as {
+    rules: Array<{ id: string }>;
+  }
+).rules.map((r) => r.id);
+const engineRules = new Set(
+  orderRuleIds.filter((id) => {
+    try {
+      transform("", { locale: "en-US", rules: { [id]: true } });
+      return true;
+    } catch (error) {
+      if ((error as { code?: string }).code !== "POLYTYPO_UNKNOWN_RULE") throw error;
+      console.log(`  skipping rule ${id}: not in the installed engine yet (unreleased spec rule)`);
+      return false;
+    }
+  }),
+);
+
 const data = {
   spec: specVersion,
   proofLocales: [...PROOF_LOCALES].sort(byLocaleOrder),
@@ -473,6 +494,13 @@ for (const locale of supported) {
     if (c.mode !== "text" || c.throws || c.dialect || c.keys) continue;
     if (c.in === undefined || c.out === undefined || c.rule === undefined) continue;
     if (c.in === c.out || c.in.length > MAX_INPUT_LENGTH || c.id.includes("known-wrong")) continue;
+    if (!orderRuleIds.includes(c.rule))
+      throw new Error(`fixture ${c.id}: unknown rule "${c.rule}"`);
+    // A fixture of a rule the installed engine does not run yet would render as an example of
+    // that rule with the rule absent (a default-off case would even look like a no-op example).
+    if (!engineRules.has(c.rule) || Object.keys(c.rules ?? {}).some((id) => !engineRules.has(id))) {
+      continue;
+    }
     const list = (byRule[c.rule] ??= []);
     if (list.length >= PER_RULE) continue;
     const options = {
