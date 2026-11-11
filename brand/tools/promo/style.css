@@ -775,26 +775,34 @@ pre code {
 
 .tabs {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1) var(--space-4);
+  gap: var(--space-1);
   margin-bottom: var(--space-3);
-  font-family: var(--font-mono);
+  overflow-x: auto;
+  font-family: var(--font-sans);
   font-size: var(--fs-sm);
 }
 
 .tabs button {
-  min-height: 36px;
-  padding: 0;
+  flex: none;
+  min-height: var(--control-h);
+  padding: 0 var(--space-3);
   border: 0;
   border-bottom: 2px solid transparent;
   color: var(--muted);
   background: none;
+  white-space: nowrap;
+  font-weight: 500;
   cursor: pointer;
+}
+
+.tabs button:hover {
+  color: var(--fg);
 }
 
 .tabs button[aria-selected="true"] {
   color: var(--fg);
   border-bottom-color: var(--color-accent);
+  font-weight: 600;
 }
 
 /* ── Tables ─────────────────────────────────────────────────────────────────────────────── */
@@ -802,6 +810,14 @@ pre code {
 .scroll {
   margin-bottom: var(--space-5);
   overflow-x: auto;
+  background:
+    linear-gradient(to right, var(--bg) var(--space-4), transparent) left / var(--space-6) 100%
+      local,
+    linear-gradient(to left, var(--bg) var(--space-4), transparent) right / var(--space-6) 100%
+      local,
+    linear-gradient(to right, var(--line), transparent) left / var(--space-3) 100% scroll,
+    linear-gradient(to left, var(--line), transparent) right / var(--space-3) 100% scroll;
+  background-repeat: no-repeat;
 }
 
 table {
@@ -1582,6 +1598,8 @@ footer .wrap {
   font-family: var(--font-mono);
   font-size: var(--fs-md);
   font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .site-card .site-desc {
@@ -1805,6 +1823,8 @@ select {
 
 .wb-controls {
   display: flex;
+  min-width: 0;
+  max-width: 100%;
   flex-wrap: wrap;
   gap: var(--space-3) var(--space-4);
 }
@@ -1813,11 +1833,18 @@ select {
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  min-width: 0;
+  max-width: 100%;
   color: var(--muted);
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.wb-controls select {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .wb-meta,
@@ -1990,12 +2017,12 @@ body.wb-locked {
   gap: var(--space-2);
   min-height: 44px;
   margin-bottom: -1px;
-  padding: 0 var(--space-4);
-  border: 1px solid var(--line);
-  border-bottom-color: transparent;
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-bottom: 2px solid transparent;
   color: var(--muted);
-  background: var(--surface-strong);
+  background: none;
+  white-space: nowrap;
   font: inherit;
   font-family: var(--font-sans);
   font-size: var(--fs-sm);
@@ -2011,9 +2038,19 @@ body.wb-locked {
 
 .wb-tab[aria-selected="true"] {
   color: var(--fg);
-  background: var(--bg);
-  border-bottom-color: var(--bg);
+  border-bottom-color: var(--color-accent);
   font-weight: 600;
+}
+
+@container (max-width: 520px) {
+  .wb-tab {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+    padding-block: var(--space-2);
+    line-height: var(--lh-ui);
+  }
 }
 
 .wb-label .wb-meta {
@@ -2335,8 +2372,7 @@ h3:hover > .anchor,
 }
 
 .workbench[data-split] .wb-tab:disabled {
-  border-color: transparent;
-  border-radius: 0;
+  border-bottom-color: transparent;
   background: transparent;
   color: var(--fg);
   font-weight: 600;
@@ -2371,4 +2407,82 @@ h3:hover > .anchor,
 
 .workbench[data-split] [data-copy-output] {
   display: inline-flex;
+}
+
+/* ── Locale cards: captions for the two columns of a specimen pair ───────────────────────── */
+
+.specimen-label {
+  margin: 0 0 var(--space-1);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.chips a {
+  display: block;
+  margin: calc(-1 * var(--space-1)) calc(-1 * var(--space-3));
+  padding: var(--space-1) var(--space-3);
+  color: inherit;
+  text-decoration: none;
+}
+
+.chips a:hover {
+  text-decoration: underline;
+}
+
+/* ── Narrow screens: touch sizes, the coverage table as cards ────────────────────────────── */
+
+@media (max-width: 640px) {
+  .pg-copy {
+    min-height: var(--control-h);
+  }
+
+  .code > pre {
+    padding-top: calc(var(--space-3) + var(--control-h) + var(--space-2));
+  }
+
+  .page-list li > a,
+  table a {
+    display: inline-block;
+    padding-block: var(--space-3);
+  }
+
+  table.kv--cards,
+  table.kv--cards tbody {
+    display: block;
+  }
+
+  table.kv--cards tr:first-child {
+    display: none;
+  }
+
+  table.kv--cards tr {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  table.kv--cards td {
+    display: grid;
+    grid-template-columns: minmax(0, 8rem) minmax(0, 1fr);
+    gap: var(--space-3);
+    padding: 0;
+    border: 0;
+  }
+
+  table.kv--cards td a {
+    margin-block: calc(-1 * var(--space-3));
+  }
+
+  table.kv--cards td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
 }

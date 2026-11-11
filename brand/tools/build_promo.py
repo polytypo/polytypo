@@ -121,11 +121,11 @@ def coverage_rows(data):
         rules = ", ".join(sorted({s["rule"] for s in locale["sources"]}))
         rows.append(
             "      <tr>\n"
-            f'        <td class="mono"><a href="{{{{prefix}}}}locales/{H.escape(code)}/">{H.escape(code)}</a></td>\n'
-            f"        <td>{H.escape(locale['name'])}</td>\n"
-            f'        <td class="mono small">{H.escape(rules)}</td>\n'
-            f"        <td>{fixture_count(code)}</td>\n"
-            f'        <td class="ready-cite">{H.escape(PRIMARY_SOURCES[code])}</td>\n'
+            f'        <td class="mono" data-label="Locale"><a href="{{{{prefix}}}}locales/{H.escape(code)}/">{H.escape(code)}</a></td>\n'
+            f"        <td data-label=\"Name\">{H.escape(locale['name'])}</td>\n"
+            f'        <td class="mono small" data-label="Rules cited">{H.escape(rules)}</td>\n'
+            f"        <td data-label=\"Fixtures\">{fixture_count(code)}</td>\n"
+            f'        <td class="ready-cite" data-label="Primary sources">{H.escape(PRIMARY_SOURCES[code])}</td>\n'
             "      </tr>"
         )
     return "\n".join(rows)
@@ -255,7 +255,7 @@ PAGE_DESCRIPTIONS = {
         "locale-correct quotes, dashes, ellipses and no-break spaces applied live."
     ),
     "locales": (
-        "Typography rules by language: quotation marks, dashes, ellipsis and no-break spaces for "
+        "Typography rules by locale: quotation marks, dashes, ellipsis and no-break spaces for "
         "{n} locales, each rule backed by a cited normative source and tested examples."
     ),
     "manifesto": (
@@ -280,7 +280,7 @@ PAGE_DESCRIPTIONS = {
 PAGE_TITLES = {
     "": "polytypo — fix typography in any text: smart quotes, dashes, no-break spaces",
     "locales": (
-        f"Typography rules by language: quotes, dashes, spaces for {len(gen_locale_pages.CODES)} "
+        f"Typography rules by locale: quotes, dashes, spaces for {len(gen_locale_pages.CODES)} "
         "locales | polytypo"
     ),
 }
@@ -808,7 +808,9 @@ def locale_card(loc):
     return (
         '<div class="card"><div class="lang">'
         f'{H.escape(loc["name"])} · {H.escape(loc["locale"])}</div>'
-        f'<div class="pair">{specimen(before, "in")}{specimen(after, "out")}</div>'
+        '<div class="pair">'
+        f'<div><p class="specimen-label">Input</p>{specimen(before, "in")}</div>'
+        f'<div><p class="specimen-label">Output</p>{specimen(after, "out")}</div></div>'
         f'<p class="small"><a href="{{{{prefix}}}}locales/{H.escape(loc["locale"])}/">'
         f'{H.escape(loc["name"])} typography rules</a></p></div>'
     )
@@ -1032,7 +1034,7 @@ SHOWCASE_SITES = [
     ("vatnode.dev", "VIES API for EU VAT Validation"),
 ]
 
-SHOWCASE_EMAIL = "iurii@rogulia.fi"
+SHOWCASE_EMAIL = "mail@polytypo.dev"
 SHOWCASE_SUBJECT = "Add my site to Sites using polytypo"
 
 
@@ -1104,7 +1106,7 @@ def badge_section_html(prefix):
     the band around the badge is styled by style.css: the badge itself is rendered by promo/badge.js
     and its appearance is frozen, because sites embed it as-is."""
     options = "".join(
-        f'<option value="{H.escape(lang)}">{H.escape(name)}</option>'
+        f'<option value="{H.escape(lang)}"{" selected" if lang == "en" else ""}>{H.escape(name)}</option>'
         for lang, name in BADGE_LANG_NAMES.items()
     )
     snippet = H.escape(
@@ -1200,7 +1202,8 @@ def changelog_sections():
             f'<section id="v{H.escape(rel["version"])}" class="release">'
             '<div class="release-meta">'
             f'<p class="eyebrow">{H.escape(_pretty_date(rel["date"]))}</p>'
-            f'<h2>{H.escape(rel["version"])}</h2></div>'
+            f'<h2>{H.escape(rel["version"])} '
+            f'<a class="anchor" href="#v{H.escape(rel["version"])}" aria-label="Link to this version">#</a></h2></div>'
             '<div class="release-body">'
             f'<p>{H.escape(rel["headline"])}</p>'
             f"<ul>{items}</ul>"
@@ -2570,6 +2573,14 @@ const DATA = {payload};
     startEngineLoad();
     resample();
     render();
+  }});
+  document.getElementById("pg-reset").addEventListener("click", () => {{
+    startEngineLoad();
+    lastDefault = currentSample();
+    $input.value = lastDefault;
+    clearTimeout(timer);
+    render();
+    $actionStatus.textContent = "Sample restored.";
   }});
   $input.addEventListener("input", () => {{
     // Requested from the raw event, not from run()'s 120ms-debounced render(), so the bundle is

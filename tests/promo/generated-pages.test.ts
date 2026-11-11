@@ -105,10 +105,10 @@ describe("promo pages — Sites using polytypo", () => {
   it("offers a mailto submission link with a pre-filled subject and a free-form body", () => {
     const html = readPromoPage("showcase/index.html");
     expect(html).toContain(
-      'href="mailto:iurii@rogulia.fi?subject=Add%20my%20site%20to%20Sites%20using%20polytypo"',
+      'href="mailto:mail@polytypo.dev?subject=Add%20my%20site%20to%20Sites%20using%20polytypo"',
     );
     // `</a\n    >` is prettier's own wrapping of the source template, not a different link.
-    expect(html).toMatch(/>Share your website using polytypo<\/a\s*>/);
+    expect(html).toMatch(/>Email us your site<\/a\s*>/);
   });
 
   it.each(PAGES)("%s links to the showcase from the footer and the badge section", (page) => {

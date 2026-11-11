@@ -29,6 +29,13 @@ describe("badge languages follow the locale registry", () => {
 
   it("offers every language in the picker", () => {
     const home = readFileSync(path.join(ROOT, "promo/index.html"), "utf8");
-    for (const lang of languages) expect(home).toContain(`<option value="${lang}">`);
+    for (const lang of languages)
+      expect(home).toMatch(new RegExp(`<option value="${lang}"( selected)?>`));
+  });
+
+  it("opens the picker on the language the snippet and preview already use", () => {
+    const home = readFileSync(path.join(ROOT, "promo/index.html"), "utf8");
+    expect(home).toContain('<option value="en" selected>');
+    expect(home).toContain('data-polytypo-lang="en"');
   });
 });
