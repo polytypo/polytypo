@@ -604,6 +604,16 @@
               "ranges": true
             }
           }
+        ],
+        "quote-punctuation": [
+          {
+            "id": "en-gb-quote-punctuation-none",
+            "in": "She said \"hello\", then left.",
+            "out": "She said ‘hello’, then left.",
+            "rules": {
+              "quote-punctuation": true
+            }
+          }
         ]
       },
       "modes": [
@@ -777,6 +787,32 @@
             "id": "en-us-nbsp-initials",
             "in": "E. B. White wrote it",
             "out": "E. B. White wrote it"
+          }
+        ],
+        "quote-punctuation": [
+          {
+            "id": "en-us-quote-punctuation-comma-then-space",
+            "in": "She said \"hello\", then left.",
+            "out": "She said “hello,” then left.",
+            "rules": {
+              "quote-punctuation": true
+            }
+          },
+          {
+            "id": "en-us-quote-punctuation-full-stop-then-space",
+            "in": "He called it \"done\". Then he left.",
+            "out": "He called it “done.” Then he left.",
+            "rules": {
+              "quote-punctuation": true
+            }
+          },
+          {
+            "id": "en-us-quote-punctuation-full-stop-end-of-text",
+            "in": "Call it \"ready\".",
+            "out": "Call it “ready.”",
+            "rules": {
+              "quote-punctuation": true
+            }
           }
         ]
       },
