@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.21.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.21.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.22.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.22.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,21 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.22.0 — 11 November 2026
+
+Numbers and units are now spaced the way each locale writes them, so `50%` and `50 %` give the same result.
+
+- The `nbsp` rule used to bind a number to a unit only when you had already typed a space. It now decides the form itself, per locale. In `en-US`, `5kg` becomes `5 kg` with a no-break space and `50 %` becomes `50%`; in `de-DE`, `20km` becomes `20 km` and `50%` becomes `50 %`; in `ru` the percent sign is written closed and `20°C` gets its space. Where a locale's sources allow both forms, the locale picks the closed one, so one author's text no longer comes out half spaced and half closed. The locale data gained two lists beside `beforeUnits`: `spacedUnits`, where a no-break space is inserted or kept, and `closedUnits`, where the space is removed.
+- The accepted cost: the rule now inserts and deletes a space, not only converts one. It acts on a unit only when it directly follows a number and is not a letter-led word, and it leaves alone a range dash (`15–20%`), a product (`2 x 3kg`) and a modulo (`7 % 3`). A bare `°` stays closed, and single-letter units such as `m` are only converted, never inserted, because `5m` is not reliably a unit. Text that wrote a closed `50 %` on purpose in a locale that closes the percent sign is now closed.
+
+| Locale | Mode | In | Before | After |
+| --- | --- | --- | --- | --- |
+| `en-US` | `text` | `It weighs 5kg.` | `It weighs 5kg.` | `It weighs 5⍽kg.` |
+| `en-US` | `text` | `The battery is at 50 %.` | `The battery is at 50⍽%.` | `The battery is at 50%.` |
+| `de-DE` | `text` | `Es sind 20km und 50%.` | `Es sind 20km und 50%.` | `Es sind 20⍽km und 50⍽%.` |
+| `ru` | `text` | `Скидка 50 %, температура 20°C.` | `Скидка 50⍽%, температура 20°C.` | `Скидка 50%, температура 20⍽°C.` |
+| `en-GB` | `text` | `It is 21 °C.` | `It is 21⍽°C.` | `It is 21°C.` |
 
 ## 1.21.0 — 11 November 2026
 

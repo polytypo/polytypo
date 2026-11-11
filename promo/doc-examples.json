@@ -429,7 +429,10 @@
     "out": "Es sind 20 km und 5 %."
   },
   "a7cdf5d068f9cfd0": {
-    "out": "Es sind 20km und 50%."
+    "out": "Es sind 20 km und 50 %."
+  },
+  "fe41a7593abf35e7": {
+    "out": "Скидка 50%, температура 20 °C."
   },
   "1b9415952afe25b0": {
     "out": "J. R. R. Tolkien wrote it. Meet A. Smith there."
@@ -441,7 +444,7 @@
     "out": "Vraiment ? Oui ! Et alors ; voici : un test."
   },
   "8298d4d927b6af50": {
-    "out": "Τι κάνεις; Έχει 10,5 % φέτος και «καλημέρα»."
+    "out": "Τι κάνεις; Έχει 10,5% φέτος και «καλημέρα»."
   },
   "3473dde4556fd226": {
     "out": "He said “she told me ‘go home’ twice” and left. “I don’t know,” she added."

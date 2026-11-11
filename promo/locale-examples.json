@@ -1,5 +1,5 @@
 {
-  "spec": "1.21.0",
+  "spec": "1.22.0",
   "locales": {
     "bg": {
       "byRule": {
@@ -82,9 +82,9 @@
             "out": "през 2020 г. беше"
           },
           {
-            "id": "bg-nbsp-no-space-before-question",
-            "in": "Наистина ? Да !",
-            "out": "Наистина? Да!"
+            "id": "bg-nbsp-percent-closed",
+            "in": "5% и 5 %",
+            "out": "5% и 5%"
           }
         ],
         "spaces": [
@@ -592,9 +592,9 @@
             "out": "It is 20 km to the coast"
           },
           {
-            "id": "en-gb-nbsp-percent-spaced",
+            "id": "en-gb-nbsp-percent-space-deleted",
             "in": "Prices rose 5 %",
-            "out": "Prices rose 5 %"
+            "out": "Prices rose 5%"
           },
           {
             "id": "en-gb-nbsp-prose-everything",
@@ -779,14 +779,14 @@
             "out": "It is 20 km to the coast"
           },
           {
-            "id": "en-us-nbsp-percent-spaced",
-            "in": "Prices rose 5 %",
-            "out": "Prices rose 5 %"
+            "id": "en-us-nbsp-unit-inserted",
+            "in": "It is 20km to the coast",
+            "out": "It is 20 km to the coast"
           },
           {
-            "id": "en-us-nbsp-initials",
-            "in": "E. B. White wrote it",
-            "out": "E. B. White wrote it"
+            "id": "en-us-nbsp-percent-space-deleted",
+            "in": "Prices rose 5 %",
+            "out": "Prices rose 5%"
           }
         ],
         "quote-punctuation": [
@@ -1675,6 +1675,23 @@
             "in": "Ανάλυση 1920x1080, Copyright (c) 2026",
             "out": "Ανάλυση 1920×1080, Copyright © 2026"
           }
+        ],
+        "nbsp": [
+          {
+            "id": "el-nbsp-percent-closed",
+            "in": "Η τιμή ανέβηκε 10,5 % φέτος",
+            "out": "Η τιμή ανέβηκε 10,5% φέτος"
+          },
+          {
+            "id": "el-nbsp-closed-nbsp-deleted",
+            "in": "Value 5 % here",
+            "out": "Value 5% here"
+          },
+          {
+            "id": "el-nbsp-celsius-closed",
+            "in": "Θερμοκρασία 20 °C σήμερα",
+            "out": "Θερμοκρασία 20°C σήμερα"
+          }
         ]
       },
       "modes": [
@@ -1771,9 +1788,9 @@
             "out": "23 °C"
           },
           {
-            "id": "hu-nbsp-abbreviations",
-            "in": "Kr. e. 44-ben, Kr. u. 2. században, i. sz. 3. század",
-            "out": "Kr. e. 44-ben, Kr. u. 2. században, i. sz. 3. század"
+            "id": "hu-nbsp-percent-closed",
+            "in": "48 % és 48%",
+            "out": "48% és 48%"
           }
         ],
         "spaces": [
@@ -2681,6 +2698,11 @@
             "id": "sr-nbsp-celsius",
             "in": "Било је 25 °C у хладу.",
             "out": "Било је 25 °C у хладу."
+          },
+          {
+            "id": "sr-nbsp-percent-closed",
+            "in": "Остало је 50 % и 99,90 €.",
+            "out": "Остало је 50% и 99,90 €."
           }
         ],
         "spaces": [
@@ -3208,14 +3230,14 @@
             "out": "Vi gick 5 km i dag"
           },
           {
+            "id": "sv-nbsp-unit-inserted",
+            "in": "Vi gick 5km i dag",
+            "out": "Vi gick 5 km i dag"
+          },
+          {
             "id": "sv-nbsp-currency-unit",
             "in": "Det kostar 100 kr",
             "out": "Det kostar 100 kr"
-          },
-          {
-            "id": "sv-nbsp-percent",
-            "in": "Priset steg 5 %",
-            "out": "Priset steg 5 %"
           }
         ]
       },
