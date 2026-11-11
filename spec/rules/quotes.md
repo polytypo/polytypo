@@ -1161,12 +1161,14 @@ rest of this rule's determinism.
 
 ### Lemma B — space-inertness at every position `nbsp` can reach
 
-> Inserting a code point of `INLINE-SPACE`, or converting one `INLINE-SPACE` code point to
-> another, at any position `nbsp` can act on, changes no capability of any candidate.
+> Inserting a code point of `INLINE-SPACE`, deleting one, or converting one `INLINE-SPACE`
+> code point to another, at any position `nbsp` can act on, changes no capability of any
+> candidate.
 
 *Proof.* Conversion is trivial: every test reads class membership and U+0020, U+00A0, U+202F are
-all in `INLINE-SPACE`. For insertion, `nbsp` has exactly three insertion sites (`nbsp.ts`
-`claimInsertion`):
+all in `INLINE-SPACE`. For insertion, `nbsp` has exactly three insertion sites **around quote
+marks**, items 1 to 3 below (N8 on either side of a glyph, and N1/N2 before a listed mark), and
+one site that is not around a quote mark, N5's, which item 4 covers together with N5's deletion:
 
 1. **N8, immediately right of an occurrence of `g ∈ SPACE-RIGHT`.**
    - *`g` itself*: `canOpen` reads `Rskip` (skips) and `openLeft` (untouched); `canClose` reads
@@ -1187,7 +1189,14 @@ all in `INLINE-SPACE`. For insertion, `nbsp` has exactly three insertion sites (
    `m ∈ CLOSEISH`, so both are accepted — same verdict. Its `Rskip` skips back to `m`. (`nbsp`'s
    own step 3 already declines to insert after an opening glyph.)
 
-No other sub-rule inserts; N3–N7, N9, N10 only convert. ∎
+4. **N5 (`spacedUnits` insertion, `closedUnits` deletion; `nbsp.md` §3.7).** The gap lies between
+   a `DIGIT` and the first code point of a listed unit; a listed unit never begins or ends with one of the
+   locale's own quote glyphs (`scripts/validate-spec.mjs` enforces it) and never begins with a
+   straight U+0022 or U+0027 (`nbsp.md` §3.7 U2), so no
+   quote mark is adjacent to the gap and no `Lskip` / `Rskip` read from a quote mark crosses it.
+   No candidate's capability moves.
+
+No other sub-rule inserts; N3, N4, N6, N7, N9, N10 only convert. ∎
 
 **V1's `gapInsertable` clause (§3.2) is what extends this proof to V1 itself.** The four
 capability tests above are the ones Lemma B's statement covers directly, but V1 is also a test a

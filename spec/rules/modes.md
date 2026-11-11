@@ -165,7 +165,7 @@ simply a member of `BREAK` and of nothing else, so it needs no table: every rule
 | `DOTLIKE`, `STRIP-BEFORE`, `TERMINAL`                                                       | **no**                                      |
 | `STRAIGHT`, `SQ`, `DQ`                                                                      | **no**                                      |
 | `OPEN-BRACKET`, `CLOSE-BRACKET`                                                             | **no**                                      |
-| any literal matching list (`abbreviations`, `beforeUnits`, `hyphen.*`, the trademark table) | **no** — the marker never matches a literal |
+| any literal matching list (`abbreviations`, `beforeUnits`, `spacedUnits`, `closedUnits`, `hyphen.*`, the trademark table) | **no** — the marker never matches a literal |
 | `OPENISH` **and** `CLOSEISH` (`quotes`, `apostrophe`)                                       | **yes, both**                               |
 | `CLOSEISH` (`nbsp`)                                                                         | **yes**                                     |
 | `OPENISH` (`nbsp`), `OPENQUOTE` and `CLOSEDELIM` (`apostrophe`)                             | **no**                                      |
@@ -272,7 +272,7 @@ special-casing**:
 | ----------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `<em>foo </em>- bar`          | `foo ⟦- bar`     | `dashes`: the code point left of the dash is the marker, not a space, so `lsp = 0` while `rsp = 1` — the symmetry guard declines. Miss, not damage |
 | `He said <code>x</code> "hi"` | `He said ⟦ "hi"` | `spaces`: two runs of length 1 separated by the marker, not one run of 2. No collapse                                                              |
-| `5 <em>km</em>`               | `5 ⟦km`          | `nbsp` N5 requires `cp[a-1]` to be `SP` or `NBSP`; it is the marker. Declines                                                                      |
+| `5 <em>km</em>`               | `5 ⟦km`          | `nbsp` N5 needs `cp[a-1]` to be a separator or a `DIGIT` (§3.7 step 3); it is the marker, which is neither. Declines, so nothing is inserted or deleted |
 | `из<em>-под</em>`             | `из⟦-под`        | `hyphen`: no listed form matches across the marker. Declines                                                                                       |
 | `(c<em>)</em>`                | `(c⟦)`           | `symbols`: the literal `(c)` does not match. Declines                                                                                              |
 

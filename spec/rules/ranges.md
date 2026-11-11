@@ -487,4 +487,10 @@ machinery rather than range-specific stay in [dashes.md](dashes.md) §7 (its can
    the locale sets **after a space** — `20 °C`, `20 %`. That is the spaced construction, out of
    scope here; `15°-20°` and `35%-50%`, with the symbol closed up, are the other one. The two
    never meet in the algorithm either: §3.2a's walk requires a `DIGIT` immediately beside the
-   symbol, so `15 %-20 %` is not a candidate at all.
+   symbol, so `15 %-20 %` is not a candidate at all. A locale's `nbsp.spacedUnits` and
+   `nbsp.closedUnits` (spec 1.22.0) are in the same position, with one addition: `nbsp` N5 can
+   insert or delete the space itself, and so turn the spaced construction into the closed one or
+   the reverse, after `ranges` has run. They still never meet, but the reason is `nbsp.md` §3.7
+   and not the walk: its guard G-R declines both the insertion and the deletion whenever a `DASH`
+   or `INERT-DASH` is the first code point beyond the number and its unit on either side (past
+   any spaces and U+2060), which is where a range member's symbol would be read.

@@ -1,5 +1,5 @@
 {
-  "spec": "1.21.0",
+  "spec": "1.22.0",
   "locale": "cs",
   "cases": [
     {
@@ -167,6 +167,14 @@
         "quote-punctuation": true
       },
       "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for cs, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
+    },
+    {
+      "id": "cs-nbsp-percent-keeps-authors-choice",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Je to 20% nebo 14 % lidí",
+      "out": "Je to 20% nebo 14 % lidí",
+      "note": "cs has every unit in beforeUnits: `20%ní` and `14 %` are both correct, so nothing is inserted or deleted and the typed space is bound."
     }
   ]
 }

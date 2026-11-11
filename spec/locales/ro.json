@@ -37,6 +37,8 @@
     "afterShortWords": [],
     "abbreviations": [],
     "beforeUnits": ["km", "kg", "cm", "mm", "km/h", "°C"],
+    "spacedUnits": [],
+    "closedUnits": [],
     "beforeNumber": ["art.", "nr."],
     "beforeWord": [],
     "afterSymbols": [],

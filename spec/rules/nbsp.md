@@ -1,10 +1,10 @@
 # Rule: `nbsp`
 
 **Order:** 70 (last). **Default:** on. **Modes:** text, html, markdown, yaml.
-**Spec version:** 1.5.0 (0.1.0 for everything except §3.9's `initialBinding` change (0.6.0),
-§3.3's span-boundary paragraphs (1.2.0), §3.3's character-reference guard (1.3.0) and §5's `I₆`
-discharge against `apostrophe`'s `CLOSEDELIM` (1.5.0), noted inline — 1.5.0 adds no sub-rule and
-changes nothing this rule computes).
+**Spec version:** 1.22.0 (0.1.0 for everything except §3.9's `initialBinding` change (0.6.0),
+§3.3's span-boundary paragraphs (1.2.0), §3.3's character-reference guard (1.3.0), §5's `I₆`
+discharge against `apostrophe`'s `CLOSEDELIM` (1.5.0) and N5's `spacedUnits` / `closedUnits`
+insertion and deletion with guards G-U and G-R (§3.7, 1.22.0), noted inline).
 
 ---
 
@@ -30,7 +30,12 @@ that already carries the right no-break spaces.
 - `nbsp.narrowBeforePunctuation` — array of single characters that take U+202F before them
 - `nbsp.afterShortWords` — array of lowercase words
 - `nbsp.abbreviations` — array of literal multi-token abbreviations written with U+0020
-- `nbsp.beforeUnits` — array of units that bind to a preceding number
+- `nbsp.beforeUnits` — array of units that bind to a preceding number when the author typed a space
+  (conversion only)
+- `nbsp.spacedUnits` — array of units a locale writes with a space after the number (spec 1.22.0):
+  an existing space is bound, a missing one is inserted
+- `nbsp.closedUnits` — array of units a locale writes closed up to the number (spec 1.22.0): a
+  space between the number and the unit is deleted
 - `nbsp.beforeNumber` — array of abbreviations that bind to a following **number**
 - `nbsp.beforeWord` — array of abbreviations that bind to a following **word**
 - `nbsp.afterSymbols` — array of symbols that bind to a following number
@@ -430,23 +435,112 @@ For each entry `s` in `nbsp.abbreviations`, of `k` code points:
 
 Longest match wins at a given `a`, with no backtracking (§3.5).
 
-### 3.7 N5 — `beforeUnits` (U+00A0, conversion only)
+### 3.7 N5 — units (`beforeUnits`, `spacedUnits`, `closedUnits`)
 
-For each entry `u` in `nbsp.beforeUnits`, of `k` code points:
+Three lists, one sub-rule, one scan. `beforeUnits` converts, `spacedUnits` converts and inserts,
+`closedUnits` deletes. An entry is in **at most one** of the three lists, and in neither
+`spacedUnits` nor `closedUnits` if it is in `afterSymbols`; `scripts/validate-spec.mjs` enforces
+both. `fi`'s `§` stays in `beforeUnits` and `afterSymbols`, where the two are disjoint by their
+own left and right tests (§3.8).
 
-1. Find each index `a` where `cp[a … a+k-1]` matches `u` exactly (code-point equality; no
-   case leniency — `Kg` is not `kg`).
-2. **Right boundary.** `cp[a+k]` must not be in `ALNUM`. This is what stops the unit `kg`
-   from matching inside `kgf`, and `m` from matching inside `metres`.
-3. **Left side.** `cp[a-1]` must be `SP` or `NBSP`; nothing else qualifies. If it is `NBSP`,
-   emit nothing. **If there is no space at all, this sub-rule does nothing** — see §7.2, it
-   never inserts.
-4. `cp[a-2]` must be in `DIGIT`. Let `Lrun` be the maximal `DIGIT` run ending at `a-2`,
-   starting at index `b`. `cp[b-1]` must not be in `LETTER` (so `H2 O` does not bind).
-5. Emit an edit replacing `cp[a-1]` with U+00A0.
+For each index `a` where an entry `u` of `k` code points from any of the three lists matches
+`cp[a … a+k-1]` exactly (code-point equality; no case leniency — `Kg` is not `kg`):
 
-Longest match wins at a given `a`, with no backtracking (§3.5), so a locale listing both `m`
-and `mm` binds `5 mm` correctly and does not fall back to `m` when the `mm` match is rejected.
+1. **Longest match wins at `a`, across all three lists, with no backtracking** (§3.5). A locale
+   listing `km` in one list and `km/h` in another binds `5 km/h` as the longer entry and never
+   falls back to `km` when the longer match is rejected.
+2. **Right boundary.** `cp[a+k]` must not be in `ALNUM`. This is what stops the unit `kg` from
+   matching inside `kgf`, and `m` from matching inside `metres`.
+3. **The separator and the number.** Exactly one of two shapes must hold, otherwise the
+   sub-rule does nothing:
+   - **Spaced:** `cp[a-1]` is `SP` or `NBSP` (for `closedUnits` also `NNBSP`), `cp[a-2]` is in
+     `DIGIT`, and with `Lrun` the maximal `DIGIT` run ending at `a-2` and starting at `b`,
+     `cp[b-1]` is not in `LETTER` (so `H2 O` does not bind).
+   - **Touching:** `cp[a-1]` is in `DIGIT`, and with `Lrun` the maximal `DIGIT` run ending at
+     `a-1` and starting at `b`, `cp[b-1]` is not in `LETTER`.
+4. **Action**, by the list the matched entry belongs to:
+
+   | List            | Spaced                                  | Touching       |
+   | --------------- | --------------------------------------- | -------------- |
+   | `beforeUnits`   | `SP` → U+00A0; `NBSP` already correct   | nothing        |
+   | `spacedUnits`   | `SP` → U+00A0; `NBSP` already correct\* | insert U+00A0 before the unit |
+   | `closedUnits`   | delete the separator                    | already correct |
+
+   \* `NNBSP` in `cp[a-1]` is not converted and not deleted by `spacedUnits`: an authored U+202F
+   is the right kind of space and the rule leaves it.
+
+5. **Guards for insertion and deletion (G-U).** Converting an existing space (`beforeUnits`,
+   and `spacedUnits` when a space is already there) follows steps 1-3 and nothing below applies
+   to it. Inserting for `spacedUnits` and deleting for `closedUnits` happen only if all of these
+   hold, otherwise the sub-rule does nothing for this match:
+   1. **Number start.** From `b`, while `cp[b-1]` is U+002C or U+002E and `cp[b-2]` is in
+      `DIGIT`, move `b` to the start of the `DIGIT` run ending at `b-2` (a decimal or thousands
+      separator belongs to the number). Then `cp[b-1]` must be `NONE`, in `SPACELIKE`, in
+      `OPENISH`, in `SENTENCE-DASH`, or one of U+002B, U+00B1, U+00D7, U+2212, U+007E,
+      U+2248, U+003C, U+003E, U+2060 (the joiner `ranges` writes beside a dash); or U+002D when `cp[b-2]` is `NONE`, `SPACELIKE` or `OPENISH` (a sign, not a hyphen
+      joining `file-5kg`). This is what keeps `v2-5kg.png`, `/5km`, `?q=5kg`, `x_5kg` and `A4 km`
+      out of the rule, and it refuses at a span boundary marker (§3.1: the marker is in
+      `CLOSEISH`, not in the list above).
+   2. **Right context.** `cp[a+k]` is not U+002D, U+2011 or U+005F; and not U+002E followed by a
+      member of `ALNUM`. A hyphen after the unit marks a compound (`0,5‰-Grenze`, `15cm-norm`,
+      `5-%-Klausel`) in which the author's spacing is the norm, and `5kg.png` is a file name.
+   3. **Dash adjacency (G-R), for a unit whose first code point is in `CLOSED-SYMBOL`**
+      (`ranges.md` §3.2a: `%`, `‰`, `°`, `$` and the other currency signs). Let `b` be the number
+      start of step 5.1 and `e = a+k`. Skip a single run, in any mixture, of `SPACELIKE` code points that are not in `BREAK` and of
+      U+2060 (the walk stops at a span boundary marker, which is in `BREAK`), leftwards from `b-1` and rightwards from `e`; if the first code point reached on
+      either side is in `DASH` ∪ `INERT-DASH` (`dashes.md` §3.1), do nothing. Whether a symbol is
+      closed up to its number is what `ranges` and `dashes` read to decide that `15% - 20%` is a
+      range; inserting or deleting the space after both rules have run would hand the next pass a
+      different verdict (`15 % - 20 %` → `15%—20%`, which the next pass makes `15%⁠–⁠20%`). A
+      unit that is not a closed-up symbol is not read that way and is not subject to this guard.
+   4. **Modulo guard (`closedUnits` only).** `cp[a+k]` is not the single code point U+0020
+      followed by a member of `DIGIT`: `10 % 3` is an operation, and deleting the space would
+      change it. Only U+0020 counts (not U+00A0 or U+202F), which is the reading §5 proves against: no
+      other sub-rule converts the space after a `closedUnits` entry (U4 below), so a U+0020 read here
+      on the first run is still a U+0020 on the second.
+   5. **Multiplication guard (`spacedUnits` insertion only).** Let `b` be the number start of
+      step 5.1. Read leftwards from `b-1`: at most one code point of `SPACE` ∪ `NOBREAK-SPACE`,
+      then one `MUL-LETTER` (`symbols.md` §3.1), then at most one code point of `SPACE` ∪
+      `NOBREAK-SPACE`, then a code point in `DIGIT`. If the whole shape is present, do nothing:
+      the number is the right operand of a multiplication chain, and `symbols` declines to
+      convert that chain while a letter follows it (guard M3). Inserting U+00A0 would end the
+      chain with a non-letter and hand the next pass a chain it now converts (`2 x 3kg` →
+      `2 x 3⍽kg` → `2 × 3⍽kg`). A `closedUnits` entry never begins with a letter (U3 below), so deletion
+      cannot move M3's verdict and is not subject to this guard; nor can the insertion form a
+      chain link of its own, because no `spacedUnits` entry begins with a `MUL-LETTER` (U2).
+6. Emit the edit of step 4: a replacement of `cp[a-1]` with U+00A0, the deletion of `cp[a-1]`
+   (an edit with an empty replacement), or an insertion of U+00A0 at index `a`.
+
+**Why the three lists differ in what they may do.** A locale file attests *membership* — which
+tokens are units and how the locale's sources write them (§2.1). It cannot say how a source's
+silence should be read, so it does not get to: a unit whose sources leave the spacing to the
+author, or make it depend on grammar (Czech writes `14 %` for a noun and `20%ní` for an
+adjective), stays in `beforeUnits` and the engine keeps the author's choice. Insertion and
+deletion are a content change, so each is allowed only for a unit with a national source that
+states the form, and a locale that is listed in `closedUnits` or `spacedUnits` is making that
+claim in its `sources`. Where the sources permit both forms the locale chooses `closedUnits`, so
+that one author's text looks the same throughout (operator decision, 2026-11-11).
+
+Bare `°` is in no list in any locale: written closed for an angle or a latitude, and with an
+unnamed scale ambiguous. Only `°C` and `°F` are units. Single-letter symbols (`m`, `g`, `s`, `h`)
+are listed in no `spacedUnits` or `closedUnits` for the same reason as before: they cannot be told
+from ordinary text (`1970s`, `£2m`, `18h30`).
+
+**Data properties the argument of §5 relies on.** They are properties of the entries, not of the
+algorithm, and §5 is only as good as they are. `scripts/validate-spec.mjs` enforces U1-U4.
+
+- **U1** No entry of the three lists begins or ends with a quotation glyph the locale declares.
+- **U2** No entry of the three lists begins with a member of `SPACELIKE`, `CLOSEISH`
+  (`beforePunctuation` and `narrowBeforePunctuation` are subsets of it, `quotes.md` §2.1 Q-P) or
+  `DASH` ∪ `INERT-DASH` (`dashes.md` §3.1), or with U+0022, U+0027, U+002C, U+002E, U+002F or
+  U+2026, or contains U+002D or U+2011. No `spacedUnits` entry begins with a `MUL-LETTER`
+  (`symbols.md` §3.1).
+- **U3** No `closedUnits` entry begins with a `LETTER` or contains U+002E.
+- **U4** No entry of `afterShortWords`, `abbreviations`, `beforeNumber`, `beforeWord` or
+  `afterSymbols` ends with a `DIGIT` or with the last code point of a `closedUnits` entry, and no
+  `abbreviations` entry has a `DIGIT` immediately before an internal space. So no sub-rule other
+  than N5 can claim the separator between a number and a `closedUnits` entry, or convert the space
+  after one.
 
 ### 3.8 N6 — `afterSymbols` (U+00A0, conversion only)
 
@@ -614,7 +708,7 @@ For each entry `s` in `nbsp.beforeNumber`, of `k` code points:
    a number after `Nr.`).
 5. Emit an edit replacing `cp[a+k]` with U+00A0.
 
-**Never inserts.** `Nr.5` stays `Nr.5`, for the same reason N5 never inserts: adding a space
+**Never inserts.** `Nr.5` stays `Nr.5`, for the same reason N6 never inserts: adding a space
 is a content change, not a typographic one.
 
 **N9 has no equivalent of N10's guard G-D**, so a one-letter abbreviation such as `S.` binds
@@ -697,10 +791,22 @@ a changed character. This is recorded as §7.9 and must be reviewed at the M4 ga
 
 ### 3.13 Insertions and indices
 
-Sub-rules N1, N2 and N8 can _insert_ a code point. Because rules produce edits and the
+Sub-rules N1, N2, N5 (through `spacedUnits`) and N8 can _insert_ a code point, and N5 (through `closedUnits`) can _delete_ one. Because rules produce edits and the
 pipeline applies them (ARCHITECTURE.md §7.1), every index above refers to the **input**
 array. An insertion is an edit with an empty replaced span at a given index. Two insertions
 at the same index cannot occur: the first-claim-wins rule of §3.2 forbids it.
+
+The claim key of an insertion is the index it is inserted at (the index of the code point it
+goes before); the key of a conversion or a deletion is the index of the code point it replaces.
+Both kinds of key share one index space, so an insertion at `a` and a conversion of `cp[a]` are
+the **same** key and the first claim wins. For N5's touching insertion at `a`, `cp[a]` is the
+first code point of a listed unit, and neither rival can arise: a conversion or deletion of
+`cp[a]` needs `cp[a]` to be a space, an N1/N2 insertion at `a` needs it to be in
+`beforePunctuation` ∪ `narrowBeforePunctuation` (a subset of `CLOSEISH`), and an N8 insertion
+needs a quotation glyph beside it; U1 and U2 exclude all three. N5's conversion or deletion of
+the separator `cp[a-1]` is keyed `a-1`, which another sub-rule can claim only for a
+`beforeUnits` or `spacedUnits` entry (N1-N4 and N6-N10 convert, and first claim wins as for any
+index); for a `closedUnits` entry U4 and U2 leave N5 the only claimant.
 
 ---
 
@@ -721,9 +827,12 @@ of being falsified by another rule, which is then named.
 - **[P] `http://`, `12:30`, `1:2`** in a locale that lists U+003A in `beforePunctuation`. N1
   guard 2.
 - **[P] The second and later marks of `?!`, `!!!`, `?..`** — N1/N2 guard 1.
-- **[P] A unit with no space before it.** `5km` and `5%` stay exactly as typed; N5 converts, never
-  inserts (§7.2).
-- **[P] A number written as `H2O`, `A4`, `MP3`.** N5 step 4's letter guard.
+- **[P] A unit in `beforeUnits` with no space before it, and a unit in no list.** `5km` stays
+  exactly as typed when `km` is in `beforeUnits` or in no list; N5 inserts only for `spacedUnits`
+  and deletes only for `closedUnits` (§3.7 step 4).
+- **[P] A unit inside a compound, a file name or an identifier.** `0,5‰-Grenze`, `15cm-norm`,
+  `5kg.png`, `/5km`, `x_5kg` and `10 % 3` are left as typed by N5's guards G-U (§3.7 step 5).
+- **[P] A number written as `H2O`, `A4`, `MP3`.** N5 step 3's letter guard.
 - **[P] An existing U+00A0 or U+202F that is already the right character.** Every sub-rule's
   "already correct" branch emits nothing, so a correctly-typeset document round-trips
   byte-identically. This is the property PLAN.md §3.4 exists for.
@@ -747,7 +856,7 @@ target of each sub-rule is exactly the state that branch recognises:
 | N2       | `NARROW-TARGET` immediately left of the mark          | §3.4                                       |
 | N3       | `NBSP` after the short word                           | §3.5 step 3                                |
 | N4       | `NBSP` at every internal position of the abbreviation | §3.6 step 1 (space-lenient match) + step 3 |
-| N5       | `NBSP` before the unit                                | §3.7 step 3                                |
+| N5       | `NBSP` before the unit (`beforeUnits`, `spacedUnits`); no separator (`closedUnits`) | §3.7 step 4 |
 | N6       | `NBSP` after the symbol                               | §3.8 step 3                                |
 | N7       | `NBSP` at the bound space                             | §3.9                                       |
 | N8       | `target` beside the quote glyph                       | §3.10                                      |
@@ -770,12 +879,21 @@ Guards test three kinds of thing:
    ownership of the index beside a quotation glyph by position, whatever character either
    sub-rule would have written there.
 1. **Membership in `SPACELIKE`.** Every conversion `SP → NBSP`, `SP → NNBSP`,
-   `NNBSP → NBSP`, `NBSP → NNBSP` stays inside `SPACELIKE` (§3.1). Every insertion adds a
-   `NOBREAK`, which is in `SPACELIKE`. So every boundary test that passed on run 1 passes on
-   run 2, and every one that failed still fails — **provided** boundary tests never use `SP`
-   specifically. They do not: §3.1 states this and every guard above is written against
+   `NNBSP → NBSP`, `NBSP → NNBSP` stays inside `SPACELIKE` (§3.1). Every insertion (N1, N2, N5
+   through `spacedUnits`, N8) adds a `NOBREAK`, which is in `SPACELIKE`. So every boundary test
+   that passed on run 1 passes on run 2, and every one that failed still fails — **provided**
+   boundary tests do not tell `SP` from `NOBREAK`. Every guard above is written against
    `SPACELIKE`, `ALNUM`, `UPPER`, `DIGIT`, `OPENISH`, `CLOSEISH`, `BREAK` or `NONE`, none of
-   which gains or loses a member under a `SP`/`NOBREAK` conversion.
+   which gains or loses a member under a `SP`/`NOBREAK` conversion, with **two deliberate
+   exceptions**, each of which tests `SP` specifically: the choice between "convert" and "emit
+   nothing" in every sub-rule (an `NBSP` is already correct), and N5 step 5.4 (the space after a
+   closed unit must be U+0020). The first is the sub-rule's own post-state and is covered by the
+   table above. The second holds because no other sub-rule converts the space after a
+   `closedUnits` entry (U4) and N5 never edits it (the code point before it is the last code point
+   of a unit, and a separator needs a `DIGIT` before it and a unit after it), so a U+0020 read
+   there stays U+0020.
+   **N5's deletion is the one edit that removes a `SPACELIKE` member**, and it is argued in the
+   third length-changing case below.
 2. **Membership in `ALNUM`, `DIGIT`, `UPPER`, `LETTER`, `OPENISH`, `CLOSEISH`.** No sub-rule
    ever edits a code point in any of these classes; every edit replaces or inserts a space
    character. Unchanged.
@@ -787,7 +905,7 @@ Guards test three kinds of thing:
    very index they claimed on the first run. The _side conditions_ that read the adjacent space accept both `SP` and `NBSP`
    and distinguish them only to decide "convert" versus "emit nothing".
 
-Two specific insertion cases need checking because they change lengths:
+Four specific cases need checking because they change lengths:
 
 - **N1/N2 insertion.** Run 1 turns `mot!` into `mot` `NNBSP` `!`. On run 2, `left` of the `!`
   is `NNBSP` → "already correct" → no edit. Note the insertion did **not** create a new
@@ -799,6 +917,34 @@ Two specific insertion cases need checking because they change lengths:
   positions hit the "already `target`" branch. Additionally the inserted `NNBSP` becomes the
   `left` neighbour of nothing punctuation-like, and the `right` neighbour of `«`, which is not
   a candidate for any other sub-rule.
+- **N5 insertion (`spacedUnits`).** Run 1 turns `5km` into `5` `NBSP` `km`. On run 2 the match is
+  the same entry at the same index (longest match, right boundary and number start read only
+  `ALNUM`, `DIGIT` and `LETTER`, which the insertion does not change), `cp[a-1]` is `NBSP`, and
+  the table's action is "already correct" → no edit. The insertion creates no candidate for a
+  lower sub-rule: it sits between a `DIGIT` and a unit's first code point, which is not a mark
+  (U2, so not N1/N2), not a quotation glyph (U1, so not N8), and ends no short word,
+  abbreviation or symbol a sub-rule matches (U4); N7 needs a U+002E (C1) or a `LETTER` (C2)
+  before the space, not a `DIGIT`.
+- **N5 deletion (`closedUnits`).** Run 1 turns `5 %` into `5%`. On run 2 the shape is touching,
+  and for a `closedUnits` entry the touching action is "already correct" → no edit; the match is
+  the same entry (the digit run and everything right of the gap are unchanged). A separator that
+  run 1 **declined** to delete must still be declined: the guards of step 5 read (5.1) the code
+  point before the number and its class, (5.2) the code point after the unit, (5.3) the first
+  code point beyond a run of `SPACELIKE` and U+2060 on each side, (5.4) U+0020 and a `DIGIT` after
+  the unit. The only edits of run 1 that can sit at those positions are conversions inside
+  `SPACELIKE` (a skipped run stays a skipped run), N8's insertion of a `NOBREAK` right of an
+  opening glyph (`OPENISH` and `SPACELIKE` are both accepted by 5.1, and 5.3 skips it), and N1/N2/
+  N8 insertions before a closing mark or glyph (5.2 and 5.3 accept a closing mark and a `NOBREAK`
+  alike); 5.4 is argued in class 1 above. No guard flips, so the same separator is declined again,
+  and the sub-rules after N5 see the same `SP` or `NOBREAK` they saw on run 1 and decide as
+  before. The same holds for an insertion that run 1
+  declined: 5.5 reads only `SPACE` ∪ `NOBREAK-SPACE`, a `MUL-LETTER` and a `DIGIT`, accepts a
+  space of either kind, and no run-1 edit changes a `MUL-LETTER` or a `DIGIT`. N5's deletion removes a `SPACELIKE` code point, so a test that read across the gap now
+  reads its neighbours: the digit on the left and the unit's first code point on the right, which
+  U2 and U3 make a non-space, non-letter, non-mark, non-dash code point. A sub-rule could anchor
+  at that separator only as N1/N2 (a mark at `cp[a]`, excluded by U2), as N3, N4, N6, N9 or N10 (a
+  match ending at the `DIGIT`, excluded by U4) or as N7 (excluded as above); N5's own test is
+  the one argued here.
 
 Finally, the **first-claim-wins** ordering of §3.2 is deterministic and depends only on the
 sub-rule index, not on the array contents, so the same sub-rule wins on both runs.
@@ -818,11 +964,13 @@ and a rule that oscillates:
    abbreviation is invisible to sub-rule ordering on run 2 and a lower-priority sub-rule
    (N3, say, on the word `z`) can claim the same index with a different verdict. Making the
    match space-lenient keeps N4 in control of its own indices forever.
-3. **N5 and N6 had to be conversion-only.** The naive version inserts a space before a unit,
-   turning `5km` into `5 km` — a content change, not a typographic one — and, worse, in a
-   locale listing `%` it turns `50%` into `50 %`, which is wrong in English and right in
-   French, i.e. it is a locale decision that `beforeUnits` alone cannot express. Restricting
-   to conversion makes the rule safe and shifts the question to §7.2 where it belongs.
+3. **N5 and N6 had to be conversion-only, until a locale could say which form it wants.** The
+   naive version inserts a space before a unit, turning `5km` into `5 km` — a content change, not
+   a typographic one — and, worse, in a locale listing `%` it turns `50%` into `50 %`, which is
+   wrong in English and right in French. One list cannot express that, so N5 was restricted to
+   conversion. Spec 1.22.0 adds the two lists that can (`spacedUnits`, `closedUnits`), and N5
+   inserts or deletes only for an entry a locale has put there; `beforeUnits` and N6 stay
+   conversion-only.
 4. **The conflict policy had to be total and index-based.** "Whichever sub-rule runs first in
    the loop" is not a specification; it is a Go map iteration bug waiting to happen (§3.2).
 
@@ -836,19 +984,31 @@ the rule with the largest emission surface in the pipeline. It is also the rule 
 defect family 2.
 
 **What this rule emits.** U+00A0 and U+202F only, either replacing a single space-like code
-point in place or **inserted** at one of three kinds of site: before a listed punctuation
-character (N1, N2), after an opening quote glyph, and before a closing quote glyph (N8). It
-never emits U+0020, never emits a letter, digit, dot, dash or quotation mark, and never deletes
-anything.
+point in place or **inserted** at one of four kinds of site: before a listed punctuation
+character (N1, N2), after an opening quote glyph, and before a closing quote glyph (N8), and
+between a `DIGIT` and a `spacedUnits` entry (N5). It never emits U+0020, and never emits a letter,
+digit, dot, dash or quotation mark. Its one removal is N5's deletion, for a `closedUnits` entry,
+of the single separator (U+0020, U+00A0 or U+202F) between a `DIGIT` and the entry; nothing else
+is ever deleted. Each obligation below therefore covers what is written (`E(nbsp)`) and, for the
+deletion, what is no longer there. Every argument rests on the entry properties U1-U4 of §3.7.
 
 **Against `I₁` (`spaces`).** Discharged, and this is why the rule never emits U+0020: U+00A0
 and U+202F are `CONTENT` to `spaces`, which touches only U+0020. Converting a U+0020 to a
 no-break space can only _remove_ a potential `spaces` edit, never create one. An insertion adds
 a `CONTENT` code point, which cannot lengthen a U+0020 run or place a U+0020 in a stripping
-position.
+position. N5's deletion removes a run of exactly one separator whose neighbours are a `DIGIT` and,
+by U2, a code point outside `SPACELIKE`; so no other U+0020 run is adjacent to it, none is
+lengthened, shortened or merged, and no U+0020 acquires a new left or right neighbour (S-a to S-d
+read only the immediate neighbours of a run). The one longer read, the emoticon guard's walk
+(`spaces.md` §3.6), steps only over `:` `;` `-` `^` and the mouth glyphs; the gap has a `DIGIT`
+on its left, which is in none of those sets, so a walk that stopped at the separator now stops at
+the digit.
 
 **Against `I₂` (`ellipsis`).** Discharged: no `DOTLIKE` code point is emitted, and insertions
-only push code points apart, never together.
+only push code points apart, never together. N5's deletion does close a gap, between a `DIGIT`
+and the unit's first code point, and the closure is harmless because neither side can be
+`DOTLIKE`: the left is a `DIGIT`, and the right is not U+002E or U+2026 (U2). No dot run is
+joined, and no dot run acquires a new neighbour that is part of another one.
 
 **Against `I₃` (`dashes`).** **This is the obligation the rule failed, twice**, and it is now
 discharged structurally rather than by argument.
@@ -868,6 +1028,17 @@ of this rule can create a dash token, change one's spacing verdict, or revive on
 declined. That is condition **CO-S** of `pipeline-idempotency.md` §5.1a, and it holds for every
 input rather than for the witnesses anyone happened to test.
 
+N5's deletion is the one operation of this rule that `E(nbsp)` does not describe, since it writes
+nothing. It cannot touch a dash token's own spacing: the deleted separator has a `DIGIT` on its
+left and a code point outside `DASH` ∪ `INERT-DASH` on its right (U2), so no dash run is adjacent
+to it. What a verdict can read across it is `ranges`' `after` and T1's first and second
+effective neighbour past a digit run, and the walk over a `CLOSED-SYMBOL`; those are covered, for
+a unit that begins with a `CLOSED-SYMBOL`, by guard G-R of §3.7 step 5 (the insertion and the
+deletion are both declined next to a dash), and, for every other unit, by the fact that those
+reads test for a dash, U+002E, U+002C or U+002F and the unit's first code point is none of them
+(U2). Under `"em-paired"` the separator is not a terminal and is not adjacent to one, so no
+segment boundary moves (`dashes.md` §3.4a). See `pipeline-idempotency.md` §3, `I₂ₐ`.
+
 The Russian direction — N1/N2 promoting the U+0020 before an em dash to U+00A0 — is covered by
 the same statement: `dashes` declines the promoted token at its symmetry guard and emits
 nothing, so the output `Москва⍽— столица` is stable.
@@ -882,11 +1053,24 @@ second place, which is how the two rules drifted apart in the first place.
 listed hyphen form's boundary guards ask whether the neighbouring code point is in `WORDISH`.
 An insertion beside such a form would change that neighbour from whatever it was to a no-break
 space, which is not `WORDISH` — so the guard could go from _reject_ to _accept_ and a form
-could start matching that did not before. That would be an `I₄` violation. It is unreachable
-because every insertion site puts the new space next to a listed punctuation character or a
-quote glyph, never between two letters, and a form whose neighbour is punctuation or a quote
-glyph was already accepted. If a future sub-rule inserts between two letters, this obligation
-must be re-derived.
+could start matching that did not before. That would be an `I₄` violation. For N1, N2 and N8 it
+is unreachable because every insertion site puts the new space next to a listed punctuation
+character or a quote glyph, and a form whose neighbour is punctuation or a quote glyph was
+already accepted.
+
+N5's insertion is the case that does not fit that argument: it puts a no-break space between a
+`DIGIT`, which is in `WORDISH`, and the first code point of a unit, which is usually a letter
+(`5km`). A form that begins at that letter (a prefix or a compound; a suffix begins with a hyphen,
+which U2 forbids as a unit's first code point; a form consists of letters and hyphens) was rejected on its left neighbour and would be
+accepted after the insertion. It cannot be, because N5 inserts only if the unit is matched at the
+same index and `cp[a+k]` is not in `ALNUM`. The form is made of letters and hyphens,
+and the unit contains no hyphen (U2), so the unit either ends inside the form's first word
+(`cp[a+k]` is then `ALNUM`, step 2 fails), or ends exactly at the form's first hyphen (`cp[a+k]`
+is then U+002D, which step 5.2 declines), or extends past it, which would put a hyphen inside the
+unit. N5's deletion cannot reach a form either: the code point it exposes on the right is not a
+`LETTER` (U3) and a form begins with one. If a future sub-rule inserts between two letters, or a
+future unit may contain a hyphen or begin with a letter after deletion, this obligation must be
+re-derived.
 
 **Against `I₅`, `I₆`, `I₇` (`quotes`, `apostrophe`, `symbols`).** Discharged by case analysis
 over the neighbour tests; the `quotes` half is the one that matters and is written out in
@@ -908,8 +1092,24 @@ so the `»` that case 2a reads stays immediately left of the mark and the verdic
 before and after. Pinned as a conformance fixture rather than left as prose. If a future
 sub-rule inserts between a closing delimiter and a following mark, this paragraph must be
 re-derived.
+
+N5's insertion and deletion are no new case for `quotes` or `apostrophe`: neither side of the gap
+is a quote mark or an apostrophe candidate (a `DIGIT`; and by U1 and U2 not a quotation glyph, not
+U+0022 and not U+0027), and every read those rules make starts at such a mark and crosses
+`INLINE-SPACE` outward from it, so none reaches the gap (`quotes.md` §5.6, Lemma B item 4).
 `symbols` reads `ALNUM`, `DIGIT` and symmetric spacing; a no-break space is already accepted as
 spacing there (`symbols.md` §3.3 step 1), and converting U+0020 to U+00A0 leaves `lsp`/`rsp` unchanged.
+The chain scan of `symbols.md` §3.3 is the one place N5 can matter, and it matters in one
+direction for each edit. A chain is `DIGIT+ (X DIGIT+)+`, declined by guard M3 when a `LETTER`
+follows its last digit run. Insertion can lift that verdict: `2 x 3kg` is declined (`k` follows), and
+`2 x 3⍽kg` would be converted on the next pass (a no-break space follows); this is the reason for
+guard 5.5 of §3.7, which declines the insertion whenever the number is the right operand of a link
+shape, symmetric or not (declining an insertion costs only a miss, so the guard does not repeat
+M1). No other chain shape is affected: the inserted space follows the last digit run, so it never
+lies inside a link, and U2 keeps a `spacedUnits` entry from beginning a link of its own. Deletion
+cannot lift it: the code point that follows the digit run changes from a separator to the unit's
+first code point, and neither is a `LETTER` (U3), so M3's verdict, and with it every chain
+verdict, is the same on both runs.
 
 ---
 
@@ -961,15 +1161,15 @@ about the engine **and** about a file in `spec/locales/`, and both halves have t
 | 13h | `—␣в␣Москве`            | `—␣в⍽Москве`            | `SENTENCE-DASH` still opens a phrase, so a genuine preposition after an em dash binds normally                                                                                                                              |
 | 13i | `в␣<em>Москве</em>` (`html`) | ⟶                  | **spec 1.2.0.** N3's following-token guard asks for `ALNUM` or `OPENISH`, and for this rule the span boundary marker is in neither (§3.1). The space stays U+0020. Whether it should bind is §7 item 12                   |
 
-### `de-DE` — `abbreviations: ["z. B.","d. h."]`, `beforeUnits: ["%","km","°C"]`
+### `de-DE` — `abbreviations: ["z. B.","d. h."]`, `spacedUnits: ["%","km","°C"]` (among others)
 
 | #   | Input                   | Output                  | Why                                                                                                                                                                                                                                      |
 | --- | ----------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 14  | `z.␣B.␣Berlin`          | `z.⍽B.␣Berlin`          | N4 binds the space inside the abbreviation. The space after `B.` is **not** bound: guard C1-a sees that the `B.` is preceded by the lower-case `z.` and declines. Previously produced `z.⍽B.⍽Berlin`, a false positive on ordinary prose |
 | 15  | `z.⍽B. Berlin`          | ⟶                       | N4 space-lenient match, already correct                                                                                                                                                                                                  |
 | 16  | `Es sind 20␣km bis 5␣%` | `Es sind 20⍽km bis 5⍽%` | N5 twice                                                                                                                                                                                                                                 |
-| 17  | `Es sind 20km`          | ⟶                       | N5 never inserts (§7.2)                                                                                                                                                                                                                  |
-| 18  | `H2␣O ist kein Wert`    | ⟶                       | N5 step 4: `2` is preceded by the letter `H`                                                                                                                                                                                             |
+| 17  | `Es sind 20km`          | `Es sind 20⍽km`         | N5 inserts for `spacedUnits` (de-DE lists `km` there)                                                                                                                                                                                                                  |
+| 18  | `H2␣O ist kein Wert`    | ⟶                       | N5 step 3: `2` is preceded by the letter `H`                                                                                                                                                                                             |
 | 19  | `siehe Nr.␣5 und S.␣12` | `siehe Nr.⍽5 und S.⍽12` | N9 twice                                                                                                                                                                                                                                 |
 | 20  | `siehe nr.␣5`           | ⟶                       | N9 matches exactly; `nr.` is not `Nr.`                                                                                                                                                                                                   |
 | 21  | `Bonjour&#160;:␣oui` (`fr`) | ⟶ | **spec 1.3.0.** N2's character-reference guard: the `;` closes `&#160;`, so no U+202F is inserted and the reference survives. Before 1.3.0 this produced `Bonjour&#160·:␣oui` |
@@ -997,28 +1197,27 @@ Every row `fr`, and every row measured. `⍽` = U+00A0, `⍹` = U+202F.
 | 24  | `«⍽?`                   | ⟶                       | the fixed point of case 23                                                                                                                                                                       |
 | 25  | `mot␣?`                 | `mot⍹?`                 | the ordinary case: the code point before the space is a letter, so N2 applies normally                                                                                                           |
 
-### `el` — every list empty, `initialBinding: "none"`, `quotes.innerSpace: "none"`
+### `el` — `closedUnits: ["%","°C"]`, `initialBinding: "none"`, `quotes.innerSpace: "none"`
 
-The first locale for which this rule is a **total no-op**, in the same provable sense `hyphen` is
-a no-op for a locale with empty lists. It is worth a block of its own because the claim needs
-_both_ halves of `order.json`'s `"localeData": ["nbsp", "quotes"]` to hold, and only one of them
-is visible in the `nbsp` object: the eight lists being empty disables N1–N7 and N9–N10, and
-**`quotes.innerSpace: "none"` is what additionally disables N8**. A locale with empty lists but a
-non-`none` `innerSpace` would still edit — `fr` case 23 is exactly that shape — so "all lists
-empty" alone does not license the claim.
-
-Greek is also the case that shows why N1/N2 being empty is a positive finding rather than an
-unfilled field. The Greek source denies the French space-before-punctuation pattern **by name**
-(«πράγμα που συμβαίνει, π.χ., στα γαλλικά»), so `spaces` strips the space at order 10 and nothing
-here puts one back. That is a cited decision, not a default.
+Greek is the locale where this rule does almost nothing, and the one that shows why an empty list
+is a positive finding rather than an unfilled field. The Greek source denies the French
+space-before-punctuation pattern **by name** («πράγμα που συμβαίνει, π.χ., στα γαλλικά»), so
+`spaces` strips the space at order 10 and nothing here puts one back. That is a cited decision,
+not a default. The only list that is not empty is `closedUnits`: the inter-institutional guide
+permits both forms for a percentage and a temperature, the sources examined set them tight
+(`kathimerini.gr`, `tovima.gr` and eleven other sites: 140 of 140 `%` and 41 of 41 `°C` closed),
+and a locale that is offered both chooses the closed one (§3.7). N8 stays disabled by
+`quotes.innerSpace: "none"`; a locale with empty lists but a non-`none` `innerSpace` would still
+edit — `fr` case 23 is exactly that shape.
 
 | #   | Input          | Output | Why                                                                                                                                                     |
 | --- | -------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 26  | `Τι κάνεις;`   | ⟶      | `beforePunctuation` and `narrowBeforePunctuation` are empty, so N1/N2 have no member to match. Contrast `fr` case 25, where the same shape gains U+202F |
-| 27  | `10,5␣%␣φέτος` | ⟶      | `beforeUnits` is empty, so N5 is inert and the ordinary space survives as U+0020                                                                        |
+| 27  | `10,5␣%␣φέτος` | `10,5%␣φέτος` | `%` is in `closedUnits`: N5 deletes the space between the number and the sign. The space after the sign is not N5's and stays |
+| 27a | `10,5%␣φέτος` | ⟶      | already closed                                                                                                                                          |
 | 28  | `«καλημέρα»`   | ⟶      | `innerSpace: "none"`, so N8 inserts nothing. This is the half of the no-op claim that lives in the `quotes` object rather than the `nbsp` one           |
 
-Cases 2, 6b, 8, 13, 13c, 13d, 13e, 13i, 15, 17, 18, 20, 22, 24, 26, 27 and 28 are "no change"
+Cases 2, 6b, 8, 13, 13c, 13d, 13e, 13i, 15, 18, 20, 22, 24, 26, 27a and 28 are "no change"
 cases. (Case 4 left that list in spec 1.3.0, when the row was corrected from a fixed point to a
 conversion; the §3.1a rows are numbered 31-34 and are outside it.)
 
@@ -1030,12 +1229,10 @@ conversion; the §3.1a rows are numbered 31-34 and are outside it.)
    disjoint**, nor that a character appears in only one of `beforeUnits` / `afterSymbols`.
    §2 requires an implementation to fail loudly; a `$defs`-level constraint or a CI check
    would be better. Reported.
-2. **N5/N6 never insert a space.** `5km` stays `5km` and `50%` stays `50%`. For German,
-   Duden requires a space before `%` and before a unit, so `50%` is arguably _wrong_ input
-   that polytypo declines to fix. Inserting is a content change and the schema has no flag to
-   authorise it per locale (something like `"insertBeforeUnits": true`). Needs an operator
-   decision; I chose the conservative branch because of the zero-false-positive ship
-   criterion.
+2. **N6 never inserts a space** (`§ 7` is bound, `§7` is not). N5 inserts and deletes since spec
+   1.22.0, per list (§3.7). Open: the units whose only support is BIPM or a paywalled standard
+   (`it`, `es`, `ro`, `uk`, `pt-BR` `%`) sit in `beforeUnits`; moving one to `spacedUnits` or
+   `closedUnits` needs a national source.
 3. **`afterShortWords` matching is "case-insensitive only for the first character"** per the
    schema description, which I have implemented as the Unicode **simple** uppercase mapping.
    That is a data table, not a locale operation, so it satisfies §4.4. **The spec pins a Unicode version —

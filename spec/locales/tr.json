@@ -36,7 +36,9 @@
     "narrowBeforePunctuation": [],
     "afterShortWords": [],
     "abbreviations": ["Kur. Bşk.", "Nö. Sb."],
-    "beforeUnits": ["mm", "cm", "km", "kg", "mg", "hl", "m²", "cm²", "°C", "ton"],
+    "beforeUnits": [],
+    "spacedUnits": ["mm", "cm", "km", "kg", "mg", "hl", "m²", "cm²", "°C", "ton"],
+    "closedUnits": [],
     "beforeNumber": [],
     "beforeWord": [],
     "afterSymbols": [],
@@ -101,7 +103,7 @@
       "rule": "nbsp",
       "cite": "Türk Dil Kurumu, Sıkça Sorulan Sorular, «°C \"santigrat derece\" işaretiyle sayı arasında boşluk bırakılır mı?»: «Sayı ve ölçü birimi kısaltmaları aralarında boşluk bırakılır. Tıpkı 5 m, 20 kg, 350 ton örneklerinde olduğu gibi, °C \"santigrat derece\" işaretiyle sayı arasında boşluk bırakılır: 15 °C gibi.»; Türk Dil Kurumu, Yazım Kuralları, «Kısaltmalar» 2: «Ölçü birimlerinin uluslararası kısaltmaları kullanılır: m (metre), mm (milimetre), cm (santimetre), km (kilometre), g (gram), kg (kilogram), l (litre), hl (hektolitre), mg (miligram), m² (metrekare), cm² (santimetrekare) vb.»",
       "url": "https://tdk.gov.tr/icerik/sikca-sorulan-sorular/c-derece-santigrat-isaretiyle-sayi-arasinda-bosluk-birakilir-mi/",
-      "note": "beforeUnits. Rol paylaşımı başka locale'lerdeki gibi iki kuruma değil tek kuruma düşüyor: hangi dizgilerin uluslararası birim simgesi olduğunu «Kısaltmalar» 2, aralarında boşluk bırakıldığını SSS söylüyor. KAYNAK RÜTBESİ açıkça belirtiliyor: Sıkça Sorulan Sorular, Yazım Kılavuzu'nun altındadır ve boşluk hükmünün tek dayanağı odur. Tek harfli simgeler (m, g, l) fr.json ve pl.json uygulamasına uyularak atlandı. «ton» ayrıca açıklanıyor: uluslararası bir simge değil bir kelimedir ve yalnızca SSS'nin düzyazı örneğinden («350 ton») gelir — listede tutulmasının nedeni N5'in sağ sınır testinin onu «tonluk» içinde eşleştirmemesi ve hiçbir şey uydurulmamış olmasıdır. «cm» ile «cm²» birlikte listelenebilir, çünkü aynı konumda EN UZUN EŞLEŞME KAZANIR (nbsp.md §3.7) — «15 cm²» girdisinde «cm» değil «cm²» eşleşir. «%» BİLEREK YOK: TDK yüzde işaretini sayıdan ÖNCE ve bitişik yazar (ayrı kayıt). N5 yalnızca var olan bir boşluğu DÖNÜŞTÜRÜR, asla eklemez (nbsp.md §3.7 madde 3), bu yüzden «20kg» dokunulmadan kalır. Erişim: 23.09.2026."
+      "note": "beforeUnits. Rol paylaşımı başka locale'lerdeki gibi iki kuruma değil tek kuruma düşüyor: hangi dizgilerin uluslararası birim simgesi olduğunu «Kısaltmalar» 2, aralarında boşluk bırakıldığını SSS söylüyor. KAYNAK RÜTBESİ açıkça belirtiliyor: Sıkça Sorulan Sorular, Yazım Kılavuzu'nun altındadır ve boşluk hükmünün tek dayanağı odur. Tek harfli simgeler (m, g, l) fr.json ve pl.json uygulamasına uyularak atlandı. «ton» ayrıca açıklanıyor: uluslararası bir simge değil bir kelimedir ve yalnızca SSS'nin düzyazı örneğinden («350 ton») gelir — listede tutulmasının nedeni N5'in sağ sınır testinin onu «tonluk» içinde eşleştirmemesi ve hiçbir şey uydurulmamış olmasıdır. «cm» ile «cm²» birlikte listelenebilir, çünkü aynı konumda EN UZUN EŞLEŞME KAZANIR (nbsp.md §3.7) — «15 cm²» girdisinde «cm» değil «cm²» eşleşir. «%» BİLEREK YOK: TDK yüzde işaretini sayıdan ÖNCE ve bitişik yazar (ayrı kayıt). «20kg» N5 tarafından «20 kg» yapılır (spacedUnits). Erişim: 23.09.2026."
     },
     {
       "rule": "nbsp",

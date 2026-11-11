@@ -1,5 +1,5 @@
 {
-  "spec": "1.21.0",
+  "spec": "1.22.0",
   "locale": "sl",
   "cases": [
     {
@@ -253,6 +253,14 @@
         "quote-punctuation": true
       },
       "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for sl, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
+    },
+    {
+      "id": "sl-nbsp-spaced-unit-inserted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Value 50% here",
+      "out": "Value 50 % here",
+      "note": "spec 1.22.0, nbsp.md §3.7: the unit is in spacedUnits, so the missing space is inserted as U+00A0."
     }
   ]
 }

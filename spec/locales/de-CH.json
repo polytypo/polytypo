@@ -36,7 +36,9 @@
     "narrowBeforePunctuation": [],
     "afterShortWords": [],
     "abbreviations": ["z. B.", "d. h.", "u. a.", "u. U.", "m. a. W.", "m. w. H."],
-    "beforeUnits": ["%", "‰", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
+    "beforeUnits": [],
+    "spacedUnits": ["%", "‰", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
+    "closedUnits": [],
     "beforeNumber": ["Art.", "Abs.", "Ziff.", "Kap.", "S."],
     "beforeWord": ["St."],
     "afterSymbols": ["§", "§§"],
@@ -82,6 +84,12 @@
       "rule": "quote-punctuation",
       "cite": "No Swiss source for the placement of punctuation relative to the closing quotation mark was consulted; value left at the default",
       "note": "quotes.punctuationPlacement is \"none\" because no convention has been verified for de-CH. That is the default and means the rule does nothing, not that a convention was found to depend on meaning. The German Amtliches Regelwerk (2024) is the source cited for de-DE; whether it is the right authority for Swiss usage was not established."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Schweizerische Bundeskanzlei, Schreibweisungen, Rz. 549a, 550, 552, 554: «Zwischen Ziffern und den Begriffszeichen % und ‰ steht ein Festabstand»; «25 km/h»; «3 °C»; Rz. 555: «die 0,5‰-Grenze»",
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/YVHazXZRkqKn/schreibweisungen.pdf",
+      "note": "All entries of spacedUnits are attested by the cited randziffern. Rz. 555 sets a compound closed up, which N5's right-context guard leaves alone. Bare ° is closed up (Rz. 551) and is in no list. Retrieved 2026-11-11."
     }
   ]
 }

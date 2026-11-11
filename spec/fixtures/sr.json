@@ -1,5 +1,5 @@
 {
-  "spec": "1.21.0",
+  "spec": "1.22.0",
   "locale": "sr",
   "cases": [
     {
@@ -156,12 +156,12 @@
       "note": "km and min are not attested with a space in the source read, so they are not in beforeUnits."
     },
     {
-      "id": "sr-nbsp-percent-inert",
+      "id": "sr-nbsp-percent-closed",
       "rule": "nbsp",
       "mode": "text",
       "in": "Остало је 50 % и 99,90 €.",
-      "out": "Остало је 50 % и 99,90 €.",
-      "note": "'%' is deliberately absent from beforeUnits: BIPM spaces it, Serbian print closes it up, and no Serbian norm was read. A typed space is left as typed."
+      "out": "Остало је 50% и 99,90 €.",
+      "note": "`%` is in closedUnits: Serbian print closes it up and no Serbian norm requires the space, so the typed space is deleted."
     },
     {
       "id": "sr-nbsp-short-words-inert",
@@ -213,6 +213,14 @@
         "quote-punctuation": true
       },
       "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for sr, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
+    },
+    {
+      "id": "sr-nbsp-closed-nbsp-deleted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Value 5 % here",
+      "out": "Value 5% here",
+      "note": "spec 1.22.0, nbsp.md §3.7: a typed U+00A0 before a closedUnits entry is deleted as well as a U+0020."
     }
   ]
 }

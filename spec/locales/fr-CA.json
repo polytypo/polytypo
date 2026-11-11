@@ -50,7 +50,9 @@
     "narrowBeforePunctuation": [],
     "afterShortWords": [],
     "abbreviations": ["p. ex."],
-    "beforeUnits": ["%", "‰", "€", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
+    "beforeUnits": ["‰"],
+    "spacedUnits": ["%", "€", "°C", "km", "cm", "mm", "kg", "km/h", "kWh", "$", "°F"],
+    "closedUnits": [],
     "beforeNumber": ["art.", "fig.", "n°", "N°"],
     "beforeWord": ["M.", "MM.", "Mme", "Mmes", "Mlle", "Mlles"],
     "afterSymbols": ["§"],
@@ -110,6 +112,12 @@
       "cite": "Office québécois de la langue française, Banque de dépannage linguistique, « Élision de lorsque, puisque et quoique » (2020) : « les conjonctions lorsque, puisque et quoique s'élident obligatoirement devant il(s), elle(s), on, un et une, et aussi devant la préposition en » ; l'élision généralisée devant tout mot commençant par une voyelle ou un h muet « demeure facultative »",
       "url": "https://vitrinelinguistique.oqlf.gouv.qc.ca/23623/lorthographe/elision-et-apostrophe/elision-de-lorsque-puisque-et-quoique",
       "note": "Justifie les trois entrées lorsqu, puisqu, quoiqu. L'élision obligatoire devant il(s), elle(s), on, un, une et en suffit à l'appartenance : la liste étant uniquement restrictive, le caractère facultatif de l'élision généralisée ne change rien. Là encore la plage maximale impose des entrées distinctes : qu n'apparie pas « lorsqu' ». quotes.md §3.2's span-boundary elision veto (spec 1.4.0) reads this list only when the mark's other literal neighbour is modes.md §3.2's inline span boundary, so every entry is matched against the maximal LETTER run on one side of the mark and nothing else. The list is decline-only: the worst it can do is refuse a pairing quotes would otherwise have formed."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Office québécois de la langue française, Banque de dépannage linguistique: «On sépare un symbole et le nombre qui le précède par une espace insécable.»; «20 °C, 451 °F (et non : 20°C, 451°F)»; pourcentage: «une espace insécable» avant le signe; «37,83 $»",
+      "url": "https://vitrinelinguistique.oqlf.gouv.qc.ca/21401/les-abreviations-et-les-symboles/les-symboles/ecriture-des-symboles-dunites-de-mesure",
+      "note": "%, €, $, °C, °F, km, cm, mm, kg, km/h, kWh in spacedUnits. ‰ stays in beforeUnits: not addressed. Bare ° is closed up («90°, 360°») and is in no list. Retrieved 2026-11-11 via a model summary of the page."
     }
   ]
 }

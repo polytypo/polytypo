@@ -1,5 +1,5 @@
 {
-  "spec": "1.21.0",
+  "spec": "1.22.0",
   "locale": "bg",
   "cases": [
     {
@@ -186,12 +186,12 @@
       "note": "ИБЕ №1601: «2020 г.» with a space."
     },
     {
-      "id": "bg-nbsp-percent-inert",
+      "id": "bg-nbsp-percent-closed",
       "rule": "nbsp",
       "mode": "text",
       "in": "5% и 5 %",
-      "out": "5% и 5 %",
-      "note": "ИБЕ №626 writes 5% without a space, so % is not a unit here and nothing is bound."
+      "out": "5% и 5%",
+      "note": "ИБЕ №626 writes 5% without a space, so % is in closedUnits: the typed space is deleted (nbsp.md §3.7)."
     },
     {
       "id": "bg-nbsp-single-letter-unit-inert",
@@ -259,6 +259,14 @@
         "quote-punctuation": true
       },
       "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for bg, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
+    },
+    {
+      "id": "bg-nbsp-closed-nbsp-deleted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Value 5 % here",
+      "out": "Value 5% here",
+      "note": "spec 1.22.0, nbsp.md §3.7: a typed U+00A0 before a closedUnits entry is deleted as well as a U+0020."
     }
   ]
 }

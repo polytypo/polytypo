@@ -478,8 +478,10 @@ without emitting any U+0020. None does: `ellipsis` writes only `DOTLIKE` code po
 `dashes` and `hyphen` replace dashes, hyphens and spaces; `quotes` and `apostrophe` replace
 quotation marks; `symbols` replaces a trademark literal, which starts with `(`, and a `MUL-LETTER`,
 which is always preceded by a digit or a space and so never follows a dot directly; `nbsp` replaces
-or inserts spaces, and inserts only beside a listed punctuation mark or a quote glyph, never between
-a dot and a letter. A new rule that rewrites letters or digits must re-check this.
+or inserts spaces, and inserts only beside a listed punctuation mark or a quote glyph or (N5, for a
+`spacedUnits` entry) between a digit and a unit, never between a dot and a letter, and deletes only
+the single separator between a digit and a `closedUnits` entry, whose neighbours are a digit and a
+non-letter. A new rule that rewrites letters or digits must re-check this.
 
 ---
 

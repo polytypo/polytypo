@@ -77,6 +77,8 @@
       "грн",
       "р."
     ],
+    "spacedUnits": [],
+    "closedUnits": [],
     "beforeNumber": [],
     "beforeWord": ["акад.", "доц.", "проф."],
     "afterSymbols": [],

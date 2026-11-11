@@ -1,5 +1,5 @@
 {
-  "spec": "1.21.0",
+  "spec": "1.22.0",
   "locale": "el",
   "cases": [
     {
@@ -219,12 +219,12 @@
       "note": "symbols.md reads no locale data. Greek adds no branch to it: the refusal to map U+037E to U+003B or U+0387 to U+00B7 is recorded in symbols.md §7.8 as a decided refusal, not implemented as a conversion."
     },
     {
-      "id": "el-nbsp-units-not-bound",
+      "id": "el-nbsp-percent-closed",
       "rule": "nbsp",
       "mode": "text",
       "in": "Η τιμή ανέβηκε 10,5 % φέτος",
-      "out": "Η τιμή ανέβηκε 10,5 % φέτος",
-      "note": "nbsp.beforeUnits is empty for Greek, so the ordinary space before % is left as U+0020. No Greek normative source states the binding, and a byte-level scan of 13 Greek-language pages found 183 number-plus-unit occurrences with no space of any kind — Greek sets 50% tight, so there is nothing to promote."
+      "out": "Η τιμή ανέβηκε 10,5% φέτος",
+      "note": "`%` is in closedUnits: the inter-institutional guide permits both forms, a byte-level scan of 13 Greek-language pages found 183 number-plus-unit occurrences with no space of any kind, and a locale offered both takes the closed one (nbsp.md §3.7)."
     },
     {
       "id": "el-nbsp-no-french-spacing",
@@ -295,6 +295,30 @@
         "quote-punctuation": true
       },
       "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for el, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
+    },
+    {
+      "id": "el-nbsp-closed-nbsp-deleted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Value 5 % here",
+      "out": "Value 5% here",
+      "note": "spec 1.22.0, nbsp.md §3.7: a typed U+00A0 before a closedUnits entry is deleted as well as a U+0020."
+    },
+    {
+      "id": "el-nbsp-celsius-closed",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Θερμοκρασία 20 °C σήμερα",
+      "out": "Θερμοκρασία 20°C σήμερα",
+      "note": "`°C` is in closedUnits: the guide permits both forms and the locale takes the closed one."
+    },
+    {
+      "id": "el-nbsp-closed-guard-sentence-dash",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Το 5 % - αν υπάρχει - τέλος",
+      "out": "Το 5 % —αν υπάρχει— τέλος",
+      "note": "nbsp.md §3.7 step 5.3 also holds for a dash that is not a range: the space before `%` is left as typed."
     }
   ]
 }

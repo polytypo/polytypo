@@ -46,6 +46,8 @@
       "et al."
     ],
     "beforeUnits": ["%", "‰", "°C", "km", "cm", "mm", "kg", "mg", "mL", "min", "dB", "kW", "kWh"],
+    "spacedUnits": [],
+    "closedUnits": [],
     "beforeNumber": ["art.", "cap.", "núm.", "nro.", "pág.", "págs."],
     "beforeWord": ["Sr.", "Sra.", "Srta."],
     "afterSymbols": [],

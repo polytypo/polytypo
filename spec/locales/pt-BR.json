@@ -36,7 +36,9 @@
     "narrowBeforePunctuation": [],
     "afterShortWords": [],
     "abbreviations": ["p. ex."],
-    "beforeUnits": ["%", "‰", "°C", "km", "cm", "mm", "kg", "kW", "kWh", "Hz"],
+    "beforeUnits": ["%", "‰"],
+    "spacedUnits": ["°C", "km", "cm", "mm", "kg", "kW", "kWh", "Hz"],
+    "closedUnits": [],
     "beforeNumber": ["p."],
     "beforeWord": [],
     "afterSymbols": [],
@@ -76,7 +78,7 @@
       "rule": "nbsp",
       "cite": "BIPM, The International System of Units (SI), 9.ª ed., resumo conciso: «A single space is always left between the number and the unit»; Código de Redação Interinstitucional (PT, 2022), anexo A3, pontos 2 e 3, para a lista de símbolos",
       "url": "https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-concise-EN.pdf",
-      "note": "Justifica nbsp.beforeUnits. A locale atesta a PERTENÇA — que estes símbolos são unidades e que se escrevem depois do número com um espaço; o mecanismo (converter esse espaço em U+00A0, nunca o inserir) é da regra e está fixado em nbsp.md §2.1. REPARO CITADO, mais importante do que qualquer inclusão: o ponto 10.9.1 exclui «h» por nome — «horas (o símbolo «h» escreve-se sempre sem ponto, sem espaços): eram as 18h30» —, pelo que «h» NÃO entra na lista e há um caso de conformidade a fixá-lo. Os símbolos de uma só letra (m, g, l, t, s, A, W, V, K) ficam igualmente de fora, embora atestados, pela mesma razão que em fr: não são desambiguáveis sem contexto. Note-se que o português escreve «7 %» com espaço, ao contrário do grego. Consultado em 18.9.2026. Para pt-BR a lista é a mesma: nenhuma fonte brasileira consultada a contradiz, e o BIPM não é uma autoridade sobre o português mas sobre que cadeias são símbolos de unidade do SI."
+      "note": "Justifica nbsp.beforeUnits. A locale atesta a PERTENÇA — que estes símbolos são unidades e que se escrevem depois do número com um espaço; o mecanismo (converter esse espaço em U+00A0 e, nas listas spacedUnits, inseri-lo quando falta) é da regra e está fixado em nbsp.md §3.7. REPARO CITADO, mais importante do que qualquer inclusão: o ponto 10.9.1 exclui «h» por nome — «horas (o símbolo «h» escreve-se sempre sem ponto, sem espaços): eram as 18h30» —, pelo que «h» NÃO entra na lista e há um caso de conformidade a fixá-lo. Os símbolos de uma só letra (m, g, l, t, s, A, W, V, K) ficam igualmente de fora, embora atestados, pela mesma razão que em fr: não são desambiguáveis sem contexto. Note-se que o português escreve «7 %» com espaço, ao contrário do grego. Consultado em 18.9.2026. Para pt-BR a lista é a mesma: nenhuma fonte brasileira consultada a contradiz, e o BIPM não é uma autoridade sobre o português mas sobre que cadeias são símbolos de unidade do SI."
     },
     {
       "rule": "nbsp",

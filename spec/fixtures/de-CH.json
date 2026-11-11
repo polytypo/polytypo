@@ -1,5 +1,5 @@
 {
-  "spec": "1.21.0",
+  "spec": "1.22.0",
   "locale": "de-CH",
   "cases": [
     {
@@ -378,12 +378,12 @@
       "note": "N5 twice — Rz. 251, 549–550 (Zahl und Einheit) and Rz. 554 (vor % und ‰)."
     },
     {
-      "id": "de-ch-nbsp-unit-never-inserts",
+      "id": "de-ch-nbsp-unit-inserted",
       "rule": "nbsp",
       "mode": "text",
       "in": "Es sind 20km",
-      "out": "Es sind 20km",
-      "note": "nbsp.md §7.2: N5 converts, never inserts."
+      "out": "Es sind 20 km",
+      "note": "spec 1.22.0, nbsp.md §3.7: `km` is in spacedUnits, so the missing space is inserted as U+00A0. Before 1.22.0 N5 only converted."
     },
     {
       "id": "de-ch-nbsp-before-number",
@@ -515,6 +515,14 @@
         "quote-punctuation": true
       },
       "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for de-CH, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
+    },
+    {
+      "id": "de-ch-nbsp-spaced-unit-inserted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Value 20km here",
+      "out": "Value 20 km here",
+      "note": "spec 1.22.0, nbsp.md §3.7: the unit is in spacedUnits, so the missing space is inserted as U+00A0."
     }
   ]
 }

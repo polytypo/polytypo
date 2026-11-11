@@ -37,6 +37,8 @@
     "afterShortWords": ["a", "i", "k", "o", "s", "u", "v", "z"],
     "abbreviations": ["a. s.", "s. r. o."],
     "beforeUnits": ["%", "°C", "ha", "kg", "km", "cm", "mm", "m²", "kWh", "km/h", "str.", "hod."],
+    "spacedUnits": [],
+    "closedUnits": [],
     "beforeNumber": [],
     "beforeWord": ["tj.", "tzv.", "tzn."],
     "afterSymbols": ["§"],

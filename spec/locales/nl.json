@@ -36,7 +36,9 @@
     "narrowBeforePunctuation": [],
     "afterShortWords": [],
     "abbreviations": ["prof. dr."],
-    "beforeUnits": ["%", "‰", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
+    "beforeUnits": ["°C", "km/h", "kWh"],
+    "spacedUnits": ["km", "cm", "mm", "kg"],
+    "closedUnits": ["%", "‰"],
     "beforeNumber": [],
     "beforeWord": [],
     "afterSymbols": ["€", "$"],
@@ -77,7 +79,7 @@
       "rule": "nbsp",
       "cite": "Nederlandse Taalunie, Taaladvies.net, «Wel of geen spaties voor en na leestekens en symbolen (algemeen)» (12 mei 2021): «Vóór een punt, een komma, een dubbele punt, een puntkomma, een uitroepteken en een vraagteken komt geen spatie»; «Bij toevallige, niet-conventionele combinaties van een getal en een afgekorte eenheid […] komt er een spatie tussen het getal en de eenheid»; «Tussen een valutateken en het bijbehorende getal staat een spatie, tenzij het geheel deel uitmaakt van een samenstelling» — «De vaas kostte € 179,–»; BIPM, The International System of Units (SI), 9th ed., concise summary — uitsluitend voor de samenstelling van de symbolenlijst",
       "url": "https://taaladvies.net/wel-of-geen-spaties-voor-en-na-leestekens-en-symbolen-algemeen/",
-      "note": "Drie velden uit één pagina. beforePunctuation en narrowBeforePunctuation leeg: alle zes leestekens worden bij name genoemd en krijgen geen spatie — een ontkenning, geen stilzwijgen. beforeUnits: BIPM levert welke reeksen SI-symbolen zijn, de Taalunie de Nederlandse conventie; eenletterige symbolen blijven weg zoals in fr.json. afterSymbols = [«€», «$»]: LET OP BIJ HET OVERNEMEN VAN fr.json — in het Nederlands gaat het valutateken aan het getal vooraf («€ 179»), in het Frans volgt het erop («2 €»), dus het hoort hier in afterSymbols en niet in beforeUnits. De twee leden zijn die welke het kopje «Valutatekens (€, $)» zelf noemt: een klasse-afleiding over een MET NAME GENOEMDE tweeledige klasse, gemarkeerd naar het voorbeeld van fr.json bij M., MM., Mmes. TOEGESTANE VARIANTEN, vastgelegd: voor het procentteken laat de Taalunie zowel «25 %» als «25%» toe, en bij °C schrijft zij dat er «meestal geen spatie» staat terwijl ISO er één voorschrijft. Dat hoeft niet beslecht te worden: N5 zet alleen een bestaande spatie om en voegt er nooit een in (nbsp.md §3.7). afterShortWords, beforeNumber en beforeWord zijn leeg: deze pagina loopt de leestekens en symbolen één voor één langs en zegt daarover niets, en het Nederlands kent geen tegenhanger van de Poolse sierotka-regel. Geraadpleegd op 18.09.2026."
+      "note": "Drie velden uit één pagina. beforePunctuation en narrowBeforePunctuation leeg: alle zes leestekens worden bij name genoemd en krijgen geen spatie — een ontkenning, geen stilzwijgen. beforeUnits: BIPM levert welke reeksen SI-symbolen zijn, de Taalunie de Nederlandse conventie; eenletterige symbolen blijven weg zoals in fr.json. afterSymbols = [«€», «$»]: LET OP BIJ HET OVERNEMEN VAN fr.json — in het Nederlands gaat het valutateken aan het getal vooraf («€ 179»), in het Frans volgt het erop («2 €»), dus het hoort hier in afterSymbols en niet in beforeUnits. De twee leden zijn die welke het kopje «Valutatekens (€, $)» zelf noemt: een klasse-afleiding over een MET NAME GENOEMDE tweeledige klasse, gemarkeerd naar het voorbeeld van fr.json bij M., MM., Mmes. TOEGESTANE VARIANTEN, vastgelegd: voor het procentteken laat de Taalunie zowel «25 %» als «25%» toe, en bij °C schrijft zij dat er «meestal geen spatie» staat terwijl ISO er één voorschrijft. Beslist op 11.11.2026: zie het item hieronder. afterShortWords, beforeNumber en beforeWord zijn leeg: deze pagina loopt de leestekens en symbolen één voor één langs en zegt daarover niets, en het Nederlands kent geen tegenhanger van de Poolse sierotka-regel. Geraadpleegd op 18.09.2026."
     },
     {
       "rule": "nbsp",
@@ -96,6 +98,12 @@
       "cite": "Nederlandse Taalunie, Taaladvies.net, « 'S avonds / 's Avonds (hoofdletter?) » (12 mei 2021, op grond van de Woordenlijst 2015) : « Als de zin met een apostrof begint, krijgt het eerstvolgende volledige woord in de zin de hoofdletter », met de voorbeelden « 's Avonds werkt John in een café », « 't Was een mooie dag » en « 'ns Kijken hoe we dat doen »",
       "url": "https://taaladvies.net/s-avonds-of-s-avonds-hoofdletter/",
       "note": "Attests s ('s avonds, from the older genitive des avonds), t ('t was) and ns ('ns kijken). The same entries cover 's-Gravenhage and 's-Hertogenbosch, where a hyphen rather than a space follows the letter run."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Nederlandse Taalunie, Taaladvies.net, «Wel of geen spaties voor en na leestekens en symbolen (algemeen)» (12 mei 2021): voor het procentteken is «25%» toegestaan («Daar is in niet-technische teksten geen bezwaar tegen»), de norm (NEN/NBN) schrijft «25 %",
+      "url": "https://taaladvies.net/wel-of-geen-spaties-voor-en-na-leestekens-en-symbolen-algemeen/",
+      "note": "%, ‰ in closedUnits: de bron laat beide vormen toe, en waar beide toegestaan zijn kiest polytypo de gesloten vorm zodat een tekst overal hetzelfde oogt (beslissing van de operator, 11.11.2026). km, cm, mm, kg in spacedUnits (Taalunie: «De afstand was 15 cm»). °C, km/h en kWh blijven in beforeUnits: de bron toont voor °C beide vormen zonder «geen bezwaar», km/h is niet bevestigd (nl: km/u) en kWh wordt niet genoemd. Samenstellingen blijven ongemoeid («de 15cm-norm», «de 37°C-grens»): dat is de rechtercontext van N5. Geraadpleegd op 11.11.2026."
     }
   ]
 }

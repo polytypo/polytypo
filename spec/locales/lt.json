@@ -36,23 +36,24 @@
     "narrowBeforePunctuation": [],
     "afterShortWords": [],
     "abbreviations": ["t. y.", "t. t.", "š. m."],
-    "beforeUnits": [
+    "beforeUnits": ["cm", "mm", "m.", "d."],
+    "spacedUnits": [
       "%",
       "proc.",
       "°C",
       "kg",
       "km",
-      "cm",
-      "mm",
       "EUR",
       "Eur",
       "€",
       "mln.",
       "val.",
       "min.",
-      "m.",
-      "d."
+      "km/h",
+      "m/s",
+      "ha"
     ],
+    "closedUnits": [],
     "beforeNumber": [],
     "beforeWord": [],
     "afterSymbols": ["§"],
@@ -100,6 +101,12 @@
       "cite": "European Commission, ES institucijų vertimo į lietuvių kalbą vadovas (2014), A.9: jungiamasis tarpas «renkamas tada, kai norima, kad tekstas (pvz., skaičius ir mato simbolis) išliktų vienoje eilutėje»; A.9.4 «t. y., t. t., š. m.; E. Petraitis, R. Jutkonytė, J. M. Barroso»; A.9.5 «40 mln., 2007 m. liepos 16 d., 17 val. 20 min., § 19, 100 %, 100 proc., 23 °C, 5 000 EUR, 1 000 kg»; A.9.8 (no space before . ! ? : … , ;); A.9.9 (angular degrees closed up); Vilniaus universitetas ChGF, Kalbos patarimai (2021): nepertraukiamas tarpas for initials, units, currency and %; «53 €», «53 Eur»; A. Drukteinis (2020) p. 142 «33,00 mm»",
       "url": "http://www.laraneda.lt/failai/interinstitutional_translation_guide_lt.pdf",
       "note": "SECONDARY throughout (house styles; no norm of VLKK states a no-break rule). (1) beforePunctuation and narrowBeforePunctuation are empty: a stated negative (A.9.8; Drukteinis p. 9), not silence. (2) beforeUnits = %, proc., °C, kg, km, cm, mm, EUR, Eur, €, mln., val., min., m., d.: the no-break intent is stated (DGT A.9, VU), and km and cm are spaced in A.4.2.2; m. and d. are the year and day abbreviations of A.9.5 («2007 m. liepos 16 d.»), the same footing as bg «г.». DECISIONS: single-letter m (metre) and g are excluded, as in hr, sk, bg and sl; bare ° is not listed, since angular degrees are closed up; ‰ is not attested; vnt. and t. p. are not listed (form evidence only). (3) afterSymbols = §. (4) abbreviations = t. y., t. t., š. m., as named in A.9.4. (5) initialBinding = none: DGT A.9.4 and VU bind a single initial, but that is house style only and a rule on single initials collides at sentence boundaries; DECISION, MEDIUM. (6) afterShortWords is empty: no source binds į, ir, o, ar, su or iš, and DGT A.9.2–A.9.7 enumerates the no-break cases without them. beforeNumber and beforeWord are empty: decisions, not citations. Retrieved 2026-10-25."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Europos Komisija, Institucijų vertimo į lietuvių kalbą vadovas (2014), A.9.5, A.9.13, A.10.1: «100 %», «23 °C», «5 000 EUR», «1 000 kg», «Greitis – 100 km/h.», «vėjas 5–7 m/s»; Vilniaus universiteto Kalbos patarimai (2021): «1 ha – 53 Eur»",
+      "url": "http://www.laraneda.lt/failai/interinstitutional_translation_guide_lt.pdf",
+      "note": "%, proc., °C, kg, km, EUR, Eur, €, mln., val., min., km/h, m/s, ha in spacedUnits; m. and d. in beforeUnits (single-letter abbreviations, conversion only). Retrieved 2026-11-11."
     }
   ]
 }

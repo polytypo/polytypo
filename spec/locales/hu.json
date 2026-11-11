@@ -36,7 +36,9 @@
     "narrowBeforePunctuation": [],
     "afterShortWords": [],
     "abbreviations": ["a. m.", "i. sz.", "Kr. e.", "Kr. u.", "s. k.", "i. e."],
-    "beforeUnits": ["km", "kg", "kWh", "km/h", "°C"],
+    "beforeUnits": [],
+    "spacedUnits": ["km", "kg", "kWh", "km/h", "°C"],
+    "closedUnits": ["%"],
     "beforeNumber": [],
     "beforeWord": [],
     "afterSymbols": [],
@@ -84,6 +86,12 @@
       "cite": "Magyar Tudományos Akadémia, A magyar helyesírás szabályai, 12. kiadás (AkH12), §279 c: «A mértékegységnek a jelét szóköz választja el az előtte levő számtól, például: 100 km, 1 kg, 10 kWh, 120 km/h, 220 W.»; §275: «Fokjel. Például: 45°; 23 °C», «A százalék jele. Például: 48%»",
       "url": "https://helyesiras.mta.hu/helyesiras/default/akh12",
       "note": "beforeUnits = km, kg, kWh, km/h, °C, each attested with a space in §279 c or §275. '%' is deliberately absent: AkH prints 48% without a space; geometric 45° is likewise unspaced. Single-letter symbols are excluded by decision, not by citation: §279 c itself writes «220 W» with a space, but `s` is a Hungarian conjunction and a list of single letters would be a derivation (as in sk and ro). 'Ft' is omitted: it is a currency abbreviation attested only by example (§290), so it ships unverified-empty. Verified 2026-10-21."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Magyar Tudományos Akadémia, AkH12, 275.: «48%», «23 °C»; 279. c): «A mértékegységnek a jelét szóköz választja el az előtte levő számtól, például: 100 km, 1 kg, 10 kWh, 120 km/h, 220 W.»",
+      "url": "https://helyesiras.mta.hu/helyesiras/default/akh12",
+      "note": "% in closedUnits (§275: «48%»); km, kg, kWh, km/h, °C in spacedUnits (§279 c, §275). Geometric degree sign is closed up and is in no list. ‰ not found in the parts read. Retrieved 2026-11-11."
     }
   ]
 }

@@ -386,7 +386,8 @@ glyph, or deletes one from the *right* of a mark, this paragraph must be re-deri
 **A standing note for anyone adding a row here.** These rows become conformance fixtures
 verbatim, so each one must exercise **only** the rule it documents. Choose the surrounding words
 so that no _other_ rule fires: no unit or unit-like token (`mm`, `cm`, `см`, `km`, `%`, `°C`),
-which `nbsp.beforeUnits` binds to a preceding number with U+00A0; no abbreviation ending in a
+which `nbsp` binds to a preceding number with U+00A0 (`beforeUnits`, `spacedUnits`), or whose
+space it inserts or deletes (`spacedUnits`, `closedUnits`); no abbreviation ending in a
 full stop, which `nbsp.beforeNumber` / `beforeWord` bind; and no short function word, which
 `nbsp.afterShortWords` binds. A row reading `Tolerance ±5 mm` teaches a reader that `symbols`
 produces the space it does not produce — the true pipeline output carries a U+00A0 that belongs

@@ -36,7 +36,9 @@
     "narrowBeforePunctuation": [],
     "afterShortWords": ["a", "i", "o", "u", "w", "z"],
     "abbreviations": ["lek. med.", "inż. górn.", "bp sufr."],
-    "beforeUnits": ["%", "‰", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
+    "beforeUnits": ["‰", "°C"],
+    "spacedUnits": ["km", "cm", "mm", "kg", "km/h", "kWh"],
+    "closedUnits": ["%"],
     "beforeNumber": [],
     "beforeWord": [],
     "afterSymbols": ["§"],
@@ -89,13 +91,19 @@
       "rule": "nbsp",
       "cite": "Główny Urząd Miar, «Zasady stosowania oznaczeń i nazw jednostek miar», akapit «Spacja»: «należy zostawiać spację między wartością liczbową a oznaczeniem jednostki» (100 g, 2 L; ale nie: 100g); pkt 12: «pomiędzy [symbolem %] a wartością liczbową wielkości pozostawia się spację»; BIPM, The International System of Units (SI), 9th ed., concise summary — dla składu samej listy symboli",
       "url": "https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-concise-EN.pdf",
-      "note": "Podział ról taki sam jak w en-US, fi, sv, es i pt: BIPM mówi, które łańcuchy są symbolami jednostek SI, a GUM i rozporządzenie — jaka jest polska konwencja odstępu. ZASTRZEŻENIE CO DO ŹRÓDŁA: dobór reguł w dokumencie GUM jest zawężony do towarów paczkowanych, natomiast akapit «Spacja» i pkt 12 powołują się na § 15 i § 8 ust. 4 rozporządzenia, które są prawem powszechnym. WARIANT DOPUSZCZALNY, odnotowany, bo dotyczy najczęstszego wpisu: polska tradycja ortotypograficzna pisze procent bez spacji, co Wolański («Jeszcze raz o spacji lub jej braku po znaku %», 26.11.2021) uznaje za równie poprawne. Rozbieżność nie wymaga rozstrzygnięcia: N5 wyłącznie ZAMIENIA istniejącą spację i nigdy jej nie wstawia (nbsp.md §3.7), więc «5 %» dostaje U+00A0, a «5%» zostaje nietknięte — jedna lista obsługuje obie poświadczone formy. Symbole jednoliterowe (m, g, l, s, A) pominięto zgodnie z praktyką fr.json. Konsultowano 18.09.2026."
+      "note": "Podział ról taki sam jak w en-US, fi, sv, es i pt: BIPM mówi, które łańcuchy są symbolami jednostek SI, a GUM i rozporządzenie — jaka jest polska konwencja odstępu. ZASTRZEŻENIE CO DO ŹRÓDŁA: dobór reguł w dokumencie GUM jest zawężony do towarów paczkowanych, natomiast akapit «Spacja» i pkt 12 powołują się na § 15 i § 8 ust. 4 rozporządzenia, które są prawem powszechnym. WARIANT DOPUSZCZALNY, odnotowany, bo dotyczy najczęstszego wpisu: polska tradycja ortotypograficzna pisze procent bez spacji, co Wolański («Jeszcze raz o spacji lub jej braku po znaku %», 26.11.2021) uznaje za równie poprawne. Rozstrzygnięcie (operator, 11.11.2026): «%» jest w closedUnits, patrz następny wpis. Symbole jednoliterowe (m, g, l, s, A) pominięto zgodnie z praktyką fr.json. Konsultowano 18.09.2026."
     },
     {
       "rule": "nbsp",
       "cite": "dr hab. Adam Wolański, Poradnia Językowa PWN, «Symbol paragrafu i wyróżnienia tytułów aktów prawnych» (20.02.2019): «Symbol §, zastępujący wyraz paragraf, może być użyty tylko przed liczbą zapisaną cyframi. Należy go oddzielać od liczby spacją»",
       "url": "https://sjp.pwn.pl/poradnia/haslo/Symbol-paragrafu-i-wyroznienia-tytulow-aktow-prawnych;19239.html",
       "note": "Uzasadnia afterSymbols = [«§»]. Warunek «tylko przed liczbą zapisaną cyframi» pokrywa się co do joty z własnym strażnikiem N6, który wymaga, by cp[a+k+1] należało do klasy DIGIT (nbsp.md §3.8). Poradnia jest źródłem doradczym; «Zasady» kwestii nie poruszają, więc nie ma sprzeczności. Konsultowano 18.09.2026."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Główny Urząd Miar, «Zasady stosowania oznaczeń i nazw jednostek miar» (2021): «Przykład: 5 % 0,5 % Ale nie: 5% 0,5%»; Adam Wolański, Poradnia Językowa PWN, «Jeszcze raz o spacji lub jej braku po znaku %» (26.11.2021): «za poprawny zapis należy uznać zarówno 38,4 % ± 3,4 %, jak i 38,4% ± 3,4%»; Mirosław Bańko, PWN, «procent i stopień Celsjusza» (18.7.2003): «Symbole % i °C piszemy bezpośrednio po liczbie»",
+      "url": "https://sjp.pwn.pl/poradnia/haslo/jeszcze-raz-o-spacji-lub-jej-braku-po-znaku-percent;21530.html",
+      "note": "% w closedUnits: źródła dopuszczają obie formy, a tam gdzie obie są dopuszczalne, locale wybiera formę łączną, żeby tekst wyglądał jednolicie (decyzja operatora, 11.11.2026). km, cm, mm, kg, km/h, kWh w spacedUnits (GUM: «100 g, 2 L ale nie: 100g»; Wolański: «5 km, 10 kg»). °C zostaje w beforeUnits: Bańko pisze łącznie, GUM i rozporządzenie ogólną regułą z odstępem. ‰ nie ma w polskim źródle i zostaje w beforeUnits. Sprawdzone 11.11.2026."
     }
   ]
 }

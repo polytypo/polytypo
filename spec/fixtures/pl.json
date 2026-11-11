@@ -1,5 +1,5 @@
 {
-  "spec": "1.21.0",
+  "spec": "1.22.0",
   "locale": "pl",
   "cases": [
     {
@@ -143,6 +143,22 @@
         "quote-punctuation": true
       },
       "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for pl, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
+    },
+    {
+      "id": "pl-nbsp-spaced-unit-inserted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Value 20km here",
+      "out": "Value 20 km here",
+      "note": "spec 1.22.0, nbsp.md §3.7: the unit is in spacedUnits, so the missing space is inserted as U+00A0."
+    },
+    {
+      "id": "pl-nbsp-closed-nbsp-deleted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Value 5 % here",
+      "out": "Value 5% here",
+      "note": "spec 1.22.0, nbsp.md §3.7: a typed U+00A0 before a closedUnits entry is deleted as well as a U+0020."
     }
   ]
 }

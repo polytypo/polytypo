@@ -97,6 +97,8 @@
         "afterShortWords",
         "abbreviations",
         "beforeUnits",
+        "spacedUnits",
+        "closedUnits",
         "beforeNumber",
         "beforeWord",
         "afterSymbols",
@@ -127,7 +129,19 @@
           "type": "array",
           "items": { "type": "string", "minLength": 1 },
           "uniqueItems": true,
-          "description": "Units and signs that bind to a preceding number with U+00A0. Example: \"%\", \"km\", \"°C\"."
+          "description": "Units and signs that bind to a preceding number with U+00A0 when the author already typed a space. Conversion only: a missing space is never inserted and an existing one is never removed. Use for a unit whose spacing the locale's sources leave to the author or make depend on context. Example: \"%\", \"km\", \"°C\". Disjoint from spacedUnits and closedUnits (scripts/validate-spec.mjs)."
+        },
+        "spacedUnits": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "description": "Units and signs the locale writes with a space after the number. N5 binds an existing space with U+00A0 and inserts U+00A0 when the number and the unit touch (nbsp.md 3.7). Disjoint from beforeUnits, closedUnits and afterSymbols (scripts/validate-spec.mjs). Example: \"%\" in German, \"°C\" in Russian."
+        },
+        "closedUnits": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "description": "Units and signs the locale writes closed up to the number. N5 deletes a single U+0020, U+00A0 or U+202F between the number and the unit (nbsp.md 3.7). Disjoint from beforeUnits, spacedUnits and afterSymbols (scripts/validate-spec.mjs). Example: \"%\" in English."
         },
         "beforeNumber": {
           "type": "array",

@@ -133,6 +133,8 @@ function carriedRules(locale) {
       "afterShortWords",
       "abbreviations",
       "beforeUnits",
+      "spacedUnits",
+      "closedUnits",
       "beforeNumber",
       "beforeWord",
       "afterSymbols",
@@ -336,6 +338,99 @@ function checkLocaleInvariants(file, locale) {
     }
   }
 
+  // nbsp.md 3.7: a unit belongs to at most one of the three unit lists, and a unit that N5 inserts
+  // or deletes around may not also be an N6 symbol, or two sub-rules would want opposite sides.
+  {
+    const owner = new Map();
+    for (const key of ["beforeUnits", "spacedUnits", "closedUnits"]) {
+      for (const entry of Array.isArray(nbsp[key]) ? nbsp[key] : []) {
+        if (owner.has(entry)) {
+          fail(
+            file,
+            `nbsp: "${escapeNonAscii(String(entry))}" is in both ${owner.get(entry)} and ${key} (nbsp.md 3.7: one list per unit)`,
+          );
+        }
+        owner.set(entry, key);
+      }
+    }
+    for (const key of ["spacedUnits", "closedUnits"]) {
+      for (const entry of Array.isArray(nbsp[key]) ? nbsp[key] : []) {
+        if ((nbsp.afterSymbols ?? []).includes(entry)) {
+          fail(
+            file,
+            `nbsp.${key}: "${escapeNonAscii(String(entry))}" is also in afterSymbols (nbsp.md 3.7)`,
+          );
+        }
+      }
+    }
+  }
+
+  // nbsp.md 3.7 data properties U2 and U3: the idempotency arguments for N5's insertion and
+  // deletion rest on what a unit may begin with, which no JSON Schema can state.
+  {
+    const forbiddenFirst = new Set([
+      0x2e, 0x2c, 0x2f, 0x2026, 0x22, 0x27, 0x2d, 0x2010, 0x2011, 0x2013, 0x2014, 0x2212,
+    ]);
+    const mulLetters = new Set([0x78, 0x58, 0x445, 0x425]);
+    for (const key of ["spacedUnits", "closedUnits"]) {
+      for (const entry of Array.isArray(nbsp[key]) ? nbsp[key] : []) {
+        const first = String(entry).codePointAt(0);
+        const shown = escapeNonAscii(String(entry));
+        if (/^\s/u.test(entry) || forbiddenFirst.has(first) || String(entry).includes("-")) {
+          fail(
+            file,
+            `nbsp.${key}: "${shown}" begins with a space, dash or separator, or contains a hyphen (nbsp.md 3.7 U2)`,
+          );
+        }
+        if (key === "spacedUnits" && mulLetters.has(first)) {
+          fail(
+            file,
+            `nbsp.spacedUnits: "${shown}" begins with a multiplication letter (nbsp.md 3.7 U2)`,
+          );
+        }
+        if (key === "closedUnits" && (/^\p{L}/u.test(entry) || String(entry).includes("."))) {
+          fail(
+            file,
+            `nbsp.closedUnits: "${shown}" begins with a letter or contains a full stop (nbsp.md 3.7 U3)`,
+          );
+        }
+      }
+    }
+  }
+
+  // nbsp.md 3.7 U4: no other sub-rule may claim the separator between a number and a
+  // closedUnits entry, or convert the space after one.
+  {
+    const lastCp = (entry) => [...String(entry)].at(-1);
+    const closedLast = new Set(
+      (Array.isArray(nbsp.closedUnits) ? nbsp.closedUnits : []).map(lastCp),
+    );
+    for (const key of [
+      "afterShortWords",
+      "abbreviations",
+      "beforeNumber",
+      "beforeWord",
+      "afterSymbols",
+    ]) {
+      for (const entry of Array.isArray(nbsp[key]) ? nbsp[key] : []) {
+        const last = lastCp(entry);
+        const shown = escapeNonAscii(String(entry));
+        if (/^\p{Nd}$/u.test(last) || closedLast.has(last)) {
+          fail(
+            file,
+            `nbsp.${key}: "${shown}" ends with a digit or the last code point of a closedUnits entry (nbsp.md 3.7 U4)`,
+          );
+        }
+        if (key === "abbreviations" && /\p{Nd} /u.test(String(entry))) {
+          fail(
+            file,
+            `nbsp.abbreviations: "${shown}" has a digit before an internal space (nbsp.md 3.7 U4)`,
+          );
+        }
+      }
+    }
+  }
+
   // A list entry touching a quote glyph at either edge would let an nbsp sub-rule claim an
   // index adjacent to that glyph, reopening the cross-target conflict N1/N2's guard closes.
   // The glyphs are per-locale, so no JSON Schema can state this.
@@ -349,6 +444,8 @@ function checkLocaleInvariants(file, locale) {
     "afterShortWords",
     "abbreviations",
     "beforeUnits",
+    "spacedUnits",
+    "closedUnits",
     "beforeNumber",
     "beforeWord",
     "afterSymbols",

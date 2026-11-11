@@ -134,7 +134,11 @@ U+0020 in the wider set emits none in the narrower one.
 
 **Who can violate it.** Only a rule that emits U+0020. In the current pipeline that is
 `dashes` alone (`-spaced` forms). `nbsp` emits U+00A0 and U+202F, which are `CONTENT` to
-`spaces` and are never touched. `quotes` (0.3.0) deletes a code point inside a quote pair when
+`spaces` and are never touched. `nbsp` also deletes: since spec 1.22.0 N5 removes the single
+separator between a `DIGIT` and a `closedUnits` entry. That separator has a `DIGIT` on its left
+and, by `nbsp.md` §3.7 U2, a code point outside `SPACELIKE` on its right, so it is a run of
+length one with no space beside it, and removing it lengthens, shortens, merges or re-neighbours
+no other U+0020 run (`nbsp.md` §5, composition obligation against `I₁`). `quotes` (0.3.0) deletes a code point inside a quote pair when
 `innerSpace = "none"`, but never a U+0020 that survives the deletion — the maximal-run deletion
 and the landing guard together ensure the two surviving neighbours are always `CONTENT`
 (`quotes.md` 3.7, 5). Every other rule replaces code points one-for-one or shortens a run, and
@@ -189,7 +193,23 @@ whose two sides are a quote glyph and a `DELETE-LANDING` member — neither is a
 `CLOSED-SYMBOL`, so no range member's `before`/`after` moves. `symbols` (R₇) emits only U+00A9,
 U+00AE and U+2122 and deletes only a `(`…`)` span. `nbsp` (R₈) converts a space it found and
 never inserts one where a guard reads (`nbsp.md` §3.3), and U+00A0/U+202F satisfy none of G1, G2
-or G3.
+or G3. N5's insertion and deletion (`nbsp.md` §3.7, 1.22.0) are the one place R₈ adds or removes
+an `INLINE-SPACE` beside a `DIGIT` and a unit that may be a `CLOSED-SYMBOL`; guard G-R of that
+section declines both whenever the first neighbour beyond the spaces, on either side, is a `DASH`
+or `INERT-DASH`, which are the only positions where G1–G3 read that gap.
+
+That discharge covers a unit whose first code point is in `CLOSED-SYMBOL` (`%`, `‰`, `°C`, the
+currency signs), and only that: it is the only kind of unit that `ranges` §3.2a and T1's p1/p2
+step over. A unit such as `km` or `kg` is **not read** by `ranges` or `dashes`. Neither walks over
+a letter, so such a unit is never a range member and never a flank, and the only reads that reach
+the gap before it are the effective neighbours of a digit run: `after` in G2 and G3 (a `DASH`,
+an `INERT-DASH` or U+002F) and T1's first and second neighbour (a `DASH` or an `INERT-DASH`).
+What those reads find at the two positions differs between the runs (the unit's first code
+point, against a no-break space and then that code point; or a separator and then that code
+point, against that code point alone), and the only code points involved are a space and the
+unit's first code point, neither of which is in those sets: `nbsp.md` §3.7 U2 states that no unit
+begins with one. For a unit whose first code point is outside `CLOSED-SYMBOL`, then, G-R is not
+needed and is not applied, and the argument is this one.
 
 ### I₃ — `dashes`
 
@@ -216,14 +236,21 @@ replaces code points one-for-one with quote glyphs (also outside every `dashes` 
 `innerSpace = "none"`, deletes a maximal `INLINE-SPACE` run whose two sides are a quote glyph and
 a `DELETE-LANDING` member — neither in `DASH ∪ INERT-DASH`, so no dash run is ever adjacent to a
 deleted run and no token's `lsp`/`rsp` changes (`quotes.md` 3.7, 5, composition obligation
-against `I₃`).
+against `I₃`). `nbsp`'s N5 deletes a separator with a `DIGIT` on its left and a code point outside
+`DASH` ∪ `INERT-DASH` on its right (`nbsp.md` §3.7 U2), so no dash run is adjacent to it; the
+longer reads of T1 and of `ranges`' `after` are the ones discharged under `I₂ₐ`.
 
 ### I₄ — `hyphen`
 
 `I₄(y)` requires no occurrence of a listed `hyphen` form whose hyphen is still U+002D. A later
 rule violates it only by changing a form's word boundaries, i.e. by inserting or removing a
-code point immediately beside a listed form. `nbsp` inserts only next to listed punctuation
-or beside a quote glyph, so the inserted space never lands between two letters; `symbols`
+code point immediately beside a listed form. `nbsp` inserts next to listed punctuation or beside
+a quote glyph, so the inserted space there never lands between two letters; its one other
+insertion, N5's between a `DIGIT` and a `spacedUnits` entry, can land between a digit and a
+letter, and is shown not to change a form's boundary in `nbsp.md` §5, composition obligation
+against `I₄` (the unit ends in a letter or at the form's hyphen, which N5's right-context guard
+declines); N5's deletion exposes a code point that is neither a letter nor a hyphen (U2, U3), and every form
+begins with one or the other; `symbols`
 deletes only `(`…`)` spans; `quotes` (0.3.0) deletes only a run whose landing is in
 `ALNUM ∪ QUOTEMARK`, but the deletion always removes an `INLINE-SPACE` run that is *not itself*
 inside a word — `hyphen`'s `WORDISH = ALNUM ∪ HYPHENISH` excludes both a U+0020 and a quote
@@ -239,7 +266,8 @@ space-like code point or the end. It is vacuous for a locale whose
 **Who can violate it.** `apostrophe`, `symbols` and `nbsp`, by changing the class of `cp[i-1]` or
 `cp[i+2]` or by putting a punctuation mark next to a primary close. The argument is in
 `quote-punctuation.md` §5: none of them emits the primary close (QP-1), a letter or a
-comma or full stop next to it, or anything that is not `SPACELIKE` where a space stood.
+comma or full stop next to it, or anything that is not `SPACELIKE` where a space stood. `nbsp`'s N5
+deletes a separator only after a `DIGIT`, never after a comma or full stop.
 
 ### I₅ … I₈
 
@@ -257,7 +285,10 @@ available. `quotes.md` §5's replacement is two lemmas plus a certification gate
 own output rather than relying on an argument about it: **Lemma A** (glyph-blindness — no
 candidate's verdict depends on *which* quote glyph a neighbour is) makes `apostrophe`'s emission
 structurally inert as a neighbour (Corollary A1); **Lemma B** (space-inertness at every position
-`nbsp` can reach) makes `nbsp`'s three insertion sites structurally inert. Both are CO-S
+`nbsp` can reach) makes `nbsp`'s three insertion sites around quote marks structurally inert; N5's insertion and
+deletion (`nbsp.md` §3.7) lie between a `DIGIT` and a unit that begins with no quotation glyph
+and no U+0022 or U+0027 (`nbsp.md` §3.7 U1, U2), so they are not adjacent to any quote mark
+(`quotes.md` §5, Lemma B item 4). Both are CO-S
 discharges in the sense of §5.1a below, over a *reachable-position* alphabet rather than a
 whole-emission alphabet for Lemma B specifically — see `quotes.md` §5 for why the alphabet alone
 is not sufficient there.
@@ -450,6 +481,7 @@ The idempotency property test must include, in every runtime:
    | **wide** | the consumed **and** emitted sets below | 0–5 |
    | **deep** | a core of at least `1`, `-`, U+0020, `.`, U+2060 | 0–8 |
    | **quotes** (spec 0.3.0) | `{ U+0022, U+0027, U+002D, U+0020, a }` ∪ every distinct quote glyph in `spec/locales/registry.json`'s locales | 0–6, per locale |
+   | **units** (spec 1.22.0, **mandatory**) | `{ 1, U+0020, U+00A0, x, х (U+0445), U+002D, U+2013, U+2014, U+2060, % }` ∪ one `nbsp.spacedUnits` entry ∪ one `nbsp.closedUnits` entry of that locale, each entry **one symbol** | 0–6, per locale |
 
    **Why the quotes tier exists, separately from wide/deep.** `quotes` (0.3.0)'s worst witness —
    `‘""-"-"` in `en-GB` — is seven code points over `{ ‘ " - }`, and the committed deep tier's
@@ -458,6 +490,21 @@ The idempotency property test must include, in every runtime:
    first time — every glyph the rule can produce is also now something it reads — so a tier keyed
    to that single, self-consistent alphabet is the natural unit rather than folding it into wide
    or deep, which are keyed to different rules' emission alphabets.
+
+   **Why the units tier exists, and what it must contain.** N5 inserts and deletes (`nbsp.md`
+   §3.7, spec 1.22.0), and the neighbourhood where it does so is the one place `nbsp` is read by
+   `ranges`, `dashes` and `symbols` at once: a digit run, a separator, a unit, a dash and a
+   multiplication letter. None of the other tiers contains a unit, so none can reach a defect in
+   that composition, and the two rules whose verdicts N5 can move (`ranges`/`dashes` through the
+   dash and `CLOSED-SYMBOL` reads, `symbols` through guard M3) are exactly the two guarded by G-R
+   and 5.5. The alphabet has the digit, both spaces N5 distinguishes (U+0020 and U+00A0), both
+   Latin and Cyrillic `MUL-LETTER` (M3), the hyphen, en and em dash and the joiner (G-R and T1),
+   and `%`, a `CLOSED-SYMBOL`; the two entries stand for the other unit kinds, and a locale
+   whose list is empty contributes none. A locale whose `spacedUnits` or `closedUnits` is
+   empty runs the tier without that entry (a `%` that is in no list is inert, but the dash and
+   chain reads are still exercised). Length 6 is the least that holds the guard-5.5 witness
+   `2␣x␣3km` (digit, space, letter, space, digit, unit), and the sweep must be run for both the
+   per-rule and the composition assertions (2) and (3) below, not only for the full pipeline. With twelve symbols the tier is about three million strings per locale.
 
    **Why two tiers, and why the bound moved.** A single length-4 bound was normative until
    `dashes` defect (e) — witness `1-1 - 1`, **seven characters** — shipped underneath it. Nothing

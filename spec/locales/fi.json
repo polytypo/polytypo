@@ -37,8 +37,6 @@
     "afterShortWords": [],
     "abbreviations": ["fil. maist."],
     "beforeUnits": [
-      "%",
-      "‰",
       "§",
       "kg",
       "g",
@@ -55,10 +53,11 @@
       "min",
       "s",
       "ms",
-      "°C",
       "kW",
       "kWh"
     ],
+    "spacedUnits": ["%", "‰", "°C", "°F"],
+    "closedUnits": [],
     "beforeNumber": [],
     "beforeWord": [],
     "afterSymbols": ["§"],
@@ -136,6 +135,12 @@
       "cite": "Kotimaisten kielten keskus (Kotus), Kielitoimiston ohjepankki: “Yhdysmerkki eli yhdysviiva”",
       "url": "https://kielitoimistonohjepankki.fi/ohje/yhdysmerkki-eli-yhdysviiva/",
       "note": "`prefixes`, `suffixes` and `compounds` are empty. Kotus’s hyphen guidance is entirely about when to write a hyphen (compounds with numerals or abbreviations, identical adjoining vowels, word-group compounds such as “avaimet käteen -sopimus”), never about forbidding a line break at one. Finnish compounding is productive, so there is no closed normative list to encode — unlike Russian, where кое-, -таки and из-под are a fixed inventory. Nothing here, and no Kotus page found, prescribes U+2011."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Kotus, Kielitoimiston ohjepankki: «Prosenttimerkki»: «Numeron ja prosenttimerkin väliin kuuluu suomenkielisissä teksteissä välilyönti.»; «Promillemerkki»: «Luvun ja merkin väliin jätetään väli: 4 ‰»; «Asteen ja tuuman merkit»: «erotetaan numero ja asteikon tunnus (°C, °F) välilyönnillä», «Asteen merkki ° kirjoitetaan numeron perään ilman välilyöntiä»",
+      "url": "https://kielitoimistonohjepankki.fi/ohje/prosenttimerkki/",
+      "note": "%, ‰, °C and °F in spacedUnits. Bare ° is closed up and is in no list (the same page sets 10° closed for a temperature with no scale letter). Other units stay in beforeUnits: only BIPM supports them. Retrieved 2026-11-11."
     }
   ]
 }

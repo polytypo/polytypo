@@ -20,14 +20,14 @@ The rule is one scan with ten sub-rules, N1 to N10, each driven by a list in the
 | N2 | `narrowBeforePunctuation` | narrow no-break space before the listed marks |
 | N3 | `afterShortWords` | U+00A0 after a listed short word |
 | N4 | `abbreviations` | U+00A0 for every space inside a listed abbreviation |
-| N5 | `beforeUnits` | U+00A0 between a number and a listed unit |
+| N5 | `beforeUnits`, `spacedUnits`, `closedUnits` | U+00A0 between a number and a listed unit, or no space at all for a closed unit |
 | N6 | `afterSymbols` | U+00A0 between a listed symbol and the number after it |
 | N7 | `initialBinding` | U+00A0 inside initials and between initials and a surname |
 | N8 | `quotes.*.innerSpace` | the space just inside a quotation pair |
 | N9 | `beforeNumber` | U+00A0 between a listed abbreviation and a following number |
 | N10 | `beforeWord` | U+00A0 between a listed abbreviation and a following word |
 
-Only N1, N2 and N8 insert a space. The others convert an existing space and do nothing if there is none.
+N1, N2, N5 and N8 insert a space. N5 also removes one, for units the locale writes closed. The others convert an existing space and do nothing if there is none.
 
 ### Before punctuation (N1, N2)
 
@@ -101,7 +101,13 @@ locale: ru
 
 ### Units and symbols (N5, N6)
 
-A unit in `beforeUnits` binds to the digits before it, when the unit is followed by something other than a letter or digit. Digits glued to a letter (`H2 O`) do not count as a number.
+N5 reads three lists, and a unit belongs to exactly one of them:
+
+- `beforeUnits` converts an existing space to U+00A0 and does nothing else.
+- `spacedUnits` converts an existing space, and inserts U+00A0 when the number and the unit touch.
+- `closedUnits` removes the single space between the number and the unit.
+
+A unit binds to the digits before it when it is followed by something other than a letter or digit. Digits glued to a letter (`H2 O`) do not count as a number.
 
 ```example
 locale: de-DE
@@ -109,15 +115,21 @@ locale: de-DE
 Es sind 20 km und 5 %.
 ```
 
-`afterSymbols` works the other way: `§ 3`, `№ 5`.
-
-N5 and N6 only convert. `20km` and `50%` are left as typed, because adding a space would change the content.
+Which list a unit goes in is the locale's call, taken from its national sources: where they allow both forms the locale writes the closed one, and where only the spaced form is attested it writes the space. In de-DE `20km` and `50%` both come out with a no-break space, and in ru `50 %` comes out closed.
 
 ```example
 locale: de-DE
 ---
 Es sind 20km und 50%.
 ```
+
+```example
+locale: ru
+---
+Скидка 50 %, температура 20°C.
+```
+
+Insertion and removal are skipped where the text is not a plain number followed by a unit: next to a range dash, after a hyphen or underscore, in a product of numbers (`2 x 3kg`), and in a modulo (`7 % 3`). `afterSymbols` works the other way: `§ 3`, `№ 5`.
 
 ### Initials (N7)
 

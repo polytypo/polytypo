@@ -1,5 +1,5 @@
 {
-  "spec": "1.21.0",
+  "spec": "1.22.0",
   "locale": "ro",
   "cases": [
     {
@@ -164,7 +164,7 @@
       "mode": "text",
       "in": "50 % din preț",
       "out": "50 % din preț",
-      "note": "% is not listed: it rests only on a non-normative guide, so it is not bound."
+      "note": "`%` is not listed: it rests only on a non-normative guide, so it is not bound, inserted or deleted."
     },
     {
       "id": "ro-nbsp-initial-single",

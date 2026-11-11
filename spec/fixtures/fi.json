@@ -1,5 +1,5 @@
 {
-  "spec": "1.21.0",
+  "spec": "1.22.0",
   "locale": "fi",
   "cases": [
     {
@@ -1185,7 +1185,7 @@
       "mode": "text",
       "in": "Matkaa on 20km rannikolle",
       "out": "Matkaa on 20km rannikolle",
-      "note": "N5 converts, never inserts."
+      "note": "`km` is in beforeUnits for fi (only BIPM supports it): a typed space is bound, nothing is inserted."
     },
     {
       "id": "fi-nbsp-unit-already-bound",
@@ -1328,6 +1328,14 @@
         "quote-punctuation": true
       },
       "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for fi, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
+    },
+    {
+      "id": "fi-nbsp-spaced-unit-inserted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Value 50% here",
+      "out": "Value 50 % here",
+      "note": "spec 1.22.0, nbsp.md §3.7: the unit is in spacedUnits, so the missing space is inserted as U+00A0."
     }
   ]
 }

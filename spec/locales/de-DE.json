@@ -36,7 +36,9 @@
     "narrowBeforePunctuation": [],
     "afterShortWords": [],
     "abbreviations": ["z. B.", "d. h.", "u. a.", "u. Ä.", "z. T.", "i. d. R."],
-    "beforeUnits": ["%", "‰", "€", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
+    "beforeUnits": ["‰"],
+    "spacedUnits": ["%", "€", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
+    "closedUnits": [],
     "beforeNumber": ["Nr.", "S."],
     "beforeWord": ["St."],
     "afterSymbols": ["§", "§§"],
@@ -87,6 +89,12 @@
       "cite": "Rat für deutsche Rechtschreibung, Amtliches Regelwerk der deutschen Rechtschreibung (2024), §79 E1",
       "url": "https://www.rechtschreibrat.com/DOX/RfdR_Amtliches-Regelwerk_2024.pdf",
       "note": "Supports quotes.punctuationPlacement = \"none\". Verbatim: “Satzzeichen, die zu einer angeführten Einheit gehören, stehen vor dem schließenden Anführungszeichen; Satzzeichen, die zum Trägersatz gehören, stehen nach dem schließenden Anführungszeichen.” E1(2) puts a comma after the closing mark when a carrier sentence follows the quotation, but the placement of a full stop and of the other marks depends on whether they belong to the quotation, so the rule does nothing here. Consulted 2026-11-09."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Gesellschaft für deutsche Sprache, «Leerzeichen und Festabstände»: «Vor bzw. nach Sonderzeichen wie §, €, %, & steht ein Leerzeichen»; «Abgekürzten Maß- und Mengenangaben geht ein Leerzeichen voran: 30 l, 50 km»; «ein Leerzeichen nach der Zahl … aber keines vor dem C»",
+      "url": "https://gfds.de/leerzeichen-und-festabstaende/",
+      "note": "%, €, °C, km, cm, mm, kg, km/h, kWh in spacedUnits. ‰ stays in beforeUnits: GfdS does not address it. Bare ° is closed up (GfdS: «ein Winkel von 30°») and is in no list. Retrieved 2026-11-11 via a model summary of the page, one level below a page read in full."
     }
   ]
 }

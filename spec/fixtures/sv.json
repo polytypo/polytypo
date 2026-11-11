@@ -1,5 +1,5 @@
 {
-  "spec": "1.21.0",
+  "spec": "1.22.0",
   "locale": "sv",
   "cases": [
     {
@@ -1172,12 +1172,12 @@
       "note": "nbsp N5, cited to Språkrådet §4.3.4 and BIPM."
     },
     {
-      "id": "sv-nbsp-unit-no-space",
+      "id": "sv-nbsp-unit-inserted",
       "rule": "nbsp",
       "mode": "text",
       "in": "Vi gick 5km i dag",
-      "out": "Vi gick 5km i dag",
-      "note": "N5 converts, never inserts."
+      "out": "Vi gick 5 km i dag",
+      "note": "`km` is in spacedUnits (spec 1.22.0), so the missing space is inserted as U+00A0."
     },
     {
       "id": "sv-nbsp-unit-already-bound",
@@ -1304,6 +1304,14 @@
         "quote-punctuation": true
       },
       "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for sv, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
+    },
+    {
+      "id": "sv-nbsp-spaced-unit-inserted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Value 50% here",
+      "out": "Value 50 % here",
+      "note": "spec 1.22.0, nbsp.md §3.7: the unit is in spacedUnits, so the missing space is inserted as U+00A0."
     }
   ]
 }

@@ -217,6 +217,9 @@ both before and after the edit.
   `Q` and the punctuation (N1/N2) only if the locale lists that punctuation in
   `beforePunctuation` or `narrowBeforePunctuation`, which `en-US` does not; if a locale did, the
   insertion would make `cp[i+1]` a space, which fails C2, so the pair is no longer a candidate.
+  `nbsp`'s N5 also deletes a single separator (`nbsp.md` §3.7, spec 1.22.0), but only one that
+  follows a `DIGIT`; C4 needs the space to follow a comma or full stop, so a deleted separator is
+  never the code point C4 reads.
 
 **What is argued and what is measured.** The discharges against `ellipsis`, `ranges`, `dashes`,
 `hyphen` and `nbsp` are class-membership arguments over the alphabet `{Q, U+002C, U+002E}` and

@@ -37,14 +37,8 @@
     "afterShortWords": [],
     "abbreviations": [],
     "beforeUnits": [
-      "%",
-      "‰",
-      "kr",
-      "€",
-      "kg",
       "g",
       "mg",
-      "km",
       "m",
       "cm",
       "mm",
@@ -60,6 +54,8 @@
       "h",
       "°C"
     ],
+    "spacedUnits": ["%", "‰", "kr", "€", "km", "kg"],
+    "closedUnits": [],
     "beforeNumber": [],
     "beforeWord": [],
     "afterSymbols": ["§"],
@@ -124,6 +120,12 @@
       "cite": "Språkrådet, Snabba skrivregler, §4.4 (sammansättningar med förkortningar) and kap. 7 (avstavning)",
       "url": "https://www.diva-portal.org/smash/get/diva2:1829117/FULLTEXT04.pdf",
       "note": "`prefixes`, `suffixes` and `compounds` are empty. The guide’s hyphen material states when to insert a bindestreck in compounds (e-post, EU-länderna, FN-arbete, satellit-tv-program, lan-spel) and treats avstavning as a separate topic; it never forbids a line break at an existing hyphen. Swedish compounding is productive, so there is no closed inventory to list — the field exists for the Russian кое- / -таки / из-под case. No U+2011 requirement found in any Språkrådet material consulted."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Myndigheternas skrivregler (Ds 2009:38), §10.15 «Procent och promille»: «Mellanslag sätts före tecknet.»; Snabba skrivregler §5.1.1 och §1.16: «10 km, 11 kg», «pris 7,50 kr», «3 € (tre euro)»",
+      "url": "https://www.regeringen.se/contentassets/cf18bfb62e0c4282ab3e8632080c2fb4/myndigheternas-skrivregler-ds-200938",
+      "note": "%, ‰, kr, €, km, kg in spacedUnits. Other units stay in beforeUnits: the sources list their symbols without a number. °C and bare ° were not found in either document. Retrieved 2026-11-11."
     }
   ]
 }

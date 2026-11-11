@@ -37,6 +37,8 @@
     "afterShortWords": [],
     "abbreviations": [],
     "beforeUnits": ["%", "‰", "€", "°C", "km", "cm", "mm", "kg", "km/h", "kWh"],
+    "spacedUnits": [],
+    "closedUnits": [],
     "beforeNumber": ["n.", "pag."],
     "beforeWord": [],
     "afterSymbols": [],

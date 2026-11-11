@@ -1,5 +1,5 @@
 {
-  "spec": "1.21.0",
+  "spec": "1.22.0",
   "locale": "hu",
   "cases": [
     {
@@ -173,12 +173,12 @@
       "note": "AkH12 §275: «23 °C» with a space."
     },
     {
-      "id": "hu-nbsp-percent-inert",
+      "id": "hu-nbsp-percent-closed",
       "rule": "nbsp",
       "mode": "text",
       "in": "48 % és 48%",
-      "out": "48 % és 48%",
-      "note": "AkH12 §275 prints 48% without a space, so % is not a unit here and nothing is bound."
+      "out": "48% és 48%",
+      "note": "AkH12 §275 prints 48% without a space, so % is in closedUnits: the typed space is deleted."
     },
     {
       "id": "hu-nbsp-single-letter-unit-inert",
@@ -270,6 +270,30 @@
         "quote-punctuation": true
       },
       "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for hu, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
+    },
+    {
+      "id": "hu-nbsp-spaced-unit-inserted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Value 20km here",
+      "out": "Value 20 km here",
+      "note": "spec 1.22.0, nbsp.md §3.7: the unit is in spacedUnits, so the missing space is inserted as U+00A0."
+    },
+    {
+      "id": "hu-nbsp-closed-nbsp-deleted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Value 5 % here",
+      "out": "Value 5% here",
+      "note": "spec 1.22.0, nbsp.md §3.7: a typed U+00A0 before a closedUnits entry is deleted as well as a U+0020."
+    },
+    {
+      "id": "hu-nbsp-celsius-spaced",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Ma 23°C van",
+      "out": "Ma 23 °C van",
+      "note": "AkH12 §275 writes `23 °C`: `°C` is in spacedUnits (spec 1.22.0)."
     }
   ]
 }

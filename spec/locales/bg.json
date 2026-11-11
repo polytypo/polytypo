@@ -36,7 +36,9 @@
     "narrowBeforePunctuation": [],
     "afterShortWords": [],
     "abbreviations": [],
-    "beforeUnits": ["км", "кг", "лв.", "г."],
+    "beforeUnits": [],
+    "spacedUnits": ["км", "кг", "лв.", "г."],
+    "closedUnits": ["%"],
     "beforeNumber": [],
     "beforeWord": [],
     "afterSymbols": [],
@@ -78,6 +80,12 @@
       "cite": "Институт за български език (БАН), «За интервалите и препинателните знаци» (2018): «Пред точка, запетая, въпросителен знак, удивителен знак, точка и запетая, двоеточие не се оставя интервал.»; Езикови справки №1601: «Между последната цифра и съкращението се поставя шпация (интервал): 20 лв., също и 5 кг, 10 м, 100 км, 2020 г. и под.»; №626: «В записа 5% няма интервал (шпация) между цифрата и знака за процент.»",
       "url": "https://ibl.bas.bg/ezikovispravki/vaprosi/pri-skrashcheniya-vkl-mezhdu-tsifra-i-skrashchenie-5-kg-2014-g-4/1601",
       "note": "(1) beforePunctuation and narrowBeforePunctuation empty: no space before . , ? ! ; :. (2) beforeUnits = км, кг, лв., г.: each attested with a space after a number. This is form evidence only (IBL does not say non-breaking), the same footing as hu and sk, MEDIUM. The single-letter м is excluded by decision. (3) % is excluded: IBL writes 5% unspaced; the DGT house handbook's «4 %» with a non-breaking space ranks below it. (4) abbreviations, beforeNumber, beforeWord, afterSymbols and afterShortWords are empty and initialBinding = none: no source states a rule (IBL says proper names follow ordinary line-break rules). Decision, not citation. Verified 2026-10-21."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Институт за български език към БАН, Езикови справки № 626: «В записа 5% няма интервал (шпация) между цифрата и знака за процент.»; № 1601 (28.1.2020): «Между последната цифра и съкращението се поставя шпация (интервал): 20 лв., … 5 кг, 10 м, 100 км, 2020 г.»",
+      "url": "https://ibl.bas.bg/ezikovispravki/vaprosi/pri-znatsite-za-protsent-gradus-nomer-paragraf-i-dr-2/626",
+      "note": "% е в closedUnits (№ 626). км, кг, лв., г. са в spacedUnits (№ 1601). °C и ‰ няма в източниците на ИБЕ БАН и не са в списъци. Проверено на 11.11.2026."
     }
   ]
 }

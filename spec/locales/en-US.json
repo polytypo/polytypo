@@ -42,27 +42,20 @@
     "narrowBeforePunctuation": [],
     "afterShortWords": [],
     "abbreviations": [],
-    "beforeUnits": [
-      "%",
+    "beforeUnits": ["g", "m", "L", "h", "s", "°C", "°F"],
+    "spacedUnits": [
       "kg",
-      "g",
       "mg",
       "km",
-      "m",
       "cm",
       "mm",
       "mi",
       "ft",
       "lb",
       "oz",
-      "L",
       "mL",
-      "h",
-      "min",
-      "s",
       "ms",
-      "°C",
-      "°F",
+      "min",
       "kB",
       "MB",
       "GB",
@@ -70,6 +63,7 @@
       "kW",
       "kWh"
     ],
+    "closedUnits": ["%"],
     "beforeNumber": [],
     "beforeWord": [],
     "afterSymbols": [],
@@ -116,7 +110,7 @@
       "rule": "nbsp",
       "cite": "BIPM, The International System of Units (SI), 9th ed. (2019), concise summary, “The language of science: using the SI to express the values of quantities”",
       "url": "https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-concise-EN.pdf",
-      "note": "Verbatim: “A single space is always left between the number and the unit.” This is the authority for the unit list itself; Chicago is the authority for making that space non-breaking. `%` is included even though Chicago sets percentages closed up (45%): the rule only converts a space the author already typed, and a spaced `45 %` in English is a deliberate scientific-style choice worth binding."
+      "note": "Verbatim: “A single space is always left between the number and the unit.” This is the authority for the unit list itself; Chicago is the authority for making that space non-breaking. BIPM supplies which strings are SI symbols; the spacing of `%`, which BIPM sets with a space and Chicago closed up, is decided by the entry above."
     },
     {
       "rule": "nbsp",
@@ -145,6 +139,12 @@
       "cite": "CMOS Shop Talk (the Chicago Manual of Style’s own blog), Russell Harper, “Commas and Periods with Quotation Marks”, 20 October 2020 (updated 20 January 2026), which cites Chicago Manual of Style 6.9–6.10",
       "url": "https://cmosshoptalk.com/2020/10/20/commas-and-periods-with-quotation-marks/",
       "note": "Supports quotes.punctuationPlacement = \"inside\". Verbatim: “In publications that follow Chicago style, commas and periods are placed before a closing quotation mark”; semicolons, colons, question marks, exclamation points and dashes “go after a closing quotation mark unless they belong to the quoted matter.” Only the comma and the full stop are positional, so only those two are moved (quote-punctuation.md §3); the others depend on whether they belong to the quotation, which no scan of code points can tell. The post also notes the convention is “no longer universally followed outside the United States”. The numbered paragraphs of the manual itself are behind a login and were not read; 6.9–6.10 are the numbers the post gives, and it names no edition; the current (18th) edition is inferred from the post’s update date, not stated by it. CMOS Shop Talk, “Section 7.75 in the Spotlight” (11 August 2015, 16th ed.), says punctuation that is not part of a quoted computer term stays outside the marks; whether that holds in the 18th edition was not checked, and the rule does not model it (accepted cost, quote-punctuation.md §6). Consulted 2026-11-09."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Chicago Manual of Style, 18th ed., 9.18 (as quoted by CMOS Shop Talk, “Introducing the Chicago Manual of Style for PerfectIt”, 31 Aug 2021): “20%” [with no space between the numeral and the symbol]; “A single space is always left between the number and the unit” (NIST SP 811, 2008 ed., §7.2) for kg, km, kW and the like",
+      "url": "https://cmosshoptalk.com/2021/08/31/introducing-the-chicago-manual-of-style-for-perfectit/",
+      "note": "`%` is in closedUnits: Chicago, the named style authority for en-US, sets it closed up; NIST SP 811 §7.10.2 sets a space (“0.25 %”), and where authorities disagree the locale follows the style guide. The listed multi-letter units are in spacedUnits (NIST §7.2; Chicago: “between a numeral and an abbreviated unit of measure, as in ‘10 kg’”). `°C` and `°F` stay in beforeUnits: Chicago is silent and NIST sets a space, practice sets them closed. Single-letter symbols stay in beforeUnits: `1970s` and `£2m` are not units. Retrieved 2026-11-11."
     }
   ]
 }

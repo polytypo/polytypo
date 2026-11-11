@@ -37,7 +37,6 @@
     "afterShortWords": [],
     "abbreviations": [],
     "beforeUnits": [
-      "%",
       "kg",
       "g",
       "mg",
@@ -55,8 +54,6 @@
       "min",
       "s",
       "ms",
-      "°C",
-      "°F",
       "kB",
       "MB",
       "GB",
@@ -64,6 +61,8 @@
       "kW",
       "kWh"
     ],
+    "spacedUnits": [],
+    "closedUnits": ["%", "°C", "°F"],
     "beforeNumber": [],
     "beforeWord": [],
     "afterSymbols": [],
@@ -92,7 +91,7 @@
       "rule": "nbsp",
       "cite": "BIPM, The International System of Units (SI), 9th ed. (2019), concise summary, “The language of science: using the SI to express the values of quantities”",
       "url": "https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-concise-EN.pdf",
-      "note": "Verbatim: “A single space is always left between the number and the unit.” Used here because the University of Oxford Style Guide sets measurements closed up (“The average height of a woman in the UK is 1.61m.”, “worth 10% of the available marks”) and is therefore silent on binding a space it does not itself write. The nbsp rule never inserts a space — it only makes an author-typed space non-breaking — so the two positions do not conflict."
+      "note": "Verbatim: “A single space is always left between the number and the unit.” Used here because the University of Oxford Style Guide sets measurements closed up (“The average height of a woman in the UK is 1.61m.”, “worth 10% of the available marks”) and is therefore silent on binding a space it does not itself write. Oxford is the named authority for en-GB, so where the two disagree on `%` and `°C`/`°F` the locale follows Oxford (closedUnits, see the entry below); for the remaining units BIPM only supplies the symbols."
     },
     {
       "rule": "nbsp",
@@ -127,6 +126,12 @@
       "cite": "University of Oxford Style Guide (2014; Michaelmas term 2014 edition), p. 16, “Using other punctuation with quotation marks”",
       "url": "https://warwick.ac.uk/fac/sci/lifesci/research/der/workshop/university_of_oxford_style_guide.pdf",
       "note": "Supports quotes.punctuationPlacement = \"none\". Verbatim: “If the quote would have required punctuation in its original form, place the punctuation inside the quotation marks.” and “Place any punctuation which does not belong to the quote outside the quotation marks (except closing punctuation if the end of the quote is also the end of the sentence).” Placement follows whether the mark belongs to the quoted material, which a scan of code points cannot decide, so the rule does nothing here rather than guess. This is a university house style, not a national norm, and the copy read is the 2014 edition at the URL above; the current edition on ox.ac.uk was not reachable. Consulted 2026-11-09."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "University of Oxford Style Guide (2014), pp. 7, 10: “worth 10% of the available marks”; “The average height of a woman in the UK is 1.61m.”; “Preheat the oven to 350°F (180°C).”",
+      "url": "https://www.warwick.ac.uk/fac/sci/lifesci/research/der/workshop/university_of_oxford_style_guide.pdf",
+      "note": "`%`, `°C` and `°F` are in closedUnits: Oxford, the named authority for en-GB, sets them closed up. The other units stay in beforeUnits (an author-typed space is bound, nothing is inserted or deleted): Oxford's own example is the single-letter `m`, which no list holds, and BIPM sets a space. Retrieved 2026-11-11."
     }
   ]
 }

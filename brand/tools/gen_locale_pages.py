@@ -73,7 +73,9 @@ NBSP_LISTS = [
     ("narrowBeforePunctuation", "Characters that take U+202F before them"),
     ("afterShortWords", "Short words after which the space becomes U+00A0, so the word is not left at the end of a line"),
     ("abbreviations", "Multi-token abbreviations whose internal spaces become U+00A0"),
-    ("beforeUnits", "Units and signs bound to the preceding number with U+00A0"),
+    ("beforeUnits", "Units and signs bound to the preceding number with U+00A0 when the author typed a space"),
+    ("spacedUnits", "Units and signs written with a space after the number: the space is bound with U+00A0, and inserted when missing"),
+    ("closedUnits", "Units and signs written closed up to the number: a space between them is removed"),
     ("beforeNumber", "Abbreviations bound to the following number with U+00A0"),
     ("beforeWord", "Abbreviations bound to the following word with U+00A0"),
     ("afterSymbols", "Symbols bound to the following number with U+00A0"),
@@ -158,8 +160,11 @@ def quick_answer(d):
         parts.append(f"U+00A0 goes before {_codes(nb['beforePunctuation'])}")
     if nb["narrowBeforePunctuation"]:
         parts.append(f"U+202F goes before {_codes(nb['narrowBeforePunctuation'])}")
-    if not parts and nb["beforeUnits"]:
-        parts.append(f"numbers bind to units such as {_codes(nb['beforeUnits'][:3])} with U+00A0")
+    unit_list = nb["spacedUnits"] or nb["beforeUnits"]
+    if not parts and unit_list:
+        parts.append(f"numbers bind to units such as {_codes(unit_list[:3])} with U+00A0")
+    if not parts and nb["closedUnits"]:
+        parts.append(f"{_codes(nb['closedUnits'][:3])} is written closed up to the number")
     if parts:
         out.append("; ".join(parts)[0].upper() + "; ".join(parts)[1:] + ".")
     return " ".join(out)

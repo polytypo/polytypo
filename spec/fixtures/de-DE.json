@@ -1,5 +1,5 @@
 {
-  "spec": "1.21.0",
+  "spec": "1.22.0",
   "locale": "de-DE",
   "cases": [
     {
@@ -416,12 +416,12 @@
       "note": "nbsp.md §6 case 16: N5 twice."
     },
     {
-      "id": "de-de-nbsp-unit-never-inserts",
+      "id": "de-de-nbsp-unit-inserted",
       "rule": "nbsp",
       "mode": "text",
       "in": "Es sind 20km",
-      "out": "Es sind 20km",
-      "note": "nbsp.md §6 case 17 and §7.2: N5 converts, never inserts — even though Duden requires the space, adding one is a content change."
+      "out": "Es sind 20 km",
+      "note": "spec 1.22.0, nbsp.md §3.7: `km` is in spacedUnits, so the missing space is inserted as U+00A0. Before 1.22.0 N5 only converted."
     },
     {
       "id": "de-de-nbsp-unit-letter-guard",
@@ -630,7 +630,7 @@
       "rules": {
         "ranges": true
       },
-      "note": "dashes.md §3.2 step 8 (spec 1.3.0): T1's outward walk from the digit run steps over one CLOSED-SYMBOL. The cluster guard cannot catch this one — a cluster ends at the U+0020 — so before the amendment the `--` became a spaced en dash and the range converted on the next pass. To be precise about \"before the amendment\": the drift is a property of the INTERMEDIATE state — ranges.md §3.2a's widened candidacy without T1's transparency — which never shipped. Under spec 1.2.0 this input was stable, because the token was not a range candidate at all."
+      "note": "dashes.md §3.2 step 8 (spec 1.3.0): T1's outward walk from the digit run steps over one CLOSED-SYMBOL. The cluster guard cannot catch this one — a cluster ends at the U+0020 — so before the amendment the `--` became a spaced en dash and the range converted on the next pass. To be precise about \"before the amendment\": the drift is a property of the INTERMEDIATE state — ranges.md §3.2a's widened candidacy without T1's transparency — which never shipped. Under spec 1.2.0 this input was stable, because the token was not a range candidate at all. Spec 1.22.0: `%` is in de-DE's spacedUnits, and N5 declines to insert beside a dash (nbsp.md §3.7 step 5.3), so the output is unchanged."
     },
     {
       "id": "de-de-dashes-t1-closed-up-symbol-left",
@@ -677,7 +677,9 @@
       "id": "de-de-yaml-colon-split-declines-growth",
       "rule": "dashes",
       "mode": "yaml",
-      "keys": ["description"],
+      "keys": [
+        "description"
+      ],
       "in": "description: a:--b\n",
       "out": "description: a:--b\n",
       "note": "modes.md §3.8.6: `:` is an opaque unit inside a plain scalar, so the dash token sits at a span extremity and the `-spaced` replacement (2 → 3) is discarded by the edge-growth rule of §3.4. Without the split this becomes `a: – b`, which no longer parses as one scalar."
@@ -686,7 +688,9 @@
       "id": "de-de-yaml-hash-split-declines-growth",
       "rule": "dashes",
       "mode": "yaml",
-      "keys": ["description"],
+      "keys": [
+        "description"
+      ],
       "in": "description: a--#b\n",
       "out": "description: a--#b\n",
       "note": "modes.md §3.8.6: `#` is an opaque unit inside a plain scalar for the same reason. Without the split this becomes `a – #b`, and everything from the hash becomes a comment."
@@ -695,7 +699,9 @@
       "id": "de-de-yaml-block-prose",
       "rule": "quotes",
       "mode": "yaml",
-      "keys": ["description"],
+      "keys": [
+        "description"
+      ],
       "in": "description: |\n  Er sagte \"hallo\" und ging\n",
       "out": "description: |\n  Er sagte „hallo“ und ging\n",
       "note": "modes.md §8 item 4: the same construct in a locale whose quote glyphs are structurally different from en-US, so a fixture is not the same English output with a different locale field."
@@ -704,7 +710,9 @@
       "id": "de-de-yaml-unlisted-key-untouched",
       "rule": "dashes",
       "mode": "yaml",
-      "keys": ["description"],
+      "keys": [
+        "description"
+      ],
       "in": "run: git diff -- a--b\n",
       "out": "run: git diff -- a--b\n",
       "note": "modes.md §3.8.2: the measured case. A keyless draft rewrote shell inside `run:`; `keys` is what makes it unreachable."
@@ -738,7 +746,9 @@
       "id": "de-de-yaml-three-dash-against-colon",
       "rule": "dashes",
       "mode": "yaml",
-      "keys": ["description"],
+      "keys": [
+        "description"
+      ],
       "in": "description: a:---b\n",
       "out": "description: a:---b\n",
       "note": "modes.md §3.8.6 with §3.4's character clause: without it this became `description: a: – b`, which no longer parses — `: ` is a mapping indicator. The two-dash companion de-de-yaml-colon-split-declines-growth is caught by the length clause; only this one needs the character clause."
@@ -747,7 +757,9 @@
       "id": "de-de-yaml-three-dash-against-hash",
       "rule": "dashes",
       "mode": "yaml",
-      "keys": ["description"],
+      "keys": [
+        "description"
+      ],
       "in": "description: a---#b\n",
       "out": "description: a---#b\n",
       "note": "modes.md §3.8.6 with §3.4's character clause: without it this became `description: a – #b`, and everything from the hash became a comment — the value silently truncated to `a –`."
@@ -757,7 +769,10 @@
       "rule": "quotes",
       "mode": "markdown",
       "dialect": "commonmark",
-      "frontmatterKeys": ["title", "summary"],
+      "frontmatterKeys": [
+        "title",
+        "summary"
+      ],
       "in": "---\ntitle: Er sagte \"hallo\" laut\nsummary: Noch \"eins\" hier\nslug: \"er-sagte-hallo\"\n---\n\nIm Text \"so\" hier.\n",
       "out": "---\ntitle: Er sagte „hallo“ laut\nsummary: Noch „eins“ hier\nslug: \"er-sagte-hallo\"\n---\n\nIm Text „so“ hier.\n",
       "note": "modes.md §3.7.4: two listed plain scalars in a locale whose quote glyphs differ from English, with an unlisted slug between the block and the body. Each listed scalar is its own span and the marks pair inside it, so the German pair appears three times and the slug keeps its straight quotes."
@@ -766,7 +781,9 @@
       "id": "de-de-yaml-single-quoted-escape-growth-declined",
       "rule": "dashes",
       "mode": "yaml",
-      "keys": ["description"],
+      "keys": [
+        "description"
+      ],
       "in": "description: 'a''--''b'\n",
       "out": "description: 'a''--''b'\n",
       "note": "modes.md §3.8.6 and §3.4: de-DE is a `-spaced` locale, so the dash would grow against a unit and the edge-growth rule discards it, as in fr. A second locale so that an implementation that does not split cannot pass on one cell alone."
@@ -857,6 +874,89 @@
         "quote-punctuation": true
       },
       "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for de-DE, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
+    },
+    {
+      "id": "de-de-nbsp-spaced-unit-inserted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Value 50% here",
+      "out": "Value 50 % here",
+      "note": "spec 1.22.0, nbsp.md §3.7: the unit is in spacedUnits, so the missing space is inserted as U+00A0."
+    },
+    {
+      "id": "de-de-nbsp-spaced-guard-hyphen-compound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Die 15cm-Norm und die 5-km-Strecke",
+      "out": "Die 15cm-Norm und die 5-km-Strecke",
+      "note": "nbsp.md §3.7 step 5.2: a hyphen after the unit marks a compound; N5 inserts nothing."
+    },
+    {
+      "id": "de-de-nbsp-spaced-guard-file-name",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Datei foto-5kg.png und /5km und x_5kg",
+      "out": "Datei foto-5kg.png und /5km und x_5kg",
+      "note": "nbsp.md §3.7 step 5.1 and 5.2: a hyphen, slash or underscore before the number and a full stop plus a letter after the unit mark a name, not a measurement."
+    },
+    {
+      "id": "de-de-nbsp-spaced-number-starts",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "(5km), 1.000km, 1,5kg, +5kg, −5kg und -5kg",
+      "out": "(5 km), 1.000 km, 1,5 kg, +5 kg, −5 kg und -5 kg",
+      "note": "nbsp.md §3.7 step 5.1: a bracket, a decimal or thousands separator and a sign may stand left of the number; U+002D counts as a sign only after a space or at the start."
+    },
+    {
+      "id": "de-de-nbsp-spaced-letter-before-number",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "H2km und A4kg",
+      "out": "H2km und A4kg",
+      "note": "nbsp.md §3.7 step 3: a letter before the digit run is not a number."
+    },
+    {
+      "id": "de-de-nbsp-spaced-sentence-end",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Es sind 5km. Dann 5kg.",
+      "out": "Es sind 5 km. Dann 5 kg.",
+      "note": "The unit is followed by a full stop and then a space, so it is not a file name."
+    },
+    {
+      "id": "de-de-nbsp-spaced-html-boundary",
+      "rule": "nbsp",
+      "mode": "html",
+      "in": "<p>Es sind 20<b>km</b> und 30km</p>",
+      "out": "<p>Es sind 20<b>km</b> und 30 km</p>",
+      "note": "A span boundary between the digits and the unit is not in the list of things allowed beside a number, so nothing is inserted there; the second is inside one text node and is inserted."
+    },
+    {
+      "id": "de-de-nbsp-spaced-guard-range-dash",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Von 15% - 20% mehr",
+      "out": "Von 15%⁠–⁠20% mehr",
+      "note": "nbsp.md §3.7 step 5.3: the same guard on the inserting side — `%` is in spacedUnits, but a space is not inserted beside a dash.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "de-de-nbsp-spaced-range-dash-km",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Es sind 5-10km und 3 - 4km",
+      "out": "Es sind 5-10km und 3 - 4 km",
+      "note": "The guard applies to a unit that is a closed-up symbol only: `km` is not read by `ranges`, so a space is inserted beside a dash."
+    },
+    {
+      "id": "de-de-nbsp-spaced-guard-range-dash-default",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Von 5% - 10% mehr",
+      "out": "Von 5% - 10% mehr",
+      "note": "nbsp.md §3.7 step 5.3 on the default rule set: the guard applies whether or not `ranges` is on."
     }
   ]
 }

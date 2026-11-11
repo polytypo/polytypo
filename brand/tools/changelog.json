@@ -2,6 +2,56 @@
   "_comment": "Single source for CHANGELOG.md (brand/tools/gen_readmes.py) and the site's /changelog page (brand/tools/build_promo.py). Released versions only. Example strings are real engine output captured from the published packages of each version, never typed by hand; an entry whose release changes no output carries examples: [].",
   "releases": [
     {
+      "version": "1.22.0",
+      "date": "2026-11-11",
+      "headline": "Numbers and units are now spaced the way each locale writes them, so `50%` and `50 %` give the same result.",
+      "items": [
+        {
+          "text": "The `nbsp` rule used to bind a number to a unit only when you had already typed a space. It now decides the form itself, per locale. In `en-US`, `5kg` becomes `5 kg` with a no-break space and `50 %` becomes `50%`; in `de-DE`, `20km` becomes `20 km` and `50%` becomes `50 %`; in `ru` the percent sign is written closed and `20°C` gets its space. Where a locale's sources allow both forms, the locale picks the closed one, so one author's text no longer comes out half spaced and half closed. The locale data gained two lists beside `beforeUnits`: `spacedUnits`, where a no-break space is inserted or kept, and `closedUnits`, where the space is removed."
+        },
+        {
+          "text": "The accepted cost: the rule now inserts and deletes a space, not only converts one. It acts on a unit only when it directly follows a number and is not a letter-led word, and it leaves alone a range dash (`15–20%`), a product (`2 x 3kg`) and a modulo (`7 % 3`). A bare `°` stays closed, and single-letter units such as `m` are only converted, never inserted, because `5m` is not reliably a unit. Text that wrote a closed `50 %` on purpose in a locale that closes the percent sign is now closed."
+        }
+      ],
+      "examples": [
+        {
+          "locale": "en-US",
+          "mode": "text",
+          "in": "It weighs 5kg.",
+          "before": "It weighs 5kg.",
+          "after": "It weighs 5 kg."
+        },
+        {
+          "locale": "en-US",
+          "mode": "text",
+          "in": "The battery is at 50 %.",
+          "before": "The battery is at 50 %.",
+          "after": "The battery is at 50%."
+        },
+        {
+          "locale": "de-DE",
+          "mode": "text",
+          "in": "Es sind 20km und 50%.",
+          "before": "Es sind 20km und 50%.",
+          "after": "Es sind 20 km und 50 %."
+        },
+        {
+          "locale": "ru",
+          "mode": "text",
+          "in": "Скидка 50 %, температура 20°C.",
+          "before": "Скидка 50 %, температура 20°C.",
+          "after": "Скидка 50%, температура 20 °C."
+        },
+        {
+          "locale": "en-GB",
+          "mode": "text",
+          "in": "It is 21 °C.",
+          "before": "It is 21 °C.",
+          "after": "It is 21°C."
+        }
+      ]
+    },
+    {
       "version": "1.21.0",
       "date": "2026-11-11",
       "headline": "A new rule, off by default, moves a comma or full stop inside the closing quotation mark in American English.",

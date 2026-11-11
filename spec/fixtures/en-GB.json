@@ -1,5 +1,5 @@
 {
-  "spec": "1.21.0",
+  "spec": "1.22.0",
   "locale": "en-GB",
   "cases": [
     {
@@ -1169,7 +1169,7 @@
       "mode": "text",
       "in": "It is 20km to the coast",
       "out": "It is 20km to the coast",
-      "note": "N5 never inserts."
+      "note": "`km` is in beforeUnits for en-GB: a typed space is bound, nothing is inserted or deleted."
     },
     {
       "id": "en-gb-nbsp-unit-already-bound",
@@ -1180,12 +1180,12 @@
       "note": "Already-correct branch."
     },
     {
-      "id": "en-gb-nbsp-percent-spaced",
+      "id": "en-gb-nbsp-percent-space-deleted",
       "rule": "nbsp",
       "mode": "text",
       "in": "Prices rose 5 %",
-      "out": "Prices rose 5 %",
-      "note": "`%` is in beforeUnits."
+      "out": "Prices rose 5%",
+      "note": "`%` is in closedUnits: the Oxford Style Guide sets percentages closed up (spec 1.22.0), so the typed space is deleted."
     },
     {
       "id": "en-gb-nbsp-percent-closed",
@@ -1193,7 +1193,7 @@
       "mode": "text",
       "in": "Prices rose 5%",
       "out": "Prices rose 5%",
-      "note": "Never inserts."
+      "note": "Already closed up: `%` is in closedUnits and nothing is inserted."
     },
     {
       "id": "en-gb-nbsp-formula-not-a-unit",
@@ -1243,7 +1243,7 @@
       "rule": "nbsp",
       "mode": "text",
       "in": "The report -- published 2026-08-15 -- says \"growth was 5 %\", but...",
-      "out": "The report – published 2026-08-15 – says ‘growth was 5 %’, but…",
+      "out": "The report – published 2026-08-15 – says ‘growth was 5%’, but…",
       "note": "Second prose case, same input as en-US-nbsp-prose-report."
     },
     {
@@ -1945,6 +1945,22 @@
         "quote-punctuation": true
       },
       "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for en-GB (Oxford places the mark by whether it belongs to the quotation, which a scan cannot decide), so enabling the rule changes nothing; `quotes` alone converts the glyphs and the comma stays outside."
+    },
+    {
+      "id": "en-gb-nbsp-closed-nbsp-deleted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Value 5 % here",
+      "out": "Value 5% here",
+      "note": "spec 1.22.0, nbsp.md §3.7: a typed U+00A0 before a closedUnits entry is deleted as well as a U+0020."
+    },
+    {
+      "id": "en-gb-nbsp-celsius-closed",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Preheat to 180 °C and 350 °F",
+      "out": "Preheat to 180°C and 350°F",
+      "note": "Oxford sets `°C` and `°F` closed up (spec 1.22.0)."
     }
   ]
 }
