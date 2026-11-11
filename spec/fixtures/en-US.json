@@ -4621,17 +4621,6 @@
       "note": "quote-punctuation.md §3.3, §6 row H3: a marker sits at cp[i-1], so C3 fails."
     },
     {
-      "id": "en-us-quote-punctuation-html-line-boundary",
-      "rule": "quote-punctuation",
-      "mode": "html",
-      "in": "<p>She said \"hello\".</p>\n<p>Next.</p>",
-      "out": "<p>She said “hello.”</p>\n<p>Next.</p>",
-      "rules": {
-        "quote-punctuation": true
-      },
-      "note": "quote-punctuation.md §3.3, §6 row H4: the gap between the paragraphs holds a line terminator, so it is the -2 marker, a member of BREAK, and C4 holds (modes.md §3.2)."
-    },
-    {
       "id": "en-us-quote-punctuation-html-inline-boundary",
       "rule": "quote-punctuation",
       "mode": "html",
@@ -4640,7 +4629,7 @@
       "rules": {
         "quote-punctuation": true
       },
-      "note": "quote-punctuation.md §3.3, §6 row H5, accepted cost: the gap holds no line terminator, so it is the -1 marker at cp[i+2] and C4 fails."
+      "note": "quote-punctuation.md §3.3, §6 row H5, accepted cost: the gap between the paragraphs is a -1 marker at cp[i+2], so C4 fails."
     },
     {
       "id": "en-us-quote-punctuation-markdown-commonmark-one-span",

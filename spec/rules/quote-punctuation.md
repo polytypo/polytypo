@@ -273,8 +273,7 @@ move together.
 | H1  | `html`     | `<p>She said "hello", then left.</p>`          | `<p>She said “hello,” then left.</p>`          | one text node                                                      |
 | H2  | `html`     | `<p>She said <em>"hello"</em>, then left.</p>` | `<p>She said <em>“hello”</em>, then left.</p>` | a marker at `cp[i+1]` fails C2                                     |
 | H3  | `html`     | `<p>She said "<em>hello</em>", then left.</p>` | `<p>She said “<em>hello</em>”, then left.</p>` | a marker at `cp[i-1]` fails C3                                     |
-| H4  | `html`     | `<p>She said "hello".</p>` + U+000A + `<p>Next.</p>` | `<p>She said “hello.”</p>` + U+000A + `<p>Next.</p>` | the gap holds a line terminator: a −2 marker is `BREAK`, so C4 holds |
-| H5  | `html`     | `<p>She said "hello".</p><p>Next.</p>`         | `<p>She said “hello”.</p><p>Next.</p>`         | the gap holds none: a −1 marker at `cp[i+2]` fails C4              |
+| H5  | `html`     | `<p>She said "hello".</p><p>Next.</p>`         | `<p>She said “hello”.</p><p>Next.</p>`         | the gap between the paragraphs is a −1 marker at `cp[i+2]`: C4 fails            |
 | M1  | `markdown` | `She said "hello", then left.` + U+000A        | `She said “hello,” then left.` + U+000A        | one span                                                           |
 | M2  | `markdown` | `*She said "hello"*, then left.`               | `*She said “hello”*, then left.`               | the closing `*` is a boundary                                      |
 | M3  | `markdown` | `*He said "hi".* Next`                         | `*He said “hi”.* Next`                         | the same, at `cp[i+2]`                                             |

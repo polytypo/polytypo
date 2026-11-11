@@ -2,6 +2,42 @@
   "_comment": "Single source for CHANGELOG.md (brand/tools/gen_readmes.py) and the site's /changelog page (brand/tools/build_promo.py). Released versions only. Example strings are real engine output captured from the published packages of each version, never typed by hand; an entry whose release changes no output carries examples: [].",
   "releases": [
     {
+      "version": "1.21.0",
+      "date": "2026-11-11",
+      "headline": "A new rule, off by default, moves a comma or full stop inside the closing quotation mark in American English.",
+      "items": [
+        {
+          "text": "The `quote-punctuation` rule follows the American convention: a comma or full stop that comes right after a closing quotation mark goes inside it. With the rule on in `en-US`, `She said \"hello\", then left.` becomes `She said “hello,” then left.`, and `He called it \"done\". Then he left.` becomes `He called it “done.” Then he left.` The rule is off by default, so your output does not change until you turn it on with `rules: { \"quote-punctuation\": true }`. It works in `text`, `html`, `markdown` and `yaml` modes. Every other locale, `en-GB` included, is left exactly as typed; the locale data gained a `quotes.punctuationPlacement` field, `inside` for `en-US` and `none` elsewhere."
+        },
+        {
+          "text": "The accepted cost: the rule moves the mark whenever a letter, then the closing quote, then the comma or full stop is followed by a space or the end of the text, and it cannot tell a quotation from a name or a literal value. `Set it to \"strict\".` becomes `Set it to “strict.”` even where the full stop ends the sentence rather than the quoted word. It leaves the mark alone after a digit (`\"Route 66\".` stays as typed), before a letter, and for the other punctuation marks."
+        }
+      ],
+      "examples": [
+        {
+          "locale": "en-US",
+          "mode": "text",
+          "in": "She said \"hello\", then left.",
+          "before": "She said “hello”, then left.",
+          "after": "She said “hello,” then left."
+        },
+        {
+          "locale": "en-US",
+          "mode": "text",
+          "in": "He called it \"done\". Then he left.",
+          "before": "He called it “done”. Then he left.",
+          "after": "He called it “done.” Then he left."
+        },
+        {
+          "locale": "en-US",
+          "mode": "text",
+          "in": "Set it to \"strict\".",
+          "before": "Set it to “strict”.",
+          "after": "Set it to “strict.”"
+        }
+      ]
+    },
+    {
       "version": "1.20.1",
       "date": "2026-11-07",
       "headline": "No change to output: the Serbian locale's citation now states what it does with the percent sign.",

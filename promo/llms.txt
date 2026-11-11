@@ -57,7 +57,7 @@ Modes (4): text, html, markdown, yaml. `text` has no parser and no skip list —
 - [Czech (cs)](https://polytypo.dev/locales/cs/): Czech (cs): quotation marks „…“ and ‚…‘, spaced en dash for breaks; 8 cited sources, 20 tested examples.
 - [Dutch (nl)](https://polytypo.dev/locales/nl/): Dutch (nl): quotation marks “…” and ‘…’, spaced en dash for breaks; 9 cited sources, 17 tested examples.
 - [English (United Kingdom) (en-GB)](https://polytypo.dev/locales/en-GB/): English (United Kingdom) (en-GB): quotation marks ‘…’ and “…”, spaced en dash for breaks; 10 cited sources, 221 tested examples.
-- [English (United States) (en-US)](https://polytypo.dev/locales/en-US/): English (United States) (en-US): quotation marks “…” and ‘…’, unspaced em dash for breaks; 12 cited sources, 504 tested examples.
+- [English (United States) (en-US)](https://polytypo.dev/locales/en-US/): English (United States) (en-US): quotation marks “…” and ‘…’, unspaced em dash for breaks; 12 cited sources, 503 tested examples.
 - [Finnish (fi)](https://polytypo.dev/locales/fi/): Finnish (fi): quotation marks ”…” and ’…’, spaced en dash for breaks; 12 cited sources, 158 tested examples.
 - [French (Canada) (fr-CA)](https://polytypo.dev/locales/fr-CA/): French (Canada) (fr-CA): quotation marks «…» and “…”, spaced em dash for breaks; 9 cited sources, 41 tested examples.
 - [French (France) (fr)](https://polytypo.dev/locales/fr/): French (France) (fr): quotation marks «…» and “…”, spaced em dash for breaks; 10 cited sources, 128 tested examples.

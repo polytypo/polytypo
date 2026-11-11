@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.20.1`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.20.1 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.21.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.21.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,19 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.21.0 — 11 November 2026
+
+A new rule, off by default, moves a comma or full stop inside the closing quotation mark in American English.
+
+- The `quote-punctuation` rule follows the American convention: a comma or full stop that comes right after a closing quotation mark goes inside it. With the rule on in `en-US`, `She said "hello", then left.` becomes `She said “hello,” then left.`, and `He called it "done". Then he left.` becomes `He called it “done.” Then he left.` The rule is off by default, so your output does not change until you turn it on with `rules: { "quote-punctuation": true }`. It works in `text`, `html`, `markdown` and `yaml` modes. Every other locale, `en-GB` included, is left exactly as typed; the locale data gained a `quotes.punctuationPlacement` field, `inside` for `en-US` and `none` elsewhere.
+- The accepted cost: the rule moves the mark whenever a letter, then the closing quote, then the comma or full stop is followed by a space or the end of the text, and it cannot tell a quotation from a name or a literal value. `Set it to "strict".` becomes `Set it to “strict.”` even where the full stop ends the sentence rather than the quoted word. It leaves the mark alone after a digit (`"Route 66".` stays as typed), before a letter, and for the other punctuation marks.
+
+| Locale | Mode | In | Before | After |
+| --- | --- | --- | --- | --- |
+| `en-US` | `text` | `She said "hello", then left.` | `She said “hello”, then left.` | `She said “hello,” then left.` |
+| `en-US` | `text` | `He called it "done". Then he left.` | `He called it “done”. Then he left.` | `He called it “done.” Then he left.` |
+| `en-US` | `text` | `Set it to "strict".` | `Set it to “strict”.` | `Set it to “strict.”` |
 
 ## 1.20.1 — 7 November 2026
 
