@@ -98,7 +98,7 @@ opposite order. After an edit continue from `i + 2`; otherwise from `i + 1`.
   any quotation mark (a nested quotation, `“He said ‘hi’”.`), after a bracket, and across any
   boundary marker or protected run (the marker is not `LETTER`).
 - **C4** requires the punctuation to end its clause. It declines when a letter, a digit, a
-  bracket, another dot, a quotation mark or a boundary marker comes next: `“file”.txt`,
+  bracket, another dot, a quotation mark or a −1 boundary marker comes next: `“file”.txt`,
   `(“hi”.)`, `“wait”…`, and `“file”.${ext}` with a protected `${ext}`.
 - **C2** moves only the comma and the full stop. `;` `:` `?` `!` and the dashes are positional in
   no locale this specification has verified — Chicago puts them outside unless they belong to the
@@ -112,12 +112,15 @@ first and last code points are not U+0020.
 ### 3.3 Modes, `protect`, `analyze`
 
 **Document modes.** A span boundary between the mark and the punctuation, or on either side of
-the pair, puts a marker at `cp[i-1]`, `cp[i+1]` or `cp[i+2]`. A marker at `cp[i-1]` fails C3, at
-`cp[i+1]` fails C2, and at `cp[i+2]` fails C4. The rule therefore needs no special handling of
-`html`, `markdown` or `yaml`: it acts only when the whole of `Q`, the punctuation, and the text on
-either side are in one span, and the redistribution of edits to spans is trivial because the edit
-never contains a marker. The end of a text unit is `NONE`, not a marker, so `<p>Call it
-"ready".</p>` moves the stop while `<p>Call it "ready".</p><p>Next</p>` does not (§6).
+the pair, puts a marker at `cp[i-1]`, `cp[i+1]` or `cp[i+2]`. A −1 marker at `cp[i-1]` fails C3, at
+`cp[i+1]` fails C2, and at `cp[i+2]` fails C4; a −2 line marker at `cp[i+2]` is `SPACELIKE` and
+satisfies C4. The rule therefore needs no special handling of `html`, `markdown` or `yaml`: `Q` and
+the punctuation are always in one span, and the redistribution of edits to spans is trivial because
+the edit never contains a marker. The end of a text unit is `NONE`, not a marker, so `<p>Call it
+"ready".</p>` moves the stop while `<p>Call it "ready".</p><p>Next</p>` does not (§6). A line
+break in the source between the blocks changes that: the whitespace-only text node holding it is
+not a span (`modes.md` §3.6), the gap is a −2 line marker, a member of `SPACELIKE`, and C4 holds,
+so `<p>Call it "ready".</p>` + U+000A + `<p>Next</p>` moves the stop (§6, row H6).
 
 **`text` mode `protect`.** A protected run is a boundary marker, including at the very start or
 end of the input (`modes.md` §3.9.3), so it blocks the scan the same way. The edit never changes
@@ -277,6 +280,7 @@ move together.
 | H2  | `html`     | `<p>She said <em>"hello"</em>, then left.</p>` | `<p>She said <em>“hello”</em>, then left.</p>` | a marker at `cp[i+1]` fails C2                                     |
 | H3  | `html`     | `<p>She said "<em>hello</em>", then left.</p>` | `<p>She said “<em>hello</em>”, then left.</p>` | a marker at `cp[i-1]` fails C3                                     |
 | H5  | `html`     | `<p>She said "hello".</p><p>Next.</p>`         | `<p>She said “hello”.</p><p>Next.</p>`         | the gap between the paragraphs is a −1 marker at `cp[i+2]`: C4 fails            |
+| H6  | `html`     | `<p>She said "hello".</p>` + U+000A + `<p>Next.</p>` | `<p>She said “hello.”</p>` + U+000A + `<p>Next.</p>` | the line break between the paragraphs is a −2 marker at `cp[i+2]`, `SPACELIKE`: C4 holds |
 | M1  | `markdown` | `She said "hello", then left.` + U+000A        | `She said “hello,” then left.` + U+000A        | one span                                                           |
 | M2  | `markdown` | `*She said "hello"*, then left.`               | `*She said “hello”*, then left.`               | the closing `*` is a boundary                                      |
 | M3  | `markdown` | `*He said "hi".* Next`                         | `*He said “hi”.* Next`                         | the same, at `cp[i+2]`                                             |

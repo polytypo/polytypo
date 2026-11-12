@@ -1,5 +1,5 @@
 {
-  "spec": "1.22.0",
+  "spec": "1.23.0",
   "locale": "en-US",
   "cases": [
     {
@@ -4992,6 +4992,114 @@
         "quote-punctuation": true
       },
       "note": "quote-punctuation.md §3.3, §6 row H5, accepted cost: the gap between the paragraphs is a -1 marker at cp[i+2], so C4 fails."
+    },
+    {
+      "id": "en-us-quote-punctuation-html-line-break-gap",
+      "rule": "quote-punctuation",
+      "mode": "html",
+      "in": "<p>She said \"hello\".</p>\n<p>Next.</p>",
+      "out": "<p>She said “hello.”</p>\n<p>Next.</p>",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "quote-punctuation.md §3.3, §6 row H6; modes.md §3.6: the whitespace-only text node holding the line feed is not a span, so the gap is a -2 marker at cp[i+2] and C4 holds."
+    },
+    {
+      "id": "en-us-quote-punctuation-html-blank-lines-gap",
+      "rule": "quote-punctuation",
+      "mode": "html",
+      "in": "<p>She said \"hello\".</p>\n\n  <p>Next.</p>",
+      "out": "<p>She said “hello.”</p>\n\n  <p>Next.</p>",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "modes.md §3.6: a whitespace-only text node of line feeds and spaces is skipped whole."
+    },
+    {
+      "id": "en-us-quote-punctuation-html-crlf-gap",
+      "rule": "quote-punctuation",
+      "mode": "html",
+      "in": "<p>She said \"hello\".</p>\r\n<p>Next.</p>",
+      "out": "<p>She said “hello.”</p>\r\n<p>Next.</p>",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "modes.md §3.6: a run of CR and LF is whitespace-only with a line break, so it is not a span."
+    },
+    {
+      "id": "en-us-quote-punctuation-html-form-feed-gap",
+      "rule": "quote-punctuation",
+      "mode": "html",
+      "in": "<p>She said \"hello\".</p>\f<p>Next.</p>",
+      "out": "<p>She said “hello.”</p>\f<p>Next.</p>",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "modes.md §3.6: U+000C is a line terminator in §3.2's sense, so a run of it between the blocks is not a span."
+    },
+    {
+      "id": "en-us-quote-punctuation-html-reference-in-gap-space",
+      "rule": "quote-punctuation",
+      "mode": "html",
+      "in": "<p>She said \"hello\".</p>\n&#32;\n<p>Next.</p>",
+      "out": "<p>She said “hello”.</p>\n&#32;\n<p>Next.</p>",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "modes.md §3.6: a character reference is never whitespace for the test, so the run stays spans and the markers are -1."
+    },
+    {
+      "id": "en-us-quote-punctuation-html-reference-in-gap-amp",
+      "rule": "quote-punctuation",
+      "mode": "html",
+      "in": "<p>She said \"hello\".</p>\n&amp;\n<p>Next.</p>",
+      "out": "<p>She said “hello”.</p>\n&amp;\n<p>Next.</p>",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "modes.md §3.6: as for &#32;, the reference keeps the run processable."
+    },
+    {
+      "id": "en-us-quote-punctuation-html-trailing-line-break",
+      "rule": "quote-punctuation",
+      "mode": "html",
+      "in": "<p>She said \"hello\".</p>\n",
+      "out": "<p>She said “hello.”</p>\n",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "modes.md §3.6, §3.5 step 2: the trailing line feed is not a span and leaves no marker, so cp[i+2] is NONE and the stop moves."
+    },
+    {
+      "id": "en-us-quote-punctuation-markdown-html-block-line-break-gap",
+      "rule": "quote-punctuation",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "<div>\n<p>She said \"hello\".</p>\n<p>Next.</p>\n</div>\n",
+      "out": "<div>\n<p>She said “hello.”</p>\n<p>Next.</p>\n</div>\n",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "modes.md §3.6, §3.7.3: a markdown HTML block uses the html rule, so the line feed between the paragraphs is a -2 marker."
+    },
+    {
+      "id": "en-us-quote-punctuation-html-space-only-node",
+      "rule": "quote-punctuation",
+      "mode": "html",
+      "in": "<p>She said \"hello\".</p> <p>Next.</p>",
+      "out": "<p>She said “hello”.</p> <p>Next.</p>",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "note": "modes.md §3.6: a whitespace-only text node with no line break is still a span, so the markers around it are -1 and C4 fails."
+    },
+    {
+      "id": "en-us-dashes-html-spaced-hyphen-on-own-line",
+      "rule": "dashes",
+      "mode": "html",
+      "in": "<p>a</p>\n<p> - </p>\n<p>b</p>",
+      "out": "<p>a</p>\n<p> - </p>\n<p>b</p>",
+      "note": "modes.md §3.6, accepted cost: the line feeds around the paragraph are -2 markers, a BREAK at cp[L] and cp[R], so dashes declines the token as it does in text mode."
     },
     {
       "id": "en-us-quote-punctuation-markdown-commonmark-one-span",

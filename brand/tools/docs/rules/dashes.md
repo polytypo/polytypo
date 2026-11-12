@@ -1,7 +1,7 @@
 ---
 title: Dashes
-seo_title: Dashes rule: em dash, en dash and spacing per locale | polytypo
-description: The dashes rule sets the parenthetical dash in the form each locale prescribes, and leaves compound hyphens, numbers, ranges and arrows alone.
+seo_title: Spaces around an em dash: the dashes rule per locale | polytypo
+description: Em dash spaces depend on the locale. The dashes rule sets the parenthetical dash, em or en, with or without spaces, as each locale prescribes, and leaves hyphens, numbers and ranges alone.
 section: rules
 order: 40
 ---
@@ -9,6 +9,23 @@ order: 40
 The `dashes` rule renders the **parenthetical dash**, the one that interrupts a sentence, in the form the locale prescribes. A spaced hyphen or a doubled hyphen becomes the locale’s dash: a tight em dash in `en-US`, a spaced en dash in `de-DE` and `en-GB`, a spaced em dash in `fr` and `ru`. An em dash or en dash the author already typed is corrected in the same way, in spacing and in length.
 
 It is on by default, runs after [spaces](/docs/rules/spaces/), [ellipsis](/docs/rules/ellipsis/) and [ranges](/docs/rules/ranges/), and works in all four modes. It is deliberately conservative. It only touches a stroke that is symmetrically spaced and has text on both sides, and it never touches a hyphen inside a word, a number, a date, a command-line flag or a list marker.
+
+## Spaces around an em dash
+
+Whether an em dash takes spaces depends on the locale. American English sets it tight, `word—word`. Most other locales do not use a tight em dash at all: British English, German and Dutch set a spaced en dash, `word – word`, while French, Italian and Russian set a spaced em dash, `word — word`. Spanish puts a space outside the pair of dashes and none inside it.
+
+| You write for | Dash | Spaces around it | Cited source |
+| --- | --- | --- | --- |
+| American English | em dash | none | Chicago Manual of Style |
+| British English | en dash | one on each side | Oxford University style guide |
+| French | em dash | one on each side | Jacques André, Petites leçons de typographie |
+| Russian | em dash | one on each side | Мильчин and Rosenthal |
+
+The same rule decides the length and the spacing together, so a spaced em dash in American English text is corrected to a tight one, and a tight em dash in German text becomes a spaced en dash. The [Parenthetical dashes](#parenthetical-dashes) section below shows the same sentence through several locales.
+
+### Em dash and en dash
+
+The em dash and the en dash do different jobs in most style guides. The parenthetical dash, the one that interrupts a sentence, is handled here. The dash between two numbers, as in `1914–1918`, is a range and belongs to [ranges](/docs/rules/ranges/), which is off by default. A lone en dash that the author typed is left as written in every locale, because it is taken as a deliberate connecting dash.
 
 ## How it works
 

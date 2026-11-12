@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.22.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.22.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.23.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.23.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,23 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.23.0 — 12 November 2026
+
+In HTML, the line break between two blocks is now read as a line break, so the `quote-punctuation` rule works across pretty-printed paragraphs.
+
+- In `html` mode a text node holding only whitespace and a line break, such as the newline between `</p>` and `<p>`, used to be read as a piece of text with a boundary on each side. It is now read as what it is, a line break between two blocks, the way `text` mode reads the same lines. Nothing changes for markup with no line break between the blocks (`</p><p>`) or with only spaces between them. The visible effect is on rules that look across the gap: with `quote-punctuation` on in `en-US`, `<p>She said "hello".</p>` followed by a line break and `<p>Next.</p>` now gives `“hello.”`, where it used to leave the full stop outside. The same holds for an HTML block inside Markdown and for a line break at the very end of a document: `<p>She said "hello".</p>` followed by a line feed now moves the full stop too. Every other `html` and `markdown` fixture of 1.22 gives the same output.
+- The accepted cost: a line of its own that holds only a spaced hyphen between two line breaks is now left as typed, as `text` mode leaves it, where it used to become a dash.
+
+| Locale | Mode | In | Before | After |
+| --- | --- | --- | --- | --- |
+| `en-US` | `html` | `<p>Done.</p>
+<p> - </p>
+<p>Next.</p>` | `<p>Done.</p>
+<p>—</p>
+<p>Next.</p>` | `<p>Done.</p>
+<p> - </p>
+<p>Next.</p>` |
 
 ## 1.22.0 — 11 November 2026
 

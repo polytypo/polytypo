@@ -19,7 +19,7 @@ step 9 with §3.8.5's content-line condition, added in 1.10.0, §3.8.4's carriag
 continuation line with the bails of §3.8.6 that use it, added in 1.11.0, and §3.8.4's node lines,
 declined keys, node markers and own-line region, with the changes to steps 1, 3, 4, 5, 6, 7 and 8
 that go with them, added in 1.11.0, and §3.9 with the amendments it carries to §3.1, §3.5 step 2,
-§4, §5, §7 item 7 and §8, added in 1.13.0, and §3.4's delimiter-neighbour rule with §3.7.3's autolink-literal tail, terminator guard and reference labels, and the amendments they carry to §3.4's deletion paragraph, §5 items 2 and 3, its fifth-part note and testing obligation, and §6, added in 1.17.2, and §3.4's escape-and-reference rule with the amendments it carries to §3.6, §3.7.3, §5 item 2's fifth-part note, §5 item 3 and the testing obligation, added in 1.17.4, and §3.4's bracket-shape rule, added in 1.17.5).
+§4, §5, §7 item 7 and §8, added in 1.13.0, and §3.4's delimiter-neighbour rule with §3.7.3's autolink-literal tail, terminator guard and reference labels, and the amendments they carry to §3.4's deletion paragraph, §5 items 2 and 3, its fifth-part note and testing obligation, and §6, added in 1.17.2, and §3.4's escape-and-reference rule with the amendments it carries to §3.6, §3.7.3, §5 item 2's fifth-part note, §5 item 3 and the testing obligation, added in 1.17.4, and §3.4's bracket-shape rule, added in 1.17.5, and §3.6's whitespace-only text node rule, added in 1.23.0).
 
 ---
 
@@ -125,7 +125,7 @@ possibility of collision with author content and makes the classification table 
 
 The test is on the raw source bytes of the gap, so it is decidable without asking the parser
 anything and is identical in five runtimes. `a<em>x</em>b` gives −1; `foo\nbar`, `foo\n\nbar`
-and `<p>a</p>\n<p>b</p>` all give −2.
+and `<p>a</p>\n<p>b</p>` all give −2 (in the last the text node `\n` is not a span, §3.6).
 
 **Why a line boundary is a `BREAK` and not just another opaque marker.** Every rule already has
 correct, specified, fixture-covered behaviour at a line terminator, because `text` mode has real
@@ -539,7 +539,24 @@ Skipped, exhaustively and exactly:
   conversions on both sides of it for nothing — `Tom & Jerry's "book"` would lose the pairing of
   its quotation marks. Well-formedness, not the presence of an ampersand, is what makes a
   skipped region;
-- comments, CDATA, doctype, processing instructions, and any prologue.
+- comments, CDATA, doctype, processing instructions, and any prologue;
+- every **whitespace-only text run that contains a line break** (since 1.23.0): a maximal run of
+  source text between two pieces of markup (a tag, comment, CDATA section, doctype or processing
+  instruction) or a document edge, whose **raw source**, as written and before the split around
+  character references, consists only of U+0009, U+000A, U+000C, U+000D and U+0020, at least one
+  of them U+000A, U+000C or U+000D. A character reference is never whitespace for this test, so
+  `\n&#32;\n` and `\n&amp;\n` are processed as before. Such a run is not a span, so it lies in the
+  gap between the spans on either side and §3.2 chooses the marker from its raw source: the
+  pretty-printed `<p>a</p>\n<p>b</p>` has one −2 line marker between `a` and `b`, as the same text
+  has in `text` mode, instead of two −1 markers around a literal line feed. At the start or end
+  of a text unit such a run leaves no marker at all (§3.5 step 2), so `<p>Call it "ready".</p>`
+  followed by a line feed ends the unit as it does without one. The same holds inside a
+  `markdown` HTML block, which §3.7.3 hands to this list. A whitespace-only text node with **no** line break
+  (`<b>a</b> <i>b</i>`), and any text node holding a non-whitespace code point, is processed
+  as before. The accepted cost: no rule reaches the node's own characters any more, and a
+  line of its own that holds only ` - ` (`<p>a</p>`, a line feed, `<p> - </p>`, a line feed,
+  `<p>b</p>`) is now left alone, exactly as `text` mode leaves it between two line feeds,
+  where before 1.23.0 it became a dash.
 
 **Element names compare case-insensitively**, per HTML: `<CODE>`, `<Code>` and `<code>` are all
 skipped. (In MDX, JSX names compare case-sensitively — §3.7.3.)

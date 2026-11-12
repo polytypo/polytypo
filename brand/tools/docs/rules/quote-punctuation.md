@@ -28,7 +28,7 @@ Nothing is inserted or deleted, so a call keeps its length, and the output is a 
 
 ### Modes
 
-A boundary between the quotation mark and the punctuation, or immediately before or after the pair, blocks the move. In `html` and `markdown` that means an element or an emphasis delimiter: `<em>“hello”</em>,` and `*“hello”*,` keep the comma where it was. In `text` mode a range given to `protect` counts as a boundary in the same way. The end of a document is not a boundary.
+A boundary between the quotation mark and the punctuation, or immediately before or after the pair, blocks the move. In `html` and `markdown` that means an element or an emphasis delimiter: `<em>“hello”</em>,` and `*“hello”*,` keep the comma where it was. In `text` mode a range given to `protect` counts as a boundary in the same way. The end of a document is not a boundary, and neither is a line break between two blocks: `<p>She said “hello”.</p>` followed by a line break and `<p>Next.</p>` moves the full stop, while the same two blocks with nothing, or only spaces, between them do not. The same holds at the end of a document that finishes with a line break.
 
 ## Locale data
 

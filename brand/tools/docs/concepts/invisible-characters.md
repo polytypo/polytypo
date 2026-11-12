@@ -1,7 +1,7 @@
 ---
 title: Invisible characters
-seo_title: Invisible characters in typography: U+00A0, U+202F, U+2011 and more | polytypo
-description: The four characters polytypo inserts that you cannot see, U+00A0, U+202F, U+2011 and U+2060, what inserts each, how to spot them, and the narrowNbsp option.
+seo_title: Unicode spaces and invisible characters: U+00A0, U+202F, U+2011 | polytypo
+description: The four invisible characters polytypo inserts, the Unicode spaces U+00A0 and U+202F, the non-breaking hyphen U+2011 and the word joiner U+2060, what inserts each, how to spot them, and the narrowNbsp option.
 section: concepts
 order: 60
 ---
