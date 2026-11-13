@@ -2,6 +2,28 @@
   "_comment": "Single source for CHANGELOG.md (brand/tools/gen_readmes.py) and the site's /changelog page (brand/tools/build_promo.py). Released versions only. Example strings are real engine output captured from the published packages of each version, never typed by hand; an entry whose release changes no output carries examples: [].",
   "releases": [
     {
+      "version": "1.23.1",
+      "date": "2026-11-13",
+      "headline": "In HTML, a closing tag with nothing to close no longer changes how the text around it is typeset in the JavaScript package.",
+      "items": [
+        {
+          "text": "A stray end tag such as the `</span>` in `<p>The dogs'</span> bones.</p>` is ignored by every HTML parser, but it is still markup. The Python, Ruby, Go and PHP packages already read the text on each side of it as two pieces with a boundary between them. The JavaScript package read it as one piece with the tag inside it, so the apostrophe in `dogs'` was not seen as ending a word and stayed straight. The spec now says so in words (`modes.md` §3.6), pins it with fixtures, and the JavaScript package follows it: a tag the parser ignores, whether an end tag with no open element, a repeated `<body>` or `<html>`, or `</>`, is outside every piece of text. Text between well-formed tags, and every attribute, comes out as before."
+        },
+        {
+          "text": "Only text that sat next to such a tag can change, and only in the JavaScript package. The other four packages, and every document with no ignored tag, give the same output as 1.23.0."
+        }
+      ],
+      "examples": [
+        {
+          "locale": "en-US",
+          "mode": "html",
+          "in": "<p>The dogs'</span> bones.</p>",
+          "before": "<p>The dogs'</span> bones.</p>",
+          "after": "<p>The dogs’</span> bones.</p>"
+        }
+      ]
+    },
+    {
       "version": "1.23.0",
       "date": "2026-11-12",
       "headline": "In HTML, the line break between two blocks is now read as a line break, so the `quote-punctuation` rule works across pretty-printed paragraphs.",

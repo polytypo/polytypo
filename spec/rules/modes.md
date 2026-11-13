@@ -19,7 +19,7 @@ step 9 with §3.8.5's content-line condition, added in 1.10.0, §3.8.4's carriag
 continuation line with the bails of §3.8.6 that use it, added in 1.11.0, and §3.8.4's node lines,
 declined keys, node markers and own-line region, with the changes to steps 1, 3, 4, 5, 6, 7 and 8
 that go with them, added in 1.11.0, and §3.9 with the amendments it carries to §3.1, §3.5 step 2,
-§4, §5, §7 item 7 and §8, added in 1.13.0, and §3.4's delimiter-neighbour rule with §3.7.3's autolink-literal tail, terminator guard and reference labels, and the amendments they carry to §3.4's deletion paragraph, §5 items 2 and 3, its fifth-part note and testing obligation, and §6, added in 1.17.2, and §3.4's escape-and-reference rule with the amendments it carries to §3.6, §3.7.3, §5 item 2's fifth-part note, §5 item 3 and the testing obligation, added in 1.17.4, and §3.4's bracket-shape rule, added in 1.17.5, and §3.6's whitespace-only text node rule, added in 1.23.0).
+§4, §5, §7 item 7 and §8, added in 1.13.0, and §3.4's delimiter-neighbour rule with §3.7.3's autolink-literal tail, terminator guard and reference labels, and the amendments they carry to §3.4's deletion paragraph, §5 items 2 and 3, its fifth-part note and testing obligation, and §6, added in 1.17.2, and §3.4's escape-and-reference rule with the amendments it carries to §3.6, §3.7.3, §5 item 2's fifth-part note, §5 item 3 and the testing obligation, added in 1.17.4, and §3.4's bracket-shape rule, added in 1.17.5, and §3.6's whitespace-only text node rule, added in 1.23.0, and §3.6's ignored-tag rule, added in 1.23.1).
 
 ---
 
@@ -557,6 +557,19 @@ Skipped, exhaustively and exactly:
   line of its own that holds only ` - ` (`<p>a</p>`, a line feed, `<p> - </p>`, a line feed,
   `<p>b</p>`) is now left alone, exactly as `text` mode leaves it between two line feeds,
   where before 1.23.0 it became a dash.
+
+- **every tag is markup, including one the parser ignores** (since 1.23.1): a start or end tag
+  that opens or closes nothing (`</span>` with no open `span`, a second `<body>` or `<html>`, `</>`)
+  is still a tag in the source, so its code points lie outside every span, whatever the parser did
+  with it. A parser that merges the text on either side of an ignored tag into one text node
+  (`parse5` does) does not change that: the runtime splits the run around the tag, and the gap
+  between the two spans carries the tag's raw source, so §3.2 chooses the marker from it: −1, or
+  −2 when that gap holds a line terminator, whether inside the tag itself (`</span` followed by a
+  line feed and `>`) or in a whitespace-only run beside it (above). A tag extends as the WHATWG
+  tokenizer delimits it, so `>` inside a quoted attribute value does not end it. `dogs'</span> bones` is the span `dogs'`,
+  a −1, and the span ` bones`, so the apostrophe is word-final before a boundary and becomes
+  U+2019, as it does before a well-formed `</i>`. A `<` that begins no tag (`a < b`, `</ x>` read
+  as a comment) is unchanged: text stays text, and a bogus comment is already a comment.
 
 **Element names compare case-insensitively**, per HTML: `<CODE>`, `<Code>` and `<code>` are all
 skipped. (In MDX, JSX names compare case-sensitively — §3.7.3.)

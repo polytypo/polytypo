@@ -1,5 +1,5 @@
 {
-  "spec": "1.23.0",
+  "spec": "1.23.1",
   "locale": "en-US",
   "cases": [
     {
@@ -5281,6 +5281,110 @@
       "rules": {
         "ranges": true
       }
+    },
+    {
+      "id": "en-us-apostrophe-html-stray-end-tag-gap",
+      "rule": "apostrophe",
+      "mode": "html",
+      "in": "<p>dogs'</span> bones</p>",
+      "out": "<p>dogs’</span> bones</p>",
+      "note": "modes.md §3.6: an end tag with no open element is markup; the run around it is two spans with a −1 between, so the apostrophe is word-final."
+    },
+    {
+      "id": "en-us-apostrophe-html-stray-end-tag-no-parent",
+      "rule": "apostrophe",
+      "mode": "html",
+      "in": "dogs'</span> bones",
+      "out": "dogs’</span> bones",
+      "note": "modes.md §3.6: the same at the document level, where the parser has no element at all."
+    },
+    {
+      "id": "en-us-apostrophe-html-stray-end-tag-newline-in-tag",
+      "rule": "apostrophe",
+      "mode": "html",
+      "in": "<p>dogs'</span\n> bones</p>",
+      "out": "<p>dogs’</span\n> bones</p>",
+      "note": "modes.md §3.6, §3.2: the apostrophe is word-final before either marker, so this pins only that the tag's own bytes are not edited; the marker is pinned by the dashes cases below."
+    },
+    {
+      "id": "en-us-apostrophe-html-stray-body-start-tag",
+      "rule": "apostrophe",
+      "mode": "html",
+      "in": "<p>dogs'<body class=\"a\"> bones</p>",
+      "out": "<p>dogs’<body class=\"a\"> bones</p>",
+      "note": "modes.md §3.6: a start tag the parser ignores (a second body) is markup too, and its attribute is untouched."
+    },
+    {
+      "id": "en-us-apostrophe-html-empty-end-tag",
+      "rule": "apostrophe",
+      "mode": "html",
+      "in": "<p>dogs'</> bones</p>",
+      "out": "<p>dogs’</> bones</p>",
+      "note": "modes.md §3.6: `</>` is dropped by the tokenizer but is still a tag in the source."
+    },
+    {
+      "id": "en-us-quotes-html-stray-end-tag-single-pair",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "<p>say 'hi</span> there' ok</p>",
+      "out": "<p>say “hi</span> there” ok</p>",
+      "note": "modes.md §3.6: a pair opens and closes across an ignored tag, the boundary being a −1."
+    },
+    {
+      "id": "en-us-quotes-html-stray-end-tag-attribute-quotes-untouched",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "<p>say \"a</span title=\"x y\"> b\" ok</p>",
+      "out": "<p>say “a</span title=\"x y\"> b” ok</p>",
+      "note": "modes.md §3.6: the quotes inside the ignored tag's attribute are source, never text."
+    },
+    {
+      "id": "en-us-dashes-html-stray-end-tag-gap",
+      "rule": "dashes",
+      "mode": "html",
+      "in": "<p>a - </span>b</p>",
+      "out": "<p>a—</span>b</p>",
+      "note": "modes.md §3.6, §3.2: the ignored end tag is a −1 gap, so the spaced hyphen is a dash."
+    },
+    {
+      "id": "en-us-dashes-html-stray-end-tag-line-feed-in-tag",
+      "rule": "dashes",
+      "mode": "html",
+      "in": "<p>a - </span\n>b</p>",
+      "out": "<p>a - </span\n>b</p>",
+      "note": "modes.md §3.2: the gap holds a line terminator inside the tag, so the marker is −2 and the spaced hyphen stays, exactly as beside a well-formed tag with a line feed in it."
+    },
+    {
+      "id": "en-us-dashes-html-stray-end-tag-quoted-gt",
+      "rule": "dashes",
+      "mode": "html",
+      "in": "<p>a - </span title=\"a>b\">c</p>",
+      "out": "<p>a—</span title=\"a>b\">c</p>",
+      "note": "modes.md §3.6: a `>` inside a quoted attribute value does not end the ignored tag."
+    },
+    {
+      "id": "en-us-apostrophe-html-stray-html-start-tag",
+      "rule": "apostrophe",
+      "mode": "html",
+      "in": "<p>dogs'<html lang=\"x\"> bones</p>",
+      "out": "<p>dogs’<html lang=\"x\"> bones</p>",
+      "note": "modes.md §3.6: a second html start tag is ignored by the parser and still markup."
+    },
+    {
+      "id": "en-us-quotes-html-less-than-is-text",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "<p>say 'a < b' ok</p>",
+      "out": "<p>say “a < b” ok</p>",
+      "note": "modes.md §3.6: a `<` that begins no tag is text and the pair spans it."
+    },
+    {
+      "id": "en-us-quotes-html-bogus-comment-gap",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "<p>say 'hi</ x> there' ok</p>",
+      "out": "<p>say “hi</ x> there” ok</p>",
+      "note": "modes.md §3.6: `</ x>` is a bogus comment, already markup, and the pair spans it."
     }
   ]
 }

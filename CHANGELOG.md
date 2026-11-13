@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.23.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.23.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.23.1`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.23.1 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,17 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.23.1 — 13 November 2026
+
+In HTML, a closing tag with nothing to close no longer changes how the text around it is typeset in the JavaScript package.
+
+- A stray end tag such as the `</span>` in `<p>The dogs'</span> bones.</p>` is ignored by every HTML parser, but it is still markup. The Python, Ruby, Go and PHP packages already read the text on each side of it as two pieces with a boundary between them. The JavaScript package read it as one piece with the tag inside it, so the apostrophe in `dogs'` was not seen as ending a word and stayed straight. The spec now says so in words (`modes.md` §3.6), pins it with fixtures, and the JavaScript package follows it: a tag the parser ignores, whether an end tag with no open element, a repeated `<body>` or `<html>`, or `</>`, is outside every piece of text. Text between well-formed tags, and every attribute, comes out as before.
+- Only text that sat next to such a tag can change, and only in the JavaScript package. The other four packages, and every document with no ignored tag, give the same output as 1.23.0.
+
+| Locale | Mode | In | Before | After |
+| --- | --- | --- | --- | --- |
+| `en-US` | `html` | `<p>The dogs'</span> bones.</p>` | `<p>The dogs'</span> bones.</p>` | `<p>The dogs’</span> bones.</p>` |
 
 ## 1.23.0 — 12 November 2026
 

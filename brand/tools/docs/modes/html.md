@@ -51,6 +51,7 @@ The list is exhaustive and closed:
 - every well-formed **character reference** (`&amp;`, `&#160;`, `&#x2014;`), as an opaque unit. `&nbsp;` stays `&nbsp;` rather than becoming a literal U+00A0;
 - comments, CDATA sections, the doctype and processing instructions;
 - a text node that is only whitespace and contains a line break, such as the newline between `</p>` and `<p>`. It counts as a line break between its neighbours, or as nothing at the very start or end of the document, as in `text` mode, so `<p>She said "hello".</p>` followed by a line break and `<p>Next.</p>` can move the full stop under `quote-punctuation`. A node of spaces alone, as in `<b>a</b> <i>b</i>`, is processed as usual.
+- a tag the parser ignores, such as a closing `</span>` with no open `span`, a second `<body>` or `</>`. It is still a tag in the source, so the text on either side of it is two pieces with a boundary between them, as it is beside a well-formed tag.
 
 Element names compare case-insensitively, as in HTML, so `<CODE>` is skipped as `<code>` is.
 
