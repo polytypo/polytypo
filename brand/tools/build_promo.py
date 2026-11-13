@@ -1094,7 +1094,7 @@ def footer_html(data, prefix):
         f"<div><h2>Packages</h2><ul>{package_links}"
         f'<li><a href="{page_href(prefix, "docs/guides/remark-plugin")}">{_plugin_icon_svg()}remark plugin</a></li></ul></div>'
         "</div>"
-        f'<p class="footer-legal small">polytypo · spec {data["spec"]} · MIT for the code, separate '
+        f'<p class="footer-legal small">polytypo · <a href="{page_href(prefix, "changelog")}">spec {data["spec"]}</a> · MIT for the code, separate '
         "terms for the brand assets · Created by "
         '<a href="https://iurii.rogulia.fi" rel="author">Iurii Rogulia</a>.</p>'
         "</div></footer>"
@@ -1165,6 +1165,11 @@ def _latest_released_version():
     version. It was spelled out as 1.2.0 and went stale the moment 1.3.0 shipped."""
     versions = [rel["version"] for rel in _changelog_data()["releases"]]
     return max(versions, key=lambda v: tuple(int(part) for part in v.split(".")))
+
+
+def _latest_release_date():
+    latest = _latest_released_version()
+    return next(rel["date"] for rel in _changelog_data()["releases"] if rel["version"] == latest)
 
 
 def changelog_sections():
@@ -1586,6 +1591,7 @@ def build():
         # The newest released version, so the /changelog intro cannot name a stale one.
         # It was spelled out as 1.2.0 and went stale the moment 1.3.0 shipped.
         "{{latest_version}}": H.escape(_latest_released_version()),
+        "{{latest_date}}": H.escape(_pretty_date(_latest_release_date())),
         "{{coverage_rows}}": coverage_rows(data),
         "{{doc_index}}": doc_index_html(),
         "{{skill_url}}": H.escape(SKILL_URL),
