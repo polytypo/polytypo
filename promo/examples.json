@@ -90,6 +90,35 @@
       ]
     },
     {
+      "locale": "da",
+      "name": "Danish",
+      "hero": {
+        "in": "Hun spurgte: \"Er det ikke butikken, de kalder 'den om hjørnet'?\" ... Vi gik - næsten 3 km - og den var lukket. Copyright (c) 2026, format 40x60 cm.",
+        "out": "Hun spurgte: »Er det ikke butikken, de kalder ›den om hjørnet‹?« … Vi gik – næsten 3 km – og den var lukket. Copyright © 2026, format 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, »Isn’t this the shop they call ›round the corner‹?« … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Han sagde \"goddag\".",
+          "out": "Han sagde »goddag«."
+        },
+        {
+          "rule": "dashes",
+          "in": "Bogen - udkommet før krigen - er fremragende.",
+          "out": "Bogen – udkommet før krigen – er fremragende."
+        },
+        {
+          "rule": "nbsp",
+          "in": "3 km og 50 %",
+          "out": "3 km og 50 %"
+        }
+      ]
+    },
+    {
       "locale": "nl",
       "name": "Dutch",
       "hero": {

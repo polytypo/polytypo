@@ -367,6 +367,119 @@
       "resolution": ["cs"],
       "disagreed": 0
     },
+    "da": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "da-quotes-primary",
+            "in": "Han sagde: \"Jeg er træt.\" og gik.",
+            "out": "Han sagde: »Jeg er træt.« og gik."
+          },
+          {
+            "id": "da-quotes-nested-secondary",
+            "in": "Han sagde: \"Hun sagde 'ja' til mig\" og gik.",
+            "out": "Han sagde: »Hun sagde ›ja‹ til mig« og gik."
+          },
+          {
+            "id": "da-quotes-nested-at-end",
+            "in": "Han sagde: \"Hun sagde 'ja'\" og gik.",
+            "out": "Han sagde: »Hun sagde ›ja‹« og gik."
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "da-ellipsis-three-dots",
+            "in": "Vent... og så.",
+            "out": "Vent… og så."
+          },
+          {
+            "id": "da-ellipsis-before-question",
+            "in": "Er det nu...?",
+            "out": "Er det nu…?"
+          },
+          {
+            "id": "da-ellipsis-before-exclamation",
+            "in": "Hvad nu...!",
+            "out": "Hvad nu…!"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "da-dashes-parenthetical",
+            "in": "Nu - ikke mindst - går vi.",
+            "out": "Nu – ikke mindst – går vi."
+          },
+          {
+            "id": "da-dashes-em-input",
+            "in": "Nu — ikke mindst — går vi.",
+            "out": "Nu – ikke mindst – går vi."
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "da-nbsp-spaced-units",
+            "in": "Prisen er 25 % og 10 kr og 3 € og 3 km og 10 kg og 5 cm og 7 ha",
+            "out": "Prisen er 25 % og 10 kr og 3 € og 3 km og 10 kg og 5 cm og 7 ha"
+          },
+          {
+            "id": "da-nbsp-spaced-unit-inserted",
+            "in": "Prisen 50% og 5€ her",
+            "out": "Prisen 50 % og 5 € her"
+          },
+          {
+            "id": "da-nbsp-spaced-unit-inserted-letters",
+            "in": "Det koster 15kr og vejer 3kg",
+            "out": "Det koster 15 kr og vejer 3 kg"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "da-spaces-before-punctuation",
+            "in": "Hvad nu ? Ikke !",
+            "out": "Hvad nu? Ikke!"
+          },
+          {
+            "id": "da-spaces-brackets",
+            "in": "Han ( stille ) gik .",
+            "out": "Han (stille) gik."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "da-symbols-copyright",
+            "in": "(c) 2026",
+            "out": "© 2026"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "da-apostrophe-foreign-name",
+            "in": "O'Brien kom.",
+            "out": "O’Brien kom."
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Hun spurgte: \"Er det ikke butikken, de kalder 'den om hjørnet'?\" ... Vi gik - næsten 3 km - og den var lukket. Copyright (c) 2026, format 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Hun spurgte: »Er det ikke butikken, de kalder ›den om hjørnet‹?« … Vi gik – næsten 3 km – og den var lukket. Copyright © 2026, format 40×60 cm.\nsay(»a – b …«)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Hun spurgte: \"Er det ikke butikken, de kalder 'den om hjørnet'?\" ... Vi gik - næsten 3 km - og den var lukket. Copyright (c) 2026, format 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Hun spurgte: »Er det ikke butikken, de kalder ›den om hjørnet‹?« … Vi gik – næsten 3 km – og den var lukket. Copyright © 2026, format 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Hun spurgte: \"Er det ikke butikken, de kalder 'den om hjørnet'?\" ... Vi gik - næsten 3 km - og den var lukket. Copyright (c) 2026, format 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Hun spurgte: »Er det ikke butikken, de kalder ›den om hjørnet‹?« … Vi gik – næsten 3 km – og den var lukket. Copyright © 2026, format 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": ["da-DK"],
+      "disagreed": 0
+    },
     "nl": {
       "byRule": {
         "quotes": [

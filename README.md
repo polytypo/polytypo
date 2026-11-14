@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.26.0** · locales: **29** · rules: **10**.
+Spec version: **1.26.0** · locales: **30** · rules: **10**.
 
 ## Implementations
 
@@ -48,6 +48,7 @@ Spec version: **1.26.0** · locales: **29** · rules: **10**.
 | Bulgarian (`bg`) | Тя попита: „Не е ли това магазинът, който наричат „на ъгъла“?“ … Вървяхме – почти 3 км – и беше затворен. Copyright © 2026, формат 40×60 см. |
 | Croatian (`hr`) | Pitala je: „Nije li to dućan koji zovu ‘onaj na uglu’?” … Hodali smo – gotovo 3 km – i bio je zatvoren. Copyright © 2026, format 40×60 cm. |
 | Czech (`cs`) | Zeptal se: „Není to ten obchod, kterému říkají ‚ten za rohem‘?“ … Šli jsme – skoro 3 km – a byl zavřený. Copyright © 2026, formát 40×60 cm. |
+| Danish (`da`) | Hun spurgte: »Er det ikke butikken, de kalder ›den om hjørnet‹?« … Vi gik – næsten 3 km – og den var lukket. Copyright © 2026, format 40×60 cm. |
 | Dutch (`nl`) | Hij vroeg: “Is dit niet de winkel die ze ‘om de hoek’ noemen?” … We liepen – bijna 3 km – en hij was dicht. Copyright © 2026, formaat 40×60 cm. |
 | English (United Kingdom) (`en-GB`) | She asked, ‘Isn’t this the shop they call “round the corner”?’ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm. |
 | English (United States) (`en-US`) | She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm. |
@@ -84,6 +85,7 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | `bg` | Bulgarian | „…“ | „…“ | en dash, spaced | en dash, spaced |
 | `hr` | Croatian | „…” | ‘…’ | en dash, spaced | en dash, spaced |
 | `cs` | Czech | „…“ | ‚…‘ | en dash, spaced | en dash, unspaced |
+| `da` | Danish | »…« | ›…‹ | en dash, spaced | unchanged |
 | `nl` | Dutch | “…” | ‘…’ | en dash, spaced | unchanged |
 | `en-GB` | English (United Kingdom) | ‘…’ | “…” | en dash, spaced | en dash, unspaced |
 | `en-US` | English (United States) | “…” | ‘…’ | em dash, unspaced | en dash, unspaced |
