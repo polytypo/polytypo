@@ -85,6 +85,7 @@ PRIMARY_SOURCES = {
     "sl": "SAZU / ZRC SAZU Inštitut za slovenski jezik Frana Ramovša, Slovenski pravopis 2001",
     "lt": "A. Drukteinis (ed.), Lietuvių kalbos skyryba",
     "lv": "Valsts valodas centrs, Tiesību aktu tulkošanas rokasgrāmata",
+    "et": "Eesti Keele Instituut, Eesti keele õigekirja põhireeglid",
 }
 
 
@@ -1851,6 +1852,7 @@ BADGE_TEXT = {
     "sl": "Tipografsko urejanje: <b>polytypo</b>",
     "lt": "Tipografinis tvarkymas: <b>polytypo</b>",
     "lv": "Tipogrāfiskā sakārtošana: <b>polytypo</b>",
+    "et": "Tüpograafiline korrastus: <b>polytypo</b>",
     "it": "Pulizia tipografica con <b>polytypo</b>",
     "pl": "Typograficzne porządki dzięki <b>polytypo</b>",
     "pt": "Limpeza tipográfica por <b>polytypo</b>",
@@ -1878,6 +1880,7 @@ BADGE_LANG_NAMES = {
     "sl": "Slovenian",
     "lt": "Lithuanian",
     "lv": "Latvian",
+    "et": "Estonian",
     "it": "Italian",
     "pl": "Polish",
     "pt": "Portuguese",

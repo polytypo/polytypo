@@ -2,6 +2,38 @@
   "_comment": "Single source for CHANGELOG.md (brand/tools/gen_readmes.py) and the site's /changelog page (brand/tools/build_promo.py). Released versions only. Example strings are real engine output captured from the published packages of each version, never typed by hand; an entry whose release changes no output carries examples: [].",
   "releases": [
     {
+      "version": "1.25.0",
+      "date": "2026-11-14",
+      "headline": "Estonian joins as the twenty-ninth locale, cited to the Institute of the Estonian Language.",
+      "items": [
+        {
+          "text": "Estonian ships as `et`. Until now Estonian text had to be skipped or run through a foreign locale, and the second has a cost. Measured: `Ta ütles: \"Mul on 'tõsi' siin\" - nähtavasti - ja läks.` came back from `en-GB` as `Ta ütles: ‘Mul on “tõsi” siin’ – nähtavasti – ja läks.`, with English marks and the nesting inverted. `et` gives `Ta ütles: „Mul on „tõsi“ siin“ – nähtavasti – ja läks.`: the low-opening pair `„…“` at both levels, no space inside, and an en dash with spaces."
+        },
+        {
+          "text": "The closing mark is the 66-shaped `“`, not `”`. The Institute of the Estonian Language records that the 2013 spelling dictionary dropped the `„…”` form of 2006, so `„…”` typed by the author is converted to `„…“`, as is `«…»`, which the Institute ranks second."
+        },
+        {
+          "text": "Both quotation levels use the same pair, so when the inner mark touches the outer one, as in `\"Ta ütles 'jah'\"`, the engine declines the pair: the text is left as typed or converted only in part."
+        },
+        {
+          "text": "An ellipsis after `?` or `!` keeps its three dots and becomes the ellipsis character, `midagi?…`, because the Institute's own examples keep the dots there. Estonian philological omission marks of two or four dots are a different mark; a run of four dots is still collapsed to the ellipsis character."
+        },
+        {
+          "text": "With the `ranges` rule on, a numeric range is closed up with an en dash and no-break joiners either side, `30–35`. Ranges of dotted ordinals are not recognised."
+        },
+        {
+          "text": "A no-break space is put between a number and `€`, `km`, `kg`, `cm`, `ha` and `°C`. Measured: `15€` comes back from `en-GB` unchanged and from `et` as `15 €` with a no-break space. `%` and `‰` are written closed up to the number, so a space before them is removed; the Institute's guide tolerates the space in specialised texts, and `et` removes it there too. Single-letter units such as `m`, `g` and `a` are left alone, because they are also common words, so `4 m` and `2005. a` stay unbound."
+        },
+        {
+          "text": "Estonian abbreviations such as `k.a`, `v.a` and `e.m.a` carry no inner space, so there is nothing to bind inside them. `nr`, `lk`, `§` and initials are separated by a space in the sources, but none of them says the space is non-breaking, so they are left as typed."
+        },
+        {
+          "text": "Pass `et` (or a region form such as `et-EE`). Script-tagged identifiers are refused with `POLYTYPO_UNKNOWN_LOCALE`, as before."
+        }
+      ],
+      "examples": []
+    },
+    {
       "version": "1.24.0",
       "date": "2026-11-14",
       "headline": "Latvian joins as the twenty-eighth locale, cited to the Latvian State Language Centre.",

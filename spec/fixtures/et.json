@@ -1,0 +1,266 @@
+{
+  "spec": "1.25.0",
+  "locale": "et",
+  "cases": [
+    {
+      "id": "et-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ta ütles: \"Mul on igav.\" ja läks.",
+      "out": "Ta ütles: „Mul on igav.“ ja läks.",
+      "note": "EKI, Eesti keele õigekirja põhireeglid R37: low-opening „ and 66-shaped closing “; the full stop of direct speech stays inside."
+    },
+    {
+      "id": "et-quotes-nested-same-pair",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ta ütles: \"Õpetaja ütles: \"Ega hinne parane.\" Mis siis?\"",
+      "out": "Ta ütles: „Õpetaja ütles: „Ega hinne parane.“ Mis siis?“",
+      "note": "Põhireeglid R38 Märkus 1 and R51 Märkus 2: a quotation inside a quotation takes the same pair; the same pair at both levels is the pin."
+    },
+    {
+      "id": "et-quotes-nested-with-words",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ta ütles: \"See on 'tsitaat' raamatust\" ja läks.",
+      "out": "Ta ütles: „See on „tsitaat“ raamatust“ ja läks.",
+      "note": "Põhireeglid R51 Märkus 2 permits a nested quotation; no read source uses single marks, so single straight inner quotes become the same pair (a pin)."
+    },
+    {
+      "id": "et-quotes-already-typeset",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ta ütles „jah“ ja läks.",
+      "out": "Ta ütles „jah“ ja läks.",
+      "note": "Põhireeglid R37: text already carrying U+201E/U+201C is a fixed point."
+    },
+    {
+      "id": "et-quotes-old-closer-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ta ütles „jah” ja läks.",
+      "out": "Ta ütles „jah“ ja läks.",
+      "note": "Raadik, Keelenõuanne soovitab 5, p. 227: ÕS 2013 abandoned the „…” form; a U+201D closer typed by the author is normalised to the pinned U+201C."
+    },
+    {
+      "id": "et-quotes-angle-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ta ütles «jah» ja läks.",
+      "out": "Ta ütles „jah“ ja läks.",
+      "note": "« » is ranked second by EVS 8:2008 (Raadik, Keelenõuanne soovitab 5, p. 227); it is normalised to the pinned pair."
+    },
+    {
+      "id": "et-quotes-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ta ütles: \" jah \" ja läks.",
+      "out": "Ta ütles: „jah“ ja läks.",
+      "note": "Põhireeglid examples are closed: innerSpace is none."
+    },
+    {
+      "id": "et-quotes-nest-at-end-declined",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ta ütles: \"See on 'tsitaat'\" ja läks.",
+      "out": "Ta ütles: \"See on ’tsitaat'\" ja läks.",
+      "note": "ACCEPTED COST of the identical pair: a nest whose inner mark touches the outer one is declined (quotes.md §6, §3.2 V1); the inner apostrophe-shaped mark is left to the apostrophe rule."
+    },
+    {
+      "id": "et-quotes-nest-at-start-declined",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ta ütles: \"'Tsitaat' on\" ja läks.",
+      "out": "Ta ütles: \"'Tsitaat’ on\" ja läks.",
+      "note": "ACCEPTED COST of the identical pair: the nest opens against the outer opener, so it is declined (quotes.md §6, §3.2 V1)."
+    },
+    {
+      "id": "et-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Oota... ja siis.",
+      "out": "Oota… ja siis.",
+      "note": "Three dots become the ellipsis character (Põhireeglid R56, mõttepunktid)."
+    },
+    {
+      "id": "et-ellipsis-after-question",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Järsku tuuakse veel midagi?...",
+      "out": "Järsku tuuakse veel midagi?…",
+      "note": "Raadik, Märgikobarad (Oma Keel 2/2022) p. 54: «huvitavatki?…» keeps the dots after the question mark, so abbreviatedAfterTerminal is false."
+    },
+    {
+      "id": "et-ellipsis-after-exclamation",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Hoidku selle eest!...",
+      "out": "Hoidku selle eest!…",
+      "note": "Raadik, Märgikobarad p. 55: «Küsi- ja hüüumärk säilivad ning lause lõpus võivad nad olla nii mõttepunktide ees kui ka järel»; p. 56 «kurat!…». No two-dot form after «!» is attested."
+    },
+    {
+      "id": "et-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Nüüd - tõsi küll - oleme siin.",
+      "out": "Nüüd – tõsi küll – oleme siin.",
+      "note": "Mäekivi, Raadik, Keelenõuanne soovitab 4, p. 194; Põhireeglid R53–54: en dash with a space on both sides."
+    },
+    {
+      "id": "et-dashes-em-input",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Nüüd — tõsi küll — oleme siin.",
+      "out": "Nüüd – tõsi küll – oleme siin.",
+      "note": "ESA vormistusnõuded: the en dash is the dash in a sentence; an em dash is normalised by this pin (no read source excludes U+2014)."
+    },
+    {
+      "id": "et-dashes-existing-en",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Nüüd – tõsi küll – oleme siin.",
+      "out": "Nüüd – tõsi küll – oleme siin.",
+      "note": "An en dash already in place is a fixed point."
+    },
+    {
+      "id": "et-ranges-digits-tight",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "1986-1989 ja 30-35 aastat",
+      "out": "1986⁠–⁠1989 ja 30⁠–⁠35 aastat",
+      "note": "Mäekivi, Raadik 2008 p. 195: «1986–1989», en dash, no spaces; the en-tight form carries U+2060 either side (ranges.md §3).",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "et-ranges-already-tight",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "2001–2006",
+      "out": "2001–2006",
+      "note": "An en dash already between digits is left as it is (ranges.md §3).",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "et-ranges-word-hyphen-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "Lääne-Virumaa",
+      "out": "Lääne-Virumaa",
+      "note": "A hyphen between words is not a range (ranges.md §3).",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "et-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Lääne-Virumaa ja e-post",
+      "out": "Lääne-Virumaa ja e-post",
+      "note": "Põhireeglid R59–61: no closed list of unbreakable forms, so the hyphen rule changes nothing."
+    },
+    {
+      "id": "et-nbsp-spaced-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Maksab 15 € ja 3 km ja 10 kg ja 25 cm ja 7 ha ja –6 °C",
+      "out": "Maksab 15 € ja 3 km ja 10 kg ja 25 cm ja 7 ha ja –6 °C",
+      "note": "Põhireeglid R36: «30 g, 15 €, –6 °C»; Rehemaa p. 26: number and unit stay on one line."
+    },
+    {
+      "id": "et-nbsp-single-letter-unit-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "5 m ja 3 g ja 7 a laps",
+      "out": "5 m ja 3 g ja 7 a laps",
+      "note": "Single-letter units are excluded by DECISION (they are also common words; nbsp.md §3.7); ACCEPTED COST: «4 m», «7 a» stay unbound."
+    },
+    {
+      "id": "et-nbsp-closed-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "9 % ja 0,4 ‰",
+      "out": "9% ja 0,4‰",
+      "note": "Põhireeglid R36 Märkus 2: «9%, 0,4‰» are written closed; closedUnits deletes the space."
+    },
+    {
+      "id": "et-nbsp-spaced-unit-inserted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Hind 15€ siin",
+      "out": "Hind 15 € siin",
+      "note": "nbsp.md §3.7: the unit is in spacedUnits, so the missing space is inserted as U+00A0."
+    },
+    {
+      "id": "et-nbsp-abbreviations-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "See on k.a ja v.a ja nt ja jne",
+      "out": "See on k.a ja v.a ja nt ja jne",
+      "note": "Mäekivi, Raadik p. 193 and Põhireeglid R63 Märkus 1: Estonian abbreviations carry no internal space, so abbreviations is empty and nothing is bound."
+    },
+    {
+      "id": "et-nbsp-before-number-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "määrus nr 144 ja vt lk 30",
+      "out": "määrus nr 144 ja vt lk 30",
+      "note": "The space is attested (Mäekivi, Raadik p. 192; Rehemaa p. 28) but no read source makes it non-breaking, so beforeNumber is empty."
+    },
+    {
+      "id": "et-nbsp-initials-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "F. R. Kreutzwald ja A. Värnik",
+      "out": "F. R. Kreutzwald ja A. Värnik",
+      "note": "Mäekivi, Raadik p. 192 attests the space after an initial but not its non-breaking form, so initialBinding is none."
+    },
+    {
+      "id": "et-spaces-before-punctuation",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Mis siis ? Ei tea !",
+      "out": "Mis siis? Ei tea!",
+      "note": "Mäekivi, Raadik, Keelenõuanne soovitab 4, p. 191: «Koma, punkti, kooloni, semikooloni, küsimärgi ja hüüumärgi ette lauses tühikut ei panda»; nbsp.beforePunctuation is empty, so the space is removed, not bound."
+    },
+    {
+      "id": "et-spaces-brackets",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Ta ( vaikselt ) läks .",
+      "out": "Ta (vaikselt) läks.",
+      "note": "Spaces inside brackets and before a full stop are removed."
+    },
+    {
+      "id": "et-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "(c) 2026",
+      "out": "© 2026",
+      "note": "(c) becomes the copyright sign."
+    },
+    {
+      "id": "et-apostrophe-case-ending",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Youtube'ist ja tõest'",
+      "out": "Youtube’ist ja tõest’",
+      "note": "Põhireeglid R57 and Märkus 4: a straight apostrophe becomes U+2019."
+    },
+    {
+      "id": "et-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alfa „beta“, gamma",
+      "out": "alfa „beta“, gamma",
+      "note": "Põhireeglid R37 vs R38; Raadik, «Kuidas vormistada tsitaati?», KS5 p. 218: placement depends on meaning, so punctuationPlacement is none and the rule leaves the text alone.",
+      "rules": {
+        "quote-punctuation": true
+      }
+    }
+  ]
+}

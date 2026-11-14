@@ -1,0 +1,85 @@
+{
+  "locale": "et",
+  "name": "Estonian",
+  "quotes": {
+    "primary": {
+      "open": "„",
+      "close": "“",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "„",
+      "close": "“",
+      "innerSpace": "none"
+    },
+    "punctuationPlacement": "none",
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": []
+    }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": [],
+    "beforeUnits": [],
+    "spacedUnits": ["€", "km", "kg", "cm", "ha", "°C"],
+    "closedUnits": ["%", "‰"],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Eesti Keele Instituut, Eesti keele õigekirja põhireeglid (2025; heaks kiidetud Emakeele Seltsi keeletoimkonnas 6.03.2024), REEGEL 37, 38 Märkus 1, 51 Märkus 2; M. Raadik, «Mis kujuga on jutumärgid?», Keelenõuanne soovitab 5 (2015), lk 227 (= Oma Keel 2014, nr 2): «Selle sihiga on 2013. a ÕS loobunud 2006. a valitud märkidest [„ ”] ning rakendanud kuju [„ “], millel on eesti keeles kõige tugevam traditsioon»; Põhireeglid R37: «Mari ütles: „Mul on igav.“»; R51 Märkus 2: «Ühtede jutumärkide sees võivad olla ka teised»",
+      "url": "https://eki.ee/wp-content/uploads/2025/08/Eesti-keele-oigekirja-pohireeglid.pdf",
+      "note": "PICK-AND-PIN of the code points: U+201E…U+201C (low-9 opener, 66-shaped closer). The closer U+201D belongs to the ÕS 2006 form that ÕS 2013 abandoned (Raadik, KS5 p. 227); the issue's „…” lead is therefore refuted. The code points were read from glyph shapes and the verbal description «„99 all ja 66 üleval“» (Emakeele Seltsi aastaraamatu vormistusnõuded, 20.06.2026, journal house style, corroboration only), not from a text layer of the Põhireeglid PDF (it has none); the text layers of KS5 pp. 213–218 and 226–227 and of Oma Keel 2/2022 carry U+201E…U+201C (the ÕS 2006 pair is U+201E…U+201D). Secondary equals primary: R51 Märkus 2 permits («võivad») a quotation inside a quotation and R38 Märkus 1 shows «„Õpetaja ütles: „Ega hinne … parandada.““»; no read source uses single marks for it, so this is a pin, not a stated requirement. ACCEPTED COST of the identical pair: a nest whose inner mark touches the outer one is declined (quotes.md §6, §3.2 V1), pinned by fixtures. « » is ranked second by EVS 8:2008 as reported by Raadik (not read) and is normalised to the pinned pair. innerSpace none: every Põhireeglid example is closed up; no source states the rule in words. Märgikobarad (Oma Keel 2/2022) p. 60, «Kõrvutiste jutumärkide vahele üldiselt tühikut ei panda», concerns two adjacent marks, which supports the nested pair standing flush. punctuationPlacement none: the full stop stands inside for direct speech (R37) and is dropped for a quotation inside a sentence (R38; M. Raadik, «Kuidas vormistada tsitaati?», KS5 p. 218), so placement depends on meaning. elisionIdioms and elisionClitics empty: apostrophe elision (R57 Märkus 4: tõest’, a’al, on’s) and case-ending apostrophes (Youtube’ist) are open classes. The Eesti keele käsiraamat was not reachable (both URLs returned 404) and is not cited. Retrieved 2026-11-14."
+    },
+    {
+      "rule": "dashes",
+      "cite": "H. Mäekivi, M. Raadik, «See tühine tühik», Keelenõuanne soovitab 4 (2008), lk 194: «Kõigil neil juhtudel kirjutatakse mõttekriips mõlemalt poolt lahku (kuid näiteks järgneva komaga kokku)»; Põhireeglid REEGEL 53–54",
+      "url": "https://keeleabi.eki.ee/pdf/191.pdf",
+      "note": "dash.parenthetical = en-spaced (U+0020 U+2013 U+0020). Spacing is stated by Mäekivi and Raadik; the width U+2013 is read from the REEGEL 53–54 examples («varuosad – kõik», «Nüüd – tõsi küll – oleme») and corroborated by the Emakeele Seltsi vormistusnõuded: «poolpikk, nn enn-kriips (–) … Sama poolpikka kriipsu kasutatakse ka lauses mõttekriipsuna». No read Estonian source states an exclusion of U+2014, so an em dash is normalised to the en dash by this pin, not by a citation. Retrieved 2026-11-14."
+    },
+    {
+      "rule": "ranges",
+      "cite": "H. Mäekivi, M. Raadik, «See tühine tühik», Keelenõuanne soovitab 4 (2008), lk 195: «Sõna kuni asendav mõttekriips enda ette ega taha üldjuhul tühikut ei nõua: … 75–100 mm», «1986–1989»; T. Rehemaa, Arvukirjutus (2. tr, 2020), lk 38, 53",
+      "url": "https://keeleabi.eki.ee/pdf/191.pdf",
+      "note": "dash.range = en-tight (U+2013, no spaces). A spaced form is permitted when a number itself contains a space («8000 – 10 000 eurot ~ 8000–10 000 eurot», Rehemaa p. 38); the closed form is pinned. The en dash stands for «kuni» only; a hyphen between consecutive ordinals means «ja» («1.-2. jaanuar», R60), and dotted flanks are not range candidates (an algorithm limit, not data). The ranges rule is off by default. Retrieved 2026-11-14."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "M. Raadik, «Märgikobarad», Oma Keel 2/2022, lk 54, 60: «Küll säilivad mõttepunktide kõrval küsi- ja hüüumärk … Järsku tuuakse veel midagi huvitavatki?…»; Põhireeglid REEGEL 56",
+      "url": "https://www.emakeeleselts.ee/wp-content/uploads/2022/12/raadik_OK_2022-2.pdf",
+      "note": "abbreviatedAfterTerminal = false: the dots stay after ? and ! and no read source reduces them to two. Estonian philological omission marks («katkestuspunktid», two or four dots; Mäekivi and Raadik 2008 p. 198) are a different mark; the ellipsis rule collapses a four-dot run to the ellipsis character, an accepted cost for such texts. Retrieved 2026-11-14."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Põhireeglid REEGEL 17 (poolitamine), 59–61 (sidekriips)",
+      "url": "https://eki.ee/wp-content/uploads/2025/08/Eesti-keele-oigekirja-pohireeglid.pdf",
+      "note": "All three lists are empty: hyphenation and the uses of the hyphen are described, but no closed list of unbreakable hyphenated forms is given. Retrieved 2026-11-14."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Põhireeglid REEGEL 36 ja Märkus 2: «eraldatakse lühend või tähis numbriga kirjutatud arvust tühikuga (nt 30 g, 15 €, –6 °C, 10 m² tuba, 7 a laps, § 5 ~ 5. §)», «Arvuga kokku kirjutatakse kraadimärk, … protsendi-, promillimärk (nt 4° sooja, … 9%, 0,4‰)»; T. Rehemaa, Arvukirjutus (2. tr, 2020), lk 26: «Arv ja lühend tuleb mahutada ühele reale. Poolitamatu tühiku saab Wordi programmis, kui valida Ctrl + Shift + tühikuklahv.», lk 27: «15 °C (mitte: „15° C“)»; Mäekivi, Raadik 2008 lk 191, 193, 204",
+      "url": "https://eki.ee/wp-content/uploads/2025/08/Eesti-keele-oigekirja-pohireeglid.pdf",
+      "note": "(1) beforePunctuation and narrowBeforePunctuation empty: a stated negative, «Koma, punkti, kooloni, semikooloni, küsimärgi ja hüüumärgi ette lauses tühikut ei panda» (Mäekivi, Raadik p. 191). (2) spacedUnits = € km kg cm ha °C: R36 (€, °C) and Rehemaa pp. 26, 30, 44, 46 (kg, ha, cm, km); the one-line rule keeps number and unit together (Rehemaa p. 26). Not listed though attested: °F, Hz, dl, px (by DECISION, no closed set is stated), and EUR (not attested). Single-letter units (m, g, l, t, s, a) are excluded because they are also common words and nbsp.md §3.7 forbids them; ACCEPTED COST: Mäekivi and Raadik's own «4 m» and «2005. a» (p. 204) stay unbound. (3) closedUnits = % and ‰ (R36 Märkus 2). ACCEPTED COST: Rehemaa p. 27 tolerates a space before % in specialised texts, which N5 will delete. A bare ° is in no list in any locale (nbsp.md §3.7). (4) abbreviations empty: Estonian lowercase abbreviations are written without internal spaces (k.a, s.o, v.a, e.m.a, R63 Märkus 1; Mäekivi, Raadik p. 193), so there is no space to bind; the issue's jne, nt, vt lead is refuted. Foreign-origin abbreviations do carry one («a. D.», «P. S.», p. 193) but no source makes it non-breaking, so they are not listed: ACCEPTED COST. (5) beforeNumber, afterSymbols and initialBinding left empty or none: the space is attested («määrus nr 144» (Mäekivi, Raadik p. 192), «vt lk 30–33» (Rehemaa p. 28), «§ 5 ~ 5. §» (R36; Mäekivi, Raadik p. 199), «A. Värnik, … F. R. Kreutzwald» (Mäekivi, Raadik p. 192)) but no read source says it is non-breaking, and unverified lists ship empty. (6) afterShortWords, beforeUnits and beforeWord empty: not addressed. Not expressible and so not covered: digit groups («10 000», Mäekivi, Raadik p. 204), «2005. a», «5. §». Retrieved 2026-11-14."
+    }
+  ]
+}

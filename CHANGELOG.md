@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.24.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.24.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.25.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.25.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,19 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.25.0 — 14 November 2026
+
+Estonian joins as the twenty-ninth locale, cited to the Institute of the Estonian Language.
+
+- Estonian ships as `et`. Until now Estonian text had to be skipped or run through a foreign locale, and the second has a cost. Measured: `Ta ütles: "Mul on 'tõsi' siin" - nähtavasti - ja läks.` came back from `en-GB` as `Ta ütles: ‘Mul on “tõsi” siin’ – nähtavasti – ja läks.`, with English marks and the nesting inverted. `et` gives `Ta ütles: „Mul on „tõsi“ siin“ – nähtavasti – ja läks.`: the low-opening pair `„…“` at both levels, no space inside, and an en dash with spaces.
+- The closing mark is the 66-shaped `“`, not `”`. The Institute of the Estonian Language records that the 2013 spelling dictionary dropped the `„…”` form of 2006, so `„…”` typed by the author is converted to `„…“`, as is `«…»`, which the Institute ranks second.
+- Both quotation levels use the same pair, so when the inner mark touches the outer one, as in `"Ta ütles 'jah'"`, the engine declines the pair: the text is left as typed or converted only in part.
+- An ellipsis after `?` or `!` keeps its three dots and becomes the ellipsis character, `midagi?…`, because the Institute's own examples keep the dots there. Estonian philological omission marks of two or four dots are a different mark; a run of four dots is still collapsed to the ellipsis character.
+- With the `ranges` rule on, a numeric range is closed up with an en dash and no-break joiners either side, `30–35`. Ranges of dotted ordinals are not recognised.
+- A no-break space is put between a number and `€`, `km`, `kg`, `cm`, `ha` and `°C`. Measured: `15€` comes back from `en-GB` unchanged and from `et` as `15 €` with a no-break space. `%` and `‰` are written closed up to the number, so a space before them is removed; the Institute's guide tolerates the space in specialised texts, and `et` removes it there too. Single-letter units such as `m`, `g` and `a` are left alone, because they are also common words, so `4 m` and `2005. a` stay unbound.
+- Estonian abbreviations such as `k.a`, `v.a` and `e.m.a` carry no inner space, so there is nothing to bind inside them. `nr`, `lk`, `§` and initials are separated by a space in the sources, but none of them says the space is non-breaking, so they are left as typed.
+- Pass `et` (or a region form such as `et-EE`). Script-tagged identifiers are refused with `POLYTYPO_UNKNOWN_LOCALE`, as before.
 
 ## 1.24.0 — 14 November 2026
 

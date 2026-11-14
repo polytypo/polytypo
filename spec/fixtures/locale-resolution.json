@@ -1,5 +1,5 @@
 {
-  "spec": "1.24.0",
+  "spec": "1.25.0",
   "cases": [
     {
       "id": "exact-en-us",
@@ -294,6 +294,12 @@
       "tag": "lv-LV",
       "resolves": "lv",
       "note": "section 3.4 step 3a: the region strip reaches lv, which needs no registry alias."
+    },
+    {
+      "id": "strip-et-ee",
+      "tag": "et-EE",
+      "resolves": "et",
+      "note": "section 3.4 step 3a: the region strip reaches et, which needs no registry alias."
     }
   ]
 }
