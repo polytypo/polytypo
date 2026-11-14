@@ -204,12 +204,12 @@
       "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 89: «Nr. 20» binds; lowercase «nr.» is attested only after the number («155. nr.»), so it is not listed and stays as typed."
     },
     {
-      "id": "lv-nbsp-initials-lone-inert",
+      "id": "lv-nbsp-initial-binds",
       "rule": "nbsp",
       "mode": "text",
       "in": "J. Kalniņš un A. Bērziņš",
-      "out": "J. Kalniņš un A. Bērziņš",
-      "note": "initialBinding is chain, a DECISION that departs from LVEK prot. Nr. 36 5. § and p. 89 for a lone initial: a rule on a lone initial collides at sentence boundaries (nbsp.md §3.9)."
+      "out": "J. Kalniņš un A. Bērziņš",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 89 «starp iniciāli un uzvārdu (J. Kalniņš)»; LVEK 10.09.2014 prot. Nr. 36 5. §: a bound space after an initial (initialBinding single)."
     },
     {
       "id": "lv-nbsp-initials-chain",
@@ -217,7 +217,15 @@
       "mode": "text",
       "in": "J. K. Bērziņš atnāca.",
       "out": "J. K. Bērziņš atnāca.",
-      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 89 «starp iniciāli un uzvārdu»; LVEK prot. Nr. 36 5. §: a run of two or more initials is bound to the surname and to each other (nbsp.md §3.9, chain)."
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 89; LVEK prot. Nr. 36 5. §: a run of initials is bound to each other and to the surname (nbsp.md §3.9)."
+    },
+    {
+      "id": "lv-nbsp-initial-sentence-boundary",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Es izvēlējos plānu B. Tad aizgāju.",
+      "out": "Es izvēlējos plānu B. Tad aizgāju.",
+      "note": "ACCEPTED COST of initialBinding = single: a lone capital before a full stop is read as an initial even at a sentence boundary (nbsp.md §3.9, §7.9a), the price of binding «J. // Kalniņš»."
     },
     {
       "id": "lv-nbsp-short-words-inert",

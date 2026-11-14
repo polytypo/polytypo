@@ -288,6 +288,12 @@
       "tag": "tr-TR",
       "resolves": "tr",
       "note": "section 3.4 step 3a, and the tag a Turkish caller actually sends. tr needs no registry alias precisely because the region strip reaches it — this case is what makes that claim testable rather than asserted."
+    },
+    {
+      "id": "strip-lv-lv",
+      "tag": "lv-LV",
+      "resolves": "lv",
+      "note": "section 3.4 step 3a: the region strip reaches lv, which needs no registry alias."
     }
   ]
 }
