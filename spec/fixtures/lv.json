@@ -201,7 +201,7 @@
       "mode": "text",
       "in": "Nr. 20 un nr. 5",
       "out": "Nr. 20 un nr. 5",
-      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 89: «Nr. 20» binds; lowercase «nr.» is attested only after the number («155. nr.»), so it is not listed and stays as typed."
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 89: «Nr. 20» binds; the only lowercase example of «nr.» stands after the number («155. nr.»), so it is not listed and stays as typed."
     },
     {
       "id": "lv-nbsp-initial-binds",
@@ -217,7 +217,7 @@
       "mode": "text",
       "in": "J. K. Bērziņš atnāca.",
       "out": "J. K. Bērziņš atnāca.",
-      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 89; LVEK prot. Nr. 36 5. §: a run of initials is bound to each other and to the surname (nbsp.md §3.9)."
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 89; LVEK prot. Nr. 36 5. §: the sources state the single-initial rule; binding within a run of initials is nbsp.md §3.9 behaviour."
     },
     {
       "id": "lv-nbsp-initial-sentence-boundary",
