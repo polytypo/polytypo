@@ -86,6 +86,7 @@ PRIMARY_SOURCES = {
     "lt": "A. Drukteinis (ed.), Lietuvių kalbos skyryba",
     "lv": "Valsts valodas centrs, Tiesību aktu tulkošanas rokasgrāmata",
     "et": "Eesti Keele Instituut, Eesti keele õigekirja põhireeglid",
+    "da": "Dansk Sprognævn, Retskrivningsreglerne",
 }
 
 
@@ -1853,6 +1854,7 @@ BADGE_TEXT = {
     "lt": "Tipografinis tvarkymas: <b>polytypo</b>",
     "lv": "Tipogrāfiskā sakārtošana: <b>polytypo</b>",
     "et": "Tüpograafiline korrastus: <b>polytypo</b>",
+    "da": "Typografisk oprydning med <b>polytypo</b>",
     "it": "Pulizia tipografica con <b>polytypo</b>",
     "pl": "Typograficzne porządki dzięki <b>polytypo</b>",
     "pt": "Limpeza tipográfica por <b>polytypo</b>",
@@ -1881,6 +1883,7 @@ BADGE_LANG_NAMES = {
     "lt": "Lithuanian",
     "lv": "Latvian",
     "et": "Estonian",
+    "da": "Danish",
     "it": "Italian",
     "pl": "Polish",
     "pt": "Portuguese",

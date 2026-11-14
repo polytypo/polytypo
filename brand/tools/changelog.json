@@ -2,6 +2,35 @@
   "_comment": "Single source for CHANGELOG.md (brand/tools/gen_readmes.py) and the site's /changelog page (brand/tools/build_promo.py). Released versions only. Example strings are real engine output captured from the published packages of each version, never typed by hand; an entry whose release changes no output carries examples: [].",
   "releases": [
     {
+      "version": "1.26.0",
+      "date": "2026-11-14",
+      "headline": "Danish joins as the thirtieth locale, cited to the Danish Language Council.",
+      "items": [
+        {
+          "text": "Danish ships as `da`. Until now Danish text had to be skipped or run through a foreign locale, and the second has a cost. Measured: `Han sagde: \"Hun sagde 'ja' til mig\" - tydeligvis - og gik.` came back from `en-GB` as `Han sagde: ‘Hun sagde “ja” til mig’ – tydeligvis – og gik.`, with English marks and the nesting inverted. `da` gives `Han sagde: »Hun sagde ›ja‹ til mig« – tydeligvis – og gik.`: the guillemets `»…«` at the first level, `›…‹` inside, no space inside the marks, and an en dash with spaces."
+        },
+        {
+          "text": "The Danish Language Council's spelling rules name two principal forms, `»…«` and the double-quote form, and rank neither. `da` pins `»…«`: the rules list it first, every direct-speech example in them uses it, and the Folketingstidende guide uses it throughout its chapter on quotation marks. The quote forms `”…”`, `„…“` and `«…»` typed by the author are converted to `»…«`; `«…»`, the reversed pair, is not attested as Danish in the sources read."
+        },
+        {
+          "text": "An ellipsis before `?` or `!` becomes the ellipsis character with the terminal mark after it, `Er det nu…?`, because the Council writes the dots first. A run of four dots is collapsed to the ellipsis character, although the Council allows it as a longer pause."
+        },
+        {
+          "text": "Ranges keep the hyphen. The Council writes `mandag-fredag 9-16` and `200-300 deltagere` with a plain hyphen and no spaces, so `da` has no range dash and the `ranges` rule leaves `9-16` and `1986-1989` as typed."
+        },
+        {
+          "text": "A no-break space is put between a number and `%`, `kr`, `€`, `km`, `kg`, `cm` and `ha`. Measured: `15kr og 50%` comes back from `en-GB` unchanged and from `da` as `15 kr og 50 %`, with no-break spaces. The Council recommends the space before `%`; `da` follows it and inserts it where it is missing. `15 kr.` is bound as well. Single-letter units such as `m` and `g` are left alone, because they are also common words. `°C` is left as typed: the Council entry that was read covers only angles."
+        },
+        {
+          "text": "Danish abbreviations such as `f.eks.`, `bl.a.` and `dvs.` carry no inner space, so there is nothing to bind inside them. `nr.`, `s.`, `kl.` and `§` are followed by a space in the sources, but none of them says the space is non-breaking, so they are left as typed."
+        },
+        {
+          "text": "Pass `da` (or a region form such as `da-DK`). Script-tagged identifiers are refused with `POLYTYPO_UNKNOWN_LOCALE`, as before."
+        }
+      ],
+      "examples": []
+    },
+    {
       "version": "1.25.0",
       "date": "2026-11-14",
       "headline": "Estonian joins as the twenty-ninth locale, cited to the Institute of the Estonian Language.",

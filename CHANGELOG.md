@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.25.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.25.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.26.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.26.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,18 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.26.0 — 14 November 2026
+
+Danish joins as the thirtieth locale, cited to the Danish Language Council.
+
+- Danish ships as `da`. Until now Danish text had to be skipped or run through a foreign locale, and the second has a cost. Measured: `Han sagde: "Hun sagde 'ja' til mig" - tydeligvis - og gik.` came back from `en-GB` as `Han sagde: ‘Hun sagde “ja” til mig’ – tydeligvis – og gik.`, with English marks and the nesting inverted. `da` gives `Han sagde: »Hun sagde ›ja‹ til mig« – tydeligvis – og gik.`: the guillemets `»…«` at the first level, `›…‹` inside, no space inside the marks, and an en dash with spaces.
+- The Danish Language Council's spelling rules name two principal forms, `»…«` and the double-quote form, and rank neither. `da` pins `»…«`: the rules list it first, every direct-speech example in them uses it, and the Folketingstidende guide uses it throughout its chapter on quotation marks. The quote forms `”…”`, `„…“` and `«…»` typed by the author are converted to `»…«`; `«…»`, the reversed pair, is not attested as Danish in the sources read.
+- An ellipsis before `?` or `!` becomes the ellipsis character with the terminal mark after it, `Er det nu…?`, because the Council writes the dots first. A run of four dots is collapsed to the ellipsis character, although the Council allows it as a longer pause.
+- Ranges keep the hyphen. The Council writes `mandag-fredag 9-16` and `200-300 deltagere` with a plain hyphen and no spaces, so `da` has no range dash and the `ranges` rule leaves `9-16` and `1986-1989` as typed.
+- A no-break space is put between a number and `%`, `kr`, `€`, `km`, `kg`, `cm` and `ha`. Measured: `15kr og 50%` comes back from `en-GB` unchanged and from `da` as `15 kr og 50 %`, with no-break spaces. The Council recommends the space before `%`; `da` follows it and inserts it where it is missing. `15 kr.` is bound as well. Single-letter units such as `m` and `g` are left alone, because they are also common words. `°C` is left as typed: the Council entry that was read covers only angles.
+- Danish abbreviations such as `f.eks.`, `bl.a.` and `dvs.` carry no inner space, so there is nothing to bind inside them. `nr.`, `s.`, `kl.` and `§` are followed by a space in the sources, but none of them says the space is non-breaking, so they are left as typed.
+- Pass `da` (or a region form such as `da-DK`). Script-tagged identifiers are refused with `POLYTYPO_UNKNOWN_LOCALE`, as before.
 
 ## 1.25.0 — 14 November 2026
 

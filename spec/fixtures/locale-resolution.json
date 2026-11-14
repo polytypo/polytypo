@@ -1,5 +1,5 @@
 {
-  "spec": "1.25.0",
+  "spec": "1.26.0",
   "cases": [
     {
       "id": "exact-en-us",
@@ -300,6 +300,12 @@
       "tag": "et-EE",
       "resolves": "et",
       "note": "section 3.4 step 3a: the region strip reaches et, which needs no registry alias."
+    },
+    {
+      "id": "strip-da-dk",
+      "tag": "da-DK",
+      "resolves": "da",
+      "note": "section 3.4 step 3a: the region strip reaches da, which needs no registry alias."
     }
   ]
 }

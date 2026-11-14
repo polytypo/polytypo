@@ -1,0 +1,85 @@
+{
+  "locale": "da",
+  "name": "Danish",
+  "quotes": {
+    "primary": {
+      "open": "»",
+      "close": "«",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "›",
+      "close": "‹",
+      "innerSpace": "none"
+    },
+    "punctuationPlacement": "none",
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": []
+    }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "none"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": [],
+    "beforeUnits": [],
+    "spacedUnits": ["%", "kr", "€", "km", "kg", "cm", "ha"],
+    "closedUnits": [],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Dansk Sprognævn, Retskrivningsreglerne, text of Retskrivningsordbogen 4. udg. (2012), read on the sproget.dk editing mirror (the public rule pages are not online at their old addresses); Nyt fra Sprognævnet 2025/1, p. 8, reports no major rule changes in RO 5. udg. (2024) other than §38, §45 and §§31–35, and Oversigt over ændringer i retskrivningsreglerne 2025 (RO 5 → RO 5.1) changes §58 only in the §58.1 example and §58.2, so that the text read still stands in RO 5.1 is an inference: §58 Anførselstegn: «Der er følgende hovedformer: »...« og \"...\"; mindre benyttede er de enkelte (ufordoblede) anførselstegn: ›...‹ eller ‘...’», «man i øvrigt bruger samme type anførselstegn i hele teksten», (4) «Enkelte (ufordoblede) anførselstegn kan bruges ved ord der står i en større sammenhæng som selv er omgivet af anførselstegn»; §59(4): punktum and komma «kan valgfrit sættes foran eller efter anførselstegnet»; Retskrivningsvejledning for Folketingstidende, 2. udg. (2013), Anførselstegn chapter pp. 17–26; Oversigt 2025 §47.3.b and §58.1",
+      "url": "https://rediger.sproget.dk/raad-og-regler/Retskrivningsregler/retskrivningsregler/a7-40-60/a7-58-anforselstegn",
+      "note": "PICK-AND-PIN: »…« (U+00BB open, U+00AB close) with ›…‹ (U+203A, U+2039) inside. §58 names two principal forms, »…« and a double-quote form whose code points the mirror text does not show, and ranks neither. The issue's «…» lead (U+00AB as the opener) is refuted: every source read that uses guillemets opens with U+00BB. »…« is pinned because §58 lists it first, every §59 example of direct speech uses it («»Nej,« svarede hun»), the Folketingstidende guide uses it throughout its Anførselstegn chapter (pp. 17–26), and `sl` ships the same pair. The rival ”…” (U+201D both sides, read from page images) is used in the examples the 2025 change list adds to §47.3.b («”Hejsa, Peter!”»), already in the §58.1 example of RO 5 (2024) retained in RO 5.1 («”godmorgen!”»), and in the Digitaliseringsstyrelsen web guide (Skrivevejledning for borger.dk, last updated 05-08-2026, p. 67); it is normalised to the pinned pair. ›…‹ for the inner level: §58 lists the single forms ›...‹ and ‘...’ as less used and §58(4) allows single marks for a quotation inside a quotation, but the inner marks of its example are straight in the mirror text, so the choice between the two single forms is a pin; Folketingstidende instead nests by doubling », and no source read states ›…‹ as the inner mark of »…«. innerSpace none: no example carries a space inside the marks. punctuationPlacement none: §59(4) allows the full stop or comma before or after the closing mark and requires the position after it for a quotation inside a sentence, so placement depends on meaning. elisionIdioms and elisionClitics empty: not addressed. Retrieved 2026-11-14."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Dansk Sprognævn, Retskrivningsreglerne, text of Retskrivningsordbogen 4. udg. (2012), read on the sproget.dk editing mirror (the public rule pages are not online at their old addresses); Nyt fra Sprognævnet 2025/1, p. 8, reports no major rule changes in RO 5. udg. (2024) other than §38, §45 and §§31–35, and Oversigt over ændringer i retskrivningsreglerne 2025 (RO 5 → RO 5.1) changes §58 only in the §58.1 example and §58.2, so that the text read still stands in RO 5.1 is an inference: §55 Tankestreg: «skrives eller trykkes med afstand (spatium) til de omgivende ord»; Digitaliseringsstyrelsen, Skrivevejledning for borger.dk og lifeindenmark.dk (last updated 05-08-2026; file «version 5»), pp. 66–67: «Tankestreg på PC Alt + 0150», example «lægeskift – kan»; Retskrivningsvejledning for Folketingstidende (2013), pp. 121–122",
+      "url": "https://rediger.sproget.dk/raad-og-regler/Retskrivningsregler/retskrivningsregler/a7-40-60/a7-55-tankestreg",
+      "note": "dash.parenthetical = en-spaced (U+0020 U+2013 U+0020). The spacing is stated by §55, which says only that the dash is typographically longer than the hyphen; the width U+2013 is read from the web guide (Alt+0150 is Windows-1252 0x96 = U+2013) and its example, and every Folketingstidende example is spaced. No source read mentions U+2014, so an em dash is normalised to the en dash by this pin, not by a citation. Retrieved 2026-11-14."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Dansk Sprognævn, Retskrivningsreglerne, text of Retskrivningsordbogen 4. udg. (2012), read on the sproget.dk editing mirror (the public rule pages are not online at their old addresses); Nyt fra Sprognævnet 2025/1, p. 8, reports no major rule changes in RO 5. udg. (2024) other than §38, §45 and §§31–35, and Oversigt over ændringer i retskrivningsreglerne 2025 (RO 5 → RO 5.1) changes §58 only in the §58.1 example and §58.2, so that the text read still stands in RO 5.1 is an inference: §57.9 Bindestreg «I betydningen 'fra ... til'»: «København-Århus», «mandag-fredag 9-16», «200-300 deltagere»; a spaced tankestreg only «Mellem særlig lange ord og talangivelser»: «24. december 1994 – 6. januar 1995»; Digitaliseringsstyrelsen, Skrivevejledning for borger.dk, p. 59 (times): «Hvis du alligevel skriver klokkeslæt med bindestreg, bruger vi bindestreg og ikke tankestreg, og vi har ingen luft mellem tal og bindestreg»; Retskrivningsvejledning for Folketingstidende (2013), pp. 111–112: «2013-2014», «3-4 dage», «nr. 5-8»",
+      "url": "https://rediger.sproget.dk/raad-og-regler/Retskrivningsregler/retskrivningsregler/a7-40-60/a7-57-bindestreg",
+      "note": "dash.range = none. The Danish convention for «fra … til» is the hyphen U+002D without spaces, and the schema has no hyphen value; en-tight would rewrite the normative «9-16» as «9–16», so the token is left exactly as written. Retrieved 2026-11-14."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Dansk Sprognævn, Oversigt over ændringer i retskrivningsreglerne 2025 (RO 5 → RO 5.1), §43 Prikker, column «Retskrivningsordbogen 5.1»: «Først var det kedeligt, men så ...!», «Var det nu også det hun sagde ..?»; «Hvis tøveprikkerne efterfølges af et sluttegn, sættes der ikke mellemrum mellem tøveprikkerne og sluttegnet»",
+      "url": "https://dsn.dk/wp-content/uploads/2025/12/Oversigt-over-aendringer-i-retskrivningsreglerne-2025-1.pdf",
+      "note": "abbreviatedAfterTerminal = false: the terminal mark follows the dots, so no source reduces the dots after ? or !. ACCEPTED COST: §43 allows two or more dots, including four («stilheden ....»); the ellipsis rule collapses a four-dot run to the ellipsis character, and a two-dot run is left as typed. Retrieved 2026-11-14."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Dansk Sprognævn, Retskrivningsreglerne, text of Retskrivningsordbogen 4. udg. (2012), read on the sproget.dk editing mirror (the public rule pages are not online at their old addresses); Nyt fra Sprognævnet 2025/1, p. 8, reports no major rule changes in RO 5. udg. (2024) other than §38, §45 and §§31–35, and Oversigt over ændringer i retskrivningsreglerne 2025 (RO 5 → RO 5.1) changes §58 only in the §58.1 example and §58.2, so that the text read still stands in RO 5.1 is an inference: §57 Bindestreg (1) «Bindestreg bruges ved deling af ord ved linjeskift (se § 15-17)»",
+      "url": "https://rediger.sproget.dk/raad-og-regler/Retskrivningsregler/retskrivningsregler/a7-40-60/a7-57-bindestreg",
+      "note": "All three lists are empty: the uses of the hyphen are described, but no closed list of forms that must not break is given. Retrieved 2026-11-14."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Dansk Sprognævn, Svarbase SV00000086 «procenttegn og mellemrum» (2006, edited 2015): «Vi anbefaler mellemrum mellem tallet og procenttegnet: 25 %»; SV00015797 «valutabetegnelser» (NfS 2014/3, edited 2022): «I løbende tekst står betegnelsen for møntenheden efter tallet» (10 kr., 15 $), written «med mellemrum fordi de repræsenterer et ord som man siger efter tallet»; Dansk Sprognævn, Retskrivningsreglerne, text of Retskrivningsordbogen 4. udg. (2012), read on the sproget.dk editing mirror (the public rule pages are not online at their old addresses), §42.1a (units without a full stop: cm, m, km, g, kg) and §42.5: «Der skrives ikke mellemrum mellem de enkelte dele af en forkortelse»; Retskrivningsvejledning for Folketingstidende (2013), pp. 49–52, 114 («17 ha», «2 kg», «5 kr.»); Digitaliseringsstyrelsen, Skrivevejledning for borger.dk, p. 58 («50 %», «7 %»)",
+      "url": "https://sproget.dk/raad-og-regler/artikler-mv/svarbase/SV00000086",
+      "note": "(1) spacedUnits = % kr € km kg cm ha: the Sprognævn recommends the space before % (the same entry notes economists and bookkeepers often write it closed up, which makes the spaced form a recommendation, not the only form; it is pinned, as in `sv`); the currency designation follows the number, and SV00015797 treats currency and unit designations like SI symbols (kg, MW); ha is attested in the Folketingstidende guide only. kr is listed without the full stop; the engine accepts a following full stop. $ is attested («15 $») and not listed, by decision. Single-letter units (m, g, l, t) are excluded because they are also common words and nbsp.md §3.7 forbids them. °C: the only Sprognævn entry read on the degree sign (SV00015408) concerns angles and says nothing on temperatures, so it is not listed. (2) closedUnits empty: no unit is written closed up by a stated rule. (3) abbreviations empty: Danish abbreviations are written without an inner space (§42.5: osv., m.m., el.lign., H.C. Andersen; Folketingstidende: bl.a., dvs., f.eks.), so there is nothing to bind; the issue's lead of f.eks., bl.a. and dvs. is refuted as candidates. initialBinding none: initials are written closed up. (4) beforePunctuation, narrowBeforePunctuation, afterShortWords, beforeUnits, beforeNumber, beforeWord and afterSymbols empty: no source read says any space is non-breaking; kl., nr., s. and § are attested before numbers without that statement. Not expressible and so not covered: the full stop as thousands marker («250.000 kr.», Digitaliseringsstyrelsen p. 58) and dates («den 6. juni 2025»). Retrieved 2026-11-14."
+    }
+  ]
+}

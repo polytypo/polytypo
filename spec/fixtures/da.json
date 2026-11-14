@@ -1,0 +1,295 @@
+{
+  "spec": "1.26.0",
+  "locale": "da",
+  "cases": [
+    {
+      "id": "da-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sagde: \"Jeg er træt.\" og gik.",
+      "out": "Han sagde: »Jeg er træt.« og gik.",
+      "note": "Retskrivningsreglerne §58, §59: direct speech takes »…«; the full stop of the speech stays inside."
+    },
+    {
+      "id": "da-quotes-nested-secondary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sagde: \"Hun sagde 'ja' til mig\" og gik.",
+      "out": "Han sagde: »Hun sagde ›ja‹ til mig« og gik.",
+      "note": "Dansk Sprognævn, Retskrivningsreglerne §58: the inner level takes ›…‹ (pin of the listed single form)."
+    },
+    {
+      "id": "da-quotes-nested-at-end",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sagde: \"Hun sagde 'ja'\" og gik.",
+      "out": "Han sagde: »Hun sagde ›ja‹« og gik.",
+      "note": "Dansk Sprognævn, Retskrivningsreglerne §58: a nest that ends against the outer closer is still paired."
+    },
+    {
+      "id": "da-quotes-already-typeset",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sagde »ja« og gik.",
+      "out": "Han sagde »ja« og gik.",
+      "note": "Dansk Sprognævn, Retskrivningsreglerne §58: text already carrying »…« is a fixed point."
+    },
+    {
+      "id": "da-quotes-already-typeset-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sagde »hun sagde ›ja‹ til mig« og gik.",
+      "out": "Han sagde »hun sagde ›ja‹ til mig« og gik.",
+      "note": "Dansk Sprognævn, Retskrivningsreglerne §58: already-typeset nesting is a fixed point."
+    },
+    {
+      "id": "da-quotes-already-typeset-comma",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "»Nej,« svarede hun.",
+      "out": "»Nej,« svarede hun.",
+      "note": "Dansk Sprognævn, Retskrivningsreglerne §59: direct speech with the comma inside is a fixed point."
+    },
+    {
+      "id": "da-quotes-double-curly-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sagde ”ja” og gik.",
+      "out": "Han sagde »ja« og gik.",
+      "note": "Dansk Sprognævn, Oversigt over ændringer 2025, §58.1 example «”godmorgen!”» uses ”…”; it is normalised to the pinned pair."
+    },
+    {
+      "id": "da-quotes-low-high-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sagde „ja“ og gik.",
+      "out": "Han sagde »ja« og gik.",
+      "note": "„…“ is not among the forms §58 names (»…« and a double-quote form); it is normalised to the pinned pair."
+    },
+    {
+      "id": "da-quotes-reversed-guillemets-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sagde «ja» og gik.",
+      "out": "Han sagde »ja« og gik.",
+      "note": "Every source read that uses guillemets opens with U+00BB; the reversed pair «…» is normalised to »…«."
+    },
+    {
+      "id": "da-quotes-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sagde: \" ja \" og gik.",
+      "out": "Han sagde: »ja« og gik.",
+      "note": "innerSpace is none: no example in §58–59 carries a space inside the marks."
+    },
+    {
+      "id": "da-quotes-question-inside",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Hvad?\" spurgte han.",
+      "out": "»Hvad?« spurgte han.",
+      "note": "Dansk Sprognævn, Retskrivningsreglerne §59: a question mark of the speech stays inside the closing mark."
+    },
+    {
+      "id": "da-quotes-stray-period-after",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han spurgte: \"Hvad?\".",
+      "out": "Han spurgte: »Hvad?«.",
+      "note": "Dansk Sprognævn, Retskrivningsreglerne §59(4): a full stop after the closing mark is left where it stands."
+    },
+    {
+      "id": "da-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Vent... og så.",
+      "out": "Vent… og så.",
+      "note": "Oversigt 2025 §43 (RO 5.1) allows two or more dots as tøveprikker; three dots become the ellipsis character."
+    },
+    {
+      "id": "da-ellipsis-before-question",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Er det nu...?",
+      "out": "Er det nu…?",
+      "note": "Oversigt 2025 §43 (RO 5.1): «…men så ...!», «…sagde ..?» and no space between the dots and the terminal mark; abbreviatedAfterTerminal is false."
+    },
+    {
+      "id": "da-ellipsis-before-exclamation",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Hvad nu...!",
+      "out": "Hvad nu…!",
+      "note": "Oversigt 2025 §43 (RO 5.1) «men så ...!»: the dots stay before the terminal mark."
+    },
+    {
+      "id": "da-ellipsis-four-dots-collapsed",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Stilheden ....",
+      "out": "Stilheden …",
+      "note": "ACCEPTED COST: Oversigt 2025 §43 allows four dots («stilheden ....»); the ellipsis rule collapses them to the ellipsis character."
+    },
+    {
+      "id": "da-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Nu - ikke mindst - går vi.",
+      "out": "Nu – ikke mindst – går vi.",
+      "note": "Retskrivningsreglerne §55: the dash stands with a space on both sides; U+2013 per the Digitaliseringsstyrelsen guide pp. 66–67."
+    },
+    {
+      "id": "da-dashes-em-input",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Nu — ikke mindst — går vi.",
+      "out": "Nu – ikke mindst – går vi.",
+      "note": "No source read mentions U+2014; an em dash is normalised to the en dash by this pin."
+    },
+    {
+      "id": "da-dashes-existing-en",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Nu – ikke mindst – går vi.",
+      "out": "Nu – ikke mindst – går vi.",
+      "note": "Dansk Sprognævn, Retskrivningsreglerne §55: the spaced en dash is a fixed point."
+    },
+    {
+      "id": "da-ranges-none-hyphen-kept",
+      "rule": "ranges",
+      "rules": {
+        "ranges": true
+      },
+      "mode": "text",
+      "in": "mandag-fredag 9-16 og 1986-1989",
+      "out": "mandag-fredag 9-16 og 1986-1989",
+      "note": "Dansk Sprognævn, Retskrivningsreglerne §57.9: the range hyphen is U+002D without spaces; dash.range is none, so the token stays as written (ranges.md §2)."
+    },
+    {
+      "id": "da-ranges-word-hyphen-untouched",
+      "rule": "ranges",
+      "rules": {
+        "ranges": true
+      },
+      "mode": "text",
+      "in": "København-Aarhus",
+      "out": "København-Aarhus",
+      "note": "Retskrivningsreglerne §57.9: «København-Århus»; a hyphen between words is untouched (ranges.md §3)."
+    },
+    {
+      "id": "da-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "e-mail og H.C. Andersen-prisen",
+      "out": "e-mail og H.C. Andersen-prisen",
+      "note": "Dansk Sprognævn, Retskrivningsreglerne §57: no closed list of hyphenated forms is cited, so the hyphen lists are empty and nothing changes."
+    },
+    {
+      "id": "da-nbsp-spaced-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Prisen er 25 % og 10 kr og 3 € og 3 km og 10 kg og 5 cm og 7 ha",
+      "out": "Prisen er 25 % og 10 kr og 3 € og 3 km og 10 kg og 5 cm og 7 ha",
+      "note": "SV00000086 (% with a space), SV00015797 (currency after the number, like SI symbols), Folketingstidende p. 114 (ha, kg)."
+    },
+    {
+      "id": "da-nbsp-spaced-unit-inserted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Prisen 50% og 5€ her",
+      "out": "Prisen 50 % og 5 € her",
+      "note": "SV00000086 and SV00015797: the space before % and € is inserted and made non-breaking."
+    },
+    {
+      "id": "da-nbsp-spaced-unit-inserted-letters",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Det koster 15kr og vejer 3kg",
+      "out": "Det koster 15 kr og vejer 3 kg",
+      "note": "SV00015797 and Folketingstidende p. 114: a letter unit (kr, kg) written closed up to the number gets the no-break space."
+    },
+    {
+      "id": "da-nbsp-kr-with-full-stop",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Det koster 15 kr. i dag",
+      "out": "Det koster 15 kr. i dag",
+      "note": "SV00015797 «10 kr.»: kr is listed without the full stop; a following full stop does not prevent the binding."
+    },
+    {
+      "id": "da-nbsp-single-letter-unit-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Det er 5 m og 3 g",
+      "out": "Det er 5 m og 3 g",
+      "note": "Single-letter units are excluded (nbsp.md §3.7): they are also common words."
+    },
+    {
+      "id": "da-nbsp-degree-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Det er 38 °C ude",
+      "out": "Det er 38 °C ude",
+      "note": "UNVERIFIED: SV00015408 covers angles only, so °C is not listed and the text is left as typed."
+    },
+    {
+      "id": "da-nbsp-abbreviations-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "f.eks. og bl.a. og dvs. samt H.C. Andersen",
+      "out": "f.eks. og bl.a. og dvs. samt H.C. Andersen",
+      "note": "Retskrivningsreglerne §42.5: abbreviations are written without an inner space, so there is nothing to bind."
+    },
+    {
+      "id": "da-nbsp-before-number-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "se nr. 5 og s. 12 og kl. 9 og § 10",
+      "out": "se nr. 5 og s. 12 og kl. 9 og § 10",
+      "note": "Folketingstidende pp. 50–52 list kl., nr., § and s. before numbers, and the examples (§ 10, p. 51; nr. 5-8, p. 111; kl. 15, p. 112) show a space, but no source calls it non-breaking, so nothing is bound."
+    },
+    {
+      "id": "da-spaces-before-punctuation",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Hvad nu ? Ikke !",
+      "out": "Hvad nu? Ikke!",
+      "note": "A space before ? or ! is removed; no source read puts one there."
+    },
+    {
+      "id": "da-spaces-brackets",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Han ( stille ) gik .",
+      "out": "Han (stille) gik.",
+      "note": "A space inside brackets and before a full stop is removed (the spaces rule is locale-independent)."
+    },
+    {
+      "id": "da-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "(c) 2026",
+      "out": "© 2026",
+      "note": "The (c) sequence becomes the copyright sign."
+    },
+    {
+      "id": "da-apostrophe-foreign-name",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "O'Brien kom.",
+      "out": "O’Brien kom.",
+      "note": "A typewriter apostrophe inside a name becomes U+2019."
+    },
+    {
+      "id": "da-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "mode": "text",
+      "in": "alfa »beta«, gamma",
+      "out": "alfa »beta«, gamma",
+      "note": "Dansk Sprognævn, Retskrivningsreglerne §59(4): punctuationPlacement is none, so the comma is left where it stands."
+    }
+  ]
+}
