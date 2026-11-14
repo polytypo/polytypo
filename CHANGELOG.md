@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.23.1`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.23.1 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.24.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.24.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,18 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.24.0 — 14 November 2026
+
+Latvian joins as the twenty-eighth locale, cited to the Latvian State Language Centre.
+
+- Latvian ships as `lv`. Until now Latvian text had to be skipped or run through a foreign locale, and the second has a cost. Measured: `Viņš teica: "Tā ir 'citāta' no grāmatas" - protams - un aizgāja.` came back from `en-GB` as `Viņš teica: ‘Tā ir “citāta” no grāmatas’ – protams – un aizgāja.`, the English marks and the nesting inverted. `lv` gives `Viņš teica: “Tā ir “citāta” no grāmatas” – protams – un aizgāja.`: the round pair `“…”` for both levels, no space inside, and an en dash with spaces.
+- The Latvian Language Expert Commission accepts a low or a high opening mark and names no closing mark for the low one. The only complete pair attested is the round pair of the State Language Centre's handbook, so that pair is the one `lv` writes; `„…”` and `«…»` typed by the author are converted to it.
+- Both quotation levels use the same pair, so when the inner mark touches the outer one, as in `"Tā ir 'citāta'"`, the engine declines the pair: the text is left as typed or converted only in part.
+- An ellipsis after `?` or `!` keeps its three dots and becomes the ellipsis character, `Ko gan viņš pateiks?…`, because the handbook writes `?...` and states no two-dot rule.
+- With the `ranges` rule on, a numeric range is closed up with an en dash and no-break joiners either side, `30–35`. Ranges of dotted ordinals such as `2005.–2007.` are not recognised.
+- No-break spaces are put between a number and `%`, `€`, `EUR`, `km` and `°C`, inside `u. c.`, `u. tml.` and `š. g.`, and between `Nr.` and a number. Measured: `Maksā 10 % jeb 21 €, u. c.` comes back from `en-GB` as `Maksā 10% jeb 21 €, u. c.`, the percent sign closed up and the other spaces ordinary, and from `lv` with a no-break space in all three places. Single-letter units such as `t`, `m` and `g` are left alone, because they are also common words. A run of two or more initials is bound, as in `J. K. Bērziņš`; a lone initial is left alone, although the Commission binds it, since a rule on a lone initial collides at sentence boundaries. One-letter prepositions, `§` and hyphenated forms are not bound, since no source gives a rule for them.
+- Pass `lv` (or a region form such as `lv-LV`). Script-tagged identifiers are refused with `POLYTYPO_UNKNOWN_LOCALE`, as before.
 
 ## 1.23.1 — 13 November 2026
 

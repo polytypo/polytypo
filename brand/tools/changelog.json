@@ -2,6 +2,35 @@
   "_comment": "Single source for CHANGELOG.md (brand/tools/gen_readmes.py) and the site's /changelog page (brand/tools/build_promo.py). Released versions only. Example strings are real engine output captured from the published packages of each version, never typed by hand; an entry whose release changes no output carries examples: [].",
   "releases": [
     {
+      "version": "1.24.0",
+      "date": "2026-11-14",
+      "headline": "Latvian joins as the twenty-eighth locale, cited to the Latvian State Language Centre.",
+      "items": [
+        {
+          "text": "Latvian ships as `lv`. Until now Latvian text had to be skipped or run through a foreign locale, and the second has a cost. Measured: `Viņš teica: \"Tā ir 'citāta' no grāmatas\" - protams - un aizgāja.` came back from `en-GB` as `Viņš teica: ‘Tā ir “citāta” no grāmatas’ – protams – un aizgāja.`, the English marks and the nesting inverted. `lv` gives `Viņš teica: “Tā ir “citāta” no grāmatas” – protams – un aizgāja.`: the round pair `“…”` for both levels, no space inside, and an en dash with spaces."
+        },
+        {
+          "text": "The Latvian Language Expert Commission accepts a low or a high opening mark and names no closing mark for the low one. The only complete pair attested is the round pair of the State Language Centre's handbook, so that pair is the one `lv` writes; `„…”` and `«…»` typed by the author are converted to it."
+        },
+        {
+          "text": "Both quotation levels use the same pair, so when the inner mark touches the outer one, as in `\"Tā ir 'citāta'\"`, the engine declines the pair: the text is left as typed or converted only in part."
+        },
+        {
+          "text": "An ellipsis after `?` or `!` keeps its three dots and becomes the ellipsis character, `Ko gan viņš pateiks?…`, because the handbook writes `?...` and states no two-dot rule."
+        },
+        {
+          "text": "With the `ranges` rule on, a numeric range is closed up with an en dash and no-break joiners either side, `30–35`. Ranges of dotted ordinals such as `2005.–2007.` are not recognised."
+        },
+        {
+          "text": "No-break spaces are put between a number and `%`, `€`, `EUR`, `km` and `°C`, inside `u. c.`, `u. tml.` and `š. g.`, and between `Nr.` and a number. Measured: `Maksā 10 % jeb 21 €, u. c.` comes back from `en-GB` as `Maksā 10% jeb 21 €, u. c.`, the percent sign closed up and the other spaces ordinary, and from `lv` with a no-break space in all three places. Single-letter units such as `t`, `m` and `g` are left alone, because they are also common words. A run of two or more initials is bound, as in `J. K. Bērziņš`; a lone initial is left alone, although the Commission binds it, since a rule on a lone initial collides at sentence boundaries. One-letter prepositions, `§` and hyphenated forms are not bound, since no source gives a rule for them."
+        },
+        {
+          "text": "Pass `lv` (or a region form such as `lv-LV`). Script-tagged identifiers are refused with `POLYTYPO_UNKNOWN_LOCALE`, as before."
+        }
+      ],
+      "examples": []
+    },
+    {
       "version": "1.23.1",
       "date": "2026-11-13",
       "headline": "In HTML, a closing tag with nothing to close no longer changes how the text around it is typeset in the JavaScript package.",

@@ -1,0 +1,85 @@
+{
+  "locale": "lv",
+  "name": "Latvian",
+  "quotes": {
+    "primary": {
+      "open": "“",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "“",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "punctuationPlacement": "none",
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": []
+    }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": ["u. c.", "u. tml.", "š. g."],
+    "beforeUnits": [],
+    "spacedUnits": ["%", "€", "EUR", "km", "°C"],
+    "closedUnits": [],
+    "beforeNumber": ["Nr."],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "initialBinding": "chain"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Valsts valodas centrs, Latviešu valodas ekspertu komisija, «Svarīgākie lēmumi 2014. gadā», 14.05.2014, protokols Nr. 34 3. §: «no valodas prakses viedokļa ir pareizs atverošo pēdiņu novietojums gan apakšā („) gan augšā (“), tomēr vienā tekstā konsekventi lietojams viens variants»; Valsts valodas centrs, Tiesību aktu tulkošanas rokasgrāmata (2021), 7.2.3 «Pēdiņas», p. 87: «centra tulkojumos lietojam apaļās pēdiņas (“”) … Centra tulkojumu praksē atvērējpēdiņas liekam augšā»; I pielikums p. 117: «Ja tiešajā runā vai citātā ir iekļauts cita runātāja teksts, cits citāts vai nosaukums (virsraksts), lietojamas dubultpēdiņas.»; «Starp pēdiņām un tajās iekļauto tekstu atstarpes neliek.»; «Ja pēdiņās ietvertā daļa ir teikuma (vai frāzes) beigās, pieturzīmi liek aiz pēdiņām»",
+      "url": "https://vvc.gov.lv/lv/media/149/download",
+      "note": "PICK-AND-PIN. LVEK accepts opening U+201E or U+201C in one text and names no closing mark, so a low-opening pair has no attested closer. The only complete pair attested is the VVC house style U+201C…U+201D (code points read from the PDF text layer of the handbook, HIGH); it is pinned, not claimed as the only legal Latvian form. « » is attested only through Blinkena (2009) p. 398, as quoted in handbook fn. 50; the book was not read. Secondary equals primary (p. 117: double marks for a quotation inside a quotation; single marks ‘’ only for cultivar names and glosses, p. 88). ACCEPTED COST of the identical pair: a nest whose inner mark touches the outer one is declined (quotes.md §6, §3.2 V1), pinned by fixtures. innerSpace none for both. punctuationPlacement none: placement depends on context (p. 117, p. 87). elisionIdioms and elisionClitics empty: apostrophe elision exists (p. 121) but no closed set. Handbook: https://vvc.gov.lv/lv/media/62/download (house style, SECONDARY). Retrieved 2026-11-14."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Valsts valodas centrs, LVEK, «Svarīgākie lēmumi 2014. gadā», 10.09.2014, protokols Nr. 36 5. §: «latviešu valodā nelieto garo jeb dubulto domuzīmi (—)»; Valsts valodas centrs, Tiesību aktu tulkošanas rokasgrāmata (2021), p. 86: «domuzīmi (–) (Alt + 0150)», «liekot to savrupinātās daļas abās pusēs»; p. 114: «Domuzīmi no pārējā teksta atdala ar atstarpēm abās pusēs.»",
+      "url": "https://vvc.gov.lv/lv/media/149/download",
+      "note": "dash.parenthetical = en-spaced (U+0020 U+2013 U+0020). The exclusion of U+2014 is NORMATIVE (LVEK); width U+2013 from Alt 0150 and the spacing from the VVC handbook (SECONDARY, HIGH). Retrieved 2026-11-14. Handbook: https://vvc.gov.lv/lv/media/62/download."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Valsts valodas centrs, Tiesību aktu tulkošanas rokasgrāmata (2021), p. 86: «Prievārda “līdz” vietā (ja saistāmie jēdzieni ir rakstīti ar cipariem) izmanto vienotājdomuzīmi, un to ar atstarpēm neatdala. 2005.–2007. gada plāns; viņa vecums varēja būt 30–35 gadi»; I pielikums p. 114: «(1899–1915)»",
+      "url": "https://vvc.gov.lv/lv/media/62/download",
+      "note": "dash.range = en-tight (U+2013, no spaces). SECONDARY (VVC house style), HIGH. Ordinal-dotted ranges such as «2005.–2007.» are not range candidates (the flank is U+002E): an algorithm limit, not data. The ranges rule is off by default. Retrieved 2026-11-14."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Valsts valodas centrs, Tiesību aktu tulkošanas rokasgrāmata (2021), I pielikums «Jautājuma zīme», p. 122: «kopā ar daudzpunkti, lai pavēstītu par lielāku pauzi, kas sekos (Ko gan viņš visu tur nepiedzīvos?...)»",
+      "url": "https://vvc.gov.lv/lv/media/62/download",
+      "note": "abbreviatedAfterTerminal = false: the handbook writes «?...» with three dots (read from a page image). One house-style example, MEDIUM; no source read states a two-dot rule, so the terminal-plus-three-dots form is left as typed. Retrieved 2026-11-14."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Valsts valodas centrs, Tiesību aktu tulkošanas rokasgrāmata (2021), p. 87 «Defise» and I pielikums p. 115 «Defise»",
+      "url": "https://vvc.gov.lv/lv/media/62/download",
+      "note": "All three lists are empty: uses of the hyphen are described, but no closed list of unbreakable hyphenated forms is given. Retrieved 2026-11-14."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Valsts valodas centrs, LVEK, «Svarīgākie lēmumi 2014. gadā», 12.03.2014, prot. Nr. 33 2. §: valūtu nosaukumus, kodus un grafiskos simbolus «norādīt aiz summas ar saistīto atstarpi, piemēram: … 1 234 EUR; 5678,90 $»; Valsts valodas centrs, Tiesību aktu tulkošanas rokasgrāmata (2021), p. 89 «Atstarpes»: «5 km, 25 t, 10 %, 21 €, –8 °C»; «dažos saīsinājumos (u. c., u. tml., š. g.)»; «starp saīsinājumu Nr., nr. un skaitli (Nr. 20, 155. nr.)»; «starp iniciāli un uzvārdu (J. Kalniņš)»; pp. 107–124 «… un iepriekšējo burtu vai ciparu atstarpi neliek»; p. 78 §7.1.13 (currency)",
+      "url": "https://vvc.gov.lv/lv/media/149/download",
+      "note": "Currency after the sum is NORMATIVE (LVEK 12.03.2014 prot. Nr. 33 2. §, restated in the handbook p. 78 §7.1.13); the rest is VVC house style, called «vēlams» and bounded by a warning against overuse (p. 89), SECONDARY. Handbook: https://vvc.gov.lv/lv/media/62/download. (1) beforePunctuation and narrowBeforePunctuation empty: a stated negative, «… un iepriekšējo burtu vai ciparu atstarpi neliek» for . , : ; ? ! and the apostrophe (pp. 107–124). (2) spacedUnits: % and km and °C from p. 89 (and p. 88 «15 %»), € from p. 89 and LVEK, EUR from LVEK («1 234 EUR») and p. 78. Not listed though attested: $, £, ¥, USD, GBP (LVEK, p. 78) and °F (fn. 54); not verified as a closed set, so left out. Single-letter t, m and g are excluded by DECISION although «25 t» is attested on p. 89: they are also common words. kg and cm are not listed because no read source spaces them. A bare ° is closed up (fn. 54) and not listed; closedUnits is empty. (3) abbreviations = u. c., u. tml., š. g. (p. 89). (4) beforeNumber = Nr. only (p. 89 «Nr. 20», p. 88, p. 119); lowercase «nr.» is attested only after the number («155. nr.»), which N5 cannot express, so it is not listed. (5) initialBinding = chain: LVEK 10.09.2014 prot. Nr. 36 5. § («pēc datuma un iniciāļa norādes lietojama saistītā atstarpe») and p. 89 («starp iniciāli un uzvārdu (J. Kalniņš)») are NORMATIVE for a single initial, but a rule on a lone initial collides at sentence boundaries, so this DECISION deliberately departs from the norm for the lone initial and binds only runs of two or more initials (nbsp.md §3.9). (6) afterShortWords, beforeUnits, beforeWord and afterSymbols empty: no source binds un, ar, uz or no, and § is written after its number («3. §», p. 85). Not expressible and so not covered: binding after a dotted ordinal («2018. gada», «4. stāvs», «155. nr.», p. 89), after a date (LVEK), and inside digit groups («10 000»). Retrieved 2026-11-14."
+    }
+  ]
+}

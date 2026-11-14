@@ -1,0 +1,282 @@
+{
+  "spec": "1.24.0",
+  "locale": "lv",
+  "cases": [
+    {
+      "id": "lv-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Viņš teica: \"jā\" un aizgāja.",
+      "out": "Viņš teica: “jā” un aizgāja.",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) 7.2.3, p. 87: round marks, opener high U+201C, closer U+201D, no inner space (pinned pair; LVEK 14.05.2014 also permits a low opener but names no closer)."
+    },
+    {
+      "id": "lv-quotes-nested-same-pair",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Viņš teica: \"Es zinu, ka \"Pīlādzis\" ir laba grāmata.\"",
+      "out": "Viņš teica: “Es zinu, ka “Pīlādzis” ir laba grāmata.”",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) I pielikums p. 117: a quotation or title inside a quotation takes double marks («dubultpēdiņas»); the same pair at both levels is the pin, not the source."
+    },
+    {
+      "id": "lv-quotes-nested-with-words",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Viņš teica: \"Tā ir 'citāta' no grāmatas\" un aizgāja.",
+      "out": "Viņš teica: “Tā ir “citāta” no grāmatas” un aizgāja.",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 117: no single-mark nesting level; single straight inner quotes become the same U+201C/U+201D pair."
+    },
+    {
+      "id": "lv-quotes-before-question-mark",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Vai tiešām? \"Jā!\" viņš teica.",
+      "out": "Vai tiešām? “Jā!” viņš teica.",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 117: a closing mark follows the sentence mark flush; innerSpace is none."
+    },
+    {
+      "id": "lv-quotes-already-typeset",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Viņš teica “jā” un aizgāja.",
+      "out": "Viņš teica “jā” un aizgāja.",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 87: text already carrying U+201C/U+201D is a fixed point."
+    },
+    {
+      "id": "lv-quotes-low-open-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Viņš teica „jā” un aizgāja.",
+      "out": "Viņš teica “jā” un aizgāja.",
+      "note": "A low-opening pair typed by the author is normalised to the pinned pair; LVEK 14.05.2014 permits either opener but names no closer, so one pair is pinned."
+    },
+    {
+      "id": "lv-quotes-angle-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Viņš teica «jā» un aizgāja.",
+      "out": "Viņš teica “jā” un aizgāja.",
+      "note": "Angle quotes are attested only through Blinkena (2009) p. 398 as quoted in VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) fn. 50; they are normalised to the pinned pair."
+    },
+    {
+      "id": "lv-quotes-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Viņš teica: \" jā \" un aizgāja.",
+      "out": "Viņš teica: “jā” un aizgāja.",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 117: «Starp pēdiņām un tajās iekļauto tekstu atstarpes neliek.»"
+    },
+    {
+      "id": "lv-quotes-nest-at-end-declined",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Viņš teica: \"Tā ir 'citāta'\" un aizgāja.",
+      "out": "Viņš teica: \"Tā ir ’citāta'\" un aizgāja.",
+      "note": "ACCEPTED COST of the identical pair: a nest whose inner mark touches the outer one is declined (quotes.md §6, §3.2 V1); the inner apostrophe-shaped mark is left to the apostrophe rule."
+    },
+    {
+      "id": "lv-quotes-nest-at-start-declined",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Viņš teica: \"'Pīlādzis' ir\" un aizgāja.",
+      "out": "Viņš teica: \"'Pīlādzis’ ir\" un aizgāja.",
+      "note": "ACCEPTED COST of the identical pair: the nest opens against the outer opener, so it is declined (quotes.md §6, §3.2 V1)."
+    },
+    {
+      "id": "lv-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Pagaidi... un tad.",
+      "out": "Pagaidi… un tad.",
+      "note": "Three dots become the ellipsis character."
+    },
+    {
+      "id": "lv-ellipsis-after-question",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Ko gan viņš pateiks?...",
+      "out": "Ko gan viņš pateiks?…",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) I pielikums p. 122: «?...» keeps three dots, so abbreviatedAfterTerminal is false and the dots become the ellipsis character after the mark."
+    },
+    {
+      "id": "lv-ellipsis-after-exclamation",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Neesi mierā!...",
+      "out": "Neesi mierā!…",
+      "note": "abbreviatedAfterTerminal is false: no two-dot form after «!» is attested."
+    },
+    {
+      "id": "lv-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Viņš teica - protams - ka nāks.",
+      "out": "Viņš teica – protams – ka nāks.",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) pp. 86, 114: en dash with a space on both sides."
+    },
+    {
+      "id": "lv-dashes-em-input",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Tas — protams — labi.",
+      "out": "Tas – protams – labi.",
+      "note": "LVEK 10.09.2014 prot. Nr. 36 5. §: «latviešu valodā nelieto garo jeb dubulto domuzīmi (—)»; an em dash is normalised to the en dash."
+    },
+    {
+      "id": "lv-dashes-existing-en",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Dēls – meita atnāca.",
+      "out": "Dēls – meita atnāca.",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 86: an en dash already in place is a fixed point."
+    },
+    {
+      "id": "lv-ranges-digits-tight",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "1999-2000 un 30-35 gadi",
+      "out": "1999⁠–⁠2000 un 30⁠–⁠35 gadi",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 86: «30–35 gadi», en dash, no spaces; the en-tight form carries U+2060 either side (ranges.md §3).",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "lv-ranges-already-tight",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "2001–2006",
+      "out": "2001–2006",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 114: «(1899–1915)» is a fixed point (ranges.md §3).",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "lv-ranges-word-hyphen-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "jūnijs-augusts",
+      "out": "jūnijs-augusts",
+      "note": "A hyphen between words is not a range (ranges.md §2).",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "lv-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Rīga-Jūrmala",
+      "out": "Rīga-Jūrmala",
+      "note": "The hyphen lists are empty: no closed list of unbreakable hyphenated forms is attested."
+    },
+    {
+      "id": "lv-nbsp-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "10 % un 21 € un 5 EUR un 3 km un -8 °C",
+      "out": "10 % un 21 € un 5 EUR un 3 km un -8 °C",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 89: «5 km, 25 t, 10 %, 21 €, –8 °C»; LVEK 12.03.2014 prot. Nr. 33 2. §: currency goes after the sum with a bound space."
+    },
+    {
+      "id": "lv-nbsp-single-letter-unit-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "5 m un 3 g un 25 t",
+      "out": "5 m un 3 g un 25 t",
+      "note": "Single-letter m, g and t are not listed by DECISION, although «25 t» is attested on p. 89: they are also common words."
+    },
+    {
+      "id": "lv-nbsp-abbreviations",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Tas ir, piemēram, u. c. un u. tml. un š. g. rudenī",
+      "out": "Tas ir, piemēram, u. c. un u. tml. un š. g. rudenī",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 89: «dažos saīsinājumos (u. c., u. tml., š. g.)»."
+    },
+    {
+      "id": "lv-nbsp-before-number",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Nr. 20 un nr. 5",
+      "out": "Nr. 20 un nr. 5",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 89: «Nr. 20» binds; lowercase «nr.» is attested only after the number («155. nr.»), so it is not listed and stays as typed."
+    },
+    {
+      "id": "lv-nbsp-initials-lone-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "J. Kalniņš un A. Bērziņš",
+      "out": "J. Kalniņš un A. Bērziņš",
+      "note": "initialBinding is chain, a DECISION that departs from LVEK prot. Nr. 36 5. § and p. 89 for a lone initial: a rule on a lone initial collides at sentence boundaries (nbsp.md §3.9)."
+    },
+    {
+      "id": "lv-nbsp-initials-chain",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "J. K. Bērziņš atnāca.",
+      "out": "J. K. Bērziņš atnāca.",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 89 «starp iniciāli un uzvārdu»; LVEK prot. Nr. 36 5. §: a run of two or more initials is bound to the surname and to each other (nbsp.md §3.9, chain)."
+    },
+    {
+      "id": "lv-nbsp-short-words-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "uz mājām un ar draugu",
+      "out": "uz mājām un ar draugu",
+      "note": "afterShortWords is empty: no source binds un, ar, uz or no."
+    },
+    {
+      "id": "lv-nbsp-bare-degree-closed",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "15°",
+      "out": "15°",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 89 fn. 54: the bare degree sign is closed up."
+    },
+    {
+      "id": "lv-nbsp-spaced-unit-inserted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Value 50% here",
+      "out": "Value 50 % here",
+      "note": "spec 1.22.0, nbsp.md §3.7: the unit is in spacedUnits, so the missing space is inserted as U+00A0."
+    },
+    {
+      "id": "lv-spaces-brackets",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Viņš ( klusi ) aizgāja .",
+      "out": "Viņš (klusi) aizgāja.",
+      "note": "Spaces inside brackets and before a full stop are removed."
+    },
+    {
+      "id": "lv-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "(c) 2026",
+      "out": "© 2026",
+      "note": "(c) becomes the copyright sign."
+    },
+    {
+      "id": "lv-apostrophe-foreign-name",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "O'Brien atnāca.",
+      "out": "O’Brien atnāca.",
+      "note": "A straight apostrophe in a name becomes U+2019."
+    },
+    {
+      "id": "lv-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alfa “beta”, gamma",
+      "out": "alfa “beta”, gamma",
+      "note": "VVC, Tiesību aktu tulkošanas rokasgrāmata (2021) p. 117: placement depends on context, so punctuationPlacement is none and the rule leaves the text alone.",
+      "rules": {
+        "quote-punctuation": true
+      }
+    }
+  ]
+}
