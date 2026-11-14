@@ -487,6 +487,35 @@
       ]
     },
     {
+      "locale": "lv",
+      "name": "Latvian",
+      "hero": {
+        "in": "Viņa jautāja: \"Vai tā nav veikals, ko sauc par 'to aiz stūra'?\" ... Gājām - gandrīz 3 km - un tas bija slēgts. Copyright (c) 2026, formāts 40x60 cm.",
+        "out": "Viņa jautāja: “Vai tā nav veikals, ko sauc par “to aiz stūra”?” … Gājām – gandrīz 3 km – un tas bija slēgts. Copyright © 2026, formāts 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, “Isn’t this the shop they call “round the corner”?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Viņš teica \"sveiki\".",
+          "out": "Viņš teica “sveiki”."
+        },
+        {
+          "rule": "dashes",
+          "in": "Grāmata - izdota pirms kara - ir lieliska.",
+          "out": "Grāmata – izdota pirms kara – ir lieliska."
+        },
+        {
+          "rule": "nbsp",
+          "in": "3 km un 50 %",
+          "out": "3 km un 50 %"
+        }
+      ]
+    },
+    {
       "locale": "lt",
       "name": "Lithuanian",
       "hero": {

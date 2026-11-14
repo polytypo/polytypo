@@ -1939,6 +1939,124 @@
       "resolution": ["it"],
       "disagreed": 0
     },
+    "lv": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "lv-quotes-primary",
+            "in": "Viņš teica: \"jā\" un aizgāja.",
+            "out": "Viņš teica: “jā” un aizgāja."
+          },
+          {
+            "id": "lv-quotes-nested-same-pair",
+            "in": "Viņš teica: \"Es zinu, ka \"Pīlādzis\" ir laba grāmata.\"",
+            "out": "Viņš teica: “Es zinu, ka “Pīlādzis” ir laba grāmata.”"
+          },
+          {
+            "id": "lv-quotes-nested-with-words",
+            "in": "Viņš teica: \"Tā ir 'citāta' no grāmatas\" un aizgāja.",
+            "out": "Viņš teica: “Tā ir “citāta” no grāmatas” un aizgāja."
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "lv-ellipsis-three-dots",
+            "in": "Pagaidi... un tad.",
+            "out": "Pagaidi… un tad."
+          },
+          {
+            "id": "lv-ellipsis-after-question",
+            "in": "Ko gan viņš pateiks?...",
+            "out": "Ko gan viņš pateiks?…"
+          },
+          {
+            "id": "lv-ellipsis-after-exclamation",
+            "in": "Neesi mierā!...",
+            "out": "Neesi mierā!…"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "lv-dashes-parenthetical",
+            "in": "Viņš teica - protams - ka nāks.",
+            "out": "Viņš teica – protams – ka nāks."
+          },
+          {
+            "id": "lv-dashes-em-input",
+            "in": "Tas — protams — labi.",
+            "out": "Tas – protams – labi."
+          }
+        ],
+        "ranges": [
+          {
+            "id": "lv-ranges-digits-tight",
+            "in": "1999-2000 un 30-35 gadi",
+            "out": "1999⁠–⁠2000 un 30⁠–⁠35 gadi",
+            "rules": {
+              "ranges": true
+            }
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "lv-nbsp-units",
+            "in": "10 % un 21 € un 5 EUR un 3 km un -8 °C",
+            "out": "10 % un 21 € un 5 EUR un 3 km un -8 °C"
+          },
+          {
+            "id": "lv-nbsp-abbreviations",
+            "in": "Tas ir, piemēram, u. c. un u. tml. un š. g. rudenī",
+            "out": "Tas ir, piemēram, u. c. un u. tml. un š. g. rudenī"
+          },
+          {
+            "id": "lv-nbsp-before-number",
+            "in": "Nr. 20 un nr. 5",
+            "out": "Nr. 20 un nr. 5"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "lv-spaces-brackets",
+            "in": "Viņš ( klusi ) aizgāja .",
+            "out": "Viņš (klusi) aizgāja."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "lv-symbols-copyright",
+            "in": "(c) 2026",
+            "out": "© 2026"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "lv-apostrophe-foreign-name",
+            "in": "O'Brien atnāca.",
+            "out": "O’Brien atnāca."
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Viņa jautāja: \"Vai tā nav veikals, ko sauc par 'to aiz stūra'?\" ... Gājām - gandrīz 3 km - un tas bija slēgts. Copyright (c) 2026, formāts 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Viņa jautāja: “Vai tā nav veikals, ko sauc par “to aiz stūra”?” … Gājām – gandrīz 3 km – un tas bija slēgts. Copyright © 2026, formāts 40×60 cm.\nsay(“a – b …”)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Viņa jautāja: \"Vai tā nav veikals, ko sauc par 'to aiz stūra'?\" ... Gājām - gandrīz 3 km - un tas bija slēgts. Copyright (c) 2026, formāts 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Viņa jautāja: “Vai tā nav veikals, ko sauc par “to aiz stūra”?” … Gājām – gandrīz 3 km – un tas bija slēgts. Copyright © 2026, formāts 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Viņa jautāja: \"Vai tā nav veikals, ko sauc par 'to aiz stūra'?\" ... Gājām - gandrīz 3 km - un tas bija slēgts. Copyright (c) 2026, formāts 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Viņa jautāja: “Vai tā nav veikals, ko sauc par “to aiz stūra”?” … Gājām – gandrīz 3 km – un tas bija slēgts. Copyright © 2026, formāts 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": ["lv-LV"],
+      "disagreed": 0
+    },
     "lt": {
       "byRule": {
         "quotes": [
