@@ -210,6 +210,35 @@
       ]
     },
     {
+      "locale": "et",
+      "name": "Estonian",
+      "hero": {
+        "in": "Ta küsis: \"Kas see pole pood, mida kutsutakse 'nurga taguseks'?\" ... Kõndisime - peaaegu 3 km - ja see oli kinni. Copyright (c) 2026, formaat 40x60 cm.",
+        "out": "Ta küsis: „Kas see pole pood, mida kutsutakse „nurga taguseks“?“ … Kõndisime – peaaegu 3 km – ja see oli kinni. Copyright © 2026, formaat 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, „Isn’t this the shop they call „round the corner“?“ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Ta ütles \"tere\".",
+          "out": "Ta ütles „tere“."
+        },
+        {
+          "rule": "dashes",
+          "in": "Raamat - ilmus enne sõda - on suurepärane.",
+          "out": "Raamat – ilmus enne sõda – on suurepärane."
+        },
+        {
+          "rule": "nbsp",
+          "in": "3 km ja 50 %",
+          "out": "3 km ja 50%"
+        }
+      ]
+    },
+    {
       "locale": "fi",
       "name": "Finnish",
       "hero": {

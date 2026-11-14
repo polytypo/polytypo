@@ -842,6 +842,129 @@
       "resolution": ["en-US", "en", "en-AU", "EN-us", "en_US"],
       "disagreed": 0
     },
+    "et": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "et-quotes-primary",
+            "in": "Ta ütles: \"Mul on igav.\" ja läks.",
+            "out": "Ta ütles: „Mul on igav.“ ja läks."
+          },
+          {
+            "id": "et-quotes-nested-same-pair",
+            "in": "Ta ütles: \"Õpetaja ütles: \"Ega hinne parane.\" Mis siis?\"",
+            "out": "Ta ütles: „Õpetaja ütles: „Ega hinne parane.“ Mis siis?“"
+          },
+          {
+            "id": "et-quotes-nested-with-words",
+            "in": "Ta ütles: \"See on 'tsitaat' raamatust\" ja läks.",
+            "out": "Ta ütles: „See on „tsitaat“ raamatust“ ja läks."
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "et-ellipsis-three-dots",
+            "in": "Oota... ja siis.",
+            "out": "Oota… ja siis."
+          },
+          {
+            "id": "et-ellipsis-after-question",
+            "in": "Järsku tuuakse veel midagi?...",
+            "out": "Järsku tuuakse veel midagi?…"
+          },
+          {
+            "id": "et-ellipsis-after-exclamation",
+            "in": "Hoidku selle eest!...",
+            "out": "Hoidku selle eest!…"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "et-dashes-parenthetical",
+            "in": "Nüüd - tõsi küll - oleme siin.",
+            "out": "Nüüd – tõsi küll – oleme siin."
+          },
+          {
+            "id": "et-dashes-em-input",
+            "in": "Nüüd — tõsi küll — oleme siin.",
+            "out": "Nüüd – tõsi küll – oleme siin."
+          }
+        ],
+        "ranges": [
+          {
+            "id": "et-ranges-digits-tight",
+            "in": "1986-1989 ja 30-35 aastat",
+            "out": "1986⁠–⁠1989 ja 30⁠–⁠35 aastat",
+            "rules": {
+              "ranges": true
+            }
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "et-nbsp-spaced-units",
+            "in": "Maksab 15 € ja 3 km ja 10 kg ja 25 cm ja 7 ha ja –6 °C",
+            "out": "Maksab 15 € ja 3 km ja 10 kg ja 25 cm ja 7 ha ja –6 °C"
+          },
+          {
+            "id": "et-nbsp-closed-units",
+            "in": "9 % ja 0,4 ‰",
+            "out": "9% ja 0,4‰"
+          },
+          {
+            "id": "et-nbsp-spaced-unit-inserted",
+            "in": "Hind 15€ siin",
+            "out": "Hind 15 € siin"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "et-spaces-before-punctuation",
+            "in": "Mis siis ? Ei tea !",
+            "out": "Mis siis? Ei tea!"
+          },
+          {
+            "id": "et-spaces-brackets",
+            "in": "Ta ( vaikselt ) läks .",
+            "out": "Ta (vaikselt) läks."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "et-symbols-copyright",
+            "in": "(c) 2026",
+            "out": "© 2026"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "et-apostrophe-case-ending",
+            "in": "Youtube'ist ja tõest'",
+            "out": "Youtube’ist ja tõest’"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Ta küsis: \"Kas see pole pood, mida kutsutakse 'nurga taguseks'?\" ... Kõndisime - peaaegu 3 km - ja see oli kinni. Copyright (c) 2026, formaat 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Ta küsis: „Kas see pole pood, mida kutsutakse „nurga taguseks“?“ … Kõndisime – peaaegu 3 km – ja see oli kinni. Copyright © 2026, formaat 40×60 cm.\nsay(„a – b …“)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Ta küsis: \"Kas see pole pood, mida kutsutakse 'nurga taguseks'?\" ... Kõndisime - peaaegu 3 km - ja see oli kinni. Copyright (c) 2026, formaat 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Ta küsis: „Kas see pole pood, mida kutsutakse „nurga taguseks“?“ … Kõndisime – peaaegu 3 km – ja see oli kinni. Copyright © 2026, formaat 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Ta küsis: \"Kas see pole pood, mida kutsutakse 'nurga taguseks'?\" ... Kõndisime - peaaegu 3 km - ja see oli kinni. Copyright (c) 2026, formaat 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Ta küsis: „Kas see pole pood, mida kutsutakse „nurga taguseks“?“ … Kõndisime – peaaegu 3 km – ja see oli kinni. Copyright © 2026, formaat 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": ["et-EE"],
+      "disagreed": 0
+    },
     "fi": {
       "byRule": {
         "spaces": [

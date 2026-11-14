@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.25.0** · locales: **28** · rules: **10**.
+Spec version: **1.25.0** · locales: **29** · rules: **10**.
 
 ## Implementations
 
@@ -51,6 +51,7 @@ Spec version: **1.25.0** · locales: **28** · rules: **10**.
 | Dutch (`nl`) | Hij vroeg: “Is dit niet de winkel die ze ‘om de hoek’ noemen?” … We liepen – bijna 3 km – en hij was dicht. Copyright © 2026, formaat 40×60 cm. |
 | English (United Kingdom) (`en-GB`) | She asked, ‘Isn’t this the shop they call “round the corner”?’ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm. |
 | English (United States) (`en-US`) | She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked—nearly 3 km—just to find it closed. Copyright © 2026; the print measures 40×60 cm. |
+| Estonian (`et`) | Ta küsis: „Kas see pole pood, mida kutsutakse „nurga taguseks“?“ … Kõndisime – peaaegu 3 km – ja see oli kinni. Copyright © 2026, formaat 40×60 cm. |
 | Finnish (`fi`) | Hän kysyi: ”Eikö tämä ole se ’nurkan’ kirjakauppa?” … Kävelimme – lähes 3 km – ja löysimme sen kiinni. Copyright © 2026; tulosteen koko on 40×60 cm, hinta nousi 10,5 %. |
 | French (Canada) (`fr-CA`) | Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026; le tirage fait 40×60 cm. |
 | French (France) (`fr`) | Elle a dit : « Ce n’est pas la librairie qu’on appelle “le coin”, si ? » … On a marché — presque 3 km — pour la trouver fermée. Copyright © 2026 ; le tirage fait 40×60 cm. |
@@ -86,6 +87,7 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | `nl` | Dutch | “…” | ‘…’ | en dash, spaced | unchanged |
 | `en-GB` | English (United Kingdom) | ‘…’ | “…” | en dash, spaced | en dash, unspaced |
 | `en-US` | English (United States) | “…” | ‘…’ | em dash, unspaced | en dash, unspaced |
+| `et` | Estonian | „…“ | „…“ | en dash, spaced | en dash, unspaced |
 | `fi` | Finnish | ”…” | ’…’ | en dash, spaced | en dash, unspaced |
 | `fr-CA` | French (Canada) | «…» + U+00A0 | “…” | em dash, spaced | unchanged |
 | `fr` | French (France) | «…» + U+00A0 | “…” | em dash, spaced | unchanged |
