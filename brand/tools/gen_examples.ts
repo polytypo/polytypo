@@ -39,6 +39,7 @@ const LOCALES = [
   "lv",
   "et",
   "da",
+  "nb",
 ] as const;
 
 // Every hero line: nested quotes, an apostrophe or elision (except el — see its own note below),
@@ -128,6 +129,9 @@ const HERO: Record<(typeof LOCALES)[number], string> = {
   da:
     `Hun spurgte: "Er det ikke butikken, de kalder 'den om hjørnet'?" ... Vi gik - næsten 3 km - og den var ` +
     `lukket. Copyright (c) 2026, format 40x60 cm.`,
+  nb:
+    `Hun spurte: "Er ikke dette butikken de kaller 'den rundt hjørnet'?" ... Vi gikk - nesten 3 km - og den var ` +
+    `stengt. Copyright (c) 2026, format 40x60 cm.`,
   nl:
     `Hij vroeg: "Is dit niet de winkel die ze 'om de hoek' noemen?" ... We liepen -- bijna 3 km ` +
     `-- en hij was dicht. Copyright (c) 2026, formaat 40x60 cm.`,
@@ -281,6 +285,11 @@ const SHOWCASE: Record<
     { rule: "dashes", in: `Bogen - udkommet før krigen - er fremragende.` },
     { rule: "nbsp", in: `3 km og 50 %` },
   ],
+  nb: [
+    { rule: "quotes", in: `Han sa "god dag".` },
+    { rule: "dashes", in: `Boken - utgitt før krigen - er fremragende.` },
+    { rule: "nbsp", in: `3 km og 50 %` },
+  ],
   nl: [
     { rule: "quotes", in: `Hij zei "dag" en vertrok.` },
     { rule: "dashes", in: `Het nieuws - volgens de kranten - is niet bekend.` },
@@ -365,6 +374,7 @@ const NAMES: Record<(typeof LOCALES)[number], string> = {
   lv: "Latvian",
   et: "Estonian",
   da: "Danish",
+  nb: "Norwegian Bokmål",
   "pt-PT": "Portuguese (Portugal)",
   "pt-BR": "Portuguese (Brazil)",
 };

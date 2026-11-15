@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.26.0** · locales: **30** · rules: **10**.
+Spec version: **1.27.0** · locales: **30** · rules: **10**.
 
 ## Implementations
 
@@ -113,7 +113,7 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | `tr` | Turkish | “…” | ‘…’ | unchanged | unchanged |
 | `uk` | Ukrainian | «…» | “…” | em dash, spaced | em dash, unspaced |
 
-Aliases resolve in the spec, never in a platform locale library: `en` → `en-US`, `de` → `de-DE`, `pt` → `pt-PT`. An unknown locale throws — there is no silent fallback to English.
+Aliases resolve in the spec, never in a platform locale library: `en` → `en-US`, `de` → `de-DE`, `pt` → `pt-PT`, `no` → `nb`. An unknown locale throws — there is no silent fallback to English.
 
 ## Rules
 

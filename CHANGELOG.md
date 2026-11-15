@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.26.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.26.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.27.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.27.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,17 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.27.0 — 15 November 2026
+
+Norwegian Bokmål joins as the thirty-first locale, cited to the Language Council of Norway.
+
+- Norwegian Bokmål ships as `nb`. Until now Norwegian text had to be skipped or run through a foreign locale, and the second has a cost. Measured: `Han sa: "Hun sa 'ja' til meg" - tydeligvis - og gikk.` came back from `en-GB` as `Han sa: ‘Hun sa “ja” til meg’ – tydeligvis – og gikk.`, with English marks and the nesting inverted. `nb` gives `Han sa: «Hun sa ‘ja’ til meg» – tydeligvis – og gikk.`: the guillemets `«…»` at the first level, single quotes `‘…’` inside, no space inside the marks, and an en dash with spaces.
+- The Language Council of Norway (Språkrådet) calls the guillemets and the doubled-comma form equally correct, so `nb` pins `«…»`: the Council lists it first and reports it as the computer standard. The quote forms `“…”`, `„…“` and `»…«` typed by the author are converted to `«…»`. The Council also allows `’…’` and `‹…›` for a quotation inside a quotation and recommends a thin space where a double and a single mark touch; `nb` uses `‘…’` and does not insert that space.
+- Ranges take the en dash without spaces, as in the Council's `kapitlene 2–10` and `opningstid: 9–19`. With the opt-in `ranges` rule, `2-10` becomes `2–10`; the rule joins the dash to its numbers so the range cannot break across lines. A year range with an abbreviated end such as `1349-54` is left as typed.
+- An ellipsis before `?` or `!` becomes the ellipsis character with the terminal mark after it, `Er det nå…?`, because the Council writes the dots first.
+- A no-break space is put between a number and `%`, `kr`, `km`, `kg`, `cm` and `°C`. Measured: `15kr og 50%` comes back from `en-GB` unchanged and from `nb` as `15 kr og 50 %`, with no-break spaces. The Council states the space for all of them and a fixed space for `%`; `nb` follows it and inserts the space where it is missing. Single-letter units such as `m` and `g`, and `min`, are left alone, because they are also common words. `§`, `$` and abbreviations such as `f.eks.` and `m.a.o.` are left as typed: the sources do not say their spaces are non-breaking, and the abbreviations carry no inner space.
+- Pass `nb`, `no` or a region form such as `nb-NO` or `no-NO`; `no` resolves to `nb`. Nynorsk (`nn`) is not supported and is refused with `POLYTYPO_UNKNOWN_LOCALE`, as before.
 
 ## 1.26.0 — 14 November 2026
 

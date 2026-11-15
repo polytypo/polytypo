@@ -1,0 +1,315 @@
+{
+  "spec": "1.27.0",
+  "locale": "nb",
+  "cases": [
+    {
+      "id": "nb-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sa: \"Jeg er trøtt.\" og gikk.",
+      "out": "Han sa: «Jeg er trøtt.» og gikk.",
+      "note": "Språkrådet, «Hermeteikn»: «…» is the pinned primary form; the full stop of a quotation that is a sentence stays inside."
+    },
+    {
+      "id": "nb-quotes-nested-secondary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sa: \"Hun sa 'ja' til meg\" og gikk.",
+      "out": "Han sa: «Hun sa ‘ja’ til meg» og gikk.",
+      "note": "Språkrådet, «Sitat i sitat»: a quotation inside a quotation takes single marks; ‘…’ is the pin among the three permitted single forms."
+    },
+    {
+      "id": "nb-quotes-nested-at-end",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sa: \"Hun sa 'ja'\" og gikk.",
+      "out": "Han sa: «Hun sa ‘ja’» og gikk.",
+      "note": "Språkrådet, «Sitat i sitat»: a nest that ends against the outer closer is still paired."
+    },
+    {
+      "id": "nb-quotes-already-typeset",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sa «ja» og gikk.",
+      "out": "Han sa «ja» og gikk.",
+      "note": "Språkrådet, «Hermeteikn»: text already carrying «…» is a fixed point."
+    },
+    {
+      "id": "nb-quotes-already-typeset-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sa «hun sa ‘ja’ til meg» og gikk.",
+      "out": "Han sa «hun sa ‘ja’ til meg» og gikk.",
+      "note": "Språkrådet, «Sitat i sitat»: already-typeset nesting is a fixed point."
+    },
+    {
+      "id": "nb-quotes-double-curly-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sa “ja” og gikk.",
+      "out": "Han sa «ja» og gikk.",
+      "note": "Språkrådet, «Hermeteikn»: “…” is an equally correct form; the pin normalises it to «…»."
+    },
+    {
+      "id": "nb-quotes-low-high-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sa „ja“ og gikk.",
+      "out": "Han sa «ja» og gikk.",
+      "note": "Språkrådet, «Hermeteikn»: „…“ (also „…”) was common in print until about 1900 and is less common now; it is normalised to the pinned pair."
+    },
+    {
+      "id": "nb-quotes-danish-guillemets-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sa »ja« og gikk.",
+      "out": "Han sa «ja» og gikk.",
+      "note": "Språkrådet, «Hermeteikn»: the reversed pair »…« is not a Norwegian form in the pages read; it is normalised to «…»."
+    },
+    {
+      "id": "nb-quotes-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Han sa: \" ja \" og gikk.",
+      "out": "Han sa: «ja» og gikk.",
+      "note": "Språkrådet, «Hermeteikn»: no example carries a space inside the marks (innerSpace none)."
+    },
+    {
+      "id": "nb-quotes-question-inside",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Hva?\" spurte han.",
+      "out": "«Hva?» spurte han.",
+      "note": "Språkrådet, «Hermeteikn»: a question mark that belongs to the quotation stays before the closing mark."
+    },
+    {
+      "id": "nb-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Vent... og så.",
+      "out": "Vent… og så.",
+      "note": "Språkrådet, «Mellomrom», shows both three full stops («så ...») and the single character («Svarte f…!») without ruling between them; conversion to U+2026 is the engine's ellipsis rule (ellipsis.md), not a Språkrådet norm."
+    },
+    {
+      "id": "nb-ellipsis-before-question",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Er det nå...?",
+      "out": "Er det nå…?",
+      "note": "Språkrådet, «Mellomrom»: «eller ...?» puts the terminal mark after the dots; abbreviatedAfterTerminal is false."
+    },
+    {
+      "id": "nb-ellipsis-before-exclamation",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Hva nå...!",
+      "out": "Hva nå…!",
+      "note": "Språkrådet, «Mellomrom»: «Svarte f…!»: the terminal mark follows the dots."
+    },
+    {
+      "id": "nb-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Nå - ikke minst - går vi.",
+      "out": "Nå – ikke minst – går vi.",
+      "note": "Språkrådet, «Tankestrek»: «med ett mellomrom på begge sider»; the short dash U+2013."
+    },
+    {
+      "id": "nb-dashes-em-input",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Nå — ikke minst — går vi.",
+      "out": "Nå – ikke minst – går vi.",
+      "note": "Språkrådet, «Tankestrek»: «Vi bruker kort tankestrek (–), ikke lang (—)»; an em dash is normalised to the en dash."
+    },
+    {
+      "id": "nb-dashes-existing-en",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Nå – ikke minst – går vi.",
+      "out": "Nå – ikke minst – går vi.",
+      "note": "Språkrådet, «Tankestrek»: the spaced en dash is a fixed point."
+    },
+    {
+      "id": "nb-ranges-hyphen-converted",
+      "rule": "ranges",
+      "rules": {
+        "ranges": true
+      },
+      "mode": "text",
+      "in": "kapitlene 2-10",
+      "out": "kapitlene 2⁠–⁠10",
+      "note": "Språkrådet, «Tankestrek»: «kapitlene 2–10»: the range takes the en dash with no spaces; ranges.md §3.3.1 binds the dash with word joiners when a hyphen-typed range is converted."
+    },
+    {
+      "id": "nb-ranges-opening-hours",
+      "rule": "ranges",
+      "rules": {
+        "ranges": true
+      },
+      "mode": "text",
+      "in": "åpent 9-19",
+      "out": "åpent 9⁠–⁠19",
+      "note": "Språkrådet, «Mellomrom»: «opningstid: 9–19»; ranges.md §3.2 G4's one-digit against two-digit branch admits it."
+    },
+    {
+      "id": "nb-ranges-authored-unbound",
+      "rule": "ranges",
+      "rules": {
+        "ranges": true
+      },
+      "mode": "text",
+      "in": "kapitlene 2–10",
+      "out": "kapitlene 2–10",
+      "note": "Språkrådet, «Tankestrek»: an authored en-dash range is already correct and stays unbound; ranges.md §3.3.1 never makes an edit whose entire content is invisible."
+    },
+    {
+      "id": "nb-ranges-date-words-untouched",
+      "rule": "ranges",
+      "rules": {
+        "ranges": true
+      },
+      "mode": "text",
+      "in": "1. mai–10. september",
+      "out": "1. mai–10. september",
+      "note": "Språkrådet, «Tankestrek»: «1. mai–10. september»; the dash is not digit-flanked and is left as typed (ranges.md §3)."
+    },
+    {
+      "id": "nb-ranges-abbreviated-year-declined",
+      "rule": "ranges",
+      "rules": {
+        "ranges": true
+      },
+      "mode": "text",
+      "in": "årene 1349-54",
+      "out": "årene 1349-54",
+      "note": "Språkrådet, «Tankestrek»: the source writes «1349–54» with an abbreviated second member; ranges.md §3.2 G4 declines a four-and-two digit pair, a recorded miss."
+    },
+    {
+      "id": "nb-ranges-word-hyphen-untouched",
+      "rule": "ranges",
+      "rules": {
+        "ranges": true
+      },
+      "mode": "text",
+      "in": "e-post og EU-motstander",
+      "out": "e-post og EU-motstander",
+      "note": "Språkrådet, «Bindestrek»: a hyphen between letters is a compound hyphen and is untouched (ranges.md §3)."
+    },
+    {
+      "id": "nb-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "e-post og 50-årsdag og A4-format",
+      "out": "e-post og 50-årsdag og A4-format",
+      "note": "Språkrådet, «Bindestrek»: the hyphen is written in these compounds; the lists are empty, so nothing is bound."
+    },
+    {
+      "id": "nb-nbsp-spaced-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Prisen er 25 % og 10 kr og 3 km og 5 kg og 7 cm og 38 °C",
+      "out": "Prisen er 25 % og 10 kr og 3 km og 5 kg og 7 cm og 38 °C",
+      "note": "Språkrådet, «Mellomrom»: «Det skal vere mellomrom mellom tal og (forkorta) nemningar» (10 kr, 5,68 kg, 10 %, +5 °C); «Prosentteikn og mellomrom»: a hard space is welcome."
+    },
+    {
+      "id": "nb-nbsp-spaced-unit-inserted",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Prisen 25% og 10kr her",
+      "out": "Prisen 25 % og 10 kr her",
+      "note": "Språkrådet, «Mellomrom»: a missing space between the number and % or kr is supplied, as a no-break space."
+    },
+    {
+      "id": "nb-nbsp-spaced-unit-inserted-metric",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Det er 3km og 5kg og 7cm og 38°C",
+      "out": "Det er 3 km og 5 kg og 7 cm og 38 °C",
+      "note": "Språkrådet, «Mellomrom»: the general rule for abbreviated designations, with °C exemplified."
+    },
+    {
+      "id": "nb-nbsp-kr-with-full-stop",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Det koster 15 kr. i dag",
+      "out": "Det koster 15 kr. i dag",
+      "note": "Språkrådet, «Kronebeløp: rekkjefølgje, komma og strek»: «Etter kr skal det ikkje stå punktum, bortsett frå til slutt i setningar»; the engine accepts a full stop after kr (nbsp.md §3.7) and does not remove it, so the space is bound and the full stop stays."
+    },
+    {
+      "id": "nb-nbsp-single-letter-unit-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Det er 5 m og 3 g og 10 min",
+      "out": "Det er 5 m og 3 g og 10 min",
+      "note": "nbsp.md §3.7: single-letter and common-word units are not listed; min is also a Norwegian word."
+    },
+    {
+      "id": "nb-nbsp-degree-bare-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "I dag 18 °C, men i går berre 5°.",
+      "out": "I dag 18 °C, men i går berre 5°.",
+      "note": "Språkrådet, «Mellomrom»: «I dag er det 18 °C, men i går var det berre 5°»; a bare degree sign is written closed up and is not a listed unit."
+    },
+    {
+      "id": "nb-nbsp-abbreviations-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "f.eks. og m.a.o. og m.m.",
+      "out": "f.eks. og m.a.o. og m.m.",
+      "note": "Språkrådet, «Punktum»: Norwegian abbreviations are written without an inner space, so there is nothing to bind."
+    },
+    {
+      "id": "nb-nbsp-section-sign-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "se § 10 og $ 10",
+      "out": "se § 10 og $ 10",
+      "note": "Språkrådet, «Mellomrom»: «§ 10» and «$ 10» are written with a space, but no source says the space is non-breaking, so it is left as typed."
+    },
+    {
+      "id": "nb-spaces-before-punctuation",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Hva nå ? Ikke !",
+      "out": "Hva nå? Ikke!",
+      "note": "Språkrådet, «Mellomrom»: no space is written before ? or !."
+    },
+    {
+      "id": "nb-spaces-brackets",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Han ( stille ) gikk .",
+      "out": "Han (stille) gikk.",
+      "note": "spaces.md: no space inside brackets or before a full stop."
+    },
+    {
+      "id": "nb-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "(c) 2026",
+      "out": "© 2026",
+      "note": "symbols.md: (c) becomes ©."
+    },
+    {
+      "id": "nb-apostrophe-foreign-name",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "O'Brien kom.",
+      "out": "O’Brien kom.",
+      "note": "apostrophe.md: a straight apostrophe inside a word becomes U+2019."
+    },
+    {
+      "id": "nb-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "rules": {
+        "quote-punctuation": true
+      },
+      "mode": "text",
+      "in": "alfa «beta», gamma",
+      "out": "alfa «beta», gamma",
+      "note": "Språkrådet, «Hermeteikn»: punctuationPlacement is none, because the full stop and question or exclamation mark go inside only when they belong to the quotation; the rule is a no-op and the comma stays where it stands."
+    }
+  ]
+}

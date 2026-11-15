@@ -1,0 +1,85 @@
+{
+  "locale": "nb",
+  "name": "Norwegian Bokmål",
+  "quotes": {
+    "primary": {
+      "open": "«",
+      "close": "»",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "‘",
+      "close": "’",
+      "innerSpace": "none"
+    },
+    "punctuationPlacement": "none",
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": []
+    }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": [],
+    "beforeUnits": [],
+    "spacedUnits": ["%", "kr", "km", "kg", "cm", "°C"],
+    "closedUnits": [],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Språkrådet, «Hermeteikn» (Godt og korrekt språk › Tegn); språkspørsmål «Hermeteikn, kva slags?» and «Sitat i sitat» (last updated 1 January 2024): «Dei to formene for hermeteikn som er vanlegast i norsk, er doble ″komma″ oppe og doble «vinkelteikn». Dei blir rekna som like rette»; «Eit sitat inni eit anna sitat bør helst markerast med enkle hermeteikn»; «Enkle vinklar er mindre brukt, men […] kan gjerne brukast»; «Komma skal setjast utanfor, anten det opphavleg høyrer til sitatet eller ikkje»",
+      "url": "https://sprakradet.no/godt-og-korrekt-sprak/rettskriving-og-grammatikk/tegn/hermeteikn/",
+      "note": "PICK-AND-PIN: «…» (U+00AB open, U+00BB close) with ‘…’ (U+2018, U+2019) inside. Språkrådet calls the doubled-comma form and the guillemet form equally correct, lists «…» first and as usual in books and newspapers, and reports, as far as it knows («Så vidt vi veit»), that Standard Norge and Microsoft agreed to make the guillemets the computer default; the doubled-comma form (”…” or “…”, U+201D or U+201C opening) is the equally correct rival and is normalised to the pinned pair. The »…« (U+00BB opening) reading in the issue is the Danish form and is not attested in any Språkrådet page read. Secondary: «Sitat i sitat» names single marks as the preferred inner level and uses ‘…’ in its examples; the Hermeteikn page also lists ’…’ (U+2019 both sides), which «Hermeteikn, kva slags?» calls the traditional Norwegian form («9 9 er det tradisjonelle i norsk») and the FAQ allows ‹…› (U+2039, U+203A), so the choice among the three single forms is a pin; ‘…’ is pinned because it is the form of the FAQ's own examples (including its gåsaugo ‘hermeteikn’) and keeps the opening and closing marks distinct. innerSpace none: no example has a space between a mark and the text. punctuationPlacement none: the comma goes outside, while the full stop and a question or exclamation mark go inside only when they belong to the quotation, so placement depends on meaning. ACCEPTED GAP: «Sitat i sitat» recommends a thin space (U+2009) between a double and a single mark that touch; the schema cannot express it, and an authored U+2009 is left untouched. elisionIdioms and elisionClitics empty: not addressed. Six of the nine pages read are in Nynorsk (Tankestrek, Punktum and Bindestrek are in Bokmål); Språkrådet publishes these rules on its common pages without a separate rule for the other written standard. Read 2026-11-15 via a text-extraction reader; direct fetch returned HTTP 403."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Språkrådet, «Tankestrek» (Bokmål): «Tankestrek kan brukes ved innskudd og tilføyelse, med ett mellomrom («luft») på begge sider»; «Vi bruker kort tankestrek (–), ikke lang (—)»; «Tankestreken (–) er lengre enn bindestreken (-)»; «Mellomrom»: «Det skal vere mellomrom føre (og etter) ein tankestrek ved innskot og i liknande funksjonar»",
+      "url": "https://sprakradet.no/godt-og-korrekt-sprak/rettskriving-og-grammatikk/tegn/tankestrek/",
+      "note": "dash.parenthetical = en-spaced (U+0020 U+2013 U+0020). The spacing and the short dash are stated; the page names Alt+0150 (Windows-1252 0x96 = U+2013) and rejects the long dash U+2014, so an em dash is normalised to the en dash by citation. The dialogue dash (replikkstrek) is not encoded. Read 2026-11-15 via a text-extraction reader; direct fetch returned HTTP 403."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Språkrådet, «Tankestrek»: «Streken svarer i slike tilfeller til fra ... til, mellom ... og» and «Her skal det ikke være mellomrom på hver side av tankestreken» (1. mai–10. september, årene 1349–54, kapitlene 2–10, 2–0); «Mellomrom»: «Det skal ikkje vere mellomrom føre og etter tankestrekar som viser tidsrom, avstandar» (opningstid: 9–19)",
+      "url": "https://sprakradet.no/godt-og-korrekt-sprak/rettskriving-og-grammatikk/tegn/tankestrek/",
+      "note": "dash.range = en-tight (U+2013, no spaces). Unlike Danish, Norwegian writes the range with the dash, not the hyphen. The abbreviated second member (1349–54) is Språkrådet's own example; the ranges rule's digit-run guards decide which of the typed forms are converted (ranges.md §3.2). Read 2026-11-15 via a text-extraction reader; direct fetch returned HTTP 403."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Språkrådet, «Mellomrom» («eller ...?», «Svarte f…!») and «Punktum» («Han er vel ikke …?»)",
+      "url": "https://sprakradet.no/godt-og-korrekt-sprak/rettskriving-og-grammatikk/mellomrom/",
+      "note": "abbreviatedAfterTerminal = false: the terminal mark follows the dots in every example, so no source reduces the dots after ? or !. Spacing around the dots (a space before them when a word is omitted, none when letters are omitted) depends on what is omitted and is not encoded. Read 2026-11-15 via a text-extraction reader; direct fetch returned HTTP 403."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Språkrådet, «Bindestrek»: «Også der førsteleddet er et siffer e.l., skal ordet skrives med bindestrek» (2.-prioritetslån, 50-årsdag, A4-format); «Sammensetninger med en forkortelse eller en enkelt bokstav som førsteledd skal ha bindestrek» (e-post, EU-motstander)",
+      "url": "https://sprakradet.no/godt-og-korrekt-sprak/rettskriving-og-grammatikk/tegn/bindestrek/",
+      "note": "All three lists are empty: the page says when a hyphen is written, not where a line must not break. Read 2026-11-15 via a text-extraction reader; direct fetch returned HTTP 403."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Språkrådet, «Mellomrom»: «Det skal vere mellomrom mellom tal og (forkorta) nemningar anten nemninga står framfor talet eller etter det» (10 kr, 5,68 kg, 10 %, +5 °C, § 10); språkspørsmål «Prosentteikn og mellomrom» (last updated 1 January 2024): «Det rette er 25 %» and «Bruk gjerne det som heiter hardt eller fast mellomrom, så skil ikkje talet og teiknet lag ved linjeskift»; «Kronebeløp: rekkjefølgje, komma og strek»: «I vanleg tekst er 500 kr (eller helst 500 kroner) i utgangspunktet det beste» and «Etter kr skal det ikkje stå punktum»; «Punktum»: f.eks., m.a.o., m.m. written without an inner space",
+      "url": "https://sprakradet.no/godt-og-korrekt-sprak/rettskriving-og-grammatikk/mellomrom/",
+      "note": "(1) spacedUnits = % kr km kg cm °C: the space between number and unit is stated; a hard space is stated only for %, and the others take the same pin (as in `da`). 10 kr, 5,68 kg and +5 °C are exemplified; km and cm rest on the general rule for abbreviated designations. kr is listed without a full stop: «Kronebeløp» states «Etter kr skal det ikkje stå punktum, bortsett frå til slutt i setningar». A bare ° is written closed up in the source («5°»), so only the °C form is listed. Single-letter and common-word units (m, l, min) are excluded (nbsp.md §3.7). (2) closedUnits empty. (3) abbreviations empty: Norwegian abbreviations carry no inner space, so there is nothing to bind. (4) afterSymbols empty: «§ 10» and «$ 10» are written with a space, but no source says it is non-breaking. beforePunctuation, narrowBeforePunctuation, afterShortWords, beforeUnits, beforeNumber, beforeWord empty and initialBinding none: not addressed. Not expressible and so not covered: grouping of thousands with a space («3 562 987 675») and the prefix form «kr 500,–» and the whole-krone dash (Tankestrek: «Tankestrek kan brukes for å angi hele kronebeløp»). Read 2026-11-15 via a text-extraction reader; direct fetch returned HTTP 403."
+    }
+  ]
+}

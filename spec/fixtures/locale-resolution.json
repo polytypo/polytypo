@@ -1,5 +1,5 @@
 {
-  "spec": "1.26.0",
+  "spec": "1.27.0",
   "cases": [
     {
       "id": "exact-en-us",
@@ -146,10 +146,10 @@
       "throws": "POLYTYPO_UNKNOWN_LOCALE"
     },
     {
-      "id": "unknown-nb-no",
-      "tag": "nb-NO",
+      "id": "unknown-nn-no",
+      "tag": "nn-NO",
       "throws": "POLYTYPO_UNKNOWN_LOCALE",
-      "note": "section 4: nb must not resolve to the nearest language sv"
+      "note": "section 4: nn (Nynorsk) must not resolve to the nearest locale nb"
     },
     {
       "id": "unknown-ja",
@@ -306,6 +306,24 @@
       "tag": "da-DK",
       "resolves": "da",
       "note": "section 3.4 step 3a: the region strip reaches da, which needs no registry alias."
+    },
+    {
+      "id": "strip-nb-no",
+      "tag": "nb-NO",
+      "resolves": "nb",
+      "note": "section 3.4 step 3a: the region strip reaches nb, which needs no registry alias."
+    },
+    {
+      "id": "alias-no",
+      "tag": "no",
+      "resolves": "nb",
+      "note": "section 3.4 step 2: the registry alias no maps to nb."
+    },
+    {
+      "id": "alias-no-no",
+      "tag": "no-NO",
+      "resolves": "nb",
+      "note": "section 3.4 step 3b: the strip lands on the alias key no, so the alias is followed."
     }
   ]
 }

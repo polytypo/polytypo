@@ -87,6 +87,7 @@ PRIMARY_SOURCES = {
     "lv": "Valsts valodas centrs, Tiesību aktu tulkošanas rokasgrāmata",
     "et": "Eesti Keele Instituut, Eesti keele õigekirja põhireeglid",
     "da": "Dansk Sprognævn, Retskrivningsreglerne",
+    "nb": "Språkrådet",
 }
 
 
@@ -1855,6 +1856,7 @@ BADGE_TEXT = {
     "lv": "Tipogrāfiskā sakārtošana: <b>polytypo</b>",
     "et": "Tüpograafiline korrastus: <b>polytypo</b>",
     "da": "Typografisk oprydning med <b>polytypo</b>",
+    "nb": "Typografisk opprydding med <b>polytypo</b>",
     "it": "Pulizia tipografica con <b>polytypo</b>",
     "pl": "Typograficzne porządki dzięki <b>polytypo</b>",
     "pt": "Limpeza tipográfica por <b>polytypo</b>",
@@ -1884,6 +1886,7 @@ BADGE_LANG_NAMES = {
     "lv": "Latvian",
     "et": "Estonian",
     "da": "Danish",
+    "nb": "Norwegian Bokmål",
     "it": "Italian",
     "pl": "Polish",
     "pt": "Portuguese",
