@@ -635,6 +635,35 @@
       ]
     },
     {
+      "locale": "nn",
+      "name": "Norwegian Nynorsk",
+      "hero": {
+        "in": "Ho spurde: \"Er ikkje dette butikken dei kallar 'den rundt hjørnet'?\" ... Vi gjekk - nesten 3 km - og han var stengd. Copyright (c) 2026, format 40x60 cm.",
+        "out": "Ho spurde: «Er ikkje dette butikken dei kallar ‘den rundt hjørnet’?» … Vi gjekk – nesten 3 km – og han var stengd. Copyright © 2026, format 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, «Isn’t this the shop they call ‘round the corner’?» … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Han sa \"god dag\".",
+          "out": "Han sa «god dag»."
+        },
+        {
+          "rule": "dashes",
+          "in": "Boka - utgjeven før krigen - er framifrå.",
+          "out": "Boka – utgjeven før krigen – er framifrå."
+        },
+        {
+          "rule": "nbsp",
+          "in": "3 km og 50 %",
+          "out": "3 km og 50 %"
+        }
+      ]
+    },
+    {
       "locale": "pl",
       "name": "Polish",
       "hero": {
