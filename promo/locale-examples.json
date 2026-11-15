@@ -2419,6 +2419,137 @@
       "resolution": [],
       "disagreed": 0
     },
+    "nb": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "nb-quotes-primary",
+            "in": "Han sa: \"Jeg er trøtt.\" og gikk.",
+            "out": "Han sa: «Jeg er trøtt.» og gikk."
+          },
+          {
+            "id": "nb-quotes-nested-secondary",
+            "in": "Han sa: \"Hun sa 'ja' til meg\" og gikk.",
+            "out": "Han sa: «Hun sa ‘ja’ til meg» og gikk."
+          },
+          {
+            "id": "nb-quotes-nested-at-end",
+            "in": "Han sa: \"Hun sa 'ja'\" og gikk.",
+            "out": "Han sa: «Hun sa ‘ja’» og gikk."
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "nb-ellipsis-three-dots",
+            "in": "Vent... og så.",
+            "out": "Vent… og så."
+          },
+          {
+            "id": "nb-ellipsis-before-question",
+            "in": "Er det nå...?",
+            "out": "Er det nå…?"
+          },
+          {
+            "id": "nb-ellipsis-before-exclamation",
+            "in": "Hva nå...!",
+            "out": "Hva nå…!"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "nb-dashes-parenthetical",
+            "in": "Nå - ikke minst - går vi.",
+            "out": "Nå – ikke minst – går vi."
+          },
+          {
+            "id": "nb-dashes-em-input",
+            "in": "Nå — ikke minst — går vi.",
+            "out": "Nå – ikke minst – går vi."
+          }
+        ],
+        "ranges": [
+          {
+            "id": "nb-ranges-hyphen-converted",
+            "in": "kapitlene 2-10",
+            "out": "kapitlene 2⁠–⁠10",
+            "rules": {
+              "ranges": true
+            }
+          },
+          {
+            "id": "nb-ranges-opening-hours",
+            "in": "åpent 9-19",
+            "out": "åpent 9⁠–⁠19",
+            "rules": {
+              "ranges": true
+            }
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "nb-nbsp-spaced-units",
+            "in": "Prisen er 25 % og 10 kr og 3 km og 5 kg og 7 cm og 38 °C",
+            "out": "Prisen er 25 % og 10 kr og 3 km og 5 kg og 7 cm og 38 °C"
+          },
+          {
+            "id": "nb-nbsp-spaced-unit-inserted",
+            "in": "Prisen 25% og 10kr her",
+            "out": "Prisen 25 % og 10 kr her"
+          },
+          {
+            "id": "nb-nbsp-spaced-unit-inserted-metric",
+            "in": "Det er 3km og 5kg og 7cm og 38°C",
+            "out": "Det er 3 km og 5 kg og 7 cm og 38 °C"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "nb-spaces-before-punctuation",
+            "in": "Hva nå ? Ikke !",
+            "out": "Hva nå? Ikke!"
+          },
+          {
+            "id": "nb-spaces-brackets",
+            "in": "Han ( stille ) gikk .",
+            "out": "Han (stille) gikk."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "nb-symbols-copyright",
+            "in": "(c) 2026",
+            "out": "© 2026"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "nb-apostrophe-foreign-name",
+            "in": "O'Brien kom.",
+            "out": "O’Brien kom."
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Hun spurte: \"Er ikke dette butikken de kaller 'den rundt hjørnet'?\" ... Vi gikk - nesten 3 km - og den var stengt. Copyright (c) 2026, format 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Hun spurte: «Er ikke dette butikken de kaller ‘den rundt hjørnet’?» … Vi gikk – nesten 3 km – og den var stengt. Copyright © 2026, format 40×60 cm.\nsay(«a – b …»)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Hun spurte: \"Er ikke dette butikken de kaller 'den rundt hjørnet'?\" ... Vi gikk - nesten 3 km - og den var stengt. Copyright (c) 2026, format 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Hun spurte: «Er ikke dette butikken de kaller ‘den rundt hjørnet’?» … Vi gikk – nesten 3 km – og den var stengt. Copyright © 2026, format 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Hun spurte: \"Er ikke dette butikken de kaller 'den rundt hjørnet'?\" ... Vi gikk - nesten 3 km - og den var stengt. Copyright (c) 2026, format 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Hun spurte: «Er ikke dette butikken de kaller ‘den rundt hjørnet’?» … Vi gikk – nesten 3 km – og den var stengt. Copyright © 2026, format 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": ["nb-NO", "no", "no-NO"],
+      "disagreed": 0
+    },
     "pl": {
       "byRule": {
         "quotes": [

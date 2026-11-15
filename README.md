@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.27.0** · locales: **30** · rules: **10**.
+Spec version: **1.27.0** · locales: **31** · rules: **10**.
 
 ## Implementations
 
@@ -63,6 +63,7 @@ Spec version: **1.27.0** · locales: **30** · rules: **10**.
 | Italian (`it`) | Ha chiesto: «Non è questo il negozio che chiamano “quello all’angolo”?» … Abbiamo camminato — quasi 3 km — ed era chiuso. Copyright © 2026, formato 40×60 cm. |
 | Latvian (`lv`) | Viņa jautāja: “Vai tā nav veikals, ko sauc par “to aiz stūra”?” … Gājām – gandrīz 3 km – un tas bija slēgts. Copyright © 2026, formāts 40×60 cm. |
 | Lithuanian (`lt`) | Ji paklausė: „Ar ne tai parduotuvė, kurią vadina „ta už kampo“?“ … Ėjome – beveik 3 km – o ji buvo uždaryta. Copyright © 2026, formatas 40×60 cm. |
+| Norwegian Bokmål (`nb`) | Hun spurte: «Er ikke dette butikken de kaller ‘den rundt hjørnet’?» … Vi gikk – nesten 3 km – og den var stengt. Copyright © 2026, format 40×60 cm. |
 | Polish (`pl`) | Zapytał: „Czy to nie ten sklep, który nazywają »tym za rogiem«?” … Szliśmy – prawie 3 km – a był zamknięty. Copyright © 2026, format 40×60 cm. |
 | Portuguese (Brazil) (`pt-BR`) | Perguntou: “Não é esta a loja que chamam de ‘a da esquina’?” … Caminhamos – quase 3 km – e estava fechada. Copyright © 2026, formato 40×60 cm. |
 | Portuguese (Portugal) (`pt-PT`) | Perguntou: «Não é esta a loja a que chamam “a da esquina”?» … Caminhámos — quase 3 km — e estava fechada. Copyright © 2026, formato 40×60 cm. |
@@ -100,6 +101,7 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | `it` | Italian | «…» | “…” | em dash, spaced | unchanged |
 | `lv` | Latvian | “…” | “…” | en dash, spaced | en dash, unspaced |
 | `lt` | Lithuanian | „…“ | „…“ | en dash, spaced | en dash, unspaced |
+| `nb` | Norwegian Bokmål | «…» | ‘…’ | en dash, spaced | en dash, unspaced |
 | `pl` | Polish | „…” | »…« | en dash, spaced | en dash, unspaced |
 | `pt-BR` | Portuguese (Brazil) | “…” | ‘…’ | en dash, spaced | unchanged |
 | `pt-PT` | Portuguese (Portugal) | «…» | “…” | em dash, spaced | unchanged |
