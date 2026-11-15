@@ -77,10 +77,10 @@ locale: EN_us
 "quoted"
 ```
 
-Unsupported language. Nynorsk is not Bokmål, and nothing guesses:
+Unsupported language. Faroese is not Danish, and nothing guesses:
 
 ```example
-locale: nn-NO
+locale: fo-FO
 expect: error
 ---
 "quoted"

@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.27.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.27.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.28.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.28.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,14 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.28.0 — 15 November 2026
+
+Norwegian Nynorsk joins as the thirty-second locale, cited to the Language Council of Norway.
+
+- Norwegian Nynorsk ships as `nn`. Until now `nn` and `nn-NO` were refused with `POLYTYPO_UNKNOWN_LOCALE`, so the text had to go through another locale. Measured: `Ho sa: "Eg gjekk - nesten 3 km - heim og kjøpte 2 kg for 15 kr"` came back from `en-GB` with the quotation in single marks, `Ho sa: ‘Eg gjekk – nesten 3 km – heim og kjøpte 2 kg for 15 kr’`, and an ordinary space before `kr`. `nn` gives `Ho sa: «Eg gjekk – nesten 3 km – heim og kjøpte 2 kg for 15 kr»`, with guillemets and a no-break space before `kr`.
+- `nn` carries exactly the rules of `nb`. The Language Council of Norway (Språkrådet) publishes one set of rules for quotation marks, dashes, ellipses and spaces and states no separate rule for either written standard; its Nynorsk pages give the same `«…»` with `‘…’` inside, the spaced en dash for an insertion, the unspaced en dash for a range and a space before `%`, `kr`, `km`, `kg`, `cm` and `°C`. It also shares `nb`'s one gap: the Council recommends a thin space where a double and a single quotation mark touch, and `nn` does not insert it.
+- Pass `nn` or a region form such as `nn-NO`. `no` still resolves to `nb`, so pass Nynorsk text as `nn`.
 
 ## 1.27.0 — 15 November 2026
 

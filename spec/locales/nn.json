@@ -1,0 +1,85 @@
+{
+  "locale": "nn",
+  "name": "Norwegian Nynorsk",
+  "quotes": {
+    "primary": {
+      "open": "«",
+      "close": "»",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "‘",
+      "close": "’",
+      "innerSpace": "none"
+    },
+    "punctuationPlacement": "none",
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": []
+    }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": [],
+    "beforeUnits": [],
+    "spacedUnits": ["%", "kr", "km", "kg", "cm", "°C"],
+    "closedUnits": [],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Språkrådet, «Hermeteikn» (Godt og korrekt språk › Tegn): «Sitat inni eit sitat markerer vi med enkle hermeteikn»; «Komma skal setjast utanfor, anten det opphavleg høyrer til sitatet eller ikkje»; språkspørsmål «Hermeteikn, kva slags?» (last updated 1 January 2024): «Dei to formene for hermeteikn som er vanlegast i norsk […] Dei blir rekna som like rette»; «Sitat i sitat» (last updated 1 January 2024): «Eit sitat inni eit anna sitat bør helst markerast med enkle hermeteikn»; «Enkle vinklar er mindre brukt, men […] kan gjerne brukast»",
+      "url": "https://sprakradet.no/godt-og-korrekt-sprak/rettskriving-og-grammatikk/tegn/hermeteikn/",
+      "note": "PICK-AND-PIN, identical to nb: «…» (U+00AB, U+00BB) with ‘…’ (U+2018, U+2019) inside. All three pages are written in Nynorsk; Språkrådet publishes one version of each and states no separate rule for either written standard. The doubled-comma form is called equally correct; «Hermeteikn, kva slags?» reports that guillemets are the most common form in print and, as far as Språkrådet knows, the agreed computer default. Inner level: single marks are preferred; ’…’ (U+2019 both sides, «9 9 er det tradisjonelle i norsk») and ‹…› (U+2039, U+203A) are also allowed, and ‘…’ is pinned because «Sitat i sitat» uses it in its examples. innerSpace none. punctuationPlacement none: the comma goes outside; a full stop, question mark or exclamation mark goes inside only when it belongs to the quotation. elisionIdioms and elisionClitics empty: not addressed. ACCEPTED GAP: «Sitat i sitat» recommends a thin space (U+2009) where a double and a single mark touch, which the schema cannot express. Read 2026-11-15 via a text-extraction reader; direct fetch returned HTTP 403."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Språkrådet, «Mellomrom» (Nynorsk text): «Det skal vere mellomrom føre (og etter) ein tankestrek ved innskot og i liknande funksjonar» («Han har – sant å seie – ikkje lenge att»); «Tankestrek» (Bokmål only): «Vi bruker kort tankestrek (–), ikke lang (—)»",
+      "url": "https://sprakradet.no/godt-og-korrekt-sprak/rettskriving-og-grammatikk/mellomrom/",
+      "note": "dash.parenthetical = en-spaced (U+0020 U+2013 U+0020). The spacing is stated in Nynorsk. That the dash is U+2013 and not U+2014 is stated only on the Tankestrek page, which exists in Bokmål alone (https://sprakradet.no/godt-og-korrekt-sprak/rettskriving-og-grammatikk/tegn/tankestrek/); it is a common page for both written standards, and the Nynorsk «Kronebeløp» answer confirms only «tankestrek, ikkje bindestrek». The dialogue dash is not encoded. Read 2026-11-15 via a text-extraction reader; direct fetch returned HTTP 403."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Språkrådet, «Mellomrom» (Nynorsk text): «Det skal ikkje vere mellomrom føre og etter tankestrekar som viser tidsrom, avstandar, relasjonar eller andre motpolar» («1. mai–10. september»)",
+      "url": "https://sprakradet.no/godt-og-korrekt-sprak/rettskriving-og-grammatikk/mellomrom/",
+      "note": "dash.range = en-tight (U+2013, no spaces), identical to nb. The Bokmål Tankestrek page gives the same rule with further examples (1349–54, 2–10). Read 2026-11-15 via a text-extraction reader; direct fetch returned HTTP 403."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Språkrådet, «Mellomrom» (Nynorsk text): «Er det meininga å gjere det slik, eller ...?», «Svarte f…!»",
+      "url": "https://sprakradet.no/godt-og-korrekt-sprak/rettskriving-og-grammatikk/mellomrom/",
+      "note": "abbreviatedAfterTerminal = false: in every example the terminal mark follows the dots, and no source reduces the dots after ? or !. Spacing before the dots depends on what is omitted and is not encoded. Read 2026-11-15 via a text-extraction reader; direct fetch returned HTTP 403."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Språkrådet, «Bindestrek» (Bokmål only; no Nynorsk version published): when a hyphen is written, e.g. «2.-prioritetslån», «e-post»",
+      "url": "https://sprakradet.no/godt-og-korrekt-sprak/rettskriving-og-grammatikk/tegn/bindestrek/",
+      "note": "All three lists are empty: no source, in either written standard, says where a line must not break. Read 2026-11-15 via a text-extraction reader; direct fetch returned HTTP 403."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Språkrådet, «Mellomrom» (Nynorsk text): «Det skal vere mellomrom mellom tal og (forkorta) nemningar anten nemninga står framfor talet eller etter det» (10 kr, 5,68 kg, 10 %, +5 °C, § 10); språkspørsmål «Prosentteikn og mellomrom» (last updated 1 January 2024): «Det rette er 25 %, med mellomrom mellom sifferet og prosentteiknet», recommending «hardt eller fast mellomrom»; «Kronebeløp: rekkjefølgje, komma og strek» (last updated 1 January 2024): «I vanleg tekst er 500 kr (eller helst 500 kroner) i utgangspunktet det beste»",
+      "url": "https://sprakradet.no/godt-og-korrekt-sprak/rettskriving-og-grammatikk/mellomrom/",
+      "note": "spacedUnits = % kr km kg cm °C, identical to nb. A hard space is stated only for % (https://sprakradet.no/spraksporsmal-og-svar/prosentteikn-og-mellomrom/); the other units take the same pin. kr carries no full stop and has the same form in Nynorsk (https://sprakradet.no/spraksporsmal-og-svar/kronebelop-rekkjefolgje-komma-og-strek/); nkr is advised only when several currencies appear, which is word choice and not encoded. A bare ° is written closed up («5°»), so only °C is listed. Single-letter and common-word units (m, l, min) are excluded (nbsp.md §3.7). closedUnits, abbreviations, afterSymbols and the other lists are empty, and initialBinding is none: not addressed. Read 2026-11-15 via a text-extraction reader; direct fetch returned HTTP 403."
+    }
+  ]
+}

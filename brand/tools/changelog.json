@@ -2,6 +2,23 @@
   "_comment": "Single source for CHANGELOG.md (brand/tools/gen_readmes.py) and the site's /changelog page (brand/tools/build_promo.py). Released versions only. Example strings are real engine output captured from the published packages of each version, never typed by hand; an entry whose release changes no output carries examples: [].",
   "releases": [
     {
+      "version": "1.28.0",
+      "date": "2026-11-15",
+      "headline": "Norwegian Nynorsk joins as the thirty-second locale, cited to the Language Council of Norway.",
+      "items": [
+        {
+          "text": "Norwegian Nynorsk ships as `nn`. Until now `nn` and `nn-NO` were refused with `POLYTYPO_UNKNOWN_LOCALE`, so the text had to go through another locale. Measured: `Ho sa: \"Eg gjekk - nesten 3 km - heim og kjøpte 2 kg for 15 kr\"` came back from `en-GB` with the quotation in single marks, `Ho sa: ‘Eg gjekk – nesten 3 km – heim og kjøpte 2 kg for 15 kr’`, and an ordinary space before `kr`. `nn` gives `Ho sa: «Eg gjekk – nesten 3 km – heim og kjøpte 2 kg for 15 kr»`, with guillemets and a no-break space before `kr`."
+        },
+        {
+          "text": "`nn` carries exactly the rules of `nb`. The Language Council of Norway (Språkrådet) publishes one set of rules for quotation marks, dashes, ellipses and spaces and states no separate rule for either written standard; its Nynorsk pages give the same `«…»` with `‘…’` inside, the spaced en dash for an insertion, the unspaced en dash for a range and a space before `%`, `kr`, `km`, `kg`, `cm` and `°C`. It also shares `nb`'s one gap: the Council recommends a thin space where a double and a single quotation mark touch, and `nn` does not insert it."
+        },
+        {
+          "text": "Pass `nn` or a region form such as `nn-NO`. `no` still resolves to `nb`, so pass Nynorsk text as `nn`."
+        }
+      ],
+      "examples": []
+    },
+    {
       "version": "1.27.0",
       "date": "2026-11-15",
       "headline": "Norwegian Bokmål joins as the thirty-first locale, cited to the Language Council of Norway.",

@@ -1,5 +1,5 @@
 {
-  "spec": "1.27.0",
+  "spec": "1.28.0",
   "cases": [
     {
       "id": "exact-en-us",
@@ -146,10 +146,10 @@
       "throws": "POLYTYPO_UNKNOWN_LOCALE"
     },
     {
-      "id": "unknown-nn-no",
-      "tag": "nn-NO",
+      "id": "unknown-fo-fo",
+      "tag": "fo-FO",
       "throws": "POLYTYPO_UNKNOWN_LOCALE",
-      "note": "section 4: nn (Nynorsk) must not resolve to the nearest locale nb"
+      "note": "section 4: fo (Faroese) must not resolve to the nearest locale da"
     },
     {
       "id": "unknown-ja",
@@ -312,6 +312,12 @@
       "tag": "nb-NO",
       "resolves": "nb",
       "note": "section 3.4 step 3a: the region strip reaches nb, which needs no registry alias."
+    },
+    {
+      "id": "strip-nn-no",
+      "tag": "nn-NO",
+      "resolves": "nn",
+      "note": "section 3.4 step 3a: the region strip reaches nn, which needs no registry alias."
     },
     {
       "id": "alias-no",

@@ -132,7 +132,7 @@ module-level mutable state, reentrant).
 
 - **Never fall back to English**, or to any other default, under any circumstance. Not on an
   unknown language, not on a malformed tag, not on an empty string.
-- **Never fall back to a "nearest" language.** `nn` does not resolve to `nb`, `nl` does not
+- **Never fall back to a "nearest" language.** `fo` does not resolve to `da`, `nl` does not
   resolve to `de`, `pt` does not resolve to `fr`.
 - **Never fall back to the first entry of `registry.locales`.**
 - **Never consult the host environment** — `LANG`, `LC_ALL`, `navigator.language`,
@@ -177,7 +177,7 @@ Against `spec/locales/registry.json` as of spec 0.2.0:
 | `DE`          | `de`      | canonicalise, alias                                  | `de-DE`                             |
 | `xx-YY`       | `xx-YY`   | no exact, no alias, strip → `xx`, no exact, no alias | **throw** `POLYTYPO_UNKNOWN_LOCALE` |
 | `xx`          | `xx`      | no exact, no alias, nothing to strip                 | **throw** `POLYTYPO_UNKNOWN_LOCALE` |
-| `nn-NO`       | `nn-NO`   | strip → `nn`, miss                                   | **throw** `POLYTYPO_UNKNOWN_LOCALE` |
+| `fo-FO`       | `fo-FO`   | strip → `fo`, miss                                   | **throw** `POLYTYPO_UNKNOWN_LOCALE` |
 | `eng`         | —         | fails §3.3 (length 3)                                | **throw** `POLYTYPO_UNKNOWN_LOCALE` |
 | `sr-Latn`     | —         | fails §3.3 (length 7)                                | **throw** `POLYTYPO_UNKNOWN_LOCALE` |
 | `es-419`      | —         | fails §3.3 (region not `A`–`Z`)                      | **throw** `POLYTYPO_UNKNOWN_LOCALE` |

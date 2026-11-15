@@ -88,6 +88,7 @@ PRIMARY_SOURCES = {
     "et": "Eesti Keele Instituut, Eesti keele õigekirja põhireeglid",
     "da": "Dansk Sprognævn, Retskrivningsreglerne",
     "nb": "Språkrådet",
+    "nn": "Språkrådet",
 }
 
 
@@ -1857,6 +1858,7 @@ BADGE_TEXT = {
     "et": "Tüpograafiline korrastus: <b>polytypo</b>",
     "da": "Typografisk oprydning med <b>polytypo</b>",
     "nb": "Typografisk opprydding med <b>polytypo</b>",
+    "nn": "Typografisk opprydding med <b>polytypo</b>",
     "it": "Pulizia tipografica con <b>polytypo</b>",
     "pl": "Typograficzne porządki dzięki <b>polytypo</b>",
     "pt": "Limpeza tipográfica por <b>polytypo</b>",
@@ -1887,6 +1889,7 @@ BADGE_LANG_NAMES = {
     "et": "Estonian",
     "da": "Danish",
     "nb": "Norwegian Bokmål",
+    "nn": "Norwegian Nynorsk",
     "it": "Italian",
     "pl": "Polish",
     "pt": "Portuguese",
