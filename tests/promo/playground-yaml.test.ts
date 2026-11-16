@@ -43,7 +43,7 @@ describe("playground yaml mode — the call block it shows", () => {
     expect(c.py).toContain('keys=["description", "title"]');
     expect(c.go).toContain('[]string{"description", "title"}');
     expect(c.rb).toContain('keys: ["description", "title"]');
-    expect(c.php).toContain("'keys' => ['description', 'title']");
+    expect(c.php).toContain("keys: ['description', 'title']");
   });
 
   it("shows keys only in yaml mode, and dialect only in markdown", async () => {
@@ -57,8 +57,24 @@ describe("playground yaml mode — the call block it shows", () => {
     await pg.set({ mode: "markdown" });
     for (const [lang, code] of Object.entries(pg.calls())) {
       expect(code, `${lang} names keys in markdown mode`).not.toMatch(/\bkeys\b/);
+      if (lang === "php") continue;
       expect(code, `${lang} omits dialect in markdown mode`).toMatch(/dialect/i);
     }
+    // markdown is not implemented by the PHP runtime, so its snippet is a statement of that
+    // rather than a call that would throw.
+    expect(pg.calls().php).toContain("not implemented");
+    expect(pg.calls().php).not.toContain("Polytypo::transform");
+  });
+
+  it("shows no call for the mdx dialect in the runtimes that do not implement it", async () => {
+    const pg = loadPlayground();
+    await pg.set({ locale: "en-US", mode: "markdown", dialect: "mdx" });
+    const c = pg.calls();
+    for (const lang of ["py", "go", "rb"] as const) {
+      expect(c[lang], lang).toContain("not implemented");
+      expect(c[lang], lang).not.toMatch(/transform\(/i);
+    }
+    expect(c.js).toContain('dialect: "mdx"');
   });
 
   it("drops blank entries rather than passing an empty key that matches nothing", async () => {

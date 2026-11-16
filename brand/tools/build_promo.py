@@ -2338,6 +2338,7 @@ const DATA = {payload};
   function renderCallCode(options) {{
     const showDialect = options.mode === "markdown";
     const showKeys = options.mode === "yaml";
+    const isMdx = showDialect && options.dialect === "mdx";
     const locale = strLit(options.locale);
     const mode = strLit(options.mode);
     const dialect = strLit(options.dialect || "commonmark");
@@ -2367,7 +2368,9 @@ const DATA = {payload};
       `);`;
     $callJs.innerHTML = highlight(jsCode);
 
-    const pyCode =
+    const pyCode = isMdx
+      ? `# the mdx dialect is not implemented by the Python runtime`
+      :
       `from polytypo import transform\\n\\n` +
       `transform(\\n` +
       `    input,\\n` +
@@ -2382,7 +2385,9 @@ const DATA = {payload};
       `)`;
     $callPy.innerHTML = highlight(pyCode);
 
-    const goCode =
+    const goCode = isMdx
+      ? `// the mdx dialect is not implemented by the Go runtime`
+      :
       `out, err := polytypo.Transform(\\n` +
       `    input,\\n` +
       `    polytypo.Options{{\\n` +
@@ -2398,7 +2403,9 @@ const DATA = {payload};
       `)`;
     $callGo.innerHTML = highlight(goCode);
 
-    const rbCode =
+    const rbCode = isMdx
+      ? `# the mdx dialect is not implemented by the Ruby runtime`
+      :
       `require "polytypo"\\n\\n` +
       `Polytypo.transform(\\n` +
       `  input,\\n` +
@@ -2413,20 +2420,16 @@ const DATA = {payload};
       `)`;
     $callRb.innerHTML = highlight(rbCode);
 
-    const phpCode =
-      `Polytypo::transform(\\n` +
-      `    $input,\\n` +
-      `    [\\n` +
-      `        'locale' => ${{phpStrLit(options.locale)}},\\n` +
-      `        'mode' => ${{phpStrLit(options.mode)}},\\n` +
-      (showDialect
-        ? `        'dialect' => ${{phpStrLit(options.dialect)}},\\n`
-        : "") +
-      (showKeys
-        ? `        'keys' => ${{keysPhp}},\\n`
-        : "") +
-      `    ],\\n` +
-      `);`;
+    const phpCode = options.mode === "markdown"
+      ? `// markdown mode is not implemented by the PHP runtime`
+      : `Polytypo::transform(\\n` +
+        `    $input,\\n` +
+        `    ${{phpStrLit(options.locale)}},\\n` +
+        `    mode: ${{phpStrLit(options.mode)}},\\n` +
+        (showKeys
+          ? `    keys: ${{keysPhp}},\\n`
+          : "") +
+        `);`;
     $callPhp.innerHTML = highlight(phpCode);
   }}
 
