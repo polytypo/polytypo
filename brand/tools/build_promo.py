@@ -89,7 +89,7 @@ PRIMARY_SOURCES = {
     "da": "Dansk Sprognævn, Retskrivningsreglerne",
     "nb": "Språkrådet",
     "nn": "Språkrådet",
-    "sq": "Akademia e Shkencave e Shqipërisë, Rregullat e pikësimit në gjuhën shqipe",
+    "sq": "Akademia e Shkencave e Shqipërisë; Rregullat e pikësimit në gjuhën shqipe",
 }
 
 
