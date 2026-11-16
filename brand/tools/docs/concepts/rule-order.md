@@ -6,7 +6,7 @@ section: concepts
 order: 40
 ---
 
-`transform` runs ten rules in one fixed order. The order is part of the specification, not an implementation detail, and it is identical in all five runtimes.
+`transform` runs {{rules_count}} rules in one fixed order. The order is part of the specification, not an implementation detail, and it is identical in all five runtimes.
 
 ## The order
 

@@ -6,7 +6,7 @@ section: runtimes
 order: 50
 ---
 
-The PHP package is [`polytypo/polytypo`](https://packagist.org/packages/polytypo/polytypo) on Packagist; the source is in [polytypo/polytypo-php](https://github.com/polytypo/polytypo-php). It claims spec 1.8.0. The `text`, `html` and `yaml` modes are fully conformant. The `markdown` mode is not implemented for either dialect: `mode: 'markdown'` always raises `POLYTYPO_INVALID_DIALECT`, whatever `dialect` is given. `league/commonmark`, the standard PHP CommonMark library, reports no position data on inline text nodes, and the mode needs the exact source extent of every text span.
+The PHP package is [`polytypo/polytypo`](https://packagist.org/packages/polytypo/polytypo) on Packagist; the source is in [polytypo/polytypo-php](https://github.com/polytypo/polytypo-php). It claims spec {{claimed_spec}}. The `text`, `html` and `yaml` modes are fully conformant. The `markdown` mode is not implemented for either dialect: `mode: 'markdown'` always raises `POLYTYPO_INVALID_DIALECT`, whatever `dialect` is given. `league/commonmark`, the standard PHP CommonMark library, reports no position data on inline text nodes, and the mode needs the exact source extent of every text span.
 
 ## Install
 
@@ -104,7 +104,7 @@ She said, "it's fine" -- but I wasn't sure...
 
 ## Conformance
 
-Spec 1.8.0. Modes: `text`, `html`, `yaml`. `markdown` is not implemented in either dialect. All nine rules. See [spec/CONFORMANCE.md](https://github.com/polytypo/polytypo/blob/main/spec/CONFORMANCE.md).
+Spec {{claimed_spec}}. Modes: `text`, `html`, `yaml`. `markdown` is not implemented in either dialect. All {{rules_count}} rules. See [spec/CONFORMANCE.md](https://github.com/polytypo/polytypo/blob/main/spec/CONFORMANCE.md).
 
 ## Related
 

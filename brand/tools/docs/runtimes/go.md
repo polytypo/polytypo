@@ -6,7 +6,7 @@ section: runtimes
 order: 30
 ---
 
-The Go module is [`github.com/polytypo/polytypo-go`](https://pkg.go.dev/github.com/polytypo/polytypo-go); the source is in [polytypo/polytypo-go](https://github.com/polytypo/polytypo-go). It claims spec 1.8.0. The `text`, `html` and `yaml` modes are fully conformant. The `markdown` mode covers the `commonmark` dialect (CommonMark plus GFM); `mdx` returns `CodeInvalidDialect`, because no MDX parser is available for this runtime.
+The Go module is [`github.com/polytypo/polytypo-go`](https://pkg.go.dev/github.com/polytypo/polytypo-go); the source is in [polytypo/polytypo-go](https://github.com/polytypo/polytypo-go). It claims spec {{claimed_spec}}. The `text`, `html` and `yaml` modes are fully conformant. The `markdown` mode covers the `commonmark` dialect (CommonMark plus GFM); `mdx` returns `CodeInvalidDialect`, because no MDX parser is available for this runtime.
 
 ## Install
 
@@ -117,7 +117,7 @@ She said, "it's fine" -- but I wasn't sure...
 
 ## Conformance
 
-Spec 1.8.0. Modes: `text`, `html`, `yaml`, and `markdown` with `Dialect: "commonmark"`. `Dialect: "mdx"` returns `CodeInvalidDialect`. All nine rules. See [spec/CONFORMANCE.md](https://github.com/polytypo/polytypo/blob/main/spec/CONFORMANCE.md).
+Spec {{claimed_spec}}. Modes: `text`, `html`, `yaml`, and `markdown` with `Dialect: "commonmark"`. `Dialect: "mdx"` returns `CodeInvalidDialect`. All {{rules_count}} rules. See [spec/CONFORMANCE.md](https://github.com/polytypo/polytypo/blob/main/spec/CONFORMANCE.md).
 
 ## Related
 

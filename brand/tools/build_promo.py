@@ -640,6 +640,22 @@ def _runtime_status():
     return {rt["name"]: rt for rt in status["runtimes"]}
 
 
+# docs/runtimes/<tail> page -> runtime "name" in conformance-status.json, for {{claimed_spec}}.
+_RUNTIME_PAGE_STATUS_NAME = {
+    "javascript": "JavaScript/TypeScript",
+    "python": "Python",
+    "go": "Go",
+    "ruby": "Ruby",
+    "php": "PHP",
+}
+
+
+def claimed_spec_version(slug):
+    """The spec version a runtime claims, for its own docs/runtimes/ page; "" elsewhere."""
+    name = _RUNTIME_PAGE_STATUS_NAME.get(slug.rsplit("/", 1)[-1]) if slug.startswith("docs/runtimes/") else None
+    return _runtime_status()[name]["specVersion"] if name else ""
+
+
 def _badge_shield_url(package_url):
     for host, shield in _BADGE_SHIELD.items():
         if host in package_url:
@@ -1480,7 +1496,7 @@ def doc_page_body(page, prefix, replacements):
         f'<p class="doc-lead">{H.escape(page["description"])}</p>{updated_html()}{runtime_badges_row(page["slug"])}{content}'
         f'<nav class="doc-pager" aria-label="Pager">{"".join(pager)}</nav></article>{toc}</div>'
     )
-    for key, val in replacements.items():
+    for key, val in {**replacements, "{{claimed_spec}}": claimed_spec_version(page["slug"])}.items():
         html = html.replace(key, val)
     return html
 

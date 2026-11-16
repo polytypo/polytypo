@@ -6,7 +6,7 @@ section: runtimes
 order: 40
 ---
 
-The Ruby gem is [`polytypo`](https://rubygems.org/gems/polytypo); the source is in [polytypo/polytypo-ruby](https://github.com/polytypo/polytypo-ruby). It claims spec 1.8.0 and needs Ruby 3.2 or later. The `text`, `html` and `yaml` modes are fully conformant. The `markdown` mode covers the `commonmark` dialect (CommonMark plus GFM, through the `commonmarker` gem); `dialect: "mdx"` raises `POLYTYPO_INVALID_DIALECT`, because no MDX parser is available for this runtime.
+The Ruby gem is [`polytypo`](https://rubygems.org/gems/polytypo); the source is in [polytypo/polytypo-ruby](https://github.com/polytypo/polytypo-ruby). It claims spec {{claimed_spec}} and needs Ruby 3.2 or later. The `text`, `html` and `yaml` modes are fully conformant. The `markdown` mode covers the `commonmark` dialect (CommonMark plus GFM, through the `commonmarker` gem); `dialect: "mdx"` raises `POLYTYPO_INVALID_DIALECT`, because no MDX parser is available for this runtime.
 
 ## Install
 
@@ -109,7 +109,7 @@ She said, "it's fine" -- but I wasn't sure...
 
 ## Conformance
 
-Spec 1.8.0. Modes: `text`, `html`, `yaml`, and `markdown` with `dialect: "commonmark"`. `dialect: "mdx"` raises `POLYTYPO_INVALID_DIALECT`. All nine rules. See [spec/CONFORMANCE.md](https://github.com/polytypo/polytypo/blob/main/spec/CONFORMANCE.md).
+Spec {{claimed_spec}}. Modes: `text`, `html`, `yaml`, and `markdown` with `dialect: "commonmark"`. `dialect: "mdx"` raises `POLYTYPO_INVALID_DIALECT`. All {{rules_count}} rules. See [spec/CONFORMANCE.md](https://github.com/polytypo/polytypo/blob/main/spec/CONFORMANCE.md).
 
 ## Related
 

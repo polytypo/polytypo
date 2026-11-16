@@ -6,7 +6,7 @@ section: runtimes
 order: 10
 ---
 
-The JavaScript/TypeScript package is published on npm as [`polytypo`](https://www.npmjs.com/package/polytypo); the source is in [polytypo/polytypo-js](https://github.com/polytypo/polytypo-js). It claims spec 1.8.0 and covers every mode, both Markdown dialects, all nine rules and all nineteen locales. It ships ESM and CommonJS builds with type declarations, and requires Node 20 or later.
+The JavaScript/TypeScript package is published on npm as [`polytypo`](https://www.npmjs.com/package/polytypo); the source is in [polytypo/polytypo-js](https://github.com/polytypo/polytypo-js). It claims spec {{claimed_spec}} and covers every mode, both Markdown dialects, all {{rules_count}} rules and all {{locale_count}} locales. It ships ESM and CommonJS builds with type declarations, and requires Node 20 or later.
 
 ## Install
 
@@ -126,7 +126,7 @@ She said, "it's fine" -- but I wasn't sure...
 
 ## Conformance
 
-The package passes the conformance suite for spec 1.8.0. Modes: `text`, `html`, `markdown` (dialects `commonmark` and `mdx`) and `yaml`. Rules: all nine. The matrix for every runtime is [spec/CONFORMANCE.md](https://github.com/polytypo/polytypo/blob/main/spec/CONFORMANCE.md).
+The package passes the conformance suite for spec {{claimed_spec}}. Modes: `text`, `html`, `markdown` (dialects `commonmark` and `mdx`) and `yaml`. Rules: all {{rules_count}}. The matrix for every runtime is [spec/CONFORMANCE.md](https://github.com/polytypo/polytypo/blob/main/spec/CONFORMANCE.md).
 
 ## Related
 

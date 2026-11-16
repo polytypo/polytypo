@@ -86,3 +86,28 @@ describe("documentation pages", () => {
     for (const slug of slugs) expect(hub).toContain(`href="../docs/${slug}/"`);
   });
 });
+
+describe("runtime pages — conformance claim is generated", () => {
+  const status = JSON.parse(
+    readFileSync(path.join(ROOT, "scripts/conformance-status.json"), "utf8"),
+  ) as {
+    runtimes: { name: string; specVersion: string }[];
+  };
+  const pages: Record<string, string> = {
+    javascript: "JavaScript/TypeScript",
+    python: "Python",
+    go: "Go",
+    ruby: "Ruby",
+    php: "PHP",
+  };
+
+  for (const [slug, name] of Object.entries(pages)) {
+    it(`${slug} states the spec version it claims`, () => {
+      const html = read(`runtimes/${slug}`);
+      const claimed = status.runtimes.find((r) => r.name === name)?.specVersion;
+      expect(claimed).toBeTruthy();
+      expect(html).toContain(`pec ${claimed}`);
+      expect(html).not.toMatch(/\{\{[a-zA-Z_]+\}\}/);
+    });
+  }
+});

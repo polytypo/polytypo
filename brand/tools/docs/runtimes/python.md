@@ -6,7 +6,7 @@ section: runtimes
 order: 20
 ---
 
-The Python package is published on PyPI as [`polytypo`](https://pypi.org/project/polytypo/); the source is in [polytypo/polytypo-python](https://github.com/polytypo/polytypo-python). It claims spec 1.8.0. The `text`, `html` and `yaml` modes are fully conformant. The `markdown` mode covers the `commonmark` dialect; `dialect="mdx"` raises `POLYTYPO_INVALID_DIALECT`, because no MDX parser is available for this runtime.
+The Python package is published on PyPI as [`polytypo`](https://pypi.org/project/polytypo/); the source is in [polytypo/polytypo-python](https://github.com/polytypo/polytypo-python). It claims spec {{claimed_spec}}. The `text`, `html` and `yaml` modes are fully conformant. The `markdown` mode covers the `commonmark` dialect; `dialect="mdx"` raises `POLYTYPO_INVALID_DIALECT`, because no MDX parser is available for this runtime.
 
 ## Install
 
@@ -112,7 +112,7 @@ She said, "it's fine" -- but I wasn't sure...
 
 ## Conformance
 
-Spec 1.8.0. Modes: `text`, `html`, `yaml`, and `markdown` with `dialect="commonmark"` (CommonMark plus GFM: tables, strikethrough, task lists, autolink literals). `markdown` with `dialect="mdx"` raises `POLYTYPO_INVALID_DIALECT`. All nine rules. See [spec/CONFORMANCE.md](https://github.com/polytypo/polytypo/blob/main/spec/CONFORMANCE.md).
+Spec {{claimed_spec}}. Modes: `text`, `html`, `yaml`, and `markdown` with `dialect="commonmark"` (CommonMark plus GFM: tables, strikethrough, task lists, autolink literals). `markdown` with `dialect="mdx"` raises `POLYTYPO_INVALID_DIALECT`. All {{rules_count}} rules. See [spec/CONFORMANCE.md](https://github.com/polytypo/polytypo/blob/main/spec/CONFORMANCE.md).
 
 ## Related
 

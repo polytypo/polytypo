@@ -6,7 +6,7 @@ section: concepts
 order: 50
 ---
 
-`transform` needs exactly one locale, named by the required `locale` option. Resolution turns the tag you pass into one of the nineteen supported locales, or throws `POLYTYPO_UNKNOWN_LOCALE`. There is no default locale, and no fallback to English or to any "nearest" language.
+`transform` needs exactly one locale, named by the required `locale` option. Resolution turns the tag you pass into one of the {{locale_count}} supported locales, or throws `POLYTYPO_UNKNOWN_LOCALE`. There is no default locale, and no fallback to English or to any "nearest" language.
 
 The algorithm is specified in the spec and is the same in all five runtimes. It does not use the platform's locale-negotiation library, because those libraries disagree with each other and will return a best guess for a language the tool has never heard of. Applying Finnish rules to a Portuguese text silently is worse than an error.
 
