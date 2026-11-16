@@ -1,6 +1,9 @@
-"""The one order every list of locales on this site, README and generated file uses.
+"""The two orders every list of locales on this site, README and generated file uses.
 
-Alphabetical by the locale's English `name` in spec/locales/<code>.json, case-insensitive, with the
+A list that shows the locale's NAME is alphabetical by name; a list whose label is the CODE is
+alphabetical by code (`sort_key_by_code`). Both rules below.
+
+By name: alphabetical by the locale's English `name` in spec/locales/<code>.json, case-insensitive, with the
 code as tie-breaker. "French" sorts before "French (Canada)", "German (Germany)" before
 "German (Switzerland)". The registry's own order (spec/locales/registry.json) is the spec's and
 is left alone; this order is applied where a list is presented.
@@ -26,3 +29,11 @@ def sort_key(code):
 
 def sorted_codes(codes):
     return sorted(codes, key=sort_key)
+
+
+def sort_key_by_code(code):
+    return code.casefold()
+
+
+def sorted_by_code(codes):
+    return sorted(codes, key=sort_key_by_code)

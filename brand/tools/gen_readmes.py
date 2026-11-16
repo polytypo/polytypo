@@ -13,7 +13,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from locale_order import sorted_codes  # noqa: E402
+from locale_order import sorted_codes, sorted_by_code  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
@@ -136,10 +136,11 @@ def hero_block():
 def locale_table():
     rows = ["| Locale | Language | Primary quotes | Secondary | Parenthetical dash | Range |",
             "| --- | --- | --- | --- | --- | --- |"]
-    # Same rule as the hero table above: a locale that exists in the spec but not yet in any
+    # Same rule as the hero table above, except that this one leads with the code, so it runs by
+    # code: a locale that exists in the spec but not yet in any
     # published runtime is not listed as available. It appears here the moment the bumped
     # devDependency can run it, with no edit to this file.
-    for code in [c for c in sorted_codes(REGISTRY["locales"]) if c in HERO]:
+    for code in [c for c in sorted_by_code(REGISTRY["locales"]) if c in HERO]:
         d = LOCALE_DATA[code]
         q, s = d["quotes"]["primary"], d["quotes"]["secondary"]
         inner = {"none": "", "nbsp": " + U+00A0", "narrow-nbsp": " + U+202F"}[q["innerSpace"]]

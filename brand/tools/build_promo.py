@@ -31,7 +31,7 @@ PROMO_SRC = os.path.join(HERE, "promo")
 sys.path.insert(0, HERE)
 from build_brandbook import fonts_css, inline  # noqa: E402
 import docs_md  # noqa: E402
-from locale_order import sort_key as locale_sort_key
+from locale_order import sort_key as locale_sort_key, sort_key_by_code
 from doc_search import SEARCH_BUTTON, SEARCH_DIALOG, search_script  # noqa: E402
 import gen_locale_pages  # noqa: E402
 
@@ -118,7 +118,8 @@ def verify_primary_sources(codes):
 
 def coverage_rows(data):
     """One <tr> per shipped locale, from the spec's own data."""
-    codes = [loc["locale"] for loc in data["locales"]]
+    # The code is the first column, so the rows run by code.
+    codes = sorted((loc["locale"] for loc in data["locales"]), key=sort_key_by_code)
     verify_primary_sources(codes)
     rows = []
     for code in codes:
@@ -1744,7 +1745,7 @@ def write_llms_txt(out_dir, data):
     covers AI crawlers (no per-agent rule is needed); this file is what gives one a structured
     summary instead of making it parse five HTML pages to find the same links."""
     n = len(data["locales"])
-    locale_list = ", ".join(loc["locale"] for loc in data["locales"])
+    locale_list = ", ".join(sorted((loc["locale"] for loc in data["locales"]), key=sort_key_by_code))
     rule_ids = ", ".join(r["id"] for r in _ORDER["rules"])
     # Mode ids in the spec's own order, taken from the rules' `modes` arrays rather than a literal
     # list here, so a mode added to the spec appears without editing this file.

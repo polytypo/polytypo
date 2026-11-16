@@ -85,34 +85,34 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | Locale | Language | Primary quotes | Secondary | Parenthetical dash | Range |
 | --- | --- | --- | --- | --- | --- |
 | `bg` | Bulgarian | „…“ | „…“ | en dash, spaced | en dash, spaced |
-| `hr` | Croatian | „…” | ‘…’ | en dash, spaced | en dash, spaced |
 | `cs` | Czech | „…“ | ‚…‘ | en dash, spaced | en dash, unspaced |
 | `da` | Danish | »…« | ›…‹ | en dash, spaced | unchanged |
-| `nl` | Dutch | “…” | ‘…’ | en dash, spaced | unchanged |
+| `de-CH` | German (Switzerland) | «…» | ‹…› | en dash, spaced | en dash, unspaced |
+| `de-DE` | German (Germany) | „…“ | ‚…‘ | en dash, spaced | en dash, unspaced |
+| `el` | Greek | «…» | “…” | em dash, spaced outside the pair | unchanged |
 | `en-GB` | English (United Kingdom) | ‘…’ | “…” | en dash, spaced | en dash, unspaced |
 | `en-US` | English (United States) | “…” | ‘…’ | em dash, unspaced | en dash, unspaced |
+| `es` | Spanish | «…» | “…” | em dash, spaced outside the pair | unchanged |
 | `et` | Estonian | „…“ | „…“ | en dash, spaced | en dash, unspaced |
 | `fi` | Finnish | ”…” | ’…’ | en dash, spaced | en dash, unspaced |
-| `fr-CA` | French (Canada) | «…» + U+00A0 | “…” | em dash, spaced | unchanged |
 | `fr` | French (France) | «…» + U+00A0 | “…” | em dash, spaced | unchanged |
-| `de-DE` | German (Germany) | „…“ | ‚…‘ | en dash, spaced | en dash, unspaced |
-| `de-CH` | German (Switzerland) | «…» | ‹…› | en dash, spaced | en dash, unspaced |
-| `el` | Greek | «…» | “…” | em dash, spaced outside the pair | unchanged |
+| `fr-CA` | French (Canada) | «…» + U+00A0 | “…” | em dash, spaced | unchanged |
+| `hr` | Croatian | „…” | ‘…’ | en dash, spaced | en dash, spaced |
 | `hu` | Hungarian | „…” | »…« | en dash, spaced | en dash, unspaced |
 | `it` | Italian | «…» | “…” | em dash, spaced | unchanged |
-| `lv` | Latvian | “…” | “…” | en dash, spaced | en dash, unspaced |
 | `lt` | Lithuanian | „…“ | „…“ | en dash, spaced | en dash, unspaced |
+| `lv` | Latvian | “…” | “…” | en dash, spaced | en dash, unspaced |
 | `nb` | Norwegian Bokmål | «…» | ‘…’ | en dash, spaced | en dash, unspaced |
+| `nl` | Dutch | “…” | ‘…’ | en dash, spaced | unchanged |
 | `nn` | Norwegian Nynorsk | «…» | ‘…’ | en dash, spaced | en dash, unspaced |
 | `pl` | Polish | „…” | »…« | en dash, spaced | en dash, unspaced |
 | `pt-BR` | Portuguese (Brazil) | “…” | ‘…’ | en dash, spaced | unchanged |
 | `pt-PT` | Portuguese (Portugal) | «…» | “…” | em dash, spaced | unchanged |
 | `ro` | Romanian | „…” | «…» | en dash, spaced | unchanged |
 | `ru` | Russian | «…» | „…“ | em dash, spaced | em dash, unspaced |
-| `sr` | Serbian | „…” | ’…’ | en dash, spaced | en dash, unspaced |
 | `sk` | Slovak | „…“ | ‚…‘ | en dash, spaced | en dash, spaced |
 | `sl` | Slovenian | »…« | ›…‹ | en dash, spaced | en dash, unspaced |
-| `es` | Spanish | «…» | “…” | em dash, spaced outside the pair | unchanged |
+| `sr` | Serbian | „…” | ’…’ | en dash, spaced | en dash, unspaced |
 | `sv` | Swedish | ”…” | ’…’ | en dash, spaced | en dash, unspaced |
 | `tr` | Turkish | “…” | ‘…’ | unchanged | unchanged |
 | `uk` | Ukrainian | «…» | “…” | em dash, spaced | em dash, unspaced |
