@@ -89,6 +89,7 @@ PRIMARY_SOURCES = {
     "da": "Dansk Sprognævn, Retskrivningsreglerne",
     "nb": "Språkrådet",
     "nn": "Språkrådet",
+    "sq": "Akademia e Shkencave e Shqipërisë, Rregullat e pikësimit në gjuhën shqipe",
 }
 
 
@@ -1860,6 +1861,7 @@ BADGE_TEXT = {
     "da": "Typografisk oprydning med <b>polytypo</b>",
     "nb": "Typografisk opprydding med <b>polytypo</b>",
     "nn": "Typografisk opprydding med <b>polytypo</b>",
+    "sq": "Pastrim tipografik me <b>polytypo</b>",
     "it": "Pulizia tipografica con <b>polytypo</b>",
     "pl": "Typograficzne porządki dzięki <b>polytypo</b>",
     "pt": "Limpeza tipográfica por <b>polytypo</b>",
@@ -1891,6 +1893,7 @@ BADGE_LANG_NAMES = {
     "da": "Danish",
     "nb": "Norwegian Bokmål",
     "nn": "Norwegian Nynorsk",
+    "sq": "Albanian",
     "it": "Italian",
     "pl": "Polish",
     "pt": "Portuguese",

@@ -1,5 +1,5 @@
 {
-  "spec": "1.28.0",
+  "spec": "1.29.0",
   "cases": [
     {
       "id": "exact-en-us",
@@ -318,6 +318,18 @@
       "tag": "nn-NO",
       "resolves": "nn",
       "note": "section 3.4 step 3a: the region strip reaches nn, which needs no registry alias."
+    },
+    {
+      "id": "strip-sq-al",
+      "tag": "sq-AL",
+      "resolves": "sq",
+      "note": "section 3.4 step 3a: the region strip reaches sq, which needs no registry alias."
+    },
+    {
+      "id": "strip-sq-xk",
+      "tag": "sq-XK",
+      "resolves": "sq",
+      "note": "section 3.4 step 3a: the region strip reaches sq, which needs no registry alias."
     },
     {
       "id": "alias-no",

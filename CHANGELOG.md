@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.28.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.28.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.29.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.29.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,14 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.29.0 — 16 November 2026
+
+Albanian joins as the thirty-third locale, cited to the Academy of Sciences of Albania.
+
+- Albanian ships as `sq`. Until now `sq` was refused with `POLYTYPO_UNKNOWN_LOCALE`, so the text had to go through another locale. Measured: `Ai tha: "Shkova - gati 3 km - në shtëpi dhe bleva 2 kg" dhe iku.` came back from `en-GB` as `Ai tha: ‘Shkova – gati 3 km – në shtëpi dhe bleva 2 kg’ dhe iku.`, with the quotation in single marks. `sq` gives `Ai tha: “Shkova – gati 3 km – në shtëpi dhe bleva 2 kg” dhe iku.`, with double marks, and single marks for a quotation inside a quotation.
+- The data is cited to the Academy of Sciences of Albania: its punctuation rules (2002) call the high marks `“…”` and the low marks `«…»` equal in use and name the high ones as more common on a computer, so `sq` pins `“…”`. The dash around an inserted clause is spaced, and `sq` writes it as an en dash. The Academy's spelling rules (1973) keep `km`, `kg`, `cm`, `dm`, `ha` and `km²` together with the number, so `sq` turns the space before them into a no-break space. It neither adds nor removes a space, and `%` and `‰` are left as typed. The paragraph sign `§` stays with its number.
+- Ranges are not converted for `sq`: the 1973 spelling rules ask for a long dash in time spans and a hyphen in approximate quantities and numbers such as `5-6 ditë`, and the range rule cannot tell the two apart, so `1939-1944` stays as typed. Pass `sq` or a region form such as `sq-AL` or `sq-XK`.
 
 ## 1.28.0 — 15 November 2026
 

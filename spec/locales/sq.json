@@ -1,0 +1,85 @@
+{
+  "locale": "sq",
+  "name": "Albanian",
+  "quotes": {
+    "primary": {
+      "open": "“",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "‘",
+      "close": "’",
+      "innerSpace": "none"
+    },
+    "punctuationPlacement": "none",
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": []
+    }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "none"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": [],
+    "beforeUnits": ["km", "kg", "cm", "dm", "ha", "km²"],
+    "spacedUnits": [],
+    "closedUnits": [],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": ["§"],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Akademia e Shkencave e Shqipërisë, Instituti i Gjuhësisë dhe i Letërsisë, «Rregullat e pikësimit në gjuhën shqipe» (Shkenca, Tiranë 2002), ch. 8 «Thonjëzat», footnote p. 88: «Thonjëzat mund të realizohen grafikisht në dy forma që nuk paraqesin ndonjë ndryshim në përdorim. Thonjëzat e larta (“ ”) të quajtura dhe angleze, janë më të zakonshme në kompjuter. Thonjëzat e ulta (« ») të quajtura edhe franceze janë më pak të përdorshme»; §150 Shënim 2: «Duhet të përdoren edhe thonjëzat njëshe, në qoftë se përdoren thonjëzat brenda një teksti të mbyllur në thonjëza»; §175: «Nuk lihen hapësira të bardha midis thonjëzave dhe tekstit të futur brenda tyre»; §145 Shënim 2 and §150 Shënim 1 (full stop inside only when the quoted part is a syntactically independent sentence)",
+      "url": "https://archive.org/download/rregullat-e-pikesimit-ne-gjuhen-shqipe-akademia-e-shkencave-e-shqiperise-2002/Rregullat%20e%20pik%C3%ABsimit%20n%C3%AB%20gjuh%C3%ABn%20shqipe%2C%20Akademia%20e%20Shkencave%20e%20Shqip%C3%ABris%C3%AB%20%282002%29.pdf",
+      "note": "PICK-AND-PIN: “…” (U+201C, U+201D) with ‘…’ (U+2018, U+2019) inside. The source calls both forms equal in use and names the high marks the more common on a computer; every example in §§145–153 uses them. «…» (U+00AB, U+00BB) is the permitted, less used form, and the 1973 Drejtshkrimi uses it in its examples. »…« is not attested in any source read. innerSpace none. punctuationPlacement none: placement follows meaning, per §145 Shënim 2 and §150 Shënim 1. elisionIdioms and elisionClitics empty: not addressed. Read 2026-11-16 from archive.org page images of the scan."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), §165: «Viza përdoret për të veçuar fjalitë e ndërkallura»; §175: «Vizat paraprihen dhe ndiqen gjithmonë nga një hapësirë e bardhë: tekst – fjali e ndërkallur – tekst»",
+      "url": "https://archive.org/download/rregullat-e-pikesimit-ne-gjuhen-shqipe-akademia-e-shkencave-e-shqiperise-2002/Rregullat%20e%20pik%C3%ABsimit%20n%C3%AB%20gjuh%C3%ABn%20shqipe%2C%20Akademia%20e%20Shkencave%20e%20Shqip%C3%ABris%C3%AB%20%282002%29.pdf",
+      "note": "dash.parenthetical = en-spaced (U+0020 U+2013 U+0020). The spacing is normative. The code point is PICK-AND-PIN: both sources call the dash «viza e gjatë» (2002 §163 and p. 109; 1973 §69), which sets it against the hyphen, «vizë lidhëse», and does not name en or em; the 2002 rules print it short throughout (heading «10. VIZA (–)») and the 1973 Drejtshkrimi prints it long. U+2013 is pinned. Read 2026-11-16 from archive.org page images of the scan."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Akademia e Shkencave e RP të Shqipërisë, Instituti i Gjuhësisë dhe i Letërsisë, «Drejtshkrimi i gjuhës shqipe» (Tiranë 1973), §69 b): «Shkruhen me vizë të gjatë në mes tyre: … numërorët që shënojnë caqet e një hapësire kohore: periudha 1939—1944»; §68 a): approximate quantities take a hyphen, «10-15 vjet», «5-6 ditë»; §68 i): «27-51, 25-09»",
+      "url": "https://www.klasaletersi.com/wp-content/uploads/2017/03/Drejtshrimi-i-gjuh%C3%ABs-shqipe-1973.pdf",
+      "note": "dash.range = none. The source asks for a long dash in time spans and for a hyphen in approximate quantities and number groups of the same shape («5-6 ditë», «27-51»); the ranges rule reads only code points and cannot tell them apart, so converting would break the second norm. Read 2026-11-16 from the scan."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), ch. 7: «Shumëpikëshi është shenjë pikësimi e përbërë prej tri pikash të njëpasnjëshme»; §175: «… tre pikat vijnë menjëherë pas shkronjës së fundit»; §140 example «të mykura?...»",
+      "url": "https://archive.org/download/rregullat-e-pikesimit-ne-gjuhen-shqipe-akademia-e-shkencave-e-shqiperise-2002/Rregullat%20e%20pik%C3%ABsimit%20n%C3%AB%20gjuh%C3%ABn%20shqipe%2C%20Akademia%20e%20Shkencave%20e%20Shqip%C3%ABris%C3%AB%20%282002%29.pdf",
+      "note": "abbreviatedAfterTerminal = false: the example keeps three dots after a question mark. Read 2026-11-16 from archive.org page images of the scan."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Akademia e Shkencave e RP të Shqipërisë, «Drejtshkrimi i gjuhës shqipe» (1973), §99 b): ordinal suffixes after Arabic numerals and endings written with a hyphen are not divided at line end («Kongresi i 6-të», «SMT-ja, PTT-së, TEC-it»)",
+      "url": "https://www.klasaletersi.com/wp-content/uploads/2017/03/Drejtshrimi-i-gjuh%C3%ABs-shqipe-1973.pdf",
+      "note": "All three lists are empty: the constraint cannot be expressed, because a hyphen-rule suffix must follow a letter while here it follows a digit or an open set of abbreviations. The source is not silent. Read 2026-11-16 from the scan."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Akademia e Shkencave e RP të Shqipërisë, «Drejtshkrimi i gjuhës shqipe» (1973), §99 ç): «Nuk ndahen në fund të rreshtit: … shkurtimet e njësive të masave dhe shenjat e përqindjes e të përmijës nga shifra që u prin: … 35 cm, 50 dm, 40 km, 28 800 km², 90 ha, 3 m³, 200 g, 35 kg, 70 kv, 2 l; 100%, 112%, 30‰»; §99 d): «shenja e paragrafit dhe numri e shkronja që vijnë pas saj … : § 12»; note on p. 132: «Shenjat % (për qind) dhe ‰ (për mijë) mund të përdoren vetëm pas një numri të shënuar me shifra: 5%, 90%, 80‰»",
+      "url": "https://www.klasaletersi.com/wp-content/uploads/2017/03/Drejtshrimi-i-gjuh%C3%ABs-shqipe-1973.pdf",
+      "note": "beforeUnits = km kg cm dm ha km²; afterSymbols = §. That a measure abbreviation does not break from the number before it is normative (§99 ç)); the units are therefore bound with U+00A0 where a space is already written. Whether the separator must be inserted or deleted is not stated: the examples print measures spaced and % ‰ closed up, which is typesetting, not a rule, so spacedUnits and closedUnits are empty and % ‰ are not listed. Single-letter units (g, l) and m³ are excluded (nbsp.md §3.7); kv is not listed. Currency (€, lekë) and °C are not addressed. beforePunctuation, abbreviations and the other lists are empty, initialBinding is none. Read 2026-11-16 from the scan."
+    }
+  ]
+}

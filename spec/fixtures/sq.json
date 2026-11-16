@@ -1,0 +1,255 @@
+{
+  "spec": "1.29.0",
+  "locale": "sq",
+  "cases": [
+    {
+      "id": "sq-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ai tha: \"Jam i lodhur.\" dhe iku.",
+      "out": "Ai tha: “Jam i lodhur.” dhe iku.",
+      "note": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), ch. 8 footnote: “…” is the pinned primary form; the full stop of a quotation that is an independent sentence stays inside (§145 Shënim 2)."
+    },
+    {
+      "id": "sq-quotes-nested-secondary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ai tha: \"Ajo tha 'po' mua\" dhe iku.",
+      "out": "Ai tha: “Ajo tha ‘po’ mua” dhe iku.",
+      "note": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), §150 Shënim 2: a quotation inside a quotation takes single marks; ‘…’ is the pin."
+    },
+    {
+      "id": "sq-quotes-nested-at-end",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ai tha: \"Ajo tha 'po'\" dhe iku.",
+      "out": "Ai tha: “Ajo tha ‘po’” dhe iku.",
+      "note": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), §150 Shënim 2: a nest that ends against the outer closer is still paired."
+    },
+    {
+      "id": "sq-quotes-already-typeset",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ai tha “po” dhe iku.",
+      "out": "Ai tha “po” dhe iku.",
+      "note": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), ch. 8 footnote: text already carrying “…” is a fixed point."
+    },
+    {
+      "id": "sq-quotes-already-typeset-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ai tha “ajo tha ‘po’ mua” dhe iku.",
+      "out": "Ai tha “ajo tha ‘po’ mua” dhe iku.",
+      "note": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), §150 Shënim 2: already-typeset nesting is a fixed point."
+    },
+    {
+      "id": "sq-quotes-french-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ai tha «po» dhe iku.",
+      "out": "Ai tha “po” dhe iku.",
+      "note": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), ch. 8 footnote: «…» is the permitted, less used form; the pin normalises it to “…”."
+    },
+    {
+      "id": "sq-quotes-low-high-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ai tha „po“ dhe iku.",
+      "out": "Ai tha “po” dhe iku.",
+      "note": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), ch. 8: „…“ is not among the forms the source gives; it is normalised to the pinned pair."
+    },
+    {
+      "id": "sq-quotes-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ai tha: \" po \" dhe iku.",
+      "out": "Ai tha: “po” dhe iku.",
+      "note": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), §175: «Nuk lihen hapësira të bardha midis thonjëzave dhe tekstit futur brenda tyre»; innerSpace none."
+    },
+    {
+      "id": "sq-quotes-question-inside",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "\"Pse?\" pyeti ai.",
+      "out": "“Pse?” pyeti ai.",
+      "note": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), §145 Shënim 2 and §150 Shënim 1: punctuation placement follows meaning; a question mark that belongs to the quotation stays inside."
+    },
+    {
+      "id": "sq-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Prit... pastaj.",
+      "out": "Prit… pastaj.",
+      "note": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), ch. 7: the ellipsis is three consecutive dots; the engine sets them as one U+2026."
+    },
+    {
+      "id": "sq-ellipsis-before-question",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "A është kjo...?",
+      "out": "A është kjo…?",
+      "note": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), §140 example «të mykura?...»: three dots stay with the terminal mark; abbreviatedAfterTerminal is false."
+    },
+    {
+      "id": "sq-ellipsis-before-exclamation",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Çfarë tani...!",
+      "out": "Çfarë tani…!",
+      "note": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), ch. 7: abbreviatedAfterTerminal is false; the dots are kept before «!»."
+    },
+    {
+      "id": "sq-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Libri - botuar para luftës - është i mirë.",
+      "out": "Libri – botuar para luftës – është i mirë.",
+      "note": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), §175: «Vizat paraprihen dhe ndiqen gjithmonë nga një hapësirë e bardhë»; U+2013 is the pin."
+    },
+    {
+      "id": "sq-dashes-em-input",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Libri — botuar para luftës — është i mirë.",
+      "out": "Libri – botuar para luftës – është i mirë.",
+      "note": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), §165 and §175: an em dash typed as the inserted-clause dash is normalised to the pinned spaced en dash."
+    },
+    {
+      "id": "sq-dashes-existing-en",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Libri – botuar para luftës – është i mirë.",
+      "out": "Libri – botuar para luftës – është i mirë.",
+      "note": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), §175: already-typeset spaced en dashes are a fixed point."
+    },
+    {
+      "id": "sq-ranges-none-hyphen-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "vitet 1939-1944",
+      "out": "vitet 1939-1944",
+      "note": "Akademia e Shkencave e RP të Shqipërisë, «Drejtshkrimi i gjuhës shqipe» (1973), §68 and §69 disagree on one shape (hyphen for approximations and numbers, long dash for time spans); ranges.md §2: dash.range \"none\" disables the rule, so the hyphen is left as typed.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "sq-ranges-none-approximate-quantity",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "për 5-6 ditë",
+      "out": "për 5-6 ditë",
+      "note": "Akademia e Shkencave e RP të Shqipërisë, «Drejtshkrimi i gjuhës shqipe» (1973), §68 a): a hyphen marks an approximate quantity; ranges.md §2: dash.range \"none\" leaves it untouched.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "sq-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "e-mail dhe 50-vjetor dhe A4-format",
+      "out": "e-mail dhe 50-vjetor dhe A4-format",
+      "note": "Akademia e Shkencave e RP të Shqipërisë, «Drejtshkrimi i gjuhës shqipe» (1973), §99 b): the line-break constraint is not expressible, so the hyphen lists are empty and the rule leaves the text unchanged."
+    },
+    {
+      "id": "sq-nbsp-units-bound",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Rruga është 3 km dhe 5 kg dhe 7 cm dhe 4 dm dhe 90 ha",
+      "out": "Rruga është 3 km dhe 5 kg dhe 7 cm dhe 4 dm dhe 90 ha",
+      "note": "Akademia e Shkencave e RP të Shqipërisë, «Drejtshkrimi i gjuhës shqipe» (1973), §99 ç): measure abbreviations do not break from the preceding number; beforeUnits binds the written space with U+00A0."
+    },
+    {
+      "id": "sq-nbsp-square-unit",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Sipërfaqja është 28 800 km² këtu",
+      "out": "Sipërfaqja është 28 800 km² këtu",
+      "note": "Akademia e Shkencave e RP të Shqipërisë, «Drejtshkrimi i gjuhës shqipe» (1973), §99 ç): «28 800 km²» is an example of a measure that does not break from its number."
+    },
+    {
+      "id": "sq-nbsp-unit-touching-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Rruga është 3km dhe 5kg",
+      "out": "Rruga është 3km dhe 5kg",
+      "note": "Akademia e Shkencave e RP të Shqipërisë, «Drejtshkrimi i gjuhës shqipe» (1973), §99 ç): the source states that the unit stays with the number, not whether a missing space is inserted; beforeUnits only converts a written space, so touching text is untouched."
+    },
+    {
+      "id": "sq-nbsp-percent-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Rritja është 100 % dhe 100% dhe 30‰ këtu",
+      "out": "Rritja është 100 % dhe 100% dhe 30‰ këtu",
+      "note": "Akademia e Shkencave e RP të Shqipërisë, «Drejtshkrimi i gjuhës shqipe» (1973), §99 ç) and p. 132: % and ‰ are printed closed up, which is typesetting and not a stated rule; neither is listed, so the text is untouched."
+    },
+    {
+      "id": "sq-nbsp-section-sign",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "shih § 12 dhe § 67",
+      "out": "shih § 12 dhe § 67",
+      "note": "Akademia e Shkencave e RP të Shqipërisë, «Drejtshkrimi i gjuhës shqipe» (1973), §99 d): the paragraph sign does not break from its number; afterSymbols binds it with U+00A0."
+    },
+    {
+      "id": "sq-nbsp-single-letter-unit-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Ka 5 m dhe 3 g dhe 2 l",
+      "out": "Ka 5 m dhe 3 g dhe 2 l",
+      "note": "nbsp.md §3.7: single-letter units cannot be told from words and are not listed; the text is untouched."
+    },
+    {
+      "id": "sq-nbsp-degree-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Sot 18 °C dhe 5 €",
+      "out": "Sot 18 °C dhe 5 €",
+      "note": "Akademia e Shkencave e RP të Shqipërisë, «Drejtshkrimi i gjuhës shqipe» (1973): neither °C nor a currency is addressed; the lists carry no entry and the text is untouched."
+    },
+    {
+      "id": "sq-spaces-before-punctuation",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Pse ? Jo !",
+      "out": "Pse? Jo!",
+      "note": "Locale-independent spaces rule: no sq-specific spacing before terminal marks is claimed."
+    },
+    {
+      "id": "sq-spaces-brackets",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Ai ( i qetë ) shkoi .",
+      "out": "Ai (i qetë) shkoi.",
+      "note": "Locale-independent spaces rule: no sq-specific bracket spacing is claimed."
+    },
+    {
+      "id": "sq-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "(c) 2026",
+      "out": "© 2026",
+      "note": "Locale-independent symbols rule."
+    },
+    {
+      "id": "sq-apostrophe-foreign-name",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "O'Brien erdhi.",
+      "out": "O’Brien erdhi.",
+      "note": "Locale-independent apostrophe rule: the straight apostrophe in a name becomes U+2019; elisionIdioms and elisionClitics are empty because the sources do not address them."
+    },
+    {
+      "id": "sq-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alfa “beta”, gamma",
+      "out": "alfa “beta”, gamma",
+      "note": "Akademia e Shkencave e Shqipërisë, «Rregullat e pikësimit në gjuhën shqipe» (2002), §145 Shënim 2 and §150 Shënim 1: placement follows meaning, so punctuationPlacement is none and the rule does not move the comma.",
+      "rules": {
+        "quote-punctuation": true
+      }
+    }
+  ]
+}
