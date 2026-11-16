@@ -10,11 +10,11 @@ files, plus **59** locale-resolution cases.
 
 | Runtime | Package | Spec version claimed | Status | Last verified |
 | --- | --- | --- | --- | --- |
-| [JavaScript/TypeScript](https://github.com/polytypo/polytypo-js) | [package](https://www.npmjs.com/package/polytypo) | 1.29.0 | ✅ conformant | 2026-11-16 |
-| [Python](https://github.com/polytypo/polytypo-python) | [package](https://pypi.org/project/polytypo/) | 1.29.0 | ✅ conformant | 2026-11-16 |
-| [Go](https://github.com/polytypo/polytypo-go) | [package](https://pkg.go.dev/github.com/polytypo/polytypo-go) | 1.29.0 | ✅ conformant | 2026-11-16 |
-| [Ruby](https://github.com/polytypo/polytypo-ruby) | [package](https://rubygems.org/gems/polytypo) | 1.29.0 | ✅ conformant | 2026-11-16 |
-| [PHP](https://github.com/polytypo/polytypo-php) | [package](https://packagist.org/packages/polytypo/polytypo) | 1.29.0 | ✅ conformant | 2026-11-16 |
+| [JavaScript/TypeScript](https://github.com/polytypo/polytypo-js) | [package](https://www.npmjs.com/package/polytypo) | 1.30.0 | ✅ conformant | 2026-11-17 |
+| [Python](https://github.com/polytypo/polytypo-python) | [package](https://pypi.org/project/polytypo/) | 1.30.0 | ✅ conformant | 2026-11-17 |
+| [Go](https://github.com/polytypo/polytypo-go) | [package](https://pkg.go.dev/github.com/polytypo/polytypo-go) | 1.30.0 | ✅ conformant | 2026-11-17 |
+| [Ruby](https://github.com/polytypo/polytypo-ruby) | [package](https://rubygems.org/gems/polytypo) | 1.30.0 | ✅ conformant | 2026-11-17 |
+| [PHP](https://github.com/polytypo/polytypo-php) | [package](https://packagist.org/packages/polytypo/polytypo) | 1.30.0 | ✅ conformant | 2026-11-17 |
 
 "Last verified" is the date a maintainer last observed that runtime's own CI green against the
 spec version it claims — not a live, automated signal.
