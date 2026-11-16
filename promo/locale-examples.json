@@ -1,6 +1,119 @@
 {
   "spec": "1.29.0",
   "locales": {
+    "sq": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "sq-quotes-primary",
+            "in": "Ai tha: \"Jam i lodhur.\" dhe iku.",
+            "out": "Ai tha: “Jam i lodhur.” dhe iku."
+          },
+          {
+            "id": "sq-quotes-nested-secondary",
+            "in": "Ai tha: \"Ajo tha 'po' mua\" dhe iku.",
+            "out": "Ai tha: “Ajo tha ‘po’ mua” dhe iku."
+          },
+          {
+            "id": "sq-quotes-nested-at-end",
+            "in": "Ai tha: \"Ajo tha 'po'\" dhe iku.",
+            "out": "Ai tha: “Ajo tha ‘po’” dhe iku."
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "sq-ellipsis-three-dots",
+            "in": "Prit... pastaj.",
+            "out": "Prit… pastaj."
+          },
+          {
+            "id": "sq-ellipsis-before-question",
+            "in": "A është kjo...?",
+            "out": "A është kjo…?"
+          },
+          {
+            "id": "sq-ellipsis-before-exclamation",
+            "in": "Çfarë tani...!",
+            "out": "Çfarë tani…!"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "sq-dashes-parenthetical",
+            "in": "Libri - botuar para luftës - është i mirë.",
+            "out": "Libri – botuar para luftës – është i mirë."
+          },
+          {
+            "id": "sq-dashes-em-input",
+            "in": "Libri — botuar para luftës — është i mirë.",
+            "out": "Libri – botuar para luftës – është i mirë."
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "sq-nbsp-units-bound",
+            "in": "Rruga është 3 km dhe 5 kg dhe 7 cm dhe 4 dm dhe 90 ha",
+            "out": "Rruga është 3 km dhe 5 kg dhe 7 cm dhe 4 dm dhe 90 ha"
+          },
+          {
+            "id": "sq-nbsp-square-unit",
+            "in": "Sipërfaqja është 28 800 km² këtu",
+            "out": "Sipërfaqja është 28 800 km² këtu"
+          },
+          {
+            "id": "sq-nbsp-section-sign",
+            "in": "shih § 12 dhe § 67",
+            "out": "shih § 12 dhe § 67"
+          }
+        ],
+        "spaces": [
+          {
+            "id": "sq-spaces-before-punctuation",
+            "in": "Pse ? Jo !",
+            "out": "Pse? Jo!"
+          },
+          {
+            "id": "sq-spaces-brackets",
+            "in": "Ai ( i qetë ) shkoi .",
+            "out": "Ai (i qetë) shkoi."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "sq-symbols-copyright",
+            "in": "(c) 2026",
+            "out": "© 2026"
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "sq-apostrophe-foreign-name",
+            "in": "O'Brien erdhi.",
+            "out": "O’Brien erdhi."
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Ajo pyeti: \"A nuk është ky dyqani që e quajnë 'në qoshe'?\" ... Ecëm - gati 3 km - dhe ishte mbyllur. Copyright (c) 2026, formati 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Ajo pyeti: “A nuk është ky dyqani që e quajnë ‘në qoshe’?” … Ecëm – gati 3 km – dhe ishte mbyllur. Copyright © 2026, formati 40×60 cm.\nsay(“a – b …”)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Ajo pyeti: \"A nuk është ky dyqani që e quajnë 'në qoshe'?\" ... Ecëm - gati 3 km - dhe ishte mbyllur. Copyright (c) 2026, formati 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Ajo pyeti: “A nuk është ky dyqani që e quajnë ‘në qoshe’?” … Ecëm – gati 3 km – dhe ishte mbyllur. Copyright © 2026, formati 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Ajo pyeti: \"A nuk është ky dyqani që e quajnë 'në qoshe'?\" ... Ecëm - gati 3 km - dhe ishte mbyllur. Copyright (c) 2026, formati 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Ajo pyeti: “A nuk është ky dyqani që e quajnë ‘në qoshe’?” … Ecëm – gati 3 km – dhe ishte mbyllur. Copyright © 2026, formati 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": ["sq-AL", "sq-XK"],
+      "disagreed": 0
+    },
     "bg": {
       "byRule": {
         "quotes": [

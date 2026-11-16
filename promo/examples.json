@@ -3,6 +3,35 @@
   "proofLocales": ["en-GB", "en-US", "fr", "de-DE", "de-CH", "ru"],
   "locales": [
     {
+      "locale": "sq",
+      "name": "Albanian",
+      "hero": {
+        "in": "Ajo pyeti: \"A nuk është ky dyqani që e quajnë 'në qoshe'?\" ... Ecëm - gati 3 km - dhe ishte mbyllur. Copyright (c) 2026, formati 40x60 cm.",
+        "out": "Ajo pyeti: “A nuk është ky dyqani që e quajnë ‘në qoshe’?” … Ecëm – gati 3 km – dhe ishte mbyllur. Copyright © 2026, formati 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Ai tha \"mirëdita\" dhe iku.",
+          "out": "Ai tha “mirëdita” dhe iku."
+        },
+        {
+          "rule": "dashes",
+          "in": "Libri - botuar para luftës - është i mirë.",
+          "out": "Libri – botuar para luftës – është i mirë."
+        },
+        {
+          "rule": "nbsp",
+          "in": "3 km dhe 90 ha",
+          "out": "3 km dhe 90 ha"
+        }
+      ]
+    },
+    {
       "locale": "bg",
       "name": "Bulgarian",
       "hero": {

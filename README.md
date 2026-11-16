@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.29.0** · locales: **32** · rules: **10**.
+Spec version: **1.29.0** · locales: **33** · rules: **10**.
 
 ## Implementations
 
@@ -45,6 +45,7 @@ Spec version: **1.29.0** · locales: **32** · rules: **10**.
 
 | Locale | Output |
 | --- | --- |
+| Albanian (`sq`) | Ajo pyeti: “A nuk është ky dyqani që e quajnë ‘në qoshe’?” … Ecëm – gati 3 km – dhe ishte mbyllur. Copyright © 2026, formati 40×60 cm. |
 | Bulgarian (`bg`) | Тя попита: „Не е ли това магазинът, който наричат „на ъгъла“?“ … Вървяхме – почти 3 км – и беше затворен. Copyright © 2026, формат 40×60 см. |
 | Croatian (`hr`) | Pitala je: „Nije li to dućan koji zovu ‘onaj na uglu’?” … Hodali smo – gotovo 3 km – i bio je zatvoren. Copyright © 2026, format 40×60 cm. |
 | Czech (`cs`) | Zeptal se: „Není to ten obchod, kterému říkají ‚ten za rohem‘?“ … Šli jsme – skoro 3 km – a byl zavřený. Copyright © 2026, formát 40×60 cm. |
@@ -112,6 +113,7 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | `ru` | Russian | «…» | „…“ | em dash, spaced | em dash, unspaced |
 | `sk` | Slovak | „…“ | ‚…‘ | en dash, spaced | en dash, spaced |
 | `sl` | Slovenian | »…« | ›…‹ | en dash, spaced | en dash, unspaced |
+| `sq` | Albanian | “…” | ‘…’ | en dash, spaced | unchanged |
 | `sr` | Serbian | „…” | ’…’ | en dash, spaced | en dash, unspaced |
 | `sv` | Swedish | ”…” | ’…’ | en dash, spaced | en dash, unspaced |
 | `tr` | Turkish | “…” | ‘…’ | unchanged | unchanged |
