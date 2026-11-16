@@ -19,7 +19,7 @@ step 9 with §3.8.5's content-line condition, added in 1.10.0, §3.8.4's carriag
 continuation line with the bails of §3.8.6 that use it, added in 1.11.0, and §3.8.4's node lines,
 declined keys, node markers and own-line region, with the changes to steps 1, 3, 4, 5, 6, 7 and 8
 that go with them, added in 1.11.0, and §3.9 with the amendments it carries to §3.1, §3.5 step 2,
-§4, §5, §7 item 7 and §8, added in 1.13.0, and §3.4's delimiter-neighbour rule with §3.7.3's autolink-literal tail, terminator guard and reference labels, and the amendments they carry to §3.4's deletion paragraph, §5 items 2 and 3, its fifth-part note and testing obligation, and §6, added in 1.17.2, and §3.4's escape-and-reference rule with the amendments it carries to §3.6, §3.7.3, §5 item 2's fifth-part note, §5 item 3 and the testing obligation, added in 1.17.4, and §3.4's bracket-shape rule, added in 1.17.5, and §3.6's whitespace-only text node rule, added in 1.23.0, and §3.6's ignored-tag rule, added in 1.23.1).
+§4, §5, §7 item 7 and §8, added in 1.13.0, and §3.4's delimiter-neighbour rule with §3.7.3's autolink-literal tail, terminator guard and reference labels, and the amendments they carry to §3.4's deletion paragraph, §5 items 2 and 3, its fifth-part note and testing obligation, and §6, added in 1.17.2, and §3.4's escape-and-reference rule with the amendments it carries to §3.6, §3.7.3, §5 item 2's fifth-part note, §5 item 3 and the testing obligation, added in 1.17.4, and §3.4's bracket-shape rule, added in 1.17.5, and §3.6's whitespace-only text node rule, added in 1.23.0, and §3.6's ignored-tag rule, added in 1.23.1, and §3.6's published list, added in 1.30.0).
 
 ---
 
@@ -586,6 +586,16 @@ Everything else is processable, **including unknown and custom elements** (`<my-
 guessing from its name is exactly the kind of heuristic that behaves differently in five
 runtimes. **The skip list is closed**: extending it is a spec change, not an implementation
 decision.
+
+**The list is published (since 1.30.0).** Every runtime exposes the ten element names above, as
+lowercase strings in the order the first bullet gives them, from its public API (from the `html`
+entry point, in a runtime that has one) as a constant a caller cannot modify: a frozen array, a tuple, a constant array, or, where the
+language has no immutable collection, a function that returns a fresh copy on each call. The
+mode's own membership test is built from this list, not from a second copy of it, and it is exactly §3.6's ten names: a
+caller that walks a document with its own parser (a `.tsx` file, a template) reads it to decide
+which elements to leave alone. How the constant is named follows each runtime's own conventions,
+and its README says where to find it. Nothing about the list changes: it stays closed, and the
+value moves only with a spec version.
 
 ### 3.7 Skip list — `markdown`
 

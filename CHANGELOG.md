@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.29.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.29.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.30.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.30.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,13 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.30.0 — 16 November 2026
+
+The list of HTML elements polytypo leaves alone is now available to your own code.
+
+- In `html` mode polytypo skips ten elements and everything inside them: `code`, `pre`, `kbd`, `samp`, `var`, `script`, `style`, `textarea`, `svg` and `math`. Until now, code that walked a document on its own, with its own parser, in a `.tsx` file or in a template, had to copy those names by hand and could not tell when they changed. All five packages now expose the same list, in the same order, as a value that cannot be modified: `SKIPPED_ELEMENTS` from `polytypo/html` in JavaScript, `polytypo.html.SKIPPED_ELEMENTS` in Python, `Polytypo::SKIPPED_ELEMENTS` in Ruby, `Polytypo::SKIPPED_ELEMENTS` in PHP and `polytypo.SkippedElements()` in Go.
+- The list itself is unchanged and stays closed. Text you already run through polytypo comes back exactly as before; nothing in this release changes output.
 
 ## 1.29.0 — 16 November 2026
 

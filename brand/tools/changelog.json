@@ -2,6 +2,20 @@
   "_comment": "Single source for CHANGELOG.md (brand/tools/gen_readmes.py) and the site's /changelog page (brand/tools/build_promo.py). Released versions only. Example strings are real engine output captured from the published packages of each version, never typed by hand; an entry whose release changes no output carries examples: [].",
   "releases": [
     {
+      "version": "1.30.0",
+      "date": "2026-11-16",
+      "headline": "The list of HTML elements polytypo leaves alone is now available to your own code.",
+      "items": [
+        {
+          "text": "In `html` mode polytypo skips ten elements and everything inside them: `code`, `pre`, `kbd`, `samp`, `var`, `script`, `style`, `textarea`, `svg` and `math`. Until now, code that walked a document on its own, with its own parser, in a `.tsx` file or in a template, had to copy those names by hand and could not tell when they changed. All five packages now expose the same list, in the same order, as a value that cannot be modified: `SKIPPED_ELEMENTS` from `polytypo/html` in JavaScript, `polytypo.html.SKIPPED_ELEMENTS` in Python, `Polytypo::SKIPPED_ELEMENTS` in Ruby, `Polytypo::SKIPPED_ELEMENTS` in PHP and `polytypo.SkippedElements()` in Go."
+        },
+        {
+          "text": "The list itself is unchanged and stays closed. Text you already run through polytypo comes back exactly as before; nothing in this release changes output."
+        }
+      ],
+      "examples": []
+    },
+    {
       "version": "1.29.0",
       "date": "2026-11-16",
       "headline": "Albanian joins as the thirty-third locale, cited to the Academy of Sciences of Albania.",
