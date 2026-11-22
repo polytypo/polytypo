@@ -270,6 +270,51 @@ window.Polytypo = (function () {
     window.addEventListener("resize", fitDocNav);
   }
 
+  /** The first of the visitor's browser languages that `known` can serve, or null. Mirrors the
+   * resolution in spec/rules/locale-resolution.md 3.4 — exact tag, alias, then the region
+   * stripped once — and adds the one site-level choice that spec does not make: an English tag
+   * with a region other than US or CA (en-AU, en-IE, en-IN, ...) takes en-GB when it is known,
+   * since those follow British spelling and punctuation. `known` is any list of codes, so the
+   * badge picker (languages) and the playground (locales) share this. */
+  function detectLocale(languages, known, aliases) {
+    const byLower = new Map(known.map((code) => [code.toLowerCase(), code]));
+    for (const raw of languages || []) {
+      const parts = String(raw).replace(/_/g, "-").split("-");
+      const lang = parts[0].toLowerCase();
+      const region = parts.slice(1).find((p) => /^[A-Za-z]{2}$/.test(p));
+      const upper = region ? region.toUpperCase() : "";
+      if (lang === "en" && upper && upper !== "US" && upper !== "CA" && byLower.has("en-gb")) {
+        return byLower.get("en-gb");
+      }
+      const candidates = upper ? [lang + "-" + upper.toLowerCase(), lang] : [lang];
+      for (const c of candidates) {
+        if (byLower.has(c)) return byLower.get(c);
+        const aliased = aliases && aliases[c];
+        if (aliased && byLower.has(aliased.toLowerCase()))
+          return byLower.get(aliased.toLowerCase());
+      }
+    }
+    return null;
+  }
+
+  /** localStorage may throw or be absent (private windows, blocked site data); a failed read or
+   * write just means the choice is not remembered. */
+  function readPref(key) {
+    try {
+      return window.localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  function writePref(key, value) {
+    try {
+      window.localStorage.setItem(key, value);
+    } catch {
+      /* not remembered */
+    }
+  }
+
   return {
     esc,
     mark,
@@ -284,5 +329,8 @@ window.Polytypo = (function () {
     summarizeError,
     copyStatusText,
     track,
+    detectLocale,
+    readPref,
+    writePref,
   };
 })();

@@ -161,15 +161,18 @@ describe("brand/tools/promo/site.js — the permalink helpers are gone from the 
         "copyButton",
         "copyStatusText",
         "describeChange",
+        "detectLocale",
         "diff",
         "esc",
         "highlight",
         "mark",
         "paint",
+        "readPref",
         "setButton",
         "summarizeChange",
         "summarizeError",
         "track",
+        "writePref",
       ].sort(),
     );
   });

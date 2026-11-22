@@ -321,7 +321,7 @@ Polytypo.bootTabs("build-tabs", "build-panes");
 })();
 </script>
 <script>
-const DATA = {"spec": "1.30.0", "proofLocales": ["en-GB", "en-US", "fr", "de-DE", "de-CH", "ru"], "locales": [{"locale": "sq", "name": "Albanian", "hero": {"in": "Ajo pyeti: \"A nuk është ky dyqani që e quajnë 'në qoshe'?\" ... Ecëm - gati 3 km - dhe ishte mbyllur. Copyright (c) 2026, formati 40x60 cm.", "out": "Ajo pyeti: “A nuk është ky dyqani që e quajnë ‘në qoshe’?” … Ecëm – gati 3 km – dhe ishte mbyllur. Copyright © 2026, formati 40×60 cm."}, "proof": {"in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.", "out": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."}, "cases": [{"rule": "quotes", "in": "Ai tha \"mirëdita\" dhe iku.", "out": "Ai tha “mirëdita” dhe iku."}, {"rule": "dashes", "in": "Libri - botuar para luftës - është i mirë.", "out": "Libri – botuar para luftës – është i mirë."}, {"rule": "nbsp", "in": "3 km dhe 90 ha", "out": "3 km dhe 90 ha"}]}], "allLocales": ["sq", "bg", "hr", "cs", "da", "nl", "en-GB", "en-US", "et", "fi", "fr-CA", "fr", "de-DE", "de-CH", "el", "hu", "it", "lv", "lt", "nb", "nn", "pl", "pt-BR", "pt-PT", "ro", "ru", "sr", "sk", "sl", "es", "sv", "tr", "uk"]};
+const DATA = {"spec": "1.30.0", "proofLocales": ["en-GB", "en-US", "fr", "de-DE", "de-CH", "ru"], "locales": [{"locale": "sq", "name": "Albanian", "hero": {"in": "Ajo pyeti: \"A nuk është ky dyqani që e quajnë 'në qoshe'?\" ... Ecëm - gati 3 km - dhe ishte mbyllur. Copyright (c) 2026, formati 40x60 cm.", "out": "Ajo pyeti: “A nuk është ky dyqani që e quajnë ‘në qoshe’?” … Ecëm – gati 3 km – dhe ishte mbyllur. Copyright © 2026, formati 40×60 cm."}, "proof": {"in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.", "out": "She asked, “Isn’t this the shop they call ‘round the corner’?” … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."}, "cases": [{"rule": "quotes", "in": "Ai tha \"mirëdita\" dhe iku.", "out": "Ai tha “mirëdita” dhe iku."}, {"rule": "dashes", "in": "Libri - botuar para luftës - është i mirë.", "out": "Libri – botuar para luftës – është i mirë."}, {"rule": "nbsp", "in": "3 km dhe 90 ha", "out": "3 km dhe 90 ha"}]}], "allLocales": ["sq", "bg", "hr", "cs", "da", "nl", "en-GB", "en-US", "et", "fi", "fr-CA", "fr", "de-DE", "de-CH", "el", "hu", "it", "lv", "lt", "nb", "nn", "pl", "pt-BR", "pt-PT", "ro", "ru", "sr", "sk", "sl", "es", "sv", "tr", "uk"], "aliases": {"en": "en-US", "de": "de-DE", "pt": "pt-PT", "no": "nb"}};
 (function playground() {
   const {
     mark, diff, paint, highlight, bootTabs, summarizeChange, summarizeError, copyStatusText,
@@ -359,8 +359,19 @@ const DATA = {"spec": "1.30.0", "proofLocales": ["en-GB", "en-US", "fr", "de-DE"
   }
   $locale.value = "sq";
   // /locales/<code>/ links here with ?locale=<code>; an unknown value is ignored, not an error.
+  // Without it: the locale the visitor picked last time, else the one their browser asks for.
+  // This runs before the first render, so the page never shows en-US and then switches.
+  const LOCALE_PREF = "polytypo:locale";
   const requested = new URLSearchParams(location.search).get("locale");
-  if (LOCALES.some(([code]) => code === requested)) $locale.value = requested;
+  const known = LOCALES.map(([code]) => code);
+  if (known.includes(requested)) $locale.value = requested;
+  else if (LOCALES.length > 1) {
+    const stored = Polytypo.readPref(LOCALE_PREF);
+    const detected = known.includes(stored)
+      ? stored
+      : Polytypo.detectLocale(navigator.languages || [navigator.language], known, DATA.aliases);
+    if (detected) $locale.value = detected;
+  }
 
   // Mirrors HERO["en-US"] in gen_examples.ts — unreachable in practice (every locale in the
   // dropdown has its own recorded hero), kept in sync anyway so it isn't a stale copy of text
@@ -810,6 +821,7 @@ const DATA = {"spec": "1.30.0", "proofLocales": ["en-GB", "en-US", "fr", "de-DE"
   // startEngineLoad() returns immediately unless the engine is still unrequested, so wiring it to
   // every control costs nothing on the eager page and needs no LAZY branch here.
   $locale.addEventListener("change", () => {
+    Polytypo.writePref(LOCALE_PREF, $locale.value);
     startEngineLoad();
     resample();
     render();

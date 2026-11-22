@@ -29,6 +29,13 @@ export interface PolytypoSiteJs {
   summarizeError: (code: string) => string;
   copyStatusText: (what: string, ok: boolean) => string;
   track: (name: string, props?: Record<string, string>) => void;
+  detectLocale: (
+    languages: string[],
+    known: string[],
+    aliases?: Record<string, string>,
+  ) => string | null;
+  readPref: (key: string) => string | null;
+  writePref: (key: string, value: string) => void;
 }
 
 /** The exported object exactly as site.js assigns it, untyped — for the guard test that checks

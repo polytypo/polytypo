@@ -2103,7 +2103,10 @@ def build_playground_script(data, prefix, lazy, fixed_locale=None):
     """
     # A locale page fixes the locale: only that locale's data ships, and the form has no locale
     # control. The call block still lists every locale the option accepts.
-    shipped = dict(data, allLocales=[l["locale"] for l in data["locales"]])
+    registry = json.load(open(os.path.join(REPO, "spec", "locales", "registry.json"), encoding="utf-8"))
+    shipped = dict(
+        data, allLocales=[l["locale"] for l in data["locales"]], aliases=registry["aliases"]
+    )
     if fixed_locale:
         shipped["locales"] = [l for l in data["locales"] if l["locale"] == fixed_locale]
     payload = json.dumps(shipped, ensure_ascii=False)
@@ -2149,8 +2152,19 @@ const DATA = {payload};
   }}
   $locale.value = "{fixed_locale or DEFAULT_PLAYGROUND_LOCALE}";
   // /locales/<code>/ links here with ?locale=<code>; an unknown value is ignored, not an error.
+  // Without it: the locale the visitor picked last time, else the one their browser asks for.
+  // This runs before the first render, so the page never shows en-US and then switches.
+  const LOCALE_PREF = "polytypo:locale";
   const requested = new URLSearchParams(location.search).get("locale");
-  if (LOCALES.some(([code]) => code === requested)) $locale.value = requested;
+  const known = LOCALES.map(([code]) => code);
+  if (known.includes(requested)) $locale.value = requested;
+  else if (LOCALES.length > 1) {{
+    const stored = Polytypo.readPref(LOCALE_PREF);
+    const detected = known.includes(stored)
+      ? stored
+      : Polytypo.detectLocale(navigator.languages || [navigator.language], known, DATA.aliases);
+    if (detected) $locale.value = detected;
+  }}
 
   // Mirrors HERO["en-US"] in gen_examples.ts — unreachable in practice (every locale in the
   // dropdown has its own recorded hero), kept in sync anyway so it isn't a stale copy of text
@@ -2600,6 +2614,7 @@ const DATA = {payload};
   // startEngineLoad() returns immediately unless the engine is still unrequested, so wiring it to
   // every control costs nothing on the eager page and needs no LAZY branch here.
   $locale.addEventListener("change", () => {{
+    Polytypo.writePref(LOCALE_PREF, $locale.value);
     startEngineLoad();
     resample();
     render();

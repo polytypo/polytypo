@@ -153,7 +153,22 @@
     );
   }
   if (lang) {
-    lang.addEventListener("change", () => syncBadge());
+    // A choice the visitor made wins; otherwise the browser's own language, when it has a caption.
+    const options = Array.from(lang.options).map((o) => o.value);
+    const stored = window.Polytypo.readPref("polytypo:badge-lang");
+    const initial = options.includes(stored)
+      ? stored
+      : window.Polytypo.detectLocale(navigator.languages || [navigator.language], options, {
+          no: "nb",
+        });
+    if (initial && initial !== lang.value) {
+      lang.value = initial;
+      syncBadge();
+    }
+    lang.addEventListener("change", () => {
+      window.Polytypo.writePref("polytypo:badge-lang", lang.value);
+      syncBadge();
+    });
     document.querySelectorAll("[data-badge-theme]").forEach((b) => {
       b.addEventListener("click", () => syncBadge(b.getAttribute("data-badge-theme")));
     });
