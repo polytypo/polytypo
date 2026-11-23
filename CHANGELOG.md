@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.30.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.30.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.31.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.31.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,14 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.31.0 — 23 November 2026
+
+Catalan joins as the thirty-fourth locale, cited to the Institut d'Estudis Catalans.
+
+- Catalan ships as `ca`. Until now `ca` was refused with `POLYTYPO_UNKNOWN_LOCALE`, so the text had to go through another locale. Measured: `Va dir: "Vam caminar - gairebé 3 km - fins a l'escola" i va marxar.` came back from `fr` as `Va dir : « Vam caminar — gairebé 3 km — fins a l’escola » i va marxar.`, with a space before the colon, spaces inside the guillemets and spaced dashes. `ca` gives `Va dir: «Vam caminar —gairebé 3 km— fins a l’escola» i va marxar.`: guillemets hugging the quotation, a closed-up dash around the inserted clause, a no-break space before `km`, and the apostrophe in `l’escola`.
+- The data is cited to the Institut d'Estudis Catalans. Quotations take `«…»` with `“…”` inside, the ellipsis is the single character, and no space is added before `: ; ? !`. `%`, `‰`, `°C`, `km` and `kg` stay with the number, and `p. ex.` and compound titles such as `M. I. Sr.` are kept together. `l`, `d`, `m`, `t`, `s` and `n` are treated as elided forms, so an apostrophe that stands against inline markup, as in `l'<em>home</em>`, is not taken for a closing quotation mark. The punt volat in `col·legi` and `AL·LEGORIA` is left alone. The punctuation rules rest on the Institut's `Manual d'estil`, because the `Ortografia catalana` has no punctuation chapter; the `Ortografia` supplies the apostrophe and the hyphen.
+- Ranges such as `153-174` keep their hyphen, as the Manual prescribes. The Manual also allows a spaced hyphen between two multi-word elements. A single spaced hyphen is left alone; two in one sentence are read as a parenthetical dash: `De la plaça de Catalunya - plaça de la Bonanova - i tornem.` becomes `De la plaça de Catalunya —plaça de la Bonanova— i tornem.`. Pass `ca` or a region form such as `ca-ES` or `ca-AD`.
 
 ## 1.30.0 — 16 November 2026
 

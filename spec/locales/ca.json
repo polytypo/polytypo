@@ -1,0 +1,97 @@
+{
+  "locale": "ca",
+  "name": "Catalan",
+  "quotes": {
+    "primary": {
+      "open": "«",
+      "close": "»",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "“",
+      "close": "”",
+      "innerSpace": "none"
+    },
+    "punctuationPlacement": "none",
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": ["l", "d", "m", "t", "s", "n"],
+      "after": []
+    }
+  },
+  "dash": {
+    "parenthetical": "em-paired",
+    "range": "none"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": ["p. ex.", "M. I. Sr.", "M. I. Sra.", "M. H. Sr.", "M. H. Sra.", "S. A. R."],
+    "beforeUnits": ["%", "‰", "°C", "km", "kg"],
+    "spacedUnits": [],
+    "closedUnits": [],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "initialBinding": "chain"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Mestres, Costa, Oliva, Fité, Manual d'estil (IEC, 5a ed. en línia 2019; paginació 4a ed.), cap. VII §10, p. 215: «En català se n'utilitzen tradicionalment tres tipus: les cometes baixes o llatines (« »), les cometes altes o angleses […] i les cometes simples […]. Mantenen una relació de jerarquia […]: cometes baixes, cometes altes i cometes simples»; §1.5, p. 171: «Els signes dobles es col·loquen immediatament abans del mot que precedeixen i immediatament després del mot que segueixen»",
+      "url": "https://estil.iec.cat/wp-content/uploads/sites/24/2019/02/07_Pag_167-278_p.pdf",
+      "note": "Manual d'estil editat per l'IEC, no obra normativa: l'Ortografia catalana no té capítol de puntuació, i Optimot i la GIEC no han pogut ser consultats. Es fixa (pick-and-pin) aquest manual com a autoritat de puntuació. L'espai fi de §1.5.1 hi és marcat «~» (menys bo). punctuationPlacement = \"none\": §10.6 a) posa coma, punt i coma, punt i dos punts FORA de les cometes de tancament (usos no citacionals); les citacions (§13.5) no s'han llegit. El tercer nivell (‘ ’) no és expressable en l'esquema. Consultat el 2026-11-23."
+    },
+    {
+      "rule": "quotes",
+      "cite": "Institut d'Estudis Catalans, Ortografia catalana (2017), §4.1.1, pp. 105-106: «L'apòstrof és un signe ortogràfic consistent en una coma volada (’)»; formes elidides l', n', s', d', m', t'; formes reduïdes «'m, 'ns, 't, 'l, 'ls, 's i 'n»",
+      "url": "https://aplicacions.llengua.gencat.cat/llc/AppJava/pdf/ortografia_catalana_versio_digital.pdf",
+      "note": "elisionClitics.before = l, d, m, t, s, n. El conjunt tancat de formes reduïdes (after) és a l'Ortografia però no s'hi ha trobat cap cas atestat en contacte amb un límit de span, de manera que after queda buit (com en-US). Contacte amb límit de span atestat al Manual d'estil VII §14.2.5-14.2.6 («d'El Temps», «d'«El Quadrat d'Or»»). Consultat el 2026-11-23."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Manual d'estil (IEC), cap. VII §8, p. 206: «El guió […] consisteix en una ratlla horitzontal de la llargada equivalent a un quadratí o una mica més. En un incís, el primer guió s'escriu enganxat a la primera lletra del mot que el segueix, i el segon, enganxat a l'última lletra del mot que el precedeix»",
+      "url": "https://estil.iec.cat/wp-content/uploads/sites/24/2019/02/07_Pag_167-278_p.pdf",
+      "note": "em-paired (U+2014). Cost acceptat: el Manual d'estil VII §9.2 admet un guionet amb espais entre elements de diverses paraules («plaça de Catalunya - plaça de la Bonanova»), que la regla de guions pot llegir com a incís; es fixa amb un fixture. Un incís amb un sol guió (§8.6 b) queda sense convertir. Consultat el 2026-11-23."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Manual d'estil (IEC), cap. VII §9.2.2 a), p. 213: el guionet uneix «dues xifres correlatives i també xifres que comprenen els nombres intermedis»: «p. 153-174»; «el curs 1990-1991»",
+      "url": "https://estil.iec.cat/wp-content/uploads/sites/24/2019/02/07_Pag_167-278_p.pdf",
+      "note": "range = \"none\": el signe és U+002D, el que l'autor ja escriu. Consultat el 2026-11-23."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Manual d'estil (IEC), cap. VII §6, p. 194: «Els punts suspensius són únicament tres»; «hi ha un caràcter que conté aquests tres punts, i és recomanable de fer-lo servir»",
+      "url": "https://estil.iec.cat/wp-content/uploads/sites/24/2019/02/07_Pag_167-278_p.pdf",
+      "note": "Consultat el 2026-11-23."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Institut d'Estudis Catalans, Ortografia catalana (2017), §3.2.1, p. 101: «La partició a final de ratlla se sol fer aprofitant els guionets existents (gira-|sol, tornem-|hi)»",
+      "url": "https://aplicacions.llengua.gencat.cat/llc/AppJava/pdf/ortografia_catalana_versio_digital.pdf",
+      "note": "Les tres llistes queden buides: el català no segueix la convenció russa. Consultat el 2026-11-23."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Manual d'estil (IEC), cap. VI §14.1: «Les abreviatures compostes, especialment les dels tractaments i les dels noms de persona, no s'han de separar» («* M. I. || Sra.», «* J. || V. Foix», «~ J. V. || Foix»); §14.3: «No podem separar les quantitats dels símbols que acompanyen» («* 50 || %», «* 850 || kg»)",
+      "url": "https://estil.iec.cat/wp-content/uploads/sites/24/2019/02/06_Pag_143-166_p.pdf",
+      "note": "L'espai entre nombre i símbol només és atestat en exemples (cap. XII §4.1 g-i: «80 %», «13 ‰», «−15 °C»), per tant beforeUnits i no spacedUnits. «°» sol va enganxat («43° 50′ 30″»). initialBinding \"chain\" és una tria (pick-and-pin) com en es: una inicial sola davant del cognom no hi és exemplificada. beforeNumber, beforeWord, afterShortWords i afterSymbols queden buits: el manual no els tracta. Consultat el 2026-11-23."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Manual d'estil (IEC), cap. VII §1.5, p. 171: els signes senzills «es col·loquen immediatament després de l'última lletra del mot al qual s'ajunten»; §1.5.1: l'espai fi és un «costum […] adquirit per imitació d'altres llengües»",
+      "url": "https://estil.iec.cat/wp-content/uploads/sites/24/2019/02/07_Pag_167-278_p.pdf",
+      "note": "beforePunctuation i narrowBeforePunctuation buits. Consultat el 2026-11-23."
+    }
+  ]
+}

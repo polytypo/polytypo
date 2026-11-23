@@ -42,6 +42,7 @@ const LOCALES = [
   "nb",
   "nn",
   "sq",
+  "ca",
 ] as const;
 
 // Every hero line: nested quotes, an apostrophe or elision (except el — see its own note below),
@@ -140,6 +141,9 @@ const HERO: Record<(typeof LOCALES)[number], string> = {
   sq:
     `Ajo pyeti: "A nuk është ky dyqani që e quajnë 'në qoshe'?" ... Ecëm - gati 3 km - dhe ishte ` +
     `mbyllur. Copyright (c) 2026, formati 40x60 cm.`,
+  ca:
+    `Ella va preguntar: "No és aquesta la botiga de l'amic que anomenen 'la de la cantonada'?" ... Vam caminar - gairebé 3 km - i ` +
+    `era tancada. Copyright (c) 2026, format 40x60 cm.`,
   nl:
     `Hij vroeg: "Is dit niet de winkel die ze 'om de hoek' noemen?" ... We liepen -- bijna 3 km ` +
     `-- en hij was dicht. Copyright (c) 2026, formaat 40x60 cm.`,
@@ -308,6 +312,11 @@ const SHOWCASE: Record<
     { rule: "dashes", in: `Libri - botuar para luftës - është i mirë.` },
     { rule: "nbsp", in: `3 km dhe 90 ha` },
   ],
+  ca: [
+    { rule: "quotes", in: `Ella va dir "bon dia" i va marxar.` },
+    { rule: "dashes", in: `El llibre - publicat abans de la guerra - és bo.` },
+    { rule: "nbsp", in: `3 km i 50 %` },
+  ],
   nl: [
     { rule: "quotes", in: `Hij zei "dag" en vertrok.` },
     { rule: "dashes", in: `Het nieuws - volgens de kranten - is niet bekend.` },
@@ -395,6 +404,7 @@ const NAMES: Record<(typeof LOCALES)[number], string> = {
   nb: "Norwegian Bokmål",
   nn: "Norwegian Nynorsk",
   sq: "Albanian",
+  ca: "Catalan",
   "pt-PT": "Portuguese (Portugal)",
   "pt-BR": "Portuguese (Brazil)",
 };

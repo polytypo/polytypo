@@ -1,0 +1,309 @@
+{
+  "spec": "1.31.0",
+  "locale": "ca",
+  "cases": [
+    {
+      "id": "ca-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Va dir \"estic cansat\" i va marxar.",
+      "out": "Va dir «estic cansat» i va marxar.",
+      "note": "Manual d'estil (IEC), cap. VII §10, p. 215: «cometes baixes» are the first level."
+    },
+    {
+      "id": "ca-quotes-nested",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Va escriure: \"Em va dir 'arribo de seguida' i va desaparèixer.\"",
+      "out": "Va escriure: «Em va dir “arribo de seguida” i va desaparèixer.»",
+      "note": "Manual d'estil (IEC), cap. VII §10, p. 215: «cometes baixes, cometes altes i cometes simples»; the second level is “…”. The third level ‘…’ is not expressible in the schema."
+    },
+    {
+      "id": "ca-quotes-inner-space-deleted",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Va dir « estic cansat » i va marxar.",
+      "out": "Va dir «estic cansat» i va marxar.",
+      "note": "Manual d'estil (IEC), cap. VII §1.5, p. 171: the double signs sit immediately against the words they enclose, so innerSpace is none."
+    },
+    {
+      "id": "ca-quotes-punctuation-stays-outside",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Va dir \"hola\", després va marxar.",
+      "out": "Va dir «hola», després va marxar.",
+      "note": "Manual d'estil (IEC), cap. VII §10.6 a): comma, semicolon, full stop and colon follow the closing mark, so punctuationPlacement is none and nothing is moved."
+    },
+    {
+      "id": "ca-quotes-apostrophe-inside",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Va dir \"l'escola és a prop\" ahir.",
+      "out": "Va dir «l’escola és a prop» ahir.",
+      "note": "Ortografia catalana (IEC 2017) §4.1.1: the apostrophe is the «coma volada (’)»; it does not open a quotation."
+    },
+    {
+      "id": "ca-apostrophe-elision",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Aquesta és l'escola d'en Pere i m'agrada.",
+      "out": "Aquesta és l’escola d’en Pere i m’agrada.",
+      "note": "Ortografia catalana (IEC 2017) §4.1.1, pp. 105-106: l', d', m' are elided forms written with the «coma volada»."
+    },
+    {
+      "id": "ca-apostrophe-reduced-forms",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Dóna-me'n un i porta-'ls.",
+      "out": "Dóna-me’n un i porta-’ls.",
+      "note": "Ortografia catalana (IEC 2017) §4.1.1: the reduced forms 'n and 'ls take the same sign. Not a verified boundary case; the fixture pins that the apostrophe rule converts them."
+    },
+    {
+      "id": "ca-apostrophe-before-span-quote",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Parla d'\"estabornir\" sovint.",
+      "out": "Parla d’«estabornir» sovint.",
+      "note": "Manual d'estil (IEC), cap. VII §14.2.5-14.2.6 [686a], [685]: an apostrophe flush against a quotation mark is kept as an apostrophe in text mode; the span-boundary cases below are what quotes.elisionClitics.before changes."
+    },
+    {
+      "id": "ca-quotes-span-boundary-elision-declined",
+      "rule": "quotes",
+      "mode": "html",
+      "in": "Va dir 'que l'<em>home</em>' ara.",
+      "out": "Va dir «que l’<em>home</em>» ara.",
+      "note": "quotes.md §3.2's span-boundary elision veto: the elided l' stands flush against the emphasis boundary, so the cited quotes.elisionClitics.before entry l declines the mark and the author's own pair keeps its meaning. Ortografia catalana (IEC 2017) §4.1.1, pp. 105-106: l' is an elided form; Manual d'estil (IEC) cap. VII §14.2.5 attests an apostrophe against a span boundary («d'El Temps»)."
+    },
+    {
+      "id": "ca-quotes-span-boundary-elision-declined-markdown",
+      "rule": "quotes",
+      "mode": "markdown",
+      "dialect": "commonmark",
+      "in": "Va dir 'res d'*El Temps*' ara.",
+      "out": "Va dir «res d’*El Temps*» ara.",
+      "note": "Same veto in markdown mode, on the entry d: Manual d'estil (IEC) cap. VII §14.2.5 «d'El Temps» (italic) is written with the apostrophe flush against the span."
+    },
+    {
+      "id": "ca-punt-volat-kept",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "El col·legi i la il·lusió.",
+      "out": "El col·legi i la il·lusió.",
+      "note": "Ortografia catalana (IEC 2017) §2.1.2, Quadre 3: the punt volat (U+00B7) is part of the spelling (l·l); no rule may touch it."
+    },
+    {
+      "id": "ca-punt-volat-capitals",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "AL·LEGORIA i COL·LEGI.",
+      "out": "AL·LEGORIA i COL·LEGI.",
+      "note": "Ortografia catalana (IEC 2017) §2.1.2, Quadre 3: L·L in capitals."
+    },
+    {
+      "id": "ca-punt-volat-after-apostrophe",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Parla de l'il·lusió i de s'il·luminar.",
+      "out": "Parla de l’il·lusió i de s’il·luminar.",
+      "note": "Ortografia catalana (IEC 2017) §4.1.1 with §2.1.2: the elision before a word that contains the punt volat is converted and the punt volat is left alone."
+    },
+    {
+      "id": "ca-punt-volat-inside-quotes",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Va dir \"col·legi\" i va marxar.",
+      "out": "Va dir «col·legi» i va marxar.",
+      "note": "Ortografia catalana (IEC 2017) §2.1.2: the punt volat inside a quoted word."
+    },
+    {
+      "id": "ca-middle-dot-multiplication",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "El resultat de 4 · 2 = 8.",
+      "out": "El resultat de 4 · 2 = 8.",
+      "note": "Manual d'estil (IEC), cap. VII §15.1 b): U+00B7 as a multiplication sign is written with spaces; it is left as typed."
+    },
+    {
+      "id": "ca-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Doncs... no ho sé.",
+      "out": "Doncs… no ho sé.",
+      "note": "Manual d'estil (IEC), cap. VII §6, p. 194: «Els punts suspensius són únicament tres»; the single character is recommended."
+    },
+    {
+      "id": "ca-ellipsis-not-abbreviated-after-terminal",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "De veritat?..",
+      "out": "De veritat?…",
+      "note": "Manual d'estil (IEC), cap. VII §6, p. 194: examples «vindries?…» and «enamorat!…» use three dots after a terminal mark."
+    },
+    {
+      "id": "ca-dashes-paired-spaced-hyphens",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "El llibre - publicat abans de la guerra - és bo.",
+      "out": "El llibre —publicat abans de la guerra— és bo.",
+      "note": "Manual d'estil (IEC), cap. VII §8, p. 206: in an incís the first dash is attached to the first letter of the following word and the second to the last letter of the preceding word."
+    },
+    {
+      "id": "ca-dashes-paired-double-hyphen",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Vam caminar -- gairebé 3 km -- i era tancat.",
+      "out": "Vam caminar —gairebé 3 km— i era tancat.",
+      "note": "Manual d'estil (IEC), cap. VII §8, p. 206, examples [284a], [33b]. The space before km is bound by the nbsp rule."
+    },
+    {
+      "id": "ca-dashes-paired-already-correct",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Va arribar —per fi— a casa.",
+      "out": "Va arribar —per fi— a casa.",
+      "note": "Manual d'estil (IEC), cap. VII §8, p. 206: the closed-up form is already correct."
+    },
+    {
+      "id": "ca-dashes-single-hyphen-untouched",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Barcelona - la capital de Catalunya.",
+      "out": "Barcelona - la capital de Catalunya.",
+      "note": "Manual d'estil (IEC), cap. VII §8.6 b): an incís at the end of the sentence omits the closing dash; a single stroke is left unconverted by construction (dashes.md §3.4a), an accepted cost."
+    },
+    {
+      "id": "ca-dashes-spaced-hyphens-between-places",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "De la plaça de Catalunya - plaça de la Bonanova - i tornem.",
+      "out": "De la plaça de Catalunya —plaça de la Bonanova— i tornem.",
+      "note": "Manual d'estil (IEC), cap. VII §9.2 allows an ordinary space around a hyphen that joins multi-word elements («plaça de Catalunya - plaça de la Bonanova»). Two such hyphens in one segment are read as an incís and converted (dashes.md §3.4a); this is the accepted cost of em-paired for a locale whose authority allows the spaced hyphen. A single such hyphen is left as typed."
+    },
+    {
+      "id": "ca-ranges-none-hyphen-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "Vegeu les pàgines 153-174 i el curs 1990-1991.",
+      "out": "Vegeu les pàgines 153-174 i el curs 1990-1991.",
+      "note": "Manual d'estil (IEC), cap. VII §9.2.2 a), p. 213: ranges are written with the hyphen (guionet); ranges.md §2: dash.range \"none\" disables the rule, so the hyphen is left as typed.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "ca-hyphen-compound-untouched",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "Gira-sol i tornem-hi.",
+      "out": "Gira-sol i tornem-hi.",
+      "note": "Ortografia catalana (IEC 2017) §3.2.1, p. 101: line breaks use the existing hyphens; the hyphen lists are empty."
+    },
+    {
+      "id": "ca-nbsp-percent",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "El 80 % dels alumnes ho va aprovar.",
+      "out": "El 80 % dels alumnes ho va aprovar.",
+      "note": "Manual d'estil (IEC), cap. VI §14.3, p. 161: «No podem separar les quantitats dels símbols que acompanyen» («* 50 || %»)."
+    },
+    {
+      "id": "ca-nbsp-per-mille",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Un 13 ‰ del total.",
+      "out": "Un 13 ‰ del total.",
+      "note": "Manual d'estil (IEC), cap. XII §4.1 h-i, p. 490: «13 ‰» is written with a space; the space is kept together with the number."
+    },
+    {
+      "id": "ca-nbsp-celsius",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Fa −15 °C a la nit.",
+      "out": "Fa −15 °C a la nit.",
+      "note": "Manual d'estil (IEC), cap. XII §4.1 g-i and cap. VII [186a]: «−15 °C», «28 °C»."
+    },
+    {
+      "id": "ca-nbsp-kilometre-and-kilogram",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Pesa 850 kg i fa 3 km.",
+      "out": "Pesa 850 kg i fa 3 km.",
+      "note": "Manual d'estil (IEC), cap. VI §14.3: [315] «* 850 || kg»; cap. VII [186a]: «2 km»."
+    },
+    {
+      "id": "ca-nbsp-degree-tight",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Va néixer a 43° 50′ 30″ nord.",
+      "out": "Va néixer a 43° 50′ 30″ nord.",
+      "note": "Manual d'estil (IEC), cap. XII §4.1: the degree sign alone is written closed up («43° 50′ 30″»), so ° is not in beforeUnits."
+    },
+    {
+      "id": "ca-nbsp-abbreviation-p-ex",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "en alguns casos, p. ex. aquest",
+      "out": "en alguns casos, p. ex. aquest",
+      "note": "Manual d'estil (IEC), cap. IX §3 and cap. VI §14.1: composite abbreviations are not split."
+    },
+    {
+      "id": "ca-nbsp-abbreviation-titles",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Va parlar el M. I. Sr. Pere.",
+      "out": "Va parlar el M. I. Sr. Pere.",
+      "note": "Manual d'estil (IEC), cap. VI §14.1: «Les abreviatures compostes, especialment les dels tractaments […] no s'han de separar» («* M. I. || Sra.»). The initials M. I. chain: the space before the first initial is bound too (initialBinding chain)."
+    },
+    {
+      "id": "ca-nbsp-initials-chain",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Ho va escriure J. V. Foix ahir.",
+      "out": "Ho va escriure J. V. Foix ahir.",
+      "note": "Manual d'estil (IEC), cap. VI §14.1: [304a] «* J. || V. Foix» and [304b] «~ J. V. || Foix» are both rejected, so the whole chain binds, including the space before the first initial, (initialBinding chain, a pick-and-pin: a lone initial before a surname is not exemplified)."
+    },
+    {
+      "id": "ca-nbsp-no-space-before-punctuation",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Què vols? Vine: veuràs; no cal dir res!",
+      "out": "Què vols? Vine: veuràs; no cal dir res!",
+      "note": "Manual d'estil (IEC), cap. VII §1.5, §5, §7: the simple signs, the colon, ? and ! are written immediately after the last word; no space is inserted."
+    },
+    {
+      "id": "ca-spaces-before-punctuation-deleted",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Què vols ? Vine : veuràs ; no cal dir res !",
+      "out": "Què vols? Vine: veuràs; no cal dir res!",
+      "note": "Manual d'estil (IEC), cap. VII §1.5: no space precedes the punctuation, so the ordinary spaces typed before it are deleted."
+    },
+    {
+      "id": "ca-roundtrip-noop",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Va dir «estic cansat» i va marxar…",
+      "out": "Va dir «estic cansat» i va marxar…",
+      "note": "Already-typeset text is a fixed point."
+    },
+    {
+      "id": "ca-symbols-copyright-and-dimensions",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "Copyright (c) 2026, mida 40x60 cm",
+      "out": "Copyright © 2026, mida 40×60 cm",
+      "note": "Symbols are locale-independent; the cm after the dimension is not in beforeUnits for ca, so the space is left as typed."
+    },
+    {
+      "id": "ca-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "alfa «beta», gamma",
+      "out": "alfa «beta», gamma",
+      "note": "Manual d'estil (IEC), cap. VII §10.6 a): comma, semicolon, full stop and colon follow the closing quotation mark, so punctuationPlacement is none and the rule does not move the comma.",
+      "rules": {
+        "quote-punctuation": true
+      }
+    }
+  ]
+}

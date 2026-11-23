@@ -2,6 +2,23 @@
   "_comment": "Single source for CHANGELOG.md (brand/tools/gen_readmes.py) and the site's /changelog page (brand/tools/build_promo.py). Released versions only. Example strings are real engine output captured from the published packages of each version, never typed by hand; an entry whose release changes no output carries examples: [].",
   "releases": [
     {
+      "version": "1.31.0",
+      "date": "2026-11-23",
+      "headline": "Catalan joins as the thirty-fourth locale, cited to the Institut d'Estudis Catalans.",
+      "items": [
+        {
+          "text": "Catalan ships as `ca`. Until now `ca` was refused with `POLYTYPO_UNKNOWN_LOCALE`, so the text had to go through another locale. Measured: `Va dir: \"Vam caminar - gairebé 3 km - fins a l'escola\" i va marxar.` came back from `fr` as `Va dir : « Vam caminar — gairebé 3 km — fins a l’escola » i va marxar.`, with a space before the colon, spaces inside the guillemets and spaced dashes. `ca` gives `Va dir: «Vam caminar —gairebé 3 km— fins a l’escola» i va marxar.`: guillemets hugging the quotation, a closed-up dash around the inserted clause, a no-break space before `km`, and the apostrophe in `l’escola`."
+        },
+        {
+          "text": "The data is cited to the Institut d'Estudis Catalans. Quotations take `«…»` with `“…”` inside, the ellipsis is the single character, and no space is added before `: ; ? !`. `%`, `‰`, `°C`, `km` and `kg` stay with the number, and `p. ex.` and compound titles such as `M. I. Sr.` are kept together. `l`, `d`, `m`, `t`, `s` and `n` are treated as elided forms, so an apostrophe that stands against inline markup, as in `l'<em>home</em>`, is not taken for a closing quotation mark. The punt volat in `col·legi` and `AL·LEGORIA` is left alone. The punctuation rules rest on the Institut's `Manual d'estil`, because the `Ortografia catalana` has no punctuation chapter; the `Ortografia` supplies the apostrophe and the hyphen."
+        },
+        {
+          "text": "Ranges such as `153-174` keep their hyphen, as the Manual prescribes. The Manual also allows a spaced hyphen between two multi-word elements. A single spaced hyphen is left alone; two in one sentence are read as a parenthetical dash: `De la plaça de Catalunya - plaça de la Bonanova - i tornem.` becomes `De la plaça de Catalunya —plaça de la Bonanova— i tornem.`. Pass `ca` or a region form such as `ca-ES` or `ca-AD`."
+        }
+      ],
+      "examples": []
+    },
+    {
       "version": "1.30.0",
       "date": "2026-11-16",
       "headline": "The list of HTML elements polytypo leaves alone is now available to your own code.",
