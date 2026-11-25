@@ -2303,6 +2303,119 @@
       "resolution": [],
       "disagreed": 0
     },
+    "is": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "is-quotes-primary",
+            "in": "Hún sagði \"Það var nú gott\" og fór.",
+            "out": "Hún sagði „Það var nú gott“ og fór."
+          },
+          {
+            "id": "is-quotes-nested-same-pair",
+            "in": "Ásgeir mælti: \"Afi sagði: \"Hertu þig nú.\" Svo fór hann.\"",
+            "out": "Ásgeir mælti: „Afi sagði: „Hertu þig nú.“ Svo fór hann.“"
+          },
+          {
+            "id": "is-quotes-nested-with-words",
+            "in": "Hún sagði \"þetta er 'orð' úr bók\" og fór.",
+            "out": "Hún sagði „þetta er „orð“ úr bók“ og fór."
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "is-apostrophe-omission",
+            "in": "Það átt' ekki við. Hann fæddist '87.",
+            "out": "Það átt’ ekki við. Hann fæddist ’87."
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "is-ellipsis-three-dots",
+            "in": "Bíddu... og svo.",
+            "out": "Bíddu… og svo."
+          },
+          {
+            "id": "is-ellipsis-after-question",
+            "in": "Hvað á ég að gera?... Ég veit ekki.",
+            "out": "Hvað á ég að gera?… Ég veit ekki."
+          },
+          {
+            "id": "is-ellipsis-after-exclamation",
+            "in": "Farðu!... Strax.",
+            "out": "Farðu!… Strax."
+          }
+        ],
+        "dashes": [
+          {
+            "id": "is-dashes-parenthetical",
+            "in": "Á Íslandi - og hvergi nema á Íslandi - er þetta svona.",
+            "out": "Á Íslandi – og hvergi nema á Íslandi – er þetta svona."
+          },
+          {
+            "id": "is-dashes-em-input",
+            "in": "Á Íslandi — og hvergi nema á Íslandi — er þetta svona.",
+            "out": "Á Íslandi – og hvergi nema á Íslandi – er þetta svona."
+          }
+        ],
+        "ranges": [
+          {
+            "id": "is-ranges-digits-tight",
+            "in": "Bls. 13-15 og árin 1986-1989",
+            "out": "Bls. 13⁠–⁠15 og árin 1986⁠–⁠1989",
+            "rules": {
+              "ranges": true
+            }
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "is-nbsp-units",
+            "in": "Hann greiddi henni 100 kr. og fór 3 km.",
+            "out": "Hann greiddi henni 100 kr. og fór 3 km."
+          }
+        ],
+        "spaces": [
+          {
+            "id": "is-spaces-before-punctuation",
+            "in": "Hvað ? Nei !",
+            "out": "Hvað? Nei!"
+          },
+          {
+            "id": "is-spaces-brackets",
+            "in": "Hún ( hljótt ) fór .",
+            "out": "Hún (hljótt) fór."
+          }
+        ],
+        "symbols": [
+          {
+            "id": "is-symbols-copyright",
+            "in": "(c) 2026",
+            "out": "© 2026"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Hún spurði: \"Er þetta ekki búðin sem þeir kalla 'á horninu'?\" ... Við gengum - næstum 3 km - og hún var lokuð. Copyright (c) 2026, stærð 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Hún spurði: „Er þetta ekki búðin sem þeir kalla „á horninu“?“ … Við gengum – næstum 3 km – og hún var lokuð. Copyright © 2026, stærð 40×60 cm.\nsay(„a – b …“)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Hún spurði: \"Er þetta ekki búðin sem þeir kalla 'á horninu'?\" ... Við gengum - næstum 3 km - og hún var lokuð. Copyright (c) 2026, stærð 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Hún spurði: „Er þetta ekki búðin sem þeir kalla „á horninu“?“ … Við gengum – næstum 3 km – og hún var lokuð. Copyright © 2026, stærð 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Hún spurði: \"Er þetta ekki búðin sem þeir kalla 'á horninu'?\" ... Við gengum - næstum 3 km - og hún var lokuð. Copyright (c) 2026, stærð 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Hún spurði: „Er þetta ekki búðin sem þeir kalla „á horninu“?“ … Við gengum – næstum 3 km – og hún var lokuð. Copyright © 2026, stærð 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": [],
+      "disagreed": 0
+    },
     "it": {
       "byRule": {
         "quotes": [

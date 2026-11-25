@@ -569,6 +569,35 @@
       ]
     },
     {
+      "locale": "is",
+      "name": "Icelandic",
+      "hero": {
+        "in": "Hún spurði: \"Er þetta ekki búðin sem þeir kalla 'á horninu'?\" ... Við gengum - næstum 3 km - og hún var lokuð. Copyright (c) 2026, stærð 40x60 cm.",
+        "out": "Hún spurði: „Er þetta ekki búðin sem þeir kalla „á horninu“?“ … Við gengum – næstum 3 km – og hún var lokuð. Copyright © 2026, stærð 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, „Isn’t this the shop they call „round the corner“?“ … We’d walked – nearly 3 km – just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Hún sagði \"góðan dag\" og fór.",
+          "out": "Hún sagði „góðan dag“ og fór."
+        },
+        {
+          "rule": "dashes",
+          "in": "Bókin - gefin út fyrir stríðið - er góð.",
+          "out": "Bókin – gefin út fyrir stríðið – er góð."
+        },
+        {
+          "rule": "nbsp",
+          "in": "Hann greiddi 100 kr. fyrir 3 km",
+          "out": "Hann greiddi 100 kr. fyrir 3 km"
+        }
+      ]
+    },
+    {
       "locale": "it",
       "name": "Italian",
       "hero": {

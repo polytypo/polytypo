@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.32.0** · locales: **34** · rules: **10**.
+Spec version: **1.32.0** · locales: **35** · rules: **10**.
 
 ## Implementations
 
@@ -62,6 +62,7 @@ Spec version: **1.32.0** · locales: **34** · rules: **10**.
 | German (Switzerland) (`de-CH`) | Sie fragte: «Ist das nicht der Laden namens ‹an der Ecke›?» … Wir liefen – fast 3 km – und fanden ihn leider geschlossen. Copyright © 2026, Format 40×60 cm, z. B. für Poster. |
 | Greek (`el`) | Ρώτησε: «Δεν είναι αυτό το μαγαζί “στη γωνία”;» … Περπατήσαμε —σχεδόν 3 χλμ— και το βρήκαμε κλειστό. Copyright © 2026, μέγεθος 40×60 cm. |
 | Hungarian (`hu`) | Megkérdezte: „Nem ez az a bolt, amit »a sarki«-nak hívnak?” … Mentünk – majdnem 3 km-t – és zárva volt. Copyright © 2026, 40×60 cm. |
+| Icelandic (`is`) | Hún spurði: „Er þetta ekki búðin sem þeir kalla „á horninu“?“ … Við gengum – næstum 3 km – og hún var lokuð. Copyright © 2026, stærð 40×60 cm. |
 | Italian (`it`) | Ha chiesto: «Non è questo il negozio che chiamano “quello all’angolo”?» … Abbiamo camminato — quasi 3 km — ed era chiuso. Copyright © 2026, formato 40×60 cm. |
 | Latvian (`lv`) | Viņa jautāja: “Vai tā nav veikals, ko sauc par “to aiz stūra”?” … Gājām – gandrīz 3 km – un tas bija slēgts. Copyright © 2026, formāts 40×60 cm. |
 | Lithuanian (`lt`) | Ji paklausė: „Ar ne tai parduotuvė, kurią vadina „ta už kampo“?“ … Ėjome – beveik 3 km – o ji buvo uždaryta. Copyright © 2026, formatas 40×60 cm. |
@@ -102,6 +103,7 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | `fr-CA` | French (Canada) | «…» + U+00A0 | “…” | em dash, spaced | unchanged |
 | `hr` | Croatian | „…” | ‘…’ | en dash, spaced | en dash, spaced |
 | `hu` | Hungarian | „…” | »…« | en dash, spaced | en dash, unspaced |
+| `is` | Icelandic | „…“ | „…“ | en dash, spaced | en dash, unspaced |
 | `it` | Italian | «…» | “…” | em dash, spaced | unchanged |
 | `lt` | Lithuanian | „…“ | „…“ | en dash, spaced | en dash, unspaced |
 | `lv` | Latvian | “…” | “…” | en dash, spaced | en dash, unspaced |
