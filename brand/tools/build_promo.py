@@ -91,6 +91,7 @@ PRIMARY_SOURCES = {
     "nn": "Språkrådet",
     "sq": "Akademia e Shkencave e Shqipërisë; Rregullat e pikësimit në gjuhën shqipe",
     "ca": "Institut d'Estudis Catalans; Ortografia catalana (2017); Manual d'estil",
+    "is": "Árnastofnun; Ritreglur",
 }
 
 
@@ -1880,6 +1881,7 @@ BADGE_TEXT = {
     "nn": "Typografisk opprydding med <b>polytypo</b>",
     "sq": "Pastrim tipografik me <b>polytypo</b>",
     "ca": "Neteja tipogràfica amb <b>polytypo</b>",
+    "is": "Leturfræðileg hreinsun með <b>polytypo</b>",
     "it": "Pulizia tipografica con <b>polytypo</b>",
     "pl": "Typograficzne porządki dzięki <b>polytypo</b>",
     "pt": "Limpeza tipográfica por <b>polytypo</b>",
@@ -1913,6 +1915,7 @@ BADGE_LANG_NAMES = {
     "nn": "Norwegian Nynorsk",
     "sq": "Albanian",
     "ca": "Catalan",
+    "is": "Icelandic",
     "it": "Italian",
     "pl": "Polish",
     "pt": "Portuguese",

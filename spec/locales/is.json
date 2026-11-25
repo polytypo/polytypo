@@ -1,0 +1,91 @@
+{
+  "locale": "is",
+  "name": "Icelandic",
+  "quotes": {
+    "primary": {
+      "open": "„",
+      "close": "“",
+      "innerSpace": "none"
+    },
+    "secondary": {
+      "open": "„",
+      "close": "“",
+      "innerSpace": "none"
+    },
+    "punctuationPlacement": "none",
+    "elisionIdioms": [],
+    "elisionClitics": {
+      "before": [],
+      "after": []
+    }
+  },
+  "dash": {
+    "parenthetical": "en-spaced",
+    "range": "en-tight"
+  },
+  "ellipsis": {
+    "abbreviatedAfterTerminal": false
+  },
+  "hyphen": {
+    "prefixes": [],
+    "suffixes": [],
+    "compounds": []
+  },
+  "nbsp": {
+    "beforePunctuation": [],
+    "narrowBeforePunctuation": [],
+    "afterShortWords": [],
+    "abbreviations": [],
+    "beforeUnits": ["kr", "km"],
+    "spacedUnits": [],
+    "closedUnits": [],
+    "beforeNumber": [],
+    "beforeWord": [],
+    "afterSymbols": [],
+    "initialBinding": "none"
+  },
+  "sources": [
+    {
+      "rule": "quotes",
+      "cite": "Árnastofnun, Ritreglur (Auglýsingar mennta- og menningarmálaráðuneytis nr. 695/2016 og 800/2018 með leiðréttingum), §28.1: «Íslensk tilvitnunarmerki eru „svona“»; «skal ljúka hvorri þeirra með sínum tilvitnunarmerkjum» («Ásgeir mælti: „Afi sagði við mig: „Hertu þig nú.““»); §28.2: «Einföld tilvitnunarmerki eru höfð utan um merkingu orða eða orðasambanda»",
+      "url": "https://ritreglur.arnastofnun.is/",
+      "note": "U+201E…U+201C read from glyph shapes on the rendered pages of the earlier Auglýsing nr. 755/2018 (stjornarradid.is, Greinarmerki_Islensk malnefnd_2018.pdf) and of nr. 695/2016 p. 1, not from a text layer. Secondary equals primary: §28.1 nests double inside double; single marks (U+2018…U+2019 or U+201A…U+2018) are for glosses, not nesting. Accepted cost of the identical pair, as in et (quotes.md §6), pinned by fixtures. innerSpace none by example only. elisionIdioms and elisionClitics are empty: §31.1 apostrophe omission (átt’, ’ann, ’87) is an open class. Retrieved 2026-11-25."
+    },
+    {
+      "rule": "quote-punctuation",
+      "cite": "Árnastofnun, Ritreglur, §32.1: punctuation «á undan seinna tilvitnunarmerki ef þau auðkenna heila málsgrein» / «á eftir seinna tilvitnunarmerki ef þau auðkenna aðeins hluta málsgreinarinnar»",
+      "url": "https://ritreglur.arnastofnun.is/",
+      "note": "punctuationPlacement none: placement depends on meaning, so nothing is moved. Retrieved 2026-11-25."
+    },
+    {
+      "rule": "dashes",
+      "cite": "Árnastofnun, Ritreglur, §26.3: «Þankastrik afmarka ýmis innskot eða viðauka» («Á Íslandi — og hvergi nema á Íslandi — er…»); §26.2.3: millistrik «Í stað hefðbundinna þankastrika og nefnast þá stutt þankastrik» («Á Íslandi – og hvergi nema á Íslandi – er…»); §26.2.2 («Landsbókasafn Íslands – Háskólabókasafn»)",
+      "url": "https://ritreglur.arnastofnun.is/",
+      "note": "Pick-and-pin en-spaced (U+0020 U+2013 U+0020): both widths are permitted for the parenthetical and spacing is shown by example only. Pinned on engine grounds: a spaced hyphen also stands for §26.2.2 contexts where only U+2013 is shown, and an authored U+2014 normalised to U+2013 is still the permitted «stutt þankastrik». Widths read from the rendered 755/2018 pages. Retrieved 2026-11-25."
+    },
+    {
+      "rule": "ranges",
+      "cite": "Árnastofnun, Ritreglur, §26.2.1: millistrik «Tengir saman tölur eða töluorð í ýmiss konar talnabilum og ártölum»; «Hvorki er bil á undan né eftir slíku striki» («13–15», «mars 2013–janúar 2014»)",
+      "url": "https://ritreglur.arnastofnun.is/",
+      "note": "range en-tight (U+2013). Ordinal-dot flanks («18.–21. ágúst») are not range candidates (algorithm limit). Retrieved 2026-11-25."
+    },
+    {
+      "rule": "ellipsis",
+      "cite": "Árnastofnun, Ritreglur, §31.2: «Úrfellingarpunktar, sem eru sjálfstætt tákn (…)»; «Á undan úrfellingarpunktum er stafbil ef næst fyrir framan þá kemur heilt orð»",
+      "url": "https://ritreglur.arnastofnun.is/",
+      "note": "U+2026. abbreviatedAfterTerminal false: the source never reduces the dots after ? or !. Pin. Retrieved 2026-11-25."
+    },
+    {
+      "rule": "hyphen",
+      "cite": "Árnastofnun, Ritreglur, §26.1 (bandstrik: «13-menningarnir», «BA-nemi», «ís- og sælgætiskaup»)",
+      "url": "https://ritreglur.arnastofnun.is/",
+      "note": "All three lists empty: uses are described, there is no closed list of unbreakable forms. Retrieved 2026-11-25."
+    },
+    {
+      "rule": "nbsp",
+      "cite": "Árnastofnun, Ritreglur, §22.6: «Ekki er bil á eftir orði í skammstöfun nema milli tveggja skammstafana sem hvor um sig er sjálfstæð eining» (t.d., o.s.frv., próf. dr.); §22.3 «Hann greiddi henni 100 kr.»; §22.4 «149.500.000 km frá jörðu»",
+      "url": "https://ritreglur.arnastofnun.is/",
+      "note": "abbreviations empty (no internal space; «próf. dr.» not stated non-breaking). beforeUnits kr, km: spacing attested by example, non-breaking not stated (pick-and-pin). % °C ‰ are not addressed and are left out. beforePunctuation and narrowBeforePunctuation empty (examples closed). nr., § and initials are spaced by example («lögum nr. 2/1990», «§ 8.5.2», «Agnes M. Sigurðardóttir») but no non-breaking rule: left empty, initialBinding none (pick-and-pin). Retrieved 2026-11-25."
+    }
+  ]
+}

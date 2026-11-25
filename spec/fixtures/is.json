@@ -1,0 +1,288 @@
+{
+  "spec": "1.32.0",
+  "locale": "is",
+  "cases": [
+    {
+      "id": "is-quotes-primary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Hún sagði \"Það var nú gott\" og fór.",
+      "out": "Hún sagði „Það var nú gott“ og fór.",
+      "note": "Árnastofnun, Ritreglur §28.1: «Íslensk tilvitnunarmerki eru „svona“»; U+201E opens, U+201C closes."
+    },
+    {
+      "id": "is-quotes-nested-same-pair",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Ásgeir mælti: \"Afi sagði: \"Hertu þig nú.\" Svo fór hann.\"",
+      "out": "Ásgeir mælti: „Afi sagði: „Hertu þig nú.“ Svo fór hann.“",
+      "note": "Árnastofnun, Ritreglur §28.1: a quotation inside a quotation takes the same pair, «„Afi sagði við mig: „Hertu þig nú.““». Accepted cost as in et (quotes.md §6)."
+    },
+    {
+      "id": "is-quotes-nested-with-words",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Hún sagði \"þetta er 'orð' úr bók\" og fór.",
+      "out": "Hún sagði „þetta er „orð“ úr bók“ og fór.",
+      "note": "Árnastofnun, Ritreglur §28.1: the inner pair is the same „…“ as the outer one."
+    },
+    {
+      "id": "is-quotes-already-typeset",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Hún sagði „já“ og fór.",
+      "out": "Hún sagði „já“ og fór.",
+      "note": "Árnastofnun, Ritreglur §28.1: already-correct marks are kept."
+    },
+    {
+      "id": "is-quotes-old-closer-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Hún sagði „já” og fór.",
+      "out": "Hún sagði „já“ og fór.",
+      "note": "Árnastofnun, Ritreglur §28.1: the closing mark is U+201C, so a U+201D closer is normalised."
+    },
+    {
+      "id": "is-quotes-angle-input",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Hún sagði «já» og fór.",
+      "out": "Hún sagði „já“ og fór.",
+      "note": "Árnastofnun, Ritreglur §28.1: guillemets are not Icelandic quotation marks."
+    },
+    {
+      "id": "is-quotes-no-inner-space",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Hún sagði: \" já \" og fór.",
+      "out": "Hún sagði: „já“ og fór.",
+      "note": "Árnastofnun, Ritreglur §28.1: every example sets the marks against the quoted words, so innerSpace is none."
+    },
+    {
+      "id": "is-quotes-nest-at-end-declined",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Hún sagði: \"Þetta er 'orð'\" og fór.",
+      "out": "Hún sagði: \"Þetta er ’orð'\" og fór.",
+      "note": "Árnastofnun, Ritreglur §28.1; quotes.md §6: with the inner pair equal to the outer one, a nested pair that touches its outer closer is declined. Accepted cost, pinned."
+    },
+    {
+      "id": "is-quotes-nest-at-start-declined",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Hún sagði: \"'Orð' er hér\" og fór.",
+      "out": "Hún sagði: \"'Orð’ er hér\" og fór.",
+      "note": "Árnastofnun, Ritreglur §28.1; quotes.md §6: a nested pair that touches its outer opener is declined. Accepted cost, pinned."
+    },
+    {
+      "id": "is-apostrophe-omission",
+      "rule": "apostrophe",
+      "mode": "text",
+      "in": "Það átt' ekki við. Hann fæddist '87.",
+      "out": "Það átt’ ekki við. Hann fæddist ’87.",
+      "note": "Árnastofnun, Ritreglur §31.1: the apostrophe marks an omitted letter or digit (átt’, ’ann, ’87)."
+    },
+    {
+      "id": "is-quotes-apostrophe-inside",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Hún sagði \"það átt' ekki við\" og fór.",
+      "out": "Hún sagði „það átt’ ekki við“ og fór.",
+      "note": "Árnastofnun, Ritreglur §31.1: the apostrophe of átt’ does not close a quotation."
+    },
+    {
+      "id": "is-quote-punctuation-none",
+      "rule": "quote-punctuation",
+      "mode": "text",
+      "in": "„Ég held,“ sagði hún. Hann sagði „strax“ en átti við „eftir klukkutíma“.",
+      "out": "„Ég held,“ sagði hún. Hann sagði „strax“ en átti við „eftir klukkutíma“.",
+      "note": "Árnastofnun, Ritreglur §32.1: the punctuation goes before the closing mark when the quotation is a whole sentence and after it when it is only part, so punctuationPlacement is none and nothing is moved.",
+      "rules": {
+        "quote-punctuation": true
+      }
+    },
+    {
+      "id": "is-ellipsis-three-dots",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Bíddu... og svo.",
+      "out": "Bíddu… og svo.",
+      "note": "Árnastofnun, Ritreglur §31.2: the ellipsis points are the single character U+2026."
+    },
+    {
+      "id": "is-ellipsis-after-question",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Hvað á ég að gera?... Ég veit ekki.",
+      "out": "Hvað á ég að gera?… Ég veit ekki.",
+      "note": "Árnastofnun, Ritreglur §31.2: the source never reduces the dots after ? or !; abbreviatedAfterTerminal is false."
+    },
+    {
+      "id": "is-ellipsis-after-exclamation",
+      "rule": "ellipsis",
+      "mode": "text",
+      "in": "Farðu!... Strax.",
+      "out": "Farðu!… Strax.",
+      "note": "Árnastofnun, Ritreglur §31.2: as above, the three dots stay after !."
+    },
+    {
+      "id": "is-dashes-parenthetical",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Á Íslandi - og hvergi nema á Íslandi - er þetta svona.",
+      "out": "Á Íslandi – og hvergi nema á Íslandi – er þetta svona.",
+      "note": "Árnastofnun, Ritreglur §26.3 and 26.2.3: the parenthetical dash is permitted as U+2013 with spaces (pick-and-pin)."
+    },
+    {
+      "id": "is-dashes-em-input",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Á Íslandi — og hvergi nema á Íslandi — er þetta svona.",
+      "out": "Á Íslandi – og hvergi nema á Íslandi – er þetta svona.",
+      "note": "Árnastofnun, Ritreglur §26.3: the em dash is the traditional form; the locale pins the permitted «stutt þankastrik» U+2013."
+    },
+    {
+      "id": "is-dashes-existing-en",
+      "rule": "dashes",
+      "mode": "text",
+      "in": "Á Íslandi – og hvergi nema á Íslandi – er þetta svona.",
+      "out": "Á Íslandi – og hvergi nema á Íslandi – er þetta svona.",
+      "note": "Árnastofnun, Ritreglur §26.2.3: an authored spaced en dash is kept."
+    },
+    {
+      "id": "is-ranges-digits-tight",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "Bls. 13-15 og árin 1986-1989",
+      "out": "Bls. 13⁠–⁠15 og árin 1986⁠–⁠1989",
+      "note": "ranges.md; Árnastofnun, Ritreglur §26.2.1: «Hvorki er bil á undan né eftir slíku striki» («13–15»).",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "is-ranges-already-tight",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "Árin 2001–2006",
+      "out": "Árin 2001–2006",
+      "note": "ranges.md; Árnastofnun, Ritreglur §26.2.1: an authored tight en dash is kept.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "is-ranges-word-hyphen-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "Hún á BA-próf og 13-menningarnir komu.",
+      "out": "Hún á BA-próf og 13-menningarnir komu.",
+      "note": "ranges.md; Árnastofnun, Ritreglur §26.1: the hyphen of «BA-nemi» and «13-menningarnir» is a bandstrik, not a range.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "is-ranges-spaced-subtraction-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "Reikningur: 23 - 15 = 8",
+      "out": "Reikningur: 23 - 15 = 8",
+      "note": "ranges.md; Árnastofnun, Ritreglur §26.2.2: a spaced minus between digits is arithmetic, not a range, and is left alone.",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "is-ranges-ordinal-dot-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "Frá 18.-21. ágúst",
+      "out": "Frá 18.-21. ágúst",
+      "note": "ranges.md; Árnastofnun, Ritreglur §26.2.1: an ordinal-dot flank («18.–21. ágúst») is not a range candidate (algorithm limit, accepted cost).",
+      "rules": {
+        "ranges": true
+      }
+    },
+    {
+      "id": "is-hyphen-noop",
+      "rule": "hyphen",
+      "mode": "text",
+      "in": "BA-próf og ís- og sælgætiskaup",
+      "out": "BA-próf og ís- og sælgætiskaup",
+      "note": "Árnastofnun, Ritreglur §26.1: the hyphen lists are empty, so nothing is bound."
+    },
+    {
+      "id": "is-nbsp-units",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Hann greiddi henni 100 kr. og fór 3 km.",
+      "out": "Hann greiddi henni 100 kr. og fór 3 km.",
+      "note": "Árnastofnun, Ritreglur §22.3, 22.4: «100 kr.», «149.500.000 km». Spacing is attested; the non-breaking binding of kr and km is pick-and-pin."
+    },
+    {
+      "id": "is-nbsp-abbreviations-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Þ.e. t.d. o.s.frv. og próf. dr. Jón",
+      "out": "Þ.e. t.d. o.s.frv. og próf. dr. Jón",
+      "note": "Árnastofnun, Ritreglur §22.6: abbreviations carry no internal space, so there is nothing to bind."
+    },
+    {
+      "id": "is-nbsp-before-number-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Samkvæmt lögum nr. 2/1990, § 8.5.2",
+      "out": "Samkvæmt lögum nr. 2/1990, § 8.5.2",
+      "note": "Árnastofnun, Ritreglur §22: nr. and § are spaced by example, but no non-breaking rule is stated; the lists are empty."
+    },
+    {
+      "id": "is-nbsp-initials-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Agnes M. Sigurðardóttir",
+      "out": "Agnes M. Sigurðardóttir",
+      "note": "Árnastofnun, Ritreglur §22: initials are spaced by example; initialBinding is none."
+    },
+    {
+      "id": "is-nbsp-percent-inert",
+      "rule": "nbsp",
+      "mode": "text",
+      "in": "Um 9 % og 5 °C",
+      "out": "Um 9 % og 5 °C",
+      "note": "% and °C are not addressed by the source and are not bound."
+    },
+    {
+      "id": "is-spaces-before-punctuation",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Hvað ? Nei !",
+      "out": "Hvað? Nei!",
+      "note": "Árnastofnun, Ritreglur §22.1: no space before terminal punctuation."
+    },
+    {
+      "id": "is-spaces-brackets",
+      "rule": "spaces",
+      "mode": "text",
+      "in": "Hún ( hljótt ) fór .",
+      "out": "Hún (hljótt) fór.",
+      "note": "Árnastofnun, Ritreglur §22.1: no space inside brackets or before a full stop."
+    },
+    {
+      "id": "is-symbols-copyright",
+      "rule": "symbols",
+      "mode": "text",
+      "in": "(c) 2026",
+      "out": "© 2026",
+      "note": "symbols.md: (c) becomes ©."
+    },
+    {
+      "id": "is-letters-boundary",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Þórður sagði \"Ægir og Össur drekka ðýð\"",
+      "out": "Þórður sagði „Ægir og Össur drekka ðýð“",
+      "note": "Þ Ð Æ Ö are letters of the Icelandic alphabet (Árnastofnun, Íslenska stafrófið); they sit against the quotation marks."
+    }
+  ]
+}

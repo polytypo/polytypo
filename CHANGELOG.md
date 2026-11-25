@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.31.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.31.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.32.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.32.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,13 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.32.0 — 25 November 2026
+
+Icelandic joins as the thirty-fifth locale, cited to Árnastofnun.
+
+- Icelandic ships as `is`. Until now `is` was refused with `POLYTYPO_UNKNOWN_LOCALE`, so the text had to go through another locale. Measured: `Hún sagði: "Hann kallaði það 'búðina á horninu' - rétt hjá skólanum - og fór 3 km." Hann greiddi 100 kr. og beið...` came back from `de-DE` as `Hún sagði: „Hann kallaði það ‚búðina á horninu‘ – rétt hjá skólanum – og fór 3 km.“ Hann greiddi 100 kr. og beið…`, with a single-quote pair inside the quotation and a breaking space before `kr.`. `is` gives `Hún sagði: „Hann kallaði það „búðina á horninu“ – rétt hjá skólanum – og fór 3 km.“ Hann greiddi 100 kr. og beið…`: the same `„…“` pair at both levels, and no-break spaces before `km` and `kr.`.
+- The data is cited to Árnastofnun's `Ritreglur`. A quotation inside a quotation takes the same `„…“` pair, because the rules reserve single marks for glosses. So a nested pair that touches its outer mark, as in `"Þetta er 'orð'"`, is declined: the text is left as typed or converted only in part. The parenthetical dash is a spaced en dash; the source also allows the em dash, and an em dash you wrote is rewritten to the en dash. Ranges such as `13-15` become `13–15` when the `ranges` rule is on. `kr` and `km` stay with the number. `%`, `°C` and `‰` are left alone, because the source does not say how they are spaced. Apostrophes in `átt’` and `’87` are converted; punctuation next to a closing quotation mark is not moved, because the source places it by meaning. Pass `is` or a region form such as `is-IS`.
 
 ## 1.31.0 — 23 November 2026
 

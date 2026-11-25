@@ -2,6 +2,20 @@
   "_comment": "Single source for CHANGELOG.md (brand/tools/gen_readmes.py) and the site's /changelog page (brand/tools/build_promo.py). Released versions only. Example strings are real engine output captured from the published packages of each version, never typed by hand; an entry whose release changes no output carries examples: [].",
   "releases": [
     {
+      "version": "1.32.0",
+      "date": "2026-11-25",
+      "headline": "Icelandic joins as the thirty-fifth locale, cited to Árnastofnun.",
+      "items": [
+        {
+          "text": "Icelandic ships as `is`. Until now `is` was refused with `POLYTYPO_UNKNOWN_LOCALE`, so the text had to go through another locale. Measured: `Hún sagði: \"Hann kallaði það 'búðina á horninu' - rétt hjá skólanum - og fór 3 km.\" Hann greiddi 100 kr. og beið...` came back from `de-DE` as `Hún sagði: „Hann kallaði það ‚búðina á horninu‘ – rétt hjá skólanum – og fór 3 km.“ Hann greiddi 100 kr. og beið…`, with a single-quote pair inside the quotation and a breaking space before `kr.`. `is` gives `Hún sagði: „Hann kallaði það „búðina á horninu“ – rétt hjá skólanum – og fór 3 km.“ Hann greiddi 100 kr. og beið…`: the same `„…“` pair at both levels, and no-break spaces before `km` and `kr.`."
+        },
+        {
+          "text": "The data is cited to Árnastofnun's `Ritreglur`. A quotation inside a quotation takes the same `„…“` pair, because the rules reserve single marks for glosses. So a nested pair that touches its outer mark, as in `\"Þetta er 'orð'\"`, is declined: the text is left as typed or converted only in part. The parenthetical dash is a spaced en dash; the source also allows the em dash, and an em dash you wrote is rewritten to the en dash. Ranges such as `13-15` become `13–15` when the `ranges` rule is on. `kr` and `km` stay with the number. `%`, `°C` and `‰` are left alone, because the source does not say how they are spaced. Apostrophes in `átt’` and `’87` are converted; punctuation next to a closing quotation mark is not moved, because the source places it by meaning. Pass `is` or a region form such as `is-IS`."
+        }
+      ],
+      "examples": []
+    },
+    {
       "version": "1.31.0",
       "date": "2026-11-23",
       "headline": "Catalan joins as the thirty-fourth locale, cited to the Institut d'Estudis Catalans.",

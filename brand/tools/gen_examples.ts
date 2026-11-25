@@ -43,6 +43,7 @@ const LOCALES = [
   "nn",
   "sq",
   "ca",
+  "is",
 ] as const;
 
 // Every hero line: nested quotes, an apostrophe or elision (except el — see its own note below),
@@ -144,6 +145,9 @@ const HERO: Record<(typeof LOCALES)[number], string> = {
   ca:
     `Ella va preguntar: "No és aquesta la botiga de l'amic que anomenen 'la de la cantonada'?" ... Vam caminar - gairebé 3 km - i ` +
     `era tancada. Copyright (c) 2026, format 40x60 cm.`,
+  is:
+    `Hún spurði: "Er þetta ekki búðin sem þeir kalla 'á horninu'?" ... Við gengum - næstum 3 km - og hún var ` +
+    `lokuð. Copyright (c) 2026, stærð 40x60 cm.`,
   nl:
     `Hij vroeg: "Is dit niet de winkel die ze 'om de hoek' noemen?" ... We liepen -- bijna 3 km ` +
     `-- en hij was dicht. Copyright (c) 2026, formaat 40x60 cm.`,
@@ -317,6 +321,11 @@ const SHOWCASE: Record<
     { rule: "dashes", in: `El llibre - publicat abans de la guerra - és bo.` },
     { rule: "nbsp", in: `3 km i 50 %` },
   ],
+  is: [
+    { rule: "quotes", in: `Hún sagði "góðan dag" og fór.` },
+    { rule: "dashes", in: `Bókin - gefin út fyrir stríðið - er góð.` },
+    { rule: "nbsp", in: `Hann greiddi 100 kr. fyrir 3 km` },
+  ],
   nl: [
     { rule: "quotes", in: `Hij zei "dag" en vertrok.` },
     { rule: "dashes", in: `Het nieuws - volgens de kranten - is niet bekend.` },
@@ -405,6 +414,7 @@ const NAMES: Record<(typeof LOCALES)[number], string> = {
   nn: "Norwegian Nynorsk",
   sq: "Albanian",
   ca: "Catalan",
+  is: "Icelandic",
   "pt-PT": "Portuguese (Portugal)",
   "pt-BR": "Portuguese (Brazil)",
 };
