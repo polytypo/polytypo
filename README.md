@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.31.0** · locales: **33** · rules: **10**.
+Spec version: **1.31.0** · locales: **34** · rules: **10**.
 
 ## Implementations
 
@@ -47,6 +47,7 @@ Spec version: **1.31.0** · locales: **33** · rules: **10**.
 | --- | --- |
 | Albanian (`sq`) | Ajo pyeti: “A nuk është ky dyqani që e quajnë ‘në qoshe’?” … Ecëm – gati 3 km – dhe ishte mbyllur. Copyright © 2026, formati 40×60 cm. |
 | Bulgarian (`bg`) | Тя попита: „Не е ли това магазинът, който наричат „на ъгъла“?“ … Вървяхме – почти 3 км – и беше затворен. Copyright © 2026, формат 40×60 см. |
+| Catalan (`ca`) | Ella va preguntar: «No és aquesta la botiga de l’amic que anomenen “la de la cantonada”?» … Vam caminar —gairebé 3 km— i era tancada. Copyright © 2026, format 40×60 cm. |
 | Croatian (`hr`) | Pitala je: „Nije li to dućan koji zovu ‘onaj na uglu’?” … Hodali smo – gotovo 3 km – i bio je zatvoren. Copyright © 2026, format 40×60 cm. |
 | Czech (`cs`) | Zeptal se: „Není to ten obchod, kterému říkají ‚ten za rohem‘?“ … Šli jsme – skoro 3 km – a byl zavřený. Copyright © 2026, formát 40×60 cm. |
 | Danish (`da`) | Hun spurgte: »Er det ikke butikken, de kalder ›den om hjørnet‹?« … Vi gik – næsten 3 km – og den var lukket. Copyright © 2026, format 40×60 cm. |
@@ -86,6 +87,7 @@ Every string above is real engine output, generated from `promo/examples.json` �
 | Locale | Language | Primary quotes | Secondary | Parenthetical dash | Range |
 | --- | --- | --- | --- | --- | --- |
 | `bg` | Bulgarian | „…“ | „…“ | en dash, spaced | en dash, spaced |
+| `ca` | Catalan | «…» | “…” | em dash, spaced outside the pair | unchanged |
 | `cs` | Czech | „…“ | ‚…‘ | en dash, spaced | en dash, unspaced |
 | `da` | Danish | »…« | ›…‹ | en dash, spaced | unchanged |
 | `de-CH` | German (Switzerland) | «…» | ‹…› | en dash, spaced | en dash, unspaced |

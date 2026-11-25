@@ -243,6 +243,124 @@
       "resolution": [],
       "disagreed": 0
     },
+    "ca": {
+      "byRule": {
+        "quotes": [
+          {
+            "id": "ca-quotes-primary",
+            "in": "Va dir \"estic cansat\" i va marxar.",
+            "out": "Va dir «estic cansat» i va marxar."
+          },
+          {
+            "id": "ca-quotes-nested",
+            "in": "Va escriure: \"Em va dir 'arribo de seguida' i va desaparèixer.\"",
+            "out": "Va escriure: «Em va dir “arribo de seguida” i va desaparèixer.»"
+          },
+          {
+            "id": "ca-quotes-inner-space-deleted",
+            "in": "Va dir « estic cansat » i va marxar.",
+            "out": "Va dir «estic cansat» i va marxar."
+          }
+        ],
+        "apostrophe": [
+          {
+            "id": "ca-apostrophe-elision",
+            "in": "Aquesta és l'escola d'en Pere i m'agrada.",
+            "out": "Aquesta és l’escola d’en Pere i m’agrada."
+          },
+          {
+            "id": "ca-apostrophe-reduced-forms",
+            "in": "Dóna-me'n un i porta-'ls.",
+            "out": "Dóna-me’n un i porta-’ls."
+          },
+          {
+            "id": "ca-apostrophe-before-span-quote",
+            "in": "Parla d'\"estabornir\" sovint.",
+            "out": "Parla d’«estabornir» sovint."
+          }
+        ],
+        "ellipsis": [
+          {
+            "id": "ca-ellipsis-three-dots",
+            "in": "Doncs... no ho sé.",
+            "out": "Doncs… no ho sé."
+          },
+          {
+            "id": "ca-ellipsis-not-abbreviated-after-terminal",
+            "in": "De veritat?..",
+            "out": "De veritat?…"
+          }
+        ],
+        "dashes": [
+          {
+            "id": "ca-dashes-paired-spaced-hyphens",
+            "in": "El llibre - publicat abans de la guerra - és bo.",
+            "out": "El llibre —publicat abans de la guerra— és bo."
+          },
+          {
+            "id": "ca-dashes-paired-double-hyphen",
+            "in": "Vam caminar -- gairebé 3 km -- i era tancat.",
+            "out": "Vam caminar —gairebé 3 km— i era tancat."
+          },
+          {
+            "id": "ca-dashes-spaced-hyphens-between-places",
+            "in": "De la plaça de Catalunya - plaça de la Bonanova - i tornem.",
+            "out": "De la plaça de Catalunya —plaça de la Bonanova— i tornem."
+          }
+        ],
+        "nbsp": [
+          {
+            "id": "ca-nbsp-percent",
+            "in": "El 80 % dels alumnes ho va aprovar.",
+            "out": "El 80 % dels alumnes ho va aprovar."
+          },
+          {
+            "id": "ca-nbsp-per-mille",
+            "in": "Un 13 ‰ del total.",
+            "out": "Un 13 ‰ del total."
+          },
+          {
+            "id": "ca-nbsp-celsius",
+            "in": "Fa −15 °C a la nit.",
+            "out": "Fa −15 °C a la nit."
+          }
+        ],
+        "spaces": [
+          {
+            "id": "ca-spaces-before-punctuation-deleted",
+            "in": "Què vols ? Vine : veuràs ; no cal dir res !",
+            "out": "Què vols? Vine: veuràs; no cal dir res!"
+          }
+        ],
+        "symbols": [
+          {
+            "id": "ca-symbols-copyright-and-dimensions",
+            "in": "Copyright (c) 2026, mida 40x60 cm",
+            "out": "Copyright © 2026, mida 40×60 cm"
+          }
+        ]
+      },
+      "modes": [
+        {
+          "mode": "text",
+          "in": "Ella va preguntar: \"No és aquesta la botiga de l'amic que anomenen 'la de la cantonada'?\" ... Vam caminar - gairebé 3 km - i era tancada. Copyright (c) 2026, format 40x60 cm.\nsay(\"a -- b ...\")",
+          "out": "Ella va preguntar: «No és aquesta la botiga de l’amic que anomenen “la de la cantonada”?» … Vam caminar —gairebé 3 km— i era tancada. Copyright © 2026, format 40×60 cm.\nsay(«a -- b …»)"
+        },
+        {
+          "mode": "html",
+          "in": "<p>Ella va preguntar: \"No és aquesta la botiga de l'amic que anomenen 'la de la cantonada'?\" ... Vam caminar - gairebé 3 km - i era tancada. Copyright (c) 2026, format 40x60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>",
+          "out": "<p>Ella va preguntar: «No és aquesta la botiga de l’amic que anomenen “la de la cantonada”?» … Vam caminar —gairebé 3 km— i era tancada. Copyright © 2026, format 40×60 cm.</p>\n<pre><code>say(\"a -- b ...\")</code></pre>"
+        },
+        {
+          "mode": "markdown",
+          "in": "Ella va preguntar: \"No és aquesta la botiga de l'amic que anomenen 'la de la cantonada'?\" ... Vam caminar - gairebé 3 km - i era tancada. Copyright (c) 2026, format 40x60 cm.\n\n`say(\"a -- b ...\")`",
+          "out": "Ella va preguntar: «No és aquesta la botiga de l’amic que anomenen “la de la cantonada”?» … Vam caminar —gairebé 3 km— i era tancada. Copyright © 2026, format 40×60 cm.\n\n`say(\"a -- b ...\")`"
+        }
+      ],
+      "compare": null,
+      "resolution": [],
+      "disagreed": 0
+    },
     "hr": {
       "byRule": {
         "quotes": [

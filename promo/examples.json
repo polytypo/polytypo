@@ -61,6 +61,35 @@
       ]
     },
     {
+      "locale": "ca",
+      "name": "Catalan",
+      "hero": {
+        "in": "Ella va preguntar: \"No és aquesta la botiga de l'amic que anomenen 'la de la cantonada'?\" ... Vam caminar - gairebé 3 km - i era tancada. Copyright (c) 2026, format 40x60 cm.",
+        "out": "Ella va preguntar: «No és aquesta la botiga de l’amic que anomenen “la de la cantonada”?» … Vam caminar —gairebé 3 km— i era tancada. Copyright © 2026, format 40×60 cm."
+      },
+      "proof": {
+        "in": "She asked, \"Isn't this the shop they call 'round the corner'?\" ... We'd walked - nearly 3 km - just to find it closed. Copyright (c) 2026; the print measures 40x60 cm.",
+        "out": "She asked, «Isn’t this the shop they call “round the corner”?» … We’d walked —nearly 3 km— just to find it closed. Copyright © 2026; the print measures 40×60 cm."
+      },
+      "cases": [
+        {
+          "rule": "quotes",
+          "in": "Ella va dir \"bon dia\" i va marxar.",
+          "out": "Ella va dir «bon dia» i va marxar."
+        },
+        {
+          "rule": "dashes",
+          "in": "El llibre - publicat abans de la guerra - és bo.",
+          "out": "El llibre —publicat abans de la guerra— és bo."
+        },
+        {
+          "rule": "nbsp",
+          "in": "3 km i 50 %",
+          "out": "3 km i 50 %"
+        }
+      ]
+    },
+    {
       "locale": "hr",
       "name": "Croatian",
       "hero": {
