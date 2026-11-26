@@ -973,23 +973,36 @@ loop:
 `A` — exactly when `B ⊋ π(A)`, i.e. the rendered array admits a pairing the input did not — one
 pair is removed, and *which* pair is specified so two ports cannot disagree.
 
-**Termination.** Each iteration either accepts or strictly shrinks `A`. `A` is finite and `∅`
-accepts unconditionally, so the loop runs at most `|A₀| + 1` times. Cost is `O(k·n)` with `k` the
-number of pairs; in the overwhelmingly common case the first round certifies and the extra cost
-is one `O(n)` pass. An implementation may short-circuit on that.
+**Round cap.** The loop runs at most `GATE_ROUNDS_MAX = 8` rounds, a round being one pass of the
+loop body past its `A = ∅` test (one render and one re-run of passes 1–2). If round
+`GATE_ROUNDS_MAX` does not accept, the gate accepts `∅` and the rule emits no edit for that call.
+`∅` is the unconditional fixed point of the loop, so idempotency is unaffected: a second call on
+the unchanged output finds the same candidates and reaches the same `∅` after the same eight
+rounds. The cap is part of the contract, not an implementation tuning knob: two ports with
+different caps would disagree on an input that needs more rounds than the smaller cap allows.
+
+**Termination and cost.** Each round either accepts or strictly shrinks `A`, and the cap bounds
+the number of rounds, so the loop runs at most `min(|A₀| + 1, GATE_ROUNDS_MAX)` times. Every round
+is one `O(n)` render and re-run, so the cost of the gate is `O(GATE_ROUNDS_MAX · n)` — linear in
+the input for a fixed cap. In the overwhelmingly common case the first round certifies and the
+extra cost is one `O(n)` pass. An implementation may short-circuit on that.
 
 **Why the exit condition is `B = π(A)` and not `π(A) ⊆ B`.** Exiting with extra pairs in `B` is
 unsound: the second run *starts* from `B`, and if `B` certifies, the second run renders `B`'s
 extra pairs and the output differs. The intersection alone does not terminate at a sound state,
 which is why the forced-removal clause exists.
 
-**Empirical status of the forced-removal clause.** An exhaustive sweep of ~850,000 inputs across
-all ten locales (the alphabet of §9's fixtures, to length 4–5, plus the named witnesses) did not
-observe the clause firing even once — every case that reached the gate either certified in round
-1 or was resolved by the plain intersection shrinking `A`. The clause is implemented as specified
-(it is strictly more conservative than omitting it, never less sound, so it costs nothing even if
-unreachable in practice) but its necessity is **not** demonstrated by a concrete witness as of
-this writing. If a future sweep finds one, it belongs in `spec/fixtures/` as a named case.
+**Empirical status of the forced-removal clause.** The clause fires. A pair removed by it is still
+a candidate in the rendered array, so `B ⊋ π(A)` persists after the removal and the loop continues
+removing one pair per round until `A = ∅` or the cap is reached; in both cases the gate accepts
+`∅`. Inputs that reach it interleave many marks of different kinds without a clean pairing. Measured
+over 20,701 paragraphs of six public-domain novels and of Wikipedia text in six locales, 8,733
+contain no candidate pair, 11,957 certified in one round, 8 in two or three rounds, and three
+needed 5, 14 and 38; the output of those three is identical with the cap at 8 and with no cap
+(`∅` in all). The cap would change the *outcome* only for an input in which the loop certified a
+non-empty set after more than `GATE_ROUNDS_MAX` rounds; none was found by exhaustive enumeration
+to length 9 over `'`, `"`, `a` and a space, nor by a search for one over longer inputs, so the cap
+is, as measured, a bound on time and not on output.
 
 ### 3.6 Pass 5 — emit
 
@@ -1585,8 +1598,10 @@ Ordered by how much this matters.
 6. **`" "` and `«»` are prevented by an explicit vacuity guard, not by construction**, unlike
    0.1.0 where an empty pair was structurally impossible. Weaker footing than 0.1.0 had, though
    the gate catches any resulting instability.
-7. **Worst case is `O(n²)`** (gate rounds × pass cost). A pathological span of alternating quote
-   marks is quadratic; cap rounds if this matters in practice.
+7. **The gate is bounded at `GATE_ROUNDS_MAX` rounds (spec 1.33.0), so its cost is
+   `O(GATE_ROUNDS_MAX · n)`.** Through 1.32.0 the number of rounds grew with the number of pairs
+   and the worst case was `O(n²)`. An input that needs more rounds than the cap is left entirely
+   unconverted by `quotes` for that call, not only at the point that needed them.
 8. **`rock 'n' roll` — closed for every locale in spec 1.1.0 by the universal medial-`n` veto
    (§3.2), by operator decision that the idiom is international rather than a locale fact.** It
    was closed for `en-US` alone in spec 0.4.0 via `quotes.elisionIdioms =
@@ -1724,9 +1739,12 @@ same entry also called 2801 a vitest total; it is one runner's conformance test 
 runtime's own total is 4440.
 
 1.33.0 closes two defects in the opening and pairing of quotation marks, neither of which touches
-a locale file. **U+00BF and U+00A1 join `OPENISH`** (§3.1): a quotation directly after an
+a locale file, and bounds the certification gate. **U+00BF and U+00A1 join `OPENISH`** (§3.1): a quotation directly after an
 inverted question or exclamation mark was never recognised as opening and stayed straight (issue
 #112, `¿"Sí"?`). **The quoted-lone-mark veto** (§3.2) declines `'"'` and `"'"`: the shape made
 the certification gate remove an unrelated pair, leaving it unmatched and curled as two closing
 apostrophes (issue #113, `'he' '"'` → `’he’ '"'`). The one existing behaviour that changes is the
-`en-GB` rendering of the shape, which stops curling the outer marks.
+`en-GB` rendering of the shape, which stops curling the outer marks. **The certification gate is
+bounded at `GATE_ROUNDS_MAX = 8` rounds** (§3.5): where the loop has not accepted by then, the empty
+set is accepted and `quotes` emits nothing for that call, which makes the gate's cost linear in the
+input. No output known to the specification changes.

@@ -5476,6 +5476,22 @@
       "in": "ISBN 978-5-91796-032-6",
       "out": "ISBN 978-5-91796-032-6",
       "note": "ranges.md §3.2 G2: a chain of hyphen-joined digit runs is never a range, so ISBNs and phone numbers stay as typed."
+    },
+    {
+      "id": "en-us-quotes-gate-round-bound-sixteen-units",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"",
+      "out": "'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"",
+      "note": "quotes.md §3.5: the certification gate needs 8 rounds on this input and accepts the empty pair set, so the text is unchanged (the last round the cap allows)."
+    },
+    {
+      "id": "en-us-quotes-gate-round-bound-eighteen-units",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"",
+      "out": "'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"'\"a\"",
+      "note": "quotes.md §3.5: the certification gate needs 9 rounds on this input and accepts the empty pair set, so the text is unchanged, one more than the cap allows; the empty set is accepted without a ninth round."
     }
   ]
 }
