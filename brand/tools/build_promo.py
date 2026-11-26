@@ -221,14 +221,19 @@ SECTION_DESCRIPTIONS = {
     "runtimes": "polytypo is a typography library with five runtimes. Install and call it from JavaScript and TypeScript, Python, Go, Ruby and PHP.",
 }
 SECTION_SEO_TITLES = {
-    "runtimes": "Typography library runtimes: JavaScript, Python, Go, Ruby, PHP | polytypo",
-    "modes": "polytypo modes reference: text, html, markdown and yaml",
+    "getting-started": "Getting started with polytypo in JavaScript, Python, Go, Ruby or PHP",
+    "api": "The polytypo API reference for transform, analyze, options and errors",
+    "modes": "The polytypo modes reference for text, html, markdown and yaml",
+    "rules": "The typography rules polytypo applies and what each changes per locale",
+    "concepts": "The guarantees behind polytypo, from idempotency to the span model",
+    "guides": "Guides to fixing typography in Markdown, MDX, HTML and YAML with polytypo",
+    "runtimes": "Typography library runtimes for JavaScript, Python, Go, Ruby and PHP",
 }
 SECTION_PAGES = [
     {
         "slug": f"docs/{sid}",
         "title": label,
-        "seo_title": SECTION_SEO_TITLES.get(sid, f"polytypo documentation: {label}"),
+        "seo_title": SECTION_SEO_TITLES[sid],
         "description": SECTION_DESCRIPTIONS[sid],
         "section": sid,
         "is_section_index": True,
@@ -261,8 +266,8 @@ PAGE_DESCRIPTIONS = {
         "in five languages, plus the full error code contract."
     ),
     "playground": (
-        "Convert straight quotes to curly (smart) quotes online. Pick a locale and get its "
-        "quotation marks, dashes, ellipses and no-break spaces. Your text stays in your browser."
+        "Convert straight quotes to curly (smart) quotes online, with {other_rules} more typography rules "
+        "for dashes, ellipses and no-break spaces in your locale. Your text stays in your browser."
     ),
     "locales": (
         "Typography rules by locale: quotation marks, dashes, ellipsis and no-break spaces for "
@@ -286,22 +291,40 @@ PAGE_DESCRIPTIONS = {
     ),
 }
 
-# Titles that carry the query words their page answers; every other page is "polytypo — <label>".
+# Titles are one natural phrase for the reader: no `|`, `:` or dash-joined segments and no fixed
+# brand suffix (check_title enforces it at build). A page missing here is a build error.
+NUMBER_WORDS = {
+    1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six",
+    7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven", 12: "twelve",
+}
+
+OTHER_RULES_WORD = NUMBER_WORDS.get(RULE_COUNT - 1, str(RULE_COUNT - 1))
 PAGE_TITLES = {
     "": (
-        f"Typography library: fix quotes, dashes and no-break spaces in {len(gen_locale_pages.CODES)} "
-        "locales | polytypo"
+        f"A typography library that fixes quotes, dashes and no-break spaces in "
+        f"{len(gen_locale_pages.CODES)} locales"
     ),
-    "manifesto": "The em dash was mine before AI: typography is not an AI watermark | polytypo",
-    "contribute": "Contribute to polytypo: add a locale or change a typography rule | polytypo",
-    "changelog": "polytypo changelog: what changed in each spec version | polytypo",
-    "showcase": "Sites that use polytypo for typography | polytypo",
-    "locales": (
-        f"Typography rules by locale: quotes, dashes, spaces for {len(gen_locale_pages.CODES)} "
-        "locales | polytypo"
+    "docs": "The polytypo documentation, from installation to every rule and option",
+    "manifesto": "The em dash was mine before AI, and typography is not an AI watermark",
+    "contribute": "How to contribute to polytypo by adding a locale or changing a typography rule",
+    "changelog": "The polytypo changelog, with what changed in each spec version",
+    "showcase": "Sites that use polytypo to fix their typography",
+    "locales": f"Typography rules for {len(gen_locale_pages.CODES)} locales, covering quotes, dashes and spaces",
+    "playground": (
+        f"Straight quotes to curly quotes converter online, with {OTHER_RULES_WORD} more typography rules"
     ),
-    "playground": "Straight quotes to curly quotes converter online | polytypo",
 }
+
+TITLE_DELIMITERS = ("|", ":", " - ", " \u2013 ", " \u2014 ", "\u2014")
+
+
+def check_title(slug, title):
+    """Fail the build on a title that joins segments with a delimiter (search playbook 16.1)."""
+    for d in TITLE_DELIMITERS:
+        if d in title:
+            raise SystemExit(f"title of /{slug}: {title!r} contains the delimiter {d!r}")
+    return title
+
 
 # Depth prefix every link and asset reference on a page is written relative to. Document-relative,
 # never root-relative: before a custom domain exists the site is served from
@@ -409,7 +432,7 @@ def page_href(prefix, slug):
 # Which rules to feature, and from which locale, so each row shows the rule at its most telling.
 RULE_ROWS = [
     ("spaces", "en-US", None, "Collapse repeated spaces, strip the space before punctuation."),
-    ("ellipsis", "en-US", 0, "Three dots become U+2026."),
+    ("ellipsis", "en-US", 0, "Three dots become <code>U+2026</code>."),
     ("ellipsis", "ru", 0, "Russian keeps the abbreviated form after terminal punctuation."),
     ("dashes", "en-US", 0, "Parenthetical dash, per locale: em tight, en spaced, em spaced."),
     (
@@ -426,9 +449,9 @@ RULE_ROWS = [
         "Off by default; with rules: { ranges: true }, numeric ranges take an en dash held by "
         "word joiners.",
     ),
-    ("hyphen", "ru", 0, "Morphological hyphens bound with U+2011 so they cannot break."),
+    ("hyphen", "ru", 0, "Morphological hyphens bound with <code>U+2011</code> so they cannot break."),
     ("quotes", "de-DE", 0, "Primary and secondary quotes, with nesting resolved."),
-    ("apostrophe", "en-US", 0, "Straight apostrophe to U+2019, contractions intact."),
+    ("apostrophe", "en-US", 0, "Straight apostrophe to <code>U+2019</code>, contractions intact."),
     ("symbols", "en-US", 0, "(c) (r) (tm) and the multiplication sign between numerals."),
     ("nbsp", "fr", 0, "No-break and narrow no-break spaces, inserted per locale."),
 ]
@@ -569,11 +592,6 @@ try {
     ),
 ]
 
-NUMBER_WORDS = {
-    1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six",
-    7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven", 12: "twelve",
-}
-
 
 def load_examples():
     with open(EXAMPLES, encoding="utf-8") as f:
@@ -628,19 +646,48 @@ def specimen(marked_html, extra_class=""):
     return f'<div class="{cls}">{marked_html}</div>'
 
 
-def diff_html(a, b):
-    """Highlight the output only — the input column is shown exactly as it was typed. Both sides
-    come back as one flat marked-up run, for a specimen rather than a code panel: without a gutter
-    there are no line boxes to keep a span inside, so a changed region spanning a newline stays one
-    span and `white-space: pre-wrap` on `.specimen` renders the break."""
+def _mark_runs(text, changed, tag, kind, render=None):
+    """`text` revealed, with each run of `changed` code-point indexes wrapped in the one before/after
+    mark: <del> in an input, <ins> in an output. The same two classes the playground's paint()
+    emits, styled once in style.css."""
+    out, i = [], 0
+    while i < len(text):
+        j = i
+        while j < len(text) and (j in changed) == (i in changed):
+            j += 1
+        chunk = (render or reveal)(text[i:j])
+        out.append(f'<{tag} class="chg chg-{kind}">{chunk}</{tag}>' if i in changed else chunk)
+        i = j
+    return "".join(out)
+
+
+def diff_sets(a, b):
+    """Code-point indexes of `a` that the change removes or replaces, and of `b` that it adds."""
     sm = difflib.SequenceMatcher(None, a, b, autojunk=False)
-    right = []
-    for tag, _i1, _i2, j1, j2 in sm.get_opcodes():
-        if j1 == j2:
-            continue
-        chunk = reveal(b[j1:j2])
-        right.append(chunk if tag == "equal" else f'<span class="chg">{chunk}</span>')
-    return reveal(a), "".join(right)
+    gone, added = set(), set()
+    for tag, i1, i2, j1, j2 in sm.get_opcodes():
+        if tag != "equal":
+            gone.update(range(i1, i2))
+            added.update(range(j1, j2))
+    return gone, added
+
+
+def diff_html(a, b):
+    """The before/after pair, both sides marked: what the change removes in the input (red <del>),
+    what it puts in the output (green <ins>). Both come back as one flat marked-up run, for a
+    specimen rather than a code panel: without a gutter there are no line boxes to keep a mark
+    inside, so a changed region spanning a newline stays one mark and `white-space: pre-wrap` on
+    `.specimen` renders the break."""
+    gone, added = diff_sets(a, b)
+    return _mark_runs(a, gone, "del", "del"), _mark_runs(b, added, "ins", "ins")
+
+
+def diff_before_union(a, outputs):
+    """One input shared by several outputs (the proof grid): marked wherever ANY output changes it."""
+    gone = set()
+    for b in outputs:
+        gone |= diff_sets(a, b)[0]
+    return _mark_runs(a, gone, "del", "del")
 
 
 def rules_table(data):
@@ -926,9 +973,10 @@ def proof_input(data):
     string behind every entry in data["proofLocales"]."""
     by_locale = {loc["locale"]: loc for loc in data["locales"]}
     text = by_locale[data["proofLocales"][0]]["proof"]["in"]
+    outs = [by_locale[code]["proof"]["out"] for code in data["proofLocales"]]
     return (
-        '<p class="small muted">Input, unchanged</p>'
-        f"{specimen(reveal(text), 'proof-shared-input')}"
+        '<p class="small muted">Input — what any of the locales below changes is marked</p>'
+        f"{specimen(diff_before_union(text, outs), 'proof-shared-input')}"
     )
 
 
@@ -1272,6 +1320,21 @@ def _latest_release_date():
     return next(rel["date"] for rel in _changelog_data()["releases"] if rel["version"] == latest)
 
 
+def _changelog_row(ex):
+    """One example row. Before and After are the output of two spec versions for the same input, so
+    the shared mark applies between them: red on what the old version produced and the new one does
+    not, green on what the new one produces instead."""
+    gone, added = diff_sets(ex["before"], ex["after"])
+    show = lambda t: H.escape(_mark_invisible(t))  # noqa: E731
+    return (
+        f'<tr><td class="mono small">{H.escape(ex["locale"])}</td>'
+        f'<td class="mono small">{H.escape(ex["mode"])}</td>'
+        f'<td class="mono small">{H.escape(ex["in"])}</td>'
+        f'<td class="mono small">{_mark_runs(ex["before"], gone, "del", "del", show)}</td>'
+        f'<td class="mono small">{_mark_runs(ex["after"], added, "ins", "ins", show)}</td></tr>'
+    )
+
+
 def changelog_sections():
     """The /changelog page's body, generated from brand/tools/changelog.json — the same file
     brand/tools/gen_readmes.py renders CHANGELOG.md from, so the page and the repository file
@@ -1293,14 +1356,7 @@ def changelog_sections():
             rows = (
                 '<div class="scroll"><table>'
                 "<tr><th>Locale</th><th>Mode</th><th>In</th><th>Before</th><th>After</th></tr>"
-                + "".join(
-                    f'<tr><td class="mono small">{H.escape(ex["locale"])}</td>'
-                    f'<td class="mono small">{H.escape(ex["mode"])}</td>'
-                    f'<td class="mono small">{H.escape(ex["in"])}</td>'
-                    f'<td class="mono small">{H.escape(_mark_invisible(ex["before"]))}</td>'
-                    f'<td class="mono small">{H.escape(_mark_invisible(ex["after"]))}</td></tr>'
-                    for ex in rel["examples"]
-                )
+                + "".join(_changelog_row(ex) for ex in rel["examples"])
                 + "</table></div>"
             )
         out.append(
@@ -1640,12 +1696,14 @@ def playground_examples_html():
     tests/promo/playground-examples.test.ts re-runs the engine over them, so they cannot drift."""
     with open(os.path.join(PROMO_SRC, "playground-examples.json"), encoding="utf-8") as f:
         examples = json.load(f)
-    cards = [
-        '<div class="card"><h3>{loc}</h3><p>In: <code>{i}</code></p><p>Out: <code>{o}</code></p></div>'.format(
-            loc=H.escape(e.get("label", e["locale"])), i=H.escape(e["input"]), o=H.escape(e["output"])
+    cards = []
+    for e in examples:
+        before, after = diff_html(e["input"], e["output"])
+        cards.append(
+            '<div class="card"><h3>{loc}</h3><p>In: <code>{i}</code></p><p>Out: <code>{o}</code></p></div>'.format(
+                loc=H.escape(e.get("label", e["locale"])), i=before, o=after
+            )
         )
-        for e in examples
-    ]
     return "\n    ".join(cards)
 
 
@@ -1741,6 +1799,7 @@ def build():
         "{{Locale_count}}": locale_count_word.capitalize(),
         "{{rules_count}}": rules_count_word,
         "{{Rules_count}}": rules_count_word.capitalize(),
+        "{{other_rules_count}}": OTHER_RULES_WORD,
         "{{proof_count}}": proof_count_word,
         "{{Proof_count}}": proof_count_word.capitalize(),
         "{{locale_cards}}": locale_cards(data),
@@ -1783,14 +1842,17 @@ def build():
         body = body.replace("{{prefix}}", prefix)
         body = re.sub(r"\{\{svg:([^}]+)\}\}", lambda m: inline(m.group(1)), body)
 
-        page_title = "polytypo" if title == "Home" else f"polytypo — {title}"
-        page_title = PAGE_TITLES.get(slug) or (locale_page or {}).get("seo_title") or page_title
-        if slug in DOC_BY_SLUG and DOC_BY_SLUG[slug].get("seo_title"):
+        if slug in DOC_BY_SLUG:
             page_title = DOC_BY_SLUG[slug]["seo_title"]
-        if section_page:
+        elif section_page:
             page_title = section_page["seo_title"]
+        elif locale_page:
+            page_title = locale_page["seo_title"]
+        else:
+            page_title = PAGE_TITLES[slug]
+        check_title(slug, page_title)
         doc_page = doc_page or locale_page or section_page
-        description = doc_page["description"] if doc_page else PAGE_DESCRIPTIONS[slug].format(n=n)
+        description = doc_page["description"] if doc_page else PAGE_DESCRIPTIONS[slug].format(n=n, other_rules=OTHER_RULES_WORD)
         canonical_url = f"{SITE_ORIGIN}/{slug + '/' if slug else ''}"
         home_faq_pairs = home_faq(body) if slug == "" else None
         image_url, image_alt = og_image_for(slug, og_manifest)

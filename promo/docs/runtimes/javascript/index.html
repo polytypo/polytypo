@@ -10,11 +10,11 @@
 <link rel="apple-touch-icon" href="../../../assets/favicon/apple-touch-icon-180.png">
 <link rel="stylesheet" href="../../../assets/fonts.css">
 <link rel="stylesheet" href="../../../assets/style.css">
-<title>Typography library for JavaScript and TypeScript: npm install | polytypo</title>
+<title>Typography library for JavaScript and TypeScript, installed with npm</title>
 <meta property="og:site_name" content="polytypo">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://polytypo.dev/docs/runtimes/javascript/">
-<meta property="og:title" content="Typography library for JavaScript and TypeScript: npm install | polytypo">
+<meta property="og:title" content="Typography library for JavaScript and TypeScript, installed with npm">
 <meta property="og:description" content="polytypo is a typography library for JavaScript and TypeScript: it fixes quotes, dashes, ellipses and no-break spaces for each locale. Install it from npm, call transform and analyze, read error codes, and see which modes and dialects the package covers.">
 <meta property="og:image" content="https://polytypo.dev/images/og/docs/runtimes/javascript.png?v=4b05f73d">
 <meta property="og:image:width" content="1200">
@@ -23,11 +23,11 @@
 <meta property="og:image:alt" content="polytypo: Runtimes: JavaScript and TypeScript">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Typography library for JavaScript and TypeScript: npm install | polytypo">
+<meta name="twitter:title" content="Typography library for JavaScript and TypeScript, installed with npm">
 <meta name="twitter:description" content="polytypo is a typography library for JavaScript and TypeScript: it fixes quotes, dashes, ellipses and no-break spaces for each locale. Install it from npm, call transform and analyze, read error codes, and see which modes and dialects the package covers.">
 <meta name="twitter:image" content="https://polytypo.dev/images/og/docs/runtimes/javascript.png?v=4b05f73d">
 <meta name="twitter:image:alt" content="polytypo: Runtimes: JavaScript and TypeScript">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "Typography library for JavaScript and TypeScript: npm install | polytypo", "description": "polytypo is a typography library for JavaScript and TypeScript: it fixes quotes, dashes, ellipses and no-break spaces for each locale. Install it from npm, call transform and analyze, read error codes, and see which modes and dialects the package covers.", "url": "https://polytypo.dev/docs/runtimes/javascript/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "JavaScript and TypeScript", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "Runtimes", "item": "https://polytypo.dev/docs/runtimes/"}, {"@type": "ListItem", "position": 3, "name": "JavaScript and TypeScript", "item": "https://polytypo.dev/docs/runtimes/javascript/"}]}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "Typography library for JavaScript and TypeScript, installed with npm", "description": "polytypo is a typography library for JavaScript and TypeScript: it fixes quotes, dashes, ellipses and no-break spaces for each locale. Install it from npm, call transform and analyze, read error codes, and see which modes and dialects the package covers.", "url": "https://polytypo.dev/docs/runtimes/javascript/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "JavaScript and TypeScript", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "Runtimes", "item": "https://polytypo.dev/docs/runtimes/"}, {"@type": "ListItem", "position": 3, "name": "JavaScript and TypeScript", "item": "https://polytypo.dev/docs/runtimes/javascript/"}]}}</script>
 <script defer src="https://u.rogulia.fi/script.js" data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>
 </head>
 <body class="page-docs-runtimes-javascript">
@@ -120,7 +120,7 @@ try {
   console.log(error.code); // POLYTYPO_UNKNOWN_LOCALE
 }</code></pre>
 <p>The same call, measured:</p>
-<figure class="example"><figcaption class="mono">transform(input, { locale: &quot;de-DE&quot; })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">She said, &quot;it&#x27;s fine&quot; -- but I wasn&#x27;t sure...</div></div><div><p class="eyebrow">Output</p><div class="specimen">She said, <span class="chg">„</span>it<span class="chg">’</span>s fine<span class="chg">“</span> <span class="chg">–</span> but I wasn<span class="chg">’</span>t sure<span class="chg">…</span></div></div></div></figure>
+<figure class="example"><figcaption class="mono">transform(input, { locale: &quot;de-DE&quot; })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">She said, <del class="chg chg-del">&quot;</del>it<del class="chg chg-del">&#x27;</del>s fine<del class="chg chg-del">&quot;</del> <del class="chg chg-del">--</del> but I wasn<del class="chg chg-del">&#x27;</del>t sure<del class="chg chg-del">...</del></div></div><div><p class="eyebrow">Output</p><div class="specimen">She said, <ins class="chg chg-ins">„</ins>it<ins class="chg chg-ins">’</ins>s fine<ins class="chg chg-ins">“</ins> <ins class="chg chg-ins">–</ins> but I wasn<ins class="chg chg-ins">’</ins>t sure<ins class="chg chg-ins">…</ins></div></div></div></figure>
 <h2 id="conformance">Conformance <a class="anchor" href="#conformance" aria-label="Link to this section">#</a></h2>
 <p>The package passes the conformance suite for spec 1.32.0. Modes: <code>text</code>, <code>html</code>, <code>markdown</code> (dialects <code>commonmark</code> and <code>mdx</code>) and <code>yaml</code>. Rules: all ten. The matrix for every runtime is <a href="https://github.com/polytypo/polytypo/blob/main/spec/CONFORMANCE.md">spec/CONFORMANCE.md</a>.</p>
 <h2 id="related">Related <a class="anchor" href="#related" aria-label="Link to this section">#</a></h2>

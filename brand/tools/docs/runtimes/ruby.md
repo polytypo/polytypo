@@ -1,7 +1,7 @@
 ---
 title: Ruby
 h1: Typography library for Ruby
-seo_title: Typography library for Ruby: gem install and Polytypo.transform | polytypo
+seo_title: Typography library for Ruby, installed with gem install
 description: polytypo is a typography library for Ruby: it fixes quotes, dashes, ellipses and no-break spaces for each locale. Install the gem, call Polytypo.transform and Polytypo.analyze with keyword arguments, rescue Polytypo::Error codes, and see which modes the gem covers.
 section: runtimes
 order: 40

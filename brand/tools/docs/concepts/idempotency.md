@@ -1,6 +1,6 @@
 ---
 title: Idempotency
-seo_title: Idempotent typography: why transform(transform(x)) equals transform(x) | polytypo
+seo_title: Idempotent typography, and why transform(transform(x)) equals transform(x)
 description: Why transform(transform(x)) equals transform(x) is a contract in every runtime, and what it means for text that is already typeset.
 section: concepts
 order: 30
@@ -33,7 +33,7 @@ locale: en-US
 “Wait”—it’s done…
 ```
 
-The same holds for invisible characters. This French input already holds U+202F before `!` and `?`, and U+00A0 inside the guillemets, and comes back as it was:
+The same holds for invisible characters. This French input already holds `U+202F` before `!` and `?`, and `U+00A0` inside the guillemets, and comes back as it was:
 
 ```example
 locale: fr
@@ -58,7 +58,7 @@ The check is exhaustive rather than sampled. Every runtime runs every string up 
 
 ## Edge cases
 
-- **Options must match.** The guarantee is for the same options on both calls. A text produced with `narrowNbsp: "nbsp"` is a fixed point under that option, not under the default, where U+00A0 before French punctuation is converted to U+202F.
+- **Options must match.** The guarantee is for the same options on both calls. A text produced with `narrowNbsp: "nbsp"` is a fixed point under that option, not under the default, where `U+00A0` before French punctuation is converted to `U+202F`.
 - **Disabled rules do not change the argument.** With a rule off, the remaining rules keep their relative order and the property holds for the subset.
 
 ## Related

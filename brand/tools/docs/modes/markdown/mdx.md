@@ -1,6 +1,6 @@
 ---
 title: MDX dialect
-seo_title: MDX dialect reference: what markdown mode typesets and skips | polytypo
+seo_title: What markdown mode typesets and skips in the MDX dialect
 description: How markdown mode handles MDX: JSX elements and attributes, expressions, ESM statements, and documents that fail to parse.
 section: modes
 order: 44

@@ -1,6 +1,6 @@
 ---
 title: Markdown mode
-seo_title: Markdown typographer: smart quotes and dashes for CommonMark and MDX | polytypo
+seo_title: A Markdown typographer for smart quotes and dashes in CommonMark and MDX
 description: A typographer for Markdown: curly quotes, dashes, ellipses and no-break spaces in CommonMark and MDX prose. Code, links, HTML and frontmatter stay as written.
 section: modes
 order: 40

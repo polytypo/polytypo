@@ -1,6 +1,6 @@
 ---
 title: Installation
-seo_title: Install polytypo: npm, pip, go get, gem and Composer
+seo_title: Install polytypo with npm, pip, go get, gem or Composer
 description: Install polytypo for JavaScript, Python, Go, Ruby or PHP and make a first call.
 section: getting-started
 order: 10

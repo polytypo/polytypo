@@ -1,6 +1,6 @@
 ---
 title: analyze
-seo_title: analyze(): preview typography changes without applying them | polytypo
+seo_title: analyze() previews typography changes without applying them
 description: The same pipeline as transform, reporting what it would change instead of changing it, with code-point offsets into your input.
 section: api
 order: 30
@@ -73,7 +73,7 @@ Two rules may also touch the same original range, and both changes are reported 
 | | ruleId | start | end | before | after |
 | --- | --- | --- | --- | --- | --- |
 | 1 | `spaces` | 3 | 4 | space | empty |
-| 2 | `nbsp` | 4 | 4 | empty | U+00A0 |
+| 2 | `nbsp` | 4 | 4 | empty | `U+00A0` |
 
 Applying such a list as a patch is not guaranteed to reproduce `transform`'s output, and no change is merged or dropped to make it so.
 

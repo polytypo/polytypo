@@ -1,7 +1,7 @@
 ---
 title: PHP
 h1: Typography library for PHP
-seo_title: Typography library for PHP: Composer install and Polytypo::transform | polytypo
+seo_title: Typography library for PHP, installed with Composer
 description: polytypo is a typography library for PHP: it fixes quotes, dashes, ellipses and no-break spaces for each locale. Install it with Composer, call Polytypo::transform and Polytypo::analyze with named arguments, catch PolytypoException codes, and see which modes PHP covers.
 section: runtimes
 order: 50

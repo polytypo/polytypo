@@ -1,12 +1,12 @@
 ---
 title: Hyphen
-seo_title: Hyphen rule: non-breaking hyphens in Russian and Ukrainian | polytypo
+seo_title: The hyphen rule sets non-breaking hyphens in Russian and Ukrainian
 description: The hyphen rule binds the hyphen in listed Russian and Ukrainian forms with a non-breaking hyphen so a line break cannot split the word.
 section: rules
 order: 50
 ---
 
-The `hyphen` rule replaces a hyphen-minus (U+002D) with a non-breaking hyphen (U+2011) inside a closed list of forms, so that a line-breaking algorithm cannot split the word at the hyphen. It exists for Russian and Ukrainian, where `из-под`, `кое-что` and `сделал-таки` are single words and a line ending in `из-` is a typographic fault.
+The `hyphen` rule replaces a hyphen-minus (`U+002D`) with a non-breaking hyphen (`U+2011`) inside a closed list of forms, so that a line-breaking algorithm cannot split the word at the hyphen. It exists for Russian and Ukrainian, where `из-под`, `кое-что` and `сделал-таки` are single words and a line ending in `из-` is a typographic fault.
 
 It is a data-driven rule. It does nothing except where a locale has listed a literal form. It changes one code point to another of the same meaning: it never inserts, deletes or moves anything and never touches spacing. Two of the nineteen locales, `ru` and `uk`, carry lists. For the other seventeen the rule is a no-op, and the output is identical byte for byte.
 
@@ -20,7 +20,7 @@ A locale lists forms in three groups:
 - **prefixes**: word-initial forms ending in a hyphen, such as `кое-`
 - **suffixes**: word-final forms starting with a hyphen, such as `-таки`
 
-At each position the rule picks the longest listed form that matches there, trying compounds before prefixes before suffixes on a tie. It then checks the word boundaries for that group. If the check passes, the hyphen becomes U+2011 and the scan continues after the match. If it fails, nothing is changed at that position, and no shorter form is tried there.
+At each position the rule picks the longest listed form that matches there, trying compounds before prefixes before suffixes on a tie. It then checks the word boundaries for that group. If the check passes, the hyphen becomes `U+2011` and the scan continues after the match. If it fails, nothing is changed at that position, and no shorter form is tried there.
 
 | Group | The form must | And the boundary check requires |
 | --- | --- | --- |
@@ -131,8 +131,8 @@ locale: ru
 
 - **Lists are blunt.** `-то` is a particle in `кто-то` but a different word in other positions. The rule binds any listed suffix that follows a letter, so a locale lists only forms whose binding is unconditional.
 - **It does not fix spelling.** The rule binds a hyphen that is already there. It does not rewrite the morphology around one, so a Russian ordinal such as `10-ый` is left as typed.
-- **Other dash-like characters are never read or written:** U+2010, the soft hyphen U+00AD, U+2012, U+2013, U+2014 and U+2212. A soft hyphen inside `из-под` is the author’s deliberate break hint.
-- **Rendering.** U+2011 forbids a break at the hyphen. Some older fonts lack the glyph and fall back visibly. A renderer’s own automatic hyphenation may still break the word elsewhere at a syllable boundary.
+- **Other dash-like characters are never read or written:** `U+2010`, the soft hyphen `U+00AD`, `U+2012`, `U+2013`, `U+2014` and `U+2212`. A soft hyphen inside `из-под` is the author’s deliberate break hint.
+- **Rendering.** `U+2011` forbids a break at the hyphen. Some older fonts lack the glyph and fall back visibly. A renderer’s own automatic hyphenation may still break the word elsewhere at a syllable boundary.
 
 ## Modes and skipped regions
 

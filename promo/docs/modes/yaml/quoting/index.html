@@ -46,11 +46,11 @@
 <h2 id="plain-scalars">Plain scalars <a class="anchor" href="#plain-scalars" aria-label="Link to this section">#</a></h2>
 <p>A plain scalar runs to the end of the line, minus a trailing comment (a <code>#</code> preceded by a space) and trailing spaces. It is typeset, with these exceptions where it yields nothing:</p>
 <ul><li>the value continues on more-indented lines (a multi-line plain scalar, whose folding is not claimed);</li><li>it begins with <code>- </code> (compact nesting opens a sequence) or contains <code>: </code>, which would make it a mapping.</li></ul>
-<figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;yaml&quot;, keys: [&quot;note&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">note: a &quot;plain&quot; value -- with a comment # keep &quot;this&quot;</div></div><div><p class="eyebrow">Output</p><div class="specimen">note: a <span class="chg">“</span>plain<span class="chg">”</span> value<span class="chg">—</span>with a comment # keep &quot;this&quot;</div></div></div></figure>
+<figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;yaml&quot;, keys: [&quot;note&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">note: a <del class="chg chg-del">&quot;</del>plain<del class="chg chg-del">&quot;</del> value<del class="chg chg-del"> -- </del>with a comment # keep &quot;this&quot;</div></div><div><p class="eyebrow">Output</p><div class="specimen">note: a <ins class="chg chg-ins">“</ins>plain<ins class="chg chg-ins">”</ins> value<ins class="chg chg-ins">—</ins>with a comment # keep &quot;this&quot;</div></div></div></figure>
 <h3 id="colon-and-hash-are-boundaries">Colon and hash are boundaries <a class="anchor" href="#colon-and-hash-are-boundaries" aria-label="Link to this section">#</a></h3>
 <p>Inside a plain scalar, <code>:</code> and <code>#</code> are opaque one-character units, and the scalar's range is split at each of them. The reason is a structural one. A rule can insert a space, and a space is the only thing that makes <code>:</code> a mapping indicator (when it follows) or <code>#</code> a comment (when it precedes). Left unsplit, <code>k: a:--b</code> in German would become <code>k: a: – b</code>, which no longer parses, and <code>k: a--#b</code> would turn the end of the value into a comment.</p>
 <p>With the split, the dash sits at the edge of a span, and a replacement there that is longer than what it replaced is discarded. The compact forms that shrink are still applied: <code>k: a:--b</code> in <code>en-US</code> becomes <code>k: a:—b</code> and reparses as the same scalar.</p>
-<figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;yaml&quot;, keys: [&quot;k&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">k: a:--b</div></div><div><p class="eyebrow">Output</p><div class="specimen">k: a:<span class="chg">—</span>b</div></div></div></figure>
+<figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;yaml&quot;, keys: [&quot;k&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">k: a:<del class="chg chg-del">--</del>b</div></div><div><p class="eyebrow">Output</p><div class="specimen">k: a:<ins class="chg chg-ins">—</ins>b</div></div></div></figure>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;de-DE&quot;, mode: &quot;yaml&quot;, keys: [&quot;k&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">k: a:--b</div></div><div><p class="eyebrow">Output</p><div class="specimen">k: a:--b</div></div></div></figure>
 <p>German leaves the line as it was, because the spaced dash it would insert is longer than what it replaces. The accepted cost: a conversion that would grow against a colon or hash is missed. French inserts no narrow no-break space before a colon inside a <strong>plain</strong> scalar.</p>
 <h2 id="quoted-scalars">Quoted scalars <a class="anchor" href="#quoted-scalars" aria-label="Link to this section">#</a></h2>
@@ -58,21 +58,21 @@
 <p>Two bails keep source characters and content characters the same thing:</p>
 <ul><li>a <strong>double-quoted</strong> scalar whose content contains a backslash yields nothing, because <code>\n</code>, <code>\&quot;</code> and <code>é</code> are spelled with more characters than they stand for;</li><li>a <strong>single-quoted</strong> scalar whose content contains two consecutive apostrophes yields nothing, for the same reason.</li></ul>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;yaml&quot;, keys: [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">a: &quot;She said -- \&quot;no\&quot;&quot;
-b: &#x27;It&#x27;&#x27;s a &quot;test&quot; -- really&#x27;
-c: &quot;plain &#x27;quotes&#x27; -- fine&quot;</div></div><div><p class="eyebrow">Output</p><div class="specimen">a: &quot;She said -- \&quot;no\&quot;&quot;
-b: &#x27;It&#x27;&#x27;s a <span class="chg">“</span>test<span class="chg">”—</span>really&#x27;
-c: &quot;plain <span class="chg">“</span>quotes<span class="chg">”—</span>fine&quot;</div></div></div></figure>
+b: &#x27;It&#x27;&#x27;s a <del class="chg chg-del">&quot;</del>test<del class="chg chg-del">&quot; -- </del>really&#x27;
+c: &quot;plain <del class="chg chg-del">&#x27;</del>quotes<del class="chg chg-del">&#x27; -- </del>fine&quot;</div></div><div><p class="eyebrow">Output</p><div class="specimen">a: &quot;She said -- \&quot;no\&quot;&quot;
+b: &#x27;It&#x27;&#x27;s a <ins class="chg chg-ins">“</ins>test<ins class="chg chg-ins">”—</ins>really&#x27;
+c: &quot;plain <ins class="chg chg-ins">“</ins>quotes<ins class="chg chg-ins">”—</ins>fine&quot;</div></div></div></figure>
 <p>Only <code>c</code> changes. The cost is real: an apostrophe inside a single-quoted scalar is written <code>&#x27;&#x27;</code>, so single-quoted prose that contains one is skipped. Switching such a value to double quotes makes it eligible.</p>
 <h2 id="block-scalars">Block scalars <a class="anchor" href="#block-scalars" aria-label="Link to this section">#</a></h2>
 <p><code>|</code> and <code>&gt;</code>, with an optional chomping indicator (<code>-</code> or <code>+</code>) and indentation indicator (<code>1</code>–<code>9</code>), are recognised. <strong>Each non-blank content line is one span</strong>; the indentation, the header and every line terminator are outside every span, so the chomping behaviour is never touched and no output can add or remove a trailing newline.</p>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;yaml&quot;, keys: [&quot;description&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">description: |-
-  First line &quot;quoted&quot; -- done...
+  First line <del class="chg chg-del">&quot;</del>quoted<del class="chg chg-del">&quot; -- </del>done<del class="chg chg-del">...</del>
   Second line
 
   after a blank
 other: |
   keep &quot;this&quot; -- as is</div></div><div><p class="eyebrow">Output</p><div class="specimen">description: |-
-  First line <span class="chg">“</span>quoted<span class="chg">”—</span>done<span class="chg">…</span>
+  First line <ins class="chg chg-ins">“</ins>quoted<ins class="chg chg-ins">”—</ins>done<ins class="chg chg-ins">…</ins>
   Second line
 
   after a blank

@@ -1,6 +1,6 @@
 ---
 title: Frontmatter
-seo_title: Typeset Markdown frontmatter: frontmatterKeys option | polytypo
+seo_title: Typeset Markdown frontmatter with the frontmatterKeys option
 description: How markdown mode treats a YAML or TOML frontmatter block, how to typeset named fields with frontmatterKeys, and how the block is located.
 section: modes
 order: 43
@@ -72,7 +72,7 @@ A TOML block (`+++`) is skipped whole, with the option given or not. TOML's quot
 
 The extent of the block is decided by a scan, identical in every runtime, and not by whatever frontmatter support a Markdown parser happens to have:
 
-1. The document must **begin** with the delimiter (`---` or `+++`): no leading blank line, no indentation. A single leading byte-order mark (U+FEFF) is stepped over first.
+1. The document must **begin** with the delimiter (`---` or `+++`): no leading blank line, no indentation. A single leading byte-order mark (`U+FEFF`) is stepped over first.
 2. The rest of the opening line must be only spaces and tabs.
 3. The **closing line** is the first later line that begins the same delimiter and continues with only spaces and tabs. `...` is not a closer, a delimiter of the other kind is not, and `----` closes nothing.
 4. With no such closing line there is no block, and the opening delimiter is whatever the dialect makes of it: a thematic break for `---`, paragraph text for `+++`. Everything after it is prose.

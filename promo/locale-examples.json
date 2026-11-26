@@ -3121,7 +3121,7 @@
       ],
       "compare": null,
       "resolution": ["pl"],
-      "disagreed": 0
+      "disagreed": 1
     },
     "pt-BR": {
       "byRule": {
@@ -3593,7 +3593,7 @@
       ],
       "compare": null,
       "resolution": ["ru", "ru-BY"],
-      "disagreed": 0
+      "disagreed": 1
     },
     "sr": {
       "byRule": {
@@ -4436,7 +4436,7 @@
       ],
       "compare": null,
       "resolution": ["uk"],
-      "disagreed": 0
+      "disagreed": 1
     }
   }
 }

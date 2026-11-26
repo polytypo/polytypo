@@ -1,6 +1,6 @@
 ---
 title: Choosing a mode
-seo_title: Choosing a mode: text, html, markdown or yaml | polytypo
+seo_title: Choosing between the text, html, markdown and yaml modes
 description: Which mode to call for which input, and what goes wrong when a string is passed to the wrong one.
 section: getting-started
 order: 20

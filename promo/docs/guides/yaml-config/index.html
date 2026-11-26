@@ -10,11 +10,11 @@
 <link rel="apple-touch-icon" href="../../../assets/favicon/apple-touch-icon-180.png">
 <link rel="stylesheet" href="../../../assets/fonts.css">
 <link rel="stylesheet" href="../../../assets/style.css">
-<title>Fix typography in YAML and OpenAPI descriptions | polytypo</title>
+<title>Fix typography in YAML and OpenAPI descriptions with polytypo</title>
 <meta property="og:site_name" content="polytypo">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://polytypo.dev/docs/guides/yaml-config/">
-<meta property="og:title" content="Fix typography in YAML and OpenAPI descriptions | polytypo">
+<meta property="og:title" content="Fix typography in YAML and OpenAPI descriptions with polytypo">
 <meta property="og:description" content="Use yaml mode on OpenAPI-style and config YAML, naming the keys that hold prose, and see how quoted, plain and block scalars are handled and what is skipped.">
 <meta property="og:image" content="https://polytypo.dev/images/og/docs/guides/yaml-config.png?v=a50deed6">
 <meta property="og:image:width" content="1200">
@@ -23,11 +23,11 @@
 <meta property="og:image:alt" content="polytypo: Guides: Typesetting prose in YAML config">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Fix typography in YAML and OpenAPI descriptions | polytypo">
+<meta name="twitter:title" content="Fix typography in YAML and OpenAPI descriptions with polytypo">
 <meta name="twitter:description" content="Use yaml mode on OpenAPI-style and config YAML, naming the keys that hold prose, and see how quoted, plain and block scalars are handled and what is skipped.">
 <meta name="twitter:image" content="https://polytypo.dev/images/og/docs/guides/yaml-config.png?v=a50deed6">
 <meta name="twitter:image:alt" content="polytypo: Guides: Typesetting prose in YAML config">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "Fix typography in YAML and OpenAPI descriptions | polytypo", "description": "Use yaml mode on OpenAPI-style and config YAML, naming the keys that hold prose, and see how quoted, plain and block scalars are handled and what is skipped.", "url": "https://polytypo.dev/docs/guides/yaml-config/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "Typesetting prose in YAML config", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://polytypo.dev/docs/guides/"}, {"@type": "ListItem", "position": 3, "name": "Typesetting prose in YAML config", "item": "https://polytypo.dev/docs/guides/yaml-config/"}]}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "Fix typography in YAML and OpenAPI descriptions with polytypo", "description": "Use yaml mode on OpenAPI-style and config YAML, naming the keys that hold prose, and see how quoted, plain and block scalars are handled and what is skipped.", "url": "https://polytypo.dev/docs/guides/yaml-config/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "Typesetting prose in YAML config", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://polytypo.dev/docs/guides/"}, {"@type": "ListItem", "position": 3, "name": "Typesetting prose in YAML config", "item": "https://polytypo.dev/docs/guides/yaml-config/"}]}}</script>
 <script defer src="https://u.rogulia.fi/script.js" data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>
 </head>
 <body class="page-docs-guides-yaml-config">
@@ -69,9 +69,9 @@ info:
 paths:
   /rates:
     get:
-      summary: List rates -- &quot;all&quot; of them
+      summary: List rates<del class="chg chg-del"> -- &quot;</del>all<del class="chg chg-del">&quot;</del> of them
       description: |
-        First line -- &quot;one&quot;...
+        First line<del class="chg chg-del"> -- &quot;</del>one<del class="chg chg-del">&quot;...</del>
         Second line.
       operationId: list--rates
       x-run: echo &quot;a&quot; -- b</div></div><div><p class="eyebrow">Output</p><div class="specimen">openapi: 3.0.0
@@ -81,9 +81,9 @@ info:
 paths:
   /rates:
     get:
-      summary: List rates<span class="chg">—“</span>all<span class="chg">”</span> of them
+      summary: List rates<ins class="chg chg-ins">—“</ins>all<ins class="chg chg-ins">”</ins> of them
       description: |
-        First line<span class="chg">—“</span>one<span class="chg">”…</span>
+        First line<ins class="chg chg-ins">—“</ins>one<ins class="chg chg-ins">”…</ins>
         Second line.
       operationId: list--rates
       x-run: echo &quot;a&quot; -- b</div></div></div></figure>
@@ -95,11 +95,11 @@ paths:
 <p>How the value is written decides whether it is processed.</p>
 <div class="scroll"><table class="kv"><tr><th>Form</th><th>Example</th><th>Result</th></tr><tr><td>Plain, one line</td><td><code>description: Rates -- all</code></td><td>Processed</td></tr><tr><td>Double-quoted, one line</td><td><code>description: &quot;Rates -- all&quot;</code></td><td>Processed; content between the quotes</td></tr><tr><td>Single-quoted, one line</td><td><code>description: &#x27;Rates -- all&#x27;</code></td><td>Processed</td></tr><tr><td>Block scalar (pipe or <code>&gt;</code> header)</td><td><code>description: &gt;</code></td><td>Processed, one line at a time</td></tr><tr><td>Multi-line plain or quoted</td><td>value continues on the next line</td><td>Skipped</td></tr><tr><td>Flow collection, anchor, alias, tag</td><td><code>[a, b]</code>, <code>&amp;x</code>, <code>*x</code>, <code>!tag</code></td><td>Skipped</td></tr><tr><td>Double-quoted with a backslash</td><td><code>&quot;line\nbreak&quot;</code></td><td>Skipped</td></tr><tr><td>Single-quoted with <code>&#x27;&#x27;</code></td><td><code>&#x27;It&#x27;&#x27;s fine&#x27;</code></td><td>Skipped</td></tr></table></div>
 <p>A skipped value is not an error. <code>yaml</code> mode never throws on the input; a file that is not YAML at all comes back unchanged. The rule is that a construct the scan does not recognise with certainty is left alone.</p>
-<figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;yaml&quot;, keys: [&quot;description&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">description: Rates -- all # note -- here
+<figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;yaml&quot;, keys: [&quot;description&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">description: Rates<del class="chg chg-del"> -- </del>all # note -- here
 description: key: value -- a
 description: first -- line
   second -- line
-description: [a -- b]</div></div><div><p class="eyebrow">Output</p><div class="specimen">description: Rates<span class="chg">—</span>all # note -- here
+description: [a -- b]</div></div><div><p class="eyebrow">Output</p><div class="specimen">description: Rates<ins class="chg chg-ins">—</ins>all # note -- here
 description: key: value -- a
 description: first -- line
   second -- line
@@ -107,9 +107,9 @@ description: [a -- b]</div></div></div></figure>
 <p>Notice what each line does. The comment after <code>#</code> is kept as written. The value containing <code>: </code> is not a plain scalar, so it is skipped, as are the two-line value and the flow collection.</p>
 <p>Quoting style changes what is covered. A single-quoted value that contains <code>&#x27;&#x27;</code> is skipped:</p>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;yaml&quot;, keys: [&quot;description&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">a: &#x27;x&#x27;
-description: &#x27;It&#x27;&#x27;s &quot;fine&quot; -- really&#x27;
+description: &#x27;It&#x27;&#x27;s <del class="chg chg-del">&quot;</del>fine<del class="chg chg-del">&quot; -- </del>really&#x27;
 other: x</div></div><div><p class="eyebrow">Output</p><div class="specimen">a: &#x27;x&#x27;
-description: &#x27;It&#x27;&#x27;s <span class="chg">“</span>fine<span class="chg">”—</span>really&#x27;
+description: &#x27;It&#x27;&#x27;s <ins class="chg chg-ins">“</ins>fine<ins class="chg chg-ins">”—</ins>really&#x27;
 other: x</div></div></div></figure>
 <p>The value is untouched because the apostrophe is written <code>&#x27;&#x27;</code>. If your files use single quotes with apostrophes, switch those values to double quotes (without backslashes) or plain style to have them processed.</p>
 <h3 id="block-scalars">Block scalars <a class="anchor" href="#block-scalars" aria-label="Link to this section">#</a></h3>
@@ -120,8 +120,8 @@ other: x</div></div></div></figure>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;fr&quot;, mode: &quot;yaml&quot;, keys: [&quot;title&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">title: Chapter 1: &quot;the beginning&quot;!
 title: &quot;Chapter 1: the beginning!&quot;
 title: &#x27;Chapter 1: the beginning!&#x27;</div></div><div><p class="eyebrow">Output</p><div class="specimen">title: Chapter 1: &quot;the beginning&quot;!
-title: &quot;Chapter 1<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>: the beginning<span class="chg"><span class="nb" title="U+202F narrow no-break space"> </span></span>!&quot;
-title: &#x27;Chapter 1<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>: the beginning<span class="chg"><span class="nb" title="U+202F narrow no-break space"> </span></span>!&#x27;</div></div></div></figure>
+title: &quot;Chapter 1<ins class="chg chg-ins"><span class="nb" title="U+00A0 no-break space"> </span></ins>: the beginning<ins class="chg chg-ins"><span class="nb" title="U+202F narrow no-break space"> </span></ins>!&quot;
+title: &#x27;Chapter 1<ins class="chg chg-ins"><span class="nb" title="U+00A0 no-break space"> </span></ins>: the beginning<ins class="chg chg-ins"><span class="nb" title="U+202F narrow no-break space"> </span></ins>!&#x27;</div></div></div></figure>
 <p>The first line contains <code>: </code> in its value, so it is not a valid plain scalar and is skipped whole. In the two quoted lines the colon is ordinary content and is spaced.</p>
 <h2 id="pitfalls">Pitfalls <a class="anchor" href="#pitfalls" aria-label="Link to this section">#</a></h2>
 <ul><li><strong>Do not list a machine-read key.</strong> <code>run</code>, <code>image</code>, <code>if</code>, <code>pattern</code> and <code>name</code> often hold shell, templates or identifiers. Typesetting a workflow's <code>run</code> can break the script; that is why the keys are yours to name.</li><li><strong>A miss is silent.</strong> Values skipped by the table above are not reported. If a value you expected to change did not, check its form first.</li><li><strong>Frontmatter in Markdown</strong> uses the same scan through a different option: see <a href="../../../docs/guides/mdx-content/#frontmatter">MDX content</a>.</li><li><strong>Run it anywhere in a pipeline:</strong> the output of a run is unchanged by a second run, so it is safe in a pre-commit hook.</li></ul>

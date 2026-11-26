@@ -1,7 +1,7 @@
 ---
 title: Python
 h1: Typography library for Python
-seo_title: Typography library for Python: pip install and transform() | polytypo
+seo_title: Typography library for Python, installed with pip
 description: polytypo is a typography library for Python: it fixes quotes, dashes, ellipses and no-break spaces for each locale. Install it from PyPI, call transform and analyze with keyword arguments, handle PolytypoError codes, and see which modes and dialects the package covers.
 section: runtimes
 order: 20

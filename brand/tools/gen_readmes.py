@@ -143,7 +143,7 @@ def locale_table():
     for code in [c for c in sorted_by_code(REGISTRY["locales"]) if c in HERO]:
         d = LOCALE_DATA[code]
         q, s = d["quotes"]["primary"], d["quotes"]["secondary"]
-        inner = {"none": "", "nbsp": " + U+00A0", "narrow-nbsp": " + U+202F"}[q["innerSpace"]]
+        inner = {"none": "", "nbsp": " + `U+00A0`", "narrow-nbsp": " + `U+202F`"}[q["innerSpace"]]
         rows.append(
             f"| `{code}` | {d['name']} | {q['open']}…{q['close']}{inner} | {s['open']}…{s['close']} | "
             f"{DASH_WORDS[d['dash']['parenthetical']]} | {DASH_WORDS[d['dash']['range']]} |"
@@ -179,10 +179,45 @@ def examples_table(locale, mark_invisible=False):
     return table + "\n\n" + NBSP_NOTE
 
 
-NBSP_NOTE = """**⍽ is not in the output — it marks U+00A0 NO-BREAK SPACE**, which is otherwise indistinguishable
+NBSP_NOTE = """**⍽ is not in the output — it marks `U+00A0` NO-BREAK SPACE**, which is otherwise indistinguishable
 from an ordinary space on this page. The `nbsp` rule's entire job is invisible, which is exactly why
 `spec/fixtures/` is mirrored by a CI-generated escaped `\\uXXXX` file: a diff full of unannotated
-U+00A0 and U+202F cannot be reviewed by a human."""
+`U+00A0` and `U+202F` cannot be reviewed by a human."""
+
+
+COMPARE = """Thirteen small inputs (plain text, HTML and Markdown; `en-US`, `de-CH`, `fr`, `ru`) are run through
+each tool at a pinned version, and a script checks the output: whether code, URLs, attribute values
+and Markdown link destinations survive, whether a second pass changes the result, whether the
+Markdown source is rewritten, and whether inner quotes are converted in a non-English locale.
+`yes` means the check failed, with the case id; `–` means the tool does not handle that kind of
+input (Markdown, or a locale other than `en-US`). The checks are pass/fail on exact strings, not a
+rating of typographic quality.
+
+| Tool | Alters code | Alters URLs, attributes | Breaks link titles | Rewrites Markdown source | Not idempotent | Inner quotes left straight |
+| --- | :-- | :-- | :-- | :-- | :-- | :-- |
+| polytypo 1.32.0 (JS, Python, Ruby) | no | no | no | no | no | no |
+| typograf 7.9.1 | no | no | – | – | no | yes (`loc-de-CH`, `loc-fr`) |
+| smartquotes 2.3.2 | yes (`html-code`) | yes (`html-attr`) | – | – | yes (`text-elision`) | – |
+| smartypants (JS) 0.2.2 | no | no | – | – | no | – |
+| retext-smartypants 6.2.0 | – | – | – | – | no | – |
+| remark-smartypants 3.0.3 | no | yes (`md-url`) | no | yes (`md-source`) | no | – |
+| markdown-it 15.0.3 | no | no | no | – | – | – |
+| smartypants (Python) 2.0.2 | no | no | – | – | no | – |
+| typogrify 2.1.0 | no | no | – | – | yes (`text-quotes` and 4 more) | – |
+| rubypants 0.7.1 | no | no | – | – | no | – |
+
+The Python and Ruby builds of polytypo return the same output as the JavaScript build on all
+thirteen inputs. `text` mode has no notion of a URL, so a bare URL in plain text is rewritten like
+prose; every tool measured here does the same (`text-url`). Go, PHP, redcarpet and blackfriday
+are not measured.
+
+```bash
+node scripts/compare/run.mjs --details
+```
+
+The script installs the pinned tools into a temporary directory, prints the table above and, with
+`--details`, the input and output behind every `yes`. It needs network access, npm, Python 3 and
+Ruby, and finishes in under a minute."""
 
 
 MODES = """| Mode | What it processes | Status |
@@ -239,12 +274,12 @@ Every string above is real engine output, generated from `promo/examples.json` �
 Rule ids are **public API**. Renaming one is a breaking change. Order comes from
 `spec/rules/order.json`, never registration order and never map iteration order.
 
-Four of the characters these rules insert are invisible or rare: U+00A0 no-break space (most
-locales), U+202F narrow no-break space (`fr` only, before `;` `!` `?`), U+2011 non-breaking hyphen
-(`ru` only, from `hyphen`) and U+2060 word joiner (around the dash of a bound range, and only with
+Four of the characters these rules insert are invisible or rare: `U+00A0` no-break space (most
+locales), `U+202F` narrow no-break space (`fr` only, before `;` `!` `?`), `U+2011` non-breaking hyphen
+(`ru` only, from `hyphen`) and `U+2060` word joiner (around the dash of a bound range, and only with
 `ranges` on). Fonts do not all carry the last three — a browser falls back to another face, while a
 PDF renderer with a single embedded font can drop the glyph. `rules: {{ hyphen: false }}` turns off
-the only rule that emits U+2011, and `ranges` is off by default, so U+2060 appears only where it
+the only rule that emits `U+2011`, and `ranges` is off by default, so `U+2060` appears only where it
 was asked for.
 
 ## Examples, by rule
@@ -269,11 +304,15 @@ dash next to `</strong>` is left alone. Pass the whole fragment to `html` mode i
 One call also means one locale: language is never detected, so a document that mixes languages is
 split by the caller.
 
+## Compared with other tools
+
+{compare}
+
 ## Conformance
 
 An implementation is polytypo **if and only if** it passes the conformance suite for the spec version
 it claims. The suite lives in `spec/fixtures/<locale>.json` as flat `in`/`out` pairs written with
-literal characters, mirrored by a CI-generated escaped file so that a diff of an invisible U+202F is
+literal characters, mirrored by a CI-generated escaped file so that a diff of an invisible `U+202F` is
 reviewable by a human.
 
 Every fixture is also an idempotency case: the runner asserts `transform(out) == out`, passing the
@@ -316,7 +355,7 @@ Read an entry as "what changes in text I already run through polytypo". Each one
 change with a cost, stated: a rule that fires where it did not before also fires somewhere you may
 not want, and the fixtures pin both sides.
 
-**Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
+**Two characters below are not in the output.** ⍽ marks `U+00A0` NO-BREAK SPACE and · marks `U+202F`
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow."""
 
@@ -380,6 +419,7 @@ def build():
         rules=rules_table(),
         examples=examples_table("en-US", mark_invisible=True),
         modes=MODES,
+        compare=COMPARE,
     )
     path = os.path.join(REPO, "README.md")
     with open(path, "w", encoding="utf-8") as f:

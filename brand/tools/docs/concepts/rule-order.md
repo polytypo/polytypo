@@ -1,6 +1,6 @@
 ---
 title: Rule order
-seo_title: Typography rule order: the ten polytypo rules and why they run in this order
+seo_title: Why the polytypo typography rules run in this order
 description: The fixed order in which the ten polytypo rules run, why each sits where it does, why ranges and quote-punctuation are off by default, and how options never reorder them.
 section: concepts
 order: 40

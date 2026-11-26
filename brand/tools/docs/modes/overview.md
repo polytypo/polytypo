@@ -1,6 +1,6 @@
 ---
 title: How modes work
-seo_title: How polytypo modes work: what the rules see and what every mode guarantees
+seo_title: How polytypo modes work and what every mode guarantees
 description: Why polytypo has modes, what the rules are allowed to see in each, and the three guarantees all four share.
 section: modes
 order: 10

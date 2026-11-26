@@ -1,25 +1,25 @@
 ---
 title: No-break spaces
-seo_title: Non-breaking space in HTML: &nbsp;, U+00A0 and the narrow U+202F | polytypo
+seo_title: Non-breaking space in HTML, from &nbsp; and U+00A0 to the narrow U+202F
 description: How to write a non-breaking space in HTML (&nbsp;, &#160;, U+00A0), when to use the narrow U+202F, and how polytypo inserts them per locale automatically.
 section: rules
 order: 90
 ---
 
-The `nbsp` rule makes a line break fall where the language allows it. It turns an ordinary space into a no-break space (U+00A0) or a narrow no-break space (U+202F) where a locale needs one: before French `? ! ; :`, between a number and its unit, after a short Russian or Czech preposition, between initials and a surname. In a few places it inserts a space the author did not type.
+The `nbsp` rule makes a line break fall where the language allows it. It turns an ordinary space into a no-break space (`U+00A0`) or a narrow no-break space (`U+202F`) where a locale needs one: before French `? ! ; :`, between a number and its unit, after a short Russian or Czech preposition, between initials and a surname. In a few places it inserts a space the author did not type.
 
 It runs last (order 70), after every other rule has settled the characters around each space, and it is on by default in every mode. Almost everything it does is conversion of a space that is already there. Text that already carries the right no-break spaces passes through unchanged.
 
 ## In HTML
 
-A no-break space looks like an ordinary space, but the browser never breaks a line at it and never collapses a run of it. HTML gives U+00A0 several spellings; the narrow no-break space U+202F has no named one.
+A no-break space looks like an ordinary space, but the browser never breaks a line at it and never collapses a run of it. HTML gives `U+00A0` several spellings; the narrow no-break space `U+202F` has no named one.
 
 | Character | Ways to write it in HTML |
 | --- | --- |
-| No-break space, U+00A0 | `&nbsp;` (also `&NonBreakingSpace;`), `&#160;`, `&#xA0;`, or the character itself |
-| Narrow no-break space, U+202F | `&#8239;`, `&#x202F;`, or the character itself. There is no named reference |
+| No-break space, `U+00A0` | `&nbsp;` (also `&NonBreakingSpace;`), `&#160;`, `&#xA0;`, or the character itself |
+| Narrow no-break space, `U+202F` | `&#8239;`, `&#x202F;`, or the character itself. There is no named reference |
 
-Use U+202F where a narrow gap is the convention, such as before French `? ! ;`, and check that your font has a glyph for it (see "Narrow versus ordinary no-break space" below).
+Use `U+202F` where a narrow gap is the convention, such as before French `? ! ;`, and check that your font has a glyph for it (see "Narrow versus ordinary no-break space" below).
 
 You do not have to type either one by hand. In [`html` mode](/docs/modes/html/) polytypo inserts and converts these spaces in the text of the document, per locale, and leaves tags, attributes and existing character references exactly as written. It writes the characters themselves, not entities.
 
@@ -36,22 +36,22 @@ The rule is one scan with ten sub-rules, N1 to N10, each driven by a list in the
 
 | Sub-rule | Locale field | What it does |
 | --- | --- | --- |
-| N1 | `beforePunctuation` | U+00A0 before the listed marks |
+| N1 | `beforePunctuation` | `U+00A0` before the listed marks |
 | N2 | `narrowBeforePunctuation` | narrow no-break space before the listed marks |
-| N3 | `afterShortWords` | U+00A0 after a listed short word |
-| N4 | `abbreviations` | U+00A0 for every space inside a listed abbreviation |
-| N5 | `beforeUnits`, `spacedUnits`, `closedUnits` | U+00A0 between a number and a listed unit, or no space at all for a closed unit |
-| N6 | `afterSymbols` | U+00A0 between a listed symbol and the number after it |
-| N7 | `initialBinding` | U+00A0 inside initials and between initials and a surname |
+| N3 | `afterShortWords` | `U+00A0` after a listed short word |
+| N4 | `abbreviations` | `U+00A0` for every space inside a listed abbreviation |
+| N5 | `beforeUnits`, `spacedUnits`, `closedUnits` | `U+00A0` between a number and a listed unit, or no space at all for a closed unit |
+| N6 | `afterSymbols` | `U+00A0` between a listed symbol and the number after it |
+| N7 | `initialBinding` | `U+00A0` inside initials and between initials and a surname |
 | N8 | `quotes.*.innerSpace` | the space just inside a quotation pair |
-| N9 | `beforeNumber` | U+00A0 between a listed abbreviation and a following number |
-| N10 | `beforeWord` | U+00A0 between a listed abbreviation and a following word |
+| N9 | `beforeNumber` | `U+00A0` between a listed abbreviation and a following number |
+| N10 | `beforeWord` | `U+00A0` between a listed abbreviation and a following word |
 
 N1, N2, N5 and N8 insert a space. N5 also removes one, for units the locale writes closed. The others convert an existing space and do nothing if there is none.
 
 ### Before punctuation (N1, N2)
 
-French sets a space before `:` `;` `!` `?`. The fr locale puts `:` in `beforePunctuation` (U+00A0) and `;` `!` `?` in `narrowBeforePunctuation` (U+202F). If the author typed no space, one is inserted. If there is a space, it is converted. If the correct character is already there, nothing changes.
+French sets a space before `:` `;` `!` `?`. The fr locale puts `:` in `beforePunctuation` (`U+00A0`) and `;` `!` `?` in `narrowBeforePunctuation` (`U+202F`). If the author typed no space, one is inserted. If there is a space, it is converted. If the correct character is already there, nothing changes.
 
 ```example
 locale: fr
@@ -101,7 +101,7 @@ A word after a hyphen is not a free-standing word. In `из-за дождя` the
 
 ### Abbreviations (N4, N9, N10)
 
-`abbreviations` lists multi-token forms written with ordinary spaces, such as German `z. B.` or Russian `т. е.`. Every space inside a listed form becomes U+00A0. The text on both sides must not be a letter or digit, and case must match exactly.
+`abbreviations` lists multi-token forms written with ordinary spaces, such as German `z. B.` or Russian `т. е.`. Every space inside a listed form becomes `U+00A0`. The text on both sides must not be a letter or digit, and case must match exactly.
 
 `beforeNumber` holds abbreviations that bind to a number after them (`Nr. 5`, `S. 12`). `beforeWord` holds those that bind to a word (`Mme Hugo`, `ул. Ленина`). Both require exactly one space and never insert one.
 
@@ -123,8 +123,8 @@ locale: ru
 
 N5 reads three lists, and a unit belongs to exactly one of them:
 
-- `beforeUnits` converts an existing space to U+00A0 and does nothing else.
-- `spacedUnits` converts an existing space, and inserts U+00A0 when the number and the unit touch.
+- `beforeUnits` converts an existing space to `U+00A0` and does nothing else.
+- `spacedUnits` converts an existing space, and inserts `U+00A0` when the number and the unit touch.
 - `closedUnits` removes the single space between the number and the unit.
 
 A unit binds to the digits before it when it is followed by something other than a letter or digit. Digits glued to a letter (`H2 O`) do not count as a number.
@@ -179,9 +179,9 @@ Il a dit « mot » et «autre».
 
 ## Narrow versus ordinary no-break space
 
-U+00A0 is a no-break space of normal width. U+202F is narrower, which is how French sets the space before `? ! ;`. N2 always targets the narrow space. No shipped locale gives a quotation pair a narrow inner space, so inside guillemets the rule writes U+00A0.
+`U+00A0` is a no-break space of normal width. `U+202F` is narrower, which is how French sets the space before `? ! ;`. N2 always targets the narrow space. No shipped locale gives a quotation pair a narrow inner space, so inside guillemets the rule writes `U+00A0`.
 
-Many fonts have no glyph for U+202F. The browser then falls back to another font for that one character and the line width shifts, or a PDF renderer drops the glyph. The `narrowNbsp` option replaces the narrow target with U+00A0 everywhere the rule would have written U+202F:
+Many fonts have no glyph for `U+202F`. The browser then falls back to another font for that one character and the line width shifts, or a PDF renderer drops the glyph. The `narrowNbsp` option replaces the narrow target with `U+00A0` everywhere the rule would have written `U+202F`:
 
 ```example
 locale: fr
@@ -190,7 +190,7 @@ narrowNbsp: nbsp
 Vraiment ? Oui ! Et alors ; voici : un test.
 ```
 
-The option changes what is written, not which positions are chosen or what is read. An existing U+202F at a position the rule owns is normalised to the target. Elsewhere it is left alone. Valid values are `narrow` (the default) and `nbsp`; anything else raises `POLYTYPO_INVALID_OPTION`, even when `nbsp` is switched off. See [Options](/docs/api/options/). Converting the output yourself with `replaceAll` is not equivalent: feeding that result back through the rule turns the spaces into U+202F again.
+The option changes what is written, not which positions are chosen or what is read. An existing `U+202F` at a position the rule owns is normalised to the target. Elsewhere it is left alone. Valid values are `narrow` (the default) and `nbsp`; anything else raises `POLYTYPO_INVALID_OPTION`, even when `nbsp` is switched off. See [Options](/docs/api/options/). Converting the output yourself with `replaceAll` is not equivalent: feeding that result back through the rule turns the spaces into `U+202F` again.
 
 ## Locale data
 
@@ -212,7 +212,7 @@ locale: el
 ## Edge cases
 
 - **Edges.** A no-break space is never inserted at the start or end of a text unit, and never next to a line break. In `html` this matters because a text node often begins at a tag.
-- **Other spaces.** A tab, a thin space (U+2009), a figure space (U+2007) or any other fixed-width space is left as the author typed it.
+- **Other spaces.** A tab, a thin space (`U+2009`), a figure space (`U+2007`) or any other fixed-width space is left as the author typed it.
 - **Markup boundaries.** In `html` and `markdown`, a French mark that follows an inline element still gets its space: `<em>non</em> !` becomes `<em>non</em>` plus a narrow space plus `!`. The cost is that `12:<b>30</b>` is read as sentence punctuation and gets a space before the colon. A Russian preposition before an inline element, as in `в <em>Москве</em>`, stays unbound.
 - **Case.** Short words match with a capital first letter. Abbreviations, units and symbols match exactly, so `Nr.` is not `nr.`.
 - **Longest match.** If two list entries match at a position, only the longer is considered. If it fails a guard, the shorter is not tried.

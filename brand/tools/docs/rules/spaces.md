@@ -1,18 +1,18 @@
 ---
 title: spaces
-seo_title: Spaces rule: collapse double spaces and fix punctuation spacing | polytypo
+seo_title: The spaces rule collapses double spaces and fixes punctuation spacing
 description: The spaces rule collapses runs of ordinary spaces, removes spaces before punctuation and inside brackets, and leaves indentation, hard breaks and emoticons alone.
 section: rules
 order: 10
 ---
 
-`spaces` is the first rule in the pipeline and the most conservative one. It does two things: it collapses a run of two or more ordinary spaces (U+0020) into one, and it deletes a space that sits in front of closing punctuation or on the inside of a bracket pair. It only ever removes U+0020. It never inserts a character, never touches any other kind of whitespace, and never touches whitespace that has structural meaning.
+`spaces` is the first rule in the pipeline and the most conservative one. It does two things: it collapses a run of two or more ordinary spaces (`U+0020`) into one, and it deletes a space that sits in front of closing punctuation or on the inside of a bracket pair. It only ever removes `U+0020`. It never inserts a character, never touches any other kind of whitespace, and never touches whitespace that has structural meaning.
 
 It runs first so that every later rule sees one canonical spacing form instead of having to consider `a  ,  b` next to `a, b`. It is on by default and behaves the same in every locale.
 
 ## How it works
 
-The rule looks at each maximal run of U+0020 characters and decides, once, how long the run should be: zero or one.
+The rule looks at each maximal run of `U+0020` characters and decides, once, how long the run should be: zero or one.
 
 A run is a candidate only if there is ordinary content on both sides. A run at the start of the text or directly after a line break is skipped (indentation), and so is a run directly before a line break or at the end of the text (the Markdown hard break, and the separator between two inline elements in HTML). In `html` and `markdown` mode the edge of a text span counts as the end of the text for this check, because the rule cannot see what lies beyond it and deleting whitespace cannot be undone.
 
@@ -32,7 +32,7 @@ A space before a full stop is removed only when the dot is a single terminal ful
 
 The cost is stated in the spec: a misplaced full stop followed directly by a letter, as in `end .Next`, keeps its stray space. Deleting it would glue two words together, which is worse.
 
-U+2026 is not in the list of characters that pull a space off, so a space before an existing ellipsis is never removed.
+`U+2026` is not in the list of characters that pull a space off, so a space before an existing ellipsis is never removed.
 
 ### The emoticon guard
 
@@ -136,11 +136,11 @@ The other rules still run, in their usual order.
 
 ## Edge cases
 
-- Only U+0020 is ever changed. Tabs, no-break spaces (U+00A0, U+202F), thin and figure spaces, the ideographic space, zero-width space and the byte-order mark are never collapsed or removed. `5` followed by two U+00A0 characters and `km` stays as written; only an ordinary space run beside a no-break space collapses.
+- Only `U+0020` is ever changed. Tabs, no-break spaces (`U+00A0`, `U+202F`), thin and figure spaces, the ideographic space, zero-width space and the byte-order mark are never collapsed or removed. `5` followed by two `U+00A0` characters and `km` stays as written; only an ordinary space run beside a no-break space collapses.
 - Line terminators are never inserted, removed or reordered, and a run never merges across one.
 - Indentation (a run at the start of the text or after a line break) is left as written, and so are trailing spaces before a line break or at the end of the text.
 - The six punctuation marks that pull a space off are exactly `, . ; : ! ?`. Closing quotation marks and guillemets are not among them; the space inside quotation marks belongs to `nbsp`.
-- The Greek question mark is written U+003B, the same code point as the Latin semicolon, so `Τι κάνεις ;` loses its space with no Greek-specific logic. The Greek compatibility characters U+037E and U+0387, and the middle dot U+00B7, are not in any list: text that already contains them is left as it is. A space before an *ano teleia* therefore survives, and so does the spaced separator in `Home · About · Contact`.
+- The Greek question mark is written `U+003B`, the same code point as the Latin semicolon, so `Τι κάνεις ;` loses its space with no Greek-specific logic. The Greek compatibility characters `U+037E` and `U+0387`, and the middle dot `U+00B7`, are not in any list: text that already contains them is left as it is. A space before an *ano teleia* therefore survives, and so does the spaced separator in `Home · About · Contact`.
 - Emoticon recognition covers the eye-nose-mouth shape only. Kaomoji such as `(^_^)`, `=)` and emoji are not special-cased.
 - The rule has no awareness of code. In `text` mode nothing is skipped, so spacing inside code is changed like any other text; the `html`, `markdown` and `yaml` modes remove code spans, fenced code, `<pre>`, attributes and similar regions before the rule runs.
 

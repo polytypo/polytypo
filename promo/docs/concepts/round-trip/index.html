@@ -10,11 +10,11 @@
 <link rel="apple-touch-icon" href="../../../assets/favicon/apple-touch-icon-180.png">
 <link rel="stylesheet" href="../../../assets/fonts.css">
 <link rel="stylesheet" href="../../../assets/style.css">
-<title>Round trip: how HTML, Markdown and YAML output stays your input | polytypo</title>
+<title>How the round trip keeps HTML, Markdown and YAML output faithful to your input</title>
 <meta property="og:site_name" content="polytypo">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://polytypo.dev/docs/concepts/round-trip/">
-<meta property="og:title" content="Round trip: how HTML, Markdown and YAML output stays your input | polytypo">
+<meta property="og:title" content="How the round trip keeps HTML, Markdown and YAML output faithful to your input">
 <meta property="og:description" content="In html, markdown and yaml modes the output is your input with a few substring replacements applied, and nothing is re-serialised.">
 <meta property="og:image" content="https://polytypo.dev/images/og/docs/concepts/round-trip.png?v=e34e2cbc">
 <meta property="og:image:width" content="1200">
@@ -23,11 +23,11 @@
 <meta property="og:image:alt" content="polytypo: Concepts: Round trip">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Round trip: how HTML, Markdown and YAML output stays your input | polytypo">
+<meta name="twitter:title" content="How the round trip keeps HTML, Markdown and YAML output faithful to your input">
 <meta name="twitter:description" content="In html, markdown and yaml modes the output is your input with a few substring replacements applied, and nothing is re-serialised.">
 <meta name="twitter:image" content="https://polytypo.dev/images/og/docs/concepts/round-trip.png?v=e34e2cbc">
 <meta name="twitter:image:alt" content="polytypo: Concepts: Round trip">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "Round trip: how HTML, Markdown and YAML output stays your input | polytypo", "description": "In html, markdown and yaml modes the output is your input with a few substring replacements applied, and nothing is re-serialised.", "url": "https://polytypo.dev/docs/concepts/round-trip/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "Round trip", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "Concepts", "item": "https://polytypo.dev/docs/concepts/"}, {"@type": "ListItem", "position": 3, "name": "Round trip", "item": "https://polytypo.dev/docs/concepts/round-trip/"}]}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "How the round trip keeps HTML, Markdown and YAML output faithful to your input", "description": "In html, markdown and yaml modes the output is your input with a few substring replacements applied, and nothing is re-serialised.", "url": "https://polytypo.dev/docs/concepts/round-trip/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "Round trip", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "Concepts", "item": "https://polytypo.dev/docs/concepts/"}, {"@type": "ListItem", "position": 3, "name": "Round trip", "item": "https://polytypo.dev/docs/concepts/round-trip/"}]}}</script>
 <script defer src="https://u.rogulia.fi/script.js" data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>
 </head>
 <body class="page-docs-concepts-round-trip">
@@ -50,34 +50,34 @@
 <h2 id="examples">Examples <a class="anchor" href="#examples" aria-label="Link to this section">#</a></h2>
 <p>An HTML document. Only the prose changes. The upper-case tags, the unquoted and single-quoted attributes, the <code>&amp;nbsp;</code> and <code>&amp;amp;</code> references, the self-closing <code>&lt;BR/&gt;</code>, the doctype, the comment, the <code>pre</code> block and the script are returned as they were written:</p>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;html&quot; })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">&lt;!DOCTYPE html&gt;
-&lt;P CLASS=lead id=&#x27;a&#x27;&gt;&quot;Hello&quot; -- it&#x27;s &lt;BR/&gt;fine&amp;nbsp;now &amp;amp; then...&lt;/P&gt;
+&lt;P CLASS=lead id=&#x27;a&#x27;&gt;<del class="chg chg-del">&quot;</del>Hello<del class="chg chg-del">&quot; -- </del>it<del class="chg chg-del">&#x27;</del>s &lt;BR/&gt;fine&amp;nbsp;now &amp;amp; then<del class="chg chg-del">...</del>&lt;/P&gt;
 &lt;!-- keep &quot;this&quot; -- as is --&gt;
 &lt;pre&gt;&quot;raw&quot; -- text&lt;/pre&gt;
 &lt;script&gt;var s = &quot;x -- y&quot;;&lt;/script&gt;
-&lt;p&gt;She said &quot;no&quot;...&lt;/p&gt;</div></div><div><p class="eyebrow">Output</p><div class="specimen">&lt;!DOCTYPE html&gt;
-&lt;P CLASS=lead id=&#x27;a&#x27;&gt;<span class="chg">“</span>Hello<span class="chg">”—</span>it<span class="chg">’</span>s &lt;BR/&gt;fine&amp;nbsp;now &amp;amp; then<span class="chg">…</span>&lt;/P&gt;
+&lt;p&gt;She said <del class="chg chg-del">&quot;</del>no<del class="chg chg-del">&quot;...</del>&lt;/p&gt;</div></div><div><p class="eyebrow">Output</p><div class="specimen">&lt;!DOCTYPE html&gt;
+&lt;P CLASS=lead id=&#x27;a&#x27;&gt;<ins class="chg chg-ins">“</ins>Hello<ins class="chg chg-ins">”—</ins>it<ins class="chg chg-ins">’</ins>s &lt;BR/&gt;fine&amp;nbsp;now &amp;amp; then<ins class="chg chg-ins">…</ins>&lt;/P&gt;
 &lt;!-- keep &quot;this&quot; -- as is --&gt;
 &lt;pre&gt;&quot;raw&quot; -- text&lt;/pre&gt;
 &lt;script&gt;var s = &quot;x -- y&quot;;&lt;/script&gt;
-&lt;p&gt;She said <span class="chg">“</span>no<span class="chg">”…</span>&lt;/p&gt;</div></div></div></figure>
+&lt;p&gt;She said <ins class="chg chg-ins">“</ins>no<ins class="chg chg-ins">”…</ins>&lt;/p&gt;</div></div></div></figure>
 <p>A Markdown document. The list markers, emphasis delimiters, link destination and title, inline code and indented code block are untouched. The trailing newline is kept:</p>
-<figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect: &quot;commonmark&quot; })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen"># &quot;Title&quot; -- here
+<figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect: &quot;commonmark&quot; })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen"># <del class="chg chg-del">&quot;</del>Title<del class="chg chg-del">&quot; -- </del>here
 
-* &quot;one&quot; -- it&#x27;s
-* two...
+* <del class="chg chg-del">&quot;</del>one<del class="chg chg-del">&quot; -- </del>it<del class="chg chg-del">&#x27;</del>s
+* two<del class="chg chg-del">...</del>
 
-Para with `&quot;code&quot; -- x` and a [link](http://x.com/a--b &quot;t&quot;) and *&quot;em&quot;* text.
+Para with `&quot;code&quot; -- x` and a [link](http://x.com/a--b &quot;t&quot;) and *<del class="chg chg-del">&quot;</del>em<del class="chg chg-del">&quot;</del>* text.
 
-    &quot;indented&quot; -- code</div></div><div><p class="eyebrow">Output</p><div class="specimen"># <span class="chg">“</span>Title<span class="chg">”—</span>here
+    &quot;indented&quot; -- code</div></div><div><p class="eyebrow">Output</p><div class="specimen"># <ins class="chg chg-ins">“</ins>Title<ins class="chg chg-ins">”—</ins>here
 
-* <span class="chg">“</span>one<span class="chg">”—</span>it<span class="chg">’</span>s
-* two<span class="chg">…</span>
+* <ins class="chg chg-ins">“</ins>one<ins class="chg chg-ins">”—</ins>it<ins class="chg chg-ins">’</ins>s
+* two<ins class="chg chg-ins">…</ins>
 
-Para with `&quot;code&quot; -- x` and a [link](http://x.com/a--b &quot;t&quot;) and *<span class="chg">“</span>em<span class="chg">”</span>* text.
+Para with `&quot;code&quot; -- x` and a [link](http://x.com/a--b &quot;t&quot;) and *<ins class="chg chg-ins">“</ins>em<ins class="chg chg-ins">”</ins>* text.
 
     &quot;indented&quot; -- code</div></div></div></figure>
 <h2 id="what-is-preserved">What is preserved <a class="anchor" href="#what-is-preserved" aria-label="Link to this section">#</a></h2>
-<ul><li>Attribute quoting (<code>class=foo</code>, <code>class=&#x27;foo&#x27;</code> and <code>class=&quot;foo&quot;</code> all stay as written), attribute order, duplicate attributes and whitespace inside tags.</li><li>Tag name case, and self-closing and void forms (<code>&lt;br&gt;</code>, <code>&lt;br/&gt;</code>, <code>&lt;br /&gt;</code>).</li><li>Character references: <code>&amp;amp;</code> does not become <code>&amp;#38;</code>, and <code>&amp;nbsp;</code> does not become U+00A0. A bare <code>&amp;</code> stays a bare <code>&amp;</code>.</li><li>The doctype, comments and trailing whitespace.</li><li>Markdown list markers, emphasis delimiters, heading style, table alignment, hard-break spaces and line endings.</li><li>YAML quoting style, indentation, anchors, tags and block scalar chomping indicators.</li><li>Malformed input. Unclosed tags, stray <code>&lt;</code> and mismatched nesting are not repaired. Parser error recovery only affects where prose is found, never what is written out.</li></ul>
+<ul><li>Attribute quoting (<code>class=foo</code>, <code>class=&#x27;foo&#x27;</code> and <code>class=&quot;foo&quot;</code> all stay as written), attribute order, duplicate attributes and whitespace inside tags.</li><li>Tag name case, and self-closing and void forms (<code>&lt;br&gt;</code>, <code>&lt;br/&gt;</code>, <code>&lt;br /&gt;</code>).</li><li>Character references: <code>&amp;amp;</code> does not become <code>&amp;#38;</code>, and <code>&amp;nbsp;</code> does not become <code>U+00A0</code>. A bare <code>&amp;</code> stays a bare <code>&amp;</code>.</li><li>The doctype, comments and trailing whitespace.</li><li>Markdown list markers, emphasis delimiters, heading style, table alignment, hard-break spaces and line endings.</li><li>YAML quoting style, indentation, anchors, tags and block scalar chomping indicators.</li><li>Malformed input. Unclosed tags, stray <code>&lt;</code> and mismatched nesting are not repaired. Parser error recovery only affects where prose is found, never what is written out.</li></ul>
 <h2 id="edge-cases">Edge cases <a class="anchor" href="#edge-cases" aria-label="Link to this section">#</a></h2>
 <ul><li><strong>MDX can fail to parse.</strong> Markdown with <code>dialect: &quot;mdx&quot;</code> embeds JavaScript, and a broken JSX element or expression raises <code>POLYTYPO_MALFORMED_INPUT</code> instead of producing output. See <a href="../../../docs/api/errors/">Error codes</a>.</li><li><strong>Edits that would change structure are dropped.</strong> An edit that would add a space at the very start or end of a span is discarded, so a markup boundary is never made to touch new whitespace. See <a href="../../../docs/concepts/span-model/#edge-cases">the span model</a>.</li></ul>
 <h2 id="related">Related <a class="anchor" href="#related" aria-label="Link to this section">#</a></h2>

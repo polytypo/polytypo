@@ -8,7 +8,7 @@ Read an entry as "what changes in text I already run through polytypo". Each one
 change with a cost, stated: a rule that fires where it did not before also fires somewhere you may
 not want, and the fixtures pin both sides.
 
-**Two characters below are not in the output.** ⍽ marks U+00A0 NO-BREAK SPACE and · marks U+202F
+**Two characters below are not in the output.** ⍽ marks `U+00A0` NO-BREAK SPACE and · marks `U+202F`
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
 

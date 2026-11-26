@@ -1,6 +1,6 @@
 ---
 title: quote-punctuation
-seo_title: quote-punctuation rule: comma and full stop inside the closing quotation mark | polytypo
+seo_title: The quote-punctuation rule moves a comma or full stop inside the closing quotation mark
 description: The opt-in quote-punctuation rule moves a comma or full stop from after a closing quotation mark to before it, for the locale whose convention puts it there, and declines wherever the placement depends on meaning.
 section: rules
 order: 65
@@ -18,7 +18,7 @@ Even for `en-US` the move is not always right. In technical text a quoted litera
 
 ## How it works
 
-The rule looks at each closing primary quotation mark of the locale (for `en-US`, U+201D) and moves the comma or full stop that follows it to before it, when all of these hold:
+The rule looks at each closing primary quotation mark of the locale (for `en-US`, `U+201D`) and moves the comma or full stop that follows it to before it, when all of these hold:
 
 1. **A letter comes before the quotation mark.** A digit, another punctuation mark, a bracket or another quotation mark does not qualify, so `“Route 66”.`, `“Stop!”.`, `“e.g.”,` and the nested `“He said ‘hi’”.` are left alone.
 2. **The mark is a comma or a full stop.** Semicolons, colons, question marks and exclamation marks are never moved.

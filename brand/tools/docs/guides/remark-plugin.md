@@ -1,6 +1,6 @@
 ---
 title: Typesetting Markdown in a remark pipeline
-seo_title: Fix typography in a remark or unified pipeline with remark-polytypo | polytypo
+seo_title: Fix typography in a remark or unified pipeline with remark-polytypo
 description: Add remark-polytypo to a unified, MDX or Next.js pipeline to typeset Markdown prose at build time, with the options, the plugin order and the warnings it reports.
 section: guides
 order: 25

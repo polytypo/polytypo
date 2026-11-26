@@ -125,6 +125,15 @@ def native_name(code):
     return NATIVE[code]
 
 
+_CODE_POINT = re.compile(r"U\+[0-9A-F]{4,6}")
+
+
+def _cp(html):
+    """Every code point named in prose is code: U+00A0 becomes <code>U+00A0</code>. Takes text that
+    is already escaped, so it can be applied to a whole sentence."""
+    return _CODE_POINT.sub(lambda m: f"<code>{m.group(0)}</code>", html)
+
+
 def _codes(chars):
     return " ".join(f"<code>{H.escape(c)}</code>" for c in chars)
 
@@ -179,6 +188,11 @@ def _headline_name(code, d):
     return HEADLINE_NAME.get(code, d["name"])
 
 
+def _dash_phrase(kind):
+    short = DASH_SHORT[kind]
+    return short if kind == "none" else f"a {short}"
+
+
 def pages():
     """One page record per registered locale, in the site-wide locale order (locale_order.py)."""
     out = []
@@ -192,8 +206,8 @@ def pages():
                 "name": d["name"],
                 "title": f"{d['name']} ({code})",
                 "seo_title": (
-                    f"{_headline_name(code, d)} typography rules: {_quote_pair_text(q['primary'])} quotes, "
-                    f"{DASH_SHORT[d['dash']['parenthetical']]} | polytypo"
+                    f"{_headline_name(code, d)} typography rules with {_quote_pair_text(q['primary'])} "
+                    f"quotes and {_dash_phrase(d['dash']['parenthetical'])}"
                 ),
                 "description": (
                     f"{d['name']} ({code}): quotation marks {_quote_pair_text(q['primary'])} and "
@@ -248,7 +262,7 @@ def _chips(items, long_label):
     texts = [f"{i['left']} · {i['elided']} · {i['right']}" if isinstance(i, dict) else i for i in items]
     chips = '<span class="chips">' + " ".join(f"<code>{H.escape(t)}</code>" for t in texts) + "</span>"
     if len(items) > LONG_LIST:
-        return f"<details><summary>{len(items)} entries — {H.escape(long_label)}</summary>{chips}</details>"
+        return f"<details><summary>{len(items)} entries — {_cp(H.escape(long_label))}</summary>{chips}</details>"
     return chips
 
 
@@ -545,8 +559,8 @@ def body(page, prefix, h, all_pages):
 
     pair_rows = _kv(
         [
-            ("Primary", f"{_glyph(q['primary']['open'], h.reveal)} … {_glyph(q['primary']['close'], h.reveal)} — {H.escape(INNER_SPACE[q['primary']['innerSpace']])}"),
-            ("Secondary", f"{_glyph(q['secondary']['open'], h.reveal)} … {_glyph(q['secondary']['close'], h.reveal)} — {H.escape(INNER_SPACE[q['secondary']['innerSpace']])}"),
+            ("Primary", f"{_glyph(q['primary']['open'], h.reveal)} … {_glyph(q['primary']['close'], h.reveal)} — {_cp(H.escape(INNER_SPACE[q['primary']['innerSpace']]))}"),
+            ("Secondary", f"{_glyph(q['secondary']['open'], h.reveal)} … {_glyph(q['secondary']['close'], h.reveal)} — {_cp(H.escape(INNER_SPACE[q['secondary']['innerSpace']]))}"),
         ]
     )
     elision = ""
@@ -577,8 +591,8 @@ def body(page, prefix, h, all_pages):
         _h2("dashes", f"Which dashes does {n} use for breaks and ranges?")
         + _kv(
             [
-                ("Parenthetical break (<code>dash.parenthetical</code>)", H.escape(DASHES[dash["parenthetical"]])),
-                ("Between numbers and dates (<code>dash.range</code>)", H.escape(DASHES[dash["range"]])),
+                ("Parenthetical break (<code>dash.parenthetical</code>)", _cp(H.escape(DASHES[dash["parenthetical"]]))),
+                ("Between numbers and dates (<code>dash.range</code>)", _cp(H.escape(DASHES[dash["range"]]))),
             ]
         )
         + "<p>The <code>dashes</code> rule reads the parenthetical convention. The <code>ranges</code> rule "
@@ -599,7 +613,7 @@ def body(page, prefix, h, all_pages):
     if hy["prefixes"] or hy["suffixes"] or hy["compounds"]:
         hyphens = (
             _h2("hyphens", f"How are hyphens handled in {n}?")
-            + "<p>Morphological forms whose hyphen is bound with U+2011 so it cannot break across lines.</p>"
+            + "<p>Morphological forms whose hyphen is bound with <code>U+2011</code> so it cannot break across lines.</p>"
             + _kv(
                 [
                     ("Prefixes", _chips(hy["prefixes"], "prefixes")),
@@ -612,7 +626,7 @@ def body(page, prefix, h, all_pages):
     else:
         hyphens = _h2("hyphens", f"How are hyphens handled in {n}?") + "<p>The hyphen lists are empty for this locale, so the <code>hyphen</code> rule changes nothing.</p>"
 
-    spacing_rows = [(label + f" (<code>nbsp.{key}</code>)", _chips(nb[key], label)) for key, label in NBSP_LISTS]
+    spacing_rows = [(_cp(H.escape(label)) + f" (<code>nbsp.{key}</code>)", _chips(nb[key], label)) for key, label in NBSP_LISTS]
     spacing_rows.append(("Initials (<code>nbsp.initialBinding</code>)", f"<code>{nb['initialBinding']}</code> — {H.escape(INITIAL_BINDING[nb['initialBinding']])}"))
     spacing = (
         _h2("spacing", f"Where does {n} use no-break spaces?")
@@ -639,7 +653,7 @@ def body(page, prefix, h, all_pages):
         f'<div class="doc-layout">{_sidebar(code, prefix, all_pages)}<article class="doc">'
         f"{crumbs}<h1>{H.escape(_headline_name(code, d))} typography rules <span class=\"muted\">&middot; {H.escape(code)}</span></h1>"
         f'<p class="muted" lang="{_lang(code)}">{H.escape(native_name(code))}</p>'
-        f'<p class="doc-lead">{quick_answer(d)}</p>'
+        f'<p class="doc-lead">{_cp(quick_answer(d))}</p>'
         + h.updated()
         + _try_section(code, d["name"], prefix)
         + _h2("at-a-glance", f"{n} typography at a glance")

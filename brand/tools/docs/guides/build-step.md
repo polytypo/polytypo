@@ -1,6 +1,6 @@
 ---
 title: Running polytypo in a build step
-seo_title: Fix typography in Markdown, MDX and HTML at build time | polytypo
+seo_title: Fix typography in Markdown, MDX and HTML at build time with polytypo
 description: Typeset Markdown, MDX and HTML files at build time with a complete Node script, choosing locale, mode and dialect per file, with a check mode for CI.
 section: guides
 order: 10
@@ -136,7 +136,7 @@ Call it where imported or untrusted copy reaches a render, not on every keystrok
 - **Unknown locale throws.** `POLYTYPO_UNKNOWN_LOCALE` means the directory name is not a supported code. In the script above a stray `content/drafts/` directory would stop the run; map directory names to locales explicitly if your layout is not purely locale-first.
 - **MDX that does not parse throws.** An autolink such as `<https://example.com>` is not valid MDX and raises `POLYTYPO_MALFORMED_INPUT`. The script reports the file and carries on; fix the source or change it to `[text](url)`.
 - **Frontmatter is skipped unless you name keys.** Without `frontmatterKeys`, the headline in your frontmatter stays as authored.
-- **Narrow no-break space.** Locales such as French insert U+202F, which some fonts lack. Pass `narrowNbsp: "nbsp"` to use U+00A0 in its place ([nbsp](/docs/rules/nbsp/)).
+- **Narrow no-break space.** Locales such as French insert `U+202F`, which some fonts lack. Pass `narrowNbsp: "nbsp"` to use `U+00A0` in its place ([nbsp](/docs/rules/nbsp/)).
 
 ## Related
 

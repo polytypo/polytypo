@@ -10,11 +10,11 @@
 <link rel="apple-touch-icon" href="../../../assets/favicon/apple-touch-icon-180.png">
 <link rel="stylesheet" href="../../../assets/fonts.css">
 <link rel="stylesheet" href="../../../assets/style.css">
-<title>MDX typography in a blog: fix quotes, dashes and frontmatter | polytypo</title>
+<title>Fix quotes, dashes and frontmatter typography in an MDX blog</title>
 <meta property="og:site_name" content="polytypo">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://polytypo.dev/docs/guides/mdx-content/">
-<meta property="og:title" content="MDX typography in a blog: fix quotes, dashes and frontmatter | polytypo">
+<meta property="og:title" content="Fix quotes, dashes and frontmatter typography in an MDX blog">
 <meta property="og:description" content="Process MDX posts with markdown mode and the mdx dialect, typeset frontmatter title and description, and know what is skipped, what is prose and what throws.">
 <meta property="og:image" content="https://polytypo.dev/images/og/docs/guides/mdx-content.png?v=34276da9">
 <meta property="og:image:width" content="1200">
@@ -23,11 +23,11 @@
 <meta property="og:image:alt" content="polytypo: Guides: Typesetting an MDX blog">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="MDX typography in a blog: fix quotes, dashes and frontmatter | polytypo">
+<meta name="twitter:title" content="Fix quotes, dashes and frontmatter typography in an MDX blog">
 <meta name="twitter:description" content="Process MDX posts with markdown mode and the mdx dialect, typeset frontmatter title and description, and know what is skipped, what is prose and what throws.">
 <meta name="twitter:image" content="https://polytypo.dev/images/og/docs/guides/mdx-content.png?v=34276da9">
 <meta name="twitter:image:alt" content="polytypo: Guides: Typesetting an MDX blog">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "MDX typography in a blog: fix quotes, dashes and frontmatter | polytypo", "description": "Process MDX posts with markdown mode and the mdx dialect, typeset frontmatter title and description, and know what is skipped, what is prose and what throws.", "url": "https://polytypo.dev/docs/guides/mdx-content/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "Typesetting an MDX blog", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://polytypo.dev/docs/guides/"}, {"@type": "ListItem", "position": 3, "name": "Typesetting an MDX blog", "item": "https://polytypo.dev/docs/guides/mdx-content/"}]}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "Fix quotes, dashes and frontmatter typography in an MDX blog", "description": "Process MDX posts with markdown mode and the mdx dialect, typeset frontmatter title and description, and know what is skipped, what is prose and what throws.", "url": "https://polytypo.dev/docs/guides/mdx-content/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "Typesetting an MDX blog", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://polytypo.dev/docs/guides/"}, {"@type": "ListItem", "position": 3, "name": "Typesetting an MDX blog", "item": "https://polytypo.dev/docs/guides/mdx-content/"}]}}</script>
 <script defer src="https://u.rogulia.fi/script.js" data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>
 </head>
 <body class="page-docs-guides-mdx-content">
@@ -67,59 +67,59 @@ await writeFile(path, output);</code></pre>
 <h2 id="what-is-typeset-and-what-is-left-alone">What is typeset and what is left alone <a class="anchor" href="#what-is-typeset-and-what-is-left-alone" aria-label="Link to this section">#</a></h2>
 <p>In the <code>mdx</code> dialect, these are <strong>processed</strong>: paragraphs, headings, list items, link text, table cell text, and the children of JSX elements (<code>&lt;Callout&gt;Some text&lt;/Callout&gt;</code> is prose you wrote).</p>
 <p>These are <strong>skipped</strong>, byte for byte: fenced code and its info string, inline code, link and image destinations and titles, GFM table pipes and alignment rows, HTML blocks and raw inline HTML (under the HTML skip list), <code>{…}</code> expression containers, every JSX attribute, <code>import</code> and <code>export</code> statements, and frontmatter unless you name keys.</p>
-<figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect: &quot;mdx&quot; })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">&lt;Callout type=&quot;note&quot; title=&quot;a -- b&quot;&gt;It&#x27;s &quot;fine&quot; -- really...&lt;/Callout&gt;
+<figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect: &quot;mdx&quot; })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">&lt;Callout type=&quot;note&quot; title=&quot;a -- b&quot;&gt;It<del class="chg chg-del">&#x27;</del>s <del class="chg chg-del">&quot;</del>fine<del class="chg chg-del">&quot; -- </del>really<del class="chg chg-del">...</del>&lt;/Callout&gt;
 
 {props.label + &quot; -- x&quot;}
 
-Use `a -- b` here -- ok.</div></div><div><p class="eyebrow">Output</p><div class="specimen">&lt;Callout type=&quot;note&quot; title=&quot;a -- b&quot;&gt;It<span class="chg">’</span>s <span class="chg">“</span>fine<span class="chg">”—</span>really<span class="chg">…</span>&lt;/Callout&gt;
+Use `a -- b` here<del class="chg chg-del"> -- </del>ok.</div></div><div><p class="eyebrow">Output</p><div class="specimen">&lt;Callout type=&quot;note&quot; title=&quot;a -- b&quot;&gt;It<ins class="chg chg-ins">’</ins>s <ins class="chg chg-ins">“</ins>fine<ins class="chg chg-ins">”—</ins>really<ins class="chg chg-ins">…</ins>&lt;/Callout&gt;
 
 {props.label + &quot; -- x&quot;}
 
-Use `a -- b` here<span class="chg">—</span>ok.</div></div></div></figure>
+Use `a -- b` here<ins class="chg chg-ins">—</ins>ok.</div></div></div></figure>
 <p>Notice that the attribute <code>title=&quot;a -- b&quot;</code>, the expression <code>{props.label + &quot; -- x&quot;}</code> and the code span are unchanged, while the text inside <code>&lt;Callout&gt;</code> and the paragraph are typeset.</p>
 <p><code>export</code> statements are not prose either. In French, where <code>:</code> takes a space before it, the object below stays as written while the sentence below it is converted:</p>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;fr&quot;, mode: &quot;markdown&quot;, dialect: &quot;mdx&quot; })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">export const meta = {slug: &quot;une-note&quot;}
 
-Une note: &quot;salut&quot; -- ok!</div></div><div><p class="eyebrow">Output</p><div class="specimen">export const meta = {slug: &quot;une-note&quot;}
+Une note: <del class="chg chg-del">&quot;</del>salut<del class="chg chg-del">&quot;</del> <del class="chg chg-del">--</del> ok!</div></div><div><p class="eyebrow">Output</p><div class="specimen">export const meta = {slug: &quot;une-note&quot;}
 
-Une note<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span></span>: <span class="chg">«<span class="nb" title="U+00A0 no-break space"> </span></span>salut<span class="chg"><span class="nb" title="U+00A0 no-break space"> </span>»</span> <span class="chg">—</span> ok<span class="chg"><span class="nb" title="U+202F narrow no-break space"> </span></span>!</div></div></div></figure>
+Une note<ins class="chg chg-ins"><span class="nb" title="U+00A0 no-break space"> </span></ins>: <ins class="chg chg-ins">«<span class="nb" title="U+00A0 no-break space"> </span></ins>salut<ins class="chg chg-ins"><span class="nb" title="U+00A0 no-break space"> </span>»</ins> <ins class="chg chg-ins">—</ins> ok<ins class="chg chg-ins"><span class="nb" title="U+202F narrow no-break space"> </span></ins>!</div></div></div></figure>
 <h2 id="frontmatter">Frontmatter <a class="anchor" href="#frontmatter" aria-label="Link to this section">#</a></h2>
 <p>By default the frontmatter block is skipped whole, delimiters included. That is deliberate: it is machine-read, and typesetting it would put quotation marks around a date or a space before a colon in a key. The cost is that the title, the most visible string on the page, stays as authored.</p>
 <p><code>frontmatterKeys</code> names the YAML keys whose values are prose. Keys not listed are never touched. Matching is exact and case-sensitive, and a key named <code>title</code> is matched at any depth, including inside a nested <code>seo:</code> mapping.</p>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect: &quot;mdx&quot;, frontmatterKeys: [&quot;title&quot;, &quot;description&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">---
-title: He said &quot;hello&quot; -- twice
-description: It&#x27;s &quot;fine&quot; -- really...
+title: He said <del class="chg chg-del">&quot;</del>hello<del class="chg chg-del">&quot; -- </del>twice
+description: It<del class="chg chg-del">&#x27;</del>s <del class="chg chg-del">&quot;</del>fine<del class="chg chg-del">&quot; -- </del>really<del class="chg chg-del">...</del>
 slug: &quot;hello-twice&quot;
 date: 2026-10-01
 ---
 
-Body text -- &quot;quoted&quot;...</div></div><div><p class="eyebrow">Output</p><div class="specimen">---
-title: He said <span class="chg">“</span>hello<span class="chg">”—</span>twice
-description: It<span class="chg">’</span>s <span class="chg">“</span>fine<span class="chg">”—</span>really<span class="chg">…</span>
+Body text<del class="chg chg-del"> -- &quot;</del>quoted<del class="chg chg-del">&quot;...</del></div></div><div><p class="eyebrow">Output</p><div class="specimen">---
+title: He said <ins class="chg chg-ins">“</ins>hello<ins class="chg chg-ins">”—</ins>twice
+description: It<ins class="chg chg-ins">’</ins>s <ins class="chg chg-ins">“</ins>fine<ins class="chg chg-ins">”—</ins>really<ins class="chg chg-ins">…</ins>
 slug: &quot;hello-twice&quot;
 date: 2026-10-01
 ---
 
-Body text<span class="chg">—“</span>quoted<span class="chg">”…</span></div></div></div></figure>
+Body text<ins class="chg chg-ins">—“</ins>quoted<ins class="chg chg-ins">”…</ins></div></div></div></figure>
 <p>Notice that <code>slug</code> and <code>date</code> are unchanged. Without the option the same call changes only the body:</p>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect: &quot;mdx&quot; })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">---
 title: He said &quot;hello&quot; -- twice
 ---
 
-Body text -- &quot;quoted&quot;...</div></div><div><p class="eyebrow">Output</p><div class="specimen">---
+Body text<del class="chg chg-del"> -- &quot;</del>quoted<del class="chg chg-del">&quot;...</del></div></div><div><p class="eyebrow">Output</p><div class="specimen">---
 title: He said &quot;hello&quot; -- twice
 ---
 
-Body text<span class="chg">—“</span>quoted<span class="chg">”…</span></div></div></div></figure>
+Body text<ins class="chg chg-ins">—“</ins>quoted<ins class="chg chg-ins">”…</ins></div></div></div></figure>
 <p>The frontmatter block is its own text unit. An unbalanced quotation mark in <code>title</code> cannot pair with one in the first paragraph, and <code>frontmatterKeys</code> cannot change a byte outside the block.</p>
 <h3 id="single-quoted-values">Single-quoted values <a class="anchor" href="#single-quoted-values" aria-label="Link to this section">#</a></h3>
 <p>The block is read with the same scan as <a href="../../../docs/modes/yaml/">YAML mode</a>, which declines a single-quoted value that contains <code>&#x27;&#x27;</code> (YAML's way of writing an apostrophe inside single quotes). That value comes back untouched:</p>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect: &quot;mdx&quot;, frontmatterKeys: [&quot;title&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">---
-title: &#x27;It&#x27;&#x27;s -- a &quot;test&quot;&#x27;
+title: &#x27;It&#x27;&#x27;s<del class="chg chg-del"> -- </del>a <del class="chg chg-del">&quot;</del>test<del class="chg chg-del">&quot;</del>&#x27;
 ---
 
 Body</div></div><div><p class="eyebrow">Output</p><div class="specimen">---
-title: &#x27;It&#x27;&#x27;s<span class="chg">—</span>a <span class="chg">“</span>test<span class="chg">”</span>&#x27;
+title: &#x27;It&#x27;&#x27;s<ins class="chg chg-ins">—</ins>a <ins class="chg chg-ins">“</ins>test<ins class="chg chg-ins">”</ins>&#x27;
 ---
 
 Body</div></div></div></figure>
@@ -132,9 +132,9 @@ Body</div></div></div></figure>
 <ul><li><strong>Indented text is prose in MDX.</strong> MDX has no indented code blocks, so four spaces of indentation do not protect anything. Use a fence. Under <code>commonmark</code> the same input is a code block and is left alone; under <code>mdx</code> it is typeset (the call below is the <code>mdx</code> result):</li></ul>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect: &quot;mdx&quot; })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">Intro:
 
-    indented -- &quot;text&quot;...</div></div><div><p class="eyebrow">Output</p><div class="specimen">Intro:
+    indented<del class="chg chg-del"> -- &quot;</del>text<del class="chg chg-del">&quot;...</del></div></div><div><p class="eyebrow">Output</p><div class="specimen">Intro:
 
-    indented<span class="chg">—“</span>text<span class="chg">”…</span></div></div></div></figure>
+    indented<ins class="chg chg-ins">—“</ins>text<ins class="chg chg-ins">”…</ins></div></div></div></figure>
 <ul><li><strong>Wrong dialect, wrong result.</strong> <code>commonmark</code> on an MDX file does not recognise <code>{…}</code> expressions, so <code>{props.x + &quot; -- y&quot;}</code> is treated as prose and its dash is converted. In <code>commonmark</code> the autolink <code>&lt;https://example.com/a--b&gt;</code> is skipped, while in MDX it does not parse at all.</li><li><strong>The Python, Go, Ruby and PHP runtimes</strong> do not implement <code>mdx</code>: they raise <code>POLYTYPO_INVALID_DIALECT</code>. See each <a href="../../../docs/runtimes/javascript/">runtime page</a>.</li><li><strong>Locale is yours to supply.</strong> A post in French run with <code>en-US</code> gets English quotes. Take the locale from the post's metadata or path.</li></ul>
 <h2 id="related">Related <a class="anchor" href="#related" aria-label="Link to this section">#</a></h2>
 <ul><li><a href="../../../docs/modes/markdown/">Markdown mode</a></li><li><a href="../../../docs/modes/markdown/mdx/">MDX dialect</a></li><li><a href="../../../docs/modes/markdown/frontmatter/">Frontmatter</a></li><li><a href="../../../docs/modes/markdown/skip-list/">Skip list</a></li><li><a href="../../../docs/api/errors/">Error codes</a></li></ul>

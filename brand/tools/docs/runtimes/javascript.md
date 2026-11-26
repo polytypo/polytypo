@@ -1,7 +1,7 @@
 ---
 title: JavaScript and TypeScript
 h1: Typography library for JavaScript and TypeScript
-seo_title: Typography library for JavaScript and TypeScript: npm install | polytypo
+seo_title: Typography library for JavaScript and TypeScript, installed with npm
 description: polytypo is a typography library for JavaScript and TypeScript: it fixes quotes, dashes, ellipses and no-break spaces for each locale. Install it from npm, call transform and analyze, read error codes, and see which modes and dialects the package covers.
 section: runtimes
 order: 10

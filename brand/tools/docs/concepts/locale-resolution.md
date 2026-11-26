@@ -1,6 +1,6 @@
 ---
 title: Locale resolution
-seo_title: Locale resolution: how de-AT, pt or en become one locale | polytypo
+seo_title: How locale resolution turns de-AT, pt or en into one locale
 description: How the locale option becomes exactly one locale: exact match, alias, one region strip, and an error otherwise, never a fallback to English.
 section: concepts
 order: 50
@@ -25,7 +25,7 @@ The region is dropped once. There is no second retry, a language is never droppe
 
 ## Supported locales and aliases
 
-Nineteen locales: `cs`, `nl`, `en-GB`, `en-US`, `fi`, `fr`, `fr-CA`, `de-DE`, `de-CH`, `el`, `it`, `pl`, `pt-BR`, `pt-PT`, `ru`, `es`, `sv`, `tr`, `uk`. Three aliases: `en` is `en-US`, `de` is `de-DE`, and `pt` is `pt-PT`. See [all locales](/locales/).
+{{Locale_count}} locales, all listed on the [Locales page](/locales/). Four aliases: `en` is `en-US`, `de` is `de-DE`, `pt` is `pt-PT`, and `no` is `nb`.
 
 ## Examples
 

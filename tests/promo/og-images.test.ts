@@ -21,12 +21,12 @@ const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as Record<
 const sitemap = readFileSync(path.join(PROMO, "sitemap.xml"), "utf8");
 // Every sitemap page except home (which keeps the shared brand image) has its own drawn image.
 const pageSlugs = [...sitemap.matchAll(/<loc>([^<]*)<\/loc>/g)]
-  .map((m) => m[1].slice(ORIGIN.length + 1).replace(/\/$/, ""))
+  .map((m) => (m[1] ?? "").slice(ORIGIN.length + 1).replace(/\/$/, ""))
   .filter((slug) => slug !== "");
 
 function meta(html: string, attr: "property" | "name", key: string): string[] {
   const re = new RegExp(`<meta ${attr}="${key}" content="([^"]*)">`, "g");
-  return [...html.matchAll(re)].map((m) => m[1]);
+  return [...html.matchAll(re)].map((m) => m[1] ?? "");
 }
 
 describe("per-page OG images", () => {
@@ -51,7 +51,7 @@ describe("per-page OG images", () => {
   it("each page has exactly one absolute og:image and twitter:image pointing at its manifest version", () => {
     for (const slug of pageSlugs) {
       const html = readFileSync(path.join(PROMO, slug, "index.html"), "utf8");
-      const url = `${ORIGIN}/images/og/${slug}.png?v=${manifest[slug].v}`;
+      const url = `${ORIGIN}/images/og/${slug}.png?v=${manifest[slug]?.v}`;
       expect(meta(html, "property", "og:image"), slug).toEqual([url]);
       expect(meta(html, "name", "twitter:image"), slug).toEqual([url]);
       expect(meta(html, "name", "twitter:card"), slug).toEqual(["summary_large_image"]);
@@ -66,7 +66,7 @@ describe("per-page OG images", () => {
       expect(meta(html, "property", "og:image:type"), slug).toEqual(["image/png"]);
       const alt = meta(html, "property", "og:image:alt");
       expect(alt, slug).toHaveLength(1);
-      expect(alt[0].trim().length, slug).toBeGreaterThan(0);
+      expect((alt[0] ?? "").trim().length, slug).toBeGreaterThan(0);
       expect(meta(html, "name", "twitter:image:alt"), slug).toEqual(alt);
     }
   });

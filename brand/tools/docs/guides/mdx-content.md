@@ -1,6 +1,6 @@
 ---
 title: Typesetting an MDX blog
-seo_title: MDX typography in a blog: fix quotes, dashes and frontmatter | polytypo
+seo_title: Fix quotes, dashes and frontmatter typography in an MDX blog
 description: Process MDX posts with markdown mode and the mdx dialect, typeset frontmatter title and description, and know what is skipped, what is prose and what throws.
 section: guides
 order: 20

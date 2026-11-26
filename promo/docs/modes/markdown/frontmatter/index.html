@@ -10,11 +10,11 @@
 <link rel="apple-touch-icon" href="../../../../assets/favicon/apple-touch-icon-180.png">
 <link rel="stylesheet" href="../../../../assets/fonts.css">
 <link rel="stylesheet" href="../../../../assets/style.css">
-<title>Typeset Markdown frontmatter: frontmatterKeys option | polytypo</title>
+<title>Typeset Markdown frontmatter with the frontmatterKeys option</title>
 <meta property="og:site_name" content="polytypo">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://polytypo.dev/docs/modes/markdown/frontmatter/">
-<meta property="og:title" content="Typeset Markdown frontmatter: frontmatterKeys option | polytypo">
+<meta property="og:title" content="Typeset Markdown frontmatter with the frontmatterKeys option">
 <meta property="og:description" content="How markdown mode treats a YAML or TOML frontmatter block, how to typeset named fields with frontmatterKeys, and how the block is located.">
 <meta property="og:image" content="https://polytypo.dev/images/og/docs/modes/markdown/frontmatter.png?v=31856387">
 <meta property="og:image:width" content="1200">
@@ -23,11 +23,11 @@
 <meta property="og:image:alt" content="polytypo: Modes: Frontmatter">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Typeset Markdown frontmatter: frontmatterKeys option | polytypo">
+<meta name="twitter:title" content="Typeset Markdown frontmatter with the frontmatterKeys option">
 <meta name="twitter:description" content="How markdown mode treats a YAML or TOML frontmatter block, how to typeset named fields with frontmatterKeys, and how the block is located.">
 <meta name="twitter:image" content="https://polytypo.dev/images/og/docs/modes/markdown/frontmatter.png?v=31856387">
 <meta name="twitter:image:alt" content="polytypo: Modes: Frontmatter">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "Typeset Markdown frontmatter: frontmatterKeys option | polytypo", "description": "How markdown mode treats a YAML or TOML frontmatter block, how to typeset named fields with frontmatterKeys, and how the block is located.", "url": "https://polytypo.dev/docs/modes/markdown/frontmatter/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "Frontmatter", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "Modes", "item": "https://polytypo.dev/docs/modes/"}, {"@type": "ListItem", "position": 3, "name": "Frontmatter", "item": "https://polytypo.dev/docs/modes/markdown/frontmatter/"}]}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "Typeset Markdown frontmatter with the frontmatterKeys option", "description": "How markdown mode treats a YAML or TOML frontmatter block, how to typeset named fields with frontmatterKeys, and how the block is located.", "url": "https://polytypo.dev/docs/modes/markdown/frontmatter/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "Frontmatter", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "Modes", "item": "https://polytypo.dev/docs/modes/"}, {"@type": "ListItem", "position": 3, "name": "Frontmatter", "item": "https://polytypo.dev/docs/modes/markdown/frontmatter/"}]}}</script>
 <script defer src="https://u.rogulia.fi/script.js" data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>
 </head>
 <body class="page-docs-modes-markdown-frontmatter">
@@ -47,30 +47,30 @@
 <h2 id="frontmatterkeys"><code>frontmatterKeys</code> <a class="anchor" href="#frontmatterkeys" aria-label="Link to this section">#</a></h2>
 <p><code>frontmatterKeys</code> is optional and applies to <code>markdown</code> mode in both dialects. It lists the mapping keys of a <strong>YAML</strong> frontmatter block whose scalar values are prose. Those values are typeset and nothing else in the block is.</p>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect: &quot;commonmark&quot;, frontmatterKeys: [&quot;title&quot;, &quot;description&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">---
-title: He said &quot;hello&quot; once
-description: A note -- short
+title: He said <del class="chg chg-del">&quot;</del>hello<del class="chg chg-del">&quot;</del> once
+description: A note<del class="chg chg-del"> -- </del>short
 slug: &quot;a--b&quot;
 date: 2026-09-26
 ---
 
-&quot;Body&quot; text.</div></div><div><p class="eyebrow">Output</p><div class="specimen">---
-title: He said <span class="chg">“</span>hello<span class="chg">”</span> once
-description: A note<span class="chg">—</span>short
+<del class="chg chg-del">&quot;</del>Body<del class="chg chg-del">&quot;</del> text.</div></div><div><p class="eyebrow">Output</p><div class="specimen">---
+title: He said <ins class="chg chg-ins">“</ins>hello<ins class="chg chg-ins">”</ins> once
+description: A note<ins class="chg chg-ins">—</ins>short
 slug: &quot;a--b&quot;
 date: 2026-09-26
 ---
 
-<span class="chg">“</span>Body<span class="chg">”</span> text.</div></div></div></figure>
+<ins class="chg chg-ins">“</ins>Body<ins class="chg chg-ins">”</ins> text.</div></div></div></figure>
 <p><code>title</code> and <code>description</code> change; <code>slug</code>, <code>date</code>, the delimiters and the body's own treatment do not. Without the option the whole block comes back as written:</p>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect: &quot;commonmark&quot; })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">---
 title: He said &quot;hello&quot; once
 ---
 
-&quot;Body&quot; text.</div></div><div><p class="eyebrow">Output</p><div class="specimen">---
+<del class="chg chg-del">&quot;</del>Body<del class="chg chg-del">&quot;</del> text.</div></div><div><p class="eyebrow">Output</p><div class="specimen">---
 title: He said &quot;hello&quot; once
 ---
 
-<span class="chg">“</span>Body<span class="chg">”</span> text.</div></div></div></figure>
+<ins class="chg chg-ins">“</ins>Body<ins class="chg chg-ins">”</ins> text.</div></div></div></figure>
 <p>An empty list is legal and processes nothing. A value that is not a list of strings throws <code>POLYTYPO_INVALID_OPTION</code>. In <code>text</code>, <code>html</code> and <code>yaml</code> modes the option is ignored and not validated, as <code>dialect</code> is.</p>
 <h3 id="the-block-is-its-own-text">The block is its own text <a class="anchor" href="#the-block-is-its-own-text" aria-label="Link to this section">#</a></h3>
 <p>The pipeline runs over the frontmatter block and over the body <strong>separately</strong>. The option cannot change a byte outside the block, and an unbalanced quotation mark in <code>title</code> cannot pair with a mark in your first paragraph. Every other behaviour of the body is as without the option.</p>
@@ -84,7 +84,7 @@ title: He said &quot;hello&quot; once
 <p>A TOML block (<code>+++</code>) is skipped whole, with the option given or not. TOML's quoting is a second grammar with its own escapes and multi-line forms, so the block yields no spans.</p>
 <h2 id="where-the-block-begins-and-ends">Where the block begins and ends <a class="anchor" href="#where-the-block-begins-and-ends" aria-label="Link to this section">#</a></h2>
 <p>The extent of the block is decided by a scan, identical in every runtime, and not by whatever frontmatter support a Markdown parser happens to have:</p>
-<ol><li>The document must <strong>begin</strong> with the delimiter (<code>---</code> or <code>+++</code>): no leading blank line, no indentation. A single leading byte-order mark (U+FEFF) is stepped over first.</li><li>The rest of the opening line must be only spaces and tabs.</li><li>The <strong>closing line</strong> is the first later line that begins the same delimiter and continues with only spaces and tabs. <code>...</code> is not a closer, a delimiter of the other kind is not, and <code>----</code> closes nothing.</li><li>With no such closing line there is no block, and the opening delimiter is whatever the dialect makes of it: a thematic break for <code>---</code>, paragraph text for <code>+++</code>. Everything after it is prose.</li><li>A line ends at LF, at CR not followed by LF, or at the end of input, so CRLF documents give the same block as LF ones.</li></ol>
+<ol><li>The document must <strong>begin</strong> with the delimiter (<code>---</code> or <code>+++</code>): no leading blank line, no indentation. A single leading byte-order mark (<code>U+FEFF</code>) is stepped over first.</li><li>The rest of the opening line must be only spaces and tabs.</li><li>The <strong>closing line</strong> is the first later line that begins the same delimiter and continues with only spaces and tabs. <code>...</code> is not a closer, a delimiter of the other kind is not, and <code>----</code> closes nothing.</li><li>With no such closing line there is no block, and the opening delimiter is whatever the dialect makes of it: a thematic break for <code>---</code>, paragraph text for <code>+++</code>. Everything after it is prose.</li><li>A line ends at LF, at CR not followed by LF, or at the end of input, so CRLF documents give the same block as LF ones.</li></ol>
 <p>Trailing whitespace on a delimiter does not stop a block from being recognised, because editors that trim nothing produce it. The cost is stated: a document whose first line is a thematic break written as <code>--- </code>, followed by prose and another <code>---</code> line, has everything up to that line skipped.</p>
 <h2 id="related">Related <a class="anchor" href="#related" aria-label="Link to this section">#</a></h2>
 <ul><li><a href="../../../../docs/modes/yaml/keys/">YAML keys</a>: the matching rules</li><li><a href="../../../../docs/modes/yaml/quoting/">YAML quoting</a></li><li><a href="../../../../docs/guides/mdx-content/">MDX content guide</a></li><li><a href="../../../../docs/modes/markdown/skip-list/">Markdown skip list</a></li></ul>

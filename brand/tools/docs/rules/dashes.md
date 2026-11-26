@@ -1,6 +1,6 @@
 ---
 title: Dashes
-seo_title: Spaces around an em dash: the dashes rule per locale | polytypo
+seo_title: Spaces around an em dash, as set by the dashes rule per locale
 description: Em dash spaces depend on the locale. The dashes rule sets the parenthetical dash, em or en, with or without spaces, as each locale prescribes, and leaves hyphens, numbers and ranges alone.
 section: rules
 order: 40
@@ -29,7 +29,7 @@ The em dash and the en dash do different jobs in most style guides. The parenthe
 
 ## How it works
 
-The rule scans the text for a **dash token**: a maximal run of dash characters. The characters that count are the hyphen-minus (U+002D), the hyphen (U+2010), the en dash (U+2013), the em dash (U+2014) and the minus sign (U+2212). A run is one token, so `--` is one dash, not two.
+The rule scans the text for a **dash token**: a maximal run of dash characters. The characters that count are the hyphen-minus (`U+002D`), the hyphen (`U+2010`), the en dash (`U+2013`), the em dash (`U+2014`) and the minus sign (`U+2212`). A run is one token, so `--` is one dash, not two.
 
 Each token then goes through a series of checks. The first one that fails leaves the token exactly as written.
 
@@ -43,7 +43,7 @@ Each token then goes through a series of checks. The first one that fails leaves
 8. **Roman numerals.** A tight dash between two Roman numerals is left alone.
 9. **A single authored en dash** is never rewritten.
 
-A token that passes everything is replaced according to the locale’s `dash.parenthetical` value, with any ordinary spaces around the old dash replaced too. The rule always writes an ordinary space (U+0020). Whether that space becomes a no-break space is decided later by [nbsp](/docs/rules/nbsp/).
+A token that passes everything is replaced according to the locale’s `dash.parenthetical` value, with any ordinary spaces around the old dash replaced too. The rule always writes an ordinary space (`U+0020`). Whether that space becomes a no-break space is decided later by [nbsp](/docs/rules/nbsp/).
 
 ## Locale data
 
@@ -115,11 +115,11 @@ locale: en-US
 a-–b
 ```
 
-The U+2010 hyphen and the U+2212 minus sign are ordinary candidates too, since they are typewriter or OCR substitutes for a hyphen-minus.
+The `U+2010` hyphen and the `U+2212` minus sign are ordinary candidates too, since they are typewriter or OCR substitutes for a hyphen-minus.
 
 ### The lone en dash is never rewritten
 
-One case is exempt. A single, pure U+2013 is left alone in every locale. An en dash and an em dash do different jobs (connection and range against interruption), and a lone en dash is taken to be a deliberate mark of the first kind. In `en-US`, where the parenthetical form is an em dash, a spaced en dash stays an en dash:
+One case is exempt. A single, pure `U+2013` is left alone in every locale. An en dash and an em dash do different jobs (connection and range against interruption), and a lone en dash is taken to be a deliberate mark of the first kind. In `en-US`, where the parenthetical form is an em dash, a spaced en dash stays an en dash:
 
 ```example
 locale: en-US
@@ -210,9 +210,9 @@ In the output the dash is unchanged; the only edit is the no-break space that [n
 
 ## Spacing and no-break spaces
 
-Only the ordinary space (U+0020) counts as spacing around a dash. A no-break space (U+00A0) or narrow no-break space (U+202F) beside a dash makes the whole token inert, on either side. A no-break space is not something this rule put there, so it is not this rule’s to reinterpret. The practical consequence is that the rule is stable under the pipeline’s own output: [nbsp](/docs/rules/nbsp/) may later turn the space before a Russian em dash into a no-break space, and a second run then leaves it alone.
+Only the ordinary space (`U+0020`) counts as spacing around a dash. A no-break space (`U+00A0`) or narrow no-break space (`U+202F`) beside a dash makes the whole token inert, on either side. A no-break space is not something this rule put there, so it is not this rule’s to reinterpret. The practical consequence is that the rule is stable under the pipeline’s own output: [nbsp](/docs/rules/nbsp/) may later turn the space before a Russian em dash into a no-break space, and a second run then leaves it alone.
 
-A dash whose spacing is part no-break, such as one the author typed as `mot` + U+00A0 + `- autre`, is therefore never normalised.
+A dash whose spacing is part no-break, such as one the author typed as `mot` + `U+00A0` + `- autre`, is therefore never normalised.
 
 ## Punctuation and brackets
 
@@ -232,7 +232,7 @@ Ein Satz.--. Ende
 
 ## Dash-like characters that are never touched
 
-These characters are never candidates and never produced: the soft hyphen (U+00AD), the non-breaking hyphen (U+2011, which the [hyphen](/docs/rules/hyphen/) rule writes), the figure dash (U+2012), the horizontal bar (U+2015) and the small and fullwidth forms U+FE58, U+FE63 and U+FF0D. Each has a purpose of its own, and the rule does not read a specialised dash as a typo. A candidate whose neighbour is one of them is skipped as well.
+These characters are never candidates and never produced: the soft hyphen (`U+00AD`), the non-breaking hyphen (`U+2011`, which the [hyphen](/docs/rules/hyphen/) rule writes), the figure dash (`U+2012`), the horizontal bar (`U+2015`) and the small and fullwidth forms `U+FE58`, `U+FE63` and `U+FF0D`. Each has a purpose of its own, and the rule does not read a specialised dash as a typo. A candidate whose neighbour is one of them is skipped as well.
 
 ## Modes and skipped regions
 

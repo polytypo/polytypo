@@ -1,24 +1,24 @@
 ---
 title: ellipsis
-seo_title: Ellipsis rule: three dots to U+2026 per locale | polytypo
+seo_title: The ellipsis rule turns three dots into U+2026 per locale
 description: The ellipsis rule turns runs of three or more dots into the single character U+2026 and writes the two-dot form after ? and ! in locales that use it.
 section: rules
 order: 20
 ---
 
-`ellipsis` replaces a typed run of full stops with the single character U+2026 (…). In locales that write an ellipsis after a question or exclamation mark with only two dots, as Russian does with `Что?..`, it also produces that abbreviated form. It is on by default.
+`ellipsis` replaces a typed run of full stops with the single character `U+2026` (…). In locales that write an ellipsis after a question or exclamation mark with only two dots, as Russian does with `Что?..`, it also produces that abbreviated form. It is on by default.
 
 The rule is deliberately narrow. A run of exactly two dots is almost never touched, because `..` appears in relative paths, version ranges and numeric ranges.
 
 ## How it works
 
-The rule works on each maximal run of dot-like characters (full stops and U+2026), in order:
+The rule works on each maximal run of dot-like characters (full stops and `U+2026`), in order:
 
 1. A single full stop is an ordinary full stop. Nothing happens.
-2. Three or more full stops become one U+2026.
-3. A run that mixes full stops and U+2026 (`……`, `…..`, `..…`) is normalised to one U+2026.
-4. A single existing U+2026 stays, unless the locale asks for the abbreviated form (below).
-5. A run of exactly two full stops is left alone, with one exception in locales that do not use the abbreviated form: two dots directly after `?` or `!` become U+2026, because `Really?..` is a typing slip for `Really?…`.
+2. Three or more full stops become one `U+2026`.
+3. A run that mixes full stops and `U+2026` (`……`, `…..`, `..…`) is normalised to one `U+2026`.
+4. A single existing `U+2026` stays, unless the locale asks for the abbreviated form (below).
+5. A run of exactly two full stops is left alone, with one exception in locales that do not use the abbreviated form: two dots directly after `?` or `!` become `U+2026`, because `Really?..` is a typing slip for `Really?…`.
 
 ### The abbreviated form
 
@@ -122,9 +122,9 @@ With the rule off, `Wait...` stays as typed. The `spaces` rule still runs.
 
 - A single full stop is never touched, so decimals, abbreviations and `1.2.3` are safe.
 - A run of exactly two dots is untouched everywhere, except directly after `?` or `!` in a locale without the abbreviated form. In the abbreviated locales a two-dot run is inert.
-- Four dots collapse to one U+2026. The rule does not preserve the Chicago convention of an ellipsis followed by a full stop (`….`).
+- Four dots collapse to one `U+2026`. The rule does not preserve the Chicago convention of an ellipsis followed by a full stop (`….`).
 - Runs are maximal and are never joined across another character. Dots separated by a no-break space or a tab are separate runs; only `spaces`-stripped ordinary spaces let dots merge.
-- U+2025 (‥), U+22EF and the CJK dot leaders are neither converted nor produced.
+- `U+2025` (‥), `U+22EF` and the CJK dot leaders are neither converted nor produced.
 - The spacing around an ellipsis is not decided here. Whether `word …` takes a no-break space belongs to `nbsp`.
 - The rule does not delete a space in front of an ellipsis, in any locale, including Greek.
 - The abbreviated form is written only after `?` and `!`. A leading `..?` or `..!` is left alone.

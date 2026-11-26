@@ -10,11 +10,11 @@
 <link rel="apple-touch-icon" href="../../../assets/favicon/apple-touch-icon-180.png">
 <link rel="stylesheet" href="../../../assets/fonts.css">
 <link rel="stylesheet" href="../../../assets/style.css">
-<title>Fix typography in Markdown, MDX and HTML at build time | polytypo</title>
+<title>Fix typography in Markdown, MDX and HTML at build time with polytypo</title>
 <meta property="og:site_name" content="polytypo">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://polytypo.dev/docs/guides/build-step/">
-<meta property="og:title" content="Fix typography in Markdown, MDX and HTML at build time | polytypo">
+<meta property="og:title" content="Fix typography in Markdown, MDX and HTML at build time with polytypo">
 <meta property="og:description" content="Typeset Markdown, MDX and HTML files at build time with a complete Node script, choosing locale, mode and dialect per file, with a check mode for CI.">
 <meta property="og:image" content="https://polytypo.dev/images/og/docs/guides/build-step.png?v=8998a831">
 <meta property="og:image:width" content="1200">
@@ -23,11 +23,11 @@
 <meta property="og:image:alt" content="polytypo: Guides: Running polytypo in a build step">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Fix typography in Markdown, MDX and HTML at build time | polytypo">
+<meta name="twitter:title" content="Fix typography in Markdown, MDX and HTML at build time with polytypo">
 <meta name="twitter:description" content="Typeset Markdown, MDX and HTML files at build time with a complete Node script, choosing locale, mode and dialect per file, with a check mode for CI.">
 <meta name="twitter:image" content="https://polytypo.dev/images/og/docs/guides/build-step.png?v=8998a831">
 <meta name="twitter:image:alt" content="polytypo: Guides: Running polytypo in a build step">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "Fix typography in Markdown, MDX and HTML at build time | polytypo", "description": "Typeset Markdown, MDX and HTML files at build time with a complete Node script, choosing locale, mode and dialect per file, with a check mode for CI.", "url": "https://polytypo.dev/docs/guides/build-step/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "Running polytypo in a build step", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://polytypo.dev/docs/guides/"}, {"@type": "ListItem", "position": 3, "name": "Running polytypo in a build step", "item": "https://polytypo.dev/docs/guides/build-step/"}]}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "Fix typography in Markdown, MDX and HTML at build time with polytypo", "description": "Typeset Markdown, MDX and HTML files at build time with a complete Node script, choosing locale, mode and dialect per file, with a check mode for CI.", "url": "https://polytypo.dev/docs/guides/build-step/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "Running polytypo in a build step", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://polytypo.dev/docs/guides/"}, {"@type": "ListItem", "position": 3, "name": "Running polytypo in a build step", "item": "https://polytypo.dev/docs/guides/build-step/"}]}}</script>
 <script defer src="https://u.rogulia.fi/script.js" data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>
 </head>
 <body class="page-docs-guides-build-step">
@@ -102,20 +102,20 @@ console.log(check ? `${changed} file(s) need changes` : `${changed} file(s) rewr
 <h3 id="what-it-does-to-a-file">What it does to a file <a class="anchor" href="#what-it-does-to-a-file" aria-label="Link to this section">#</a></h3>
 <p>With <code>content/en/post.mdx</code> containing frontmatter, a link, a code span and a component, this is what the script's call produces:</p>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect: &quot;mdx&quot;, frontmatterKeys: [&quot;title&quot;, &quot;description&quot;] })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">---
-title: He said &quot;hello&quot; -- twice
+title: He said <del class="chg chg-del">&quot;</del>hello<del class="chg chg-del">&quot; -- </del>twice
 slug: &quot;hello-twice&quot;
 ---
 
-Rates -- all of them... see [the site](https://example.com/a--b) and `a -- b`.
+Rates<del class="chg chg-del"> -- </del>all of them<del class="chg chg-del">...</del> see [the site](https://example.com/a--b) and `a -- b`.
 
-&lt;Callout&gt;It&#x27;s &quot;fine&quot; -- really&lt;/Callout&gt;</div></div><div><p class="eyebrow">Output</p><div class="specimen">---
-title: He said <span class="chg">“</span>hello<span class="chg">”—</span>twice
+&lt;Callout&gt;It<del class="chg chg-del">&#x27;</del>s <del class="chg chg-del">&quot;</del>fine<del class="chg chg-del">&quot; -- </del>really&lt;/Callout&gt;</div></div><div><p class="eyebrow">Output</p><div class="specimen">---
+title: He said <ins class="chg chg-ins">“</ins>hello<ins class="chg chg-ins">”—</ins>twice
 slug: &quot;hello-twice&quot;
 ---
 
-Rates<span class="chg">—</span>all of them<span class="chg">…</span> see [the site](https://example.com/a--b) and `a -- b`.
+Rates<ins class="chg chg-ins">—</ins>all of them<ins class="chg chg-ins">…</ins> see [the site](https://example.com/a--b) and `a -- b`.
 
-&lt;Callout&gt;It<span class="chg">’</span>s <span class="chg">“</span>fine<span class="chg">”—</span>really&lt;/Callout&gt;</div></div></div></figure>
+&lt;Callout&gt;It<ins class="chg chg-ins">’</ins>s <ins class="chg chg-ins">“</ins>fine<ins class="chg chg-ins">”—</ins>really&lt;/Callout&gt;</div></div></div></figure>
 <p>Notice that <code>title</code> is typeset, <code>slug</code> is not because it is not listed, the link destination and the code span are left alone, and the text inside <code>&lt;Callout&gt;</code> is processed.</p>
 <h2 id="where-it-goes-in-the-pipeline">Where it goes in the pipeline <a class="anchor" href="#where-it-goes-in-the-pipeline" aria-label="Link to this section">#</a></h2>
 <ul><li><strong>Before the formatter.</strong> Typography changes line lengths: three dots become one character, no-break spaces appear. A formatter that wraps prose should see the final text.</li><li><strong>Before the site build, not inside it</strong>, if you want the typeset text committed. Run it in the build itself if you want sources left as authored; both work because the output is a fixed point of the transform (<a href="../../../docs/concepts/idempotency/">idempotency</a>).</li><li><strong>Run it twice and nothing happens.</strong> A second run over the output returns the same bytes, so a pre-commit hook or a CI <code>--check</code> does not flap.</li></ul>
@@ -135,7 +135,7 @@ function Byline({ text, locale }) {
 }</code></pre>
 <p>Call it where imported or untrusted copy reaches a render, not on every keystroke.</p>
 <h2 id="pitfalls">Pitfalls <a class="anchor" href="#pitfalls" aria-label="Link to this section">#</a></h2>
-<ul><li><strong>One locale per call.</strong> A file that mixes languages is typeset entirely by one locale's conventions. Split such content, or process the sections separately with their own locale.</li><li><strong>Unknown locale throws.</strong> <code>POLYTYPO_UNKNOWN_LOCALE</code> means the directory name is not a supported code. In the script above a stray <code>content/drafts/</code> directory would stop the run; map directory names to locales explicitly if your layout is not purely locale-first.</li><li><strong>MDX that does not parse throws.</strong> An autolink such as <code>&lt;https://example.com&gt;</code> is not valid MDX and raises <code>POLYTYPO_MALFORMED_INPUT</code>. The script reports the file and carries on; fix the source or change it to <code>[text](url)</code>.</li><li><strong>Frontmatter is skipped unless you name keys.</strong> Without <code>frontmatterKeys</code>, the headline in your frontmatter stays as authored.</li><li><strong>Narrow no-break space.</strong> Locales such as French insert U+202F, which some fonts lack. Pass <code>narrowNbsp: &quot;nbsp&quot;</code> to use U+00A0 in its place (<a href="../../../docs/rules/nbsp/">nbsp</a>).</li></ul>
+<ul><li><strong>One locale per call.</strong> A file that mixes languages is typeset entirely by one locale's conventions. Split such content, or process the sections separately with their own locale.</li><li><strong>Unknown locale throws.</strong> <code>POLYTYPO_UNKNOWN_LOCALE</code> means the directory name is not a supported code. In the script above a stray <code>content/drafts/</code> directory would stop the run; map directory names to locales explicitly if your layout is not purely locale-first.</li><li><strong>MDX that does not parse throws.</strong> An autolink such as <code>&lt;https://example.com&gt;</code> is not valid MDX and raises <code>POLYTYPO_MALFORMED_INPUT</code>. The script reports the file and carries on; fix the source or change it to <code>[text](url)</code>.</li><li><strong>Frontmatter is skipped unless you name keys.</strong> Without <code>frontmatterKeys</code>, the headline in your frontmatter stays as authored.</li><li><strong>Narrow no-break space.</strong> Locales such as French insert <code>U+202F</code>, which some fonts lack. Pass <code>narrowNbsp: &quot;nbsp&quot;</code> to use <code>U+00A0</code> in its place (<a href="../../../docs/rules/nbsp/">nbsp</a>).</li></ul>
 <h2 id="related">Related <a class="anchor" href="#related" aria-label="Link to this section">#</a></h2>
 <ul><li><a href="../../../docs/getting-started/installation/">Installation</a></li><li><a href="../../../docs/getting-started/choosing-a-mode/">Choosing a mode</a></li><li><a href="../../../docs/guides/mdx-content/">MDX content</a></li><li><a href="../../../docs/guides/yaml-config/">YAML configuration</a></li><li><a href="../../../docs/concepts/idempotency/">Idempotency</a></li><li><a href="../../../docs/runtimes/javascript/">JavaScript runtime</a></li></ul>
 <p>Normative text: <a href="https://github.com/polytypo/polytypo/blob/main/spec/rules/modes.md">spec/rules/modes.md</a>.</p><nav class="doc-pager" aria-label="Pager"><a class="pg prev" rel="prev" href="../../../docs/concepts/invisible-characters/"><span>Previous</span><strong>Invisible characters</strong></a><a class="pg next" rel="next" href="../../../docs/guides/mdx-content/"><span>Next</span><strong>Typesetting an MDX blog</strong></a></nav></article><nav class="doc-toc" aria-label="On this page"><p class="doc-nav-head">On this page</p><ul><li><a href="#decide-what-to-pass">Decide what to pass</a></li><li><a href="#the-script">The script</a></li><li><a href="#where-it-goes-in-the-pipeline">Where it goes in the pipeline</a></li><li><a href="#other-places-the-same-call-fits">Other places the same call fits</a></li><li><a href="#pitfalls">Pitfalls</a></li><li><a href="#related">Related</a></li></ul></nav></div>

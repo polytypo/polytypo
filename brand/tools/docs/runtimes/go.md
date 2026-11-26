@@ -1,7 +1,7 @@
 ---
 title: Go
 h1: Typography library for Go
-seo_title: Typography library for Go: go get and Transform | polytypo
+seo_title: Typography library for Go, installed with go get
 description: polytypo is a typography library for Go: it fixes quotes, dashes, ellipses and no-break spaces for each locale. Install the module, call Transform and Analyze with an Options struct, check *polytypo.Error codes, and see which modes and dialects it covers.
 section: runtimes
 order: 30

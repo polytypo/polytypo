@@ -59,13 +59,13 @@ Modes (4): text, html, markdown, yaml. `text` has no parser and no skip list —
 - [Czech (cs)](https://polytypo.dev/locales/cs/): Czech (cs): quotation marks „…“ and ‚…‘, spaced en dash for breaks; 8 cited sources, 21 tested examples.
 - [Danish (da)](https://polytypo.dev/locales/da/): Danish (da): quotation marks »…« and ›…‹, spaced en dash for breaks; 6 cited sources, 35 tested examples.
 - [Dutch (nl)](https://polytypo.dev/locales/nl/): Dutch (nl): quotation marks “…” and ‘…’, spaced en dash for breaks; 10 cited sources, 19 tested examples.
-- [English (United Kingdom) (en-GB)](https://polytypo.dev/locales/en-GB/): English (United Kingdom) (en-GB): quotation marks ‘…’ and “…”, spaced en dash for breaks; 11 cited sources, 223 tested examples.
-- [English (United States) (en-US)](https://polytypo.dev/locales/en-US/): English (United States) (en-US): quotation marks “…” and ‘…’, unspaced em dash for breaks; 13 cited sources, 533 tested examples.
+- [English (United Kingdom) (en-GB)](https://polytypo.dev/locales/en-GB/): English (United Kingdom) (en-GB): quotation marks ‘…’ and “…”, spaced en dash for breaks; 11 cited sources, 224 tested examples.
+- [English (United States) (en-US)](https://polytypo.dev/locales/en-US/): English (United States) (en-US): quotation marks “…” and ‘…’, unspaced em dash for breaks; 13 cited sources, 544 tested examples.
 - [Estonian (et)](https://polytypo.dev/locales/et/): Estonian (et): quotation marks „…“ and „…“, spaced en dash for breaks; 6 cited sources, 31 tested examples.
 - [Finnish (fi)](https://polytypo.dev/locales/fi/): Finnish (fi): quotation marks ”…” and ’…’, spaced en dash for breaks; 13 cited sources, 159 tested examples.
 - [French (Canada) (fr-CA)](https://polytypo.dev/locales/fr-CA/): French (Canada) (fr-CA): quotation marks «…» and “…”, spaced em dash for breaks; 10 cited sources, 42 tested examples.
-- [French (France) (fr)](https://polytypo.dev/locales/fr/): French (France) (fr): quotation marks «…» and “…”, spaced em dash for breaks; 10 cited sources, 129 tested examples.
-- [German (Germany) (de-DE)](https://polytypo.dev/locales/de-DE/): German (Germany) (de-DE): quotation marks „…“ and ‚…‘, spaced en dash for breaks; 9 cited sources, 104 tested examples.
+- [French (France) (fr)](https://polytypo.dev/locales/fr/): French (France) (fr): quotation marks «…» and “…”, spaced em dash for breaks; 10 cited sources, 130 tested examples.
+- [German (Germany) (de-DE)](https://polytypo.dev/locales/de-DE/): German (Germany) (de-DE): quotation marks „…“ and ‚…‘, spaced en dash for breaks; 9 cited sources, 106 tested examples.
 - [German (Switzerland) (de-CH)](https://polytypo.dev/locales/de-CH/): German (Switzerland) (de-CH): quotation marks «…» and ‹…›, spaced en dash for breaks; 8 cited sources, 63 tested examples.
 - [Greek (el)](https://polytypo.dev/locales/el/): Greek (el): quotation marks «…» and “…”, paired em dash for breaks; 9 cited sources, 39 tested examples.
 - [Hungarian (hu)](https://polytypo.dev/locales/hu/): Hungarian (hu): quotation marks „…” and »…«, spaced en dash for breaks; 8 cited sources, 34 tested examples.
@@ -75,18 +75,18 @@ Modes (4): text, html, markdown, yaml. `text` has no parser and no skip list —
 - [Lithuanian (lt)](https://polytypo.dev/locales/lt/): Lithuanian (lt): quotation marks „…“ and „…“, spaced en dash for breaks; 8 cited sources, 39 tested examples.
 - [Norwegian Bokmål (nb)](https://polytypo.dev/locales/nb/): Norwegian Bokmål (nb): quotation marks «…» and ‘…’, spaced en dash for breaks; 6 cited sources, 36 tested examples.
 - [Norwegian Nynorsk (nn)](https://polytypo.dev/locales/nn/): Norwegian Nynorsk (nn): quotation marks «…» and ‘…’, spaced en dash for breaks; 6 cited sources, 36 tested examples.
-- [Polish (pl)](https://polytypo.dev/locales/pl/): Polish (pl): quotation marks „…” and »…«, spaced en dash for breaks; 10 cited sources, 19 tested examples.
+- [Polish (pl)](https://polytypo.dev/locales/pl/): Polish (pl): quotation marks „…” and »…«, spaced en dash for breaks; 10 cited sources, 20 tested examples.
 - [Portuguese (Brazil) (pt-BR)](https://polytypo.dev/locales/pt-BR/): Portuguese (Brazil) (pt-BR): quotation marks “…” and ‘…’, spaced en dash for breaks; 8 cited sources, 21 tested examples.
 - [Portuguese (Portugal) (pt-PT)](https://polytypo.dev/locales/pt-PT/): Portuguese (Portugal) (pt-PT): quotation marks «…» and “…”, spaced em dash for breaks; 8 cited sources, 21 tested examples.
 - [Romanian (ro)](https://polytypo.dev/locales/ro/): Romanian (ro): quotation marks „…” and «…», spaced en dash for breaks; 6 cited sources, 28 tested examples.
-- [Russian (ru)](https://polytypo.dev/locales/ru/): Russian (ru): quotation marks «…» and „…“, spaced em dash for breaks; 7 cited sources, 94 tested examples.
+- [Russian (ru)](https://polytypo.dev/locales/ru/): Russian (ru): quotation marks «…» and „…“, spaced em dash for breaks; 7 cited sources, 95 tested examples.
 - [Serbian (sr)](https://polytypo.dev/locales/sr/): Serbian (sr): quotation marks „…” and ’…’, spaced en dash for breaks; 7 cited sources, 26 tested examples.
 - [Slovak (sk)](https://polytypo.dev/locales/sk/): Slovak (sk): quotation marks „…“ and ‚…‘, spaced en dash for breaks; 8 cited sources, 33 tested examples.
 - [Slovenian (sl)](https://polytypo.dev/locales/sl/): Slovenian (sl): quotation marks »…« and ›…‹, spaced en dash for breaks; 6 cited sources, 31 tested examples.
-- [Spanish (es)](https://polytypo.dev/locales/es/): Spanish (es): quotation marks «…» and “…”, paired em dash for breaks; 10 cited sources, 59 tested examples.
+- [Spanish (es)](https://polytypo.dev/locales/es/): Spanish (es): quotation marks «…» and “…”, paired em dash for breaks; 10 cited sources, 65 tested examples.
 - [Swedish (sv)](https://polytypo.dev/locales/sv/): Swedish (sv): quotation marks ”…” and ’…’, spaced en dash for breaks; 11 cited sources, 156 tested examples.
 - [Turkish (tr)](https://polytypo.dev/locales/tr/): Turkish (tr): quotation marks “…” and ‘…’, no dash substitution for breaks; 11 cited sources, 32 tested examples.
-- [Ukrainian (uk)](https://polytypo.dev/locales/uk/): Ukrainian (uk): quotation marks «…» and “…”, spaced em dash for breaks; 8 cited sources, 19 tested examples.
+- [Ukrainian (uk)](https://polytypo.dev/locales/uk/): Ukrainian (uk): quotation marks «…» and “…”, spaced em dash for breaks; 8 cited sources, 20 tested examples.
 - [Contribute](https://polytypo.dev/contribute/): add a locale or change a rule.
 - [Playground](https://polytypo.dev/playground/): run the real engine on your own text in the browser.
 

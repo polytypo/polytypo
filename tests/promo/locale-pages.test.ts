@@ -111,7 +111,7 @@ describe("locale pages", () => {
   it("titles and H1s are unique, lead with the locale and carry the query words", () => {
     const titles = registry.locales.map((c) => page(c).match(/<title>([^<]*)<\/title>/)?.[1]);
     expect(new Set(titles).size).toBe(titles.length);
-    for (const t of titles) expect(t).toMatch(/ typography rules: .* \| polytypo$/);
+    for (const t of titles) expect(t).toMatch(/^[^:|]+ typography rules with .+ quotes and .+$/);
     const h1s = registry.locales.map((c) => page(c).match(/<h1>(.*?)<\/h1>/)?.[1]);
     expect(new Set(h1s).size).toBe(h1s.length);
   });

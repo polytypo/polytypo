@@ -10,11 +10,11 @@
 <link rel="apple-touch-icon" href="../../../../assets/favicon/apple-touch-icon-180.png">
 <link rel="stylesheet" href="../../../../assets/fonts.css">
 <link rel="stylesheet" href="../../../../assets/style.css">
-<title>MDX dialect reference: what markdown mode typesets and skips | polytypo</title>
+<title>What markdown mode typesets and skips in the MDX dialect</title>
 <meta property="og:site_name" content="polytypo">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://polytypo.dev/docs/modes/markdown/mdx/">
-<meta property="og:title" content="MDX dialect reference: what markdown mode typesets and skips | polytypo">
+<meta property="og:title" content="What markdown mode typesets and skips in the MDX dialect">
 <meta property="og:description" content="How markdown mode handles MDX: JSX elements and attributes, expressions, ESM statements, and documents that fail to parse.">
 <meta property="og:image" content="https://polytypo.dev/images/og/docs/modes/markdown/mdx.png?v=e03f1440">
 <meta property="og:image:width" content="1200">
@@ -23,11 +23,11 @@
 <meta property="og:image:alt" content="polytypo: Modes: MDX dialect">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="MDX dialect reference: what markdown mode typesets and skips | polytypo">
+<meta name="twitter:title" content="What markdown mode typesets and skips in the MDX dialect">
 <meta name="twitter:description" content="How markdown mode handles MDX: JSX elements and attributes, expressions, ESM statements, and documents that fail to parse.">
 <meta name="twitter:image" content="https://polytypo.dev/images/og/docs/modes/markdown/mdx.png?v=e03f1440">
 <meta name="twitter:image:alt" content="polytypo: Modes: MDX dialect">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "MDX dialect reference: what markdown mode typesets and skips | polytypo", "description": "How markdown mode handles MDX: JSX elements and attributes, expressions, ESM statements, and documents that fail to parse.", "url": "https://polytypo.dev/docs/modes/markdown/mdx/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "MDX dialect", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "Modes", "item": "https://polytypo.dev/docs/modes/"}, {"@type": "ListItem", "position": 3, "name": "MDX dialect", "item": "https://polytypo.dev/docs/modes/markdown/mdx/"}]}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "What markdown mode typesets and skips in the MDX dialect", "description": "How markdown mode handles MDX: JSX elements and attributes, expressions, ESM statements, and documents that fail to parse.", "url": "https://polytypo.dev/docs/modes/markdown/mdx/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "MDX dialect", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "Modes", "item": "https://polytypo.dev/docs/modes/"}, {"@type": "ListItem", "position": 3, "name": "MDX dialect", "item": "https://polytypo.dev/docs/modes/markdown/mdx/"}]}}</script>
 <script defer src="https://u.rogulia.fi/script.js" data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>
 </head>
 <body class="page-docs-modes-markdown-mdx">
@@ -50,15 +50,15 @@
 
 export const meta = { title: &quot;A -- B&quot; }
 
-&lt;Callout kind=&quot;it&#x27;s&quot; label={&quot;x&quot; + &quot;y&quot;}&gt;He said &quot;stop&quot; -- twice&lt;/Callout&gt;
+&lt;Callout kind=&quot;it&#x27;s&quot; label={&quot;x&quot; + &quot;y&quot;}&gt;He said <del class="chg chg-del">&quot;</del>stop<del class="chg chg-del">&quot; -- </del>twice&lt;/Callout&gt;
 
-Total: {count + &quot;a&quot;} items -- &quot;done&quot;.</div></div><div><p class="eyebrow">Output</p><div class="specimen">import { Callout } from &quot;./callout&quot;
+Total: {count + &quot;a&quot;} items<del class="chg chg-del"> -- &quot;</del>done<del class="chg chg-del">&quot;</del>.</div></div><div><p class="eyebrow">Output</p><div class="specimen">import { Callout } from &quot;./callout&quot;
 
 export const meta = { title: &quot;A -- B&quot; }
 
-&lt;Callout kind=&quot;it&#x27;s&quot; label={&quot;x&quot; + &quot;y&quot;}&gt;He said <span class="chg">“</span>stop<span class="chg">”—</span>twice&lt;/Callout&gt;
+&lt;Callout kind=&quot;it&#x27;s&quot; label={&quot;x&quot; + &quot;y&quot;}&gt;He said <ins class="chg chg-ins">“</ins>stop<ins class="chg chg-ins">”—</ins>twice&lt;/Callout&gt;
 
-Total: {count + &quot;a&quot;} items<span class="chg">—“</span>done<span class="chg">”</span>.</div></div></div></figure>
+Total: {count + &quot;a&quot;} items<ins class="chg chg-ins">—“</ins>done<ins class="chg chg-ins">”</ins>.</div></div></div></figure>
 <p>The attribute, the expression, the <code>import</code> and the <code>export</code> come back as written; the text inside <code>&lt;Callout&gt;</code> and the paragraph are typeset.</p>
 <h2 id="names-compare-case-sensitively">Names compare case-sensitively <a class="anchor" href="#names-compare-case-sensitively" aria-label="Link to this section">#</a></h2>
 <p>HTML names compare case-insensitively and JSX names case-sensitively. <code>&lt;Code&gt;</code> is a component and is not skipped, so its children are typeset. <code>&lt;code&gt;</code> is the HTML element and is skipped whole.</p>

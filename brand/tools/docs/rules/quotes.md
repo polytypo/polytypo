@@ -1,6 +1,6 @@
 ---
 title: Quotes
-seo_title: Quotes rule: straight quotes to locale-correct quotation marks | polytypo
+seo_title: The quotes rule turns straight quotes into locale-correct quotation marks
 description: How the quotes rule turns straight and foreign quotation marks into each locale's primary and secondary pairs, resolves nesting, and leaves unmatched marks alone.
 section: rules
 order: 60
@@ -176,7 +176,7 @@ He says 'avoid `x`'s printer.' Done.
 ```
 
 - **Plural possessives next to markup.** `` `xs`' printer `` has the same shape as a closing mark after a span. The rule cannot tell them apart, and the pairing it chooses stands.
-- **Primes and look-alikes.** U+2032, U+2033, U+02BC, the grave accent and the acute accent are not quote marks and are never converted.
+- **Primes and look-alikes.** `U+2032`, `U+2033`, `U+02BC`, the grave accent and the acute accent are not quote marks and are never converted.
 - **Skipped regions.** Code, URLs, attribute values and other regions skipped by the mode adapter are not examined. See the [span model](/docs/concepts/span-model/).
 
 ## Related

@@ -1,6 +1,6 @@
 ---
 title: ranges
-seo_title: Ranges rule: hyphen to en dash between numbers per locale | polytypo
+seo_title: The ranges rule turns a hyphen into an en dash between numbers per locale
 description: The opt-in ranges rule turns a hyphen between two numbers into the locale's range dash, with the guards that protect dates, phone numbers and decimals.
 section: rules
 order: 30
@@ -51,7 +51,7 @@ Unmatched symbols are declined: `$15-€20` is a currency conversion, not a rang
 
 ### The invisible binding
 
-For tight forms the replacement is a word joiner (U+2060), the dash, and another word joiner. The joiners are zero-width, so the bound range looks exactly like an unbound one in any font, and in a diff the line shows a change with no visible difference. The site's examples make them visible; if you inspect output yourself, look at code points rather than glyphs. A range that is already in the target form (`5–10`) is left alone and not bound.
+For tight forms the replacement is a word joiner (`U+2060`), the dash, and another word joiner. The joiners are zero-width, so the bound range looks exactly like an unbound one in any font, and in a diff the line shows a change with no visible difference. The site's examples make them visible; if you inspect output yourself, look at code points rather than glyphs. A range that is already in the target form (`5–10`) is left alone and not bound.
 
 ## Examples
 
@@ -135,9 +135,10 @@ The rule reads `dash.range`, one of `em-tight`, `em-spaced`, `en-tight`, `en-spa
 
 | Value | Locales |
 | --- | --- |
-| `en-tight` | `cs`, `en-GB`, `en-US`, `fi`, `de-DE`, `de-CH`, `pl`, `sv` |
+| `en-tight` | `cs`, `en-GB`, `en-US`, `et`, `fi`, `de-DE`, `de-CH`, `hu`, `is`, `lt`, `lv`, `nb`, `nn`, `pl`, `sl`, `sr`, `sv` |
+| `en-spaced` | `bg`, `hr`, `sk` |
 | `em-tight` | `ru`, `uk` |
-| `none` | `nl`, `fr`, `fr-CA`, `el`, `it`, `pt-BR`, `pt-PT`, `es`, `tr` |
+| `none` | `ca`, `da`, `nl`, `fr`, `fr-CA`, `el`, `it`, `pt-BR`, `pt-PT`, `ro`, `sq`, `es`, `tr` |
 
 `none` means the locale has no verified range convention. The rule emits nothing there, and does not fall back to the parenthetical dash.
 

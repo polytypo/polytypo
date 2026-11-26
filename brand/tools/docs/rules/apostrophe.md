@@ -1,18 +1,18 @@
 ---
 title: Apostrophe
-seo_title: Apostrophe rule: straight ' to U+2019 in contractions and elisions | polytypo
+seo_title: The apostrophe rule turns a straight ' into U+2019 in contractions and elisions
 description: The apostrophe rule turns the straight apostrophe into U+2019 in contractions, elisions, possessives and decade abbreviations, and leaves foot marks and primes alone.
 section: rules
 order: 70
 ---
 
-The `apostrophe` rule converts a straight apostrophe (U+0027) to the typographic apostrophe (U+2019, ’) where it really is an apostrophe: a contraction (`don't`), an elision (`l'été`, `'tis`), a possessive (`the dogs' bowls`) or a decade abbreviation (`'90s`). Every edit replaces one code point with one code point, and nothing is inserted or deleted.
+The `apostrophe` rule converts a straight apostrophe (`U+0027`) to the typographic apostrophe (`U+2019`, ’) where it really is an apostrophe: a contraction (`don't`), an elision (`l'été`, `'tis`), a possessive (`the dogs' bowls`) or a decade abbreviation (`'90s`). Every edit replaces one code point with one code point, and nothing is inserted or deleted.
 
 It is on by default and works in all four modes. It runs right after [quotes](/docs/rules/quotes/), which is the whole reason the two rules are separate. Pairing quotation marks needs a view of the whole paragraph. Deciding whether a mark is an apostrophe needs only the two characters beside it. The apostrophe rule therefore only sees the straight marks that `quotes` did not turn into quotation glyphs.
 
 ## How it works
 
-For each remaining U+0027 the rule looks at the character on its left and the character on its right and takes the first case that matches.
+For each remaining `U+0027` the rule looks at the character on its left and the character on its right and takes the first case that matches.
 
 | Left | Right | Result | Example |
 | --- | --- | --- | --- |
@@ -27,10 +27,10 @@ For each remaining U+0027 the rule looks at the character on its left and the ch
 A few details sit behind those rows.
 
 - **The prime check comes first.** A digit on the left and no letter on the right is a measurement. `6'` and `6'2"` are feet and inches, not apostrophes, and the rule leaves them. `1990's` has a letter on the right, so it converts.
-- **A leading elision becomes U+2019, never U+2018.** The mark in `'90s` or `'tis` is a raised comma standing for dropped characters, not an opening quotation mark. By the time the rule sees it, `quotes` has already had its chance to treat it as a quotation and declined.
+- **A leading elision becomes `U+2019`, never `U+2018`.** The mark in `'90s` or `'tis` is a raised comma standing for dropped characters, not an opening quotation mark. By the time the rule sees it, `quotes` has already had its chance to treat it as a quotation and declined.
 - **Combining marks count as letters,** so `l'e` followed by a combining acute behaves like `l'é`.
 - **Opening brackets do not count on the right.** `f'(x)` is a prime on a function name and stays as typed.
-- **Closing sentence punctuation on the left does not count.** A mark after a comma or full stop could equally be an unpaired opening quotation mark, and the rule cannot tell, so it leaves it recoverable as U+0027.
+- **Closing sentence punctuation on the left does not count.** A mark after a comma or full stop could equally be an unpaired opening quotation mark, and the rule cannot tell, so it leaves it recoverable as `U+0027`.
 
 The rule reads no locale data. The decision is structural, based on the two neighbouring characters, so it behaves the same in every locale. What differs per locale is the work `quotes` does beforehand, which determines what reaches this rule.
 
@@ -135,11 +135,11 @@ He said,'yes' and left.
 
 - **A prime on a function name** such as `f'(x)` stays straight.
 - **The cost of reading closing brackets and quotation marks as possessives.** In `(aside)'quoted' here` the author may have meant a quotation. Both marks read as closing marks, and both convert.
-- **Names transliterated with a modifier letter.** `Hawai'i` becomes `Hawai’i` with U+2019. The linguistically better character is often U+02BB or U+02BC, but telling them apart needs a word list the rule does not have.
+- **Names transliterated with a modifier letter.** `Hawai'i` becomes `Hawai’i` with `U+2019`. The linguistically better character is often `U+02BB` or `U+02BC`, but telling them apart needs a word list the rule does not have.
 
 ## What it does not touch
 
-- **A U+2019 that is already present** is never examined, so running the rule on typeset text changes nothing.
+- **A `U+2019` that is already present** is never examined, so running the rule on typeset text changes nothing.
 - **Other apostrophe-like characters:** the grave accent (`` ` ``), the acute accent (´), the modifier letter apostrophe (ʼ, a letter in several orthographies), and the prime (′). They are not candidates.
 - **Primes are not converted to prime characters.** `6'` stays `6'`.
 - **Marks in skipped regions.** The mode removes code spans, fenced code, URLs and HTML attribute values before the rule runs, so `it's` in prose and `'string'` in code are handled by the mode, not by the rule. Check:

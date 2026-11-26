@@ -112,9 +112,12 @@
   /* Weights: 400 text; 500 table heads, tabs, card names and the copy button; 600 buttons, headings
      and emphasis. */
 
-  /* Marked difference in a specimen: the accent as a wash and a ring, same in both themes. */
-  --accent-wash: rgb(214 64 39 / 16%);
-  --accent-ring: rgb(214 64 39 / 22%);
+  /* Marked difference in a specimen: what was removed from the input (red) and what the engine put
+     in the output (green). Text on both stays --fg: 11.7:1 on the red and 12.8:1 on the green in
+     light, 10.0:1 and 8.4:1 in dark. Colour is never the only cue: the .chg-* marks also carry a
+     strike-through (removed) or an underline (added). */
+  --diff-del-bg: #f6c4bb;
+  --diff-ins-bg: #b8e3c3;
 }
 
 @media (max-width: 640px) {
@@ -139,6 +142,8 @@
     --surface-strong: #22262c;
     --code-bg: #07090c;
     --code-line: rgb(237 235 230 / 14%);
+    --diff-del-bg: #5b2722;
+    --diff-ins-bg: #1c4b2c;
   }
 }
 
@@ -152,6 +157,8 @@
   --surface-strong: #e9e6df;
   --code-bg: #15181d;
   --code-line: rgb(255 255 255 / 12%);
+  --diff-del-bg: #f6c4bb;
+  --diff-ins-bg: #b8e3c3;
 }
 
 :root[data-theme="dark"] {
@@ -164,6 +171,8 @@
   --surface-strong: #22262c;
   --code-bg: #07090c;
   --code-line: rgb(237 235 230 / 14%);
+  --diff-del-bg: #5b2722;
+  --diff-ins-bg: #1c4b2c;
 }
 
 /* ── Base ───────────────────────────────────────────────────────────────────────────────── */
@@ -308,7 +317,12 @@ code {
   font-size: 0.88em;
 }
 
+/* Inline code — a name, an entity, a code point, a snippet in prose, a table or a heading — sits
+   on a light grey fill. 14.5:1 (light) and 12.8:1 (dark) for --fg on --surface-strong. */
 :not(pre) > code {
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-xs);
+  background: var(--surface-strong);
   overflow-wrap: anywhere;
 }
 
@@ -726,10 +740,57 @@ section > .section-intro {
   border-radius: var(--radius-md);
 }
 
+/* The one before/after mark. <del> in the input, <ins> in the output, wherever an example shows
+   both: home, locale pages, docs examples, changelog, playground output. The fill is the
+   highlight; the strike-through or underline is the cue that survives without colour. */
 .chg {
+  position: relative;
   border-radius: var(--radius-xs);
-  background: var(--accent-wash);
-  box-shadow: 0 0 0 1px var(--accent-ring);
+  color: var(--fg);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.chg-del {
+  background: var(--diff-del-bg);
+  text-decoration-line: line-through;
+}
+
+.chg-ins {
+  background: var(--diff-ins-bg);
+  text-decoration-line: underline;
+}
+
+/* Spoken, not seen: a screen reader cannot read a fill, so each run announces what it is. Pseudo
+   content is neither selectable nor copied. */
+.chg::before,
+.chg::after {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.chg-del::before {
+  content: "[removed: ";
+}
+
+.chg-ins::before {
+  content: "[added: ";
+}
+
+.chg::after {
+  content: "]";
+}
+
+/* An invisible character that is the change shows as its own filled box: a no-break space has
+   width, so the fill is exactly as wide as the space. */
+.chg .nb,
+.chg .bound {
+  color: inherit;
+  border-bottom-color: var(--fg);
 }
 
 .nb {

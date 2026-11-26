@@ -88,7 +88,7 @@ class ExamplesTableTest(unittest.TestCase):
     def test_marked_table_replaces_spaces_with_the_visible_placeholder_and_adds_the_note(self):
         table = gen_readmes.examples_table("en-US", mark_invisible=True)
         self.assertIn("⍽", table)
-        self.assertIn("U+00A0 NO-BREAK SPACE", table)
+        self.assertIn("`U+00A0` NO-BREAK SPACE", table)
 
 
 class RootReadmeContentTest(unittest.TestCase):
@@ -108,6 +108,7 @@ class RootReadmeContentTest(unittest.TestCase):
             rules=gen_readmes.rules_table(),
             examples=gen_readmes.examples_table("en-US", mark_invisible=True),
             modes=gen_readmes.MODES,
+            compare=gen_readmes.COMPARE,
         )
 
     def test_title_names_no_runtime(self):

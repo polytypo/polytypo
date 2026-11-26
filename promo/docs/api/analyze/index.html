@@ -10,11 +10,11 @@
 <link rel="apple-touch-icon" href="../../../assets/favicon/apple-touch-icon-180.png">
 <link rel="stylesheet" href="../../../assets/fonts.css">
 <link rel="stylesheet" href="../../../assets/style.css">
-<title>analyze(): preview typography changes without applying them | polytypo</title>
+<title>analyze() previews typography changes without applying them</title>
 <meta property="og:site_name" content="polytypo">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://polytypo.dev/docs/api/analyze/">
-<meta property="og:title" content="analyze(): preview typography changes without applying them | polytypo">
+<meta property="og:title" content="analyze() previews typography changes without applying them">
 <meta property="og:description" content="The same pipeline as transform, reporting what it would change instead of changing it, with code-point offsets into your input.">
 <meta property="og:image" content="https://polytypo.dev/images/og/docs/api/analyze.png?v=2b5dc248">
 <meta property="og:image:width" content="1200">
@@ -23,11 +23,11 @@
 <meta property="og:image:alt" content="polytypo: API: analyze">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="analyze(): preview typography changes without applying them | polytypo">
+<meta name="twitter:title" content="analyze() previews typography changes without applying them">
 <meta name="twitter:description" content="The same pipeline as transform, reporting what it would change instead of changing it, with code-point offsets into your input.">
 <meta name="twitter:image" content="https://polytypo.dev/images/og/docs/api/analyze.png?v=2b5dc248">
 <meta name="twitter:image:alt" content="polytypo: API: analyze">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "analyze(): preview typography changes without applying them | polytypo", "description": "The same pipeline as transform, reporting what it would change instead of changing it, with code-point offsets into your input.", "url": "https://polytypo.dev/docs/api/analyze/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "analyze", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "API", "item": "https://polytypo.dev/docs/api/"}, {"@type": "ListItem", "position": 3, "name": "analyze", "item": "https://polytypo.dev/docs/api/analyze/"}]}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "analyze() previews typography changes without applying them", "description": "The same pipeline as transform, reporting what it would change instead of changing it, with code-point offsets into your input.", "url": "https://polytypo.dev/docs/api/analyze/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "analyze", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "API", "item": "https://polytypo.dev/docs/api/"}, {"@type": "ListItem", "position": 3, "name": "analyze", "item": "https://polytypo.dev/docs/api/analyze/"}]}}</script>
 <script defer src="https://u.rogulia.fi/script.js" data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>
 </head>
 <body class="page-docs-api-analyze">
@@ -68,7 +68,7 @@ polytypo.analyze(&#x27;Wait... &quot;really&quot;?&#x27;, locale=&quot;en-US&quo
 <h2 id="what-is-not-guaranteed">What is not guaranteed <a class="anchor" href="#what-is-not-guaranteed" aria-label="Link to this section">#</a></h2>
 <p>The list is a report, not a patch. How one visible change is split into records, such as one edit or two, is each runtime's own account of its work, and runtimes are not required to produce identical lists. The output of <code>transform</code> is the only byte-level contract: to get the text, call <code>transform</code>.</p>
 <p>Two rules may also touch the same original range, and both changes are reported in original coordinates. In French, <code>spaces</code> deletes the space before <code>:</code> and <code>nbsp</code> inserts a no-break space at the same place:</p>
-<div class="scroll"><table class="kv"><tr><th></th><th>ruleId</th><th>start</th><th>end</th><th>before</th><th>after</th></tr><tr><td>1</td><td><code>spaces</code></td><td>3</td><td>4</td><td>space</td><td>empty</td></tr><tr><td>2</td><td><code>nbsp</code></td><td>4</td><td>4</td><td>empty</td><td>U+00A0</td></tr></table></div>
+<div class="scroll"><table class="kv"><tr><th></th><th>ruleId</th><th>start</th><th>end</th><th>before</th><th>after</th></tr><tr><td>1</td><td><code>spaces</code></td><td>3</td><td>4</td><td>space</td><td>empty</td></tr><tr><td>2</td><td><code>nbsp</code></td><td>4</td><td>4</td><td>empty</td><td><code>U+00A0</code></td></tr></table></div>
 <p>Applying such a list as a patch is not guaranteed to reproduce <code>transform</code>'s output, and no change is merged or dropped to make it so.</p>
 <h2 id="related">Related <a class="anchor" href="#related" aria-label="Link to this section">#</a></h2>
 <ul><li><a href="../../../docs/api/transform/">transform</a></li><li><a href="../../../docs/api/options/">Options</a></li><li><a href="../../../docs/concepts/rule-order/">Rule order</a></li></ul>

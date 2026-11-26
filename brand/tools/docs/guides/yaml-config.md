@@ -1,6 +1,6 @@
 ---
 title: Typesetting prose in YAML config
-seo_title: Fix typography in YAML and OpenAPI descriptions | polytypo
+seo_title: Fix typography in YAML and OpenAPI descriptions with polytypo
 description: Use yaml mode on OpenAPI-style and config YAML, naming the keys that hold prose, and see how quoted, plain and block scalars are handled and what is skipped.
 section: guides
 order: 30

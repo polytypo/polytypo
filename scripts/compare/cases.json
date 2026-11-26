@@ -1,0 +1,108 @@
+[
+  {
+    "id": "text-quotes",
+    "format": "text",
+    "locale": "en-US",
+    "input": "She said, \"it's fine\" and left. He said, \"She told me 'go away' twice.\""
+  },
+  {
+    "id": "text-elision",
+    "format": "text",
+    "locale": "en-US",
+    "input": "Back in the '90s, rock 'n' roll and 'tis the season; the 'em all."
+  },
+  {
+    "id": "text-dash",
+    "format": "text",
+    "locale": "en-US",
+    "input": "Wait -- what? Years 1990-2000... Maybe.. \"Quoted\"\"adjacent\""
+  },
+  {
+    "id": "text-url",
+    "format": "text",
+    "locale": "en-US",
+    "input": "Visit https://e.com/a--b?q=\"x\" -- thanks.",
+    "keep": ["https://e.com/a--b?q=\"x\""],
+    "typeset": " -- thanks"
+  },
+  {
+    "id": "html-code",
+    "format": "html",
+    "locale": "en-US",
+    "input": "<p>She said \"hi\" -- <code>x = \"a\" -- b...</code></p><pre>\"raw\" -- text</pre>",
+    "keep": ["<code>x = \"a\" -- b...</code>", "<pre>\"raw\" -- text</pre>"],
+    "typeset": "\"hi\""
+  },
+  {
+    "id": "html-attr",
+    "format": "html",
+    "locale": "en-US",
+    "input": "<p class=\"a-b\" title=\"it's -- here\"><a href=\"https://e.com/a--b?q='x'\" title=\"say 'hi'...\">it's \"here\"</a></p>",
+    "keep": [
+      "class=\"a-b\"",
+      "title=\"it's -- here\"",
+      "href=\"https://e.com/a--b?q='x'\"",
+      "title=\"say 'hi'...\""
+    ],
+    "typeset": "\"here\""
+  },
+  {
+    "id": "md-code",
+    "format": "markdown",
+    "locale": "en-US",
+    "input": "Use `printf(\"hi\")` -- not \"print\".\n\n```js\nconst s = \"a\" -- 1...\n```\n",
+    "keep": ["`printf(\"hi\")`", "const s = \"a\" -- 1..."],
+    "keepHtml": ["printf(\"hi\")", "const s = \"a\" -- 1..."],
+    "typeset": "\"print\""
+  },
+  {
+    "id": "md-url",
+    "format": "markdown",
+    "locale": "en-US",
+    "input": "See <https://e.com/a--b> and [x](https://e.com/c--d) and ![alt](img--1.png) \"here\".\n",
+    "keep": ["<https://e.com/a--b>", "(https://e.com/c--d)", "(img--1.png)"],
+    "keepHtml": [
+      "href=\"https://e.com/a--b\"",
+      "href=\"https://e.com/c--d\"",
+      "src=\"img--1.png\""
+    ],
+    "typeset": "\"here\""
+  },
+  {
+    "id": "md-title",
+    "format": "markdown",
+    "locale": "en-US",
+    "input": "[a](https://e.com/a--b \"it's a title\") and ![b](img.png 'my title') \"here\".\n",
+    "link": [["a", "https://e.com/a--b"]],
+    "image": [["b", "img.png"]],
+    "typeset": "\"here\""
+  },
+  {
+    "id": "md-source",
+    "format": "markdown",
+    "locale": "en-US",
+    "identity": true,
+    "input": "- a\n- b\n\n__bold__ and *em*\n\n1) one\n2) two\n\n| a | b |\n|---|---|\n| 1 | 2 |\n"
+  },
+  {
+    "id": "loc-de-CH",
+    "format": "text",
+    "locale": "de-CH",
+    "inner": "'gut'",
+    "input": "Er sagte: \"Das ist 'gut'\" und ging."
+  },
+  {
+    "id": "loc-fr",
+    "format": "text",
+    "locale": "fr",
+    "inner": "'viens'",
+    "input": "Il a dit : \"Elle m'a dit 'viens'\" et c'est tout."
+  },
+  {
+    "id": "loc-ru",
+    "format": "text",
+    "locale": "ru",
+    "inner": "'Война и мир'",
+    "input": "Фирма \"Ромашка\" выпустила \"Книгу 'Война и мир' в 2 томах\"."
+  }
+]

@@ -1,6 +1,6 @@
 ---
 title: Round trip
-seo_title: Round trip: how HTML, Markdown and YAML output stays your input | polytypo
+seo_title: How the round trip keeps HTML, Markdown and YAML output faithful to your input
 description: In html, markdown and yaml modes the output is your input with a few substring replacements applied, and nothing is re-serialised.
 section: concepts
 order: 20
@@ -53,7 +53,7 @@ Para with `"code" -- x` and a [link](http://x.com/a--b "t") and *"em"* text.
 
 - Attribute quoting (`class=foo`, `class='foo'` and `class="foo"` all stay as written), attribute order, duplicate attributes and whitespace inside tags.
 - Tag name case, and self-closing and void forms (`<br>`, `<br/>`, `<br />`).
-- Character references: `&amp;` does not become `&#38;`, and `&nbsp;` does not become U+00A0. A bare `&` stays a bare `&`.
+- Character references: `&amp;` does not become `&#38;`, and `&nbsp;` does not become `U+00A0`. A bare `&` stays a bare `&`.
 - The doctype, comments and trailing whitespace.
 - Markdown list markers, emphasis delimiters, heading style, table alignment, hard-break spaces and line endings.
 - YAML quoting style, indentation, anchors, tags and block scalar chomping indicators.

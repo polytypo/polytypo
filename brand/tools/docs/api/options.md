@@ -1,6 +1,6 @@
 ---
 title: Options
-seo_title: polytypo options: locale, mode, dialect, keys, rules, narrowNbsp and protect
+seo_title: Every polytypo option, from locale and mode to keys, rules, narrowNbsp and protect
 description: Every polytypo option, its type and default, what it requires, and which error an invalid value raises.
 section: api
 order: 20
@@ -56,7 +56,7 @@ With `dashes` off and `ranges` on, the parenthetical `--` is left alone and the 
 
 ## narrowNbsp
 
-`"nbsp"` makes the engine emit U+00A0 wherever it would emit U+202F, the narrow no-break space that many common typefaces do not carry. The default is `"narrow"`. The option moves the rule's target rather than cleaning up afterwards, so the result is still a fixed point. Any other value throws `POLYTYPO_INVALID_OPTION`. It is checked whether or not `nbsp` is enabled, because the check belongs to the call.
+`"nbsp"` makes the engine emit `U+00A0` wherever it would emit `U+202F`, the narrow no-break space that many common typefaces do not carry. The default is `"narrow"`. The option moves the rule's target rather than cleaning up afterwards, so the result is still a fixed point. Any other value throws `POLYTYPO_INVALID_OPTION`. It is checked whether or not `nbsp` is enabled, because the check belongs to the call.
 
 ```example
 locale: fr

@@ -20,8 +20,8 @@ const Polytypo = loadPolytypoSiteJs();
 
 // The only elements mark()/paint() are ever allowed to emit — everything else in a parsed
 // fragment is either plain text (the hostile input verbatim, inert) or a defect.
-const ALLOWED_TAGS = new Set(["span"]);
-const ALLOWED_CLASSES = new Set(["chg", "nb", "bound"]);
+const ALLOWED_TAGS = new Set(["span", "ins"]);
+const ALLOWED_CLASSES = new Set(["chg", "chg-ins", "nb", "bound"]);
 // mark()/paint() only ever set `class` and `title` on their own wrapper <span>s — anything else
 // (an event handler, a URL-bearing attribute the hostile input smuggled in) is a defect.
 const ALLOWED_ATTRS = new Set(["class", "title"]);

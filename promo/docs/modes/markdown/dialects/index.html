@@ -10,11 +10,11 @@
 <link rel="apple-touch-icon" href="../../../../assets/favicon/apple-touch-icon-180.png">
 <link rel="stylesheet" href="../../../../assets/fonts.css">
 <link rel="stylesheet" href="../../../../assets/style.css">
-<title>Markdown dialects: commonmark vs mdx in polytypo</title>
+<title>Choosing between the commonmark and mdx Markdown dialects in polytypo</title>
 <meta property="og:site_name" content="polytypo">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://polytypo.dev/docs/modes/markdown/dialects/">
-<meta property="og:title" content="Markdown dialects: commonmark vs mdx in polytypo">
+<meta property="og:title" content="Choosing between the commonmark and mdx Markdown dialects in polytypo">
 <meta property="og:description" content="Why markdown mode requires an explicit dialect, what commonmark and mdx each mean, and what happens when the document does not parse.">
 <meta property="og:image" content="https://polytypo.dev/images/og/docs/modes/markdown/dialects.png?v=c7b2d68d">
 <meta property="og:image:width" content="1200">
@@ -23,11 +23,11 @@
 <meta property="og:image:alt" content="polytypo: Modes: Markdown dialects">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Markdown dialects: commonmark vs mdx in polytypo">
+<meta name="twitter:title" content="Choosing between the commonmark and mdx Markdown dialects in polytypo">
 <meta name="twitter:description" content="Why markdown mode requires an explicit dialect, what commonmark and mdx each mean, and what happens when the document does not parse.">
 <meta name="twitter:image" content="https://polytypo.dev/images/og/docs/modes/markdown/dialects.png?v=c7b2d68d">
 <meta name="twitter:image:alt" content="polytypo: Modes: Markdown dialects">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "Markdown dialects: commonmark vs mdx in polytypo", "description": "Why markdown mode requires an explicit dialect, what commonmark and mdx each mean, and what happens when the document does not parse.", "url": "https://polytypo.dev/docs/modes/markdown/dialects/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "Markdown dialects", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "Modes", "item": "https://polytypo.dev/docs/modes/"}, {"@type": "ListItem", "position": 3, "name": "Markdown dialects", "item": "https://polytypo.dev/docs/modes/markdown/dialects/"}]}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "name": "Choosing between the commonmark and mdx Markdown dialects in polytypo", "description": "Why markdown mode requires an explicit dialect, what commonmark and mdx each mean, and what happens when the document does not parse.", "url": "https://polytypo.dev/docs/modes/markdown/dialects/", "isPartOf": {"@type": "WebSite", "@id": "https://polytypo.dev/#website", "name": "polytypo", "url": "https://polytypo.dev/", "publisher": {"@id": "https://polytypo.dev/#organization"}}, "datePublished": "2026-09-07", "dateModified": "2026-11-25", "headline": "Markdown dialects", "author": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "publisher": {"@type": "Organization", "name": "polytypo", "url": "https://polytypo.dev/"}, "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Docs", "item": "https://polytypo.dev/docs/"}, {"@type": "ListItem", "position": 2, "name": "Modes", "item": "https://polytypo.dev/docs/modes/"}, {"@type": "ListItem", "position": 3, "name": "Markdown dialects", "item": "https://polytypo.dev/docs/modes/markdown/dialects/"}]}}</script>
 <script defer src="https://u.rogulia.fi/script.js" data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>
 </head>
 <body class="page-docs-modes-markdown-dialects">
@@ -52,7 +52,7 @@
 <p>The caller always knows the dialect, because it is the file extension. The library never can. Requiring the option moves a question nothing can answer to the one party that holds the answer, which is the same reason <code>locale</code> is required.</p>
 <h2 id="the-same-text-two-dialects">The same text, two dialects <a class="anchor" href="#the-same-text-two-dialects" aria-label="Link to this section">#</a></h2>
 <p>An autolink is valid CommonMark and a parse error in MDX:</p>
-<figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect: &quot;commonmark&quot; })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">See &lt;https://example.com/a--b&gt; for &quot;details&quot;.</div></div><div><p class="eyebrow">Output</p><div class="specimen">See &lt;https://example.com/a--b&gt; for <span class="chg">“</span>details<span class="chg">”</span>.</div></div></div></figure>
+<figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect: &quot;commonmark&quot; })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">See &lt;https://example.com/a--b&gt; for <del class="chg chg-del">&quot;</del>details<del class="chg chg-del">&quot;</del>.</div></div><div><p class="eyebrow">Output</p><div class="specimen">See &lt;https://example.com/a--b&gt; for <ins class="chg chg-ins">“</ins>details<ins class="chg chg-ins">”</ins>.</div></div></div></figure>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect: &quot;mdx&quot; })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">See &lt;https://example.com/a--b&gt; for &quot;details&quot;.</div></div><div><p class="eyebrow">Result</p><p>Throws <code>POLYTYPO_MALFORMED_INPUT</code></p></div></div></figure>
 <p>Indented code differs too. Four spaces open a code block in CommonMark, so the line below is skipped:</p>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect: &quot;commonmark&quot; })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">A paragraph.
@@ -63,9 +63,9 @@
 <p>MDX has no indented code blocks, so the same text is prose and is typeset:</p>
 <figure class="example"><figcaption class="mono">transform(input, { locale: &quot;en-US&quot;, mode: &quot;markdown&quot;, dialect: &quot;mdx&quot; })</figcaption><div class="example-pair"><div><p class="eyebrow">Input</p><div class="specimen">A paragraph.
 
-    echo &quot;x&quot; -- &quot;y&quot;</div></div><div><p class="eyebrow">Output</p><div class="specimen">A paragraph.
+    echo <del class="chg chg-del">&quot;</del>x<del class="chg chg-del">&quot; -- &quot;</del>y<del class="chg chg-del">&quot;</del></div></div><div><p class="eyebrow">Output</p><div class="specimen">A paragraph.
 
-    echo <span class="chg">“</span>x<span class="chg">”—“</span>y<span class="chg">”</span></div></div></div></figure>
+    echo <ins class="chg chg-ins">“</ins>x<ins class="chg chg-ins">”—“</ins>y<ins class="chg chg-ins">”</ins></div></div></div></figure>
 <p>A fence or a code span is the one marker that means code in both dialects.</p>
 <h2 id="a-document-that-does-not-parse">A document that does not parse <a class="anchor" href="#a-document-that-does-not-parse" aria-label="Link to this section">#</a></h2>
 <p><code>transform</code> throws <code>POLYTYPO_MALFORMED_INPUT</code>. Only <code>mdx</code> can reject a document, because MDX embeds JavaScript: a malformed JSX tag, an unclosed or malformed <code>{…}</code> expression or a broken <code>export</code>. HTML parsing recovers from every error, and every byte sequence is valid CommonMark.</p>

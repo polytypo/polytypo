@@ -76,7 +76,8 @@ window.Polytypo = (function () {
 
   /**
    * Character-level LCS. Returns the OUTPUT side only, as segments of [changed, text] —
-   * the input side is shown untouched, so the page marks what happened, not what was doomed.
+   * the input is a textarea, which cannot carry marks. Server-rendered examples mark both sides
+   * (build_promo.py's diff_html); this is the same <ins class="chg chg-ins"> for the live output.
    */
   function diff(a, b) {
     const n = a.length,
@@ -121,7 +122,7 @@ window.Polytypo = (function () {
         if (!changed) return mark(text);
         const why = describeChange(text);
         const title = why ? ' title="' + esc(why) + '"' : "";
-        return '<span class="chg"' + title + ">" + mark(text) + "</span>";
+        return '<ins class="chg chg-ins"' + title + ">" + mark(text) + "</ins>";
       })
       .join("");
   }
