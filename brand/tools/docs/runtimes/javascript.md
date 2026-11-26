@@ -1,18 +1,37 @@
 ---
 title: JavaScript and TypeScript
-seo_title: polytypo for JavaScript and TypeScript: install and API (npm)
-description: Install polytypo from npm, call transform and analyze in JavaScript or TypeScript, read error codes, and see which modes and dialects the package covers.
+h1: Typography library for JavaScript and TypeScript
+seo_title: Typography library for JavaScript and TypeScript: npm install | polytypo
+description: polytypo is a typography library for JavaScript and TypeScript: it fixes quotes, dashes, ellipses and no-break spaces for each locale. Install it from npm, call transform and analyze, read error codes, and see which modes and dialects the package covers.
 section: runtimes
 order: 10
 ---
 
-The JavaScript/TypeScript package is published on npm as [`polytypo`](https://www.npmjs.com/package/polytypo); the source is in [polytypo/polytypo-js](https://github.com/polytypo/polytypo-js). It claims spec {{claimed_spec}} and covers every mode, both Markdown dialects, all {{rules_count}} rules and all {{locale_count}} locales. It ships ESM and CommonJS builds with type declarations, and requires Node 20 or later.
+The JavaScript/TypeScript package is published on npm as [`polytypo`](https://www.npmjs.com/package/polytypo); the source is in [polytypo/polytypo-js](https://github.com/polytypo/polytypo-js). It claims spec {{claimed_spec}} and covers every mode, both Markdown dialects, all {{rules_count}} rules and all {{locale_count}} locales. It ships ESM and CommonJS builds with type declarations, and requires Node 20 or later. For smart quotes in JavaScript or TypeScript, `transform` turns the straight quotes in a string, a file or a Markdown document into curly ones, using the quote marks of the locale you name.
 
 ## Install
 
 ```bash
 npm install polytypo
 ```
+
+## Smart quotes in JavaScript and TypeScript
+
+Straight quotes become curly quotes, apostrophes become typographic apostrophes, and `...` becomes an ellipsis. The same string comes out with different quote marks per locale:
+
+```ts
+import { transform } from "polytypo";
+
+const text = `"It's 5 o'clock," he said... "really?"`;
+
+transform(text, { locale: "en-US" });
+// “It’s 5 o’clock,” he said… “really?”
+
+transform(text, { locale: "de-DE" });
+// „It’s 5 o’clock,“ he said… „really?“
+```
+
+In TypeScript the call is typed: `locale` is the only required option, and `transform` returns a `string`.
 
 ## Calling it
 

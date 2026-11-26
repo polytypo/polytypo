@@ -1,12 +1,34 @@
 <header class="page-head">
-  <p class="eyebrow">Try it</p>
-  <h1>Paste your text. Pick a locale.</h1>
+  <p class="eyebrow">Free online smart quotes tool</p>
+  <h1>Straight quotes to curly quotes converter</h1>
   <p class="lead">
-    This is the real engine, running in your browser. Nothing you type is sent anywhere.
+    Paste your text. Pick a locale. The real engine runs in your browser and nothing you type is
+    sent anywhere.
   </p>
 </header>
 
 <section id="try">{{playground}}</section>
+
+<section id="how">
+  <h2>How the conversion works</h2>
+  <p>
+    Pick the locale you are writing in and polytypo sets that locale’s own quotation marks, not one
+    universal pair: the same straight quotes come out differently in en-US, en-GB and de-DE. It
+    reads each apostrophe and each quote in context, so <code>It's</code> gets a proper apostrophe
+    and a nested <code>'quiet'</code> inside double quotes gets the right inner pair. Dashes,
+    ellipses and no-break spaces are set in the same pass.
+  </p>
+  <div class="card-grid card-grid--two">{{playground_examples}}</div>
+  <p>
+    Curly quotes you paste in are not turned back into straight ones. Text that is already curly is
+    set to the selected locale’s marks, as the last example shows. The
+    <code>text</code>, <code>html</code>, <code>markdown</code> and <code>yaml</code> modes cover
+    plain text, web pages, Markdown and the prose values of YAML files. The
+    <a href="{{prefix}}docs/rules/quotes/">quotes rule</a> documents every locale’s pairs, and the
+    <a href="{{prefix}}docs/runtimes/">runtime pages</a> show how to install polytypo for JavaScript
+    and TypeScript, Python, Go, Ruby and PHP.
+  </p>
+</section>
 
 <section id="notes">
   <h2>What to know before you paste</h2>
@@ -46,4 +68,9 @@
       </p>
     </div>
   </div>
+</section>
+
+<section id="faq">
+  <h2>Questions about the converter</h2>
+  <div class="faq">{{playground_faq}}</div>
 </section>

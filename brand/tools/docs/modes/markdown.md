@@ -1,12 +1,14 @@
 ---
 title: Markdown mode
-seo_title: Markdown mode: fix typography in CommonMark and MDX | polytypo
-description: Typeset the prose of a CommonMark or MDX document, leaving code, links, HTML and frontmatter exactly as written.
+seo_title: Markdown typographer: smart quotes and dashes for CommonMark and MDX | polytypo
+description: A typographer for Markdown: curly quotes, dashes, ellipses and no-break spaces in CommonMark and MDX prose. Code, links, HTML and frontmatter stay as written.
 section: modes
 order: 40
 ---
 
-`markdown` mode parses a Markdown document and runs the rules over its prose: paragraphs, headings, list items, table cells and the text of links. Code, link destinations, raw HTML and the frontmatter block are skipped and come back byte for byte.
+`markdown` mode is a typographer for Markdown documents. It turns straight quotes into the quotation marks of the chosen locale, hyphens into dashes, three dots into an ellipsis, and sets no-break spaces where the locale needs them, in the prose of a CommonMark or MDX document: paragraphs, headings, list items, table cells and the text of links.
+
+Code, link destinations, raw HTML and the frontmatter block are skipped and come back byte for byte. [Skip list](/docs/modes/markdown/skip-list/) names every construct left alone.
 
 It has one required option, [`dialect`](/docs/modes/markdown/dialects/), because "Markdown" is not one language. It has one optional option, [`frontmatterKeys`](/docs/modes/markdown/frontmatter/), which opens named fields of the frontmatter block to the rules.
 

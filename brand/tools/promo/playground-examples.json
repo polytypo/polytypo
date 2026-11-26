@@ -1,0 +1,23 @@
+[
+  {
+    "locale": "en-US",
+    "input": "She said, \"It's a 'quiet' place\" - and left...",
+    "output": "She said, “It’s a ‘quiet’ place”—and left…"
+  },
+  {
+    "locale": "en-GB",
+    "input": "She said, \"It's a 'quiet' place\" - and left...",
+    "output": "She said, ‘It’s a “quiet” place’ – and left…"
+  },
+  {
+    "locale": "de-DE",
+    "input": "She said, \"It's a 'quiet' place\" - and left...",
+    "output": "She said, „It’s a ‚quiet‘ place“ – and left…"
+  },
+  {
+    "locale": "de-DE",
+    "input": "“Hi” it’s",
+    "output": "„Hi“ it’s",
+    "label": "de-DE, curly input"
+  }
+]

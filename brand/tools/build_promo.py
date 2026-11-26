@@ -218,9 +218,10 @@ SECTION_DESCRIPTIONS = {
     "rules": "The ten typography rules, in the order they run, with what each changes per locale.",
     "concepts": "The guarantees behind polytypo: idempotency, rule order, locale resolution, the span model and round trip.",
     "guides": "Complete recipes: typeset Markdown, MDX and HTML at build time, and prose in YAML config.",
-    "runtimes": "Install and call polytypo from JavaScript and TypeScript, Python, Go, Ruby and PHP.",
+    "runtimes": "polytypo is a typography library with five runtimes. Install and call it from JavaScript and TypeScript, Python, Go, Ruby and PHP.",
 }
 SECTION_SEO_TITLES = {
+    "runtimes": "Typography library runtimes: JavaScript, Python, Go, Ruby, PHP | polytypo",
     "modes": "polytypo modes reference: text, html, markdown and yaml",
 }
 SECTION_PAGES = [
@@ -260,8 +261,8 @@ PAGE_DESCRIPTIONS = {
         "in five languages, plus the full error code contract."
     ),
     "playground": (
-        "Run polytypo's real engine in your browser. Paste text, pick a locale, and see "
-        "locale-correct quotes, dashes, ellipses and no-break spaces applied live."
+        "Convert straight quotes to curly (smart) quotes online. Pick a locale and get its "
+        "quotation marks, dashes, ellipses and no-break spaces. Your text stays in your browser."
     ),
     "locales": (
         "Typography rules by locale: quotation marks, dashes, ellipsis and no-break spaces for "
@@ -287,11 +288,19 @@ PAGE_DESCRIPTIONS = {
 
 # Titles that carry the query words their page answers; every other page is "polytypo — <label>".
 PAGE_TITLES = {
-    "": "polytypo — fix typography in any text: smart quotes, dashes, no-break spaces",
+    "": (
+        f"Typography library: fix quotes, dashes and no-break spaces in {len(gen_locale_pages.CODES)} "
+        "locales | polytypo"
+    ),
+    "manifesto": "The em dash was mine before AI: typography is not an AI watermark | polytypo",
+    "contribute": "Contribute to polytypo: add a locale or change a typography rule | polytypo",
+    "changelog": "polytypo changelog: what changed in each spec version | polytypo",
+    "showcase": "Sites that use polytypo for typography | polytypo",
     "locales": (
         f"Typography rules by locale: quotes, dashes, spaces for {len(gen_locale_pages.CODES)} "
         "locales | polytypo"
     ),
+    "playground": "Straight quotes to curly quotes converter online | polytypo",
 }
 
 # Depth prefix every link and asset reference on a page is written relative to. Document-relative,
@@ -353,6 +362,9 @@ def og_image_for(slug, manifest):
     return f"{SITE_ORIGIN}/images/og/{slug}.png?v={entry['v']}", entry["alt"]
 
 
+OG_TEXT = {"playground": "Straight to curly quotes converter"}
+
+
 def write_og_pages():
     """The non-locale pages that need a drawn image, for scripts/og/generate-og.mjs (locale pages
     it derives from the spec itself)."""
@@ -368,7 +380,7 @@ def write_og_pages():
         elif section:
             text = f"polytypo docs: {title}"
         else:
-            text = title
+            text = OG_TEXT.get(slug, title)
         out.append({"slug": slug, "text": text})
     os.makedirs(os.path.dirname(OG_MANIFEST_PATH), exist_ok=True)
     with open(os.path.join(os.path.dirname(OG_MANIFEST_PATH), "og-pages.json"), "w", encoding="utf-8") as f:
@@ -697,6 +709,22 @@ _RUNTIME_PAGE_STATUS_NAME = {
     "ruby": "Ruby",
     "php": "PHP",
 }
+
+
+def runtime_list_text():
+    """"JavaScript, Python, Go, Ruby and PHP", read from the conformance status, never hand-listed."""
+    names = [name.split("/")[0] for name in _runtime_status()]
+    return ", ".join(names[:-1]) + " and " + names[-1]
+
+
+def home_faq(body):
+    """(question, answer) pairs of the home FAQ, read from the rendered body so the visible list
+    and the FAQPage JSON-LD share one source."""
+    pairs = re.findall(r"<h3>(.*?)</h3>\s*<p>(.*?)</p>", body.split('id="faq"', 1)[1], flags=re.S)
+    return [
+        (H.unescape(re.sub(r"<[^>]+>", "", q)).strip(), " ".join(H.unescape(re.sub(r"<[^>]+>", "", a)).split()))
+        for q, a in pairs
+    ]
 
 
 def claimed_spec_version(slug):
@@ -1338,7 +1366,7 @@ def updated_html():
     )
 
 
-def jsonld(slug, page_title, description, canonical_url, doc_page=None):
+def jsonld(slug, page_title, description, canonical_url, doc_page=None, faq=None):
     """Structured data for one page: a WebPage node everywhere, plus — Home only — a
     SoftwareSourceCode node describing what actually ships (MIT, the canonical spec repo, and
     every runtime currently published — read from scripts/conformance-status.json, never
@@ -1367,6 +1395,8 @@ def jsonld(slug, page_title, description, canonical_url, doc_page=None):
             "breadcrumb": doc_breadcrumb_list(doc_page, canonical_url),
         }
         doc = {"@context": "https://schema.org", **article}
+    elif slug == "playground":
+        doc = {"@context": "https://schema.org", "@graph": [webpage_node, playground_faq_jsonld()]}
     elif slug != "":
         doc = {"@context": "https://schema.org", **webpage_node}
     else:
@@ -1379,10 +1409,26 @@ def jsonld(slug, page_title, description, canonical_url, doc_page=None):
             "license": "https://spdx.org/licenses/MIT.html",
             "programmingLanguage": [rt["name"] for rt in _runtime_status().values()],
         }
-        doc = {"@context": "https://schema.org", "@graph": [webpage_node, _WEBSITE_NODE, _organization_node(), software_node]}
-    # </script> inside a JSON string would otherwise close the element early — escape the slash,
-    # which JSON permits (\/ is a valid escape) and HTML parsers do not treat as a delimiter.
-    return json.dumps(doc, ensure_ascii=False).replace("</", "<\\/")
+        graph = [webpage_node, _WEBSITE_NODE, _organization_node(), software_node]
+        if faq:
+            graph.append(
+                {
+                    "@type": "FAQPage",
+                    "mainEntity": [
+                        {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}}
+                        for q, a in faq
+                    ],
+                }
+            )
+        doc = {"@context": "https://schema.org", "@graph": graph}
+    # Escape <, > and & as \\u sequences (valid JSON): no </script> or <!-- can end or confuse the
+    # element, whatever the strings contain.
+    return (
+        json.dumps(doc, ensure_ascii=False)
+        .replace("<", "\\u003c")
+        .replace(">", "\\u003e")
+        .replace("&", "\\u0026")
+    )
 
 
 _DOC_EXAMPLES = None
@@ -1541,7 +1587,7 @@ def doc_page_body(page, prefix, replacements):
     )
     html = (
         f'<div class="doc-layout">{doc_nav_html(page["slug"], prefix)}<article class="doc">'
-        f'{crumbs}<h1>{H.escape(page["title"])}</h1>'
+        f'{crumbs}<h1>{H.escape(page.get("h1", page["title"]))}</h1>'
         f'<p class="doc-lead">{H.escape(page["description"])}</p>{updated_html()}{runtime_badges_row(page["slug"])}{content}'
         f'<nav class="doc-pager" aria-label="Pager">{"".join(pager)}</nav></article>{toc}</div>'
     )
@@ -1585,6 +1631,46 @@ def doc_breadcrumb_list(page, canonical_url):
             {"@type": "ListItem", "position": 2, "name": section_label,
              "item": f"{SITE_ORIGIN}/docs/{page['section']}/"},
             {"@type": "ListItem", "position": 3, "name": page["title"], "item": canonical_url},
+        ],
+    }
+
+
+def playground_examples_html():
+    """Worked examples for /playground. Inputs and outputs live in promo/playground-examples.json;
+    tests/promo/playground-examples.test.ts re-runs the engine over them, so they cannot drift."""
+    with open(os.path.join(PROMO_SRC, "playground-examples.json"), encoding="utf-8") as f:
+        examples = json.load(f)
+    cards = [
+        '<div class="card"><h3>{loc}</h3><p>In: <code>{i}</code></p><p>Out: <code>{o}</code></p></div>'.format(
+            loc=H.escape(e.get("label", e["locale"])), i=H.escape(e["input"]), o=H.escape(e["output"])
+        )
+        for e in examples
+    ]
+    return "\n    ".join(cards)
+
+
+def playground_faq():
+    with open(os.path.join(PROMO_SRC, "playground-faq.json"), encoding="utf-8") as f:
+        return json.load(f)
+
+
+def playground_faq_html():
+    return "\n    ".join(
+        f'<div class="faq-item"><h3>{H.escape(item["q"])}</h3><p>{H.escape(item["a"])}</p></div>'
+        for item in playground_faq()
+    )
+
+
+def playground_faq_jsonld():
+    return {
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": item["q"],
+                "acceptedAnswer": {"@type": "Answer", "text": item["a"]},
+            }
+            for item in playground_faq()
         ],
     }
 
@@ -1645,10 +1731,13 @@ def build():
 
     replacements = {
         "{{rules_table}}": rules_table(data),
+        "{{playground_examples}}": playground_examples_html(),
+        "{{playground_faq}}": playground_faq_html(),
         "{{code_panes}}": code_panes(),
         "{{build_panes}}": build_panes(),
         "{{package_badges}}": package_badges_row(),
         "{{locale_count}}": locale_count_word,
+        "{{runtime_list}}": runtime_list_text(),
         "{{Locale_count}}": locale_count_word.capitalize(),
         "{{rules_count}}": rules_count_word,
         "{{Rules_count}}": rules_count_word.capitalize(),
@@ -1703,6 +1792,7 @@ def build():
         doc_page = doc_page or locale_page or section_page
         description = doc_page["description"] if doc_page else PAGE_DESCRIPTIONS[slug].format(n=n)
         canonical_url = f"{SITE_ORIGIN}/{slug + '/' if slug else ''}"
+        home_faq_pairs = home_faq(body) if slug == "" else None
         image_url, image_alt = og_image_for(slug, og_manifest)
         doc = (
             "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
@@ -1734,7 +1824,7 @@ def build():
             f'<meta name="twitter:description" content="{H.escape(description)}">\n'
             f'<meta name="twitter:image" content="{image_url}">\n'
             f'<meta name="twitter:image:alt" content="{H.escape(image_alt)}">\n'
-            f"<script type=\"application/ld+json\">{jsonld(slug, page_title, description, canonical_url, doc_page)}</script>\n"
+            f"<script type=\"application/ld+json\">{jsonld(slug, page_title, description, canonical_url, doc_page, home_faq_pairs)}</script>\n"
             '<script defer src="https://u.rogulia.fi/script.js" '
             'data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>\n'
             f'</head>\n<body class="page-{slug.replace("/", "-") or "home"}">\n'

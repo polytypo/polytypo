@@ -1,10 +1,14 @@
 <header class="page-head page-head--home">
-  <h1 class="display">The em dash was mine before AI.</h1>
-  <p class="lead"><code>«—»</code> is typography, not an AI watermark.</p>
+  <h1 class="display">
+    Fix quotes, dashes, ellipses and no-break spaces in {{locale_count}} locales
+  </h1>
+  <p class="lead">
+    polytypo is a typography library for {{runtime_list}}. Paste text, pick a locale, get
+    locale-correct typography back.
+  </p>
   <p>
-    polytypo fixes typography in any text: it turns straight quotes into the locale's quotation
-    marks, sets dashes and ellipses, and inserts no-break spaces. It supports {{locale_count}}
-    locales in JavaScript, Python, Go, Ruby and PHP, and gives byte-identical output in all five.
+    It turns straight quotes into the locale's quotation marks, sets dashes and ellipses, and
+    inserts no-break spaces, with byte-identical output in all five runtimes.
   </p>
   <p><a href="{{prefix}}changelog/">Version {{latest_version}}</a> · {{latest_date}}</p>
   <div class="cta-row">
@@ -71,6 +75,16 @@
   </p>
 </section>
 
+<section id="manifesto">
+  <p class="eyebrow">Manifesto</p>
+  <h2>The em dash was mine before AI.</h2>
+  <p>
+    <code>«—»</code> is typography, not an AI watermark. Publishers set these marks by
+    locale-specific convention long before language models existed.
+    <a href="{{prefix}}manifesto/">Read the manifesto</a>.
+  </p>
+</section>
+
 <section id="faq">
   <p class="eyebrow">Questions</p>
   <h2>Common questions</h2>
@@ -78,9 +92,10 @@
     <div class="faq-item">
       <h3>How do I turn straight quotes into curly quotes automatically?</h3>
       <p>
-        Call <code>transform(text, { locale })</code>. It replaces straight quotes with the locale's
-        primary and secondary pairs, for example <code>“…”</code> in en-US and <code>„…“</code> in
-        de-DE, and resolves nesting.
+        Paste it into the <a href="{{prefix}}playground/">playground</a>, or call
+        <code>transform(text, { locale })</code> from code. The
+        <a href="{{prefix}}docs/rules/quotes/">quotes rule</a> picks each locale's pairs and
+        resolves nesting.
       </p>
     </div>
     <div class="faq-item">

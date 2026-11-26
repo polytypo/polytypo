@@ -1,18 +1,40 @@
 ---
 title: PHP
-seo_title: polytypo for PHP: Composer install and Polytypo::transform
-description: Install polytypo with Composer, call Polytypo::transform and Polytypo::analyze with named arguments, catch PolytypoException codes, and see which modes PHP covers.
+h1: Typography library for PHP
+seo_title: Typography library for PHP: Composer install and Polytypo::transform | polytypo
+description: polytypo is a typography library for PHP: it fixes quotes, dashes, ellipses and no-break spaces for each locale. Install it with Composer, call Polytypo::transform and Polytypo::analyze with named arguments, catch PolytypoException codes, and see which modes PHP covers.
 section: runtimes
 order: 50
 ---
 
-The PHP package is [`polytypo/polytypo`](https://packagist.org/packages/polytypo/polytypo) on Packagist; the source is in [polytypo/polytypo-php](https://github.com/polytypo/polytypo-php). It claims spec {{claimed_spec}}. The `text`, `html` and `yaml` modes are fully conformant. The `markdown` mode is not implemented for either dialect: `mode: 'markdown'` always raises `POLYTYPO_INVALID_DIALECT`, whatever `dialect` is given. `league/commonmark`, the standard PHP CommonMark library, reports no position data on inline text nodes, and the mode needs the exact source extent of every text span.
+The PHP package is [`polytypo/polytypo`](https://packagist.org/packages/polytypo/polytypo) on Packagist; the source is in [polytypo/polytypo-php](https://github.com/polytypo/polytypo-php). It claims spec {{claimed_spec}}. The `text`, `html` and `yaml` modes are fully conformant. The `markdown` mode is not implemented for either dialect: `mode: 'markdown'` always raises `POLYTYPO_INVALID_DIALECT`, whatever `dialect` is given. `league/commonmark`, the standard PHP CommonMark library, reports no position data on inline text nodes, and the mode needs the exact source extent of every text span. For smart quotes in PHP, `Polytypo::transform` converts the straight quotes in a plain string or an HTML fragment into the curly quotes of the locale.
 
 ## Install
 
 ```bash
 composer require polytypo/polytypo
 ```
+
+## Smart quotes in PHP
+
+`Polytypo::transform` returns the string with curly quotes, typographic apostrophes and an ellipsis character:
+
+```php
+<?php
+require __DIR__ . '/vendor/autoload.php';
+
+use Polytypo\Polytypo;
+
+$text = '"It\'s 5 o\'clock," he said... "really?"';
+
+echo Polytypo::transform($text, 'en-US'), "\n";
+// “It’s 5 o’clock,” he said… “really?”
+
+echo Polytypo::transform($text, 'de-DE'), "\n";
+// „It’s 5 o’clock,“ he said… „really?“
+```
+
+For HTML, pass `mode: 'html'`; tags, attributes and `<code>` content are left alone.
 
 ## Calling it
 

@@ -1,18 +1,37 @@
 ---
 title: Python
-seo_title: polytypo for Python: PyPI install and transform()
-description: Install polytypo from PyPI, call transform and analyze with keyword arguments, handle PolytypoError codes, and see which modes and dialects the package covers.
+h1: Typography library for Python
+seo_title: Typography library for Python: pip install and transform() | polytypo
+description: polytypo is a typography library for Python: it fixes quotes, dashes, ellipses and no-break spaces for each locale. Install it from PyPI, call transform and analyze with keyword arguments, handle PolytypoError codes, and see which modes and dialects the package covers.
 section: runtimes
 order: 20
 ---
 
-The Python package is published on PyPI as [`polytypo`](https://pypi.org/project/polytypo/); the source is in [polytypo/polytypo-python](https://github.com/polytypo/polytypo-python). It claims spec {{claimed_spec}}. The `text`, `html` and `yaml` modes are fully conformant. The `markdown` mode covers the `commonmark` dialect; `dialect="mdx"` raises `POLYTYPO_INVALID_DIALECT`, because no MDX parser is available for this runtime.
+The Python package is published on PyPI as [`polytypo`](https://pypi.org/project/polytypo/); the source is in [polytypo/polytypo-python](https://github.com/polytypo/polytypo-python). It claims spec {{claimed_spec}}. The `text`, `html` and `yaml` modes are fully conformant. The `markdown` mode covers the `commonmark` dialect; `dialect="mdx"` raises `POLYTYPO_INVALID_DIALECT`, because no MDX parser is available for this runtime. To get smart quotes in Python, pass a string to `transform` and name the locale: straight quotes in the string, in a text file you read or in a Markdown document come back as curly quotes.
 
 ## Install
 
 ```bash
 pip install polytypo
 ```
+
+## Smart quotes in Python
+
+`transform` replaces straight quotes with the curly quotes of the locale, and apostrophes and `...` with their typographic forms:
+
+```python
+from polytypo import transform
+
+text = '"It\'s 5 o\'clock," he said... "really?"'
+
+print(transform(text, locale="en-US"))
+# “It’s 5 o’clock,” he said… “really?”
+
+print(transform(text, locale="de-DE"))
+# „It’s 5 o’clock,“ he said… „really?“
+```
+
+For a Markdown file, pass `mode="markdown"` and `dialect="commonmark"`; code spans and code blocks are left alone.
 
 ## Calling it
 

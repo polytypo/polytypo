@@ -170,6 +170,15 @@ def quick_answer(d):
     return " ".join(out)
 
 
+# Two locales whose page headline drops the region: "German typography rules" is the
+# de-DE page, and the Swiss one says so in its own name. Only the title and H1 use it.
+HEADLINE_NAME = {"de-DE": "German", "de-CH": "Swiss German"}
+
+
+def _headline_name(code, d):
+    return HEADLINE_NAME.get(code, d["name"])
+
+
 def pages():
     """One page record per registered locale, in the site-wide locale order (locale_order.py)."""
     out = []
@@ -183,7 +192,7 @@ def pages():
                 "name": d["name"],
                 "title": f"{d['name']} ({code})",
                 "seo_title": (
-                    f"{d['name']} typography rules: {_quote_pair_text(q['primary'])} quotes, "
+                    f"{_headline_name(code, d)} typography rules: {_quote_pair_text(q['primary'])} quotes, "
                     f"{DASH_SHORT[d['dash']['parenthetical']]} | polytypo"
                 ),
                 "description": (
@@ -628,7 +637,7 @@ def body(page, prefix, h, all_pages):
     crumbs = f'<nav class="crumbs" aria-label="Breadcrumb"><a href="{prefix}">Home</a> / <a href="{prefix}locales/">Locales</a> / {H.escape(code)}</nav>'
     return (
         f'<div class="doc-layout">{_sidebar(code, prefix, all_pages)}<article class="doc">'
-        f"{crumbs}<h1>{H.escape(d['name'])} typography rules <span class=\"muted\">&middot; {H.escape(code)}</span></h1>"
+        f"{crumbs}<h1>{H.escape(_headline_name(code, d))} typography rules <span class=\"muted\">&middot; {H.escape(code)}</span></h1>"
         f'<p class="muted" lang="{_lang(code)}">{H.escape(native_name(code))}</p>'
         f'<p class="doc-lead">{quick_answer(d)}</p>'
         + h.updated()

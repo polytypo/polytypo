@@ -1,7 +1,7 @@
 ---
 title: No-break spaces
-seo_title: No-break spaces rule: U+00A0 and U+202F per locale | polytypo
-description: How the nbsp rule converts and inserts U+00A0 and U+202F per locale, with the ten lists it reads, the narrowNbsp option and what it leaves alone.
+seo_title: Non-breaking space in HTML: &nbsp;, U+00A0 and the narrow U+202F | polytypo
+description: How to write a non-breaking space in HTML (&nbsp;, &#160;, U+00A0), when to use the narrow U+202F, and how polytypo inserts them per locale automatically.
 section: rules
 order: 90
 ---
@@ -9,6 +9,26 @@ order: 90
 The `nbsp` rule makes a line break fall where the language allows it. It turns an ordinary space into a no-break space (U+00A0) or a narrow no-break space (U+202F) where a locale needs one: before French `? ! ; :`, between a number and its unit, after a short Russian or Czech preposition, between initials and a surname. In a few places it inserts a space the author did not type.
 
 It runs last (order 70), after every other rule has settled the characters around each space, and it is on by default in every mode. Almost everything it does is conversion of a space that is already there. Text that already carries the right no-break spaces passes through unchanged.
+
+## In HTML
+
+A no-break space looks like an ordinary space, but the browser never breaks a line at it and never collapses a run of it. HTML gives U+00A0 several spellings; the narrow no-break space U+202F has no named one.
+
+| Character | Ways to write it in HTML |
+| --- | --- |
+| No-break space, U+00A0 | `&nbsp;` (also `&NonBreakingSpace;`), `&#160;`, `&#xA0;`, or the character itself |
+| Narrow no-break space, U+202F | `&#8239;`, `&#x202F;`, or the character itself. There is no named reference |
+
+Use U+202F where a narrow gap is the convention, such as before French `? ! ;`, and check that your font has a glyph for it (see "Narrow versus ordinary no-break space" below).
+
+You do not have to type either one by hand. In [`html` mode](/docs/modes/html/) polytypo inserts and converts these spaces in the text of the document, per locale, and leaves tags, attributes and existing character references exactly as written. It writes the characters themselves, not entities.
+
+```example
+locale: fr
+mode: html
+---
+<p title="Vraiment ?">Vraiment ? Oui, 20 km !</p>
+```
 
 ## How it works
 

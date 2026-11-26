@@ -1,12 +1,13 @@
 ---
 title: Ruby
-seo_title: polytypo for Ruby: gem install and Polytypo.transform
-description: Install the polytypo gem, call Polytypo.transform and Polytypo.analyze with keyword arguments, rescue Polytypo::Error codes, and see which modes the gem covers.
+h1: Typography library for Ruby
+seo_title: Typography library for Ruby: gem install and Polytypo.transform | polytypo
+description: polytypo is a typography library for Ruby: it fixes quotes, dashes, ellipses and no-break spaces for each locale. Install the gem, call Polytypo.transform and Polytypo.analyze with keyword arguments, rescue Polytypo::Error codes, and see which modes the gem covers.
 section: runtimes
 order: 40
 ---
 
-The Ruby gem is [`polytypo`](https://rubygems.org/gems/polytypo); the source is in [polytypo/polytypo-ruby](https://github.com/polytypo/polytypo-ruby). It claims spec {{claimed_spec}} and needs Ruby 3.2 or later. The `text`, `html` and `yaml` modes are fully conformant. The `markdown` mode covers the `commonmark` dialect (CommonMark plus GFM, through the `commonmarker` gem); `dialect: "mdx"` raises `POLYTYPO_INVALID_DIALECT`, because no MDX parser is available for this runtime.
+The Ruby gem is [`polytypo`](https://rubygems.org/gems/polytypo); the source is in [polytypo/polytypo-ruby](https://github.com/polytypo/polytypo-ruby). It claims spec {{claimed_spec}} and needs Ruby 3.2 or later. The `text`, `html` and `yaml` modes are fully conformant. The `markdown` mode covers the `commonmark` dialect (CommonMark plus GFM, through the `commonmarker` gem); `dialect: "mdx"` raises `POLYTYPO_INVALID_DIALECT`, because no MDX parser is available for this runtime. Use `Polytypo.transform` when you want smart quotes in Ruby: it turns the straight quotes in a string into curly quotes for the locale you pass, without touching anything else in the text.
 
 ## Install
 
@@ -15,6 +16,22 @@ gem install polytypo
 ```
 
 In a Gemfile: `gem "polytypo"`.
+
+## Smart quotes in Ruby
+
+Straight quotes become curly quotes, and apostrophes and `...` get their typographic characters:
+
+```ruby
+require "polytypo"
+
+text = %q("It's 5 o'clock," he said... "really?")
+
+puts Polytypo.transform(text, locale: "en-US")
+# “It’s 5 o’clock,” he said… “really?”
+
+puts Polytypo.transform(text, locale: "de-DE")
+# „It’s 5 o’clock,“ he said… „really?“
+```
 
 ## Calling it
 

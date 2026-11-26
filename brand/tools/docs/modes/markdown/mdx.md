@@ -1,12 +1,14 @@
 ---
-title: MDX
-seo_title: MDX typography: JSX, expressions and ESM in polytypo markdown mode
+title: MDX dialect
+seo_title: MDX dialect reference: what markdown mode typesets and skips | polytypo
 description: How markdown mode handles MDX: JSX elements and attributes, expressions, ESM statements, and documents that fail to parse.
 section: modes
 order: 44
 ---
 
 `dialect: "mdx"` reads the document as MDX 3: CommonMark plus GFM, without indented code blocks and `<…>` autolinks, with JSX elements and `{…}` expressions. MDX is the author's own content format, so the mode typesets what an author wrote as prose and leaves what the JavaScript runtime reads alone.
+
+This page is the reference for the dialect. To run it over a blog, start with the [MDX content guide](/docs/guides/mdx-content/).
 
 ## Processed and skipped
 

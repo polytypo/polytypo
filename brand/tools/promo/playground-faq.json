@@ -1,0 +1,14 @@
+[
+  {
+    "q": "How do I convert straight quotes to curly quotes in Word or plain text?",
+    "a": "Paste the text into the box above, pick the locale you are writing in, and copy the result. Straight double and single quotes become that locale’s opening and closing marks, apostrophes become ’, and the same pass sets dashes, ellipses and no-break spaces. The box holds plain text, so bold, italics and other formatting do not come back with the result; for a formatted document, run the HTML or Markdown source through the matching mode instead, or paste the converted paragraphs back and reapply the formatting."
+  },
+  {
+    "q": "Does it work on HTML and Markdown?",
+    "a": "Yes. The html mode changes only the text between tags and leaves tags, attributes and code, script and style content alone. The markdown mode changes only prose and leaves code spans, code blocks and URLs untouched; it needs a dialect, commonmark or mdx. The yaml mode changes only the values of the keys you name. The text mode treats everything you paste as prose."
+  },
+  {
+    "q": "Is my text sent anywhere?",
+    "a": "No. The conversion runs in your browser with the same engine you can install from npm, and the text you paste is not uploaded. The page records that the tool was used, together with the locale and mode you picked, but never the text itself."
+  }
+]
