@@ -707,8 +707,8 @@
       "rule": "dashes",
       "mode": "text",
       "in": "Figure 5-10",
-      "out": "Figure 5-10",
-      "note": "spec 0.5.0: compound labels (`chapter 5, figure 10`, not a range) are no longer converted with default options. `dashes` never processes a digit-flanked token (dashes.md 1, 3.4), and `ranges` — the only rule that could convert this shape — is off by default (ranges.md 1). Canonical fixtures no longer assert the converted form as a successful output under any option set; what the explicit opt-in (`rules: {ranges: true}`) does with this same input is a documented limitation of that rule, characterized in tests/rules/ranges.test.ts, not portable conformance evidence."
+      "out": "Figure 5⁠–⁠10",
+      "note": "ranges.md §1, §5: `ranges` is on by default since spec 1.33.0, and a compound label (`figure 5-10`, not a range) shares the digit-hyphen-digit shape of a range, so it converts like one: the accepted cost. Through 1.32.0 default options left it as typed; `rules: {ranges: false}` still does."
     },
     {
       "id": "en-us-hyphen-empty-lists-noop",
@@ -2138,8 +2138,8 @@
       "rule": "dashes",
       "mode": "text",
       "in": "$15 - $20",
-      "out": "$15 - $20",
-      "note": "ranges.md §3.2a and dashes.md §1 (spec 1.3.0): the ACCEPTED COST of widening range candidacy. With default options this input produced `$15—$20` through spec 1.2.0; a range candidate is declined by `dashes` unconditionally, whether or not `ranges` is enabled, so it is now a no-op. That is the behaviour `$15 - 20` has had since spec 0.5.0 — the change makes the two consistent."
+      "out": "$15⁠–⁠$20",
+      "note": "ranges.md §3.2a: `ranges` is on by default since spec 1.33.0, so a spaced hyphen between two closed-up currency amounts is a range and takes the tight en dash. `dashes` still declines the token. Through 1.32.0 default options left it as typed."
     },
     {
       "id": "en-us-ranges-closed-up-letter-prefix",
@@ -5433,6 +5433,49 @@
       "in": "He said \"'hi'\" and '\"Hello\"'.",
       "out": "He said “‘hi’” and “‘Hello’”.",
       "note": "quotes.md §3.2 quoted-lone-mark veto: the veto needs the middle mark's two neighbours to be marks, so a quotation that merely starts or ends with a nested one is unaffected."
+    },
+    {
+      "id": "en-us-ranges-default-on-year-range",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "in 1990-2000",
+      "out": "in 1990⁠–⁠2000",
+      "note": "ranges.md §1: on by default since spec 1.33.0."
+    },
+    {
+      "id": "en-us-ranges-opt-out-compound-label",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "Figure 5-10",
+      "out": "Figure 5-10",
+      "note": "ranges.md §1: `rules: {ranges: false}` restores the pre-1.33.0 behaviour, a byte-identical no-op for the compound label.",
+      "rules": {
+        "ranges": false
+      }
+    },
+    {
+      "id": "en-us-ranges-default-on-identifier-converts",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "ISSN 2307-3047",
+      "out": "ISSN 2307⁠–⁠3047",
+      "note": "ranges.md §5: accepted false positive, pinned. An ISSN has the shape of a year range (four digits, hyphen, four ascending digits) and the rule does not read the word before it. Measured on about 780 real conversions across ru, uk, de, pl and en, identifiers like this were 9 of them."
+    },
+    {
+      "id": "en-us-ranges-default-on-score-converts",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "The match ended 1-1.",
+      "out": "The match ended 1⁠–⁠1.",
+      "note": "ranges.md §5: accepted false positive, pinned. G5 admits equal members, so a level score reads as a range."
+    },
+    {
+      "id": "en-us-ranges-default-on-isbn-untouched",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "ISBN 978-5-91796-032-6",
+      "out": "ISBN 978-5-91796-032-6",
+      "note": "ranges.md §3.2 G2: a chain of hyphen-joined digit runs is never a range, so ISBNs and phone numbers stay as typed."
     }
   ]
 }

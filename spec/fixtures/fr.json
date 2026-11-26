@@ -1133,6 +1133,14 @@
       "in": "Value 50% here",
       "out": "Value 50 % here",
       "note": "spec 1.22.0, nbsp.md §3.7: the unit is in spacedUnits, so the missing space is inserted as U+00A0."
+    },
+    {
+      "id": "fr-ranges-default-on-none-locale",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "en 1990-2000",
+      "out": "en 1990-2000",
+      "note": "ranges.md §2: `dash.range` is none for fr, so the rule emits nothing and the default does not change this locale."
     }
   ]
 }

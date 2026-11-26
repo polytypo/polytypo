@@ -1,7 +1,8 @@
 # Rule: `ranges`
 
-**Order:** 25. **Default:** off. **Modes:** text, html, markdown, yaml.
-**Spec version:** 0.5.0 (new rule; split out of `dashes`); §3.2a (closed-up symbols) new in 1.3.0.
+**Order:** 25. **Default:** on (off through spec 1.32.0). **Modes:** text, html, markdown, yaml.
+**Spec version:** 0.5.0 (new rule; split out of `dashes`); §3.2a (closed-up symbols) new in 1.3.0;
+on by default in 1.33.0.
 
 ---
 
@@ -35,13 +36,27 @@ looks like one. Neither the bare digit-hyphen-digit shape nor a label word list 
 scan code points, not words with real-world referents, and are built never to consult that kind
 of context (ARCHITECTURE.md §4.1).
 
-**The resolution is: make range conversion something the caller explicitly asks for, and leave it
-off by default.** With `ranges` off (the default), `5-10`, `Figure 5-10`, `9-11` and `7-11` are
-all byte-identical no-ops — the compound-label false positive cannot occur, because nothing in
-this class converts at all. A caller who explicitly opts in (`{ rules: { ranges: true } }`) is
-choosing to accept the residual, structurally irreducible ambiguity between a genuine range and a
-same-shaped label or proper noun, in exchange for genuine ranges being typeset correctly. This is
-a documented tradeoff, not a claim of reliable label detection — see §5.
+**The resolution in 0.5.0–1.32.0 was opt-in; since 1.33.0 the rule is on by default.** With the
+rule off, `5-10`, `Figure 5-10`, `9-11` and `7-11` are all byte-identical no-ops. That was the
+right default while nothing was known about how often the ambiguity bites. **Measured for 1.33.0**
+(operator-delegated decision, 2026-11-26): the pages of ru, uk, de, pl and en Wikipedia (about
+2.7 million characters; ranges written with a dash between digits were first rewritten to a
+hyphen, to stand in for typed text) gave **777 range conversions, 9 of them not ranges**: six
+ISSNs (`ISSN 2307-3047`, four digits, a hyphen, four ascending digits: the shape of `1990-2000`),
+one registration number after `№`, one level score (`1-1`) and one more number of identifier shape (`2014-3976`). About one
+conversion in 85, and the same classes in every language measured, so the default is not
+per-locale. The compound label that motivated the opt-in (`Figure 5-10`) did not occur in the
+sample at all. The other guards held: no ISBN in the sample was converted (G2), and a class check on the same
+engine shows phone numbers, ISO dates and a score or subtraction whose left member exceeds the
+right (`3-2`, `10-5`) declined (G2, G4, G5).
+
+The exposure that remains is the one of §5, and it is accepted: an identifier or label of the
+range shape is converted like a range. A caller who wants the old behaviour passes
+`{ rules: { ranges: false } }`; a caller who wants it for one locale only chooses by locale
+before calling. **A locale whose `dash.range` is `"none"` is not affected by the default**:
+the rule emits nothing there (§2). **Every converted range carries two U+2060** (§3.3.1), so
+default output of a text with a digit range now contains invisible code points it did not
+contain before; `nbsp.md` §7.13 records that exposure.
 
 ---
 
@@ -348,12 +363,12 @@ indistinguishable choices.
 
 ## 5. What this rule does not, and cannot, solve
 
-**`ranges` converts `Figure 5-10` to `Figure 5⁠–⁠10` when explicitly enabled**, exactly as it
-converts a genuine range. This is not an oversight this document is unaware of — it is the
-residual ambiguity §1 names as the reason the rule is opt-in. Enabling `ranges` is an explicit
-choice to accept that a compound label sharing the digit-hyphen-digit shape will be converted
-alongside genuine ranges; the caller has no bounded, cited mechanism this project can offer to
-tell the two apart (§1). A future spec version could add a cited, closed `dash.labelWords` list
+**`ranges` converts `Figure 5-10` to `Figure 5⁠–⁠10`** (by default since 1.33.0), exactly as it
+converts a genuine range, and likewise `ISSN 2307-3047` and a level score `1-1`. This is not an oversight this document is unaware of — it is the
+residual ambiguity §1 names as the reason the rule is opt-in. Leaving `ranges` on is a choice to
+accept that an identifier or compound label sharing the digit-hyphen-digit shape will be
+converted alongside genuine ranges; the caller has no bounded, cited mechanism this project can
+offer to tell the two apart (§1), and `rules: {ranges: false}` is the way out. A future spec version could add a cited, closed `dash.labelWords` list
 per locale (dashes.md §7.11's own suggestion) if and when locale-authority research produces
 citable evidence for specific label words in specific locales — no such citation exists as of
 spec 0.5.0, and an empty or invented list is not that fix (§1).
@@ -362,11 +377,10 @@ spec 0.5.0, and an empty or invented list is not that fix (§1).
 
 ## 6. Worked examples
 
-`⟨J⟩` = U+2060 (word joiner), `⟶` = no change. **Every row in this table requires
-`{ rules: { ranges: true } }` explicitly** — `ranges` is off by default (§1), so every one of
-these inputs is a byte-identical no-op with default options; that default-options behaviour is
-what canonical fixtures (`spec/fixtures/*.json`) assert. These rows describe this rule's own
-conversion behaviour once explicitly enabled — they were relocated here, verbatim, from
+`⟨J⟩` = U+2060 (word joiner), `⟶` = no change. **The rows below were written when `ranges` was off by default (§1) and were checked with
+`{ rules: { ranges: true } }`**; from 1.33.0 the explicit option is redundant, and a row that
+shows `⟶` for the default now shows the result of `{ rules: { ranges: false } }`. These rows
+describe this rule's own conversion behaviour — they were relocated here, verbatim, from
 `dashes.md` §6 (rows 3, 3a-3j, 13, 17), which owned range detection through spec 0.4.1.
 
 **A row containing an invisible code point must be checked in the escaped mirror, never read** —

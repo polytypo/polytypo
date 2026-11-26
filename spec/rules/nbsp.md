@@ -235,8 +235,8 @@ paragraph above is what those tests assert.
   entire job, so `rules: { hyphen: false }` already asks for exactly this and no new option is
   warranted.
 - It does not touch **U+2060**, which `ranges` (order 25) emits when it binds a tight range
-  (ranges.md §3.3.1). `ranges` is off by default, so a caller who has not enabled it never sees
-  one; a caller who has can turn it off again. See §7.8.
+  (ranges.md §3.3.1). `ranges` has been on by default since spec 1.33.0, so default output of a text with a digit range
+  carries it; a caller can turn the rule off. See §7.8 and §7.13.
 
 ### 3.2 Structure: ten sub-rules, first claim wins
 
@@ -1353,10 +1353,11 @@ conversion; the §3.1a rows are numbered 31-34 and are outside it.)
     as `JOINER dash JOINER` (ranges.md §3.3.1), and the same production report that asked for
     `narrowNbsp` also raised the word joiner — not for a missing glyph, since it is zero-width,
     but for copy/paste and search indexing: a reader who copies `3⁠–⁠5` out of a page gets two
-    invisible characters with it. Nothing was decided here, deliberately. `ranges` is **off by
-    default**, so a caller who has not asked for range conversion never sees a joiner, and one
-    who has can stop asking; that is a narrower situation than U+202F, which a French locale
-    emits with default options. If a `wordJoiner` option is ever added it belongs in
+    invisible characters with it. Nothing was decided here, deliberately. Through spec 1.32.0 `ranges` was off by
+    default, so a caller who had not asked for range conversion never saw a joiner. **From spec
+    1.33.0 it is on by default, and default output of any text with a digit range carries the
+    joiner**, a wider exposure than U+202F, which only a French locale emits. A caller can stop
+    it with `rules: {ranges: false}`, which also stops the conversion. If a `wordJoiner` option is ever added it belongs in
     `ranges.md`, not here, and it needs its own answer to the question §3.1a answers for this
     rule: the joiner is what makes a converted range survive a second pass without regrowing a
     second joiner (ranges.md §3.1's re-entry condition), so removing it removes that anchor and

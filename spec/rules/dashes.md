@@ -12,8 +12,8 @@ symbols, and again in **1.18.0**: the value `"em-paired"` and its own algorithm,
 
 `dashes` renders the **parenthetical dash** — the one that interrupts a sentence — like this —
 in the form the locale prescribes. **As of spec 0.5.0, this rule no longer recognises the
-numeric/date range dash** (`1914–1918`); that moved to [ranges.md](ranges.md) (order 25, off by
-default).
+numeric/date range dash** (`1914–1918`); that moved to [ranges.md](ranges.md) (order 25, on by
+default since spec 1.33.0; off before it).
 
 **§1 through §7 below are current and normative for `dashes` alone.** §3.2's shared token-scanning
 steps are consumed identically by `ranges` (`ranges.md` §3.1) and are described here because this
@@ -33,7 +33,8 @@ enabled (operator decision, spec 0.5.0; see §3.2's note after step 7, and range
 "Range candidate" is [ranges.md](ranges.md) §3.2's term, and as of spec 1.3.0 it is wider than
 "digit-flanked": a closed-up symbol on a flank is walked over first (ranges.md §3.2a), so
 `$15-$20` and `35%-50%` are `ranges`' tokens too, and a token `dashes` used to convert by default
-is now one nothing touches unless the caller enables `ranges`.
+is now one `ranges` converts (on by default since spec 1.33.0; before that, nothing touched it
+unless the caller enabled `ranges`).
 `dashes` never reinterprets a digit-flanked hyphen as a parenthetical dash — that was already true
 in every prior spec version, since the two branches were always mutually exclusive per token; the
 0.5.0 split makes that exclusivity a boundary between two rules instead of two branches of one.
@@ -659,8 +660,8 @@ of being falsified by another rule, which is then named.
   alone reinterpreted as parenthetical (§1, §3.3). This holds regardless of whether `ranges`'
   own guards would have accepted or declined the token — `dashes` does not evaluate them and
   does not need to. **`$15 - $20` is the one shape this cost anything**: through spec 1.2.0 it
-  was `dashes`' token and converted with default options; it is `ranges`' now, and `ranges` is
-  off by default.
+  was `dashes`' token and converted with default options; it is `ranges`' now, and `ranges` was
+  off by default until spec 1.33.0.
 - **[P] URLs, code spans, fenced code, HTML attributes.** Removed by the mode adapter before this
   rule sees them. This rule has no notion of a URL and must not grow one.
 - **[P] Line terminators**, which are never inserted, deleted or crossed.
@@ -911,8 +912,9 @@ normative source for what happens to that same input when `ranges` is explicitly
 These are the shipped defects from §8.2. Both are now "no change" cases, and both must be
 fixtures.
 
-**Spec 0.5.0 note.** Every row below has been re-verified against `dashes`' own current output
-(default options — `ranges` disabled), not the old combined rule's. Every one is still "no
+**Spec 0.5.0 note (read with spec 1.33.0: `ranges` is on by default since then, so the "no change" in
+rows 3j, 43 and 44 holds for `dashes` alone, i.e. with `rules: {ranges: false}`).** Every row below
+was verified against `dashes`' own output (with `ranges` disabled), not the old combined rule's. Every one is still "no
 change", but for a digit-flanked row (18, 20, 24, 25) that involves a would-be range token, the
 reason is no longer "the shared guards evaluate and reject it" — with `ranges` off, that token is
 simply never looked at by anything. The output these rows assert is unaffected; the "Why" column's
@@ -1308,11 +1310,11 @@ citable evidence at the time (or since). The failure mode was judged mild relati
 phone-number case: a hyphen becoming an en dash inside a label is a normalisation a reader may not
 even notice, whereas converting `555-1234` would corrupt a number.
 
-**Current status.** As of spec 0.5.0, this entire question belongs to `ranges` (order 25, off by
-default) — see [ranges.md](ranges.md) §1 and §5 for the current statement of the same tradeoff,
+**Current status.** As of spec 0.5.0, this entire question belongs to `ranges` (order 25, on by
+default since 1.33.0) — see [ranges.md](ranges.md) §1 and §5 for the current statement of the same tradeoff,
 which is unchanged in substance from what is reproduced above, only in which document and which
-rule's default-on status governs its reachability. `dashes.md` §6 row 3j shows the current
-byte-identical no-op with default options; `ranges.md` §6 row 3j shows what `ranges` still does
+rule's default-on status governs its reachability. `dashes.md` §6 row 3j shows the
+byte-identical no-op with `ranges` disabled; `ranges.md` §6 row 3j shows what `ranges` still does
 with the same input when explicitly enabled.
 
 ### 8.6 The U+2060 range binding: a review hazard, and what it cost (spec 0.3.x)

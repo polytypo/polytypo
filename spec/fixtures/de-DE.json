@@ -607,8 +607,8 @@
       "rule": "dashes",
       "mode": "text",
       "in": "$15 - $20",
-      "out": "$15 - $20",
-      "note": "ranges.md §3.2a and dashes.md §1 (spec 1.3.0): the accepted cost, pinned in a locale whose `dash.parenthetical` is SPACED rather than tight — through spec 1.2.0 this input gave `$15 – $20` with default options, and the loss is the same shape in both kinds of locale."
+      "out": "$15⁠–⁠$20",
+      "note": "ranges.md §3.2a: `ranges` is on by default since spec 1.33.0, so a spaced hyphen between two closed-up currency amounts is a range and takes the locale's tight en dash. Through 1.32.0 default options left it as typed; `rules: {ranges: false}` still does."
     },
     {
       "id": "de-de-dashes-t1-closed-up-symbol-adjacent",
@@ -947,16 +947,16 @@
       "rule": "nbsp",
       "mode": "text",
       "in": "Es sind 5-10km und 3 - 4km",
-      "out": "Es sind 5-10km und 3 - 4 km",
-      "note": "The guard applies to a unit that is a closed-up symbol only: `km` is not read by `ranges`, so a space is inserted beside a dash."
+      "out": "Es sind 5⁠–⁠10 km und 3⁠–⁠4 km",
+      "note": "`ranges` (default on since 1.33.0) converts both strokes between digits; `km` is not a closed-up symbol, so nbsp then inserts the space before it. Through 1.32.0 default options left the first stroke as typed."
     },
     {
       "id": "de-de-nbsp-spaced-guard-range-dash-default",
       "rule": "nbsp",
       "mode": "text",
       "in": "Von 5% - 10% mehr",
-      "out": "Von 5% - 10% mehr",
-      "note": "nbsp.md §3.7 step 5.3 on the default rule set: the guard applies whether or not `ranges` is on."
+      "out": "Von 5%⁠–⁠10% mehr",
+      "note": "`ranges` (default on since 1.33.0) converts the spaced stroke between two closed-up percentages to the tight en dash. Through 1.32.0 default options left it as typed and nbsp §3.7's guard G-R kept the spaces."
     },
     {
       "id": "de-de-quotes-single-quoted-double-quote-mark",
@@ -965,6 +965,14 @@
       "in": "'he' '\"'",
       "out": "„he“ '\"'",
       "note": "quotes.md §3.2 quoted-lone-mark veto (issue #113): the same shape as en-US."
+    },
+    {
+      "id": "de-de-ranges-default-on-year-range",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "in den Jahren 1990-2000",
+      "out": "in den Jahren 1990⁠–⁠2000",
+      "note": "ranges.md §1: on by default since spec 1.33.0."
     }
   ]
 }

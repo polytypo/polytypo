@@ -48,8 +48,8 @@ below holds for any subset, in the same relative order.)
 subscripts in this document had been cited by name from eight other rule documents. Renumbering
 `R₃ … R₈` to make the sequence contiguous would rewrite every one of those references for no
 gain in meaning, so the rule takes the letter and the composition `T = R₈ ∘ R₇ ∘ … ∘ R₂ₐ ∘ … ∘ R₁`
-reads with it in place at order 25. `ranges` is also one of the two rules that are **off by
-default** (the other is `quote-punctuation`, below), so for most callers the sequence is literally
+reads with it in place at order 25. `quote-punctuation` (below) is the one rule that is **off by
+default** (`ranges` was too until spec 1.33.0), so for most callers the sequence includes `R₂ₐ` and
 the eight numbered ones; every proof below is stated over "the rules that run", which is the
 subset the caller's `rules` option selected.
 

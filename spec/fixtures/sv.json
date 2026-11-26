@@ -584,8 +584,8 @@
       "rule": "dashes",
       "mode": "text",
       "in": "Figur 5-10",
-      "out": "Figur 5-10",
-      "note": "spec 0.5.0: compound labels (`chapter 5, figure 10`, not a range) are no longer converted with default options. `dashes` never processes a digit-flanked token (dashes.md 1, 3.4), and `ranges` — the only rule that could convert this shape — is off by default (ranges.md 1). Canonical fixtures no longer assert the converted form as a successful output under any option set; what the explicit opt-in (`rules: {ranges: true}`) does with this same input is a documented limitation of that rule, characterized in tests/rules/ranges.test.ts, not portable conformance evidence."
+      "out": "Figur 5⁠–⁠10",
+      "note": "ranges.md §1, §5: `ranges` is on by default since spec 1.33.0, and a compound label (`figure 5-10`, not a range) shares the digit-hyphen-digit shape of a range, so it converts like one: the accepted cost. Through 1.32.0 default options left it as typed; `rules: {ranges: false}` still does."
     },
     {
       "id": "sv-hyphen-empty-lists-noop",

@@ -780,6 +780,14 @@
       "in": "Упаковка 2 х 3км",
       "out": "Упаковка 2 х 3км",
       "note": "nbsp.md §3.7 step 5.5 with the Cyrillic MUL-LETTER U+0445."
+    },
+    {
+      "id": "ru-ranges-default-on-year-range",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "в 1990-2000 годах",
+      "out": "в 1990⁠—⁠2000 годах",
+      "note": "ranges.md §1: on by default since spec 1.33.0; ru's range dash is the tight em dash (`dash.range`: em-tight). The no-break space after the preposition is nbsp N3, not this rule."
     }
   ]
 }

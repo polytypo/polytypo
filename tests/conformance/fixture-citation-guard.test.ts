@@ -16,8 +16,9 @@
 //    digit-flanked token (dashes.md §1, §3.3) — it does not evaluate G1-G5, `dash.range`, or
 //    range binding. A fixture tagged `rule: "dashes"` whose note attributes its result to any of
 //    those is vacuous: a port with no range algorithm at all would still pass it.
-//    - Every `rule: "ranges"` fixture must explicitly set `rules: { ranges: true }` — `ranges`
-//      defaults off, so a case without the opt-in is not exercising the rule it claims to.
+//    - A `rule: "ranges"` fixture must run with `ranges` on — `ranges` defaults on since spec
+//      1.33.0 — so it may not set `rules.ranges` to false, except the reviewed opt-out cases
+//      (id contains "opt-out") that pin what `rules: { ranges: false }` restores.
 //    - No `rule: "dashes"` fixture's note may attribute its result to G1-G5 or `dash.range`,
 //      except the four reviewed compound-label-safe-default cases, which exist specifically to
 //      prove `dashes`' unconditional decline of digit-flanked input, not any range guard.
@@ -110,9 +111,9 @@ describe('fixture-citation-guard: rule:"ranges" ownership is real, not a stale t
     const rangesCases = cases.filter((c) => c.rule === "ranges");
     if (rangesCases.length === 0) continue;
 
-    it(`${name}: every rule:"ranges" case explicitly sets rules.ranges === true`, () => {
+    it(`${name}: every rule:"ranges" case runs with ranges on, except the named opt-out cases`, () => {
       const offenders = rangesCases
-        .filter((c) => !(c.rules && c.rules.ranges === true))
+        .filter((c) => c.rules?.ranges === false && !c.id.includes("opt-out"))
         .map((c) => c.id);
       expect(offenders).toEqual([]);
     });

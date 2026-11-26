@@ -21,10 +21,10 @@
     {
       "id": "ranges",
       "order": 25,
-      "default": "off",
+      "default": "on",
       "modes": ["text", "html", "markdown", "yaml"],
       "localeData": ["dash"],
-      "summary": "Numeric/date range dash per locale convention (dash.range). Explicit opt-in (spec 0.5.0): a genuine range and a compound label sharing the same digit-hyphen-digit shape (`Figure 5-10`) cannot be told apart without the preceding word, which this project's rules are built never to consult. Off by default; enable with `{ rules: { ranges: true } }`."
+      "summary": "Numeric/date range dash per locale convention (dash.range). On by default since spec 1.33.0 (opt-in from 0.5.0 to 1.32.0). A genuine range and a same-shaped identifier or label (`ISSN 2307-3047`, `Figure 5-10`) cannot be told apart without the preceding word, which this project's rules are built never to consult; the cost was measured at about 1 conversion in 85 and is accepted (ranges.md §1). Switch off with `{ rules: { ranges: false } }`."
     },
     {
       "id": "dashes",

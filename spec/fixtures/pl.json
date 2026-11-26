@@ -159,6 +159,14 @@
       "in": "Value 5 % here",
       "out": "Value 5% here",
       "note": "spec 1.22.0, nbsp.md §3.7: a typed U+00A0 before a closedUnits entry is deleted as well as a U+0020."
+    },
+    {
+      "id": "pl-ranges-default-on-year-range",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "w latach 1990-2000",
+      "out": "w latach 1990⁠–⁠2000",
+      "note": "ranges.md §1: on by default since spec 1.33.0. The no-break space after the preposition is nbsp N3, not this rule."
     }
   ]
 }

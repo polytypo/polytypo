@@ -159,6 +159,14 @@
         "quote-punctuation": true
       },
       "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for uk, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
+    },
+    {
+      "id": "uk-ranges-default-on-year-range",
+      "rule": "ranges",
+      "mode": "text",
+      "in": "у 1990-2000 роках",
+      "out": "у 1990⁠—⁠2000 роках",
+      "note": "ranges.md §1: on by default since spec 1.33.0. The no-break space after the preposition is nbsp N3, not this rule."
     }
   ]
 }
