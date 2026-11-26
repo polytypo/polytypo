@@ -15,3 +15,6 @@ spec/fixtures/.escaped/
 promo/pagefind/
 
 .internal/
+
+# Per-locale OG images, drawn by scripts/og/generate-og.mjs (npm run gen:og)
+promo/images/og/

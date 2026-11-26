@@ -327,6 +327,53 @@ with open(os.path.join(REPO, "package.json"), encoding="utf-8") as f:
 OG_IMAGE_FILE = "polytypo-og-1200x630.png"
 OG_IMAGE_WIDTH = 1200
 OG_IMAGE_HEIGHT = 630
+OG_IMAGE_ALT = "polytypo: guillemets around an em dash, with the line Smart typography for any website"
+
+# Per-page images drawn by scripts/og/generate-og.mjs (npm run gen:og) for the locale pages;
+# every other page keeps the shared image above. The manifest holds {slug: {v, alt}}; a locale
+# page without an entry is a build error, never a silent fallback to the shared image.
+OG_MANIFEST_PATH = os.path.join(REPO, "brand", "tools", "out", "og-manifest.json")
+
+
+def load_og_manifest():
+    if not os.path.exists(OG_MANIFEST_PATH):
+        raise SystemExit(f"{OG_MANIFEST_PATH} missing — run `npm run gen:og` first")
+    with open(OG_MANIFEST_PATH, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def og_image_for(slug, manifest):
+    """(url, alt) for a page: its own drawn image, except the home page, which keeps the shared
+    brand image. A page without a manifest entry is a build error, never a silent fallback."""
+    if slug == "":
+        return f"{SITE_ORIGIN}/assets/og-image.png", OG_IMAGE_ALT
+    entry = manifest.get(slug)
+    if entry is None:
+        raise SystemExit(f"og: no image in the manifest for {slug} — run `npm run gen:og`")
+    return f"{SITE_ORIGIN}/images/og/{slug}.png?v={entry['v']}", entry["alt"]
+
+
+def write_og_pages():
+    """The non-locale pages that need a drawn image, for scripts/og/generate-og.mjs (locale pages
+    it derives from the spec itself)."""
+    section_labels = dict(DOC_SECTIONS)
+    out = []
+    for slug, title, _body in PAGES:
+        if slug == "" or slug in LOCALE_BY_SLUG:
+            continue
+        doc = DOC_BY_SLUG.get(slug)
+        section = SECTION_BY_SLUG.get(slug)
+        if doc:
+            text = f"{section_labels[doc['section']]}: {title}"
+        elif section:
+            text = f"polytypo docs: {title}"
+        else:
+            text = title
+        out.append({"slug": slug, "text": text})
+    os.makedirs(os.path.dirname(OG_MANIFEST_PATH), exist_ok=True)
+    with open(os.path.join(os.path.dirname(OG_MANIFEST_PATH), "og-pages.json"), "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, indent=2)
+        f.write("\n")
 
 # Pages that embed the playground (brand/tools/promo/playground.partial.html, substituted into both
 # bodies via {{playground}}) and therefore need its script. The home page carries it so a first-time
@@ -1621,6 +1668,7 @@ def build():
         "{{doc_index}}": doc_index_html(),
         "{{skill_url}}": H.escape(SKILL_URL),
     }
+    og_manifest = load_og_manifest()
     for slug, title, body_file in PAGES:
         prefix = PAGE_PREFIXES[slug]
         doc_page = DOC_BY_SLUG.get(slug)
@@ -1655,7 +1703,7 @@ def build():
         doc_page = doc_page or locale_page or section_page
         description = doc_page["description"] if doc_page else PAGE_DESCRIPTIONS[slug].format(n=n)
         canonical_url = f"{SITE_ORIGIN}/{slug + '/' if slug else ''}"
-        image_url = f"{SITE_ORIGIN}/assets/og-image.png"
+        image_url, image_alt = og_image_for(slug, og_manifest)
         doc = (
             "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
             '<meta name="viewport" content="width=device-width,initial-scale=1">\n'
@@ -1678,11 +1726,14 @@ def build():
             f'<meta property="og:image" content="{image_url}">\n'
             f'<meta property="og:image:width" content="{OG_IMAGE_WIDTH}">\n'
             f'<meta property="og:image:height" content="{OG_IMAGE_HEIGHT}">\n'
+            '<meta property="og:image:type" content="image/png">\n'
+            f'<meta property="og:image:alt" content="{H.escape(image_alt)}">\n'
             '<meta property="og:locale" content="en_US">\n'
             '<meta name="twitter:card" content="summary_large_image">\n'
             f'<meta name="twitter:title" content="{H.escape(page_title)}">\n'
             f'<meta name="twitter:description" content="{H.escape(description)}">\n'
             f'<meta name="twitter:image" content="{image_url}">\n'
+            f'<meta name="twitter:image:alt" content="{H.escape(image_alt)}">\n'
             f"<script type=\"application/ld+json\">{jsonld(slug, page_title, description, canonical_url, doc_page)}</script>\n"
             '<script defer src="https://u.rogulia.fi/script.js" '
             'data-website-id="d119baa4-9e97-428a-9f3f-bf0d29a54a97"></script>\n'
@@ -2682,4 +2733,7 @@ const DATA = {payload};
 
 
 if __name__ == "__main__":
-    build()
+    if sys.argv[1:] == ["--og-pages"]:
+        write_og_pages()
+    else:
+        build()
