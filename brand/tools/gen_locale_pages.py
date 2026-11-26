@@ -474,6 +474,17 @@ def _try_section(code, name, prefix):
     )
 
 
+def _discuss_section(code, name):
+    return (
+        _h2("discuss", f"Is something missing or wrong in the {name} rules?")
+        + f"<p>Have something to add or discuss about {H.escape(name)} typography? Open a thread in "
+        '<a href="https://github.com/polytypo/polytypo/discussions/new?category=ideas" rel="noopener">'
+        f"GitHub Discussions</a> and name the locale (<code>{H.escape(code)}</code>), or read the "
+        '<a href="https://github.com/polytypo/polytypo/discussions" rel="noopener">existing threads</a>. '
+        "A rule changes only with a cited source, so bring one if you have it.</p>"
+    )
+
+
 def _pager_link(rel, href, title):
     label = "Previous" if rel == "prev" else "Next"
     return (
@@ -635,5 +646,6 @@ def body(page, prefix, h, all_pages):
         + _modes_section(ex, h, n)
         + compare
         + _sources_section(d, code)
+        + _discuss_section(code, d["name"])
         + f'<nav class="doc-pager" aria-label="Pager">{"".join(pager)}</nav></article></div>'
     )
