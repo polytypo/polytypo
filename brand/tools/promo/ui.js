@@ -64,7 +64,7 @@
 
   // Split view shows both panels at once; the tabs stop being controls and become the two column
   // headings. Turning it off returns to whichever tab was open before.
-  function setSplit(wb, on) {
+  function setSplit(wb, on, animate = true) {
     const second = wb.querySelector("#pg-tab-out");
     const before = second.getBoundingClientRect().left;
     wb.toggleAttribute("data-split", on);
@@ -81,7 +81,7 @@
     } else {
       setTab(wb, wb.getAttribute("data-tab"));
     }
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!animate || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timing = { duration: 250, easing: "ease-out" };
     second.animate(
       [
@@ -92,6 +92,20 @@
     );
     if (on) wb.querySelector(".wb-output").animate([{ opacity: 0 }, { opacity: 1 }], timing);
   }
+
+  // Split view is the default. The checkbox is hidden when the workbench is too narrow for two
+  // columns; there the tabs apply, and split comes back when the room does.
+  function syncSplit(wb, animate) {
+    const box = wb.querySelector("#pg-split");
+    if (!box) return;
+    const on = box.checked && box.offsetParent !== null;
+    if (wb.hasAttribute("data-split") !== on) setSplit(wb, on, animate);
+  }
+
+  document.querySelectorAll(".workbench").forEach((wb) => {
+    syncSplit(wb, false);
+    new ResizeObserver(() => syncSplit(wb, false)).observe(wb);
+  });
 
   function toggleExpand(wb) {
     const on = wb.classList.toggle("is-expanded");
