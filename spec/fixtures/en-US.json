@@ -5385,6 +5385,54 @@
       "in": "<p>say 'hi</ x> there' ok</p>",
       "out": "<p>say “hi</ x> there” ok</p>",
       "note": "modes.md §3.6: `</ x>` is a bogus comment, already markup, and the pair spans it."
+    },
+    {
+      "id": "en-us-quotes-opens-after-inverted-exclamation",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "¡\"Hola\"!",
+      "out": "¡“Hola”!",
+      "note": "quotes.md §3.1: U+00A1 is OPENISH in every locale, not only in es, so the mark after it opens a quotation (issue #112)."
+    },
+    {
+      "id": "en-us-quotes-single-quoted-double-quote-mark-pair-before",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "'he' '\"'",
+      "out": "“he” '\"'",
+      "note": "quotes.md §3.2 quoted-lone-mark veto: a quotation mark alone between two marks of the other identity is a mention of that character, not a quotation. It stays as typed and does not disturb the unrelated pair before it (issue #113)."
+    },
+    {
+      "id": "en-us-quotes-single-quoted-double-quote-mark-in-sentence",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Press '\"' for a quote and 'x' for exit.",
+      "out": "Press '\"' for a quote and “x” for exit.",
+      "note": "quotes.md §3.2 quoted-lone-mark veto (issue #113): the later pair `'x'` converts."
+    },
+    {
+      "id": "en-us-quotes-single-quoted-double-quote-mark-between-words",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "'he' said '\"' is a quote",
+      "out": "“he” said '\"' is a quote",
+      "note": "quotes.md §3.2 quoted-lone-mark veto (issue #113)."
+    },
+    {
+      "id": "en-us-quotes-double-quoted-single-quote-mark",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Press \"'\" or '\"' now.",
+      "out": "Press \"'\" or '\"' now.",
+      "note": "quotes.md §3.2 quoted-lone-mark veto, both orders: `\"'\"` and `'\"'` stay as typed."
+    },
+    {
+      "id": "en-us-quotes-quoted-lone-mark-not-nested-quotation",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "He said \"'hi'\" and '\"Hello\"'.",
+      "out": "He said “‘hi’” and “‘Hello’”.",
+      "note": "quotes.md §3.2 quoted-lone-mark veto: the veto needs the middle mark's two neighbours to be marks, so a quotation that merely starts or ends with a nested one is unaffected."
     }
   ]
 }

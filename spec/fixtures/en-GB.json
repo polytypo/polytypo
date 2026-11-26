@@ -1961,6 +1961,14 @@
       "in": "Preheat to 180 °C and 350 °F",
       "out": "Preheat to 180°C and 350°F",
       "note": "Oxford sets `°C` and `°F` closed up (spec 1.22.0)."
+    },
+    {
+      "id": "en-gb-quotes-single-quoted-double-quote-mark",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "'he' '\"'",
+      "out": "‘he’ '\"'",
+      "note": "quotes.md §3.2 quoted-lone-mark veto (issue #113): the veto is locale-blind, so en-GB leaves the mention as typed rather than curling the outer marks around a straight one."
     }
   ]
 }

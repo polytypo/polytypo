@@ -957,6 +957,14 @@
       "in": "Von 5% - 10% mehr",
       "out": "Von 5% - 10% mehr",
       "note": "nbsp.md §3.7 step 5.3 on the default rule set: the guard applies whether or not `ranges` is on."
+    },
+    {
+      "id": "de-de-quotes-single-quoted-double-quote-mark",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "'he' '\"'",
+      "out": "„he“ '\"'",
+      "note": "quotes.md §3.2 quoted-lone-mark veto (issue #113): the same shape as en-US."
     }
   ]
 }

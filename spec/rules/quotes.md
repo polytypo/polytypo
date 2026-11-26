@@ -1,9 +1,10 @@
 # Rule: `quotes`
 
 **Order:** 40. **Default:** on. **Modes:** text, html, markdown, yaml.
-**Spec version:** 1.4.0 (0.4.1 for everything except the universal medial-`n` elision veto
-(1.1.0) and the span-boundary elision veto (1.4.0), both described in §3.2 and in the History
-section below).
+**Spec version:** 1.33.0 (0.4.1 for everything except the universal medial-`n` elision veto
+(1.1.0), the span-boundary elision veto (1.4.0), and, in 1.33.0, the inverted-mark members of
+`OPENISH` (§3.1) and the quoted-lone-mark veto (§3.2), all described in §3.1–§3.2 and in the
+History section below).
 
 ---
 
@@ -191,11 +192,23 @@ pass, no regular expression, no native-string indexing.
 | `BREAK` | U+000A, U+000D, U+000B, U+000C, U+0085, U+2028, U+2029, plus `LINE_MARKER` |
 | `INLINE-SPACE` | U+0020, U+0009, U+00A0, U+202F, U+2007, U+2009, U+200A |
 | `SPACELIKE` | `INLINE-SPACE` ∪ `BREAK` |
-| `OPENISH` | U+0028 `(` U+005B `[` U+007B `{`, `MARKER`, ∪ `QUOTEMARK` |
+| `OPENISH` | U+0028 `(` U+005B `[` U+007B `{`, U+00BF `¿`, U+00A1 `¡`, `MARKER`, ∪ `QUOTEMARK` |
 | `CLOSEISH` | U+0029, U+005D, U+007D, U+002C, U+002E, U+003B, U+003A, U+0021, U+003F, U+2026, U+2013, U+2014, `MARKER`, ∪ `QUOTEMARK` |
 | `DASHISH` | U+002D, U+2011, U+2013, U+2014 |
 | `DELETE-LANDING` | `ALNUM` ∪ `QUOTEMARK` |
 | `NONE` | the pseudo-class "index out of range" |
+
+**U+00BF and U+00A1 are `OPENISH` members (spec 1.33.0, issue #112).** Spanish opens a question
+or an exclamation with an inverted mark, and a quotation may open directly behind it: `¿"Sí"?`
+is `¿«Sí»?`. Before 1.33.0 the mark's left neighbour was in no accepting class, so `canOpen` was
+false, the closing mark found nothing to pair with, and the whole quotation stayed as typed —
+`¿'Sí'?` came out `¿'Sí’?`, the unpaired closer curled by `apostrophe` as an elision. They are
+members for **every** locale, like the brackets, not locale data: the inverted marks occur in no
+shipped locale but `es`, `canOpen`'s left test is a fixed class and not an attestation, and a
+`¡"Hola"!` quoted in English prose is the same shape. They are deliberately **not** in
+`CLOSEISH`: a closing mark followed directly by `¿` is not evidence of closing. Lemmas A and B
+(§5) are unaffected: no rule edits either code point (`nbsp`'s `beforePunctuation` lists never
+contain them, constraint Q-P), so neither is ever an inserted or substituted neighbour.
 
 **`QUOTEMARK` is a member of both `OPENISH` and `CLOSEISH`, and is exempt from `canOpen`'s
 closeish rejection** — the same dual membership `STRAIGHT` had in 0.1.0, widened to the whole
@@ -801,6 +814,65 @@ identical neighbour between runs — and that is stated rather than papered over
 (§3.5), not this veto, is the guarantor of stability against `quotes`' own re-derivation.** The
 `gapInsertable` clause is what extends that guarantee to survive `nbsp` acting *between*
 pipeline passes, which the gate alone — being a property of a single call — cannot see.
+
+**Quoted-lone-mark veto (spec 1.33.0, issue #113; both widths).** A typewriter quotation mark
+standing alone between two marks of the other typewriter identity — `'"'`, `"'"` — is a mention
+of that character, not a quotation, and the two outer marks are declined. Write `TW` for the two
+identities `V1ID` (above) maps the typewriter marks to: U+0022 and U+2019 (which is `V1ID` of
+both U+0027 and U+2019, so the rule holds before and after `apostrophe`):
+
+> For a mark at `i` with `V1ID(cp[i]) ∈ TW`, both capabilities are set to false when either holds:
+>
+> - **right form** — let `m = next(i)` and `o = next(m)`; `V1ID(cp[m]) ∈ TW`, `V1ID(cp[m]) ≠
+>   V1ID(cp[i])` and `V1ID(cp[o]) = V1ID(cp[i])`;
+> - **left form** — the mirror, with `prev`.
+>
+> `next(a)` is the index of the code point directly after `cp[a]`, except that a run of
+> `INLINE-SPACE` is skipped where `nbsp` can insert one: after `cp[a]` when `cp[a] ∈ SPACE-RIGHT`,
+> and before the next mark when that mark is in `SPACE-LEFT`. `prev` is symmetric. In a locale
+> with neither set both are the literal neighbour. A step that would leave the array, or cross
+> any other space, yields no index and the form does not hold.
+
+The gap clause is the same one V1 carries and for the same reason: without it `nbsp` inserting a
+space on the first pass changes the verdict on the second (measured in `fr`: `''«'«`).
+The veto is deliberately limited to `TW`. A first version read any two different quote glyphs
+and declined `»' »`, an ordinary closing pair followed by a stray mark, which broke idempotency
+in `fr`.
+
+The middle mark is not vetoed. It then has both neighbours in `OPENISH` and `CLOSEISH`, so it is
+a candidate, but with both outer marks gone it finds no partner and stays as typed. All three
+marks survive unchanged, `apostrophe` finds no elision in them, and every other pair in the text
+is formed as if the span were absent: `Press '"' for a quote and 'x' for exit.` converts `'x'`.
+
+*Why it exists, measured on 1.32.0.* Without it `'"'` pairs as an ordinary `NARROW` quotation of
+a single `WIDE` mark. Rendering that pair in a locale whose primary pair is `WIDE` (`en-US`,
+`de-DE`) puts the enclosed straight `"` on the same stack as its new neighbours, where it
+swallows the pairing — so the gate (§3.5) declines the pair. Declining it does not restore the
+input: the `'"'` marks raw-pair again in the rendered text, the intersection does not shrink, and
+the forced-removal clause then removes **the pair of the accepted set with the greatest `open`
+index** — the unrelated `'he'` before it. Its marks stay unmatched and `apostrophe` curls both:
+`'he' '"'` → `’he’ '"'`, in every shipped locale except `en-GB` (measured on 1.32.0; the others' primary pair is `WIDE`). Where
+the outer pair is `NARROW` (`en-GB` alone among the shipped locales) the shape paired and gave
+`‘he’ ‘"’`, a curly pair around a straight mark. The veto removes the shape from pass 1, so neither outcome exists.
+
+**This fixes the shape, not the forced-removal clause.** That clause still removes an unrelated
+pair whenever a *declined* pair raw-pairs again in the rendered text, and this veto reaches only
+the one shape in which that was reproduced. Changing the tie-break is a separate decision
+because it moves the idempotency argument of §5.
+
+**Why `V1ID` and not raw code points.** Same reason as V1: `apostrophe` turns U+0027 into
+U+2019 between pipeline passes, and a verdict that read the raw glyph would change across them.
+`'"'` after `apostrophe` is `’"'` (or `’"’`), `V1ID` of both outer marks is U+2019 on either
+run, so the veto fires identically (§5, Corollary A1). The middle mark is read for its identity
+only, and `apostrophe` changes it only in the one way `V1ID` already ignores. Measured rather
+than argued: every string of up to five characters over the eleven characters `' " « » ‘ ’ “ ”`, a
+space, `a` and U+00A0, in `fr`, `en-US`, `de-DE`, `en-GB` and `ru`, is a fixed point of the second
+call.
+
+**Cost, accepted.** A quotation that really is a nested one-mark quotation, `"'"`, is left
+straight; no prose quotes a lone quotation mark in the nested sense, and the same bytes in
+documentation, key tables and quoting-syntax explanations are the common case. The one released
+output that changes is `en-GB`'s `'he' '"'` (`‘he’ ‘"’` → `‘he’ '"'`).
 
 Record `{ index, width ∈ {WIDE, NARROW}, canOpen, canClose }` for every `i` with at least one
 capability true. Candidates with both false are dropped and never touched.
@@ -1650,3 +1722,11 @@ requires `ALNUM` on the right, and cases 2, 2a, 3 and 3a all read a class the ma
 `CLOSEDELIM` is irrelevant to it either way, since case 2a reads `ALNUM` on the right as well. The
 same entry also called 2801 a vitest total; it is one runner's conformance test count, and the
 runtime's own total is 4440.
+
+1.33.0 closes two defects in the opening and pairing of quotation marks, neither of which touches
+a locale file. **U+00BF and U+00A1 join `OPENISH`** (§3.1): a quotation directly after an
+inverted question or exclamation mark was never recognised as opening and stayed straight (issue
+#112, `¿"Sí"?`). **The quoted-lone-mark veto** (§3.2) declines `'"'` and `"'"`: the shape made
+the certification gate remove an unrelated pair, leaving it unmatched and curled as two closing
+apostrophes (issue #113, `'he' '"'` → `’he’ '"'`). The one existing behaviour that changes is the
+`en-GB` rendering of the shape, which stops curling the outer marks.

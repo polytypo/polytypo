@@ -480,6 +480,54 @@
         "quote-punctuation": true
       },
       "note": "quote-punctuation.md §2, §6: quotes.punctuationPlacement is \"none\" for es, so enabling the rule is a no-op; the input is already in the locale's own quotation marks."
+    },
+    {
+      "id": "es-quotes-opens-after-inverted-question",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "¿\"Sí\"?",
+      "out": "¿«Sí»?",
+      "note": "quotes.md §3.1: U+00BF and U+00A1 are OPENISH, so a mark directly after one can open a quotation (issue #112)."
+    },
+    {
+      "id": "es-quotes-opens-after-inverted-exclamation",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "¡\"Vamos\"!",
+      "out": "¡«Vamos»!",
+      "note": "quotes.md §3.1: U+00BF and U+00A1 are OPENISH, so a mark directly after one can open a quotation (issue #112)."
+    },
+    {
+      "id": "es-quotes-opens-after-inverted-question-mid-sentence",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "Dijo: ¿\"Sí\" o \"no\"?",
+      "out": "Dijo: ¿«Sí» o «no»?",
+      "note": "quotes.md §3.1: U+00BF and U+00A1 are OPENISH, so a mark directly after one can open a quotation (issue #112). El segundo par, tras un espacio, ya se convertía."
+    },
+    {
+      "id": "es-quotes-single-opens-after-inverted-question",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "¿'Sí'?",
+      "out": "¿«Sí»?",
+      "note": "quotes.md §3.1: U+00BF and U+00A1 are OPENISH, so a mark directly after one can open a quotation (issue #112). Sin la apertura, la comilla simple de cierre se curvaba como apóstrofo y la de apertura quedaba recta."
+    },
+    {
+      "id": "es-quotes-inverted-question-then-nested-question",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "¿\"¿Qué?\"?",
+      "out": "¿«¿Qué?»?",
+      "note": "quotes.md §3.1: U+00BF and U+00A1 are OPENISH, so a mark directly after one can open a quotation (issue #112). Una pregunta citada dentro de otra."
+    },
+    {
+      "id": "es-quotes-after-inverted-question-fixed-point",
+      "rule": "quotes",
+      "mode": "text",
+      "in": "¿«Sí»?",
+      "out": "¿«Sí»?",
+      "note": "quotes.md §3.1: U+00BF and U+00A1 are OPENISH, so a mark directly after one can open a quotation (issue #112). La salida ya tipografiada es un punto fijo."
     }
   ]
 }
