@@ -335,6 +335,18 @@ Språkrådet, Chicago, Мильчин. Where that reference is a paid standard n
 standardised on the prevailing form instead, and the `sources` entry says exactly that: a recorded
 decision, labelled as one, never dressed up as a citation.
 
+## Show that you use polytypo
+
+If polytypo typesets your text, you can say so with a badge. Add two lines to your footer or credits:
+
+```html
+<script async src="https://polytypo.dev/badge.js"></script>
+<span data-polytypo-lang="en" data-polytypo-theme="light"></span>
+```
+
+`data-polytypo-lang` takes the language code of the caption and `data-polytypo-theme` is `light` or
+`dark`. The picker at [polytypo.dev](https://polytypo.dev/#badge) shows every caption and theme.
+
 ## Licence
 
 Source code: MIT. Brand assets (the mark, the wordmark and their lockups) are **not** covered by the
