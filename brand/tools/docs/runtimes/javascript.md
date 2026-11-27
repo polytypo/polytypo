@@ -59,7 +59,7 @@ transform(input, { locale: "en-US", rules: { dashes: false } });
 | `dialect` | `"commonmark" \| "mdx"` | Required for `markdown`; ignored in `text` and `html`. |
 | `keys` | `readonly string[]` | Required for `yaml`. |
 | `frontmatterKeys` | `readonly string[]` | Optional, `markdown` only. |
-| `rules` | `Partial<Record<RuleId, boolean>>` | Per-rule override. `ranges` is off unless set to `true`. |
+| `rules` | `Partial<Record<RuleId, boolean>>` | Per-rule override. `ranges` is on unless set to `false`. |
 | `narrowNbsp` | `"narrow" \| "nbsp"` | Defaults to `"narrow"`. |
 
 The full option contract is on [Options](/docs/api/options/).

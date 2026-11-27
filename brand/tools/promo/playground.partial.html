@@ -104,13 +104,16 @@
   </div>
   <div class="wb-body">
     <div id="pg-panel-in" role="tabpanel" aria-labelledby="pg-tab-in">
-      <textarea
-        id="pg-input"
-        aria-label="Your text"
-        spellcheck="false"
-        autocapitalize="off"
-        placeholder='Paste or type text here — try: "It&apos;s a test" - said no one -- ever...'
-      ></textarea>
+      <div class="wb-in">
+        <div class="wb-mirror" id="pg-mirror" aria-hidden="true"></div>
+        <textarea
+          id="pg-input"
+          aria-label="Your text"
+          spellcheck="false"
+          autocapitalize="off"
+          placeholder='Paste or type text here — try: "It&apos;s a test" - said no one -- ever...'
+        ></textarea>
+      </div>
     </div>
     <div class="wb-output" id="pg-panel-out" role="tabpanel" aria-labelledby="pg-tab-out" hidden>
       <div class="specimen" id="pg-output"></div>

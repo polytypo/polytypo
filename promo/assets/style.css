@@ -114,8 +114,8 @@
 
   /* Marked difference in a specimen: what was removed from the input (red) and what the engine put
      in the output (green). Text on both stays --fg: 11.7:1 on the red and 12.8:1 on the green in
-     light, 10.0:1 and 8.4:1 in dark. Colour is never the only cue: the .chg-* marks also carry a
-     strike-through (removed) or an underline (added). */
+     light, 10.0:1 and 8.4:1 in dark. The fill is the only visible cue; the .chg-* marks also
+     announce [removed: …] / [added: …] to a screen reader. */
   --diff-del-bg: #f6c4bb;
   --diff-ins-bg: #b8e3c3;
 }
@@ -742,23 +742,20 @@ section > .section-intro {
 
 /* The one before/after mark. <del> in the input, <ins> in the output, wherever an example shows
    both: home, locale pages, docs examples, changelog, playground output. The fill is the
-   highlight; the strike-through or underline is the cue that survives without colour. */
+   highlight alone; a screen reader gets the [removed]/[added] text below. */
 .chg {
   position: relative;
   border-radius: var(--radius-xs);
   color: var(--fg);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
+  text-decoration: none; /* <del> and <ins> are struck and underlined by the browser default */
 }
 
 .chg-del {
   background: var(--diff-del-bg);
-  text-decoration-line: line-through;
 }
 
 .chg-ins {
   background: var(--diff-ins-bg);
-  text-decoration-line: underline;
 }
 
 /* Spoken, not seen: a screen reader cannot read a fill, so each run announces what it is. Pseudo
@@ -1954,6 +1951,52 @@ select {
   border-radius: 0;
   resize: none;
   line-height: var(--lh-body);
+}
+
+/* The input is a textarea, which cannot carry marks: a mirror with the same box and text sits
+   behind it, transparent text over the red fill of what the engine changes. */
+.wb-in {
+  position: relative;
+  height: 100%;
+}
+
+.wb-mirror,
+.wb-in textarea {
+  scrollbar-gutter: stable;
+  font-family: inherit;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: normal;
+  tab-size: 8;
+}
+
+.wb-mirror {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--fs-md);
+  line-height: var(--lh-body);
+  color: transparent;
+  pointer-events: none;
+}
+
+.wb-mirror .chg {
+  color: transparent;
+}
+
+.wb-in textarea {
+  position: relative;
+  background: transparent;
+}
+
+.wb-in textarea:focus-visible {
+  outline: none;
+}
+
+.workbench[data-size="full"] .wb-mirror,
+.workbench.is-expanded .wb-mirror {
+  padding: var(--space-5) var(--space-6);
 }
 
 .wb-output {

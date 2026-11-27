@@ -75,11 +75,11 @@ window.Polytypo = (function () {
   }
 
   /**
-   * Character-level LCS. Returns the OUTPUT side only, as segments of [changed, text] —
-   * the input is a textarea, which cannot carry marks. Server-rendered examples mark both sides
-   * (build_promo.py's diff_html); this is the same <ins class="chg chg-ins"> for the live output.
+   * Character-level LCS over both sides, as segments of [changed, text]. `right` is the output
+   * (<ins>), `left` the input (<del>). Server-rendered examples mark both sides the same way
+   * (build_promo.py's diff_html).
    */
-  function diff(a, b) {
+  function diffBoth(a, b) {
     const n = a.length,
       m = b.length;
     const dp = new Uint16Array((n + 1) * (m + 1));
@@ -90,30 +90,52 @@ window.Polytypo = (function () {
             ? dp[(i + 1) * (m + 1) + j + 1] + 1
             : Math.max(dp[(i + 1) * (m + 1) + j], dp[i * (m + 1) + j + 1]);
 
+    const left = [];
     const right = [];
-    const push = (changed, ch) => {
-      const last = right[right.length - 1];
+    const add = (side, changed, ch) => {
+      const last = side[side.length - 1];
       if (last && last[0] === changed) last[1] += ch;
-      else right.push([changed, ch]);
+      else side.push([changed, ch]);
     };
     let i = 0,
       j = 0;
     while (i < n && j < m) {
       if (a[i] === b[j]) {
-        push(false, b[j]);
+        add(left, false, a[i]);
+        add(right, false, b[j]);
         i++;
         j++;
-      } else if (dp[(i + 1) * (m + 1) + j] >= dp[i * (m + 1) + j + 1]) i++;
-      else {
-        push(true, b[j]);
+      } else if (dp[(i + 1) * (m + 1) + j] >= dp[i * (m + 1) + j + 1]) {
+        add(left, true, a[i]);
+        i++;
+      } else {
+        add(right, true, b[j]);
         j++;
       }
     }
+    while (i < n) {
+      add(left, true, a[i]);
+      i++;
+    }
     while (j < m) {
-      push(true, b[j]);
+      add(right, true, b[j]);
       j++;
     }
-    return right;
+    return { left, right };
+  }
+
+  /** The output side only. */
+  function diff(a, b) {
+    return diffBoth(a, b).right;
+  }
+
+  /** The input side, for the mirror behind the playground's textarea. */
+  function paintDel(segments) {
+    return segments
+      .map(([changed, text]) =>
+        changed ? '<del class="chg chg-del">' + esc(text) + "</del>" : esc(text),
+      )
+      .join("");
   }
 
   function paint(segments) {
@@ -327,6 +349,8 @@ window.Polytypo = (function () {
     copyButton,
     bootTabs,
     summarizeChange,
+    diffBoth,
+    paintDel,
     summarizeError,
     copyStatusText,
     track,

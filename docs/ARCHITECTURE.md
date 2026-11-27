@@ -61,8 +61,8 @@ Per runtime, the ten rules of `spec/rules/order.json` over a plain string. No I/
 clock, no locale-dependent library calls (see §4.6). Pure function in, pure string out.
 
 > The count is exact, not approximate: `order.json` is the source of truth, and a port that
-> implements nine of the ten rules fails conformance. `ranges` (order 25) and `quote-punctuation` (order 45) are off by default, and
-> `dashes` retains only parenthetical-dash processing. Omitting either is non-conforming even
+> implements nine of the ten rules fails conformance. `quote-punctuation` (order 45) is off by default and `ranges` (order 25) is on, and
+> `dashes` retains only parenthetical-dash processing. Omitting `quote-punctuation` is non-conforming even
 > though it defaults off, exactly as omitting any other default-off behaviour would be: "off by
 > default" is a runtime option, not licence to skip implementing the rule.
 

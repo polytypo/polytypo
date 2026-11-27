@@ -62,7 +62,7 @@ Polytypo::transform($input, 'fr', mode: 'html', rules: ['ranges' => true]);
 | `$locale` | Required. No fallback to English. |
 | `mode:` | `'text'` (default), `'html'`, `'yaml'`. `'markdown'` raises `POLYTYPO_INVALID_DIALECT`. |
 | `keys:` | Array of strings, required for `yaml`. |
-| `rules:` | Array of rule id to bool. `ranges` is off unless `true`. |
+| `rules:` | Array of rule id to bool. `ranges` is on unless `false`. |
 
 The contract is on [Options](/docs/api/options/).
 

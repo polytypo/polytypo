@@ -25,7 +25,7 @@
 
 ---
 
-Spec version: **1.32.0** · locales: **35** · rules: **10**.
+Spec version: **1.33.0** · locales: **35** · rules: **10**.
 
 ## Implementations
 
@@ -148,8 +148,7 @@ locales), `U+202F` narrow no-break space (`fr` only, before `;` `!` `?`), `U+201
 (`ru` only, from `hyphen`) and `U+2060` word joiner (around the dash of a bound range, and only with
 `ranges` on). Fonts do not all carry the last three — a browser falls back to another face, while a
 PDF renderer with a single embedded font can drop the glyph. `rules: { hyphen: false }` turns off
-the only rule that emits `U+2011`, and `ranges` is off by default, so `U+2060` appears only where it
-was asked for.
+the only rule that emits `U+2011`, and `rules: { ranges: false }` turns off the only rule that emits `U+2060`.
 
 ## Examples, by rule
 
@@ -157,8 +156,8 @@ was asked for.
 | --- | --- | --- |
 | `quotes` | `"He said 'no' to me," she noted.` | “He said ‘no’ to me,” she noted. |
 | `dashes` | `The plan - if there is one - fails.` | The plan—if there is one—fails. |
-| `dashes` | `chapters 3-5 and pp. 34-36` | chapters 3-5 and pp. 34-36 |
-| `ranges` (`rules: { ranges: true }`) | `chapters 3-5 and pp. 34-36` | chapters 3⁠–⁠5 and pp. 34⁠–⁠36 |
+| `dashes` (`rules: { ranges: false }`) | `chapters 3-5 and pp. 34-36` | chapters 3-5 and pp. 34-36 |
+| `ranges` | `chapters 3-5 and pp. 34-36` | chapters 3⁠–⁠5 and pp. 34⁠–⁠36 |
 | `ellipsis` | `Wait... what?` | Wait… what? |
 | `apostrophe` | `don't` | don’t |
 | `nbsp` | `It is 20 km to the coast` | It is 20⍽km to the coast |

@@ -43,7 +43,7 @@ Optional, and meaningful only when `mode` is `"markdown"` (spec 1.7.0). Names th
 
 ## rules
 
-A map from rule id to boolean. `{ dashes: false }` switches a default-on rule off. `ranges` is the one rule that is off by default: `{ ranges: true }` switches it on. Absence of a key always means that rule's own default. Turning a rule off removes it from the pipeline and never reorders the rest. An unrecognised rule id throws `POLYTYPO_UNKNOWN_RULE`.
+A map from rule id to boolean. `{ dashes: false }` switches a default-on rule off. `quote-punctuation` is the one rule that is off by default: `{ "quote-punctuation": true }` switches it on. Absence of a key always means that rule's own default. Turning a rule off removes it from the pipeline and never reorders the rest. An unrecognised rule id throws `POLYTYPO_UNKNOWN_RULE`.
 
 ```example
 locale: en-US

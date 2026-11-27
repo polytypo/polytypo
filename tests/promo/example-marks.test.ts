@@ -73,6 +73,12 @@ describe("the live playground output uses the same mark", () => {
     const html = Polytypo.paint(Polytypo.diff([..."a 'b'"], [..."a ‘b’"]));
     expect(html).toContain('<ins class="chg chg-ins"');
   });
+
+  it("paints the input side of the textarea mirror as <del class='chg chg-del'>", () => {
+    const both = Polytypo.diffBoth([..."a 'b'"], [..."a ‘b’"]);
+    const html = Polytypo.paintDel(both.left);
+    expect(html).toBe('a <del class="chg chg-del">\'</del>b<del class="chg chg-del">\'</del>');
+  });
 });
 
 function luminance(hex: string): number {
@@ -116,8 +122,10 @@ describe("style.css — mark colours, both themes", () => {
     );
   }
 
-  it("never relies on colour alone: removed text is struck through, added text underlined", () => {
-    expect(css).toMatch(/\.chg-del\s*\{[^}]*line-through/);
-    expect(css).toMatch(/\.chg-ins\s*\{[^}]*underline/);
+  it("draws only the fill, and announces the change to a screen reader instead", () => {
+    expect(css).toMatch(/\.chg\s*\{[^}]*text-decoration:\s*none/);
+    expect(css).not.toMatch(/\.chg-(?:del|ins)\s*\{[^}]*text-decoration/);
+    expect(css).toMatch(/\.chg-del::before\s*\{[^}]*\[removed:/);
+    expect(css).toMatch(/\.chg-ins::before\s*\{[^}]*\[added:/);
   });
 });

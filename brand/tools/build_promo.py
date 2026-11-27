@@ -440,14 +440,14 @@ RULE_ROWS = [
         "en-US",
         1,
         "Numeric and date ranges are left alone — converting them is the separate "
-        "ranges rule, off by default.",
+        "ranges rule, which is on by default.",
     ),
     (
         "ranges",
         "en-US",
         0,
-        "Off by default; with rules: { ranges: true }, numeric ranges take an en dash held by "
-        "word joiners.",
+        "On by default; numeric ranges take an en dash held by word joiners, and "
+        "rules: { ranges: false } switches it off.",
     ),
     ("hyphen", "ru", 0, "Morphological hyphens bound with <code>U+2011</code> so they cannot break."),
     ("quotes", "de-DE", 0, "Primary and secondary quotes, with nesting resolved."),
@@ -1255,7 +1255,7 @@ def badge_section_html(prefix):
     and its appearance is frozen, because sites embed it as-is."""
     options = "".join(
         f'<option value="{H.escape(lang)}"{" selected" if lang == "en" else ""}>{H.escape(name)}</option>'
-        for lang, name in BADGE_LANG_NAMES.items()
+        for lang, name in sorted(BADGE_LANG_NAMES.items(), key=lambda kv: (kv[1].casefold(), kv[0]))
     )
     snippet = H.escape(
         f'<script async src="{SITE_ORIGIN}/badge.js"></script>\n'
@@ -2326,7 +2326,7 @@ def build_playground_script(data, prefix, lazy, fixed_locale=None):
 const DATA = {payload};
 (function playground() {{
   const {{
-    mark, diff, paint, highlight, bootTabs, summarizeChange, summarizeError, copyStatusText,
+    esc, mark, diffBoth, paint, paintDel, highlight, bootTabs, summarizeChange, summarizeError, copyStatusText,
     copyButton, track,
   }} = window.Polytypo;
   const LAZY = {lazy_literal};
@@ -2342,6 +2342,7 @@ const DATA = {payload};
   const $keysWrap = document.getElementById("pg-keys-wrap");
   const $keys = document.getElementById("pg-keys");
   const $input = document.getElementById("pg-input");
+  const $mirror = document.getElementById("pg-mirror");
   const $output = document.getElementById("pg-output");
   const $count = document.getElementById("pg-count");
   const $outputSummary = document.getElementById("pg-output-summary");
@@ -2682,8 +2683,10 @@ const DATA = {payload};
    * not as a lesser placeholder. */
   function paintPair(before, after) {{
     if (before.length <= DIFF_CAP) {{
-      const segments = diff([...before], [...after]);
+      const both = diffBoth([...before], [...after]);
+      const segments = both.right;
       $output.innerHTML = paint(segments);
+      $mirror.innerHTML = paintDel(both.left) + "\\n";
       return {{ label: summarizeChange(before, after, segments), note: "" }};
     }}
     $output.innerHTML = mark(after);
@@ -2729,9 +2732,15 @@ const DATA = {payload};
     setFoot(isLoadSlow ? "Loading the engine — your text is typeset the moment it arrives." : "");
   }}
 
+  $input.addEventListener("scroll", () => {{
+    $mirror.scrollTop = $input.scrollTop;
+    $mirror.scrollLeft = $input.scrollLeft;
+  }});
+
   function render() {{
     const text = $input.value;
     const n = text.length;
+    $mirror.innerHTML = esc(text) + "\\n";
     $count.textContent = n ? n.toLocaleString("en-US") + " chars" : "";
     $dialectWrap.hidden = $mode.value !== "markdown";
     $keysWrap.hidden = $mode.value !== "yaml";

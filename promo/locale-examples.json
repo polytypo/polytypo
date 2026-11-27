@@ -1,5 +1,5 @@
 {
-  "spec": "1.32.0",
+  "spec": "1.33.0",
   "locales": {
     "sq": {
       "byRule": {
@@ -3054,6 +3054,11 @@
             "rules": {
               "ranges": true
             }
+          },
+          {
+            "id": "pl-ranges-default-on-year-range",
+            "in": "w latach 1990-2000",
+            "out": "w latach 1990⁠–⁠2000"
           }
         ],
         "ellipsis": [
@@ -3121,7 +3126,7 @@
       ],
       "compare": null,
       "resolution": ["pl"],
-      "disagreed": 1
+      "disagreed": 0
     },
     "pt-BR": {
       "byRule": {
@@ -3491,6 +3496,11 @@
             "rules": {
               "ranges": true
             }
+          },
+          {
+            "id": "ru-ranges-default-on-year-range",
+            "in": "в 1990-2000 годах",
+            "out": "в 1990⁠—⁠2000 годах"
           }
         ],
         "hyphen": [
@@ -3593,7 +3603,7 @@
       ],
       "compare": null,
       "resolution": ["ru", "ru-BY"],
-      "disagreed": 1
+      "disagreed": 0
     },
     "sr": {
       "byRule": {
@@ -4364,6 +4374,11 @@
             "rules": {
               "ranges": true
             }
+          },
+          {
+            "id": "uk-ranges-default-on-year-range",
+            "in": "у 1990-2000 роках",
+            "out": "у 1990⁠—⁠2000 роках"
           }
         ],
         "hyphen": [
@@ -4436,7 +4451,7 @@
       ],
       "compare": null,
       "resolution": ["uk"],
-      "disagreed": 1
+      "disagreed": 0
     }
   }
 }

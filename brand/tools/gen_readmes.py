@@ -279,8 +279,7 @@ locales), `U+202F` narrow no-break space (`fr` only, before `;` `!` `?`), `U+201
 (`ru` only, from `hyphen`) and `U+2060` word joiner (around the dash of a bound range, and only with
 `ranges` on). Fonts do not all carry the last three — a browser falls back to another face, while a
 PDF renderer with a single embedded font can drop the glyph. `rules: {{ hyphen: false }}` turns off
-the only rule that emits `U+2011`, and `ranges` is off by default, so `U+2060` appears only where it
-was asked for.
+the only rule that emits `U+2011`, and `rules: {{ ranges: false }}` turns off the only rule that emits `U+2060`.
 
 ## Examples, by rule
 

@@ -19,6 +19,14 @@ export interface PolytypoSiteJs {
   esc: (s: string) => string;
   mark: (s: string) => string;
   diff: (a: string[], b: string[]) => Array<[boolean, string]>;
+  diffBoth: (
+    a: string[],
+    b: string[],
+  ) => {
+    left: Array<[boolean, string]>;
+    right: Array<[boolean, string]>;
+  };
+  paintDel: (segments: Array<[boolean, string]>) => string;
   paint: (segments: Array<[boolean, string]>) => string;
   describeChange: (text: string) => string | undefined;
   highlight: (code: string) => string;

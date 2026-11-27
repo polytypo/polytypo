@@ -1,7 +1,7 @@
 ---
 title: Rule order
 seo_title: Why the polytypo typography rules run in this order
-description: The fixed order in which the ten polytypo rules run, why each sits where it does, why ranges and quote-punctuation are off by default, and how options never reorder them.
+description: The fixed order in which the ten polytypo rules run, why each sits where it does, why quote-punctuation is off by default, and how options never reorder them.
 section: concepts
 order: 40
 ---
@@ -14,7 +14,7 @@ order: 40
 | --- | --- | --- | --- |
 | 10 | [`spaces`](/docs/rules/spaces/) | on | collapse repeated spaces, strip spaces before punctuation and inside brackets |
 | 20 | [`ellipsis`](/docs/rules/ellipsis/) | on | three dots to the ellipsis character |
-| 25 | [`ranges`](/docs/rules/ranges/) | **off** | numeric and date range dash |
+| 25 | [`ranges`](/docs/rules/ranges/) | on | numeric and date range dash |
 | 30 | [`dashes`](/docs/rules/dashes/) | on | parenthetical dash |
 | 35 | [`hyphen`](/docs/rules/hyphen/) | on | non-breaking hyphen in listed forms |
 | 40 | [`quotes`](/docs/rules/quotes/) | on | straight quotes to the locale's pairs |
@@ -38,26 +38,26 @@ The order also underpins [idempotency](/docs/concepts/idempotency/): a rule may 
 
 ## Examples
 
-The input holds a digit range and a parenthetical dash. `ranges` is off, so the range keeps its hyphen while `dashes` converts the `--`:
+The input holds a digit range and a parenthetical dash. With `ranges` off, the range keeps its hyphen while `dashes` converts the `--`:
 
 ```example
 locale: en-US
+rules: -ranges
 ---
 5-10 -- "x"
 ```
 
-Turning `ranges` on also converts the range, bound with word joiners, and `dashes` still handles the rest:
+With `ranges` on, which is the default, the range is converted too, bound with word joiners, and `dashes` still handles the rest:
 
 ```example
 locale: en-US
-rules: ranges
 ---
 5-10 -- "x"
 ```
 
 ## Options and order
 
-`ranges` and `quote-punctuation` are the two rules that are off by default, and each is an explicit opt-in. A range and a compound label such as `Figure 5-10` have the same shape, and telling them apart would need the preceding word, which the rules never read. `quote-punctuation` moves a character the author typed, so it is not applied unless you ask for it (see [quote-punctuation](/docs/rules/quote-punctuation/)).
+`quote-punctuation` is the one rule that is off by default, and it is an explicit opt-in. `ranges` is on: a range and a compound label such as `Figure 5-10` have the same shape, and telling them apart would need the preceding word, which the rules never read, so the rule converts both (see [ranges](/docs/rules/ranges/) for the measured cost). `quote-punctuation` moves a character the author typed, so it is not applied unless you ask for it (see [quote-punctuation](/docs/rules/quote-punctuation/)).
 
 The `rules` option switches rules on or off by id. It never reorders them. A disabled rule is removed from the sequence and the rest keep their positions, and the order in which you list ids does not matter. Here `dashes` is off, so the spaced `--` stays while `ranges` still runs:
 

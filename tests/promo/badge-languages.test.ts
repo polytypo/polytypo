@@ -39,3 +39,26 @@ describe("badge languages follow the locale registry", () => {
     expect(home).toContain('data-polytypo-lang="en"');
   });
 });
+
+describe("badge language picker order", () => {
+  it("offers exactly the languages of the registered locales", () => {
+    const html = readFileSync(path.join(ROOT, "promo", "index.html"), "utf8");
+    const select = /<select[^>]*id="badge-lang"[^>]*>([\s\S]*?)<\/select>/.exec(html);
+    const values = [...(select?.[1] ?? "").matchAll(/<option value="([^"]+)"/g)].map((m) => m[1]);
+    const languages = new Set(registry.locales.map((code) => code.split("-")[0]));
+    expect([...values].sort()).toEqual([...languages].sort());
+  });
+
+  it("lists languages alphabetically by name, like the playground's locale list", () => {
+    const html = readFileSync(path.join(ROOT, "promo", "index.html"), "utf8");
+    const select = /<select[^>]*id="badge-lang"[^>]*>([\s\S]*?)<\/select>/.exec(html);
+    expect(select).not.toBeNull();
+    const names = [...(select?.[1] ?? "").matchAll(/<option[^>]*>([^<]*)<\/option>/g)].map(
+      (m) => m[1] ?? "",
+    );
+    expect(names.length).toBeGreaterThan(10);
+    expect(names).toEqual(
+      [...names].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase(), "en")),
+    );
+  });
+});

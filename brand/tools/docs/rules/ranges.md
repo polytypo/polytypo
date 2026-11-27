@@ -1,18 +1,20 @@
 ---
 title: ranges
 seo_title: The ranges rule turns a hyphen into an en dash between numbers per locale
-description: The opt-in ranges rule turns a hyphen between two numbers into the locale's range dash, with the guards that protect dates, phone numbers and decimals.
+description: The ranges rule turns a hyphen between two numbers into the locale's range dash, with the guards that protect dates, phone numbers and decimals.
 section: rules
 order: 30
 ---
 
 `ranges` rewrites the hyphen in a numeric range such as `1914-1918` or `5-10 days` into the dash the locale prescribes: an en dash in English, German, Swedish, Finnish, Polish and Czech, an em dash in Russian and Ukrainian. When the dash is tight (no spaces around it), the rule also binds it to the digits with zero-width word joiners so the range cannot break across lines.
 
-**This rule is off by default.** Without it, `5-10`, `Figure 5-10` and `9-11` come through byte for byte unchanged. Turn it on with `rules: { ranges: true }`.
+**This rule is on by default.** `5-10`, `Figure 5-10` and `9-11` are converted unless you turn it off with `rules: { ranges: false }`.
 
-## Why it is opt-in
+## Why it is on by default, and what it costs
 
-A hyphen between two numbers is ambiguous without the word in front of it. `takes 5-10 days` is a range. `Figure 5-10` is a compound label (figure 10 of chapter 5), and `9-11` can be a date or a proper noun. Telling them apart needs a per-locale list of label words, and the rules in polytypo scan code points, not words. So the rule makes the choice yours: with `ranges` on, a compound label that has the same shape as a range is converted too.
+A hyphen between two numbers is ambiguous without the word in front of it. `takes 5-10 days` is a range. `Figure 5-10` is a compound label (figure 10 of chapter 5), and `9-11` can be a date or a proper noun. Telling them apart needs a per-locale list of label words, and the rules in polytypo scan code points, not words. So the rule converts every digit-hyphen-digit shape that passes its guards, and a compound label with the same shape as a range is converted too.
+
+The cost was measured: on Russian, Ukrainian, German, Polish and English Wikipedia text with the hyphens retyped, 9 of 777 conversions (about 1.2%) were not ranges. They were six ISSNs, one №-number, one level score `1-1` and one `2014-3976`. Text with many serial numbers or scores should turn the rule off.
 
 ```example
 locale: en-US
@@ -20,16 +22,16 @@ locale: en-US
 Takes 5-10 days. See Figure 5-10 and 1914-1918.
 ```
 
-Notice that nothing changed. The same text with the rule on:
+All three converted, including `Figure 5-10`. That is the accepted trade-off. The same text with the rule off:
 
 ```example
 locale: en-US
-rules: ranges
+rules: -ranges
 ---
 Takes 5-10 days. See Figure 5-10 and 1914-1918.
 ```
 
-All three converted, including `Figure 5-10`. That is the accepted trade-off.
+Nothing changed.
 
 ## How it works
 
@@ -82,7 +84,7 @@ rules: ranges
 1914-1918 und 5 - 10 Tage
 ```
 
-French has no verified range convention (`dash.range` is `none`), so the rule does nothing even when enabled:
+French has no verified range convention (`dash.range` is `none`), so the rule does nothing there:
 
 ```example
 locale: fr
@@ -144,13 +146,13 @@ The rule reads `dash.range`, one of `em-tight`, `em-spaced`, `en-tight`, `en-spa
 
 ## Options
 
-Enable the rule explicitly:
+The rule is on by default. Switch it off explicitly:
 
 ```js
-transform(text, { locale: 'en-US', rules: { ranges: true } })
+transform(text, { locale: 'en-US', rules: { ranges: false } })
 ```
 
-`ranges: false` is the default. There is no other setting.
+`ranges: true` is the default. There is no other setting.
 
 ## Edge cases
 
@@ -159,7 +161,7 @@ transform(text, { locale: 'en-US', rules: { ranges: true } })
 - Scores such as `5-0` are rejected because the left number is larger than the right, while `0-5` converts.
 - `ranges` runs before `dashes`. A range candidate belongs to `ranges` alone, whether or not it is enabled: `dashes` never reinterprets a digit-flanked hyphen as a parenthetical dash. With both rules on, `a - 5-10` becomes `a—5–10` (the parenthetical dash first, then a bound range).
 - A bare number with a space-separated unit is not a closed-up symbol. `15 kg–20 kg` stays out of scope.
-- Because a range candidate is wider than a plain digit flank, text such as `$15 - $20` that `dashes` once converted by default is now left alone unless `ranges` is on, and is left alone in the `none` locales whatever you enable.
+- Because a range candidate is wider than a plain digit flank, text such as `$15 - $20` that `dashes` once converted is a range for `ranges`, and is left alone in the `none` locales whatever you enable.
 
 ## Related
 

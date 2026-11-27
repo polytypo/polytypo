@@ -25,7 +25,7 @@ The same rule decides the length and the spacing together, so a spaced em dash i
 
 ### Em dash and en dash
 
-The em dash and the en dash do different jobs in most style guides. The parenthetical dash, the one that interrupts a sentence, is handled here. The dash between two numbers, as in `1914–1918`, is a range and belongs to [ranges](/docs/rules/ranges/), which is off by default. A lone en dash that the author typed is left as written in every locale, because it is taken as a deliberate connecting dash.
+The em dash and the en dash do different jobs in most style guides. The parenthetical dash, the one that interrupts a sentence, is handled here. The dash between two numbers, as in `1914–1918`, is a range and belongs to [ranges](/docs/rules/ranges/). A lone en dash that the author typed is left as written in every locale, because it is taken as a deliberate connecting dash.
 
 ## How it works
 
@@ -159,19 +159,19 @@ Body text
 
 ## Numbers, dates and ranges
 
-A dash with a digit on both sides is a **range candidate** and belongs to the `ranges` rule, never to `dashes`. This holds whether or not `ranges` is turned on. With default options, `5-10`, `34-36`, `Figure 5-10` and an ISO date such as `2026-08-15` come out byte for byte as they went in:
+A dash with a digit on both sides is a **range candidate** and belongs to the `ranges` rule, never to `dashes`. This holds whether or not `ranges` is turned on. With `ranges` off, `5-10`, `34-36`, `Figure 5-10` and an ISO date such as `2026-08-15` come out byte for byte as they went in:
 
 ```example
 locale: en-US
+rules: -ranges
 ---
 Released 2026-08-15, pp. 34-36
 ```
 
-Turn the `ranges` rule on and the page range becomes an en dash (bound with an invisible word joiner so it cannot wrap), while the date is still declined. See [Ranges](/docs/rules/ranges/) for the details.
+With the `ranges` rule on, which is the default, the page range becomes an en dash (bound with an invisible word joiner so it cannot wrap), while the date is still declined. See [Ranges](/docs/rules/ranges/) for the details.
 
 ```example
 locale: en-US
-rules: ranges
 ---
 Released 2026-08-15, pp. 34-36
 ```
@@ -180,6 +180,7 @@ Since spec 1.3.0 a range candidate can also have one closed-up symbol such as `$
 
 ```example
 locale: en-US
+rules: -ranges
 ---
 Prices run $15 - $20, up 35%-50%.
 ```
@@ -270,7 +271,7 @@ The plan - if there is one - fails.
 
 ## What it does not do
 
-- It does not convert a range such as `1914-1918`. That is [ranges](/docs/rules/ranges/), which is off by default.
+- It does not convert a range such as `1914-1918`. That is [ranges](/docs/rules/ranges/).
 - It does not change a hyphen inside a word. The few forms where a hyphen must not break across lines belong to [hyphen](/docs/rules/hyphen/).
 - It does not turn a leading `-` or `—` into a dialogue dash. A leading hyphen is a list marker in Markdown, and rewriting it would break list structure.
 - It does not turn `->` or `=>` into arrows. They are source code more often than prose.

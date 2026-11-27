@@ -62,7 +62,7 @@ transform(text, locale="en-US", rules={"dashes": False})
 | `dialect` | Required for `markdown`. Only `"commonmark"` is implemented. |
 | `keys` | List of strings, required for `yaml`. |
 | `frontmatter_keys` | List of strings, optional, `markdown` only. |
-| `rules` | Dict of rule id to `bool`. `ranges` is off unless `True`. |
+| `rules` | Dict of rule id to `bool`. `ranges` is on unless `False`. |
 
 The full option contract is on [Options](/docs/api/options/); option names use snake_case here where the spec uses camelCase.
 

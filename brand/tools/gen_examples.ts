@@ -166,7 +166,7 @@ const HERO: Record<(typeof LOCALES)[number], string> = {
 };
 
 // `rules` is passed to transform() as given, and recorded next to the case, so a case for a rule
-// that is off by default (`ranges`) shows the option it was generated with.
+// that runs with a non-default option shows the option it was generated with.
 const SHOWCASE: Record<
   (typeof LOCALES)[number],
   Array<{ rule: string; in: string; rules?: Record<string, boolean> }>
@@ -174,8 +174,8 @@ const SHOWCASE: Record<
   "en-US": [
     { rule: "quotes", in: `"He said 'no' to me," she noted.` },
     { rule: "dashes", in: `The plan - if there is one - fails.` },
-    { rule: "dashes", in: `chapters 3-5 and pp. 34-36` },
-    { rule: "ranges", in: `chapters 3-5 and pp. 34-36`, rules: { ranges: true } },
+    { rule: "dashes", in: `chapters 3-5 and pp. 34-36`, rules: { ranges: false } },
+    { rule: "ranges", in: `chapters 3-5 and pp. 34-36` },
     { rule: "ellipsis", in: `Wait... what?` },
     { rule: "apostrophe", in: `don't` },
     { rule: "nbsp", in: `It is 20 km to the coast` },
@@ -274,7 +274,7 @@ const SHOWCASE: Record<
   sr: [
     { rule: "quotes", in: `Рекао је "здраво".` },
     { rule: "dashes", in: `Књига - објављена пре рата - је одлична.` },
-    { rule: "ranges", in: `рат 1941-1945`, rules: { ranges: true } },
+    { rule: "ranges", in: `рат 1941-1945` },
   ],
   sl: [
     { rule: "quotes", in: `Rekel je "zdravo".` },
@@ -284,7 +284,7 @@ const SHOWCASE: Record<
   lt: [
     { rule: "quotes", in: `Jis pasakė "labas".` },
     { rule: "ellipsis", in: `Ką pasakysiu?...` },
-    { rule: "ranges", in: `karas 1939-1945`, rules: { ranges: true } },
+    { rule: "ranges", in: `karas 1939-1945` },
   ],
   lv: [
     { rule: "quotes", in: `Viņš teica "sveiki".` },

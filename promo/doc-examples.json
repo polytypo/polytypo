@@ -77,10 +77,10 @@
   "6908695eff8934a3": {
     "out": "# “Title”—here\n\n* “one”—it’s\n* two…\n\nPara with `\"code\" -- x` and a [link](http://x.com/a--b \"t\") and *“em”* text.\n\n    \"indented\" -- code"
   },
-  "84a23d928d7209d0": {
+  "63709b7973cc8e57": {
     "out": "5-10—“x”"
   },
-  "b99f93208b6681a8": {
+  "84a23d928d7209d0": {
     "out": "5⁠–⁠10—“x”"
   },
   "509aa1c3e0aacac8": {
@@ -317,13 +317,13 @@
   "456a0e568fec87e5": {
     "out": "Title\n---\nBody text"
   },
-  "c67a5558889b9fa1": {
+  "5cac53da6c9d46a6": {
     "out": "Released 2026-08-15, pp. 34-36"
   },
-  "b7d5df7324f1e1af": {
+  "c67a5558889b9fa1": {
     "out": "Released 2026-08-15, pp. 34⁠–⁠36"
   },
-  "4eb56eb15b6a72ef": {
+  "6f4ffa4b4f99fe97": {
     "out": "Prices run $15 - $20, up 35%-50%."
   },
   "c0021ed12549ce31": {
@@ -495,10 +495,10 @@
     "out": "He says ‘avoid `x`’s printer.’ Done."
   },
   "2e2827e7117f556d": {
-    "out": "Takes 5-10 days. See Figure 5-10 and 1914-1918."
-  },
-  "7ead452d8594fcb5": {
     "out": "Takes 5⁠–⁠10 days. See Figure 5⁠–⁠10 and 1914⁠–⁠1918."
+  },
+  "cbefd72613d21aac": {
+    "out": "Takes 5-10 days. See Figure 5-10 and 1914-1918."
   },
   "6a7bfde7987dc85c": {
     "out": "1914⁠–⁠1918 and pp. 34⁠–⁠36, takes 5⁠–⁠10 days"

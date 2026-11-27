@@ -1,7 +1,7 @@
 # Changelog
 
-Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.32.0`
-on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.32.0 and produce byte-identical
+Versions here are **spec versions**, and every runtime publishes the same number: `polytypo@1.33.0`
+on npm, PyPI, pkg.go.dev, RubyGems and Packagist all implement spec 1.33.0 and produce byte-identical
 output. Only released versions are listed.
 
 Read an entry as "what changes in text I already run through polytypo". Each one is a behaviour
@@ -11,6 +11,15 @@ not want, and the fixtures pin both sides.
 **Two characters below are not in the output.** ⍽ marks `U+00A0` NO-BREAK SPACE and · marks `U+202F`
 NARROW NO-BREAK SPACE — both are otherwise indistinguishable from an ordinary space here, and a
 changelog whose entries are about invisible characters has to show them somehow.
+
+## 1.33.0 — 26 November 2026
+
+Quotations open after ¿ and ¡, a quoted lone quotation mark stops breaking its neighbours, ranges converts by default, and the quote gate is bounded.
+
+- A quotation directly after `¿` or `¡` now opens, in every locale. Until now the mark's left neighbour counted as nothing that can precede an opening quotation, so in Spanish `¿"Sí"?` and `¡"Vamos"!` stayed straight, and `¿'Sí'?` came back as `¿'Sí’?`, the opener straight and the closer curled. Measured on 1.32.0 (`es`): all three as quoted.
+- A lone quotation mark inside quotes no longer breaks the pairing around it. `'he' '"'` (`en-US`) used to come back as `’he’ '"'`, because the quoted `"` made the rule discard an unrelated pair and curl its marks as two closing apostrophes; `Press '"' for a quote and 'x' for exit.` lost its `'x'` pair the same way. Measured on 1.32.0 (`en-US`): both as quoted. The quoted mark itself now stays straight and the rest of the sentence is converted. Cost: a nested quotation that consists of a single quotation mark (`"'"`) stays as typed; in `en-GB`, `'he' '"'` (1.32.0: `‘he’ ‘"’`) now keeps the quoted `'"'` pair straight and curls only `‘he’`.
+- `ranges` is on by default. `1990-2000`, `Figure 5-10` and `$15 - $20` become ranges with the locale's range dash; locales whose `dash.range` is `none` (fr, es, it, nl, pt, ro, tr, ca, da, el, sq, fr-CA) are unaffected, and `rules: { ranges: false }` restores the earlier behaviour. Measured accepted cost: on ru, uk, de, pl and en Wikipedia text with the hyphens retyped, 9 of 777 conversions (about 1.2%) were not ranges: six ISSNs, one №-number, one level score `1-1` and one `2014-3976`. Every converted range also carries two invisible U+2060 word joiners in the default output, one on each side of the dash, so a copied range contains them. Measured on 1.32.0 (`en-US`, default rules): `in 1990-2000`, `Figure 5-10`, `ISSN 2307-3047` and `$15 - $20` came back unchanged.
+- Bounded the quote certification gate. The pass that checks the quote pairing now runs at most eight rounds, so its cost grows in line with the input. Where it has not settled by then, `quotes` leaves that call's text as typed. No output we have measured changes: over 20,701 paragraphs of six novels and Wikipedia text in six locales, the three that needed more than five rounds came back identically with and without the bound.
 
 ## 1.32.0 — 25 November 2026
 

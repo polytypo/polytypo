@@ -292,9 +292,9 @@ def _rule_examples(ex, rule_ids, h):
         note = ""
         if rid == "ranges":
             note = (
-                "<p>The <code>ranges</code> rule is off by default; these cases enable it with "
-                "<code>rules: { ranges: true }</code>.</p>"
-            ) if all(c.get("rules", {}).get("ranges") for c in cases) else ""
+                "<p>The <code>ranges</code> rule is on by default; "
+                "<code>rules: { ranges: false }</code> switches it off.</p>"
+            )
         parts.append(f"<h3><code>{rid}</code></h3>{note}{_example_cards(cases, h)}")
     return "".join(parts)
 
@@ -596,7 +596,7 @@ def body(page, prefix, h, all_pages):
             ]
         )
         + "<p>The <code>dashes</code> rule reads the parenthetical convention. The <code>ranges</code> rule "
-        "reads the range convention and is off by default.</p>"
+        "reads the range convention and is on by default.</p>"
         + _rule_examples(ex, SECTION_RULES["dashes"], h)
     )
 

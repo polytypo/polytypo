@@ -63,7 +63,7 @@ Polytypo.transform(input, locale: "en-US", rules: { "dashes" => false })
 | `dialect:` | Required for `markdown`. Only `"commonmark"` is implemented. Passing it with any other mode raises `POLYTYPO_INVALID_DIALECT`. |
 | `keys:` | Array of strings, required for `yaml`. |
 | `frontmatter_keys:` | Array of strings, optional, `markdown` only. |
-| `rules:` | Hash of rule id to boolean. The keys are strings: a symbol key such as `dashes:` raises `Polytypo::Error` (`unknown rule id`). `ranges` is off unless `true`. |
+| `rules:` | Hash of rule id to boolean. The keys are strings: a symbol key such as `dashes:` raises `Polytypo::Error` (`unknown rule id`). `ranges` is on unless `false`. |
 | `narrow_nbsp:` | `"narrow"` (default) or `"nbsp"`. |
 
 Option names use snake_case here where the spec uses camelCase. The contract is on [Options](/docs/api/options/).

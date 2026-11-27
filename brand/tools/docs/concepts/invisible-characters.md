@@ -77,7 +77,7 @@ Quoi ? Oui !
 
 The substitution is applied to the rule's target, not to its output, so the result stays [idempotent](/docs/concepts/idempotency/) under the same option. Text produced with `narrowNbsp: "nbsp"` is not a fixed point of the default setting, which would turn those `U+00A0` characters back into `U+202F`. Keep the option the same across runs. Any value other than `"narrow"` or `"nbsp"` throws `POLYTYPO_INVALID_OPTION`.
 
-There is no option for `U+2060` and none for `U+2011`. Turn `ranges` off, which is its default, to emit no word joiner, and `rules: { hyphen: false }` to emit no non-breaking hyphen. A word joiner is also carried along when a range is copied out of a page.
+There is no option for `U+2060` and none for `U+2011`. Turn `ranges` off with `rules: { ranges: false }` to emit no word joiner, and `rules: { hyphen: false }` to emit no non-breaking hyphen. A word joiner is also carried along when a range is copied out of a page.
 
 ## Edge cases
 

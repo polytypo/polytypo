@@ -1,5 +1,5 @@
 {
-  "spec": "1.32.0",
+  "spec": "1.33.0",
   "proofLocales": ["en-GB", "en-US", "fr", "de-DE", "de-CH", "ru"],
   "locales": [
     {
@@ -263,14 +263,14 @@
         },
         {
           "rule": "dashes",
+          "rules": {
+            "ranges": false
+          },
           "in": "chapters 3-5 and pp. 34-36",
           "out": "chapters 3-5 and pp. 34-36"
         },
         {
           "rule": "ranges",
-          "rules": {
-            "ranges": true
-          },
           "in": "chapters 3-5 and pp. 34-36",
           "out": "chapters 3⁠–⁠5 and pp. 34⁠–⁠36"
         },
@@ -452,7 +452,7 @@
         {
           "rule": "dashes",
           "in": "Die Jahre 2019-2023",
-          "out": "Die Jahre 2019-2023"
+          "out": "Die Jahre 2019⁠–⁠2023"
         },
         {
           "rule": "nbsp",
@@ -684,9 +684,6 @@
         },
         {
           "rule": "ranges",
-          "rules": {
-            "ranges": true
-          },
           "in": "karas 1939-1945",
           "out": "karas 1939⁠–⁠1945"
         }
@@ -891,7 +888,7 @@
         {
           "rule": "dashes",
           "in": "Годы 2019-2023 были насыщенными",
-          "out": "Годы 2019-2023 были насыщенными"
+          "out": "Годы 2019⁠—⁠2023 были насыщенными"
         },
         {
           "rule": "hyphen",
@@ -934,9 +931,6 @@
         },
         {
           "rule": "ranges",
-          "rules": {
-            "ranges": true
-          },
           "in": "рат 1941-1945",
           "out": "рат 1941⁠–⁠1945"
         }
