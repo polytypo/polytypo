@@ -620,16 +620,18 @@ for (const locale of supported) {
 
   // Only tags the installed engine accepts are listed, each with the output of one probe so a
   // page shows that the tag and its resolved locale agree.
-  const resolution = resolutionCases
-    .filter((r) => r.resolves === locale)
-    .filter((r) => {
-      try {
-        return transform(HERO[locale], { locale: r.tag }) === transform(HERO[locale], { locale });
-      } catch {
-        return false;
-      }
-    })
-    .map((r) => r.tag);
+  // The fixture file does not list every locale, so the locale's own tag is always a candidate;
+  // the engine probe below keeps only the tags it really resolves here.
+  const candidates = [
+    ...new Set([locale, ...resolutionCases.filter((r) => r.resolves === locale).map((r) => r.tag)]),
+  ];
+  const resolution = candidates.filter((tag) => {
+    try {
+      return transform(HERO[locale], { locale: tag }) === transform(HERO[locale], { locale });
+    } catch {
+      return false;
+    }
+  });
 
   localeExamples[locale] = { byRule, modes, compare, resolution, disagreed };
 }

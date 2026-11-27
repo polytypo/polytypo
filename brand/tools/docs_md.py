@@ -141,7 +141,9 @@ class Renderer:
             if "|" in line and i + 1 < len(lines) and TABLE_SEP.match(lines[i + 1].strip()):
                 rows = []
                 while i < len(lines) and "|" in lines[i]:
-                    rows.append([c.strip() for c in lines[i].strip().strip("|").split("|")])
+                    rows.append(
+                        [c.strip().replace("\\|", "|") for c in re.split(r"(?<!\\)\|", lines[i].strip().strip("|"))]
+                    )
                     i += 1
                 head, body_rows = rows[0], rows[2:]
                 th = "".join(f"<th>{self.inline(c)}</th>" for c in head)

@@ -111,7 +111,7 @@
         }
       ],
       "compare": null,
-      "resolution": ["sq-AL", "sq-XK"],
+      "resolution": ["sq", "sq-AL", "sq-XK"],
       "disagreed": 0
     },
     "bg": {
@@ -240,7 +240,7 @@
         }
       ],
       "compare": null,
-      "resolution": [],
+      "resolution": ["bg"],
       "disagreed": 0
     },
     "ca": {
@@ -358,7 +358,7 @@
         }
       ],
       "compare": null,
-      "resolution": [],
+      "resolution": ["ca"],
       "disagreed": 0
     },
     "hr": {
@@ -487,7 +487,7 @@
         }
       ],
       "compare": null,
-      "resolution": [],
+      "resolution": ["hr"],
       "disagreed": 0
     },
     "cs": {
@@ -708,7 +708,7 @@
         }
       ],
       "compare": null,
-      "resolution": ["da-DK"],
+      "resolution": ["da", "da-DK"],
       "disagreed": 0
     },
     "nl": {
@@ -1306,7 +1306,7 @@
         }
       ],
       "compare": null,
-      "resolution": ["et-EE"],
+      "resolution": ["et", "et-EE"],
       "disagreed": 0
     },
     "fi": {
@@ -2300,7 +2300,7 @@
         }
       ],
       "compare": null,
-      "resolution": [],
+      "resolution": ["hu"],
       "disagreed": 0
     },
     "is": {
@@ -2413,7 +2413,7 @@
         }
       ],
       "compare": null,
-      "resolution": [],
+      "resolution": ["is"],
       "disagreed": 0
     },
     "it": {
@@ -2634,7 +2634,7 @@
         }
       ],
       "compare": null,
-      "resolution": ["lv-LV"],
+      "resolution": ["lv", "lv-LV"],
       "disagreed": 0
     },
     "lt": {
@@ -2760,7 +2760,7 @@
         }
       ],
       "compare": null,
-      "resolution": [],
+      "resolution": ["lt"],
       "disagreed": 0
     },
     "nb": {
@@ -2891,7 +2891,7 @@
         }
       ],
       "compare": null,
-      "resolution": ["nb-NO", "no", "no-NO"],
+      "resolution": ["nb", "nb-NO", "no", "no-NO"],
       "disagreed": 0
     },
     "nn": {
@@ -3022,7 +3022,7 @@
         }
       ],
       "compare": null,
-      "resolution": ["nn-NO"],
+      "resolution": ["nn", "nn-NO"],
       "disagreed": 0
     },
     "pl": {
@@ -3424,7 +3424,7 @@
         }
       ],
       "compare": null,
-      "resolution": [],
+      "resolution": ["ro"],
       "disagreed": 0
     },
     "ru": {
@@ -3715,7 +3715,7 @@
         }
       ],
       "compare": null,
-      "resolution": [],
+      "resolution": ["sr"],
       "disagreed": 0
     },
     "sk": {
@@ -3844,7 +3844,7 @@
         }
       ],
       "compare": null,
-      "resolution": [],
+      "resolution": ["sk"],
       "disagreed": 0
     },
     "sl": {
@@ -3952,7 +3952,7 @@
         }
       ],
       "compare": null,
-      "resolution": [],
+      "resolution": ["sl"],
       "disagreed": 0
     },
     "es": {

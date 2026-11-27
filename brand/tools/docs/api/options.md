@@ -15,7 +15,7 @@ Options are the second argument of [`transform`](/docs/api/transform/) and [`ana
 | [`dialect`](#dialect) | `"commonmark"` \| `"mdx"` | none | with `mode: "markdown"` |
 | [`keys`](#keys) | list of strings | none | with `mode: "yaml"` |
 | [`frontmatterKeys`](#frontmatterkeys) | list of strings | none | no |
-| [`rules`](#rules) | map of rule id to boolean | all on except `ranges` | no |
+| [`rules`](#rules) | map of rule id to boolean | all on except `quote-punctuation` | no |
 | [`narrowNbsp`](#narrownbsp) | `"narrow"` \| `"nbsp"` | `"narrow"` | no |
 | [`protect`](#protect) | list of `{ start, end }` | none | no |
 
