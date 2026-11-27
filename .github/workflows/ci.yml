@@ -86,12 +86,13 @@ jobs:
       - name: Spec-tag-immutability check
         run: npm run check:spec-tag-immutable
 
-      - name: Test
-        run: npm test
-
-      # The generators must run clean on every push. The generated files are not diffed here:
+      # The generators must run clean on every push, and before the tests: the OG-image and promo
+      # tests read what they generate. The generated files are not diffed here:
       # they depend on the published polytypo package, so between a spec release and that
       # package's publication the diff is red for a reason no commit can fix. pages-deploy.yml
       # regenerates and requires zero drift before anything is published.
       - name: Generate artifacts
         run: npm run generate:all
+
+      - name: Test
+        run: npm test
